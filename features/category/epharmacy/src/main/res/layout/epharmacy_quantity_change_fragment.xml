@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/epharmacy_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="45dp"
+        tools:listitem="@layout/epharmacy_prescription_attachment_view_item"
+        tools:itemCount="1"
+        />
+
+
+    <com.tokopedia.totalamount.TotalAmount
+        android:id="@+id/qc_total_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unify_total_amount_title_text="@string/epharmacy_total_harga"
+        app:unify_total_amount_cta_text="@string/epharmacy_perbarui_pesanan"
+        />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/epharmacy_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

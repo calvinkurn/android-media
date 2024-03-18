@@ -10,10 +10,9 @@ import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
 import com.gojek.kyc.sdk.config.KycSdkConfig
 import com.gojek.kyc.sdk.config.KycSdkUserInfo
-import com.gojek.kyc.sdk.config.parseDataFromString
+import com.gojek.kyc.sdk.config.getDefaultSelfieConfigs
+import com.gojek.kyc.sdk.config.getDefaultUnifiedKycConfig
 import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
-import com.gojek.kyc.sdk.core.model.UnifiedKycAuroraConfigs
-import com.gojek.kyc.sdk.core.model.UnifiedKycConfigs
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.gojek.kyc.sdk.core.utils.OneKycClientApp
 import com.google.gson.Gson
@@ -34,7 +33,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -174,26 +173,24 @@ open class GoToKycModule {
     @Provides
     @ActivityScope
     fun provideDefaultRemoteConfigProvider(
-        @ApplicationContext context: Context,
-        remoteConfigImpl: FirebaseRemoteConfigImpl
+        @ApplicationContext context: Context
     ): DefaultRemoteConfigProvider {
-
         val gson = Gson()
+        val auroraConfigs = getDefaultSelfieConfigs(context, gson)
+            .copy(isAuroraEnabled = isRollenceEnabled(KEY_AURORA))
+        val kycConfigs = getDefaultUnifiedKycConfig(context, gson)
+            .copy(uploadSelfieSecondImageEnabled = isRollenceEnabled(KEY_UPLOAD_SELFIE))
+        return DefaultRemoteConfigProvider(context, gson, kycConfigs, auroraConfigs)
+    }
 
-        val kycConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_CONFIG)
-        val kycAuroraConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_AURORA)
-
-        val customKycConfigs = gson.parseDataFromString(
-            kycConfigString,
-            UnifiedKycConfigs::class.java
-        )
-
-        val customAuroraConfigs = gson.parseDataFromString(
-            kycAuroraConfigString,
-            UnifiedKycAuroraConfigs::class.java
-        )
-
-        return DefaultRemoteConfigProvider(context, gson, customKycConfigs, customAuroraConfigs)
+    private fun isRollenceEnabled(key: String): Boolean {
+        val remoteConfigInstance = RemoteConfigInstance.getInstance().abTestPlatform
+        val rollence = remoteConfigInstance.getFilteredKeyByKeyName(key)
+        return if (rollence.isNotEmpty()) {
+            remoteConfigInstance.getString(key).isNotEmpty()
+        } else {
+            true
+        }
     }
 
     @Provides
@@ -252,5 +249,7 @@ open class GoToKycModule {
         private const val NET_RETRY = 3
         private const val sharedPreferenceName = "kyc_centralized"
         private const val clickstreamEndPoint = "/api/v1/events"
+        private const val KEY_UPLOAD_SELFIE = "goto_kyc_selfie_and"
+        private const val KEY_AURORA = "goto_kyc_and_aurora"
     }
 }

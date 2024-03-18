@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
@@ -66,5 +67,6 @@ interface ProductListTypeFactory {
     fun type(inspirationProductCardView: InspirationProductItemDataView): Int
     fun type(inspirationCarouselSeamlessProductTitle: InspirationProductTitleDataView): Int
     fun type(separatorDataView: VerticalSeparatorDataView): Int
+    fun type(couponDataView: CouponDataView): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

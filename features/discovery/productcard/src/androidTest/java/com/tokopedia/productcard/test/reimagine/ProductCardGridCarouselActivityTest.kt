@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
@@ -99,6 +100,11 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
                 setProductModel(productCardModel)
                 setOnClickListener { toast("Click") }
                 setAddToCartOnClickListener { toast("Click ATC") }
+                setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+                    override fun onQuantityChanged(quantity: Int) {
+                        toast("Quantity editor $quantity")
+                    }
+                })
             }
         }
 

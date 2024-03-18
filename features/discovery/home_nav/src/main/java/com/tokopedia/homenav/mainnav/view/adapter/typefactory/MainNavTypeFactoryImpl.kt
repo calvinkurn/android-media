@@ -16,16 +16,11 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ErrorReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.ErrorWishlistViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.WishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
@@ -61,10 +56,6 @@ class MainNavTypeFactoryImpl(
         return TransactionListViewHolder.LAYOUT
     }
 
-    override fun type(wishlistDataModel: WishlistDataModel): Int {
-        return WishlistViewHolder.LAYOUT
-    }
-
     override fun type(reviewListDataModel: ReviewListDataModel): Int {
         return ReviewViewHolder.LAYOUT
     }
@@ -89,24 +80,12 @@ class MainNavTypeFactoryImpl(
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 
-    override fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel): Int {
-        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
-    }
-
     override fun type(shimmerReviewDataModel: ShimmerReviewDataModel): Int {
         return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
     }
 
-    override fun type(errorStateBuDataModel: ErrorStateBuDataModel): Int {
-        return ErrorStateBuViewHolder.LAYOUT
-    }
-
     override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
         return ErrorStateOngoingTransactionViewHolder.LAYOUT
-    }
-
-    override fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int {
-        return ErrorWishlistViewHolder.LAYOUT
     }
 
     override fun type(errorStateReviewDataModel: ErrorStateReviewDataModel): Int {
@@ -121,14 +100,11 @@ class MainNavTypeFactoryImpl(
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view, mainNavListener)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, mainNavListener)
-            ErrorStateBuViewHolder.LAYOUT -> ErrorStateBuViewHolder(view, mainNavListener)
             ErrorStateOngoingTransactionViewHolder.LAYOUT -> ErrorStateOngoingTransactionViewHolder(view, mainNavListener)
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
             InitialShimmeringTransactionDataRevampViewHolder.LAYOUT -> InitialShimmeringTransactionDataRevampViewHolder(view)
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
-            WishlistViewHolder.LAYOUT -> WishlistViewHolder(view, mainNavListener)
-            ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view, mainNavListener)
             ReviewViewHolder.LAYOUT -> ReviewViewHolder(view, mainNavListener)
             ErrorReviewViewHolder.LAYOUT -> ErrorReviewViewHolder(view, mainNavListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")

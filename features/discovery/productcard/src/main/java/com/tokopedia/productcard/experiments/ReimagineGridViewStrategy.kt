@@ -16,11 +16,14 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
+import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType.Grid
+import com.tokopedia.productcard.reimagine.cart.ProductCardCartExtension
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -44,6 +47,8 @@ internal class ReimagineGridViewStrategy(
     private fun <T: View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
 
     private val renderer = ProductCardRenderer(productCardView, Grid)
+    private val cartExtension = ProductCardCartExtension(productCardView, Grid)
+    private val stockInfo = ProductCardStockInfo(productCardView)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
@@ -106,6 +111,8 @@ internal class ReimagineGridViewStrategy(
 
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
         renderer.setProductModel(productCardModel)
+        stockInfo.render(productCardModel)
+        cartExtension.render(productCardModel)
 
         renderVideo(productCardModel)
         renderThreeDots(productCardModel)
@@ -173,6 +180,7 @@ internal class ReimagineGridViewStrategy(
     override fun recycle() {
         imageView?.glideClear()
         video.clear()
+        cartExtension.clear()
     }
 
     override fun setImageProductViewHintListener(
@@ -186,12 +194,6 @@ internal class ReimagineGridViewStrategy(
         cardContainer?.setOnClickListener(l)
     }
 
-    override fun setAddToCartOnClickListener(l: View.OnClickListener?) {
-        productCardView
-            .findViewById<View?>(R.id.productCardAddToCart)
-            ?.setOnClickListener(l)
-    }
-
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
         cardContainer?.setOnLongClickListener(l)
     }
@@ -201,4 +203,12 @@ internal class ReimagineGridViewStrategy(
     }
 
     override fun getVideoPlayerController(): VideoPlayerController = video
+
+    override fun setAddToCartOnClickListener(l: View.OnClickListener?) {
+        cartExtension.addToCartClickListener = { l?.onClick(it) }
+    }
+
+    override fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
 }

@@ -1,6 +1,9 @@
 package com.tokopedia.cart.view.util
 
+import com.tokopedia.cart.view.CartViewModel
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -10,6 +13,8 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 
 object CartPageAnalyticsUtil {
+
+    private const val DIMENSION_40_FORMAT = "/cart - rekomendasi untuk anda - %s - %s"
 
     fun generateCheckoutDataAnalytics(
         cartItemDataList: List<CartItemHolderData>,
@@ -27,7 +32,7 @@ object CartPageAnalyticsUtil {
         val enhancedECommerceCheckout = EnhancedECommerceCheckout().apply {
             for (cartItemData in cartItemDataList) {
                 val enhancedECommerceProductCartMapData =
-                    getCheckoutEnhancedECommerceProductCartMapData(cartItemData)
+                    getCheckoutEnhancedECommerceProductCartMapData(step, cartItemData)
                 addProduct(enhancedECommerceProductCartMapData.getProduct())
             }
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
@@ -38,7 +43,10 @@ object CartPageAnalyticsUtil {
         return checkoutMapData
     }
 
-    private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
+    private fun getCheckoutEnhancedECommerceProductCartMapData(
+        step: String,
+        cartItemHolderData: CartItemHolderData
+    ): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setDimension38(
                 cartItemHolderData.trackerAttribution.ifBlank {
@@ -76,6 +84,21 @@ object CartPageAnalyticsUtil {
             setDimension118(cartItemHolderData.bundleId)
             setDimension136(cartItemHolderData.cartStringOrder)
             setDimension137(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId.toString())
+            when (step) {
+                EnhancedECommerceActionField.STEP_1 -> {
+                    if (cartItemHolderData.cartProductLabelData.type == CartProductLabelData.TYPE_TIMER) {
+                        val remainingTimeSeconds =
+                            (cartItemHolderData.cartProductLabelData.localExpiredTimeMillis - System.currentTimeMillis()) / 1_000L
+                        setDimension98(remainingTimeSeconds.toString())
+                    } else {
+                        setDimension98(String.EMPTY)
+                    }
+                }
+
+                else -> {
+                    setDimension98(cartItemHolderData.cartProductLabelData.type)
+                }
+            }
             setCampaignId(cartItemHolderData.campaignId)
             setImpressionAlgorithm(if (!cartItemHolderData.isError) cartItemHolderData.productInformation.firstOrNull() else "")
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
@@ -117,6 +140,48 @@ object CartPageAnalyticsUtil {
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.cartId,
                 ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
+            )
+            data.add(productDataMap)
+        }
+        return data
+    }
+
+    fun generateBuyAgainDataProductAnalytics(
+        list: List<CartBuyAgainItemHolderData>
+    ): List<Map<String, Any>> {
+        val data = arrayListOf<Map<String, Any>>()
+        list.forEachIndexed { index, item ->
+            val productDataMap = mapOf(
+                ConstantTransactionAnalytics.Key.DIMENSION40 to DIMENSION_40_FORMAT
+                    .format(CartViewModel.PAGE_NAME_BUY_AGAIN, item.recommendationItem.recommendationType),
+                ConstantTransactionAnalytics.Key.INDEX to index,
+                ConstantTransactionAnalytics.Key.ITEM_BRAND to String.EMPTY,
+                ConstantTransactionAnalytics.Key.ITEM_CATEGORY to item.recommendationItem.categoryBreadcrumbs,
+                ConstantTransactionAnalytics.Key.ITEM_ID to item.recommendationItem.productId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to item.recommendationItem.name,
+                ConstantTransactionAnalytics.Key.ITEM_VARIANT to String.EMPTY,
+                ConstantTransactionAnalytics.Key.PRICE to item.recommendationItem.price
+            )
+            data.add(productDataMap)
+        }
+        return data
+    }
+
+    fun generateBuyAgainDataAddToCartAnalytics(
+        list: List<CartBuyAgainItemHolderData>
+    ): List<Map<String, Any>> {
+        val data = arrayListOf<Map<String, Any>>()
+        list.forEachIndexed { index, item ->
+            val productDataMap = mapOf(
+                ConstantTransactionAnalytics.Key.DIMENSION40 to DIMENSION_40_FORMAT
+                    .format(CartViewModel.PAGE_NAME_BUY_AGAIN, item.recommendationItem.recommendationType),
+                ConstantTransactionAnalytics.Key.INDEX to index,
+                ConstantTransactionAnalytics.Key.ITEM_BRAND to String.EMPTY,
+                ConstantTransactionAnalytics.Key.ITEM_CATEGORY to item.recommendationItem.categoryBreadcrumbs,
+                ConstantTransactionAnalytics.Key.ITEM_ID to item.recommendationItem.productId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to item.recommendationItem.name,
+                ConstantTransactionAnalytics.Key.ITEM_VARIANT to String.EMPTY,
+                ConstantTransactionAnalytics.Key.PRICE to item.recommendationItem.price
             )
             data.add(productDataMap)
         }

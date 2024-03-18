@@ -73,6 +73,7 @@ data class OfferingInfoForBuyerUiModel(
         val miniCartData: MiniCartSimplifiedData = MiniCartSimplifiedData(),
         val currentAppliedId: Long = 0,
         val isUpdateGiftImage: Boolean = false,
+        val isWidgetOnInitialState: Boolean = true,
         val localCacheModel: LocalCacheModel? = null
     )
 

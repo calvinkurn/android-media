@@ -18,7 +18,7 @@ class ItemSupportFeatureAdapter(private val itemList: List<SupportFeaturesUiMode
 
 
     companion object {
-        private const val BORDER_COLOR = "#AAB4C8"
+        private const val BORDER_COLOR = "AAB4C8"
         private const val CORNER_RADIUS = 12f
     }
 
@@ -46,7 +46,7 @@ class ItemSupportFeatureAdapter(private val itemList: List<SupportFeaturesUiMode
         shapeDrawable.cornerRadius = CORNER_RADIUS.dpToPx()
         shapeDrawable.setStroke(
             1.dpToPx(displayMetrics),
-            BORDER_COLOR.stringHexColorParseToInt(30)
+            "#${BORDER_COLOR}".stringHexColorParseToInt(30)
         )
         shapeDrawable.setColor(backgroundColor.orDefaultColor(itemView.context))
         itemView.background = shapeDrawable

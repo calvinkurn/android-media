@@ -1,6 +1,5 @@
 package com.tkpd.atcvariant.view.viewholder
 
-import android.graphics.Paint
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.ProductHeaderData
@@ -8,10 +7,14 @@ import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheetListener
+import com.tkpd.atcvariant.view.widget.AtcVariantNormalPriceWidget
+import com.tkpd.atcvariant.view.widget.AtcVariantPromoPriceWidget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -33,12 +36,12 @@ class AtcVariantHeaderViewHolder(
     }
 
     private val productImage = view.findViewById<ImageUnify>(R.id.img_header_main)
-    private val productPrice = view.findViewById<Typography>(R.id.txt_header_main_price)
-    private val productSlashPrice = view.findViewById<Typography>(R.id.txt_header_slash_price)
     private val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
-    private val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
-    private val labelCashback = view.findViewById<Label>(R.id.lbl_header_cashback_percentage)
     private val iconEnlarge = view.findViewById<IconUnify>(R.id.ic_enlarge_img_header)
+    private val widgetNormalPrice =
+        view.findViewById<AtcVariantNormalPriceWidget>(R.id.widget_header_normal_price)
+    private val widgetPromoPrice =
+        view.findViewById<AtcVariantPromoPriceWidget>(R.id.widget_header_promo_price)
 
     private val labelVar1 = view.findViewById<Label>(R.id.lbl_variant_name_1)
     private val labelVar2 = view.findViewById<Label>(R.id.lbl_variant_name_2)
@@ -46,16 +49,10 @@ class AtcVariantHeaderViewHolder(
 
     override fun bind(element: VariantHeaderDataModel) {
         loadImage(element.productImage)
-        loadDescription(element.headerData)
+        renderPriceSection(element.headerData, element.cashBackPercentage)
         renderVariantName(element.listOfVariantTitle)
         renderTokoCabang(element.isTokoCabang, element.uspImageUrl)
-        renderCashback(element.cashBackPercentage)
-    }
-
-    private fun renderCashback(cashBackPercentage: Int) = with(view) {
-        labelCashback.shouldShowWithAction(cashBackPercentage > 0) {
-            labelCashback.text = context.getString(productdetailcommonR.string.template_cashback, cashBackPercentage.toString())
-        }
+        renderStock(element.headerData)
     }
 
     override fun bind(element: VariantHeaderDataModel, payloads: MutableList<Any>) {
@@ -70,9 +67,46 @@ class AtcVariantHeaderViewHolder(
             PAYLOAD_UPDATE_IMAGE_ONLY -> {
                 loadImage(element.productImage)
             }
+
             PAYLOAD_UPDATE_PRICE_ONLY -> {
-                loadDescription(element.headerData)
+                renderStock(element.headerData)
+                renderPriceSection(element.headerData, element.cashBackPercentage)
             }
+        }
+    }
+
+    private fun renderPriceSection(
+        headerData: ProductHeaderData,
+        cashbackPercentage: Int
+    ) {
+        if (headerData.promoPrice != null) {
+            renderPromoPriceWidget(headerData.promoPrice, headerData.productMainPrice)
+        } else {
+            renderNormalPriceWidget(headerData, cashbackPercentage)
+        }
+    }
+
+    private fun renderPromoPriceWidget(promoPriceUiModel: PromoPriceUiModel,
+                                       originalPriceFmt: String
+    ) {
+        widgetNormalPrice.hide()
+        widgetPromoPrice.run {
+            show()
+            renderView(
+                promoPriceData = promoPriceUiModel,
+                originalPriceFmt = originalPriceFmt
+            )
+        }
+    }
+
+    private fun renderNormalPriceWidget(headerData: ProductHeaderData, cashbackPercentage: Int) {
+        widgetPromoPrice.hide()
+        widgetNormalPrice.run {
+            show()
+            renderView(
+                headerData = headerData,
+                cashbackPercentage = cashbackPercentage
+            )
         }
     }
 
@@ -96,16 +130,11 @@ class AtcVariantHeaderViewHolder(
         }
     }
 
-    private fun loadDescription(headerData: ProductHeaderData) = with(view) {
-        if (headerData.isCampaignActive) {
-            renderCampaignActive(headerData)
-        } else if (headerData.hideGimmick) {
-            renderNoCampaign(headerData.productSlashPrice)
-        } else {
-            renderNoCampaign(headerData.productMainPrice)
-        }
-
-        productStock.shouldShowWithAction(headerData.productStockFmt.isNotEmpty() && headerData.productStockFmt != "0") {
+    private fun renderStock(headerData: ProductHeaderData) = with(view) {
+        productStock.shouldShowWithAction(
+            headerData.productStockFmt.isNotEmpty()
+                    && headerData.productStockFmt != "0"
+        ) {
             productStock.text = headerData.productStockFmt
         }
     }
@@ -118,25 +147,6 @@ class AtcVariantHeaderViewHolder(
             setOnClickListener {
                 listener.onVariantImageClicked(imgUrl)
             }
-        }
-    }
-
-    private fun renderNoCampaign(price: String) = with(view) {
-        labelDiscount?.hide()
-        productSlashPrice?.hide()
-        productPrice.text = price
-    }
-
-    private fun renderCampaignActive(headerData: ProductHeaderData) = with(view) {
-        productPrice.text = headerData.productMainPrice
-
-        productSlashPrice.shouldShowWithAction(headerData.productSlashPrice.isNotBlank()) {
-            productSlashPrice?.text = headerData.productSlashPrice
-            productSlashPrice.paintFlags = productSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-
-        labelDiscount.shouldShowWithAction(headerData.shouldShowDiscPercentage) {
-            labelDiscount.text = headerData.productDiscountedPercentage
         }
     }
 }

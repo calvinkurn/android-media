@@ -13,6 +13,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.Product;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.PurchaseData;
+import com.tokopedia.tkpd.utils.CurrencyFormatHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

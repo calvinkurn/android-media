@@ -37,7 +37,7 @@ class ReviewCallback(
 
     private fun onKeywordClicked(event: ReviewComponentEvent.OnKeywordClicked) {
         // action
-        val pid = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+        val pid = viewModel.getProductInfoP1?.basic?.productID.orEmpty()
         goToReviewDetail(productId = pid, keyword = event.keyword)
 
         // tracker

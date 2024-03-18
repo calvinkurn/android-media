@@ -229,8 +229,6 @@ class PartialProductItemViewHolder(
     interface ProductViewListener {
         fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
         fun onProductImpressed(product: ProductListUiModel.ProductUiModel)
-        fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean)
-        fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String)
     }
 
     interface ShareProductBottomSheetListener {

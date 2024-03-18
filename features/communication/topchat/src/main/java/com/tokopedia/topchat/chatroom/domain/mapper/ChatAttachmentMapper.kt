@@ -6,6 +6,7 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
@@ -44,19 +45,19 @@ class ChatAttachmentMapper @Inject constructor() {
 
     private fun parseAttribute(attachment: Attachment) {
         attachment.parsedAttributes = when (attachment.type) {
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> {
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toIntOrZero() -> {
                 convertToProductAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_INVOICE_SEND.toInt() -> {
+            AttachmentType.Companion.TYPE_INVOICE_SEND.toIntOrZero() -> {
                 convertToInvoiceAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_REVIEW_REMINDER.toInt() -> {
+            AttachmentType.Companion.TYPE_REVIEW_REMINDER.toIntOrZero() -> {
                 convertToReviewReminderAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT.toInt() -> {
+            AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT.toIntOrZero() -> {
                 convertToImageAnnouncementAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_PRODUCT_BUNDLING.toInt() -> {
+            AttachmentType.Companion.TYPE_PRODUCT_BUNDLING.toIntOrZero() -> {
                 convertToProductBundlingPojo(attachment)
             }
             else -> null
@@ -79,13 +80,12 @@ class ChatAttachmentMapper @Inject constructor() {
 
     private fun convertToReviewReminderAttachment(attachment: Attachment): Any? {
         return CommonUtil.fromJson<ReviewReminderAttribute>(
-                attachment.attributes,
-                ReviewReminderAttribute::class.java
+            attachment.attributes,
+            ReviewReminderAttribute::class.java
         )
     }
 
     private fun convertToProductBundlingPojo(attachment: Attachment): ProductBundlingPojo {
         return CommonUtil.fromJson(attachment.attributes, ProductBundlingPojo::class.java)
     }
-
 }

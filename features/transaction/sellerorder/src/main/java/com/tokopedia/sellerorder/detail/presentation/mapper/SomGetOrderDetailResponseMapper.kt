@@ -27,6 +27,8 @@ import com.tokopedia.order_management_common.R as order_management_commonR
 
 object SomGetOrderDetailResponseMapper {
 
+    private const val ORDER_LEVEL_KEY = "ORDER_LEVEL_KEY"
+
     private fun getBmgmList(
         bmgms: List<SomDetailOrder.GetSomDetail.Bmgm>?,
         orderId: String,
@@ -154,7 +156,10 @@ object SomGetOrderDetailResponseMapper {
 
     private fun getProductBundleList(
         bundleList: List<SomDetailOrder.GetSomDetail.Details.Bundle>?,
-        bundleIcon: String
+        bundleIcon: String,
+        addOnLabel: String,
+        addOnIcon: String,
+        addOnsExpandableState: List<String>
     ): List<ProductBundleUiModel> {
         return bundleList?.map { bundle ->
             ProductBundleUiModel(
@@ -163,15 +168,57 @@ object SomGetOrderDetailResponseMapper {
                 bundleName = bundle.bundleName,
                 bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
                 bundleSubTotal = Utils.parseRupiah(bundle.bundleSubtotalPrice),
-                orderDetail = bundle.orderDetail.map {
-                    SomDetailOrder.GetSomDetail.Details.Product(
-                        id = it.id,
-                        orderDetailId = it.orderDetailId,
-                        name = it.name,
-                        thumbnail = it.thumbnail,
-                        priceText = it.priceText,
-                        quantity = it.quantity,
-                        note = it.note
+                products = bundle.orderDetail.map {
+                    val addOnsIdentifier = it.id + it.orderDetailId
+                    ProductBundleUiModel.ProductUiModel(
+                        detail = SomDetailOrder.GetSomDetail.Details.Product(
+                            id = it.id,
+                            orderDetailId = it.orderDetailId,
+                            name = it.name,
+                            thumbnail = it.thumbnail,
+                            priceText = it.priceText,
+                            quantity = it.quantity,
+                            note = it.note
+                        ),
+                        addOnSummaryUiModel = it.addOnSummary?.let { addOnSummary ->
+                            com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
+                                addOnIdentifier = addOnsIdentifier,
+                                totalPriceText = if (addOnSummary.totalPriceStr.isNotBlank()) {
+                                    StringRes(
+                                        order_management_commonR.string.om_add_on_collapsed_title_format,
+                                        listOf(addOnSummary.totalPriceStr)
+                                    )
+                                } else {
+                                    StringRes(Int.ZERO)
+                                },
+                                addonsLogoUrl = addOnIcon,
+                                addonsTitle = addOnLabel,
+                                addonItemList = addOnSummary.addons.map { addon ->
+                                    val addOnNote = addon.metadata?.addOnNote
+                                    val infoLink = addon.metadata?.infoLink
+                                    com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
+                                        priceText = addon.priceStr,
+                                        quantity = addon.quantity,
+                                        addonsId = addon.id,
+                                        addOnsName = addon.name,
+                                        type = addon.type,
+                                        addOnsThumbnailUrl = addon.imageUrl,
+                                        toStr = addOnNote?.to.orEmpty(),
+                                        fromStr = addOnNote?.from.orEmpty(),
+                                        message = addOnNote?.notes.orEmpty(),
+                                        noteCopyable = true,
+                                        providedByShopItself = true,
+                                        infoLink = infoLink.orEmpty(),
+                                        tips = addOnNote?.tips.orEmpty(),
+                                        orderId = "",
+                                        orderDetailId = ""
+                                    )
+                                },
+                                canExpandCollapse = true
+                            ).also {
+                                it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
+                            }
+                        }
                     )
                 }
             )
@@ -214,9 +261,11 @@ object SomGetOrderDetailResponseMapper {
 
     private fun MutableList<Visitable<SomDetailAdapterFactory>>.includeProductBundles(
         bundle: List<SomDetailOrder.GetSomDetail.Details.Bundle>?,
-        bundleIcon: String
+        bundleIcon: String,
+        details: SomDetailOrder.GetSomDetail.Details,
+        addOnsExpandableState: List<String>
     ) {
-        addAll(getProductBundleList(bundle, bundleIcon))
+        addAll(getProductBundleList(bundle, bundleIcon, details.addOnLabel, details.addOnIcon, addOnsExpandableState))
     }
 
     private fun MutableList<Visitable<SomDetailAdapterFactory>>.includeProductNonBundles(
@@ -301,7 +350,7 @@ object SomGetOrderDetailResponseMapper {
             add(
                 SomDetailAddOnOrderLevelUiModel(
                     addOnSummaryUiModel = AddOnSummaryUiModel(
-                        addOnIdentifier = addOnSummary.label,
+                        addOnIdentifier = ORDER_LEVEL_KEY,
                         totalPriceText = if (addOnSummary.totalPriceStr.isNotBlank()) {
                             StringRes(
                                 order_management_commonR.string.om_add_on_collapsed_title_format,
@@ -386,7 +435,7 @@ object SomGetOrderDetailResponseMapper {
                 addOnsExpandableState,
                 bmgmProductBenefitExpandableState
             )
-            includeProductBundles(details.bundle, details.bundleIcon)
+            includeProductBundles(details.bundle, details.bundleIcon, details, addOnsExpandableState)
             includeProductNonBundles(
                 details.nonBundle,
                 addOnInfo,

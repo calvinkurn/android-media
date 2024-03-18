@@ -1,6 +1,8 @@
 package com.tokopedia.product.info.view.bottomsheet
 
+import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -11,11 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
-import android.content.Intent
-import android.net.Uri
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -24,11 +24,11 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductEducationalHelper
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.databinding.BottomSheetProductDetailInfoBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
@@ -250,7 +250,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun goToCatalog(url: String, catalogName: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(
+        ProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(
             productInfo = listener?.getPdpDataSource(),
             userId = userSession.userId.orEmpty(),
             catalogName = catalogName
@@ -260,7 +260,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToCategory(url: String) {
         if (!GlobalConfig.isSellerApp()) {
-            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(
+            ProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(
                 productInfo = listener?.getPdpDataSource(),
                 userId = userSession.userId.orEmpty()
             )
@@ -269,7 +269,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun goToEtalase(url: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(
+        ProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(
             productInfo = listener?.getPdpDataSource(),
             userId = userSession.userId.orEmpty()
         )
@@ -343,7 +343,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToShopNotes(shopNotesData: ShopNotesData) {
         context?.let {
-            DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(
+            ProductDetailTracking.ProductDetailSheet.onShopNotesClicked(
                 productInfo = listener?.getPdpDataSource(),
                 userId = userSession.userId.orEmpty(),
                 shopNotesTitle = shopNotesData.title
@@ -357,7 +357,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun goToSpecification(annotation: List<ProductDetailInfoContent>) {
-        DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(
+        ProductDetailTracking.ProductDetailSheet.onSpecificationClick(
             productInfo = listener?.getPdpDataSource(),
             userId = userSession.userId.orEmpty()
         )
@@ -382,13 +382,13 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun onCustomInfoClicked(url: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onCustomInfoPalugadaBottomSheetClicked()
+        ProductDetailTracking.ProductDetailSheet.onCustomInfoPalugadaBottomSheetClicked()
         goToApplink(url)
     }
 
     private fun onVariantGuideLineBottomSheetClicked(url: String) {
         activity?.let {
-            DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(
+            ProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(
                 listener?.getPdpDataSource(),
                 userSession.userId.orEmpty()
             )
@@ -426,5 +426,5 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 interface ProductDetailBottomSheetListener {
     fun goToTalkReadingBottomSheet()
     fun onDiscussionSendQuestionBottomSheetClicked()
-    fun getPdpDataSource(): DynamicProductInfoP1?
+    fun getPdpDataSource(): ProductInfoP1?
 }

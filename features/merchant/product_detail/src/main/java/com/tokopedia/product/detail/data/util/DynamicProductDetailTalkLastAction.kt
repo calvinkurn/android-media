@@ -1,5 +1,0 @@
-package com.tokopedia.product.detail.data.util
-
-sealed class DynamicProductDetailTalkLastAction
-class DynamicProductDetailTalkGoToReplyDiscussion(val questionId: String) : DynamicProductDetailTalkLastAction()
-object DynamicProductDetailTalkGoToWriteDiscussion : DynamicProductDetailTalkLastAction()

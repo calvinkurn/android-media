@@ -11,6 +11,7 @@ import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.clearEditorCache
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -19,6 +20,8 @@ import com.tokopedia.picker.common.utils.isImageFormat
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -324,6 +327,39 @@ class MainEditorViewModelTest {
     }
 
     @Test
+    fun `it should fail export on null bitmap image`() = runTest {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val filePath = tempFolder.newFile("dummy.png")
+
+        every { resourceProvider.getString(any()) } returns ""
+        every { isImageFormat(any()) } returns true
+        mockParamFetcher()
+        mockNavigationTool()
+
+        // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
+            )
+        )
+        onEvent(
+            MainEditorEvent.ExportMedia(
+                canvasTextBitmap = bitmap,
+                imageBitmap = null
+            )
+        )
+        fakeImageFlattenRepository.emit("")
+
+        // Verify
+        val effects = expectAllEffects()
+        assertTrue(effects[0] is MainEditorEffect.ShowLoading)
+        assertTrue(effects.size == 1)
+    }
+
+    @Test
     fun `it should be able get reset active input text model`() = runTest {
         // When
         onEvent(MainEditorEvent.ResetActiveInputText)
@@ -517,6 +553,23 @@ class MainEditorViewModelTest {
         // Verify
         val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.CloseMainEditorPage)
+    }
+
+    @Test
+    fun `should trigger cache cleanup process`() {
+        // Given
+        mockParamFetcher()
+        mockNavigationTool()
+        mockkStatic(::clearEditorCache)
+
+        // When
+        coEvery { clearEditorCache() } just runs
+        onEvent(
+            MainEditorEvent.CacheClearChecker
+        )
+
+        // Then
+        coVerify { clearEditorCache() }
     }
 
     private fun mockParamFetcher() {

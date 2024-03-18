@@ -9,7 +9,7 @@ import kotlinx.android.parcel.RawValue
 
 
 data class ThanksPageResponse(
-    @SerializedName("thanksPageData")
+    @SerializedName("thanksPageData", alternate = ["thanksPageDataV2"])
     val thanksPageData: ThanksPageData
 )
 
@@ -84,9 +84,9 @@ data class ThanksPageData(
     @SerializedName("custom_data_applink")
     val customDataAppLink: CustomAppLinkData?,
     @SerializedName("custom_data_message")
-    val customDataMessage: CustomDataMessage?,
+    val customDataMessage: CustomDataMessageV2?,
     @SerializedName("custom_data_other")
-    val customDataOther: CustomDataOther?,
+    val customDataOther: CustomDataOtherV2?,
     @SerializedName("config_flag")
     val configFlag: String?,
     @SerializedName("config_list")
@@ -532,7 +532,11 @@ data class ConfigFlag(
     @SerializedName("hide_pg_recom")
     val shouldHideProductRecom: Boolean?,
     @SerializedName("hide_dg_recom")
-    val shouldHideDigitalRecom: Boolean?
+    val shouldHideDigitalRecom: Boolean?,
+    @SerializedName("hide_order_button")
+    val shouldHideOrderButton: Boolean = false,
+    @SerializedName("auto_redirect")
+    val autoRedirect: Boolean = false
 ) : Parcelable
 
 data class Tickers(
@@ -565,3 +569,45 @@ data class ThankPageTopTickerData(
         return !tickerCTAApplink.isNullOrEmpty()
     }
 }
+
+@Parcelize
+data class CustomDataMessageV2(
+    @SerializedName("loader_text")
+    val loaderText: String?,
+    @SerializedName("subtitle")
+    val subtitle: String?,
+    @SerializedName("title")
+    val title: String?,
+    @SerializedName("title_home_button")
+    val titleHomeButton: String?,
+    @SerializedName("title_order_button")
+    val titleOrderButton: String?,
+    @SerializedName("wtv_text")
+    val wtvText: String?,
+    @SerializedName("custom_subtitle_v2")
+    val customSubtitleV2: String?,
+    @SerializedName("custom_notes")
+    val customNotes: String?
+) : Parcelable
+
+@Parcelize
+data class CustomDataOtherV2(
+    @SerializedName("delay_duration")
+    val delayDuration: String?,
+    @SerializedName("tracking_data")
+    val trackingData: String?,
+    @SerializedName("is_enjoy_plus_benefit")
+    val isEnjoyPLus: String?,
+    @SerializedName("is_plus_transaction")
+    val isPlusTransaction: String?,
+    @SerializedName("custom_illustration")
+    val customIllustration: String?,
+    @SerializedName("validate_engine_data")
+    val gyroData: String?,
+    @SerializedName("promo_flags")
+    val promoFlags: String?,
+    @SerializedName("tickers")
+    val tickers: String?,
+    @SerializedName("signature_purchase_info")
+    val signaturePurchaseInfo: String?
+) : Parcelable

@@ -95,7 +95,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -130,6 +130,7 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.resources.common.R as resourcescommonR
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -199,23 +200,25 @@ open class BuyerOrderDetailFragment :
     }
     protected open val typeFactory: BuyerOrderDetailTypeFactory by lazy {
         BuyerOrderDetailTypeFactory(
-            this,
-            this,
-            digitalRecommendationData,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            navigator,
-            this,
-            this,
-            recyclerViewSharedPool,
-            this
+            productBundlingViewListener = this,
+            tickerViewHolderListener = this,
+            digitalRecommendationData = digitalRecommendationData,
+            digitalRecommendationListener = this,
+            courierInfoViewHolderListener = this,
+            productListToggleListener = this,
+            pofRefundInfoListener = this,
+            scpRewardsMedalTouchPointWidgetListener = this,
+            owocInfoListener = this,
+            bmgmListener = this,
+            productBenefitListener = ProductBenefitListener(),
+            orderResolutionListener = this,
+            recyclerViewSharedPool = recyclerViewSharedPool,
+            productViewListener = this,
+            bottomSheetListener = this,
+            navigator = navigator,
+            buyerOrderDetailBindRecomWidgetListener = this,
+            courierButtonListener = this,
+            addOnListener = AddOnListener()
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {
@@ -326,8 +329,8 @@ open class BuyerOrderDetailFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activity?.overridePendingTransition(
-            com.tokopedia.resources.common.R.anim.slide_left_in_medium,
-            com.tokopedia.resources.common.R.anim.slide_right_out_medium
+            resourcescommonR.anim.slide_left_in_medium,
+            resourcescommonR.anim.slide_right_out_medium
         )
         when (requestCode) {
             BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(
@@ -441,7 +444,7 @@ open class BuyerOrderDetailFragment :
         if (rvBuyerOrderDetail?.adapter != adapter) {
             rvBuyerOrderDetail?.adapter = adapter
         }
-        recyclerViewSharedPool.setMaxRecycledViews(BmgmAddOnViewHolder.RES_LAYOUT, BmgmAddOnViewHolder.MAX_RECYCLED_VIEWS)
+        recyclerViewSharedPool.setMaxRecycledViews(AddOnViewHolder.RES_LAYOUT, AddOnViewHolder.MAX_RECYCLED_VIEWS)
     }
 
     private fun setupStickyActionButtons() {
@@ -566,9 +569,9 @@ open class BuyerOrderDetailFragment :
                             )
                             viewModel.updateScpRewardsMedalTouchPointWidgetState(
                                 data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder,
-                                marginLeft = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
-                                marginTop = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_top).toIntSafely(),
-                                marginRight = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_right).toIntSafely()
+                                marginLeft = context?.resources?.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
+                                marginTop = context?.resources?.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_top).toIntSafely(),
+                                marginRight = context?.resources?.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_right).toIntSafely()
                             )
                         }
                     } else {
@@ -1174,38 +1177,6 @@ open class BuyerOrderDetailFragment :
         viewModel.impressBmgmProduct(uiModel)
     }
 
-    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        // no op for bmgm add on because there is no function copy
-    }
-
-    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
-        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
-    }
-
-    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
-        BuyerOrderDetailTracker.AddOnsInformation.clickAddOnsInfo(
-            orderId = viewModel.getOrderId(),
-            addOnsType = type
-        )
-        navigator.openAppLink(infoLink, false)
-    }
-
-    override fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String) {
-        onAddOnsInfoLinkClicked(infoLink, type)
-    }
-
-    override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
-        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
-    }
-
-    override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
-        viewModel.expandCollapseBmgmProductBenefit(identifier, isExpand)
-    }
-
-    override fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
-        navigator.goToProductSnapshotPage(addOn.orderId, addOn.orderDetailId)
-    }
-
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -1256,6 +1227,46 @@ open class BuyerOrderDetailFragment :
                     }
                 }
             }
+        }
+    }
+
+    inner class AddOnListener : AddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            // noop, buyer add on doesn't have copy function
+        }
+
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            BuyerOrderDetailTracker.AddOnsInformation.clickAddOnsInfo(
+                orderId = viewModel.getOrderId(),
+                addOnsType = type
+            )
+            navigator.openAppLink(infoLink, false)
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            // noop, add on is not clickable
+        }
+    }
+
+    inner class ProductBenefitListener : AddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            // noop, product benefit doesn't have copyable description
+        }
+
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            viewModel.expandCollapseBmgmProductBenefit(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            // noop, product benefit doesn't have clickable info
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            navigator.goToProductSnapshotPage(addOn.orderId, addOn.orderDetailId)
         }
     }
 }

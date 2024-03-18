@@ -7,13 +7,15 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialPro
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 
 class ProductViewHolderStub(
     itemView: View?,
     listener: PartialProductItemViewHolder.ProductViewListener,
     bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
+    addOnListener: AddOnViewHolder.Listener,
     navigator: BuyerOrderDetailNavigator
-) : ProductViewHolder(itemView, listener, bottomSheetListener, navigator) {
+) : ProductViewHolder(itemView, listener, bottomSheetListener, addOnListener, navigator) {
 
     override fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
         btnBuyerOrderDetailBuyProductAgain?.apply {

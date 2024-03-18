@@ -21,8 +21,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateLeftBg
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateRightBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
@@ -114,7 +114,7 @@ abstract class BaseTopChatBubbleMessageViewHolder<T : MessageUiModel>(
     }
 
     private fun bindLongClick(uiModel: T) {
-        if (!uiModel.isBanned() && !uiModel.isDeleted()) {
+        if (shouldShowLongClickMenu(uiModel)) {
             getFxChat()?.setOnLongClickListener {
                 val menus = LongClickMenuItemGenerator.createLongClickMenuMsgBubble()
                 commonListener.showMsgMenu(
@@ -127,6 +127,14 @@ abstract class BaseTopChatBubbleMessageViewHolder<T : MessageUiModel>(
         } else {
             getFxChat()?.setOnLongClickListener(null)
         }
+    }
+
+    private fun shouldShowLongClickMenu(uiModel: T): Boolean {
+        return !uiModel.isBanned() &&
+            !uiModel.isDeleted() &&
+            !uiModel.isVisibleToSellerOnly() &&
+            !uiModel.isVisibleToBuyerOnly()
+
     }
 
     private fun verifyReplyTime(chat: T) {

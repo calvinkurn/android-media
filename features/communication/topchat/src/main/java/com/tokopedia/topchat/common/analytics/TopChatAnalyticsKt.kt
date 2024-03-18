@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.topchat.chatroom.data.TopChatRoomOrderWidgetTypeEnum
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_ATC
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_BUY
@@ -1105,6 +1106,26 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventClickOrderManagementWidget(
+        isSeller: Boolean,
+        widgetType: TopChatRoomOrderWidgetTypeEnum,
+        orderId: String,
+        orderStatus: String,
+        invoiceId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_ON_ORDER_MANAGEMENT_WIDGET,
+                label = "${getRole(isSeller)} - ${widgetType.type} - $orderId - $orderStatus - $invoiceId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "49973"
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -1261,6 +1282,7 @@ object TopChatAnalyticsKt {
         const val VIEW_ON_PRODUCT_THUMBNAIL = "view on product thumbnail"
         const val IMPRESSION_BALASAN_OTOMATIS = "impression to balasan otomatis"
         const val CLICK_BALASAN_OTOMATIS = "click to balasan otomatis"
+        const val CLICK_ON_ORDER_MANAGEMENT_WIDGET = "click on order management widget"
     }
 
     private const val PRODUCT_INDEX = "0"

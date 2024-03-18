@@ -135,8 +135,8 @@ class ContentAnalyticManager @AssistedInject constructor(
             contentEEList = products,
             mainAppTrackerId = mainAppTrackerId,
             sellerAppTrackerId = sellerAppTrackerId,
-            customFields = customFields.apply {
-                Key.itemList to itemList
+            customFields = customFields.toMutableMap().apply {
+                put(Key.itemList, itemList)
             },
         )
     }

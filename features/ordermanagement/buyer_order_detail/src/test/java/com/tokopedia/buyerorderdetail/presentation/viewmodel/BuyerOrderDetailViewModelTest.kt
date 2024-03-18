@@ -1543,7 +1543,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
 
-                //default expand is true
+                //default expand is false
                 assertIsExpand(buyerDetailUiState, true)
 
                 //collapse all
@@ -1552,9 +1552,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 viewModel.expandCollapseAddOn("3", false)
                 viewModel.expandCollapseAddOn("3", true)
 
-                assertEquals(getExpandCollapseState().size, 2)
-                assertTrue(getExpandCollapseState().contains("1"))
-                assertTrue(getExpandCollapseState().contains("2"))
+                assertEquals(getExpandCollapseState().size, 1)
+                assertTrue(getExpandCollapseState().contains("3"))
             }
         }
     }
@@ -1568,7 +1567,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 .last().productListUiState.data.productList
 
         productList.forEach {
-            assertEquals(it.addonsListUiModel?.isExpand == true, expectedIsExpand)
+            assertEquals(it.addOnSummaryUiModel?.isExpand == true, expectedIsExpand)
         }
 
         val bmgm =

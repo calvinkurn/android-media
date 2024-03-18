@@ -1,8 +1,5 @@
 package com.tokopedia.sellerapp.deeplink.presenter;
 
-import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
-import static com.tokopedia.webview.ConstantKt.KEY_URL;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +16,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
-import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.view.activity.CreationOnboardingActivity;
 import com.tokopedia.track.TrackApp;
@@ -42,7 +38,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final int OTHER = 7;
     private static final int TOPADS = 12;
-    public static final int INVOICE = 14;
     public static final String PARAM_AD_ID = "ad_id";
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String TOPADS_VIEW_TYPE = "view";
@@ -62,34 +57,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
         String screenName;
         int type = getDeepLinkType(uriData);
-        switch (type) {
-            case TOPADS:
-                openTopAds(uriData);
-                screenName = AppScreen.SCREEN_TOPADS;
-                break;
-            case INVOICE:
-                openInvoice(uriData.getPathSegments(), uriData);
-                screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
-                break;
-            case OTHER:
-                prepareOpenWebView(uriData);
-                screenName = AppScreen.SCREEN_DEEP_LINK;
-                break;
-            default:
-                prepareOpenWebView(uriData);
-                screenName = AppScreen.SCREEN_DEEP_LINK;
-                break;
+        if (type == TOPADS) {
+            openTopAds(uriData);
+            screenName = AppScreen.SCREEN_TOPADS;
+        } else {
+            prepareOpenWebView(uriData);
+            screenName = AppScreen.SCREEN_DEEP_LINK;
         }
         sendCampaignGTM(activity, uriData.toString(), screenName);
-    }
-
-
-    private void openInvoice(List<String> linkSegment, Uri uriData) {
-        Intent intent = new Intent(context, SomSeeInvoiceActivity.class);
-        intent.putExtra(KEY_URL, uriData.toString());
-        intent.putExtra(KEY_TITLE, "Invoice");
-        context.startActivity(intent);
-        context.finish();
     }
 
     private void prepareOpenWebView(Uri uri) {
@@ -109,8 +84,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         try {
             if (isTopAds(linkSegment))
                 return TOPADS;
-            else if (isInvoice(linkSegment))
-                return INVOICE;
             else if (isExcludedHostUrl(uriData))
                 return OTHER;
             else if (isExcludedUrl(uriData))
@@ -124,10 +97,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isTopAds(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equals("topads");
-    }
-
-    private static boolean isInvoice(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
     }
 
     @Override

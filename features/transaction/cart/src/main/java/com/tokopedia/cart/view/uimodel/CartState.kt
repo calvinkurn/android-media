@@ -73,7 +73,7 @@ sealed interface AddToCartExternalEvent {
 }
 
 sealed interface CartTrackerEvent {
-    data class ATCTrackingURLRecent(val productModel: CartRecentViewItemHolderData) :
+    data class ATCTrackingURLRecent(val recommendationItem: RecommendationItem) :
         CartTrackerEvent
 
     data class ATCTrackingURLRecommendation(val recommendationItem: RecommendationItem) :
@@ -125,7 +125,10 @@ sealed interface LoadWishlistV2State {
 
 sealed interface RemoveFromWishlistEvent {
 
-    data class RemoveWishlistFromCartSuccess(val position: Int) : RemoveFromWishlistEvent
+    data class RemoveWishlistFromCartSuccess(
+        val position: Int,
+        val message: String,
+    ) : RemoveFromWishlistEvent
 
     data class RemoveWishlistFromCartFailed(
         val throwable: Throwable

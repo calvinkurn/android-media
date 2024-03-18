@@ -116,7 +116,7 @@ class CreationUploaderWorker(
                         is CreationUploadExecutionResult.Success -> {
                             withContext(coroutineDispatcher) {
                                 try {
-                                    queueRepository.delete(data.queueId)
+                                    queueRepository.delete(data)
                                 } catch (throwable: Throwable) {
                                     logger.sendLog(result.toString(), throwable)
                                 }

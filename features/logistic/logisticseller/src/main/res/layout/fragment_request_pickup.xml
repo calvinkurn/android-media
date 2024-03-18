@@ -456,7 +456,7 @@ Cek Gerai"
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
-                    android:background="@drawable/card_shadow_top" />
+                    android:background="@drawable/request_pickup_card_shadow_top" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_req_pickup"

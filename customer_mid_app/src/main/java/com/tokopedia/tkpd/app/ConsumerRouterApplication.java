@@ -20,8 +20,6 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.newrelic.agent.android.FeatureFlag;
 import com.newrelic.agent.android.NewRelic;
-import com.scp.auth.common.utils.ScpRefreshHelper;
-import com.scp.auth.common.utils.ScpUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -69,7 +67,6 @@ import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
@@ -619,6 +616,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 userSession,
                 provideCMHandler()
         );
+        setFCMBigQueryExport();
+    }
+
+    private void setFCMBigQueryExport(){
+        String fcmBigQueryExportFlag = "android_enable_fcm_bq_export";
+        if(remoteConfig != null && remoteConfig.getBoolean(fcmBigQueryExportFlag)) {
+            FirebaseMessaging.getInstance().setDeliveryMetricsExportToBigQuery(true);
+        }
     }
 
     private SendTokenToCMHandler provideCMHandler() {
@@ -647,15 +652,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onRefreshCM(String token) {
         refreshFCMFromInstantIdService(token);
-    }
-
-    @Override
-    public boolean isGotoAuthSdkEnabled() {
-        return ScpUtils.INSTANCE.isGotoLoginEnabled();
-    }
-
-    @Override
-    public ScpTokenModel onNewRefreshToken() {
-        return new ScpRefreshHelper(this).refreshToken();
     }
 }

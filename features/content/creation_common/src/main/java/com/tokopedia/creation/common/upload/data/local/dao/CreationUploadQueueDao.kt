@@ -19,6 +19,9 @@ interface CreationUploadQueueDao {
     @Query(GET_TOP_QUEUE_QUERY)
     suspend fun getTopQueue(): CreationUploadQueueEntity?
 
+    @Query("SELECT * FROM $CREATION_UPLOAD_QUEUE")
+    suspend fun getAllQueue(): List<CreationUploadQueueEntity>
+
     @Insert
     suspend fun insert(entity: CreationUploadQueueEntity)
 

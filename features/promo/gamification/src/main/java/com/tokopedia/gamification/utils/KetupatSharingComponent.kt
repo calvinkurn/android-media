@@ -12,7 +12,8 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 /**
  * @author by astidhiyaa on 15/08/23
  */
-class KetupatSharingComponent(rootView: View, val trackerLabel: String) {
+class KetupatSharingComponent(rootView: View, val trackerLabel: String,
+                              private val userID: String) {
     private var mListener: Listener? = null
 
     private val universalShareBottomSheet =
@@ -20,13 +21,15 @@ class KetupatSharingComponent(rootView: View, val trackerLabel: String) {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     mListener?.onShareChannel(shareModel)
+
                     shareTracker.trackClickShareChannel(
                         trackerLabel,
                         shareModel.channel ?: "",
                         UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT,
                         "thr ketupat",
                         "49194",
-                        "tokopediamarketplace"
+                        "tokopediamarketplace",
+                        getDataMap()
                     )
                 }
 
@@ -36,12 +39,20 @@ class KetupatSharingComponent(rootView: View, val trackerLabel: String) {
                         trackerLabel,
                         "thr ketupat",
                         "49193",
-                        "tokopediamarketplace"
+                        "tokopediamarketplace",
+                        getDataMap()
                     )
                 }
             })
             enableDefaultShareIntent()
         }
+
+    private fun getDataMap(): HashMap<String, Any>{
+        val dataMap = HashMap<String, Any>()
+        dataMap["userId"] = userID
+        dataMap["pagePath"] = "DirectRewardGame"
+        return dataMap
+    }
 
     fun setListener(listener: Listener) {
         mListener = listener
@@ -80,7 +91,8 @@ class KetupatSharingComponent(rootView: View, val trackerLabel: String) {
                 trackerLabel,
                 "thr ketupat",
                 "49195",
-                "tokopediamarketplace"
+                "tokopediamarketplace",
+                getDataMap()
             ) }
         }.also {
             if (it.isAdded) return@also

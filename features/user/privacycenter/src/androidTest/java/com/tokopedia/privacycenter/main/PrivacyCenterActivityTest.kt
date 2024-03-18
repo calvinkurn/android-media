@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.privacycenter.di.ActivityComponentFactory
+import com.tokopedia.privacycenter.main.di.ConsentWithdrawalState
 import com.tokopedia.privacycenter.main.di.DaggerTestAppComponent
 import com.tokopedia.privacycenter.main.di.FakeActivityComponentFactory
 import com.tokopedia.privacycenter.main.di.FakeAppModule
+import com.tokopedia.privacycenter.main.di.FakeGraphqlRepository
+import com.tokopedia.privacycenter.main.di.RecommendationState
 import com.tokopedia.privacycenter.ui.main.PrivacyCenterActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -16,14 +20,18 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 @UiTest
+@RunWith(AndroidJUnit4::class)
 class PrivacyCenterActivityTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(PrivacyCenterActivity::class.java, false, false)
 
     private lateinit var ctx: Context
+
+    private lateinit var repositoryStub: FakeGraphqlRepository
 
     @Before
     fun setUp() {
@@ -33,6 +41,7 @@ class PrivacyCenterActivityTest {
 //        fakeGql = component.fakeGraphql() as FakeGraphqlUseCase
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
         ActivityComponentFactory.instance = FakeActivityComponentFactory()
+        repositoryStub = component.graphqlRepository() as FakeGraphqlRepository
     }
 
     @After
@@ -41,21 +50,83 @@ class PrivacyCenterActivityTest {
     }
 
     @Test
-    fun basic_test() {
+    fun basic_main_page_test() {
         activityTestRule.launchActivity(Intent())
-        Thread.sleep(500)
 
         privacyCenterRobot { } assert {
-            shouldShowCorrectName("Hai, Erick Samuel (test)")
-            shouldShowIconLinked()
-            shouldShowRecommendationSection()
+            shouldShowCorrectHeader(name = "Hai, Erick Samuel (test)")
+            shouldShowActivitySection()
         }
 
         privacyCenterRobot {
-            scrollToBottom()
+            scrollToFooterImage()
+        } assert {
+            shouldShowPrivacyPolicy()
+            shouldShowFaq()
+            shouldShowTokopediaCare()
+            shouldShowFooterImage()
+        }
+
+        privacyCenterRobot {
             clickRiwayatKebijakan()
         } assert {
             shouldDisplayPrivacyTestData()
+        }
+    }
+
+    @Test
+    fun check_recommendation_section_opt_in() {
+        repositoryStub.setRecommendationResponse(RecommendationState.RECOMMENDATION_FRIEND_OPT_IN)
+        activityTestRule.launchActivity(Intent())
+
+        privacyCenterRobot { } assert {
+            shouldShowRecommendationSectionSuccess()
+            shouldShowRecommendationShareFriend(isActivated = true)
+        }
+    }
+
+    @Test
+    fun check_recommendation_section_opt_out() {
+        repositoryStub.setRecommendationResponse(RecommendationState.RECOMMENDATION_FRIEND_OPT_OUT)
+        activityTestRule.launchActivity(Intent())
+
+        privacyCenterRobot { } assert {
+            shouldShowRecommendationSectionSuccess()
+            shouldShowRecommendationShareFriend(isActivated = false)
+        }
+    }
+
+    @Test
+    fun check_recommendation_section_failed() {
+        repositoryStub.setRecommendationResponse(RecommendationState.RECOMMENDATION_FRIEND_FAILED)
+        activityTestRule.launchActivity(Intent())
+
+        privacyCenterRobot { } assert {
+            shouldShowRecommendationSectionFailed()
+        }
+    }
+
+    @Test
+    fun check_consent_withdrawal_section_success() {
+        repositoryStub.setConsentWithdrawalResponse(ConsentWithdrawalState.CONSENT_WITHDRAWAL_SUCCESS)
+        activityTestRule.launchActivity(Intent())
+
+        privacyCenterRobot {
+
+        } assert {
+            shouldShowConsentWithdrawalSuccess()
+        }
+    }
+
+    @Test
+    fun check_consent_withdrawal_section_failed() {
+        repositoryStub.setConsentWithdrawalResponse(ConsentWithdrawalState.CONSENT_WITHDRAWAL_FAILED)
+        activityTestRule.launchActivity(Intent())
+
+        privacyCenterRobot {
+
+        } assert {
+            shouldShowConsentWithdrawalFailed()
         }
     }
 }

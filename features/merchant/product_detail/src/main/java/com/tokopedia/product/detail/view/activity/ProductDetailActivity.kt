@@ -26,7 +26,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringLis
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -243,7 +243,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(
+    override fun getNewFragment(): Fragment = ProductDetailFragment.newInstance(
         productId,
         warehouseId,
         shopDomain,

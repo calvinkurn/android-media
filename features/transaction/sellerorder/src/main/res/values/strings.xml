@@ -129,7 +129,7 @@
     <string name="action_ubah">Ubah Status</string>
     <string name="bottomsheet_set_delivered">Konfirmasi Tiba di Tujuan</string>
 
-    <string name="som_shop_performance_info">Skor performa tokomu tidak akan dikurangi untuk pembatalan pesanan ini.</string>
+    <string name="som_shop_performance_info">Skor Performa Tokomu tidak akan dikurangi jika pesanan telah batal.</string>
 
     <string name="som_dropshipper_label">Dropshipper</string>
 
@@ -139,11 +139,11 @@
     <!--  instant cancel  -->
     <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silakan cek koneksi internet dan coba lagi, ya.</string>
     <string name="som_error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silakan coba lagi, ya.</string>
-    <string name="som_buyer_cancellation_confirm_shipping_title">Kirim pesanan ini?</string>
-    <string name="som_buyer_cancellation_confirm_shipping_description">Pastikan kamu sudah berdiskusi dengan pembeli. Pesanan yang diproses secara paksa berpotensi komplain.</string>
-    <string name="som_buyer_cancellation_confirm_shipping_button">Kirim Pesanan</string>
-    <string name="som_buyer_cancellation_confirm_accept_cancellation_title">Batalkan pesanan ini?</string>
-    <string name="som_buyer_cancellation_confirm_accept_cancellation_description">Skor performa tokomu tidak akan dikurangi untuk pembatalan ini.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_title">Yakin mau lanjut memproses pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_shipping_description">Untuk menghindari komplain, pastikan pelanjutan proses pesanannya sudah disetujui pembeli.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_button">Lanjutkan Proses</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_title">Yakin terima pembatalan pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_description">Tenang, Skor Performa Tokomu tidak akan berkurang karena pembatalan pesanan ini.</string>
     <string name="som_buyer_cancellation_confirm_accept_cancellation_button">Batalkan Pesanan</string>
     <string name="som_buyer_cancellation_confirm_accept_order_title">Konfirmasi terima pesanan?</string>
     <string name="som_buyer_cancellation_confirm_accept_order_description">Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain</string>
@@ -315,15 +315,6 @@
     <string name="som_detail_mvc_usage_label">Promo Penjual</string>
 
     <!--  Product Add On  -->
-    <string name="som_detail_add_on_sample_label">Pelengkap</string>
-    <string name="som_detail_add_on_description_label">Pesan Kartu Ucapan</string>
-    <string name="som_detail_add_on_colon">:</string>
-    <string name="som_detail_add_on_label_to">Ke</string>
-    <string name="som_detail_add_on_label_from">Dari</string>
-    <string name="som_detail_add_on_description"><![CDATA[%1$s. <a href="#">%2$s</a>.]]></string>
-    <string name="som_detail_add_on_see_less_description">Tutup</string>
-    <string name="som_detail_add_on_see_more_description"><![CDATA[<a href="#">Lihat Selengkapnya</a>.]]></string>
-    <string name="som_detail_add_on_description_copyable_format"><![CDATA[Ke\t\t\t: %1$s<br/>Dari\t: %2$s<br/>%3$s]]></string>
     <string name="som_detail_add_on_description_copied_message">Pesan berhasil disalin</string>
     <string name="som_detail_shipment_name_chevron_right"><![CDATA[>]]></string>
 

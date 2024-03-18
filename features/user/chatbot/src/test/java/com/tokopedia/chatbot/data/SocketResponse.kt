@@ -1944,12 +1944,4 @@ object SocketResponse {
                 ChatWebSocketResponse::class.java
             )
     }
-
-    fun getOldResponse(response: String): com.tokopedia.chatbot.websocket.ChatWebSocketResponse {
-        return GsonBuilder().create()
-            .fromJson(
-                response,
-                com.tokopedia.chatbot.websocket.ChatWebSocketResponse::class.java
-            )
-    }
 }

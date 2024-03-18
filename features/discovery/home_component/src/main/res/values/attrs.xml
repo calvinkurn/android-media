@@ -6,4 +6,8 @@
             <enum name="green" value="1" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="MegaTabLayout">
+        <attr name="grayscale_inactive_mode" format="boolean"/>
+    </declare-styleable>
 </resources>

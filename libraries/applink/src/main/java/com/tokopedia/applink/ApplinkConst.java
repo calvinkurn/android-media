@@ -289,6 +289,8 @@ public interface ApplinkConst {
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+
+    String TIPPING_DRIVER = "tokopedia://shipping/tipping";
     String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
     String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
     String PINPOINT_WEBVIEW = "tokopedia://pin-point-picker-result";
@@ -652,6 +654,7 @@ public interface ApplinkConst {
         String RECIPE_SEARCH = "tokopedia://now/recipe/search";
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
         String SEE_ALL_CATEGORY = "tokopedia://now/see-all-category";
+        String ALL_ANNOTATION = "tokopedia://now/all-annotation";
     }
 
     interface TokoFood {
@@ -888,5 +891,9 @@ public interface ApplinkConst {
 
         String STORIES_VIEWER = "tokopedia://stories/{stories_type}/{author_id}";
         String STORIES_CREATION = "tokopedia://stories/creation";
+    }
+
+    interface Som {
+        String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
     }
 }

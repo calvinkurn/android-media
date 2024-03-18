@@ -85,14 +85,6 @@ class CreationUploaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteTopQueue() {
-        creationUploadQueueRepository.deleteTopQueue()
-    }
-
-    override suspend fun deleteFromQueue(queueId: Int) {
-        creationUploadQueueRepository.delete(queueId)
-    }
-
     override suspend fun deleteQueueAndChannel(data: CreationUploadData) {
         creationUploadQueueRepository.deleteQueueAndChannel(data)
     }

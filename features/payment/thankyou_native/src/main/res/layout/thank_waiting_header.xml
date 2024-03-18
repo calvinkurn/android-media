@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="?actionBarSize"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="16dp">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:card_type="border">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_Background" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <Space
+        android:id="@+id/spaceTop"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <Space
+        android:id="@+id/spaceBottom"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Space
+        android:id="@+id/spaceStart"
+        android:layout_width="16dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <Space
+        android:id="@+id/spaceEnd"
+        android:layout_width="16dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/headerIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintTop_toBottomOf="@id/spaceTop"
+        app:layout_constraintBottom_toBottomOf="@id/headerDescription"
+        app:icon_name="CLOCK_FILLED"
+        app:icon_color_light_enable="@color/Unify_YN300"/>
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/headerTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:timer_unify_single_variant="general"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintTop_toTopOf="@id/headerIcon"
+        app:layout_constraintBottom_toBottomOf="@id/headerIcon"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/headerIcon"
+        app:layout_constraintEnd_toStartOf="@id/headerTimer"
+        app:layout_constraintTop_toTopOf="@id/headerIcon"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Oke, pembayaran berhasil!"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/headerIcon"
+        app:layout_constraintEnd_toStartOf="@id/headerTimer"
+        app:layout_constraintTop_toBottomOf="@id/headerTitle"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:typographyType="display_3"
+        tools:text="Total Bayar Rp50.000.000"/>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/headerTicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintTop_toBottomOf="@id/headerDescription"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/headerDivider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintTop_toBottomOf="@id/headerTicker"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/accountIdLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider"
+        app:typographyType="paragraph_3"
+        tools:text="Nomor Virtual Account"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/accountId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintTop_toBottomOf="@id/accountIdLabel"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="80777083824432119"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bankBranch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/accountId"
+        app:layout_constraintStart_toStartOf="@id/accountId"
+        app:typographyType="small"
+        tools:text="Atas nama PT Tokopedia (BCA KCP Kebon Jeruk)"/>
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/accountIdCopyIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintTop_toTopOf="@id/accountId"
+        app:layout_constraintBottom_toBottomOf="@id/accountId"
+        app:layout_constraintStart_toEndOf="@id/accountId"
+        android:layout_marginStart="4dp"
+        app:icon_name="COPY"
+        app:icon_color_light_enable="@color/Unify_GN500"/>
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/accountImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintTop_toTopOf="@id/accountIdLabel"
+        app:layout_constraintBottom_toBottomOf="@id/accountId"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/amountLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintTop_toBottomOf="@id/bankBranch"
+        app:typographyType="paragraph_3"
+        tools:text="Total Tagihan"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintTop_toBottomOf="@id/amountLabel"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Rp10.000.000"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/amountCopyIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintTop_toTopOf="@id/amount"
+        app:layout_constraintBottom_toBottomOf="@id/amount"
+        app:layout_constraintStart_toEndOf="@id/amount"
+        android:layout_marginStart="4dp"
+        app:icon_name="COPY"
+        app:icon_color_light_enable="@color/Unify_GN500"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/seeDetailBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintTop_toBottomOf="@id/amountLabel"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        android:text="@string/thank_see_detail"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/infoDivider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintTop_toBottomOf="@id/amount"/>
+
+    <com.tokopedia.thankyou_native.presentation.views.BulletsView
+        android:id="@+id/info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintTop_toBottomOf="@id/infoDivider"
+        app:typographyType="paragraph_3"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/secondaryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintTop_toBottomOf="@id/info"
+        app:layout_constraintStart_toEndOf="@id/spaceStart"
+        app:layout_constraintBottom_toTopOf="@id/spaceBottom"
+        app:layout_constraintEnd_toStartOf="@id/primaryButton"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:text="Lihat Cara Bayar"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/primaryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintTop_toTopOf="@id/secondaryButton"
+        app:layout_constraintEnd_toStartOf="@id/spaceEnd"
+        app:layout_constraintStart_toEndOf="@id/secondaryButton"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:text="Cek Status Bayar"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

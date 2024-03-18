@@ -26,6 +26,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentType;
 import com.tokopedia.tkpd.thankyou.data.source.MonthlyNewBuyerSource;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.tkpd.utils.CurrencyFormatHelper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

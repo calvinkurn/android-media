@@ -25,6 +25,7 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.NavToolbarConfig
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.ThematicHeader
 import com.tokopedia.discovery2.data.customtopchatdatamodel.ChatExistingChat
 import com.tokopedia.discovery2.data.customtopchatdatamodel.CustomChatResponse
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -39,13 +40,14 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.domain.GetMiniCartWidgetUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -54,14 +56,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.*
-import kotlin.collections.HashMap
 
 class DiscoveryViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private lateinit var discoveryDataUseCase: DiscoveryDataUseCase
-    private lateinit var getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase
+    private lateinit var getMiniCartListSimplifiedUseCase: GetMiniCartWidgetUseCase
     private lateinit var addToCartUseCase: AddToCartUseCase
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
@@ -675,59 +676,59 @@ class DiscoveryViewModelTest {
             )
     }
 
-//    @Test
-//    fun `when getDiscoveryData is called, isExtendedLayout of NavToolbarConfig should be false because componentsName is not slider_banner and color of NavToolbarConfig should return expected color`() {
-//        val url = "tokopedia://discovery/test-campaign-7"
-//        val componentsName = "lihat_semua"
-//        val color = "#EF1231"
-//        val properties = Properties(type = Constant.PropertyType.ATF_BANNER)
-//        val category: Category? = null
-//        val categoryData: HashMap<String, String>? = null
-//        val isExtendedLayout = false
-//
-//        mockParamKeyValueMapDecoded(
-//            url = url,
-//            result = hashMapOf()
-//        )
-//
-//        val discoveryPageData = DiscoveryPageData(
-//            pageInfo = PageInfo(
-//                thematicHeader = ThematicHeader(
-//                    color = color
-//                )
-//            ),
-//            additionalInfo = AdditionalInfo(
-//                category = category,
-//                categoryData = categoryData
-//            )
-//        ).apply {
-//            components = listOf(
-//                ComponentsItem(
-//                    name = componentsName,
-//                    properties = properties,
-//                    searchParameter = SearchParameter(
-//                        deepLinkUri = url
-//                    )
-//                )
-//            )
-//        }
-//
-//        mockDiscoveryPageData(discoveryPageData)
-//
-//        viewModel.getDiscoveryData(
-//            queryParameterMap = mutableMapOf(),
-//            userAddressData = LocalCacheModel()
-//        )
-//
-//        viewModel
-//            .getDiscoveryNavToolbarConfigLiveData()
-//            .verifyValueEquals(
-//                NavToolbarConfig(
-//                    isExtendedLayout = isExtendedLayout,
-//                    color = color
-//                )
-//            )
-//    }
+    @Test
+    fun `when getDiscoveryData is called, isExtendedLayout of NavToolbarConfig should be false because componentsName is not slider_banner and color of NavToolbarConfig should return expected color`() {
+        val url = "tokopedia://discovery/test-campaign-7"
+        val componentsName = "lihat_semua"
+        val color = "#EF1231"
+        val properties = Properties(type = Constant.PropertyType.ATF_BANNER)
+        val category: Category? = null
+        val categoryData: HashMap<String, String>? = null
+        val isExtendedLayout = false
+
+        mockParamKeyValueMapDecoded(
+            url = url,
+            result = hashMapOf()
+        )
+
+        val discoveryPageData = DiscoveryPageData(
+            pageInfo = PageInfo(
+                thematicHeader = ThematicHeader(
+                    color = color
+                )
+            ),
+            additionalInfo = AdditionalInfo(
+                category = category,
+                categoryData = categoryData
+            )
+        ).apply {
+            components = listOf(
+                ComponentsItem(
+                    name = componentsName,
+                    properties = properties,
+                    searchParameter = SearchParameter(
+                        deepLinkUri = url
+                    )
+                )
+            )
+        }
+
+        mockDiscoveryPageData(discoveryPageData)
+
+        viewModel.getDiscoveryData(
+            queryParameterMap = mutableMapOf(),
+            userAddressData = LocalCacheModel()
+        )
+
+        viewModel
+            .getDiscoveryNavToolbarConfigLiveData()
+            .verifyValueEquals(
+                NavToolbarConfig(
+                    isExtendedLayout = isExtendedLayout,
+                    color = color
+                )
+            )
+    }
 
     private fun mockDiscoveryPageData(
         discoveryPageData: DiscoveryPageData
@@ -873,7 +874,7 @@ class DiscoveryViewModelTest {
 
         viewModel.getMiniCartTokonow(shopIds, "2")
 
-        verify { getMiniCartListSimplifiedUseCase.setParams(any(), any()) }
+        coVerify { getMiniCartListSimplifiedUseCase.invoke(any()) }
     }
 
     /**************************** test for getScrollDepth() *******************************************/
@@ -981,6 +982,7 @@ class DiscoveryViewModelTest {
         verify { discoveryDataUseCase.clearPage(any()) }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     @Throws(Exception::class)
     fun tearDown() {

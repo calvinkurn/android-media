@@ -24,7 +24,7 @@
 
         <include
             android:id="@+id/loading_list_1"
-            layout="@layout/partial_shimmering_list"
+            layout="@layout/partial_shimmering_list_logistic_add_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"

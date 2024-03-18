@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.layout.LayoutStrategyFactory
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
@@ -89,6 +90,7 @@ data class ProductCardModel (
         val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
         val forceLightModeColor: Boolean = false,
         val isInBackground: Boolean = false,
+        val colorMode: ProductCardColor? = null
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -163,8 +165,8 @@ data class ProductCardModel (
 
     data class NonVariant(
             val quantity: Int = 0,
-            private val minQuantity: Int = 0,
-            private val maxQuantity: Int = 0,
+            internal val minQuantity: Int = 0,
+            internal val maxQuantity: Int = 0,
     ) {
         val minQuantityFinal = maxOf(minQuantity, MIN_QUANTITY_NON_VARIANT)
         val maxQuantityFinal = maxOf(maxQuantity, this.minQuantityFinal)

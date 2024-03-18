@@ -12,7 +12,7 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
-import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotContract
 import com.tokopedia.kotlin.extensions.view.toPx
 
 object ViewUtil {

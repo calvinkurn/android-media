@@ -32,7 +32,6 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.RecomTemporary
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -98,7 +97,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     private var lifecycleOwner: LifecycleOwner? = null
     private var widgetMetadata: RecomWidgetMetadata = RecomWidgetMetadata()
-    private var forceUseOldProductCard: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -132,14 +130,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         tokonowListener: RecommendationCarouselTokonowListener?,
         chipListener: RecomCarouselChipListener? = null,
         scrollToPosition: Int = RecyclerView.NO_POSITION,
-        @RecomTemporary forceUseOldProductCard: Boolean = false,
     ) {
         try {
             widgetMetadata = widgetMetadata.copy(
                 adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition
             )
-            this.forceUseOldProductCard = forceUseOldProductCard
             this.basicListener = basicListener
             this.tokonowListener = tokonowListener
             this.basicChipListener = chipListener
@@ -321,10 +317,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun initVar() {
         if (widgetMetadata.isInitialized) return
         carouselData?.let {
-            typeFactory = CommonRecomCarouselCardTypeFactoryImpl(
-                it.recommendationData,
-                forceUseOldProductCard
-            )
+            typeFactory = CommonRecomCarouselCardTypeFactoryImpl(it.recommendationData)
         }
         adapter = RecommendationCarouselAdapter(typeFactory)
         layoutManager = createLayoutManager()

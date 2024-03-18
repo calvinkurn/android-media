@@ -7,7 +7,7 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
-import com.tokopedia.promousage.util.analytics.model.ImpressHolder
+import com.tokopedia.promousage.analytics.model.ImpressHolder
 
 internal fun ImageView.grayscale() {
     val colorMatrix = ColorMatrix().apply {

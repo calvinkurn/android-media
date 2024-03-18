@@ -26,7 +26,7 @@ import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
 import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -47,7 +47,8 @@ class ProductDetailThanosTest {
             override fun getName(): String = "networkFinish"
 
             override fun idleState(): Boolean {
-                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val fragment =
+                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as ProductDetailFragment
                 if (fragment.view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action) == null) {
                     throw RuntimeException("button not found")
                 }
@@ -62,13 +63,16 @@ class ProductDetailThanosTest {
             override fun getName(): String = "variantFinish"
 
             override fun idleState(): Boolean {
-                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val fragment =
+                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as ProductDetailFragment
                 val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
                     it is ProductSingleVariantDataModel
                 } ?: return false
 
-                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
-                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
+                val variantVh = fragment.getRecyclerView()
+                    ?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
+                val vhContainer =
+                    variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
 
                 return vhContainer?.findViewHolderForAdapterPosition(0) != null
             }

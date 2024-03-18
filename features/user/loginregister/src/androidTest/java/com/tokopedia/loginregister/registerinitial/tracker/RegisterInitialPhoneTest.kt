@@ -12,9 +12,10 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics.Companion.LABEL_PHONE_EXIST
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.After
 import org.junit.Rule
@@ -34,7 +35,6 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
     @Test
     fun check_register_phone_failed_tracker() {
         //Given
-        isDefaultRegisterCheck = false
         val data = RegisterCheckData(
             isExist = true ,
             isPending = false,
@@ -42,7 +42,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
             registerType = "phone",
             view = "0851-5636-46951"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+        fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         //When
         runTest {
@@ -56,7 +56,6 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
     @Test
     fun check_register_phone_success_tracker() {
         //Given
-        isDefaultRegisterCheck = false
         val data = RegisterCheckData(
             isExist = false ,
             isPending = false,
@@ -64,7 +63,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
             registerType = "phone",
             view = "0851-5636-46951"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+        fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         //When
         runTest {
@@ -114,10 +113,5 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
             ),
             //Add tracker success phone number register
         )
-    }
-
-    @After
-    fun finishTest() {
-        isDefaultRegisterCheck = true
     }
 }

@@ -56,19 +56,6 @@ object ProductDetailUtil {
     const val LAST_ONLINE_DAYS_RANGE_START = 3
     const val LAST_ONLINE_DAYS_RANGE_END = 6
     const val LAST_ONLINE_MINUTES_RANGE_END = 5
-
-    private const val MAX_CHAR = 140
-    private const val ALLOW_CLICK = true
-
-    fun reviewDescFormatter(context: Context, review: String): Pair<CharSequence?, Boolean> {
-        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
-        return if (formattedText.length > MAX_CHAR) {
-            val subDescription = formattedText.substring(0, MAX_CHAR)
-            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
-        } else {
-            Pair(formattedText, !ALLOW_CLICK)
-        }
-    }
 }
 
 fun getIntentImagePreviewWithoutDownloadButton(context: Context, imageUrl: ArrayList<String>): Intent {
