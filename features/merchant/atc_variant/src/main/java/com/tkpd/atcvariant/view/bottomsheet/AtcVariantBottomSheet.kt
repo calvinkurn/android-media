@@ -281,18 +281,18 @@ class AtcVariantBottomSheet :
     }
 
     private fun observeStockCopy() {
-        viewModel.stockCopy.observe(viewLifecycleOwner, {
+        viewModel.stockCopy.observe(viewLifecycleOwner) {
             txtStock?.shouldShowWithAction(it.isNotEmpty()) {
                 if (context != null) {
                     txtStock?.text =
                         HtmlLinkHelper(requireContext(), it).spannedString
                 }
             }
-        })
+        }
     }
 
     private fun observeParamsData() {
-        sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
+        sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner) {
             val previousData = getDataFromPreviousPage(it)
             atcAnimator.setTargetLocation(it.cartPosition)
             // If complete data is coming from previous page, set params into this data (directly show without hit network)
@@ -306,7 +306,7 @@ class AtcVariantBottomSheet :
 
             setupButtonAbility(data)
             viewModel.decideInitialValue(data, userSessionInterface.isLoggedIn)
-        })
+        }
     }
 
     private fun setupButtonAbility(data: ProductVariantBottomSheetParams) {
