@@ -88,10 +88,8 @@ class PartialAtcButtonView private constructor(
     }
 
     private fun UnifyButton.setLoading(isLoading: Boolean) {
-        if (!isVisible) {
-            this.isLoading = isLoading
-        }
-        this.isEnabled = !isLoading // when loading set enable false
+        if (!isVisible) return
+        this.isLoading = isLoading
     }
 
     private fun renderButton(
@@ -140,6 +138,8 @@ class PartialAtcButtonView private constructor(
             val textFirstButton = availableButton.getOrNull(0)?.text ?: fallbackTextIfEmpty
             text = textFirstButton
             setOnClickListener {
+                if (isLoading) return@setOnClickListener
+
                 buttonListener.buttonCartTypeClick(
                     availableButton.getOrNull(0)?.cartType
                         ?: "",
@@ -157,6 +157,8 @@ class PartialAtcButtonView private constructor(
             val fallbackTextIfEmpty = if (secondButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
             text = availableButton.getOrNull(1)?.text ?: fallbackTextIfEmpty
             setOnClickListener {
+                if (isLoading) return@setOnClickListener
+
                 buttonListener.buttonCartTypeClick(
                     availableButton.getOrNull(1)?.cartType
                         ?: "",
