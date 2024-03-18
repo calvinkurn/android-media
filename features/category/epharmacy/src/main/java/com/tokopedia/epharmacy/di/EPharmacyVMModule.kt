@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.basemvvm.viewmodel.ViewModelKey
+import com.tokopedia.epharmacy.viewmodel.EPharmacyChatLoadingViewModel
+import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
+import com.tokopedia.epharmacy.viewmodel.EPharmacyOrderDetailViewModel
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.epharmacy.viewmodel.EPharmacyReminderBsViewModel
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
@@ -17,6 +20,11 @@ abstract class EPharmacyVMModule {
 
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EPharmacyCheckoutViewModel::class)
+    internal abstract fun ePharmacyCheckoutViewModel(viewModel: EPharmacyCheckoutViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -37,4 +45,14 @@ abstract class EPharmacyVMModule {
     @IntoMap
     @ViewModelKey(EPharmacyReminderBsViewModel::class)
     internal abstract fun ePharmacyReminderBsViewModel(viewModel: EPharmacyReminderBsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EPharmacyChatLoadingViewModel::class)
+    internal abstract fun ePharmacyLoadingViewModel(viewModel: EPharmacyChatLoadingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EPharmacyOrderDetailViewModel::class)
+    internal abstract fun ePharmacyOrderDetailViewModel(viewModel: EPharmacyOrderDetailViewModel): ViewModel
 }

@@ -16,6 +16,7 @@ import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -274,6 +275,7 @@ import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.Pro
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.NavigationTab
+import com.tokopedia.product.detail.view.widget.ProductDetailNavigator.goToMvc
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
@@ -2084,7 +2086,7 @@ open class ProductDetailFragment :
         goToRecommendation()
     }
 
-    private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    override val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
             onSwipeRefresh()
         }
@@ -2094,10 +2096,11 @@ open class ProductDetailFragment :
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     ) {
-        goToMvc(
+        context?.goToMvc(
             shopId = uiModel.shopId,
             productId = uiModel.productIdMVC,
-            mvcAdditionalData = uiModel.additionalData
+            mvcAdditionalData = uiModel.additionalData,
+            launcher = mvcLauncher
         )
     }
 
@@ -2836,6 +2839,13 @@ open class ProductDetailFragment :
 
         viewModel.getP2()?.gwp?.let {
             pdpUiUpdater?.updateGWPSneakPeak(productId = productId.orEmpty(), gwp = it)
+        }
+
+        viewModel.getP2()?.dynamicOneLinerVariant?.let {
+            pdpUiUpdater?.updateDynamicOneLinerVariantLevel(
+                productId = productId.orEmpty(),
+                dynamicOneLinerVariant = it
+            )
         }
     }
 

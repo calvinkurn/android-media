@@ -17,7 +17,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 
 @Composable
-fun ItemImageProductPreview(
+internal fun ItemImageProductPreview(
     imageUrl: String,
     onDoubleTap: (() -> Unit)? = null
 ) {

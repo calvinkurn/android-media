@@ -354,7 +354,7 @@ class ShareExViewModel @Inject constructor(
         channelEnum: ShareExChannelEnum,
         campaign: String
     ): String {
-        val utmSource = ShareExConstants.ShortLinkValue.SOURCE
+        val utmMedium = ShareExConstants.UTM.MEDIUM_VALUE
         val uri = Uri.parse(url)
         val newUriBuilder = Uri.Builder()
 
@@ -364,11 +364,11 @@ class ShareExViewModel @Inject constructor(
         uri.path?.let { newUriBuilder.path(it) }
 
         if (!uri.query.isNullOrEmpty()) {
-            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, utmSource)
-            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, channelEnum.label)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, channelEnum.label)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, utmMedium)
             newUriBuilder.appendQueryParameter(ShareExConstants.UTM.CAMPAIGN_KEY, campaign)
         } else {
-            val query = "${ShareExConstants.UTM.SOURCE_KEY}=$utmSource&${ShareExConstants.UTM.MEDIUM_KEY}=${channelEnum.label}&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign"
+            val query = "${ShareExConstants.UTM.SOURCE_KEY}=${channelEnum.label}&${ShareExConstants.UTM.MEDIUM_KEY}=$utmMedium&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign"
             newUriBuilder.query(query)
         }
         val newUri = newUriBuilder.build().toString()

@@ -6,6 +6,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardPaginationLoadState
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import io.mockk.*
@@ -147,7 +148,7 @@ class CarouselErrorLoadViewModelTest {
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
-        } returns false
+        } returns ProductCardPaginationLoadState.FAILED
 
         viewModel.loadData()
 
@@ -160,7 +161,7 @@ class CarouselErrorLoadViewModelTest {
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
-        } returns true
+        } returns ProductCardPaginationLoadState.LOAD_MORE
 
         viewModel.loadData()
 

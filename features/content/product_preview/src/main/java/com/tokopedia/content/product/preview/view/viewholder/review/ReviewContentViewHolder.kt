@@ -126,7 +126,7 @@ class ReviewContentViewHolder(
 
     private var snapHelperMedia = PagerSnapHelper()
 
-    private val descriptionUiModel : DescriptionUiModel
+    private val descriptionUiModel: DescriptionUiModel
 
     private val clickableSpan: ClickableSpan =
         object : ClickableSpan() {
@@ -234,11 +234,6 @@ class ReviewContentViewHolder(
     }
 
     private fun bindDescription(description: ReviewDescriptionUiModel) = with(binding) {
-        if (description.description.isBlank()) {
-            reviewOverlay.gone()
-            tvReviewDescription.gone()
-            return@with
-        }
         val divider = root.context.getString(R.string.circle_dot_divider)
         tvReviewDetails.text = buildString {
             append(description.stars)
@@ -249,7 +244,13 @@ class ReviewContentViewHolder(
             append(" $divider ")
             append(description.timestamp)
         }
-        setupReview(description.description)
+        if (description.description.isBlank()) {
+            reviewOverlay.gone()
+            tvReviewDescription.gone()
+            return@with
+        } else {
+            setupReview(description.description)
+        }
     }
 
     private fun setupReview(description: String) = with(binding) {
@@ -258,7 +259,6 @@ class ReviewContentViewHolder(
         tvReviewDescription.doOnLayout {
             val text = tvReviewDescription.layout
             if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
-
 
             tvReviewDescription.setOnClickListener {
                 descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
@@ -291,7 +291,7 @@ class ReviewContentViewHolder(
             descriptionUiModel.truncatedText = truncatedText
             setupExpanded()
         }
-        binding.tvReviewDescription.maxLines = MAX_LINES_THRESHOLD //Initial state
+        binding.tvReviewDescription.maxLines = MAX_LINES_THRESHOLD // Initial state
         tvReviewDescription.show()
     }
 
@@ -408,13 +408,15 @@ class ReviewContentViewHolder(
         return videoPlayerManager.occupy(id)
     }
 
-    override fun pauseVideo(id: String) {
+    override fun onPauseResumeVideo() {
         reviewInteractionListener.onPauseResumeVideo()
+    }
+
+    override fun pauseVideo(id: String) {
         videoPlayerManager.pause(id)
     }
 
     override fun resumeVideo(id: String) {
-        reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.resume(id)
     }
 

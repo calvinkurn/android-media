@@ -1,6 +1,5 @@
 package com.tokopedia.content.product.preview.view.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -15,9 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,17 +29,19 @@ import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
 
 /**
  * @author by astidhiyaa on 23/11/23
  */
 @Composable
-fun MediaBottomNav(
+internal fun MediaBottomNav(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
@@ -111,6 +111,9 @@ private fun RenderContent(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
+
+    val ctx = LocalContext.current
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -214,9 +217,8 @@ private fun RenderContent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .background(
-                        NestTheme.colors.RN._50
+                        NestTheme.colors.RN._50, RoundedCornerShape(5.dp)
                     )
-                    .clip(RoundedCornerShape(5.dp))
                     .border(1.dp, NestTheme.colors.RN._200, RoundedCornerShape(5.dp))
                     .padding(horizontal = 4.dp, vertical = 2.dp)
                     .constrainAs(ogPrice) {
@@ -225,9 +227,8 @@ private fun RenderContent(
                         bottom.linkTo(parent.bottom)
                     }
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_nett_price),
-                    contentDescription = "",
+                NestImage(
+                    source = ImageSource.Remote(ctx.getString(R.string.product_preview_nett_icon)),
                     modifier = Modifier.size(16.dp)
                 )
                 NestTypography(

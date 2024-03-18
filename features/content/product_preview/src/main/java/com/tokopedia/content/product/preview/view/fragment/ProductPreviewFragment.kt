@@ -62,8 +62,8 @@ class ProductPreviewFragment @Inject constructor(
     private val analyticsFactory: ProductPreviewAnalytics.Factory
 ) : TkpdBaseV4Fragment() {
 
-    private val productPreviewSource: ProductPreviewSourceModel
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        val productPreviewSource = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(
                 PRODUCT_PREVIEW_SOURCE,
                 ProductPreviewSourceModel::class.java
@@ -71,8 +71,6 @@ class ProductPreviewFragment @Inject constructor(
         } else {
             arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
         } ?: ProductPreviewSourceModel.Empty
-
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
         viewModelFactory.create(productPreviewSource)
     }
 
@@ -100,6 +98,9 @@ class ProductPreviewFragment @Inject constructor(
         pagerAdapter.getCurrentTabKey(binding.vpProductPreview.currentItem)
     }
 
+    private val currentTab: String get() =
+        pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
+
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
     private val productAtcResult = registerForActivityResult(
@@ -109,14 +110,12 @@ class ProductPreviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
 
-    private val coachMark by lazyThreadSafetyNone {
-        CoachMark2(requireContext())
-    }
+    private var coachMark: CoachMark2? = null
 
     private var coachMarkJob: Job? = null
 
-    private val hasCoachMark : Boolean get() =
-        when(val source = productPreviewSource.source) {
+    private val hasCoachMark: Boolean get() =
+        when (val source = viewModel.productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
             is ProductPreviewSourceModel.ReviewSourceData -> false
             else -> false
@@ -262,9 +261,11 @@ class ProductPreviewFragment @Inject constructor(
                         Toaster.build(
                             requireView().rootView,
                             text = getString(event.type.textRes),
-                            actionText = if (isAtc) { getString(
+                            actionText = if (isAtc) {
+                                getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
-                                ) } else { "" },
+                                )
+                            } else { "" },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
@@ -325,6 +326,7 @@ class ProductPreviewFragment @Inject constructor(
     private fun handleAtc(model: BottomNavUiModel) {
         if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
         if (model.hasVariant) {
+            analytics.onAtcVariant(model, currentTab)
             AtcVariantHelper.goToAtcVariant(
                 context = requireContext(),
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
@@ -335,16 +337,19 @@ class ProductPreviewFragment @Inject constructor(
                 }
             )
         } else {
+            analytics.onAtcWithoutVariant(model, currentTab)
             viewModel.onAction(ProductPreviewAction.ProductAction(model))
         }
     }
 
     private fun handleCoachMark() {
-        if(hasCoachMark && !viewModel.hasVisit) {
+        if (hasCoachMark && !viewModel.hasVisit) {
+            coachMark = CoachMark2(requireContext())
+
             coachMarkJob?.cancel()
             coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
                 delay(DELAY_COACH_MARK)
-                coachMark.showCoachMark(step = coachMarkItems)
+                coachMark?.showCoachMark(step = coachMarkItems)
                 viewModel.onAction(ProductPreviewAction.HasVisitCoachMark)
             }
         }

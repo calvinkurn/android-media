@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.chatbot2.data.csatoptionlist
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.chatbot.chatbot2.csat.data.response.DynamicCsat
+import com.tokopedia.csat_rating.dynamiccsat.data.model.DynamicCsat
 
 data class CsatAttributesPojo(
     @SerializedName("csat")

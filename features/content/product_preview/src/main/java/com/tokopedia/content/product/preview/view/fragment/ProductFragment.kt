@@ -97,7 +97,7 @@ class ProductFragment @Inject constructor(
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
             analytics.onSwipeContentAndTab(
                 tabName = TAB_PRODUCT_NAME,
-                isTabChanged = false,
+                isTabChanged = false
             )
             val position = getMediaCurrentPosition()
             scrollTo(position)
@@ -265,7 +265,7 @@ class ProductFragment @Inject constructor(
         val snappedView = snapHelperMedia.findSnapView(layoutManagerMedia)
             ?: return RecyclerView.NO_POSITION
         val position = binding.rvMediaProduct.getChildAdapterPosition(snappedView)
-        return if (position < 0) 0 else position
+        return position.coerceAtLeast(0)
     }
 
     private fun scrollTo(position: Int) {
@@ -283,6 +283,10 @@ class ProductFragment @Inject constructor(
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
         return videoPlayerManager.occupy(id)
+    }
+
+    override fun onPauseResumeVideo() {
+        analytics.onClickPauseOrPlayVideo(TAB_PRODUCT_NAME)
     }
 
     override fun pauseVideo(id: String) {

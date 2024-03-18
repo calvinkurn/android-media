@@ -1,5 +1,7 @@
 package com.tokopedia.content.product.preview.analytics
 
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+
 interface ProductPreviewAnalytics {
 
     /**
@@ -106,4 +108,16 @@ interface ProductPreviewAnalytics {
      * 49851
      */
     fun onClickLikeOrUnlike()
+
+    /**
+     * 17. click ATC without global variant bottomsheet
+     * 50427
+     */
+    fun onAtcWithoutVariant(bottomNavUiModel: BottomNavUiModel, currentTab: String)
+
+    /**
+     * 18. click ATC to open global variant bottomsheet
+     * 50428
+     */
+    fun onAtcVariant(bottomNavUiModel: BottomNavUiModel, currentTab: String)
 }

@@ -219,16 +219,15 @@ class ReviewFragment @Inject constructor(
 
                         is ProductPreviewUiEvent.ShowErrorToaster -> {
                             val view = ReviewReportBottomSheet.get(childFragmentManager)?.view?.rootView ?: requireView().rootView
-                            Toaster.build(
-                                view ?: return@collect,
+                            Toaster.toasterCustomBottomHeight = 60
+                            Toaster.buildWithAction(view ?: return@collect,
                                 text = event.message.message.ifNull { getString(event.type.textRes) },
-                                actionText = getString(R.string.bottom_atc_failed_click_toaster),
                                 duration = Toaster.LENGTH_LONG,
+                                type = Toaster.TYPE_ERROR,
+                                actionText = getString(R.string.bottom_atc_failed_click_toaster),
                                 clickListener = {
                                     event.onClick()
-                                },
-                                type = Toaster.TYPE_ERROR
-                            ).show()
+                                }).show()
                         }
                         else -> {}
                     }
@@ -253,7 +252,10 @@ class ReviewFragment @Inject constructor(
                 reviewAdapter.submitList(data.reviewContent)
                 scrollListener.updateStateAfterGetData()
             }
-            is ReviewPaging.Error -> showError(state)
+            is ReviewPaging.Error -> {
+                if (scrollListener.currentPage > 0) return
+                showError(state)
+            }
             else -> {}
         }
     }
@@ -316,12 +318,12 @@ class ReviewFragment @Inject constructor(
     override fun onReviewMediaScrolled() {
         analytics.onSwipeContentAndTab(
             tabName = TAB_REVIEW_NAME,
-            isTabChanged = false,
+            isTabChanged = false
         )
     }
 
     override fun onPauseResumeVideo() {
-        analytics.onClickPauseOrPlayVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+        analytics.onClickPauseOrPlayVideo(TAB_REVIEW_NAME)
     }
 
     override fun onImpressedImage() {

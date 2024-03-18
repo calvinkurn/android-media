@@ -1,11 +1,11 @@
 package com.tokopedia.content.product.preview.data.mapper
 
 import android.net.Uri
-import com.tokopedia.content.product.preview.data.response.AddWishlistResponse
-import com.tokopedia.content.product.preview.data.response.GetMiniProductInfoResponse
-import com.tokopedia.content.product.preview.data.response.LikeReviewResponse
-import com.tokopedia.content.product.preview.data.response.MediaReviewResponse
-import com.tokopedia.content.product.preview.data.response.ReviewByIdsResponse
+import com.tokopedia.content.product.preview.domain.response.AddWishlistResponse
+import com.tokopedia.content.product.preview.domain.response.GetMiniProductInfoResponse
+import com.tokopedia.content.product.preview.domain.response.LikeReviewResponse
+import com.tokopedia.content.product.preview.domain.response.MediaReviewResponse
+import com.tokopedia.content.product.preview.domain.response.ReviewByIdsResponse
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
@@ -63,7 +63,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false,
+                isScrolling = false
             )
         }
         return ReviewUiModel(
@@ -112,7 +112,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false,
+                isScrolling = false
             )
         }
         return ReviewUiModel(
@@ -134,7 +134,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             price = if (response.data.promo.isActive) {
                 BottomNavUiModel.Price.NettPrice(
                     ogPriceFmt = ogPrice,
-                    nettPriceFmt = response.data.promo.nettPriceFmt,
+                    nettPriceFmt = response.data.promo.nettPriceFmt
                 )
             } else if (response.data.campaign.isActive) {
                 BottomNavUiModel.Price.DiscountedPrice(
@@ -145,7 +145,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     ogPriceFmt = ogPrice,
                     discountPercentage = "${response.data.campaign.discountPercentage}%"
                 )
-            } else if (hasMasking){
+            } else if (hasMasking) {
                 BottomNavUiModel.Price.MaskPrice(
                     ogPriceFmt = ogPrice,
                     maskPrice = response.data.product.priceFmt
@@ -161,7 +161,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             hasVariant = response.data.hasVariant,
             buttonState = if (response.data.hasVariant) {
                 BottomNavUiModel.ButtonState.Active
-            } else if (hasMasking){
+            } else if (hasMasking) {
                 BottomNavUiModel.ButtonState.ComingSoon
             } else {
                 BottomNavUiModel.ButtonState.getByValue(

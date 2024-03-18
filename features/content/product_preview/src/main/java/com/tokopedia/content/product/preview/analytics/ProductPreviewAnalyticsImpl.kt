@@ -1,9 +1,13 @@
 package com.tokopedia.content.product.preview.analytics
 
 import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
+import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -230,6 +234,56 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
             eventAction = "click - like button",
             eventLabel = "$productId - 0",
             mainAppTrackerId = "49851",
+            customFields = mapOf(Key.productId to productId)
+        )
+    }
+
+    /**
+     * 17. click ATC without global variant bottomsheet
+     * 50427
+     */
+    override fun onAtcWithoutVariant(bottomNavUiModel: BottomNavUiModel, currentTab: String) {
+        var categoryId = ""
+        var itemCategory = ""
+        bottomNavUiModel.categoryTree.forEachIndexed { index, categoryTree ->
+            categoryId += if (index != 0) " / " else "" + categoryTree.id
+            itemCategory += if (index != 0) " / " else "" + categoryTree.name
+        }
+        analyticManager.sendEEProduct(
+            event = Event.add_to_cart,
+            eventAction = "click - add to cart media fullscreen",
+            eventLabel = "$currentTab - $productId",
+            itemList = "",
+            products = listOf(
+                ContentEnhanceEcommerce.Product(
+                    itemId = productId,
+                    itemName = bottomNavUiModel.title,
+                    itemBrand = "",
+                    itemCategory = itemCategory,
+                    itemVariant = bottomNavUiModel.hasVariant.toString(),
+                    price = bottomNavUiModel.price.finalPrice,
+                    index = "1",
+                    customFields = mapOf(
+                        "category_id" to categoryId,
+                        "shop_id" to bottomNavUiModel.shop.id,
+                        "shop_name" to bottomNavUiModel.shop.name,
+                    )
+                )
+            ),
+            mainAppTrackerId = "50427",
+            customFields = mapOf(Key.productId to productId)
+        )
+    }
+
+    /**
+     * 18. click ATC to open global variant bottomsheet
+     * 50428
+     */
+    override fun onAtcVariant(bottomNavUiModel: BottomNavUiModel, currentTab: String) {
+        analyticManager.sendClickContent(
+            eventAction = "click - variant bottomsheet atc entry point",
+            eventLabel = "$currentTab - $productId",
+            mainAppTrackerId = "50428",
             customFields = mapOf(Key.productId to productId)
         )
     }

@@ -2,8 +2,8 @@ package com.tokopedia.content.product.preview.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
-import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
+import com.tokopedia.content.product.preview.domain.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreferences
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
@@ -66,7 +66,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted val productPreviewSource: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
     private val userSessionInterface: UserSessionInterface,
-    private val productPrevSharedPref: ProductPreviewSharedPreference
+    private val productPrevSharedPref: ProductPreviewSharedPreferences
 ) : ViewModel() {
 
     @AssistedFactory
@@ -380,7 +380,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun getMediaSourcePosition(review: List<ReviewContentUiModel>): Int {
         val mediaPosition = review.first().medias.indexOfFirst { it.mediaId == attachmentSourceId }
-        return if (mediaPosition < 0) 0 else mediaPosition
+        return mediaPosition.coerceAtLeast(0)
     }
 
     private fun addToCart(model: BottomNavUiModel) {
