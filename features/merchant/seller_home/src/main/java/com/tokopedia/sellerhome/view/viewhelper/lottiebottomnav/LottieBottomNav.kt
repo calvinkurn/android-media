@@ -291,6 +291,9 @@ class LottieBottomNav : LinearLayout {
                 }
 
                 override fun onAnimationEnd(p0: Animator) {
+                    if (icon.isAnimating) {
+                        icon.pauseAnimation()
+                    }
                     if (selectedItem != index) {
                         val bottomMenuSelected = bottomMenu
                         val iconSelected = icon
