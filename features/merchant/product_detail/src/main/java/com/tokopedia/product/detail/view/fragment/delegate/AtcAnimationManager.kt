@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
@@ -34,7 +35,13 @@ class AtcAnimationManager(
         binding: ProductDetailFragmentBinding?,
         shoudShow: Boolean
     ) {
-        if (context == null || binding == null || !shoudShow) return
+        if (context == null ||
+            binding == null ||
+            !shoudShow ||
+            !ProductRollenceHelper.rollenceAtcAnimationActive()
+        ) {
+            return
+        }
 
         if (mSourceImageView == null) {
             viewModel.onFinishAnimation()

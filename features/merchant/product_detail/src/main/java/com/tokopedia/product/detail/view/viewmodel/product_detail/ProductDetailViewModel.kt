@@ -45,6 +45,7 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -270,20 +271,24 @@ class ProductDetailViewModel @Inject constructor(
     private val _finishAnimationAtc = MutableStateFlow(false)
     private val _finishAtc = MutableStateFlow(false)
 
-    val successAtcAndAnimation: Flow<Boolean> = _finishAnimationAtc.combine(_finishAtc) { a, b ->
-        a && b
-    }.map { bothSuccess ->
-        if (bothSuccess) {
-            _finishAnimationAtc.emit(false)
-            _finishAtc.emit(false)
-        }
-        bothSuccess
-    }.filter {
-        it
-    }.shareIn(
-        viewModelScope,
-        SharingStarted.Lazily
-    )
+    val successAtcAndAnimation: Flow<Boolean> =
+        _finishAnimationAtc.combine(_finishAtc) { finishAtcAnimation, finishAtc ->
+            val finishAtcAnimationResult =
+                !ProductRollenceHelper.rollenceAtcAnimationActive() || finishAtcAnimation
+
+            finishAtcAnimationResult && finishAtc
+        }.map { bothSuccess ->
+            if (bothSuccess) {
+                _finishAnimationAtc.emit(false)
+                _finishAtc.emit(false)
+            }
+            bothSuccess
+        }.filter {
+            it
+        }.shareIn(
+            viewModelScope,
+            SharingStarted.Lazily
+        )
 
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
         val edu = it.bottomSheetEdu
