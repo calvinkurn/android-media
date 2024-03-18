@@ -64,7 +64,6 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
                                             clickArea = LiveStatsCardModel.Clickable.ClickArea.Full,
                                             onClick = {
                                                 mListener?.onEstimatedIncomeClicked()
-                                                dismiss()
                                             }
                                         )
                                     }
