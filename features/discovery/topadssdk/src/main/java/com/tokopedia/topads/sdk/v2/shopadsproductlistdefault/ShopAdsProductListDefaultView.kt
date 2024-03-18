@@ -347,7 +347,6 @@ class ShopAdsProductListDefaultView(
         BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
         BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
         BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
-        val list = view?.findViewById<RecyclerView>(R.id.list)
 
         list?.run {
             layoutManager = LinearLayoutManager(contextRef.get(), LinearLayoutManager.HORIZONTAL, false)
@@ -362,7 +361,6 @@ class ShopAdsProductListDefaultView(
         BannerShopProductReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
         BannerShowMoreReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_reimagine
 
-        val list = view?.findViewById<RecyclerView>(R.id.topAdsList)
         list?.run {
             layoutManager = LinearLayoutManager(contextRef.get(), LinearLayoutManager.HORIZONTAL, false)
             adapter = bannerAdsAdapter
