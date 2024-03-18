@@ -66,6 +66,7 @@ fun ProductReportSummaryLayout(
                                         LiveStatsCardModel.Clickable(
                                             liveStats = it,
                                             clickableIcon = IconUnify.INFORMATION,
+                                            clickArea = LiveStatsCardModel.Clickable.ClickArea.IconOnly,
                                             onClick = onEstimatedIncomeClicked,
                                         )
                                     }
