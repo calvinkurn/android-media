@@ -260,6 +260,9 @@ class LottieBottomNavbar : LinearLayout {
                 override fun onAnimationRepeat(p0: Animator) = Unit
 
                 override fun onAnimationEnd(p0: Animator) {
+                    if (icon.isAnimating) {
+                        icon.pauseAnimation()
+                    }
                     if (selectedItem != index) {
                         bottomMenu.imageEnabledName?.let {
                             iconPlaceholder.setImageResource(it)
