@@ -2,6 +2,15 @@ package com.tokopedia.checkoutpayment.data
 
 import com.google.gson.annotations.SerializedName
 
+data class GetPaymentWidgetGqlResponse(
+    @SerializedName("error_message")
+    val errorMessage: List<String> = emptyList(),
+    @SerializedName("status")
+    val status: String = "",
+    @SerializedName("data")
+    val data: GetPaymentWidgetResponse = GetPaymentWidgetResponse()
+)
+
 data class GetPaymentWidgetResponse(
     @SerializedName("payment_data")
     val paymentWidgetData: List<PaymentWidgetDataResponse> = emptyList(),

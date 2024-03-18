@@ -2,6 +2,7 @@ package com.tokopedia.checkoutpayment.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkoutpayment.data.GetPaymentWidgetGqlResponse
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetResponse
 import com.tokopedia.checkoutpayment.data.PaymentWidgetDataResponse
@@ -20,61 +21,64 @@ class GetPaymentWidgetUseCase @Inject constructor(
         return """
             query getPaymentWidget(${"$"}params: GetPaymentWidgetParams) {
                 get_payment_widget(params: ${"$"}params) {
-                error_message
-                status
-                data {
-                  payment_data {
-                    gateway_code
-                    gateway_name
-                    image_url
-                    description
-                    amount_validation {
-                      minimum_amount
-                      maximum_amount
-                      minimum_amount_error_message
-                      maximum_amount_error_message
+                    error_message
+                    status
+                    data {
+                      payment_data {
+                        gateway_code
+                        gateway_name
+                        image_url
+                        description
+                        amount_validation {
+                          minimum_amount
+                          maximum_amount
+                          minimum_amount_error_message
+                          maximum_amount_error_message
+                        }
+                        profile_code
+                        merchant_code
+                        unix_timestamp
+                        bid
+                        callback_url
+                        installment_payment_data {
+                          selected_tenure
+                          error_message_invalid_tenure
+                          error_message_unavailable_tenure
+                          error_message_top_limit
+                          error_message_bottom_limit
+                        }
+                        wallet_data {
+                          wallet_type
+                          wallet_amount
+                          phone_numbered_registered
+                        }
+                        ticker_message
+                        error_details {
+                          message
+                        }
+                        mandatory_hit
+                        metadata
+                      }
+                      payment_fee_detail {
+                        title
+                        amount
+                        type
+                        show_tooltip
+                        tooltip_info
+                        show_slashed
+                        slashed_fee
+                      }
                     }
-                    profile_code
-                    merchant_code
-                    unix_timestamp
-                    bid
-                    callback_url
-                    installment_payment_data {
-                      selected_tenure
-                      error_message_invalid_tenure
-                      error_message_unavailable_tenure
-                      error_message_top_limit
-                      error_message_bottom_limit
-                    }
-                    wallet_data {
-                      wallet_type
-                      wallet_amount
-                      phone_numbered_registered
-                    }
-                    ticker_message
-                    error_details {
-                      message
-                    }
-                    mandatory_hit
-                    metadata
-                  }
-                  payment_fee_detail {
-                    title
-                    amount
-                    type
-                    show_tooltip
-                    tooltip_info
-                    show_slashed
-                    slashed_fee
-                  }
                 }
-              }
             }
         """.trimIndent()
     }
 
     override suspend fun execute(params: GetPaymentWidgetRequest): PaymentWidgetListData {
-        return mapResponse(repository.response(listOf(GraphqlRequest(graphqlQuery(), GetPaymentWidgetResponse::class.java, mapOf("params" to params)))).getSuccessData())
+        return mapResponse(
+            repository.response(listOf(GraphqlRequest(graphqlQuery(), GetPaymentWidgetGqlResponse::class.java, mapOf("params" to params))))
+                .getSuccessData<GetPaymentWidgetGqlResponse>().data
+        )
 //        return mapResponse(
 //            GetPaymentWidgetResponse(
 //                paymentWidgetData = listOf(
