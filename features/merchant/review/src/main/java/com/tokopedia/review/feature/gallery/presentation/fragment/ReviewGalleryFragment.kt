@@ -19,11 +19,15 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.utils.ROLLENCE_KEY_PRODUCT_PREVIEW
+import com.tokopedia.content.product.preview.utils.ROLLENCE_NEW_VALUE_PRODUCT_PREVIEW
+import com.tokopedia.content.product.preview.utils.ROLLENCE_OLD_VALUE_PRODUCT_PREVIEW
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -91,6 +95,15 @@ class ReviewGalleryFragment :
 
     private val enableContentProductPreview: Boolean
         get() = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CONTENT_PRODUCT_PREVIEW, false)
+
+    private val enableRollenceContentProductPreview: Boolean
+        get() {
+            val value = RemoteConfigInstance
+                .getInstance()
+                .abTestPlatform
+                .getString(ROLLENCE_KEY_PRODUCT_PREVIEW, ROLLENCE_OLD_VALUE_PRODUCT_PREVIEW)
+            return value == ROLLENCE_NEW_VALUE_PRODUCT_PREVIEW
+        }
 
     private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null
@@ -501,7 +514,7 @@ class ReviewGalleryFragment :
     }
 
     private fun goToMediaPreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
-        if (enableContentProductPreview) {
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
             val reviewId = reviewGalleryMediaThumbnailUiModel.feedbackId
             val attachmentId = reviewGalleryMediaThumbnailUiModel.attachmentId
             goToProductPreviewActivityReviewSource(
