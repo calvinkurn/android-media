@@ -83,7 +83,7 @@ class ShopAdsProductListDefaultView(
     private var hasAddProductToCartButton: Boolean = false
 
     private val linearLayoutMerchantVoucher: LinearLayout? = view?.findViewById(R.id.linearLayoutMerchantVoucher)
-    private val list = view?.findViewById<RecyclerView?>(R.id.list_v2)
+    private val list = view?.findViewById<RecyclerView>(R.id.list_v2)
 
     init {
         initAdapter()
@@ -174,7 +174,7 @@ class ShopAdsProductListDefaultView(
     }
 
     private fun setShopDetailClickListener(cpmData: CpmData) {
-        val shopDetail = view?.findViewById<View?>(R.id.shop_detail_v2)
+        val shopDetail = view?.findViewById<View>(R.id.shop_detail_v2)
 
         shopDetail?.setOnClickListener {
             topAdsBannerViewClickListener?.onBannerAdsClicked(1, cpmData.applinks, cpmData)
