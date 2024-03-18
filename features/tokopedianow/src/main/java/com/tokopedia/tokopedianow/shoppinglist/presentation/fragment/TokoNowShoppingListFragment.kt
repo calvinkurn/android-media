@@ -58,11 +58,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUi
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBinding
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
@@ -72,7 +69,10 @@ import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutTyp
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
+import com.tokopedia.tokopedianow.common.helper.AbstractEmptyStateOocListener
+import com.tokopedia.tokopedianow.common.helper.AbstractProductRecommendationListener
 import com.tokopedia.tokopedianow.shoppinglist.helper.AbstractShoppingListHorizontalProductCardItemListener
+import com.tokopedia.tokopedianow.common.helper.AbstractThematicHeaderListener
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
@@ -718,7 +718,7 @@ class TokoNowShoppingListFragment :
      * -- callback function section --
      */
 
-    private fun createHeaderCallback() = object : TokoNowThematicHeaderViewHolder.TokoNowHeaderListener {
+    private fun createHeaderCallback() = object : AbstractThematicHeaderListener() {
         override fun onClickCtaHeader() {
             analytic.trackClickBuyMoreOnTopNav()
             RouteManager.route(context, ApplinkConstInternalTokopediaNow.REPURCHASE)
@@ -727,10 +727,6 @@ class TokoNowShoppingListFragment :
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
             getRefreshLayout()?.setContentChildViewPullRefresh(view)
         }
-
-        override fun onClickChooseAddressWidgetTracker() { /* do nothing */ }
-
-        override fun onCloseTicker() { /* do nothing */ }
     }
 
     private fun createNavRecyclerViewOnScrollCallback(
@@ -912,29 +908,13 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun createEmptyStateOocCallback(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
-        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
-            override fun onRefreshLayoutPage() = refreshLayoutPage()
+    private fun createEmptyStateOocCallback() = object: AbstractEmptyStateOocListener() {
+        override fun onRefreshLayoutPage() = refreshLayoutPage()
 
-            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
-
-            override fun onGetEventCategory(): String = ""
-
-            override fun onSwitchService() { /* nothing to do */ }
-        }
+        override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
     }
 
-    private fun createProductRecommendationCallback() = object : TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener, TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener {
-        override fun onImpressedRecommendationCarouselItem(
-            model: TokoNowProductRecommendationOocUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            itemPosition: Int,
-            adapterPosition: Int
-        ) {
-            //analytic
-        }
-
+    private fun createProductRecommendationCallback() = object : AbstractProductRecommendationListener() {
         override fun onClickRecommendationCarouselItem(
             model: TokoNowProductRecommendationOocUiModel?,
             data: RecommendationCarouselData,
@@ -942,8 +922,6 @@ class TokoNowShoppingListFragment :
             itemPosition: Int,
             adapterPosition: Int
         ) {
-            //analytic
-
             openAppLink(recomItem.appUrl)
         }
 
@@ -951,53 +929,16 @@ class TokoNowShoppingListFragment :
             data: RecommendationCarouselData,
             applink: String
         ) {
-            //analytic
-
-            RouteManager.route(context, applink)
-        }
-
-        override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) { /* do nothing */ }
-
-        override fun onGetCarouselScrollPosition(adapterPosition: Int): Int = 0
-
-        private fun openAppLink(appLink: String) {
-            if(appLink.isNotEmpty()) RouteManager.route(context, appLink)
+            openAppLink(applink)
         }
 
         override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
             lifecycle.addObserver(observer)
         }
 
-        override fun onATCNonVariantRecommendationCarouselItem(
-            model: TokoNowProductRecommendationOocUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            recommendationCarouselPosition: Int,
-            quantity: Int
-        ) { /* do nothing */ }
-
-        override fun onAddVariantRecommendationCarouselItem(
-            model: TokoNowProductRecommendationOocUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem
-        ) { /* do nothing */ }
-
-        override fun onBindRecommendationCarousel(
-            model: TokoNowProductRecommendationOocUiModel,
-            adapterPosition: Int
-        ) { /* do noting */ }
-
-        override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) { /* nothing to do */ }
-
-        override fun onRecomTokonowAtcSuccess(message: String) { /* nothing to do */ }
-
-        override fun onRecomTokonowAtcFailed(throwable: Throwable) { /* nothing to do */ }
-
-        override fun onRecomTokonowAtcNeedToSendTracker(recommendationItem: RecommendationItem) { /* nothing to do */ }
-
-        override fun onRecomTokonowDeleteNeedToSendTracker(recommendationItem: RecommendationItem) { /* nothing to do */ }
-
-        override fun onClickItemNonLoginState() { /* nothing to do */ }
+        private fun openAppLink(appLink: String) {
+            if(appLink.isNotEmpty()) RouteManager.route(context, appLink)
+        }
     }
 
     /**
