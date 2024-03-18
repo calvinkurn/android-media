@@ -404,6 +404,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout11View) {
             currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_11)
+            bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout11View(
                 view,
                 WeakReference(context),
@@ -422,6 +423,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout10View) {
             currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_10)
+            bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout10View(
                 view,
                 WeakReference(context),
@@ -440,6 +442,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout8or9View) {
             currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_8_or_9)
+            bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout8or9View(
                 view,
                 WeakReference(context),
@@ -464,6 +467,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             } else {
                 getCurrentView(R.layout.item_ads_shop_layout_5)
             }
+            bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout5View(
                 view,
                 WeakReference(context),
@@ -480,6 +484,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout6View) {
             currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_6)
+            bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout6View(
                 view,
                 WeakReference(context),
@@ -499,6 +504,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             } else {
                 getCurrentView(R.layout.item_ads_banner_product_list_default)
             }
+            bannerAdsRendering = null
             bannerAdsRendering = ShopAdsProductListDefaultView(
                 view,
                 WeakReference(context),
@@ -522,6 +528,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout2View) {
             currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_card_view)
+            bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout2View(
                 view,
                 WeakReference(context),
