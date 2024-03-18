@@ -69,7 +69,8 @@ class PaymentProcessor @Inject constructor(
     suspend fun getPaymentWidget(param: GetPaymentWidgetRequest): PaymentWidgetListData? {
         return withContext(dispatchers.io) {
             try {
-                return@withContext getPaymentWidgetUseCase(param)
+                val response = getPaymentWidgetUseCase.invoke(param)
+                return@withContext response
             } catch (e: Exception) {
                 Timber.d(e)
                 return@withContext null

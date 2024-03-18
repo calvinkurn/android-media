@@ -3131,7 +3131,7 @@ class CheckoutViewModel @Inject constructor(
         var cost = listData.value.cost()!!
         var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems, payment)
 
-        if (payment.data == null) {
+        if (payment.data == null || payment.data?.paymentWidgetData.isNullOrEmpty()) {
             // get payment widget if not yet
             val chosenPayment = payment.originalData
             payment = paymentProcessor.getPaymentWidget(

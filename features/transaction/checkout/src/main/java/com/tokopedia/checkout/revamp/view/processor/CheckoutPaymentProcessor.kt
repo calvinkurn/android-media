@@ -380,7 +380,7 @@ class CheckoutPaymentProcessor @Inject constructor(
         return payment.copy(
             data = data,
             widget = payment.widget.copy(
-                state = if (data == null) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal
+                state = if (data == null || data.paymentWidgetData.isEmpty()) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal
             )
         )
     }

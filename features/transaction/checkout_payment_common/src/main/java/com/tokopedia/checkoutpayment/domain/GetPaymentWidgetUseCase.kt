@@ -1,11 +1,13 @@
 package com.tokopedia.checkoutpayment.domain
 
+import android.util.Log
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkoutpayment.data.GetPaymentWidgetDataResponse
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetGqlResponse
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
-import com.tokopedia.checkoutpayment.data.GetPaymentWidgetResponse
 import com.tokopedia.checkoutpayment.data.PaymentWidgetDataResponse
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -17,8 +19,8 @@ class GetPaymentWidgetUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<GetPaymentWidgetRequest, PaymentWidgetListData>(dispatchers.io) {
 
-    override fun graphqlQuery(): String {
-        return """
+    companion object {
+        private const val QUERY = """
             query getPaymentWidget(${"$"}params: GetPaymentWidgetParams) {
                 get_payment_widget(params: ${"$"}params) {
                     error_message
@@ -71,52 +73,23 @@ class GetPaymentWidgetUseCase @Inject constructor(
                     }
                 }
             }
-        """.trimIndent()
+        """
     }
 
+    override fun graphqlQuery(): String {
+        return QUERY
+    }
+
+    @GqlQuery("GetPaymentWidgetQuery", QUERY)
     override suspend fun execute(params: GetPaymentWidgetRequest): PaymentWidgetListData {
+        val response = repository.response(listOf(GraphqlRequest(GetPaymentWidgetQuery(), GetPaymentWidgetGqlResponse::class.java, mapOf("params" to params))))
+        val gqlResponse = response.getSuccessData<GetPaymentWidgetGqlResponse>()
         return mapResponse(
-            repository.response(listOf(GraphqlRequest(graphqlQuery(), GetPaymentWidgetGqlResponse::class.java, mapOf("params" to params))))
-                .getSuccessData<GetPaymentWidgetGqlResponse>().data
+            gqlResponse.response.data
         )
-//        return mapResponse(
-//            GetPaymentWidgetResponse(
-//                paymentWidgetData = listOf(
-//                    PaymentWidgetDataResponse(
-//                        gatewayCode = "ALFAMART",
-//                        gatewayName = "Alfamart / Alfamidi / Lawson / Dan+Dan",
-//                        imageUrl = "https://images.tokopedia.net/img/toppay/payment-logo/alfamart.png",
-//                        amountValidation = PaymentAmountValidationResponse(
-//                            minimumAmount = 10000,
-//                            maximumAmount = 50000,
-//                            minimumAmountErrorMessage = "too low",
-//                            maximumAmountErrorMessage = "too high"
-//                        )
-//                    )
-//                ),
-//                paymentFeeDetails = listOf(
-//                    PaymentFeeDetailResponse(
-//                        title = "testing title",
-//                        amount = 10000.0,
-//                        showTooltip = true,
-//                        showSlashed = true,
-//                        slashedFee = 3000,
-//                        tooltipInfo = "hallo"
-//                    ),
-//                    PaymentFeeDetailResponse(
-//                        title = "testing title2",
-//                        amount = 1000.0,
-//                        showTooltip = true,
-//                        showSlashed = true,
-//                        slashedFee = 3000,
-//                        tooltipInfo = "hallo"
-//                    )
-//                )
-//            )
-//        )
     }
 
-    private fun mapResponse(response: GetPaymentWidgetResponse): PaymentWidgetListData {
+    private fun mapResponse(response: GetPaymentWidgetDataResponse): PaymentWidgetListData {
         return PaymentWidgetListData(
             paymentWidgetData = response.paymentWidgetData.map {
                 mapPaymentWidgetData(it)
