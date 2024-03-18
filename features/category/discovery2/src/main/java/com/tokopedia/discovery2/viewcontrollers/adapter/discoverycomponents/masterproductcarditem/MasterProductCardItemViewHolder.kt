@@ -131,26 +131,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun setCtaClickListener() {
-        if (masterProductCardItemViewModel?.getTemplateType() == LIST) {
-            masterProductCardListView?.setGenericCtaButtonOnClickListener {
-                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
-                    return@setGenericCtaButtonOnClickListener
-                }
-                lastClickTime = SystemClock.elapsedRealtime()
-                sentNotifyButtonEvent()
-                masterProductCardItemViewModel?.subscribeUser()
-                showNotificationReminderPrompt()
+        masterProductCardListView?.setGenericCtaButtonOnClickListener {
+            if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                return@setGenericCtaButtonOnClickListener
             }
-        } else {
-            masterProductCardGridView?.setGenericCtaButtonOnClickListener {
-                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
-                    return@setGenericCtaButtonOnClickListener
-                }
-                lastClickTime = SystemClock.elapsedRealtime()
-                sentNotifyButtonEvent()
-                masterProductCardItemViewModel?.subscribeUser()
-                showNotificationReminderPrompt()
+            lastClickTime = SystemClock.elapsedRealtime()
+            sentNotifyButtonEvent()
+            masterProductCardItemViewModel?.subscribeUser()
+            showNotificationReminderPrompt()
+        }
+        masterProductCardGridView?.setGenericCtaButtonOnClickListener {
+            if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                return@setGenericCtaButtonOnClickListener
             }
+            lastClickTime = SystemClock.elapsedRealtime()
+            sentNotifyButtonEvent()
+            masterProductCardItemViewModel?.subscribeUser()
+            showNotificationReminderPrompt()
         }
     }
 
