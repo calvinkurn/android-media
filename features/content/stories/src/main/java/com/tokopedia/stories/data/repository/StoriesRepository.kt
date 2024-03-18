@@ -63,5 +63,5 @@ interface StoriesRepository {
 
     suspend fun getReportSummary(
         storyId: String,
-    ) : ReportSummaries
+    ) : ReportSummaries.Response
 }

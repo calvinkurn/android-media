@@ -1577,7 +1577,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
 
                 try {
-                    val report = deferredReportSummaries.await().data.first().content.metrics
+                    val report = deferredReportSummaries.await().reportSummaries.data.first().content.metrics
                     _channelReport.setValue {
                         copy(
                             totalViewFmt = report.totalViewFmt,
@@ -1612,7 +1612,7 @@ class PlayViewModel @AssistedInject constructor(
         chatManager.addChat(chat)
     }
 
-    private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
+    private suspend fun getReportSummaries(channelId: String): ReportSummaries.Response = withContext(dispatchers.io) {
         getReportSummariesUseCase(GetReportSummariesUseCase.Param(channelId, TrackContentType.Play.value))
     }
 

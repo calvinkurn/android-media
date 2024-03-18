@@ -16,7 +16,7 @@ import javax.inject.Inject
 class GetReportSummariesUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<GetReportSummariesUseCase.Param, ReportSummaries>(dispatchers.io) {
+) : CoroutineUseCase<GetReportSummariesUseCase.Param, ReportSummaries.Response>(dispatchers.io) {
 
 
     private val query = GetReportSummariesUseCaseQuery()
@@ -24,7 +24,7 @@ class GetReportSummariesUseCase @Inject constructor(
     @GqlQuery(QUERY_NAME, QUERY)
     override fun graphqlQuery(): String = query.getQuery()
 
-    override suspend fun execute(params: Param): ReportSummaries {
+    override suspend fun execute(params: Param): ReportSummaries.Response {
         return graphqlRepository.request(query, params)
     }
 

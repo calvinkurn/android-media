@@ -234,7 +234,7 @@ class StoriesRepositoryImpl @Inject constructor(
             response.submissionReport.status.equals("success", true)
         }
 
-    override suspend fun getReportSummary(storyId: String): ReportSummaries = withContext(dispatchers.io) {
+    override suspend fun getReportSummary(storyId: String): ReportSummaries.Response = withContext(dispatchers.io) {
         return@withContext getReportSummariesUseCase(
             GetReportSummariesUseCase.Param(
                 contentId = storyId,
