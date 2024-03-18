@@ -1171,7 +1171,13 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         displayAds(cpmModel, index)
     }
 
-    override fun displayAds(cpmModel: CpmModel?, index: Int) {
+
+    //this function to support the reimagine component type
+    fun displayHeadlineAdsReimagine(cpmModel: CpmModel?, index: Int = 0) {
+        displayAds(cpmModel, index, true)
+    }
+
+    override fun displayAds(cpmModel: CpmModel?, index: Int, isReimagine: Boolean) {
         try {
             if (cpmModel != null && cpmModel.data.size > 0) {
                 val data = cpmModel.data[0]

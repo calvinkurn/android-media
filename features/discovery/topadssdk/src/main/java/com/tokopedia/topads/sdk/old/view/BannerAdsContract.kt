@@ -1,22 +1,15 @@
-package com.tokopedia.topads.sdk.old.view;
+package com.tokopedia.topads.sdk.old.view
 
-import com.tokopedia.topads.sdk.domain.model.CpmModel;
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 /**
  * Created by errysuprayogi on 12/28/17.
  */
-
-public class BannerAdsContract {
-
-    public interface View {
-
-        void showLoading();
-
-        void displayAds(CpmModel cpmModel, int index);
-
-        void onCanceled();
-
-        void hideLoading();
+class BannerAdsContract {
+    interface View {
+        fun showLoading()
+        fun displayAds(cpmModel: CpmModel?, index: Int, isReimagine: Boolean = false)
+        fun onCanceled()
+        fun hideLoading()
     }
-
 }

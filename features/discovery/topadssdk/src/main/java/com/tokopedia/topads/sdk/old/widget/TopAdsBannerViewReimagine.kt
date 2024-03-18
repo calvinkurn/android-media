@@ -68,32 +68,26 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
         }
         val cpmData = cpmModel?.data?.firstOrNull()
 
-        if (TopAdsSdkUtil.isEnableTopAdsSdkV2()) {
-            cpmModel?.let {
-                renderTopAdsBannerV2(it, cpmData?.applinks.orEmpty(), cpmData?.adClickUrl.orEmpty(), index, true)
-            }
-        } else {
-            if (template == NO_TEMPLATE && isEligible(cpmData)) {
-                View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager_reimagine, this)
-                BannerShopProductReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
-                BannerShowMoreReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_reimagine
+        if (template == NO_TEMPLATE && isEligible(cpmData)) {
+            View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager_reimagine, this)
+            BannerShopProductReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
+            BannerShowMoreReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_reimagine
 
-                findViewById<TextView>(R.id.topAdsShopName)?.text = escapeHTML(cpmData?.cpm?.name.orEmpty())
-                bannerAdsAdapter = BannerAdsAdapter(
-                    BannerAdsAdapterTypeFactoryReimagine(topAdsBannerViewClickListener, impressionListener)
-                )
-                val list = findViewById<RecyclerView>(R.id.topAdsList)
-                list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
-                list.adapter = bannerAdsAdapter
-                list.addItemDecoratorShopAdsReimagine()
+            findViewById<TextView>(R.id.topAdsShopName)?.text = escapeHTML(cpmData?.cpm?.name.orEmpty())
+            bannerAdsAdapter = BannerAdsAdapter(
+                BannerAdsAdapterTypeFactoryReimagine(topAdsBannerViewClickListener, impressionListener)
+            )
+            val list = findViewById<RecyclerView>(R.id.topAdsList)
+            list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+            list.adapter = bannerAdsAdapter
+            list.addItemDecoratorShopAdsReimagine()
 
-                val snapHelper = GravitySnapHelper(Gravity.START)
-                snapHelper.attachToRecyclerView(list)
+            val snapHelper = GravitySnapHelper(Gravity.START)
+            snapHelper.attachToRecyclerView(list)
 
-                template = SHOP_TEMPLATE
-            }
-            setHeadlineShopData(cpmModel, appLink, adsClickUrl, index)
+            template = SHOP_TEMPLATE
         }
+        setHeadlineShopData(cpmModel, appLink, adsClickUrl, index)
     }
 
     private fun setHeadlineShopData(cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
