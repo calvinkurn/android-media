@@ -29,12 +29,7 @@ object SlardarInit {
         Npth.setApplication(application)
         Npth.init(application, object : ICommonParams {
             override fun getCommonParams(): MutableMap<String, Any> {
-                val params = mutableMapOf<String, String>()
-                params[AID] = aid
-                params[CHANNEL] = channel
-                params[APP_VERSION] = GlobalConfig.VERSION_NAME
-                params[VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
-                params[UPDATE_VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
+                val params = commonParams(aid, channel)
                 AppLog.putCommonParams(AppLog.getContext(), params, true, Level.L0)
                 AppLog.setUserID(userId.toLongOrZero())
                 val result = mutableMapOf<String, Any>()
@@ -172,5 +167,15 @@ object SlardarInit {
 //            ApmContext.setDebugMode(true)
 //            SDKContext.setDebugMode(true)
 //        }
+    }
+
+    private fun commonParams(aid: String, channel: String): MutableMap<String, String> {
+        val params = mutableMapOf<String, String>()
+        params[AID] = aid
+        params[CHANNEL] = channel
+        params[APP_VERSION] = GlobalConfig.VERSION_NAME
+        params[VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
+        params[UPDATE_VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
+        return params
     }
 }

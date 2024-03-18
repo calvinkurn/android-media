@@ -178,6 +178,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
     private final String PUSH_DELETION_TIME_GAP = "android_push_deletion_time_gap";
     private final String ENABLE_PUSH_TOKEN_DELETION_WORKER = "android_push_token_deletion_rollence";
+    private final String ANDROID_ENABLE_SLARDAR_INIT = "android_enable_slardar_init";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -251,14 +252,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initSlardar() {
-        Log.e("TOKO", "init application");
-        EventsSenderUtils.setEventsSenderEnable("573733", true, this);
-        EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net");
-        SlardarInit.INSTANCE.initApm(this);
-        SlardarInit.INSTANCE.initNpth(this, "573733", "local_test",
-                getUserSession().getUserId());
-        AppLogInitKt.initAppLog(this);
-        SlardarInit.INSTANCE.startApm();
+        if (remoteConfig.getBoolean(ANDROID_ENABLE_SLARDAR_INIT, true)) {
+            Log.e("TOKOSLARDAR", "init application");
+            EventsSenderUtils.setEventsSenderEnable("573733", true, this);
+            EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net");
+            SlardarInit.INSTANCE.initApm(this);
+            SlardarInit.INSTANCE.initNpth(this, "573733", "local_test",
+                    getUserSession().getUserId());
+            AppLogInitKt.initAppLog(this);
+            SlardarInit.INSTANCE.startApm();
+        }
     }
 
     private void initializeAppPerformanceTrace() {
