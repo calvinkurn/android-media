@@ -268,10 +268,10 @@ import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.media.tracker.MediaTracking
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
@@ -1188,8 +1188,8 @@ open class ProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getProductInfoP1 == null ||
             context == null ||
@@ -2305,15 +2305,34 @@ open class ProductDetailFragment :
         }
     }
 
-    override fun onShowProductMediaRecommendationClicked() {
-        val productMediaRecomBasicInfo =
-            viewModel.getProductInfoP1?.data?.productMediaRecomBasicInfo
-        val basicData = viewModel.getProductInfoP1?.basic
+    override fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val productMediaRecomBasicInfo = productInfo.data.productMediaRecomBasicInfo
+        val basicData = productInfo.basic
+        val title = productMediaRecomBasicInfo.bottomsheetTitle
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+
         viewModel.showProductMediaRecomBottomSheet(
-            title = productMediaRecomBasicInfo?.bottomsheetTitle.orEmpty(),
-            pageName = productMediaRecomBasicInfo?.recommendation.orEmpty(),
-            productId = basicData?.productID.orEmpty(),
-            isTokoNow = basicData?.isTokoNow.orFalse()
+            title = title,
+            pageName = productMediaRecomBasicInfo.recommendation,
+            productId = basicData.productID,
+            isTokoNow = basicData.isTokoNow.orFalse()
+        )
+        MediaTracking.onOverlayRecommClicked(
+            title = title,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
+        )
+    }
+
+    override fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val title = productInfo.data.productMediaRecomBasicInfo.bottomsheetTitle
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+        MediaTracking.onOverlayRecommImpressed(
+            title = title,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
         )
     }
 
@@ -2792,7 +2811,7 @@ open class ProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -3320,7 +3339,7 @@ open class ProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getProductInfoP1?.parentProductId.orEmpty()
                         }"
                         ProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -4931,7 +4950,6 @@ open class ProductDetailFragment :
                 ApplinkConst.SHOP,
                 shopId
             )
-
 
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 

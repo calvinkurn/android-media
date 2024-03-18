@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyBind
 import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
@@ -62,14 +63,13 @@ class VideoPictureView @JvmOverloads constructor(
         get() = videoPictureAdapter?.isPicture(pagerSelectedLastPosition) == true &&
             overlayRecommUiModel.shouldShow() && !shouldLiveIndicatorShow
 
-
     init {
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
     }
 
     fun setup(
         media: List<MediaDataModel>,
-        listener: ProductDetailListener?,
+        listener: ProductDetailListener,
         componentTrackDataModel: ComponentTrackDataModel?,
         initialScrollPosition: Int,
         containerType: MediaContainerType,
@@ -163,18 +163,18 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupViewPagerCallback() {
         binding.pdpViewPager.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                onMediaPageSelected(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    mListener?.getProductVideoCoordinator()
-                        ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    onMediaPageSelected(position)
                 }
-            }
-        })
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    if (state == RecyclerView.SCROLL_STATE_IDLE) {
+                        mListener?.getProductVideoCoordinator()
+                            ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                    }
+                }
+            })
     }
 
     private fun onMediaPageSelected(position: Int) {
@@ -254,11 +254,19 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupRecommendationLabel() {
         if (!shouldOverlayRecommShow) return
+        val listener = mListener ?: return
 
         with(overlayRecommStub.binding.txtAnimLabelRecommendation) {
             setup(overlayRecommUiModel)
             setOnClickListener {
-                mListener?.onShowProductMediaRecommendationClicked()
+                listener.onShowProductMediaRecommendationClicked(componentTrackDataModel)
+            }
+
+            addOnPdpImpressionListener(
+                holders = listener.getImpressionHolders(),
+                name = overlayRecommUiModel.javaClass.simpleName
+            ) {
+                listener.onProductMediaRecommendationImpressed(componentTrackDataModel)
             }
         }
     }

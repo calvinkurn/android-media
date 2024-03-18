@@ -13,7 +13,7 @@ import com.tokopedia.utils.view.binding.internal.ViewBindingMethodBinder
 
 class ViewStubDelegateImpl<T : ViewBinding>(
     private val viewStub: ViewStub,
-    private val bindViewClass: Class<T>,
+    private val bindViewClass: Class<T>
 ) {
     private val inflateDelegate = lazyThreadSafetyNone { viewStub.inflate() }
 
@@ -23,22 +23,30 @@ class ViewStubDelegateImpl<T : ViewBinding>(
 
     val isInitialized get() = inflateDelegate.isInitialized() && viewStub.parent == null
 
-    fun hide(manually: (() -> Unit)? = null) {
+    /**
+     * @param custom is a callback to developer can hide their own components.
+     * If this is null, this function should hide by [binding.root.hide()]
+     */
+    fun hide(custom: (() -> Unit)? = null) {
         if (isInitialized) {
-            if (manually == null) {
+            if (custom == null) {
                 binding.root.hide()
             } else {
-                manually()
+                custom()
             }
         }
     }
 
-    fun show(manually: (() -> Unit)? = null) {
+    /**
+     * @param custom is a callback to developer can show their own components.
+     * If this is null, this function should show by [binding.root.show()]
+     */
+    fun show(custom: (() -> Unit)? = null) {
         if (isInitialized) {
-            if (manually == null) {
+            if (custom == null) {
                 binding.root.show()
             } else {
-                manually()
+                custom()
             }
         }
     }
