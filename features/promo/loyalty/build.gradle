@@ -36,7 +36,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.travelCalendar)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
