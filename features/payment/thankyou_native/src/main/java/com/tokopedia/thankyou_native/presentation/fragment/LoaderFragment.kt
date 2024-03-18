@@ -1,31 +1,20 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
-import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
+
 import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieCompositionFactory
-import com.airbnb.lottie.LottieProperty
-import com.airbnb.lottie.LottieTask
-import com.airbnb.lottie.model.KeyPath
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isDeviceAnimationDisabled
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
@@ -34,6 +23,7 @@ import com.tokopedia.thankyou_native.data.mapper.Invalid
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.data.mapper.ProcessingPaymentPage
+import com.tokopedia.thankyou_native.data.mapper.WaitingPaymentPage
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
@@ -53,7 +43,6 @@ class LoaderFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    var lottieTask: LottieTask<LottieComposition>? = null
 
     private var isV2Enabled: Boolean = true
 
@@ -84,7 +73,6 @@ class LoaderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         showLoaderView()
-        (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess).hide()
         handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
     }
 
@@ -168,50 +156,29 @@ class LoaderFragment : BaseDaggerFragment() {
                 return
             }
 
-            if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
-                val lottie = (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess)
-                lottie.visible()
-                context?.let {
-                    lottie.setAnimationTint("white BG", ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
-                    lottie.setAnimationTint("White Solid 2", ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
+            callback?.onThankYouPageDataLoaded(thanksPageData)
+            val header = (activity as ThankYouPageActivity).findViewById<ImageView>(R.id.header_background)
+            when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
+                InstantPaymentPage -> {
+                    context?.let {
+                        header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_GN500))
+                    }
                 }
-                if (context?.isDeviceAnimationDisabled() == true) {
-                    callback?.onThankYouPageDataLoaded(thanksPageData)
-                } else {
-                    lottie.playAnimation()
-                }
-                lottie.addAnimatorListener(object: AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {
-
-                    }
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        callback?.onThankYouPageDataLoaded(thanksPageData)
-                    }
-
-                    override fun onAnimationCancel(animation: Animator) {
-
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator) {
-
-                    }
-                })
-            } else {
-                callback?.onThankYouPageDataLoaded(thanksPageData)
-
-                val header = (activity as ThankYouPageActivity).findViewById<ImageView>(R.id.header_background)
-                if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == ProcessingPaymentPage) {
+                ProcessingPaymentPage -> {
                     context?.let {
                         header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_TN50))
                     }
-                } else {
+                }
+                WaitingPaymentPage -> {
                     context?.let {
                         header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_YN50))
                     }
                 }
-                header.animate().alpha(1f).setDuration(UnifyMotion.T5).setInterpolator(UnifyMotion.EASE_OUT).start()
+                null -> {
+                    // no op
+                }
             }
+            header.animate().alpha(1f).setDuration(UnifyMotion.T5).setInterpolator(UnifyMotion.EASE_OUT).start()
         }
     }
 
@@ -219,8 +186,6 @@ class LoaderFragment : BaseDaggerFragment() {
         if (isV2Enabled) return
 
         tvProcessingPayment.visible()
-        if (lottieTask == null)
-            lottieTask = prepareLoaderLottieTask()
     }
 
     private fun hideLoaderView() {
@@ -246,16 +211,6 @@ class LoaderFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
-        return try {
-            val lottieFileZipStream =
-                ZipInputStream(requireContext().assets.open(LOADER_JSON_ZIP_FILE))
-            LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
-        } catch (ignore: IllegalStateException) {
-            null
-        }
-    }
-
     companion object {
         const val RPC_ERROR_STR = "rpc error:"
         const val DELAY_MILLIS = 2000L
@@ -267,16 +222,3 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
 }
-
-fun LottieAnimationView.setAnimationTint(itemsToTint: String, @ColorInt color: Int) {
-    if (itemsToTint == null) {
-        //un-tint
-        addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER) { null }
-        return
-    }
-    addValueCallback(
-        KeyPath(itemsToTint,"**"),
-        LottieProperty.COLOR_FILTER
-    ) { PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP) }
-}
-

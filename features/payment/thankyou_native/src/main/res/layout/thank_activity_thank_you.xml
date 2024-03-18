@@ -7,16 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_Background">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieSuccess"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:scaleType="centerCrop"
-        app:lottie_autoPlay="false"
-        app:lottie_fileName="thanks_success_lottie.json"
-        app:lottie_imageAssetsFolder="images"/>
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/header_background"
         android:layout_width="match_parent"

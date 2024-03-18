@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.transition.R.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -18,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -60,6 +62,8 @@ import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFrag
 import com.tokopedia.thankyou_native.presentation.fragment.ThankYouBaseFragment
 import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
+import com.tokopedia.unifycomponents.fade
+import com.tokopedia.unifyprinciples.UnifyMotion
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -149,8 +153,9 @@ class ThankYouPageActivity :
         val fragmentByPaymentMode = getGetFragmentByPaymentMode(thanksPageData)
         fragmentByPaymentMode?.let {
             showToolbarAfterLoading(fragmentByPaymentMode.title)
-            supportFragmentManager.beginTransaction()
-                .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            fragmentTransaction.setCustomAnimations(anim.abc_fade_out, anim.abc_fade_in)
+            fragmentTransaction.replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
                 .commit()
             showAppFeedbackBottomSheet(thanksPageData)
         } ?: run { gotoHomePage() }
@@ -455,6 +460,7 @@ class ThankYouPageActivity :
     }
 
     private fun isV2Enabled(): Boolean {
+        return true
         return try {
             val remoteConfig = FirebaseRemoteConfigImpl(this)
             return remoteConfig.getBoolean(ANDROID_ENABLE_THANKYOUPAGE_V2, true)

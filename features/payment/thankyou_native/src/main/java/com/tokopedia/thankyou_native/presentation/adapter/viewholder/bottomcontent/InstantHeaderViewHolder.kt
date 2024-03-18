@@ -1,6 +1,9 @@
 package com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent
 
+import android.graphics.drawable.BitmapDrawable
+import android.os.Handler
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.databinding.ThankInstantHeaderBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.InstantHeaderUiModel
@@ -10,10 +13,12 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.thankyou_native.helper.radiusClip
 import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONArray
@@ -29,7 +34,7 @@ class InstantHeaderViewHolder(
     override fun bind(data: InstantHeaderUiModel?) {
         if (data == null) return
 
-        binding?.headerIcon?.setImageUrl(data.gatewayImage)
+        setupIcon(data)
         binding?.headerTitle?.text = data.title
         binding?.headerDescription?.text = data.description
         binding?.headerTips?.shouldShowWithAction(data.note.isNotEmpty()) {
@@ -51,6 +56,26 @@ class InstantHeaderViewHolder(
             listener.onSecondaryButtonClick()
         }
         setUpTotalDeduction(data)
+    }
+
+    private fun setupIcon(data: InstantHeaderUiModel) {
+        val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.check_circle)
+
+        Handler().postDelayed({
+            binding?.headerIcon?.setImageDrawable(checkDrawable)
+            binding?.headerIcon?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(UnifyMotion.T3)?.setInterpolator(UnifyMotion.EASE_OVERSHOOT)?.start()
+
+            Handler().postDelayed({
+                data.gatewayImage.getBitmapImageUrl(itemView.context) {
+                    binding?.headerIcon?.animate()?.rotationY(90f)?.setDuration(UnifyMotion.T2)?.withEndAction {
+                        val bitmapDrawable = BitmapDrawable(itemView.context.resources, it)
+                        binding?.headerIcon?.setImageDrawable(bitmapDrawable)
+                        binding?.headerIcon?.rotationY = 270f
+                        binding?.headerIcon?.animate()?.rotationY(360f)?.setDuration(UnifyMotion.T1)?.start()
+                    }?.start()
+                }
+            }, 1000)
+        }, 3000)
     }
 
     private fun setUpTotalDeduction(data: InstantHeaderUiModel?) {
