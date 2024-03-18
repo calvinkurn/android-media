@@ -375,7 +375,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 if (id != it.id) {
                     val customViewCreator = getTabView(index)
                     (customViewCreator?.viewModel as? PlainTabItemViewModel)
-                        ?.setInactiveTabColor(selectedComponent.data?.firstOrNull()?.inactiveFontColor)
+                        ?.setUnselectedTabColor(selectedComponent.data?.firstOrNull()?.inactiveFontColor)
                 }
             }
         }

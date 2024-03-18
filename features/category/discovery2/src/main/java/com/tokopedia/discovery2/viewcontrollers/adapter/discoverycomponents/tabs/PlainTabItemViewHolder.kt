@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -28,7 +27,6 @@ class PlainTabItemViewHolder(
     private val tabIconView: ImageUnify = itemView.findViewById(R.id.imgIcon)
     private var tabTitleView: RTypography = itemView.findViewById(R.id.tvTitle)
     private var viewModel: PlainTabItemViewModel? = null
-    private var itemData: DataItem? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as PlainTabItemViewModel
@@ -36,25 +34,13 @@ class PlainTabItemViewHolder(
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            viewModel?.getComponentData()?.observe(
-                lifecycleOwner
-            ) { componentsItem ->
-                componentsItem.data?.firstOrNull()?.let {
-                    itemData = it
-                    renderTabItem(it)
-                }
+            viewModel?.getSelectedLiveData()?.observe(lifecycleOwner) {
+                val activeColor = it.fontColor
+                it.render(activeColor)
             }
 
-            viewModel?.getSelectionChangeLiveData()?.observe(lifecycleOwner) {
-                itemData?.let { dataItem ->
-                    renderTabItem(dataItem)
-                }
-            }
-
-            viewModel?.getInactiveColorChangeLiveData()?.observe(lifecycleOwner) {
-                val inactiveColor = Color.parseColor(Utils.getValidHexCode(itemView.context, it))
-                tabTitleView.setTextColor(inactiveColor)
-                tabIconView.setColorFilter(Color.parseColor(it))
+            viewModel?.getUnselectedLiveData()?.observe(lifecycleOwner) { (dataItem, hexColor) ->
+                dataItem.render(hexColor)
             }
         }
     }
@@ -62,56 +48,49 @@ class PlainTabItemViewHolder(
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel?.getComponentData()?.removeObservers(lifecycleOwner)
-            viewModel?.getSelectionChangeLiveData()?.removeObservers(lifecycleOwner)
-            viewModel?.getInactiveColorChangeLiveData()?.removeObservers(lifecycleOwner)
+            viewModel?.getSelectedLiveData()?.removeObservers(lifecycleOwner)
+            viewModel?.getUnselectedLiveData()?.removeObservers(lifecycleOwner)
         }
     }
 
     //region private methods
-    private fun renderTabItem(item: DataItem) {
-        val isImageUrlAvailable = item.tabActiveImageUrl?.isNotEmpty() == true &&
-            item.tabInactiveImageUrl?.isNotEmpty() == true
+    private fun DataItem.render(hexColor: String?) {
+        val isImageUrlAvailable = tabActiveImageUrl?.isNotEmpty() == true &&
+            tabInactiveImageUrl?.isNotEmpty() == true
 
         if (isImageUrlAvailable) {
-            setTabIcon(item)
+            setTabIcon()
+            tintImage(hexColor, getDefaultFontColor())
         } else {
-            item.name?.let { name ->
+            name?.run {
                 tabIconView.hide()
-                setTabText(name)
-                setFontColor(item)
-                setFontWeight(item.isSelected)
+                setTabText(this)
+
+                setFontColor(hexColor, getDefaultFontColor())
+                setFontWeight(isSelected)
             }
         }
     }
 
-    private fun setTabIcon(item: DataItem) {
+    private fun DataItem.setTabIcon() {
         tabTitleView.hide()
 
-        val imageUrl = item.getImageUrl()
+        val imageUrl = getImageUrl()
         tabIconView.loadImageWithoutPlaceholder(imageUrl)
 
         redefineImageDimension(imageUrl)
 
-        tintImage(item)
-
         tabIconView.show()
     }
 
-    private fun tintImage(item: DataItem) {
-        val tintColor = item.getDynamicColor()
-
-        if (!tintColor.isNullOrEmpty()) {
-            tabIconView.setColorFilter(Color.parseColor(tintColor))
-        }
-    }
-
-    private fun DataItem.getDynamicColor(): String? {
-        return if (isSelected) {
-            fontColor
+    private fun tintImage(hexColor: String?, defaultColor: Int) {
+        val inactiveColor = if (hexColor.isNullOrEmpty()) {
+            ContextCompat.getColor(itemView.context, defaultColor)
         } else {
-            inactiveFontColor
+            Color.parseColor(hexColor)
         }
+
+        tabIconView.setColorFilter(inactiveColor)
     }
 
     private fun redefineImageDimension(imageUrl: String?) {
@@ -142,18 +121,14 @@ class PlainTabItemViewHolder(
         tabTitleView.setTextAndCheckShow(name)
     }
 
-    private fun setFontColor(item: DataItem) {
-        try {
-            val textColor = if (!item.getDynamicColor().isNullOrEmpty()) {
-                Color.parseColor(Utils.getValidHexCode(itemView.context, item.getDynamicColor()))
-            } else {
-                ContextCompat.getColor(itemView.context, item.getDefaultFontColor())
-            }
-
-            tabTitleView.setTextColor(textColor)
-        } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+    private fun setFontColor(hexColor: String?, defaultColor: Int) {
+        val textColor = if (!hexColor.isNullOrBlank()) {
+            Color.parseColor(Utils.getValidHexCode(itemView.context, hexColor))
+        } else {
+            ContextCompat.getColor(itemView.context, defaultColor)
         }
+
+        tabTitleView.setTextColor(textColor)
     }
 
     private fun DataItem.getDefaultFontColor(): Int {

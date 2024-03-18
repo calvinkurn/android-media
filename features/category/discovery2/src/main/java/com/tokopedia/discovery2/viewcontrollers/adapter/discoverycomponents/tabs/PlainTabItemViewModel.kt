@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class PlainTabItemViewModel(
@@ -11,35 +12,33 @@ class PlainTabItemViewModel(
     var components: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel() {
-    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private val onSelectedChangeLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    private val onInactiveColorChangeLiveData: MutableLiveData<String> = MutableLiveData()
 
-    fun getComponentData() = componentData
+    private val onSelectedData: MutableLiveData<DataItem> = MutableLiveData()
+    private val onUnselectedData: MutableLiveData<Pair<DataItem, String?>> = MutableLiveData()
 
-    fun getSelectionChangeLiveData(): LiveData<Boolean> {
-        return onSelectedChangeLiveData
+    fun getSelectedLiveData(): LiveData<DataItem> {
+        return onSelectedData
     }
 
-    fun getInactiveColorChangeLiveData(): LiveData<String> {
-        return onInactiveColorChangeLiveData
+    fun getUnselectedLiveData(): LiveData<Pair<DataItem, String?>> {
+        return onUnselectedData
     }
 
     fun setSelectionTabItem(isSelected: Boolean) {
         if (components.data?.isEmpty() == true) return
 
         components.data?.firstOrNull()?.isSelected = isSelected
-        onSelectedChangeLiveData.value = isSelected
+
+        if (isSelected) {
+            components.data?.firstOrNull()?.let {
+                onSelectedData.value = it
+            }
+        }
     }
 
-    fun setInactiveTabColor(hexColor: String?) {
-        if (hexColor.isNullOrEmpty()) return
-
-        onInactiveColorChangeLiveData.value = hexColor
-    }
-
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
-        componentData.value = components
+    fun setUnselectedTabColor(hexColor: String?) {
+        components.data?.firstOrNull()?.let {
+            onUnselectedData.value = it to hexColor
+        }
     }
 }
