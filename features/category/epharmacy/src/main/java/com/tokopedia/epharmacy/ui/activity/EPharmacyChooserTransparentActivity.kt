@@ -8,16 +8,26 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.epharmacy.databinding.EpharmacyMiniConsultationTransparentActivityBinding
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
-import com.tokopedia.epharmacy.utils.EPHARMACY_CONSULTATION_SOURCE_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_DURATION
+import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_PRICE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_OUTSIDE_WORKING_HOURS
+import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 class EPharmacyChooserTransparentActivity : BaseActivity() {
 
-    private var enableImageURL = ""
-    private var groupId = ""
-    private var enablerName = ""
-    private var consultationSourceId = 0L
+    private var enableImageURL = String.EMPTY
+    private var groupId = String.EMPTY
+    private var enablerName = String.EMPTY
+    private var duration = String.EMPTY
+    private var price = String.EMPTY
+    private var note = String.EMPTY
+    private var isOutsideWorkingHours = false
+    private var isOnlyConsultation = false
 
     private val binding: EpharmacyMiniConsultationTransparentActivityBinding by lazy {
         EpharmacyMiniConsultationTransparentActivityBinding.inflate(LayoutInflater.from(this))
@@ -32,14 +42,18 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
     }
 
     private fun extractParameters() {
-        enableImageURL = intent.extras?.getString(ENABLER_IMAGE_URL) ?: ""
-        groupId = intent.extras?.getString(EPHARMACY_GROUP_ID) ?: ""
-        enablerName = intent.extras?.getString(EPHARMACY_ENABLER_NAME) ?: ""
-        consultationSourceId = intent.extras?.getLong(EPHARMACY_CONSULTATION_SOURCE_ID) ?: 0L
+        enableImageURL = intent.extras?.getString(ENABLER_IMAGE_URL).orEmpty()
+        groupId = intent.data?.getQueryParameter(EPHARMACY_GROUP_ID).orEmpty()
+        enablerName = intent.data?.getQueryParameter(EPHARMACY_ENABLER_NAME).orEmpty()
+        price = intent.data?.getQueryParameter(EPHARMACY_CONS_PRICE).orEmpty()
+        duration = intent.data?.getQueryParameter(EPHARMACY_CONS_DURATION).orEmpty()
+        note = intent.data?.getQueryParameter(EPHARMACY_NOTE).orEmpty()
+        isOutsideWorkingHours = intent.data?.getBooleanQueryParameter(EPHARMACY_IS_OUTSIDE_WORKING_HOURS, false).orFalse()
+        isOnlyConsultation = intent.data?.getBooleanQueryParameter(EPHARMACY_IS_ONLY_CONSULT, false).orFalse()
     }
 
     private fun openBottomSheet() {
-        EPharmacyChooserBottomSheet.newInstance(enableImageURL, groupId, enablerName, consultationSourceId).show(supportFragmentManager, EPharmacyChooserBottomSheet::class.simpleName)
+        EPharmacyChooserBottomSheet.newInstance(enableImageURL, groupId, enablerName, price, duration, note, isOutsideWorkingHours, isOnlyConsultation).show(supportFragmentManager, EPharmacyChooserBottomSheet::class.simpleName)
     }
 
     private fun adjustOrientation() {

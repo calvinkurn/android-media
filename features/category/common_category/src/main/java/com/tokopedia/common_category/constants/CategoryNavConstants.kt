@@ -31,6 +31,9 @@ class CategoryNavConstants {
         const val USER_CITY_ID = "user_cityId"
         const val USER_DISTRICT_ID = "user_districtId"
         const val SHOP_TIER = "shop_tier"
+        const val MIN_PRICE = "pmin"
+        const val MAX_PRICE = "pmax"
+
     }
 
 

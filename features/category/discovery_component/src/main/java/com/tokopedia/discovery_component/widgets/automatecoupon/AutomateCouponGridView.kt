@@ -111,7 +111,7 @@ class AutomateCouponGridView @JvmOverloads constructor(
 
     private fun Typography.render(dynamicColorText: DynamicColorText) {
         text = MethodChecker.fromHtml(dynamicColorText.value)
-        HexColorParser.parse(dynamicColorText.colorHex) {
+        HexColorParser.parse(dynamicColorText.colorHex.orEmpty()) {
             setTextColor(it)
         }
     }

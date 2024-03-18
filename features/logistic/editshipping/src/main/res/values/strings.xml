@@ -45,6 +45,8 @@
     <string name="text_header_courier_not_covered_all">Kurir yang kamu pilih tidak tersedia di lokasi tokomu berikut. Aktifkan kurir lainnya agar seluruh lokasi tokomu dapat melakukan pengiriman</string>
     <string name="button_activate">Tetap Aktifkan</string>
     <string name="button_deactivate">Nonaktifkan</string>
+    <string name="button_continue">Lanjutkan</string>
+    <string name="button_back">Kembali</string>
     <string name="button_save">Simpan</string>
     <string name="button_cancel_reset"><![CDATA[Batalkan & Atur Ulang]]></string>
     <string name="button_understand">Mengerti</string>

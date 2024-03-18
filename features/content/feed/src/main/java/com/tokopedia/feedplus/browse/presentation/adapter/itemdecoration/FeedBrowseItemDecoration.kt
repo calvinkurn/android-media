@@ -50,6 +50,7 @@ class FeedBrowseItemDecoration(
                 FeedBrowseItemAdapter.TYPE_BANNER,
                 FeedBrowseItemAdapter.TYPE_BANNER_PLACEHOLDER -> outRect.itemOffsetsBanner(parent, view, adapter, state)
                 FeedBrowseItemAdapter.TYPE_TITLE -> outRect.itemOffsetsTitle(parent, view)
+                FeedBrowseItemAdapter.TYPE_HORIZONTAL_STORIES -> outRect.itemOffsetsHorizontalStories(parent, view)
                 else -> outRect.itemOffsetsElse()
             }
 
@@ -132,6 +133,13 @@ class FeedBrowseItemDecoration(
     private fun Rect.itemOffsetsHorizontalChannels() {
         top = offset12
         bottom = offset16
+    }
+
+    private fun Rect.itemOffsetsHorizontalStories(
+        parent: RecyclerView,
+        child: View,
+    ) {
+        top = if (parent.getChildLayoutPosition(child) == 0) 0 else offset16
     }
 
     private fun Rect.itemOffsetsBottom(

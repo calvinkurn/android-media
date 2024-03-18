@@ -16,14 +16,14 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
+import com.tokopedia.product.detail.common.data.model.media.Media
+import com.tokopedia.product.detail.common.data.model.media.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
@@ -38,7 +38,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
@@ -98,6 +97,7 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 import com.tokopedia.product.share.ProductData
@@ -324,8 +324,9 @@ object ProductDetailMapper {
                     }
                 }
 
-                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER -> {
-                    val dataModel = DynamicOneLinerDataModel(
+                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER,
+                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_VARIANT -> {
+                    val dataModel = DynamicOneLinerUiModel(
                         name = component.componentName,
                         type = component.type,
                         data = generateDynamicInfoData(component.componentData)
@@ -646,7 +647,8 @@ object ProductDetailMapper {
             containerType = mediaData.containerType,
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
-            promoPrice = promoPriceData.promoPrice
+            promoPrice = promoPriceData.promoPrice,
+            liveIndicator = mediaData.liveIndicator
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
@@ -805,9 +807,9 @@ object ProductDetailMapper {
         )
     }
 
-    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerDataModel.Data {
-        val componentData = data.firstOrNull() ?: return DynamicOneLinerDataModel.Data()
-        return DynamicOneLinerDataModel.Data(
+    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerUiModel.Data {
+        val componentData = data.firstOrNull() ?: return DynamicOneLinerUiModel.Data()
+        return DynamicOneLinerUiModel.Data(
             text = componentData.text,
             applink = componentData.applink,
             separator = componentData.separator,
