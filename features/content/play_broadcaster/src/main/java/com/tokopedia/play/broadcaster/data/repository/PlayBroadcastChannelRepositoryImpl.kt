@@ -163,7 +163,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         return remoteConfig.getBoolean(KEY_ENABLE_SCHEDULING, true)
     }
 
-    override suspend fun getReportSummary(channelId: String, isAuthorShop: Boolean): LiveReportSummaryUiModel = withContext(dispatchers.io) {
+    override suspend fun getLiveReportSummary(channelId: String, isAuthorShop: Boolean): LiveReportSummaryUiModel = withContext(dispatchers.io) {
         val response = getReportSummaryUseCase(
             GetReportSummaryRequest.create(
                 channelId,
