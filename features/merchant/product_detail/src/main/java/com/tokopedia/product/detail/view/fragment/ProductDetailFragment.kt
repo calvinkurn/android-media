@@ -72,9 +72,7 @@ import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
-import com.tokopedia.content.product.preview.utils.ROLLENCE_KEY_PRODUCT_PREVIEW
-import com.tokopedia.content.product.preview.utils.ROLLENCE_NEW_VALUE_PRODUCT_PREVIEW
-import com.tokopedia.content.product.preview.utils.ROLLENCE_OLD_VALUE_PRODUCT_PREVIEW
+import com.tokopedia.content.product.preview.utils.enableRollenceContentProductPreview
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
@@ -624,15 +622,6 @@ open class ProductDetailFragment :
 
     private val enableContentProductPreview: Boolean
         get() = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CONTENT_PRODUCT_PREVIEW, false)
-
-    private val enableRollenceContentProductPreview: Boolean
-        get() {
-            val value = RemoteConfigInstance
-                .getInstance()
-                .abTestPlatform
-                .getString(ROLLENCE_KEY_PRODUCT_PREVIEW, ROLLENCE_OLD_VALUE_PRODUCT_PREVIEW)
-            return value == ROLLENCE_NEW_VALUE_PRODUCT_PREVIEW
-        }
 
     override val rootView: Fragment
         get() = this
