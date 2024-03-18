@@ -1,5 +1,6 @@
 package com.tokopedia.shareexperience.data.mapper
 
+import com.tokopedia.shareexperience.data.dto.ShareExGenerateLinkMessagePropertiesResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExSharePropertiesResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.properties.ShareExAffiliateEligibilityResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.properties.ShareExAffiliateRegistrationWidgetResponseDto
@@ -7,14 +8,17 @@ import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImag
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMessagePlaceholderEnum
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPageModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkMessagePropertiesModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkPropertiesModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import com.tokopedia.shareexperience.domain.util.ShareExConstants
+import timber.log.Timber
 import javax.inject.Inject
 
 class ShareExPropertyMapper @Inject constructor(
@@ -33,8 +37,8 @@ class ShareExPropertyMapper @Inject constructor(
                 title = it.shareBody.title,
                 listImage = it.shareBody.thumbnailUrls,
                 affiliate = affiliate,
-                linkProperties = ShareExLinkProperties(
-                    message = it.generateLinkProperties.message,
+                linkProperties = ShareExLinkPropertiesModel(
+                    messageObject = it.generateLinkProperties.messageObject.mapToMessageObject(),
                     ogTitle = it.generateLinkProperties.ogTitle,
                     ogDescription = it.generateLinkProperties.ogDescription,
                     ogType = it.generateLinkProperties.ogType,
@@ -126,5 +130,17 @@ class ShareExPropertyMapper @Inject constructor(
                 args = this.args.toMap()
             )
         }
+    }
+
+    private fun ShareExGenerateLinkMessagePropertiesResponseDto.mapToMessageObject(): ShareExLinkMessagePropertiesModel {
+        val replacementMap = this.placeholders.mapNotNull(
+            ShareExMessagePlaceholderEnum::fromValue
+        ).associateWith {
+            "" // set to empty first, then it will be replaced later when the value is ready
+        }.toMutableMap()
+        return ShareExLinkMessagePropertiesModel(
+            message = this.message,
+            replacementMap = replacementMap
+        )
     }
 }

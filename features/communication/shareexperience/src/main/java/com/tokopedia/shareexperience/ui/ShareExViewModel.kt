@@ -11,11 +11,12 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMessagePlaceholderEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkPropertiesModel
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
@@ -380,7 +381,7 @@ class ShareExViewModel @Inject constructor(
         defaultUrl: String,
         pageTypeEnum: ShareExPageTypeEnum,
         channelEnum: ShareExChannelEnum,
-        finalLinkProperties: ShareExLinkProperties,
+        finalLinkProperties: ShareExLinkPropertiesModel,
         isAffiliate: Boolean
     ): ShareExShortLinkRequest {
         return ShareExShortLinkRequest(
@@ -401,6 +402,10 @@ class ShareExViewModel @Inject constructor(
         getShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest { (apiType, result) ->
             when (result) {
                 is ShareExResult.Success -> {
+                    shortLinkRequest.linkerPropertiesRequest.messageObject.updateReplacementMap(
+                        ShareExMessagePlaceholderEnum.BRANCH_LINK,
+                        result.data
+                    )
                     downloadImageAndShare(shortLinkRequest, channelItemModel, result.data, imageType)
                 }
                 is ShareExResult.Error -> {
@@ -574,16 +579,15 @@ class ShareExViewModel @Inject constructor(
         imageType: ShareExImageTypeEnum
     ) {
         val imageUrl = shortLinkRequest.linkerPropertiesRequest.ogImageUrl
-        val message = shortLinkRequest.linkerPropertiesRequest.message
-        val messageWithUrl = if (message.isNotBlank()) "$message $shortLink" else shortLink
+        val message = shortLinkRequest.linkerPropertiesRequest.messageObject.getFinalMessage()
         when(channelItemModel.mimeType) {
             ShareExMimeTypeEnum.ALL, ShareExMimeTypeEnum.IMAGE -> {
                 getDownloadedImageUseCase.downloadImageThumbnail(imageUrl).collectLatest {
                     when (it) {
                         is ShareExResult.Success -> {
                             updateIntentUiState(
-                                intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
-                                message = messageWithUrl,
+                                intent = getAppIntent(channelItemModel, message, it.data),
+                                message = message,
                                 shortLink = shortLink,
                                 channelEnum = channelItemModel.channelEnum,
                                 isLoading = false,
@@ -594,8 +598,8 @@ class ShareExViewModel @Inject constructor(
                         }
                         is ShareExResult.Error -> {
                             updateIntentUiState(
-                                intent = getAppIntent(channelItemModel, messageWithUrl, null),
-                                message = messageWithUrl,
+                                intent = getAppIntent(channelItemModel, message, null),
+                                message = message,
                                 shortLink = shortLink,
                                 channelEnum = channelItemModel.channelEnum,
                                 isLoading = false,
@@ -610,8 +614,8 @@ class ShareExViewModel @Inject constructor(
             }
             else -> {
                 updateIntentUiState(
-                    intent = getAppIntent(channelItemModel, messageWithUrl, null),
-                    message = messageWithUrl,
+                    intent = getAppIntent(channelItemModel, message, null),
+                    message = message,
                     shortLink = shortLink,
                     channelEnum = channelItemModel.channelEnum,
                     isLoading = false,
