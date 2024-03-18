@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewAppLinkMapper
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
@@ -23,9 +23,7 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private var _binding: ActivityProductPreviewBinding? = null
-    private val binding: ActivityProductPreviewBinding
-        get() = _binding!!
+    private lateinit var binding: ActivityProductPreviewBinding
 
     private val productPreviewBundle: Bundle?
         get() {
@@ -34,7 +32,7 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
             val bundle = if (productId.isNullOrBlank()) {
                 intent.extras
             } else {
-                ProductPreviewSourceMapper(productId).mapSourceAppLink(intent)
+                ProductPreviewAppLinkMapper(productId).mapSourceAppLink(intent)
             }
 
             if (bundle == null) finish()
@@ -63,7 +61,7 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
     }
 
     private fun setupViews() {
-        _binding = ActivityProductPreviewBinding.inflate(layoutInflater)
+        binding = ActivityProductPreviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         openFragment()
@@ -90,11 +88,6 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
             classLoader = classLoader,
             bundle = productPreviewBundle
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
     companion object {

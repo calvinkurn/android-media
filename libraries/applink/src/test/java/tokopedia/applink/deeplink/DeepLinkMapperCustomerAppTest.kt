@@ -3204,7 +3204,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check product preivew appLink then should return tokopedia internal product preview`() {
+    fun `check product preview appLink then should return tokopedia internal product preview`() {
         val productId = "12345"
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PRODUCT_PREVIEW}/$productId"
         assertEqualsDeepLinkMapper("tokopedia://product-preview/$productId", expectedDeepLink)

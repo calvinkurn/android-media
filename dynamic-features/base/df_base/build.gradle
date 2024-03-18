@@ -81,7 +81,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.kol)
     implementation projectOrAar(rootProject.ext.features.feed)
     implementation projectOrAar(rootProject.ext.features.stories)
-    implementation projectOrAar(rootProject.ext.features.productPreview)
 
     //Digital
     implementation projectOrAar(rootProject.ext.features.digitalTopupBills)
