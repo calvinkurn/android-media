@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.domain.mapper
+package com.tokopedia.tokopedianow.shoppinglist.domain.extension
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -19,7 +19,6 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.EXPAND
-import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductItemUiModel
@@ -32,50 +31,8 @@ import com.tokopedia.tokopedianow.shoppinglist.util.Constant.INVALID_INDEX
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_DISPLAYED
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
-import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
 
-internal object MainVisitableMapper {
-    fun mapAvailableShoppingList(
-        listAvailableItem: List<GetShoppingListDataResponse.AvailableItem>
-    ): List<ShoppingListHorizontalProductCardItemUiModel> = listAvailableItem.map {
-        ShoppingListHorizontalProductCardItemUiModel(
-            id = it.id,
-            image = it.imageUrl,
-            price = it.price,
-            priceInt = it.priceInt,
-            name = it.name,
-            weight = it.getWeight(),
-            percentage = it.discountPercentage.toString(),
-            slashPrice = it.originalPrice,
-            isSelected = it.isSelected,
-            appLink = it.applink,
-            minOrder = it.minOrder,
-            shopId = it.shop.id,
-            warehouseId = it.warehouseID,
-            productLayoutType = AVAILABLE_SHOPPING_LIST
-        )
-    }
-
-    fun mapUnavailableShoppingList(
-        listUnavailableItem: List<GetShoppingListDataResponse.UnavailableItem>
-    ): List<ShoppingListHorizontalProductCardItemUiModel> = listUnavailableItem.map {
-        ShoppingListHorizontalProductCardItemUiModel(
-            id = it.id,
-            image = it.imageUrl,
-            price = it.price,
-            name = it.name,
-            weight = it.getWeight(),
-            percentage = it.discountPercentage.toString(),
-            slashPrice = it.originalPrice,
-            isSelected = it.isSelected,
-            appLink = it.applink,
-            minOrder = it.minOrder,
-            shopId = it.shop.id,
-            warehouseId = it.warehouseID,
-            productLayoutType = UNAVAILABLE_SHOPPING_LIST
-        )
-    }
-
+internal object MainVisitableExtension {
     fun MutableList<Visitable<*>>.addLoadingState(): MutableList<Visitable<*>> {
         val newList = arrayListOf(
             TokoNowThematicHeaderUiModel(
@@ -213,8 +170,6 @@ internal object MainVisitableMapper {
         addAll(products)
         return this
     }
-
-    fun List<ShoppingListHorizontalProductCardItemUiModel>.resetIndices() = mapIndexed { index, uiModel -> uiModel.copy(index = index) }
 
     fun MutableList<Visitable<*>>.addProductCarts(
         products: List<ShoppingListCartProductItemUiModel>
@@ -377,4 +332,6 @@ internal object MainVisitableMapper {
         }
         return this
     }
+
+    fun List<ShoppingListHorizontalProductCardItemUiModel>.resetIndices() = mapIndexed { index, uiModel -> uiModel.copy(index = index) }
 }
