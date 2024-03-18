@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -31,6 +30,7 @@ import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFollowFollowingParentContentBinding
 import com.tokopedia.people.databinding.UpFollowFollowingParentShimmerBinding
 import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
+import com.tokopedia.people.utils.rememberLoginListener
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.viewmodels.FollowListViewModelStoreProvider
@@ -49,6 +49,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -61,6 +62,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
     private val followerFollowingListVMFactory: FollowerFollowingListViewModel.Factory,
     private val userProfileTracker: UserProfileTracker,
     private val remoteConfig: RemoteConfig,
+    private val userSession: UserSessionInterface
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: UpFragmentFollowerFollowingListingBinding? = null
@@ -138,6 +140,8 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                 setContent {
                     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
+                    val loginListener = rememberLoginListener(userSession = userSession)
+
                     NestTheme {
                         FollowingFollowerListScreen(
                             profileName = uiState.profileName,
@@ -160,6 +164,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                                     }
                                 )[FollowListViewModel::class.java]
                             },
+                            loginListener = loginListener,
                             tracker = userProfileTracker,
                             modifier = Modifier.fillMaxSize()
                         )

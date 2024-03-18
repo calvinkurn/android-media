@@ -16,10 +16,8 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +38,8 @@ import com.tokopedia.nest.components.tabs.TabConfig
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.utils.LoginListener
+import com.tokopedia.people.utils.rememberLoginToFollowHelper
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.views.screen.FollowListErrorScreen
 import com.tokopedia.people.views.screen.FollowListScreen
@@ -55,7 +55,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.shop.common.util.ShopPageActivityResult
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -69,6 +68,7 @@ internal fun FollowingFollowerListScreen(
     onBackClicked: () -> Unit,
     onListRefresh: () -> Unit,
     followListViewModel: (FollowListType) -> FollowListViewModel,
+    loginListener: LoginListener,
     tracker: UserProfileTracker,
     initialSelectedTabType: FollowListType,
     modifier: Modifier = Modifier
@@ -147,11 +147,11 @@ internal fun FollowingFollowerListScreen(
             when (page) {
                 0 -> {
                     val viewModel = remember { followListViewModel(FollowListType.Follower) }
-                    FollowListScreen(viewModel, tracker, onListRefresh)
+                    FollowListScreen(viewModel, loginListener, tracker, onListRefresh)
                 }
                 1 -> {
                     val viewModel = remember { followListViewModel(FollowListType.Following) }
-                    FollowListScreen(viewModel, tracker, onListRefresh)
+                    FollowListScreen(viewModel, loginListener, tracker, onListRefresh)
                 }
             }
         }
@@ -161,9 +161,16 @@ internal fun FollowingFollowerListScreen(
 @Composable
 internal fun FollowListScreen(
     viewModel: FollowListViewModel,
+    loginListener: LoginListener,
     tracker: UserProfileTracker,
-    onListRefresh: () -> Unit,
+    onListRefresh: () -> Unit
 ) {
+    LaunchedEffect(loginListener) {
+        loginListener.observe {
+            viewModel.onAction(FollowListAction.Refresh)
+        }
+    }
+
     val userAppLinkLauncher = rememberLauncherForActivityResult(ContentActivityResultContracts.OpenAppLink()) { result ->
         if (result.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val intent = result.intent ?: return@rememberLauncherForActivityResult
@@ -184,6 +191,10 @@ internal fun FollowListScreen(
         viewModel.onAction(
             FollowListAction.UpdateShopFollowFromResult(shopId, isFollow)
         )
+    }
+
+    val loginToFollowHelper = rememberLoginToFollowHelper {
+        viewModel.onAction(FollowListAction.Follow(it))
     }
 
     fun onPeopleClicked(people: PeopleUiModel) {
@@ -244,10 +255,16 @@ internal fun FollowListScreen(
                     toaster.showError(
                         IllegalStateException(),
                         customErrMessage = context.getString(
-                            if (event.isGoingToFollow) R.string.up_error_follow
-                            else R.string.up_error_unfollow
+                            if (event.isGoingToFollow) {
+                                R.string.up_error_follow
+                            } else {
+                                R.string.up_error_unfollow
+                            }
                         )
                     )
+                }
+                is FollowListEvent.LoginToFollow -> {
+                    loginToFollowHelper.launch(event.people)
                 }
             }
             viewModel.onAction(FollowListAction.ConsumeEvent(event))
@@ -259,7 +276,7 @@ internal fun FollowListScreen(
         onPeopleClicked = ::onPeopleClicked,
         onFollowClicked = ::onFollowClicked,
         onLoadMore = ::onLoadMore,
-        onRefresh = ::onRefresh,
+        onRefresh = ::onRefresh
     )
 }
 
@@ -270,11 +287,11 @@ internal fun FollowListScreen(
     onPeopleClicked: (PeopleUiModel) -> Unit,
     onFollowClicked: (PeopleUiModel) -> Unit,
     onLoadMore: () -> Unit,
-    onRefresh: () -> Unit,
+    onRefresh: () -> Unit
 ) {
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isRefreshing,
-        onRefresh = onRefresh,
+        onRefresh = onRefresh
     )
 
     if (state.result?.isFailure == true && state.followList.isEmpty()) {
@@ -296,7 +313,11 @@ internal fun FollowListScreen(
             )
         }
     } else {
-        Box(Modifier.fillMaxSize().pullRefresh(pullRefreshState)) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState)
+        ) {
             FollowListScreen(
                 people = state.followList.toImmutableList(),
                 hasNextPage = state.hasNextPage,

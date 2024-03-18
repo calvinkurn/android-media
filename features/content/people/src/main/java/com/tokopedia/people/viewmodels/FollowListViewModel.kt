@@ -15,6 +15,7 @@ import com.tokopedia.people.views.uimodel.action.FollowListAction
 import com.tokopedia.people.views.uimodel.setIsFollowed
 import com.tokopedia.people.views.uimodel.state.FollowListEvent
 import com.tokopedia.people.views.uimodel.state.FollowListState
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -30,14 +31,15 @@ import kotlinx.coroutines.withContext
 private data class PerPageResult(
     val result: Result<List<PeopleUiModel>>,
     val cursor: String,
-    val total: String?,
+    val total: String?
 )
 internal class FollowListViewModel @AssistedInject constructor(
     @Assisted internal val type: FollowListType,
     @Assisted private val profileIdentifier: String,
     private val userFollowRepo: UserFollowRepository,
     private val dispatchers: CoroutineDispatchers,
-    private val uiEventManager: UiEventManager<FollowListEvent>
+    private val uiEventManager: UiEventManager<FollowListEvent>,
+    private val userSession: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
@@ -58,7 +60,7 @@ internal class FollowListViewModel @AssistedInject constructor(
         _result,
         _isLoading,
         _isRefreshing,
-        _countFmt,
+        _countFmt
     ) { followMap, nextCursor, result, isLoading, isRefreshing, countFmt ->
         withContext(dispatchers.io) {
             FollowListState(
@@ -67,7 +69,7 @@ internal class FollowListViewModel @AssistedInject constructor(
                 result = result,
                 isLoading = isLoading,
                 isRefreshing = isRefreshing,
-                countFmt = countFmt,
+                countFmt = countFmt
             )
         }
     }.stateIn(
@@ -142,7 +144,7 @@ internal class FollowListViewModel @AssistedInject constructor(
             PerPageResult(
                 Result.success(result.followers),
                 nextCursor,
-                result.total.totalFollowers,
+                result.total.totalFollowers
             )
         } catch (e: Throwable) {
             PerPageResult(
@@ -166,7 +168,7 @@ internal class FollowListViewModel @AssistedInject constructor(
             PerPageResult(
                 Result.success(result.followingList),
                 nextCursor,
-                result.total.totalFollowing,
+                result.total.totalFollowing
             )
         } catch (e: Throwable) {
             PerPageResult(
@@ -179,7 +181,7 @@ internal class FollowListViewModel @AssistedInject constructor(
 
     private fun loadData(
         cursor: String = "",
-        shouldRefresh: Boolean = false,
+        shouldRefresh: Boolean = false
     ) {
         if (_isLoading.value) return
 
@@ -194,8 +196,11 @@ internal class FollowListViewModel @AssistedInject constructor(
             _result.value = result
                 .onSuccess { followList ->
                     _followMap.update {
-                        if (shouldRefresh) followList.transformToMap()
-                        else it + followList.transformToMap()
+                        if (shouldRefresh) {
+                            followList.transformToMap()
+                        } else {
+                            it + followList.transformToMap()
+                        }
                     }
                 }
                 .onFailure {
@@ -205,7 +210,6 @@ internal class FollowListViewModel @AssistedInject constructor(
                 .map {}
             _nextCursor.value = nextCursor
             if (total != null) _countFmt.value = total
-
         }.invokeOnCompletion {
             _isLoading.value = false
             _isRefreshing.value = false
@@ -213,6 +217,11 @@ internal class FollowListViewModel @AssistedInject constructor(
     }
 
     private fun followUser(user: PeopleUiModel.UserUiModel) {
+        if (!userSession.isLoggedIn) {
+            emitEvent(FollowListEvent.LoginToFollow(user))
+            return
+        }
+
         viewModelScope.launch {
             val shouldFollow = !user.isFollowed
 
@@ -234,14 +243,21 @@ internal class FollowListViewModel @AssistedInject constructor(
     }
 
     private fun followShop(shop: PeopleUiModel.ShopUiModel) {
+        if (!userSession.isLoggedIn) {
+            emitEvent(FollowListEvent.LoginToFollow(shop))
+            return
+        }
+
         viewModelScope.launch {
             val shouldFollow = !shop.isFollowed
 
             runCatching {
-                when (val result = userFollowRepo.followShop(
-                    shop.id,
-                    ShopFollowAction.getActionByState(!shouldFollow)
-                )) {
+                when (
+                    val result = userFollowRepo.followShop(
+                        shop.id,
+                        ShopFollowAction.getActionByState(!shouldFollow)
+                    )
+                ) {
                     is MutationUiModel.Error -> error(result.message)
                     is MutationUiModel.Success -> result.message
                 }

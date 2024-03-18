@@ -12,7 +12,7 @@ data class FollowListState(
     val result: Result<Unit>?,
     val isLoading: Boolean,
     val isRefreshing: Boolean,
-    val countFmt: String,
+    val countFmt: String
 ) {
     companion object {
         val Empty = FollowListState(
@@ -21,7 +21,7 @@ data class FollowListState(
             result = Result.success(),
             isLoading = false,
             isRefreshing = false,
-            countFmt = "",
+            countFmt = ""
         )
     }
 }
@@ -33,6 +33,8 @@ sealed class FollowListEvent : UiEvent {
     data class SuccessFollow(val isGoingToFollow: Boolean, val message: String) : FollowListEvent()
 
     data class FailedFollow(val isGoingToFollow: Boolean) : FollowListEvent()
+
+    data class LoginToFollow(val people: PeopleUiModel) : FollowListEvent()
 }
 
 internal fun Result.Companion.success() = success(Unit)
