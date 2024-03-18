@@ -3156,6 +3156,10 @@ class CheckoutViewModel @Inject constructor(
                 updateTotalAndPayment(cost, payment)
                 return
             }
+            updateTotalAndPayment(cost, payment)
+            // validate promo after get payment
+            validatePromo()
+            return
         } else {
             payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Normal))
         }
@@ -3283,53 +3287,57 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             listData.value = checkoutItems
-            calculateTotal()
+            validatePromo()
         }
     }
 
     fun chooseInstallmentCC(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
-        val checkoutItems = listData.value.toMutableList()
-        val payment = checkoutItems.payment()!!
-        val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
-        val originalPaymentData = paymentWidgetData.first()
-        val newPaymentData = originalPaymentData.copy(
-            installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
-                selectedTenure = selectedInstallment.tenure
+        viewModelScope.launch(dispatchers.immediate) {
+            val checkoutItems = listData.value.toMutableList()
+            val payment = checkoutItems.payment()!!
+            val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
+            val originalPaymentData = paymentWidgetData.first()
+            val newPaymentData = originalPaymentData.copy(
+                installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
+                    selectedTenure = selectedInstallment.tenure
+                )
             )
-        )
-        paymentWidgetData[0] = newPaymentData
-        checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
-            data = payment.data.copy(
-                paymentWidgetData = paymentWidgetData
-            ),
-            tenorList = installmentList
-        )
-        listData.value = checkoutItems
-        calculateTotal()
+            paymentWidgetData[0] = newPaymentData
+            checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
+                data = payment.data.copy(
+                    paymentWidgetData = paymentWidgetData
+                ),
+                tenorList = installmentList
+            )
+            listData.value = checkoutItems
+            validatePromo()
+        }
     }
 
     fun chooseInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, silent: Boolean) {
-        val checkoutItems = listData.value.toMutableList()
-        val payment = checkoutItems.payment()!!
-        val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
-        val originalPaymentData = paymentWidgetData.first()
-        val newPaymentData = originalPaymentData.copy(
-            installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
-                selectedTenure = selectedInstallment.installmentTerm
+        viewModelScope.launch(dispatchers.immediate) {
+            val checkoutItems = listData.value.toMutableList()
+            val payment = checkoutItems.payment()!!
+            val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
+            val originalPaymentData = paymentWidgetData.first()
+            val newPaymentData = originalPaymentData.copy(
+                installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
+                    selectedTenure = selectedInstallment.installmentTerm
+                )
             )
-        )
-        paymentWidgetData[0] = newPaymentData
-        checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
-            data = payment.data.copy(
-                paymentWidgetData = paymentWidgetData
-            ),
-            installmentData = GoCicilInstallmentData(
-                tickerMessage = tickerMessage,
-                installmentOptions = installmentList
+            paymentWidgetData[0] = newPaymentData
+            checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
+                data = payment.data.copy(
+                    paymentWidgetData = paymentWidgetData
+                ),
+                installmentData = GoCicilInstallmentData(
+                    tickerMessage = tickerMessage,
+                    installmentOptions = installmentList
+                )
             )
-        )
-        listData.value = checkoutItems
-        calculateTotal()
+            listData.value = checkoutItems
+            validatePromo()
+        }
     }
 
     companion object {

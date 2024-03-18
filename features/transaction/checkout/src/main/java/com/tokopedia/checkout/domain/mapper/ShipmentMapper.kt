@@ -1418,8 +1418,7 @@ class ShipmentMapper @Inject constructor() {
     private fun mapPaymentWidget(response: PaymentWidgetResponse): PaymentWidget {
         return PaymentWidget(
             metadata = response.metadata,
-//            enable = response.enable,
-            enable = true,
+            enable = response.enable,
             errorMessage = response.errorMessage
         )
     }

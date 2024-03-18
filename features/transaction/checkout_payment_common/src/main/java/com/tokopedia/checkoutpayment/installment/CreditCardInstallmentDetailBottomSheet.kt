@@ -2,15 +2,12 @@ package com.tokopedia.checkoutpayment.installment
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
-import android.util.Base64
 import android.view.LayoutInflater
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.checkoutpayment.R
 import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
-import com.tokopedia.checkoutpayment.databinding.BottomSheetCreditCardInstallmentBinding
+import com.tokopedia.checkoutpayment.databinding.BottomSheetGocicilInstallmentBinding
 import com.tokopedia.checkoutpayment.databinding.ItemInstallmentDetailBinding
 import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
@@ -25,7 +22,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: PaymentProcessor) : CoroutineScope {
 
@@ -35,7 +31,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
     private lateinit var listener: InstallmentDetailBottomSheetListener
 
     private var bottomSheetUnify: BottomSheetUnify? = null
-    private var binding: BottomSheetCreditCardInstallmentBinding? = null
+    private var binding: BottomSheetGocicilInstallmentBinding? = null
 
     fun show(
         fragment: Fragment,
@@ -54,7 +50,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
                 showCloseIcon = true
                 showHeader = true
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
-                binding = BottomSheetCreditCardInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
+                binding = BottomSheetGocicilInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
                 setupChild(context, fragment, ccRequest, tenorList, tncInfo, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
@@ -77,9 +73,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
         tncInfo: String,
         userId: String
     ) {
-        setupTerms(tncInfo)
         if (tenorList.isNullOrEmpty()) {
-            binding?.termsContent?.gone()
             binding?.tvInstallmentMessage?.gone()
             binding?.loaderInstallment?.visible()
             launch {
@@ -134,72 +128,6 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
         } else {
             binding?.tvInstallmentMessage?.visible()
         }
-        binding?.termsContent?.visible()
-    }
-
-    private fun generateColorRGBAString(colorInt: Int): String {
-        return "rgba(${Color.red(colorInt)},${Color.green(colorInt)},${Color.blue(colorInt)},${Color.alpha(colorInt).toFloat() / 255})"
-    }
-
-    private fun setupTerms(tncInfo: String) {
-        binding?.run {
-            val backgroundColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN0))
-            val headerColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN800))
-            val ulColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500))
-            val pColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN950_44))
-            val htmlText = """
-<html>
-	<style>
-    body {
-        background: $backgroundColor;
-    }
-    h1 {
-     	font-family: SF Pro Text;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 12px;
-        line-height: 14px;
-        color: $headerColor;
-    }
-    ul {
-        padding-inline-start: 20px;
-    }
-    ul li {
-     	color: $ulColor;
-    }
-    ol li {
-        font-family: SFProText;
-        font-size: 12px;
-        line-height: 18px;
-        color: $pColor;
-        margin-top:8px;
-    }
-    ol {
-        padding-inline-start: 12px;
-    }
-    p {
-        font-family: SFProText;
-        font-size: 12px;
-        line-height: 18px;
-        color: $pColor;
-    }
-    </style>
-    <body>
-        $tncInfo
-    </body>
-</html>
-            """.trimIndent()
-            webViewTerms.loadData(Base64.encodeToString(htmlText.toByteArray(), Base64.DEFAULT), "text/html", "base64")
-            ivExpandTerms.setOnClickListener {
-                val newRotation = if (binding?.ivExpandTerms?.rotation == ROTATION_DEFAULT) ROTATION_REVERSE else ROTATION_DEFAULT
-                binding?.ivExpandTerms?.rotation = newRotation
-                if (newRotation == 0f) {
-                    binding?.webViewTerms?.gone()
-                } else {
-                    binding?.webViewTerms?.visible()
-                }
-            }
-        }
     }
 
     private fun dismiss() {
@@ -216,8 +144,5 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
     companion object {
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
-
-        private const val ROTATION_DEFAULT = 0f
-        private const val ROTATION_REVERSE = 180f
     }
 }
