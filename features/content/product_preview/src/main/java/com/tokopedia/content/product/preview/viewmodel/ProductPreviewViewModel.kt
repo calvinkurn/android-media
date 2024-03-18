@@ -574,6 +574,5 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     companion object {
         private const val DELAY_AUTO_SCROLL_PRODUCT_MEDIA = 3000L
-        private const val DEFAULT_SCALE = 1.0F
     }
 }
