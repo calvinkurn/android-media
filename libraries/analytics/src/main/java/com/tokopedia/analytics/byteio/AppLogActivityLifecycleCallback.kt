@@ -58,10 +58,11 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
 
     private suspend fun suspendSendStayProductDetail(
         durationInMs: Long,
-        product: TrackStayProductDetail,
+        product: TrackStayProductDetail?,
         isFinishing: Boolean,
         hash: Int
     ) {
+        if (product == null) return
         if (isFinishing) {
             sendStayProductDetail(durationInMs, product, QuitType.RETURN, hash)
             return

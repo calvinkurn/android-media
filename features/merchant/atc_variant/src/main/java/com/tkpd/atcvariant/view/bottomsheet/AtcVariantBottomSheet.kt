@@ -38,8 +38,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.EnterMethod
-import com.tokopedia.analytics.byteio.TrackConfirmCart
-import com.tokopedia.analytics.byteio.TrackConfirmSku
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -87,6 +86,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -488,18 +488,22 @@ class AtcVariantBottomSheet :
         }
     }
 
+    private fun getConfirmCartAnalyticsModel(result: Result<AddToCartDataModel>): TrackConfirmCartResult {
+        val cartId = (result as? Success)?.data?.data?.cartId.orEmpty()
+        val success = result is Success
+        val reason = (result as? Fail)?.throwable?.message.orEmpty()
+
+        return viewModel.getConfirmCartResultModel().apply {
+            isSuccess = success
+            failReason = reason
+            cartItemId = cartId
+        }
+    }
+
     private fun observeCart() {
         viewModel.addToCartLiveData.observe(viewLifecycleOwner) {
             loadingProgressDialog?.dismiss()
-            val cartId = (it as? Success)?.data?.data?.cartId.orEmpty()
-            val success = it is Success
-            val reason = (it as? Fail)?.throwable?.message.orEmpty()
-
-            val model = viewModel.getConfirmCartResultModel().apply {
-                isSuccess = success
-                failReason = reason
-                cartItemId = cartId
-            }
+            val model = getConfirmCartAnalyticsModel(it)
             if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
                 || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
                 AppLogPdp.sendConfirmCartResult(model)
@@ -845,17 +849,11 @@ class AtcVariantBottomSheet :
 
     override fun addToCartClick(buttonText: String) {
         this.buttonText = buttonText
-//        AppLogAnalytics.sendConfirmCart(TrackConfirmCart(
-//
-//        ))
         doAtc(ProductDetailCommonConstant.ATC_BUTTON)
     }
 
     override fun buyNowClick(buttonText: String) {
         this.buttonText = buttonText
-//        AppLogAnalytics.sendConfirmSku(TrackConfirmSku(
-//
-//        ))
         doAtc(ProductDetailCommonConstant.BUY_BUTTON)
     }
 
@@ -968,7 +966,6 @@ class AtcVariantBottomSheet :
 
     private fun doAtc(buttonAction: Int) {
         buttonActionType = buttonAction
-        Log.d("BYTEIO", "atc button clicked $buttonAction")
         context?.let {
             val isPartialySelected =
                 AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())
