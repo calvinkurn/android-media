@@ -45,7 +45,9 @@ fun LiveStatsCardView(
         Column(
             modifier = Modifier
                 .noRippleClickable {
-                    if (liveStatsCardModel is LiveStatsCardModel.Clickable) {
+                    if (liveStatsCardModel is LiveStatsCardModel.Clickable &&
+                        liveStatsCardModel.clickArea == LiveStatsCardModel.Clickable.ClickArea.Full
+                    ) {
                         liveStatsCardModel.onClick()
                     }
                 }
@@ -78,7 +80,9 @@ fun LiveStatsCardView(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     NestIcon(
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(16.dp).noRippleClickable {
+                            liveStatsCardModel.onClick()
+                        },
                         iconId = liveStatsCardModel.clickableIcon,
                         colorNightEnable = NestTheme.colors.NN._600,
                         colorNightDisable = NestTheme.colors.NN._600,

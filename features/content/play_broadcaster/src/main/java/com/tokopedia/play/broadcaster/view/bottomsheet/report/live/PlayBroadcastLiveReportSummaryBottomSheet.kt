@@ -46,8 +46,8 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-
                 val uiState by parentViewModel.uiState.collectAsStateWithLifecycle()
+
                 NestTheme(
                     isOverrideStatusBarColor = false,
                 ) {
@@ -61,6 +61,7 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
                                         LiveStatsCardModel.Clickable(
                                             liveStats = it,
                                             clickableIcon = IconUnify.CHEVRON_RIGHT,
+                                            clickArea = LiveStatsCardModel.Clickable.ClickArea.Full,
                                             onClick = {
                                                 mListener?.onEstimatedIncomeClicked()
                                                 dismiss()
