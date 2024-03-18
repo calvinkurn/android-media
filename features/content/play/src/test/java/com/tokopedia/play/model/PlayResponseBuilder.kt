@@ -1,7 +1,6 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.tokopedia.play.data.ReportSummaries
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 

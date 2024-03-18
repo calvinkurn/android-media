@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.data.ReportSummaries
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
