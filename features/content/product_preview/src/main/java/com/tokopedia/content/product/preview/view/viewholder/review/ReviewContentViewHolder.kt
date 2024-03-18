@@ -1,12 +1,6 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
-import android.graphics.Typeface
-import android.os.Build
-import android.text.Spanned
-import android.text.SpannedString
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +8,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.ContentItemComponentsAlphaAnimator
-import com.tokopedia.content.common.util.buildSpannedString
-import com.tokopedia.content.common.util.doOnLayout
-import com.tokopedia.content.product.preview.R
+import com.tokopedia.content.common.util.changeConstraint
 import com.tokopedia.content.product.preview.databinding.ItemReviewContentBinding
 import com.tokopedia.content.product.preview.utils.REVIEW_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewMediaAdapter
+import com.tokopedia.content.product.preview.view.components.ReviewCaptionView
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
 import com.tokopedia.content.product.preview.view.listener.MediaImageListener
@@ -36,14 +28,14 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiSta
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.product.preview.R
 
 class ReviewContentViewHolder(
     private val binding: ItemReviewContentBinding,
@@ -69,17 +61,6 @@ class ReviewContentViewHolder(
                 removeLikeAnimationListener()
             }
         })
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            binding.tvReviewDescription.setOnScrollChangeListener { view, _, _, _, _ ->
-                if (!descriptionUiModel.isExpanded) return@setOnScrollChangeListener
-                binding.reviewOverlay.setBottomFadingEdgeBounds(
-                    if (binding.tvReviewDescription.canScrollVertically(VERTICAL_POSITIVE_DIRECTION)) FADING_EDGE_HEIGHT else DEFAULT_ZERO
-                )
-                binding.reviewOverlay.setTopFadingEdgeBounds(
-                    if (binding.tvReviewDescription.canScrollVertically(VERTICAL_NEGATIVE_DIRECTION)) FADING_EDGE_HEIGHT else DEFAULT_ZERO
-                )
-            }
-        }
     }
 
     private val alphaAnimator = ContentItemComponentsAlphaAnimator(object : ContentItemComponentsAlphaAnimator.Listener {
@@ -125,31 +106,27 @@ class ReviewContentViewHolder(
 
     private var snapHelperMedia = PagerSnapHelper()
 
-    private val descriptionUiModel: DescriptionUiModel
-
-    private val clickableSpan: ClickableSpan =
-        object : ClickableSpan() {
-            override fun updateDrawState(tp: TextPaint) {
-                tp.color =
-                    MethodChecker.getColor(
-                        binding.root.context,
-                        unifyprinciplesR.color.Unify_Static_White
-                    )
-                tp.isUnderlineText = false
-                tp.typeface = Typeface.DEFAULT_BOLD
-            }
-
-            override fun onClick(widget: View) {
-                setupExpanded()
+    private val captionViewListener = object : ReviewCaptionView.Listener {
+        override fun onExpanded(view: ReviewCaptionView) {
+            val screenHeight = getScreenHeight()
+            val maxHeight = screenHeight * 0.45f
+            binding.root.changeConstraint {
+                constrainMaxHeight(binding.reviewOverlay.id, maxHeight.toInt())
             }
         }
+    }
+
+    private val captionView = ReviewCaptionView(
+        binding.tvReviewDescription,
+        binding.reviewOverlay,
+        captionViewListener
+    )
 
     init {
         binding.tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
         binding.layoutLikeReview.root.setOnClickListener {
             reviewInteractionListener.onLike(false)
         }
-        descriptionUiModel = DescriptionUiModel()
     }
 
     fun bind(item: ReviewContentUiModel) {
@@ -243,66 +220,7 @@ class ReviewContentViewHolder(
             append(" $divider ")
             append(description.timestamp)
         }
-        if (description.description.isBlank()) {
-            reviewOverlay.gone()
-            tvReviewDescription.gone()
-            return@with
-        } else {
-            setupReview(description.description)
-        }
-    }
-
-    private fun setupReview(description: String) = with(binding) {
-        tvReviewDescription.invisible()
-        tvReviewDescription.text = description
-        tvReviewDescription.doOnLayout {
-            val text = tvReviewDescription.layout
-            if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
-
-            tvReviewDescription.setOnClickListener {
-                descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
-                setupExpanded()
-            }
-
-            val start = text.getLineStart(0)
-            val end = text.getLineEnd(MAX_LINES_THRESHOLD - 1)
-
-            val truncatedText = buildSpannedString {
-                append(text.text.subSequence(start, end).dropLast(READ_MORE_COUNT))
-                append(root.context.getString(R.string.product_prev_review_ellipsize))
-                append(
-                    root.context.getString(R.string.product_prev_review_expand),
-                    clickableSpan,
-                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                )
-            }
-
-            val ogText = buildSpannedString {
-                append(description)
-                append(root.context.getString(R.string.product_prev_review_ellipsize))
-                append(
-                    root.context.getString(R.string.product_prev_review_collapse),
-                    clickableSpan,
-                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                )
-            }
-            descriptionUiModel.originalText = ogText
-            descriptionUiModel.truncatedText = truncatedText
-            setupExpanded()
-        }
-        binding.tvReviewDescription.maxLines = MAX_LINES_THRESHOLD // Initial state
-        tvReviewDescription.show()
-    }
-
-    private fun setupExpanded() {
-        val (lines, text) = if (descriptionUiModel.isExpanded) {
-            Pair(MAX_LINES_VALUE, descriptionUiModel.originalText)
-        } else {
-            Pair(MAX_LINES_THRESHOLD, descriptionUiModel.truncatedText)
-        }
-
-        binding.tvReviewDescription.maxLines = lines
-        binding.tvReviewDescription.text = text
+        captionView.bind(description.description)
     }
 
     fun bindLike(state: ReviewLikeUiState) {
@@ -424,20 +342,7 @@ class ReviewContentViewHolder(
         binding.pcReviewContent.show()
     }
 
-    data class DescriptionUiModel(
-        var isExpanded: Boolean = false,
-        var originalText: SpannedString = buildSpannedString { },
-        var truncatedText: SpannedString = buildSpannedString { }
-    )
-
     companion object {
-        private const val MAX_LINES_VALUE = 25
-        private const val MAX_LINES_THRESHOLD = 2
-        private const val READ_MORE_COUNT = 24
-        private const val FADING_EDGE_HEIGHT = 20
-        private const val VERTICAL_POSITIVE_DIRECTION = 1
-        private const val VERTICAL_NEGATIVE_DIRECTION = -1
-        private const val DEFAULT_ZERO = 0
 
         fun create(
             parent: ViewGroup,
