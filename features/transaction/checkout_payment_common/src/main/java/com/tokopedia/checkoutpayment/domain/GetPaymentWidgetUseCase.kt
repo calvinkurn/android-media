@@ -58,6 +58,15 @@ class GetPaymentWidgetUseCase @Inject constructor(
                     mandatory_hit
                     metadata
                   }
+                  payment_fee_detail {
+                    title
+                    amount
+                    type
+                    show_tooltip
+                    tooltip_info
+                    show_slashed
+                    slashed_fee
+                  }
                 }
               }
             }
