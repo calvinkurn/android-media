@@ -64,7 +64,7 @@ object GetBrcCsatWidgetUiStateMapper {
             val expanded = if (currentState is WidgetBrcCsatUiState.HasData) {
                 currentState.data.expanded
             } else {
-                false
+                true
             }
             WidgetBrcCsatUiState.HasData.Showing(
                 WidgetBrcCsatUiModel(orderID = orderID, helpUrl = helpPageUrl, expanded = expanded)

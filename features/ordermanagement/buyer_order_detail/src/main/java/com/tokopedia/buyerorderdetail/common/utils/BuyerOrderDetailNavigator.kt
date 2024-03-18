@@ -10,10 +10,12 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
+import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerRequestCancellationIntentParamKey
+import com.tokopedia.buyerorderdetail.presentation.activity.OrderCancellationCsatActivity
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -21,6 +23,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.resources.common.R as resourcescommonR
 
 class BuyerOrderDetailNavigator(
@@ -239,12 +242,12 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToBrcCsatForm(orderId: String, feedback: Int) {
-        val intent = RouteManager.getIntent(
-            activity,
-            BRC_CSAT_FORM_URL
+        val intent = Intent(activity, OrderCancellationCsatActivity::class.java).apply {
+            putExtra(com.tokopedia.webview.KEY_URL, BRC_CSAT_FORM_URL
                 .replace(BRC_CSAT_ORDER_ID_PARAM, orderId)
-                .replace(BRC_CSAT_FEEDBACK_PARAM, feedback.toString())
-        )
+                .replace(BRC_CSAT_FEEDBACK_PARAM, feedback.toString()))
+            putExtra(KEY_TITLE, activity.getString(R.string.bom_brc_csat_form_page_title))
+        }
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM)
         applyTransition()
     }

@@ -90,12 +90,7 @@ class WidgetBrcCsat(
         ivBomBrcCsatSmiley5.setOnClickListener { onSmileyClicked(orderID, 5) }
     }
 
-    private fun WidgetBrcCsatContentBinding.onSmileyClicked(orderID: String, feedback: Int) {
-        ivBomBrcCsatSmiley1.isEnabled = false
-        ivBomBrcCsatSmiley2.isEnabled = false
-        ivBomBrcCsatSmiley3.isEnabled = false
-        ivBomBrcCsatSmiley4.isEnabled = false
-        ivBomBrcCsatSmiley5.isEnabled = false
+    private fun onSmileyClicked(orderID: String, feedback: Int) {
         _navigator?.goToBrcCsatForm(orderID, feedback)
     }
 
