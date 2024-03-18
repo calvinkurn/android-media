@@ -5,21 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
-import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
 import com.tokopedia.favorite.R
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.topads.sdk.TopAdsConstants
-import com.tokopedia.topads.sdk.domain.model.ShopProductModel
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.FollowButtonClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.uimodel.ShopProductModel
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
-class TopAdsShopAdapter_v2 (
+class TopAdsShopAdapter_v2(
     private val shopAdsProductListener: ShopAdsProductListener,
     private val followButtonClickListener: FollowButtonClickListener?
-) : RecyclerView.Adapter<TopAdsShopAdapter_v2.ShopAdsProductViewHolder>(){
+) : RecyclerView.Adapter<TopAdsShopAdapter_v2.ShopAdsProductViewHolder>() {
 
     private val shopAdsProductItemList = arrayListOf<ShopProductModel.ShopProductModelItem>()
 
@@ -36,9 +36,7 @@ class TopAdsShopAdapter_v2 (
         private val locationName = itemView.findViewById<Typography>(R.id.locationName)
         private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.buttonFollow)
 
-
         fun bind(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
-
             productLogoShop.loadImageCircle(shopProductModelItem.shopIcon)
             loadBadge(shopProductModelItem)
             productShopName.text = shopProductModelItem.shopName
@@ -51,7 +49,6 @@ class TopAdsShopAdapter_v2 (
 
             itemView.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
             setFollowButton(shopProductModelItem.layoutType, shopProductModelItem)
-
         }
 
         private fun setFollowButton(
@@ -97,9 +94,9 @@ class TopAdsShopAdapter_v2 (
         }
 
         private fun getIsImageShopBadgeVisible(shopProductModelItem: ShopProductModel.ShopProductModelItem): Boolean {
-            return shopProductModelItem.isOfficial
-                || shopProductModelItem.isPMPro
-                || shopProductModelItem.isGoldShop
+            return shopProductModelItem.isOfficial ||
+                shopProductModelItem.isPMPro ||
+                shopProductModelItem.isGoldShop
         }
     }
 

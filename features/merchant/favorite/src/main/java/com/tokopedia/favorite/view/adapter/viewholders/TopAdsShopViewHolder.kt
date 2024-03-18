@@ -15,11 +15,11 @@ import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_13
-import com.tokopedia.topads.sdk.domain.model.ShopProductModel
-import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
-import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_13
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.FollowButtonClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.uimodel.ShopProductModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
@@ -97,9 +97,8 @@ class TopAdsShopViewHolder(
                                     null,
                                     getShopItem(shopProductModelItem)
                                 )
-                                element?.adsShopItems?.forEachIndexed{index, it -> if(it.shopId == shopProductModelItem.shopId) it.isFollowed = true }
+                                element?.adsShopItems?.forEachIndexed { index, it -> if (it.shopId == shopProductModelItem.shopId) it.isFollowed = true }
                             }
-
                         }
                     }
                 )
@@ -122,7 +121,6 @@ class TopAdsShopViewHolder(
     }
 
     private fun getShopItem(shopProductModelItem: ShopProductModel.ShopProductModelItem): TopAdsShopItem {
-
         return TopAdsShopItem(
             shopId = shopProductModelItem.shopId,
             shopName = shopProductModelItem.shopName,
@@ -153,5 +151,4 @@ class TopAdsShopViewHolder(
         }
         return list
     }
-
 }
