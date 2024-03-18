@@ -1577,7 +1577,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
 
                 try {
-                    val report = deferredReportSummaries.await().data.first().channel.metrics
+                    val report = deferredReportSummaries.await().data.first().content.metrics
                     _channelReport.setValue {
                         copy(
                             totalViewFmt = report.totalViewFmt,

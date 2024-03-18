@@ -10,11 +10,11 @@ data class ReportSummaries(
     val data: List<Data> = emptyList()
 ) {
     data class Data(
-        @SerializedName("channel")
-        val channel: Channel = Channel()
+        @SerializedName("content")
+        val content: Content = Content()
     )
 
-    data class Channel(
+    data class Content(
         @SerializedName("metrics")
         val metrics: Metric = Metric(),
     )
@@ -27,15 +27,15 @@ data class ReportSummaries(
         @SerializedName("totalLikeFmt")
         val totalLikeFmt: String = "",
 
-        @SerializedName("visitChannel")
+        @SerializedName("visitContent")
         val totalView: String = "",
 
-        @SerializedName("visitChannelFmt")
+        @SerializedName("visitContentFmt")
         val totalViewFmt: String = "",
     )
 
     data class Response(
-        @SerializedName("broadcasterReportSummariesBulk")
+        @SerializedName("broadcasterReportSummariesBulkV2")
         val reportSummaries: ReportSummaries = ReportSummaries()
     )
 }

@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 28/01/21
- * TODO() change to coroutine use case
  */
 class GetReportSummariesUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
@@ -41,8 +40,8 @@ class GetReportSummariesUseCase @Inject constructor(
 
         const val QUERY_NAME = "GetReportSummariesUseCaseQuery"
         const val QUERY = """
-             query GetReportSummaries(${'$'}contentId: String!, ${'$'}contentType: String!) {
-              broadcasterReportSummariesBulkV2(contentIDs: [${'$'}contentId], contentType: [${'$'}contentType]) {
+             query GetReportSummaries(${'$'}contentIDs: [String]!, ${'$'}contentType: String!) {
+              broadcasterReportSummariesBulkV2(contentIDs: ${'$'}contentIDs, contentType: ${'$'}contentType) {
                 reportData {
                   content {
                     contentType
