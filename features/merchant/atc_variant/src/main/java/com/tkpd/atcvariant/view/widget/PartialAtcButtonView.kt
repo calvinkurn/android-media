@@ -88,10 +88,10 @@ class PartialAtcButtonView private constructor(
     }
 
     private fun UnifyButton.setLoading(isLoading: Boolean) {
-        postOnAnimation {
-            if (!isVisible || !isEnabled) return@postOnAnimation
+        if (!isVisible) {
             this.isLoading = isLoading
         }
+        this.isEnabled = !isLoading // when loading set enable false
     }
 
     private fun renderButton(
