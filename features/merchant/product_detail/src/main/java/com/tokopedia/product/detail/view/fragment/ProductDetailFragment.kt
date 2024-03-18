@@ -2506,7 +2506,7 @@ open class ProductDetailFragment :
 
     private fun observeDeleteCart() {
         viewModel.deleteCartLiveData.observe(viewLifecycleOwner) {
-            hideProgressDialog()
+            actionButtonView.hideLoading()
             it.doSuccessOrFail({ message ->
                 view?.showToasterSuccess(
                     message.data,
@@ -2889,7 +2889,7 @@ open class ProductDetailFragment :
 
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
-            hideProgressDialog()
+            actionButtonView.hideLoading()
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
                     view?.showToasterError(
@@ -4702,7 +4702,7 @@ open class ProductDetailFragment :
             doLoginWhenUserClickButton()
             return
         }
-        showProgressDialog()
+        actionButtonView.showLoading()
         viewModel.deleteProductInCart(viewModel.getProductInfoP1?.basic?.productID ?: "")
     }
 
@@ -4890,6 +4890,11 @@ open class ProductDetailFragment :
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->
+            atcAnimation.runAtcAnimation(
+                binding,
+                actionButton == ProductDetailCommonConstant.ATC_BUTTON
+            )
+            actionButtonView.showLoading()
             when (actionButton) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
@@ -4917,7 +4922,6 @@ open class ProductDetailFragment :
                 }
 
                 else -> {
-                    atcAnimation.runAtcAnimation(binding)
                     val addToCartRequestParams = AddToCartRequestParams().apply {
                         productId = data.basic.productID
                         shopId = data.basic.shopID
@@ -5203,11 +5207,6 @@ open class ProductDetailFragment :
         return context?.let {
             ProductDetailErrorHandler.getErrorMessage(it, throwable)
         }
-            ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
-    }
-
-    private fun getErrorMessage(errorMessage: String?): String {
-        return errorMessage
             ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
     }
 

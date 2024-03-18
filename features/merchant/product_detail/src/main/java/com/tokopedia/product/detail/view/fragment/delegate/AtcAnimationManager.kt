@@ -30,8 +30,11 @@ class AtcAnimationManager(
         mSourceImageView = view
     }
 
-    fun runAtcAnimation(binding: ProductDetailFragmentBinding?) {
-        if (context == null || binding == null) return
+    fun runAtcAnimation(
+        binding: ProductDetailFragmentBinding?,
+        shoudShow: Boolean
+    ) {
+        if (context == null || binding == null || !shoudShow) return
 
         if (mSourceImageView == null) {
             viewModel.onFinishAnimation()
