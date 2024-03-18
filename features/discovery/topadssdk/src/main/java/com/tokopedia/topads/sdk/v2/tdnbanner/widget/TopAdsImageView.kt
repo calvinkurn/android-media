@@ -1,23 +1,22 @@
 package com.tokopedia.topads.sdk.v2.tdnbanner.widget
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsImageViewViewModel
-import com.tokopedia.topads.sdk.utils.TdnHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
@@ -122,34 +121,37 @@ class TopAdsImageView : AppCompatImageView {
      * */
     fun loadImage(imageData: TopAdsImageUiModel, cornerRadius: Int = 0, onLoadFailed: () -> Unit = {}) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            TdnHelper.getRequestBuilder(context, imageData.imageUrl, cornerRadius).override(
-                context.resources.displayMetrics.widthPixels,
-                getHeight(imageData.imageWidth, imageData.imageHeight)
-            )
-                .addListener(object : RequestListener<Drawable> {
+            this.loadImage(imageData.imageUrl, properties = {
+                if (cornerRadius > Int.ZERO) {
+                    transforms(listOf(FitCenter(), RoundedCorners(cornerRadius)))
+                } else {
+                    fitCenter()
+                }
 
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                overrideSize(
+                    Resize(
+                        context.resources.displayMetrics.widthPixels,
+                        getHeight(imageData.imageWidth, imageData.imageHeight)
+                    )
+                )
+
+                listener(onSuccess = { _, _ ->
+                    topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(
+                        imageData.adViewUrl
+                            ?: ""
+                    )
+                    Timber.d("TopAdsImageView is loaded successfully")
+
+                    this@TopAdsImageView.setOnClickListener {
+                        topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
+                        Timber.d("TopAdsImageView is clicked")
+                        TopAdsUrlHitter(context).hitClickUrl(this@TopAdsImageView.javaClass.canonicalName, imageData.adClickUrl, "", "", "")
+                    }
+                }, onError = {
                         Timber.d("Error in loading TopAdsImageView")
                         onLoadFailed.invoke()
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(
-                            imageData.adViewUrl
-                                ?: ""
-                        )
-                        Timber.d("TopAdsImageView is loaded successfully")
-
-                        this@TopAdsImageView.setOnClickListener {
-                            topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
-                            Timber.d("TopAdsImageView is clicked")
-                            TopAdsUrlHitter(context).hitClickUrl(this@TopAdsImageView.javaClass.canonicalName, imageData.adClickUrl, "", "", "")
-                        }
-                        return false
-                    }
-                })
-                .into(this)
+                    })
+            })
         } else {
             this.hide()
         }
