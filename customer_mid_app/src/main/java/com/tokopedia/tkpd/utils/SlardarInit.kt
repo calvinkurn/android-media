@@ -57,7 +57,10 @@ object SlardarInit {
                 return null
             }
 
-        }, true, true, true)
+        },  true,  // JAVA CRASH Enabler
+            true, // NATIVE CRASH Enabler
+            true // ANR Enabler
+        )
 
         Npth.getConfigManager().javaCrashUploadUrl = "https://slardar-bd-sg.feishu.cn/monitor/collect/c/crash"
         Npth.getConfigManager().setNativeCrashUrl("https://slardar-bd-sg.feishu.cn/monitor/collect/c/native_bin_crash")
