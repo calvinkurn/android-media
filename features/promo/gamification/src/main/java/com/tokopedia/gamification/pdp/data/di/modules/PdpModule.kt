@@ -14,7 +14,6 @@ import com.tokopedia.gamification.pdp.repository.GamificationRepository
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -22,7 +21,7 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [TopAdsWishlistModule::class,ActivityContextModule::class])
+@Module(includes = [ActivityContextModule::class])
 class PdpModule {
 
     @GamificationPdpScope
@@ -55,10 +54,12 @@ class PdpModule {
 
     @GamificationPdpScope
     @Provides
-    fun getGamingRecommendationProductUseCase(context: Context,
-                                              graphqlUseCase: GraphqlUseCase,
-                                              userSession: UserSessionInterface,
-                                              mapper: Mapper): GamingRecommendationProductUseCase {
+    fun getGamingRecommendationProductUseCase(
+        context: Context,
+        graphqlUseCase: GraphqlUseCase,
+        userSession: UserSessionInterface,
+        mapper: Mapper
+    ): GamingRecommendationProductUseCase {
         return GamingRecommendationProductUseCase(context, graphqlUseCase, userSession, mapper)
     }
 
@@ -74,7 +75,7 @@ class PdpModule {
 
     @GamificationPdpScope
     @Provides
-    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase{
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
