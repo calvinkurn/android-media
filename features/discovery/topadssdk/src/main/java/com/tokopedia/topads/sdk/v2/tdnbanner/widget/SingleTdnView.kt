@@ -1,19 +1,22 @@
 package com.tokopedia.topads.sdk.v2.tdnbanner.widget
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.bumptech.glide.load.resource.bitmap.FitCenter
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.utils.TdnHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -75,26 +78,39 @@ class SingleTdnView : BaseCustomView {
         if (!imageData.imageUrl.isNullOrEmpty()) {
             val width = context.resources.displayMetrics.widthPixels
 
-            tdnBanner.loadImage(imageData.imageUrl, properties = {
-                if (cornerRadius > Int.ZERO) {
-                    transforms(listOf(FitCenter(), RoundedCorners(cornerRadius)))
-                } else {
-                    fitCenter()
+            TdnHelper.getRequestBuilder(context, imageData.imageUrl, cornerRadius).override(
+                width,
+                getHeight(imageData.imageWidth, imageData.imageHeight, width.toFloat())
+            ).addListener(object : RequestListener<Drawable> {
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Timber.d("Error in loading TDN Banner")
+                    onLoadFailed.invoke()
+                    return false
                 }
 
-                overrideSize(Resize(width, getHeight(imageData.imageWidth, imageData.imageHeight, width.toFloat())))
-
-                listener(onSuccess = { _, _ ->
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
                     tdnShimmer.hide()
                     recordImpression(imageData, onTdnBannerImpressed)
                     Timber.d("TDN Banner is loaded successfully")
 
                     recordClick(imageData, onTdnBannerClicked)
-                }, onError = {
-                        Timber.d("Error in loading TDN Banner")
-                        onLoadFailed.invoke()
-                    })
+
+                    return false
+                }
             })
+                .into(tdnBanner)
         } else {
             tdnBanner.hide()
         }

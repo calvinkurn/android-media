@@ -1,14 +1,20 @@
 package com.tokopedia.topads.sdk.v2.tdnvertical.widget
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -163,21 +169,38 @@ class TdnVerticalView : BaseCustomView {
         onTdnBannerImpressed: (imageData: TopAdsImageUiModel) -> Unit
     ) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            tdnBanner.loadImage(imageData.imageUrl) {
-                transforms(listOf(FitCenter(), RoundedCorners(cornerRadius)))
-                listener(
-                    onSuccess = { _, _ ->
+            Glide.with(context).load(imageData.imageUrl)
+                .transform(FitCenter(), RoundedCorners(cornerRadius))
+                .addListener(object : RequestListener<Drawable> {
+
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Timber.d("Error in loading TDN Banner")
+                        onLoadFailed.invoke()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
                         tdnShimmer.hide()
                         recordImpression(imageData, onTdnBannerImpressed)
                         Timber.d("TDN Banner is loaded successfully")
+
                         recordClick(imageData, onTdnBannerClicked)
-                    },
-                    onError = { _ ->
-                        Timber.d("Error in loading TDN Banner")
-                        onLoadFailed.invoke()
+
+                        return false
                     }
-                )
-            }
+                })
+                .into(tdnBanner)
         } else {
             tdnBanner.hide()
         }
