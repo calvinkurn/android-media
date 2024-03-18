@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.utils.enableRollenceContentProductPreview
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -646,7 +647,7 @@ open class ReadReviewFragment :
             ReadReviewTracking.trackOnShopReviewImageClicked(productReview.feedbackID, shopId)
         }
 
-        if (enableContentProductPreview) {
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
             goToProductPreviewActivityReviewSource(
                 reviewId = productReview.feedbackID,
                 attachmentId = attachmentId
@@ -656,7 +657,7 @@ open class ReadReviewFragment :
                 positionClicked = positionClicked,
                 reviewMediaThumbnailUiModel = reviewMediaThumbnailUiModel,
                 productReview = productReview,
-                shopId = shopId,
+                shopId = shopId
             )
         }
     }
