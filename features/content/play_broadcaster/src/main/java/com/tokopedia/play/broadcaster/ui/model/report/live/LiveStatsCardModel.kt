@@ -10,8 +10,15 @@ sealed interface LiveStatsCardModel {
     data class Clickable(
         override val liveStats: LiveStatsUiModel,
         val clickableIcon: Int,
+        val clickArea: ClickArea,
         val onClick: () -> Unit,
-    ) : LiveStatsCardModel
+    ) : LiveStatsCardModel {
+
+        enum class ClickArea {
+            Full,
+            IconOnly,
+        }
+    }
 
     data class NotClickable(
         override val liveStats: LiveStatsUiModel,
