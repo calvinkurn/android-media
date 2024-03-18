@@ -287,6 +287,7 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
+
         try {
             performanceTrace = new BlocksPerformanceTrace(
                     this.getContext().getApplicationContext(),
@@ -331,6 +332,8 @@ public class MainParentActivity extends BaseActivity implements
         }
         sendNotificationUserSetting();
         showDarkModeIntroBottomSheet();
+//        throw new IllegalArgumentException("This is for testing slardar");
+
     }
 
     private void initDownloadManagerDialog() {

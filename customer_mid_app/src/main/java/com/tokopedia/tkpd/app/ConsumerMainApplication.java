@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.app;
 
 import static android.os.Process.killProcess;
+import static com.tokopedia.analytics.byteio.AppLogInitKt.initAppLog;
+import static com.tokopedia.network.ttnet.TTNetHelper.initTTNet;
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 import android.app.Activity;
@@ -17,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bytedance.applog.AppLog;
+import com.bytedance.applog.util.EventsSenderUtils;
+import com.bytedance.dataplatform.ExperimentManager;
+import com.bytedance.dataplatform.IExposureService;
+import com.bytedance.dataplatform.INetService;
+import com.bytedance.dataplatform.ISerializationService;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
@@ -108,7 +117,9 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
+import com.tokopedia.tkpd.utils.AppLogInitKt;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
+import com.tokopedia.tkpd.utils.SlardarInit;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.unifyprinciples.Typography;
@@ -223,6 +234,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         showDevOptNotification();
         initByteIOPlatform();
+        initSlardar();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
@@ -233,9 +245,20 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private void initByteIOPlatform() {
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
             AppLogAnalytics.init(this);
-            TTNetHelper.initTTNet(this);
+            initTTNet(this);
             LibraAbTest.init(this);
         }
+    }
+
+    private void initSlardar() {
+        Log.e("TOKO", "init application");
+        EventsSenderUtils.setEventsSenderEnable("573733", true, this);
+        EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net");
+        SlardarInit.INSTANCE.initApm(this);
+        SlardarInit.INSTANCE.initNpth(this, "573733", "local_test",
+                getUserSession().getUserId());
+        AppLogInitKt.initAppLog(this);
+        SlardarInit.INSTANCE.startApm();
     }
 
     private void initializeAppPerformanceTrace() {
