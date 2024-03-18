@@ -95,7 +95,10 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -3123,6 +3126,32 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         assertTrue(viewModel.productLayout.value == null)
     }
+
+    //region atc animation
+    @Test
+    fun `success atc and animation`() = runTest {
+        val successAtcAndAnimation = mutableListOf<Boolean>()
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
+        }
+
+        assertEquals(successAtcAndAnimation.size, 0)
+
+        viewModel.onFinishAnimation()
+        viewModel.onFinishAtc()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 1)
+        assertEquals(successAtcAndAnimation.first(), true)
+
+        viewModel.onFinishAnimation()
+        viewModel.onFinishAtc()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 2)
+        assertEquals(successAtcAndAnimation[1], true)
+    }
+    //endregion
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
