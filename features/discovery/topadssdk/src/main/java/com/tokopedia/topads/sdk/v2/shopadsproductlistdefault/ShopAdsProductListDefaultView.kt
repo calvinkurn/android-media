@@ -63,10 +63,6 @@ class ShopAdsProductListDefaultView(
     isReimagine: Boolean = false
 ) : BaseBannerAdsRendering(view, contextRef, topAdsUrlHitter, isReimagine) {
 
-    init {
-        initAdapter()
-    }
-
     private val bannerAdsAdapterTypeFactory by lazy {
         if (isReimagine) {
             BannerAdsAdapterTypeFactoryReimagine(topAdsBannerViewClickListener, impressionListener)
@@ -88,6 +84,10 @@ class ShopAdsProductListDefaultView(
 
     private val linearLayoutMerchantVoucher: LinearLayout? = view?.findViewById(R.id.linearLayoutMerchantVoucher)
     private val list = view?.findViewById<RecyclerView?>(R.id.list_v2)
+
+    init {
+        initAdapter()
+    }
 
     override fun render(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         val container = view?.findViewById<View>(R.id.container)
