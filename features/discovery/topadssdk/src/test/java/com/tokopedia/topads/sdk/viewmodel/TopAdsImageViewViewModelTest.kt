@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
