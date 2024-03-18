@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.home_account.R
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
 
 @Composable
 fun HeaderSection(
@@ -27,7 +28,8 @@ fun HeaderSection(
     ) {
         NestTypography(
             text = LocalContext.current.getString(R.string.explicit_personalize_title),
-            textStyle = NestTheme.typography.heading3
+            textStyle = NestTheme.typography.heading3,
+            modifier = Modifier.tag("title header section")
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -39,7 +41,8 @@ fun HeaderSection(
             ),
             textStyle = NestTheme.typography.paragraph2.copy(
                 color = NestTheme.colors.NN._600
-            )
+            ),
+            modifier = Modifier.tag("subtitle header section")
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -60,6 +63,7 @@ fun HeaderSection(
                     NestTheme.colors.GN._500
             ),
             modifier = Modifier.align(Alignment.End)
+                .tag("counter header section")
         )
     }
 }

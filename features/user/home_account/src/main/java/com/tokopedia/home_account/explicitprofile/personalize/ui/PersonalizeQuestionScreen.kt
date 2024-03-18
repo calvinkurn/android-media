@@ -22,6 +22,7 @@ import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
 
 @Composable
 fun PersonalizeQuestionScreen(
@@ -47,6 +48,7 @@ fun PersonalizeQuestionScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp)
                         .align(Alignment.End)
                         .clickable { onSkip.invoke() }
+                        .tag("skip button")
                 )
 
                 NestDivider(
@@ -90,7 +92,8 @@ fun PersonalizeQuestionScreen(
                 NestButton(
                     modifier = Modifier
                         .padding(16.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .tag("button save"),
                     text = LocalContext.current.getString(R.string.explicit_personalize_save),
                     isEnabled = if (minItemSelected == 0) {
                         true

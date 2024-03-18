@@ -20,6 +20,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.tokopedia.home_account.R
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
 
 @Composable
 fun SuccessScreen() {
@@ -37,11 +38,13 @@ fun SuccessScreen() {
         ) {
             NestTypography(
                 text = LocalContext.current.getString(R.string.explicit_personalize_success_title),
-                textStyle = NestTheme.typography.heading2
+                textStyle = NestTheme.typography.heading2,
+                modifier = Modifier.tag("title success page")
             )
             NestTypography(
                 text = LocalContext.current.getString(R.string.explicit_personalize_success_subtitle),
-                textStyle = NestTheme.typography.paragraph2
+                textStyle = NestTheme.typography.paragraph2,
+                modifier = Modifier.tag("subtitle success page")
             )
         }
 

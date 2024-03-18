@@ -8,6 +8,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.tokopedia.home_account.explicitprofile.data.QuestionDataModel
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
 
 @Composable
 fun ListQuestion(
@@ -16,7 +17,7 @@ fun ListQuestion(
     onOptionSelected: (OptionSelected) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(modifier = modifier.tag("question section")) {
         itemsIndexed(
             items = listQuestion,
             key = { _, item ->
