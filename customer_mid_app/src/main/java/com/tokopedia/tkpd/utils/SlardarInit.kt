@@ -100,7 +100,7 @@ object SlardarInit {
     /**
      * can be invoke after app launched since it may cost time
      */
-    fun startApm() {
+    fun startApm(aid: String, channel: String) {
         val builder = ApmStartConfig.builder()
 //        val headerInfo: JSONObject = AppLog.getHeader() // todo better copy
         builder.blockDetectOnlySampled(true)
@@ -131,9 +131,9 @@ object SlardarInit {
                 "https://mon-sg.tiktokv.com/monitor/collect/"))
             .aid(573733)
             .deviceId(AppLog.getDid())
-            .appVersion("100") // todo
-            .updateVersionCode("10000") // todo
-            .channel("local_test") // todo
+            .appVersion(GlobalConfig.VERSION_NAME)
+            .updateVersionCode(GlobalConfig.VERSION_CODE.toString())
+            .channel(channel)
             .memoryReachTop { type -> /*do sth to trim mem*/ }
             .apmStartListener(object : IApmStartListener {
                 override fun onStartComplete() {}
@@ -158,7 +158,7 @@ object SlardarInit {
         builder.queryParams {
             val params =
                 HashMap<String, String>()
-            params["app_id"] = "573733"
+            params["app_id"] = aid
             params
         }
         builder.apmLogListener { logType, logSubType, log ->
