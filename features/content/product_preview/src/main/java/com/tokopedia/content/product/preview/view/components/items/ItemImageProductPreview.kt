@@ -48,7 +48,7 @@ internal fun ItemImageProductPreview(
             y = (offset.y + zoom * offsetChange.y).coerceIn(-maxY, maxY)
         )
 
-        // notify and stop auto scroll when isZoomMode is `true`
+        // notify and stop product media auto scroll when isZoomMode is `true`
         isZoomMode = zoom != MIN_ZOOM
         stateListener?.invoke(isZoomMode)
     }
