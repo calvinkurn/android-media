@@ -858,6 +858,7 @@ class FeedFragment :
     ) {
         feedPostViewModel.trackVisitChannel(model)
         feedPostViewModel.trackChannelPerformance(model)
+        feedPostViewModel.getReportSummaries(model)
     }
 
     override fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel) {
