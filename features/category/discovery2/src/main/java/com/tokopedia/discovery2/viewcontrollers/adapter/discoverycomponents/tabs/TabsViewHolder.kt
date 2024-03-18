@@ -16,7 +16,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
-import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -161,9 +161,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 if (tabsViewModel.isFromCategory()) {
                     tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
                 }
-
-                tabsHolder.getUnifyTabLayout()
-                    .setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
 
                 tabsHolder.getUnifyTabLayout().apply {
                     layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -355,7 +352,10 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 setSelectedTabItem(tabsViewModel, tab, true)
             }
 
-            setSelectedTabBackground(tabsViewModel.components, tab.position)
+            tabsViewModel.components.data?.apply {
+                setSelectedTabBackground(tab.position)
+                setSelectedTabIndicator(tab.position)
+            }
 
             tabsViewModel.components.getComponentsItem()?.let {
                 setInactiveTabColor(tab.position, it.map { component -> component.id })
@@ -385,8 +385,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         return tabsHolder.tabLayout.getTabAt(index)?.customView as? CustomViewCreator
     }
 
-    private fun setSelectedTabBackground(components: ComponentsItem, selectedPosition: Int) {
-        val hexColor = components.data?.get(selectedPosition)?.boxColor
+    private fun List<DataItem>?.setSelectedTabBackground(selectedPosition: Int) {
+        val hexColor = this?.get(selectedPosition)?.boxColor
 
         if (hexColor.isNullOrEmpty()) {
             tabsHolder.tabLayout.setBackgroundColor(
@@ -395,6 +395,22 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         } else {
             renderTabBackground(hexColor)
         }
+    }
+
+    private fun List<DataItem>?.setSelectedTabIndicator(selectedPosition: Int) {
+        val hexColor = this?.get(selectedPosition)?.fontColor
+        val validHexCode = Utils.getValidHexCode(itemView.context, hexColor)
+
+        val validColor = if (hexColor.isNullOrEmpty()) {
+            ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
+        } else {
+            Color.parseColor(validHexCode)
+        }
+
+        tabsHolder.setIndicator(
+            TabsUnify.NestTabIndicatorType.INDICATOR_SMALL,
+            validColor
+        )
     }
 
     private fun renderTabBackground(hexColor: String?) {
