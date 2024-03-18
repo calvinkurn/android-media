@@ -1171,8 +1171,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         displayAds(cpmModel, index)
     }
 
-
-    //this function to support the reimagine component type
+    // this function to support the reimagine component type
     fun displayHeadlineAdsReimagine(cpmModel: CpmModel?, index: Int = 0) {
         displayAds(cpmModel, index, true)
     }
@@ -1186,7 +1185,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     // new approach
                     if (TopAdsSdkUtil.isEnableTopAdsSdkV2()) {
                         if (data.cpm.cpmShop != null && isResponseValid(data)) {
-                            renderTopAdsBannerV2(cpmModel, data.applinks, data.adClickUrl, index, false)
+                            renderTopAdsBannerV2(cpmModel, data.applinks, data.adClickUrl, index, isReimagine)
                         } else if (data.cpm.templateId == ITEM_4) {
                             renderViewCpmDigitalV2(context, data)
                         }
