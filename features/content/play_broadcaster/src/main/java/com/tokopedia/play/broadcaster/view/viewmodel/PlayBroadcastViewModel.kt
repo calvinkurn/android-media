@@ -2012,10 +2012,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleGetLiveReportSummary() {
         viewModelScope.launchCatchError(block = {
-            val response = repo.getReportSummary(channelId, selectedAccount.isShop)
+            val response = repo.getLiveReportSummary(channelId, selectedAccount.isShop)
             updateLiveReportSummary(response.liveStats, response.timestamp)
         }) {
-
         }
     }
 

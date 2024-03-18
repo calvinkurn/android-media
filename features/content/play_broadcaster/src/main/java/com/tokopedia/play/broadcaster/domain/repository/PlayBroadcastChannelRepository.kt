@@ -41,7 +41,7 @@ interface PlayBroadcastChannelRepository {
 
     fun canSchedule(): Boolean
 
-    suspend fun getReportSummary(channelId: String, isAuthorShop: Boolean): LiveReportSummaryUiModel
+    suspend fun getLiveReportSummary(channelId: String, isAuthorShop: Boolean): LiveReportSummaryUiModel
 
     suspend fun getReportProductSummary(channelId: String): ProductReportSummaryUiModel
 }
