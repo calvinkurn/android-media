@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFailed
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.assertWhenFailed
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -185,8 +186,7 @@ class PlayBroadcastReportViewModelTest {
     }
 
     @Test
-    fun `playBroadcaster_report_getProductReportSummary_error`() {
-        coEvery { mockRepo.getReportProductSummary(any()) } throws mockException
+    fun `playBroadcaster_report_getProductReportSummary_error_retry`() {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -194,14 +194,26 @@ class PlayBroadcastReportViewModelTest {
         )
 
         robot.use {
-            val states = it.recordStateAsList {
+
+            coEvery { mockRepo.getReportProductSummary(any()) } throws mockException
+
+            val state = it.recordState {
                 getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.GetProductReportSummary)
             }
 
-            states.last().productReportSummary.assertWhenFailed { throwable ->
+            state.productReportSummary.assertWhenFailed { throwable ->
                 throwable.assertEqualTo(mockException)
             }
+
+            coEvery { mockRepo.getReportProductSummary(any()) } returns mockProductReportSummary
+
+            val retryState = it.recordState {
+                state.productReportSummary.assertFailed()
+                (state.productReportSummary as NetworkResult.Fail).onRetry()
+            }
+
+            retryState.productReportSummary.assertEqualTo(NetworkResult.Success(mockProductReportSummary))
         }
     }
 }
