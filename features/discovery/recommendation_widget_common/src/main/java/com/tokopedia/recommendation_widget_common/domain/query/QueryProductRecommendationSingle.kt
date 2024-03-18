@@ -101,6 +101,7 @@ internal object QueryProductRecommendationSingle {
         "                            value\n" +
         "                          }\n" +
         "                          recParam\n" +
+        "                          parentID\n" +
         "                       }\n" +
         "                   }\n" +
         "                 }\n" +
