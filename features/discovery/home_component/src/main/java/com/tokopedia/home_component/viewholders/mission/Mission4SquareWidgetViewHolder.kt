@@ -50,6 +50,9 @@ class Mission4SquareWidgetViewHolder(
                     mAdapter?.submitList(element.mission4SquareWidgetList)
                 }
             }
+        } else {
+            binding?.root?.gone()
+            itemView.gone()
         }
     }
 
