@@ -38,7 +38,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
         ccRequest: CreditCardTenorListRequest,
         userId: String,
         tenorList: List<TenorListData>?,
-        tncInfo: String,
+        selectedTenure: Int,
         listener: InstallmentDetailBottomSheetListener
     ) {
         val context: Context = fragment.activity ?: return
@@ -51,7 +51,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
                 showHeader = true
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
                 binding = BottomSheetGocicilInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(context, fragment, ccRequest, tenorList, tncInfo, userId)
+                setupChild(context, fragment, ccRequest, tenorList, selectedTenure, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -70,28 +70,35 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
         fragment: Fragment,
         ccRequest: CreditCardTenorListRequest,
         tenorList: List<TenorListData>?,
-        tncInfo: String,
+        selectedTenure: Int,
         userId: String
     ) {
+        binding?.tickerInstallmentInfo?.gone()
+        binding?.tvInstallmentMessage?.gone()
         if (tenorList.isNullOrEmpty()) {
             binding?.tvInstallmentMessage?.gone()
             binding?.loaderInstallment?.visible()
             launch {
                 val installmentTermList = paymentProcessor.getCreditCardTenorList(ccRequest)
                 if (installmentTermList != null) {
-                    setupInstallments(context, fragment, installmentTermList)
+                    setupInstallments(context, fragment, installmentTermList, selectedTenure)
                 } else {
                     dismiss()
                     listener.onFailedLoadInstallment()
                 }
             }
         } else {
-            setupInstallments(context, fragment, tenorList)
+            setupInstallments(context, fragment, tenorList, selectedTenure)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupInstallments(context: Context, fragment: Fragment, tenorList: List<TenorListData>) {
+    private fun setupInstallments(
+        context: Context,
+        fragment: Fragment,
+        tenorList: List<TenorListData>,
+        selectedTenure: Int
+    ) {
         SplitCompat.installActivity(context)
         binding?.loaderInstallment?.gone()
         val inflater = LayoutInflater.from(fragment.context)
@@ -107,7 +114,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
             }
             if (!installment.disable) {
                 viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
-//                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
+                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.tenure == selectedTenure
                 viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
                     listener.onSelectInstallment(installment, tenorList)
                     dismiss()
@@ -117,7 +124,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Payme
                 if (installment.desc.isNotEmpty()) {
                     viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = installment.desc
                 }
-//                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
+                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.tenure == selectedTenure
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                 viewInstallmentDetailItem.root.alpha = DISABLE_ALPHA
             }

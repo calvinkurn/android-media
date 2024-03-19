@@ -219,18 +219,27 @@ class PaymentProcessor @Inject constructor(
         val selectedTenure = currentData.installmentPaymentData.selectedTenure
         var installmentText = ""
         if (!tenorList.isNullOrEmpty()) {
-            tenorList.firstOrNull { it.tenure == selectedTenure }?.let {
-                installmentText = "Cicil ${it.tenure}"
+            if (selectedTenure > 0) {
+                tenorList.firstOrNull { it.tenure == selectedTenure }?.let {
+                    installmentText = "Cicil ${it.tenure}"
+                }
+            } else {
+                installmentText = "Bayar Penuh"
             }
         }
         if (installmentData != null) {
-            installmentData.installmentOptions.firstOrNull { it.installmentTerm == selectedTenure }?.let {
-                installmentText = "Cicil ${it.installmentTerm}"
+            if (selectedTenure > 0) {
+                installmentData.installmentOptions.firstOrNull { it.installmentTerm == selectedTenure }?.let {
+                    installmentText = "Cicil ${it.installmentTerm}"
+                }
+            } else {
+                installmentText = "Bayar Penuh"
             }
         }
         return currentWidget.copy(
             logoUrl = currentData.imageUrl,
             title = currentData.gatewayName,
+            description = currentData.description,
             installmentText = installmentText
         )
     }

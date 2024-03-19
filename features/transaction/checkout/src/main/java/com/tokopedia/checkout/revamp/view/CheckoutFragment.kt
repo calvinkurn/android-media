@@ -2879,30 +2879,45 @@ class CheckoutFragment :
     override fun onChangeInstallment(payment: CheckoutPaymentModel) {
         if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
             // gocicil
-            GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(this, viewModel.generateGoCicilInstallmentRequest(payment), payment.installmentData, object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                override fun onSelectInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, isSilent: Boolean) {
-                    viewModel.chooseInstallment(selectedInstallment, installmentList, tickerMessage, isSilent)
-                }
+            val paymentData = payment.data.paymentWidgetData.first()
+            GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
+                this,
+                viewModel.generateGoCicilInstallmentRequest(payment),
+                payment.installmentData,
+                paymentData.installmentPaymentData.selectedTenure,
+                object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                    override fun onSelectInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, isSilent: Boolean) {
+                        viewModel.chooseInstallment(selectedInstallment, installmentList, tickerMessage, isSilent)
+                    }
 
-                override fun onFailedLoadInstallment() {
-                    view?.let { v ->
-                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    override fun onFailedLoadInstallment() {
+                        view?.let { v ->
+                            Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                        }
                     }
                 }
-            })
+            )
         } else if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
             // cc
-            CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(this, viewModel.generateCreditCardTenorListRequest(payment), userSessionInterface.userId, payment.tenorList!!, payment.data!!.paymentWidgetData.first().installmentPaymentData.creditCardAttribute.tncInfo, object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
-                    viewModel.chooseInstallmentCC(selectedInstallment, installmentList)
-                }
+            val paymentData = payment.data.paymentWidgetData.first()
+            CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
+                this,
+                viewModel.generateCreditCardTenorListRequest(payment),
+                userSessionInterface.userId,
+                payment.tenorList!!,
+                paymentData.installmentPaymentData.selectedTenure,
+                object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                    override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
+                        viewModel.chooseInstallmentCC(selectedInstallment, installmentList)
+                    }
 
-                override fun onFailedLoadInstallment() {
-                    view?.let { v ->
-                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    override fun onFailedLoadInstallment() {
+                        view?.let { v ->
+                            Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                        }
                     }
                 }
-            })
+            )
         }
     }
 

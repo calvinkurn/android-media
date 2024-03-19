@@ -4,9 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.checkoutpayment.R
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.checkoutpayment.databinding.BottomSheetGocicilInstallmentBinding
 import com.tokopedia.checkoutpayment.databinding.ItemGocicilInstallmentDetailBinding
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,8 +24,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.checkoutpayment.R
-import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentProcessor) : CoroutineScope {
@@ -42,6 +42,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentP
         fragment: Fragment,
         goCicilInstallmentRequest: GoCicilInstallmentRequest,
         goCicilInstallmentData: GoCicilInstallmentData?,
+        selectedTenure: Int,
         listener: InstallmentDetailBottomSheetListener
     ) {
         val context: Context = fragment.activity ?: return
@@ -54,7 +55,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentP
                 showHeader = true
                 setTitle(fragment.getString(R.string.occ_gocicil_bottom_sheet_title))
                 binding = BottomSheetGocicilInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(fragment, goCicilInstallmentRequest, goCicilInstallmentData)
+                setupChild(fragment, goCicilInstallmentRequest, goCicilInstallmentData, selectedTenure)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -71,7 +72,8 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentP
     private fun setupChild(
         fragment: Fragment,
         goCicilInstallmentRequest: GoCicilInstallmentRequest,
-        goCicilInstallmentData: GoCicilInstallmentData?
+        goCicilInstallmentData: GoCicilInstallmentData?,
+        selectedTenure: Int
     ) {
         binding?.tvInstallmentMessage?.gone()
         binding?.loaderInstallment?.visible()
@@ -87,7 +89,8 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentP
                     )
                     setupInstallments(
                         fragment,
-                        result
+                        result,
+                        selectedTenure
                     )
                 } else {
                     dismiss()
@@ -95,14 +98,17 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentP
                 }
             }
         } else {
-            setupInstallments(fragment, goCicilInstallmentData)
+            setupInstallments(fragment, goCicilInstallmentData, selectedTenure)
         }
     }
 
-    private fun setupInstallments(fragment: Fragment, goCicilInstallmentData: GoCicilInstallmentData) {
+    private fun setupInstallments(
+        fragment: Fragment,
+        goCicilInstallmentData: GoCicilInstallmentData,
+        selectedTenure: Int
+    ) {
         binding?.loaderInstallment?.gone()
         val inflater = LayoutInflater.from(fragment.context)
-        val selectedTerm = goCicilInstallmentData.installmentOptions.first().installmentTerm
         val installmentList = goCicilInstallmentData.installmentOptions
         for (installment in installmentList) {
             val viewInstallmentDetailItem = ItemGocicilInstallmentDetailBinding.inflate(inflater)
@@ -142,7 +148,7 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentP
                     viewInstallmentDetailItem.tvInstallmentDetailDescription.setText(R.string.occ_lbl_gocicil_installment_inactive_description)
                     viewInstallmentDetailItem.tvInstallmentDetailDescription.visible()
                 }
-            } else if (installment.isActive && selectedTerm == installment.installmentTerm) {
+            } else if (installment.isActive && selectedTenure == installment.installmentTerm) {
                 viewInstallmentDetailItem.cardItemInstallmentDetail.cardType = CardUnify.TYPE_BORDER_ACTIVE
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = true
                 viewInstallmentDetailItem.cardItemInstallmentDetail.setOnClickListener {

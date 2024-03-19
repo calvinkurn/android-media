@@ -395,7 +395,7 @@ class CheckoutPaymentProcessor @Inject constructor(
         return CreditCardTenorListRequest(
             tokenId = paymentData.installmentPaymentData.creditCardAttribute.tokenId,
             userId = userSessionInterface.userId.toLongOrZero(),
-            totalAmount = paymentRequest.payment.paymentAmount,
+            totalAmount = cost.originalItemPrice,
             discountAmount = cost.totalDiscounts,
             profileCode = paymentData.profileCode,
             otherAmount = cost.totalOtherFee,
