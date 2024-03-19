@@ -397,6 +397,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icStatistic.setOnClickListener {
+            reportAnalytic.clickStatisticIcon()
             openProductReportSummarySheet()
         }
 
@@ -439,6 +440,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     LiveStatsView(
                         liveStatsList = uiState.liveReportSummary.liveStats,
                         onClick = {
+                            reportAnalytic.clickLiveStatsArea()
                             openLiveStatsSheet()
                         }
                     )
