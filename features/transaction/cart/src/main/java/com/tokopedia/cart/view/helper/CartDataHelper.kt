@@ -227,6 +227,13 @@ object CartDataHelper {
         return RecyclerView.NO_POSITION
     }
 
+    fun getCartItemIndexByCartId(cartDataList: ArrayList<Any>, cartId: String): Int {
+        // indexOfFirst will return -1 when item not found
+        return cartDataList.indexOfFirst { any ->
+            any is CartItemHolderData && any.cartId == cartId
+        }
+    }
+
     fun getCartShopBottomHolderDataFromIndex(
         cartDataList: ArrayList<Any>,
         shopBottomIndex: Int
