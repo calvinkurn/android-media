@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
@@ -23,6 +24,11 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutPromoProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutToasterProcessor
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
+import com.tokopedia.checkoutpayment.domain.CreditCardTenorListUseCase
+import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
+import com.tokopedia.checkoutpayment.domain.GetPaymentWidgetUseCase
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
+import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
@@ -66,6 +72,9 @@ open class BaseCheckoutViewModelTest {
 
     @MockK
     lateinit var releaseBookingUseCase: Lazy<ReleaseBookingUseCase>
+
+    @MockK
+    lateinit var updateCartUseCase: Lazy<UpdateCartUseCase>
 
     @MockK
     lateinit var pinpointUseCase: UpdatePinpointUseCase
@@ -117,6 +126,18 @@ open class BaseCheckoutViewModelTest {
 
     @MockK(relaxUnitFun = true)
     lateinit var getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
+
+    @MockK(relaxed = true)
+    lateinit var creditCardTenorListUseCase: CreditCardTenorListUseCase
+
+    @MockK(relaxed = true)
+    lateinit var goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase
+
+    @MockK(relaxed = true)
+    lateinit var dynamicPaymentFeeUseCase: DynamicPaymentFeeUseCase
+
+    @MockK(relaxed = true)
+    lateinit var getPaymentWidgetUseCase: GetPaymentWidgetUseCase
 
     @MockK
     lateinit var checkoutGqlUseCase: CheckoutUseCase
@@ -196,6 +217,7 @@ open class BaseCheckoutViewModelTest {
                 saveShipmentStateGqlUseCase,
                 changeShippingAddressGqlUseCase,
                 releaseBookingUseCase,
+                updateCartUseCase,
                 helper,
                 dispatchers
             ),
@@ -210,9 +232,17 @@ open class BaseCheckoutViewModelTest {
             ),
             CheckoutPaymentProcessor(
                 getPaymentFeeCheckoutUseCase,
+                PaymentProcessor(
+                    creditCardTenorListUseCase,
+                    goCicilInstallmentOptionUseCase,
+                    dynamicPaymentFeeUseCase,
+                    getPaymentWidgetUseCase,
+                    dispatchers
+                ),
                 checkoutAnalyticsCourierSelection,
                 userSessionInterface,
-                dispatchers
+                dispatchers,
+                helper
             ),
             CheckoutProcessor(
                 checkoutGqlUseCase,
