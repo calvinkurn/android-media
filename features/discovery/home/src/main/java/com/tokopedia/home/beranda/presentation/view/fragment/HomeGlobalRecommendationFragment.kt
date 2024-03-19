@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
@@ -42,8 +41,6 @@ import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapp
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
-import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase.Companion.REFRESH_TYPE_OPEN
-import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase.Companion.REFRESH_TYPE_REFRESH
 import com.tokopedia.home.beranda.helper.HomeFeedEndlessScrollListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeEggListener
@@ -54,12 +51,15 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationCon
 import com.tokopedia.home.beranda.presentation.view.helper.ScrollToTopAdapterDataObserver
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
+import com.tokopedia.home.util.toRecomRequestType
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
@@ -159,6 +159,7 @@ class HomeGlobalRecommendationFragment :
     private var startX = 0.0F
 
     private var hasApplogScrollListener = false
+    private var refreshType = HomeRefreshType.FIRST_OPEN
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -706,7 +707,7 @@ class HomeGlobalRecommendationFragment :
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
             sourceType = sourceType,
-            refreshType = REFRESH_TYPE_REFRESH,
+            refreshType = RefreshType.REFRESH,
             tabIndex = tabIndex
         )
     }
@@ -797,7 +798,7 @@ class HomeGlobalRecommendationFragment :
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
                 sourceType = sourceType,
-                refreshType = REFRESH_TYPE_OPEN,
+                refreshType = refreshType.toRecomRequestType(),
                 tabIndex = tabIndex
             )
         }
@@ -816,6 +817,10 @@ class HomeGlobalRecommendationFragment :
             recyclerView?.scrollToPosition(BASE_POSITION)
         }
         recyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun setRefreshType(refreshType: HomeRefreshType) {
+        this.refreshType = refreshType
     }
 
     private fun createProductCardOptionsModel(
