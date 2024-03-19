@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.R
@@ -10,6 +11,7 @@ import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.ProductItemModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
+import com.tokopedia.productcard.R as productcardR
 
 class ProductItemViewHolder(
     itemView: View,
@@ -24,7 +26,7 @@ class ProductItemViewHolder(
     }
 
     override fun bind(item: ProductItemModel) {
-        val productCardViewModel = item.productCardModel
+        val productCardViewModel = item.productCardModel.copy(isInBackground = true)
         productCardGridView.run {
             applyCarousel()
             setProductModel(productCardViewModel)

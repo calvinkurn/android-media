@@ -25,6 +25,13 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmShop
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithThreeProductModel
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.shopwidgetthreeproducts.adapter.ShopWidgetAdapter
+import com.tokopedia.topads.sdk.shopwidgetthreeproducts.factory.ShopWidgetFactoryImpl
+import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
+import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.*
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
@@ -44,6 +51,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 private const val PRODUCT_CARD_COUNT_THREE = 3
 
@@ -86,7 +94,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun init() {
-        inflate(context, R.layout.topads_with_three_product_layout, this)
+        View.inflate(context, R.layout.topads_with_three_product_layout, this)
     }
 
     fun setWidgetModel(shopAdsWithThreeProductModel: ShopAdsWithThreeProductModel) {
@@ -119,8 +127,8 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun setShopImpression(
-            items: CpmData,
-            impressionListener: TopAdsItemImpressionListener?
+        items: CpmData,
+        impressionListener: TopAdsItemImpressionListener?
     ) {
         items.cpm?.cpmShop?.imageShop?.let { it1 ->
             shopImage?.addOnImpressionListener(it1) {
@@ -139,18 +147,18 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun initAdapterAndList(
-            topAdsBannerClickListener: TopAdsBannerClickListener?,
-            impressionListener: TopAdsItemImpressionListener?,
-            shopWidgetAddToCartClickListener: ShopWidgetAddToCartClickListener?
+        topAdsBannerClickListener: TopAdsBannerClickListener?,
+        impressionListener: TopAdsItemImpressionListener?,
+        shopWidgetAddToCartClickListener: ShopWidgetAddToCartClickListener?
     ) {
         shopWidgetAdapter =
-                ShopWidgetAdapter(
-                        ShopWidgetFactoryImpl(
-                                shopWidgetAddToCartClickListener,
-                                impressionListener,
-                                topAdsBannerClickListener
-                        )
+            ShopWidgetAdapter(
+                ShopWidgetFactoryImpl(
+                    shopWidgetAddToCartClickListener,
+                    impressionListener,
+                    topAdsBannerClickListener
                 )
+            )
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView?.layoutManager = layoutManager
 
@@ -161,39 +169,39 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     private fun setBackgroundAsFirstCard(cta: String, slogan: String, shopWidgetImageUrl: String) {
         firstCardBackground?.alpha = 1f
         btnLihat?.text = cta
-        adsDescription?.text = TopAdsBannerView.escapeHTML(slogan)
+        adsDescription?.text = escapeHTML(slogan)
         setShopWidgetImage(shopWidgetImageUrl)
     }
 
     private fun setWidget(
-            cpmData: CpmData,
-            shopApplink: String,
-            adsClickUrl: String,
-            hasAddToCartButton: Boolean
+        cpmData: CpmData,
+        shopApplink: String,
+        adsClickUrl: String,
+        hasAddToCartButton: Boolean
     ) {
         val list = getList(cpmData, shopApplink, adsClickUrl, hasAddToCartButton)
         shopWidgetAdapter?.submitList(list)
     }
 
     private fun setShopWidgetBackground(cpmShop: CpmShop, variant: Int) {
-        if (variant == TopAdsConstants.LAYOUT_9) {
+        if (variant == LAYOUT_9) {
             shopWidgetRootLayout?.background = null
             when {
                 cpmShop.isOfficial -> {
                     bodyContainer?.background =
-                            ContextCompat.getDrawable(context, R.drawable.purple_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.purple_gradient)
                 }
                 cpmShop.isPMPro -> {
                     bodyContainer?.background =
-                            ContextCompat.getDrawable(context, R.drawable.blue_one_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.blue_one_gradient)
                 }
                 cpmShop.isPowerMerchant -> {
                     bodyContainer?.background =
-                            ContextCompat.getDrawable(context, R.drawable.green_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.green_gradient)
                 }
                 else -> {
                     bodyContainer?.background =
-                            ContextCompat.getDrawable(context, R.drawable.blue_two_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.blue_two_gradient)
                 }
             }
         } else {
@@ -201,50 +209,50 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             when {
                 cpmShop.isOfficial -> {
                     shopWidgetRootLayout?.background =
-                            ContextCompat.getDrawable(context, R.drawable.purple_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.purple_gradient)
                 }
                 cpmShop.isPMPro -> {
                     shopWidgetRootLayout?.background =
-                            ContextCompat.getDrawable(context, R.drawable.blue_one_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.blue_one_gradient)
                 }
                 cpmShop.isPowerMerchant -> {
                     shopWidgetRootLayout?.background =
-                            ContextCompat.getDrawable(context, R.drawable.green_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.green_gradient)
                 }
                 else -> {
                     shopWidgetRootLayout?.background =
-                            ContextCompat.getDrawable(context, R.drawable.blue_two_gradient)
+                        ContextCompat.getDrawable(context, R.drawable.blue_two_gradient)
                 }
             }
         }
     }
 
     private fun getList(
-            cpmData: CpmData,
-            shopApplink: String,
-            adsClickUrl: String,
-            hasAddToCartButton: Boolean
+        cpmData: CpmData,
+        shopApplink: String,
+        adsClickUrl: String,
+        hasAddToCartButton: Boolean
     ): List<ShopWidgetItem> {
         val items: MutableList<ShopWidgetItem> = mutableListOf()
         items.add(EmptyShopCardModel(cpmData, shopApplink, adsClickUrl))
         if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
             val productCardModelList: ArrayList<ProductCardModel> =
-                getProductCardModels(cpmData.cpm.cpmShop.products, hasAddToCartButton)
+                MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddToCartButton)
             for (i in 0 until productCardModelList.size) {
                 if (i < PRODUCT_CARD_COUNT_THREE) {
                     val product = cpmData.cpm.cpmShop.products[i]
                     val model = ProductItemModel(
-                            cpmData = cpmData,
-                            productCardModel = productCardModelList[i],
-                            applinks = cpmData.cpm.cpmShop.products[i].applinks,
-                            mUrl = cpmData.cpm.cpmShop.products[i].image.m_url,
-                            adsClickUrl = cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
-                            productId = product.id,
-                            productName = product.name,
-                            productMinOrder = product.productMinimumOrder,
-                            productCategory = product.categoryBreadcrumb,
-                            productPrice = product.priceFormat,
-                            shopId = cpmData.cpm.cpmShop.id
+                        cpmData = cpmData,
+                        productCardModel = productCardModelList[i],
+                        applinks = cpmData.cpm.cpmShop.products[i].applinks,
+                        mUrl = cpmData.cpm.cpmShop.products[i].image.m_url,
+                        adsClickUrl = cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
+                        productId = product.id,
+                        productName = product.name,
+                        productMinOrder = product.productMinimumOrder,
+                        productCategory = product.categoryBreadcrumb,
+                        productPrice = product.priceFormat,
+                        shopId = cpmData.cpm.cpmShop.id
                     )
                     items.add(model)
                 }
@@ -256,45 +264,6 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             repeat(PRODUCT_CARD_COUNT_THREE) { items.add(ShopWidgetShimmerUiModel()) }
         }
         return items
-    }
-
-    private fun getProductCardModels(
-            products: List<Product>,
-            hasAddToCartButton: Boolean
-    ): ArrayList<ProductCardModel> {
-        return ArrayList<ProductCardModel>().apply {
-            products.map {
-                add(getProductCardViewModel(it, hasAddToCartButton))
-            }
-        }
-    }
-
-    private fun getProductCardViewModel(
-            product: Product,
-            hasAddToCartButton: Boolean
-    ): ProductCardModel {
-        return ProductCardModel(
-                productImageUrl = product.imageProduct.imageUrl,
-                productName = product.name,
-                discountPercentage = if (product.campaign.discountPercentage != Int.ZERO) "${product.campaign.discountPercentage}%" else "",
-                slashedPrice = product.campaign.originalPrice,
-                formattedPrice = product.priceFormat,
-                reviewCount = product.countReviewFormat.toIntOrZero(),
-                ratingCount = product.productRating,
-                ratingString = product.productRatingFormat,
-                countSoldRating = product.headlineProductRatingAverage,
-                freeOngkir = ProductCardModel.FreeOngkir(
-                        product.freeOngkir.isActive,
-                        product.freeOngkir.imageUrl
-                ),
-                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                    product.labelGroupList.map {
-                        add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
-                    }
-                },
-                hasAddToCartButton = hasAddToCartButton,
-                addToCartButtonType = UnifyButton.Type.MAIN
-        )
     }
 
     private fun initVars() {
@@ -374,19 +343,19 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun setAdsTextColor(variant: Int) {
-        if (variant == TopAdsConstants.LAYOUT_8) {
+        if (variant == LAYOUT_8) {
             shopAdsText?.setTextColor(
-                    ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                    )
+                ContextCompat.getColor(
+                    context,
+                    unifyprinciplesR.color.Unify_NN0
+                )
             )
         } else {
             shopAdsText?.setTextColor(
-                    ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
-                    )
+                ContextCompat.getColor(
+                    context,
+                    unifyprinciplesR.color.Unify_NN950_68
+                )
             )
         }
     }
@@ -404,13 +373,13 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun createLabelVoucher(
-            context: Context?,
-            voucher: String,
-            isFirstItem: Boolean
+        context: Context?,
+        voucher: String,
+        isFirstItem: Boolean
     ): View? {
         val layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
         layoutParams.marginStart = if (isFirstItem) Int.ZERO else 4.toPx()
 
@@ -442,13 +411,13 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun getTextColor(variant: Int): Int {
-        return if (variant == TopAdsConstants.LAYOUT_8) {
+        return if (variant == LAYOUT_8) {
             ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                context,
+                unifyprinciplesR.color.Unify_NN0
             )
         } else {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
         }
     }
 }
