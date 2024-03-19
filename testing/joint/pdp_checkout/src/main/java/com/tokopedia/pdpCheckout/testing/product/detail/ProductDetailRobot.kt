@@ -10,22 +10,18 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.android.material.chip.ChipGroup
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
-import com.tokopedia.unifycomponents.UnifyButton
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf
-import com.tokopedia.unifycomponents.R as unifyComponentsR
 import com.tkpd.atcvariant.R as atcvariantR
+import com.tokopedia.unifycomponents.R as unifyComponentsR
 
 class ProductDetailRobot {
 
@@ -50,23 +46,6 @@ class ProductDetailRobot {
             .perform(click())
     }
 
-    fun clickBeliPakaiOvoOcs() {
-        selectVariantOnVbs(0)
-        onView(withId(atcvariantR.id.btn_buy_variant))
-            .check(matches(isDisplayed()))
-            .check(matches(ViewMatchers.withText("Beli pakai OVO")))
-            .check(
-                matches(
-                    ViewAttributeMatcher {
-                        val buttonUnify = (it as UnifyButton)
-                        buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                    }
-                )
-            )
-
-        onView(withId(atcvariantR.id.btn_buy_variant)).perform(click())
-    }
-
     fun clickBeliLangsungOcc() {
         selectVariantOnVbs(3)
         Thread.sleep(5_000)
@@ -76,28 +55,12 @@ class ProductDetailRobot {
             .perform(click())
     }
 
-    fun clickLihatKeranjangBottomSheetAtc(pdpInterceptor: ProductDetailInterceptor? = null) {
-        pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
-        clickAtcNormal()
-        Thread.sleep(5_000)
-        onView(withId(R.id.recycler_view_add_to_cart_done)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<AddToCartDoneAddedProductViewHolder>(
-                0,
-                clickChildViewWithId(R.id.button_go_to_cart)
-            )
-        )
-    }
-
     fun clickLihatKeranjangToaster(pdpInterceptor: ProductDetailInterceptor? = null) {
         pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
         clickAtcNormal()
         Thread.sleep(1_000)
         onView(withId(unifyComponentsR.id.snackbar_btn))
             .perform(click())
-    }
-
-    fun closeBottomSheetAtc() {
-        onView(withId(R.id.btn_close)).perform(click())
     }
 
     private fun selectVariantOnVbs(index: Int) {
@@ -143,17 +106,5 @@ class ProductDetailRobot {
                 }
             }
         })
-    }
-}
-
-class ViewAttributeMatcher(
-    private val checkAttribute: (View?) -> Boolean
-) : BoundedMatcher<View?, View>(View::class.java) {
-    override fun describeTo(description: Description?) {
-        description?.appendText("Check attribute view")
-    }
-
-    override fun matchesSafely(item: View?): Boolean {
-        return checkAttribute.invoke(item)
     }
 }

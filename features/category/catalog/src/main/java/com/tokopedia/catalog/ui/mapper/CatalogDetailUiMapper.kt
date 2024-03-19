@@ -9,9 +9,13 @@ import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
+import com.tokopedia.catalog.ui.model.ProductListConfig
 import com.tokopedia.catalog.ui.model.ShareProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalogcommon.R as catalogcommonR
+import com.tokopedia.catalog.util.ColorConst.COLOR_DEEP_AZURE
+import com.tokopedia.catalog.util.ColorConst.COLOR_OCEAN_BLUE
+import com.tokopedia.catalog.util.ColorConst.COLOR_WHITE
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
@@ -117,14 +121,25 @@ class CatalogDetailUiMapper @Inject constructor(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): CatalogDetailUiModel {
         val widgets = mapToWidgetVisitables(remoteModel)
+        val headerColorProductList = if (remoteModel.productListCfg.headerColor.isNullOrEmpty()){
+            COLOR_DEEP_AZURE
+        }else{
+            remoteModel.productListCfg.headerColor
+        }
         return CatalogDetailUiModel(
             widgets = widgets,
+            departmentId = remoteModel.basicInfo.departmentID.orEmpty(),
+            brand = remoteModel.basicInfo.brand.orEmpty(),
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
             priceCtaSellerOfferingProperties = mapToPriceCtaSellerOfferingProperties(remoteModel),
             productSortingStatus = remoteModel.basicInfo.productSortingStatus.orZero(),
             catalogUrl = remoteModel.basicInfo.url.orEmpty(),
-            shareProperties = mapToShareProperties(remoteModel, widgets)
+            shareProperties = mapToShareProperties(remoteModel, widgets),
+            productListConfig = ProductListConfig(remoteModel.productListCfg.limit?:"20",
+                headerColorProductList,
+                remoteModel.basicInfo.marketPrice?.getOrNull(Int.ZERO)?.min.orZero(),
+                remoteModel.basicInfo.marketPrice?.getOrNull(Int.ZERO)?.max.orZero())
         )
     }
 
@@ -525,7 +540,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     textReviewColor = getTextColor(isDarkMode),
                     textTitleColor = getTextColor(isDarkMode),
                     textSubTitleColor = getTextColorTrustmaker(isDarkMode),
-                    backgroundColor = if (isDarkMode) "1AAEB2BF" else "FFFFFF",
+                    backgroundColor = if (isDarkMode) COLOR_OCEAN_BLUE else COLOR_WHITE,
                     styleIconPlay = ExpertReviewUiModel.StyleIconPlay(
                         iconColor = colorMapping(
                             isDarkMode,

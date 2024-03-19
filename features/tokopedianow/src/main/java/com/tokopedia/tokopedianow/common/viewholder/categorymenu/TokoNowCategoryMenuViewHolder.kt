@@ -21,8 +21,8 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuI
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuBinding
-import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
-import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
+import com.tokopedia.tokopedianow.category.constant.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokopedianow.category.constant.TOKONOW_CATEGORY_L2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryMenuViewHolder(

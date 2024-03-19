@@ -36,6 +36,7 @@ import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource.Remote
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
@@ -74,23 +75,24 @@ fun NormalPriceComponent(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             NestTypography(
-                data.priceFmt,
+                modifier = Modifier.tag("txt_main_price"),
+                text = data.priceFmt,
                 textStyle = NestTheme.typography.heading3.copy(
                     color = NestTheme.colors.NN._950,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             )
 
             if (freeOngkirImageUrl.isNotEmpty()) {
                 NestImage(
                     source = Remote(freeOngkirImageUrl, customUIError = {
-
                     }),
                     type = NestImageType.Rect(0.dp),
                     modifier = Modifier
                         .height(20.dp)
                         .wrapContentWidth()
                         .padding(start = 8.dp)
+                        .tag("img_free_ongkir")
                 )
             }
         }
@@ -101,7 +103,8 @@ fun NormalPriceComponent(
         ) {
             if (data.slashPriceFmt.isNotEmpty()) {
                 NestTypography(
-                    data.slashPriceFmt,
+                    modifier = Modifier.tag("text_slash_price"),
+                    text = data.slashPriceFmt,
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._600,
                         textDecoration = TextDecoration.LineThrough
@@ -137,10 +140,11 @@ fun PromoPriceHeader(
     ) {
         if (mainIconUrl.isNotEmpty()) {
             NestImage(
-                source = Remote(mainIconUrl,
+                source = Remote(
+                    mainIconUrl,
                     customUIError = {
-
-                    }),
+                    }
+                ),
                 modifier = Modifier
                     .size(24.dp)
                     .padding(end = 4.dp)
@@ -204,11 +208,9 @@ fun PromoPriceFooter(
             )
         }
 
-
         if (boLogo.isNotEmpty()) {
             NestImage(
                 source = Remote(source = boLogo, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier
@@ -218,6 +220,7 @@ fun PromoPriceFooter(
                         end.linkTo(parent.absoluteRight)
                     }
                     .height(18.dp)
+                    .tag("img_free_ongkir")
             )
         }
 
@@ -269,7 +272,6 @@ fun PromoPriceCard(
         if (data.superGraphicIconUrl.isNotEmpty()) {
             NestImage(
                 source = Remote(source = data.superGraphicIconUrl, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier.constrainAs(superGraphic) {

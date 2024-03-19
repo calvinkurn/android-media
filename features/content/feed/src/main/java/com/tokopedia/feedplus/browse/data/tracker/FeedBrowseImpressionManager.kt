@@ -5,6 +5,7 @@ import com.tokopedia.content.analytic.impression.OneTimeImpressionManager
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -19,6 +20,7 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
     private val channelImpressionManagerMap = mutableMapOf<String, OneTimeImpressionManager<String>>()
     private val menuImpressionManagerMap = mutableMapOf<String, OneTimeImpressionManager<String>>()
     private val inspirationBannerImpressionManagerMap = mutableMapOf<String, OneTimeImpressionManager<String>>()
+    private val storyImpressionManagerMap = mutableMapOf<String, OneTimeImpressionManager<String>>()
 
     private val oldWidgetsMap = mutableMapOf<String, FeedBrowseSlotUiModel>()
 
@@ -43,6 +45,11 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
     fun impress(slotId: String, author: AuthorWidgetModel, onImpress: () -> Unit) {
         getChannelImpressionManager(slotId)
             .impress(author.id, onImpress)
+    }
+
+    fun impress(slotId: String, story: StoryNodeModel, onImpress: () -> Unit) {
+        getStoryImpressionManager(slotId)
+            .impress(story.id, onImpress)
     }
 
     fun onNewWidgets(widgets: List<FeedBrowseSlotUiModel>) {
@@ -71,6 +78,12 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
                 is FeedBrowseSlotUiModel.InspirationBanner -> {
                     value.doCompare(entry.key, oldValue)
                 }
+                is FeedBrowseSlotUiModel.Authors -> {
+                    value.doCompare(entry.key, oldValue)
+                }
+                is FeedBrowseSlotUiModel.StoryGroups -> {
+                    value.doCompare(entry.key, oldValue)
+                }
                 else -> {}
             }
         }
@@ -78,7 +91,7 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
 
     private fun doCompare(
         oldData: CategoryInspirationDataContainer,
-        newData: CategoryInspirationDataContainer,
+        newData: CategoryInspirationDataContainer
     ) {
         if (oldData.data.keys != newData.data.keys) {
             resetMenuImpression("")
@@ -122,11 +135,34 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
         }
     }
 
+    private fun FeedBrowseSlotUiModel.Authors.doCompare(slotId: String, oldValue: FeedBrowseSlotUiModel) {
+        if (oldValue !is FeedBrowseSlotUiModel.Authors) {
+            resetChannelImpression(slotId)
+            return
+        }
+        val impressionManager = getChannelImpressionManager(slotId)
+        (oldValue.authorList - authorList.toSet()).forEach {
+            impressionManager.clear(it.id)
+        }
+    }
+
+    private fun FeedBrowseSlotUiModel.StoryGroups.doCompare(slotId: String, oldValue: FeedBrowseSlotUiModel) {
+        if (oldValue !is FeedBrowseSlotUiModel.StoryGroups) {
+            resetStoryImpression(slotId)
+            return
+        }
+        val impressionManager = getStoryImpressionManager(slotId)
+        (oldValue.storyList - storyList.toSet()).forEach {
+            impressionManager.clear(it.id)
+        }
+    }
+
     private fun resetMenuImpression(slotId: String) = getMenuImpressionManager(slotId).reset()
 
     private fun resetChannelImpression(slotId: String) = getChannelImpressionManager(slotId).reset()
 
     private fun resetInspirationBannerImpression(slotId: String) = getInspirationBannerImpressionManager(slotId).reset()
+    private fun resetStoryImpression(slotId: String) = getStoryImpressionManager(slotId).reset()
 
     private fun getChannelImpressionManager(slotId: String): OneTimeImpressionManager<String> {
         return channelImpressionManagerMap[slotId] ?: OneTimeImpressionManager<String>().also {
@@ -146,8 +182,14 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
         }
     }
 
+    private fun getStoryImpressionManager(slotId: String): OneTimeImpressionManager<String> {
+        return storyImpressionManagerMap[slotId] ?: OneTimeImpressionManager<String>().also {
+            storyImpressionManagerMap[slotId] = it
+        }
+    }
+
     private data class CategoryInspirationDataContainer(
         val data: CategoryInspirationMap,
-        val selectedMenuId: String,
+        val selectedMenuId: String
     )
 }
