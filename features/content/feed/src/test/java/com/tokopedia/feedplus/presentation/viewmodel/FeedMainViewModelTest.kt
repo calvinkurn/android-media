@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.data.FeedTabsModelBuilder
@@ -13,6 +12,7 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -166,9 +166,9 @@ class FeedMainViewModelTest {
 
         // then
         val feedTabsData = viewModel.feedTabs.value
-        assert(feedTabsData is NetworkResult.Error)
+        assert(feedTabsData is NetworkResult.Fail)
 
-        val failedTabsData = feedTabsData as NetworkResult.Error
+        val failedTabsData = feedTabsData as NetworkResult.Fail
 
         assert(failedTabsData.error is MessageErrorException)
         assert(failedTabsData.error.message == expectedValue.message)
