@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.developer_options.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -12,7 +15,8 @@ class ShopPageDevMockWidgetAdapter(
     private val listenerShopPageMockWidgetViewHolder: ShopPageMockWidgetViewHolder.Listener? = null
 ) : RecyclerView.Adapter<ShopPageDevMockWidgetAdapter.ShopPageMockWidgetViewHolder>() {
 
-    private var listShopPageMockWidget: List<ShopPageMockWidgetModel> = listOf()
+    private var listShopPageMockWidget: MutableList<ShopPageMockWidgetModel> = mutableListOf()
+    private var originalListShopPageMockWidget: List<ShopPageMockWidgetModel> = listOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopPageMockWidgetViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_shop_page_mock_widget_item, parent, false)
         return ShopPageMockWidgetViewHolder(v, listenerShopPageMockWidgetViewHolder)
@@ -28,16 +32,65 @@ class ShopPageDevMockWidgetAdapter(
         return listShopPageMockWidget.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun setListShopPageMockWidget(listShopPageMockWidget: List<ShopPageMockWidgetModel>) {
-        this.listShopPageMockWidget = listShopPageMockWidget
-        notifyDataSetChanged()
+        val newItems = listShopPageMockWidget
+        this.originalListShopPageMockWidget = listShopPageMockWidget.toList()
+        submitList(newItems)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateIsFestivity(isFestivity: Boolean) {
-        listShopPageMockWidget.forEach { it.updateIsFestivity(isFestivity) }
-        notifyDataSetChanged()
+        val newItems = mutableListOf<ShopPageMockWidgetModel>().apply {
+            addAll(listShopPageMockWidget.map {
+                it.copy().apply {
+                    updateIsFestivity(isFestivity)
+                }
+            })
+        }
+        submitList(newItems)
+    }
+
+    fun filterWidgetByName(widgetName: String) {
+        val newData = if (widgetName.isEmpty()) {
+            originalListShopPageMockWidget
+        } else {
+            originalListShopPageMockWidget.filter { it.getWidgetName().contains(widgetName, ignoreCase = true) } // Filter based on name or any field
+        }
+        submitList(newData)
+    }
+
+    private fun submitList(items: List<ShopPageMockWidgetModel>) {
+        val diffUtilCallback = RvDiffUtilCallback(listShopPageMockWidget, items)
+        val result = DiffUtil.calculateDiff(diffUtilCallback)
+        listShopPageMockWidget.clear()
+        listShopPageMockWidget.addAll(items)
+        result.dispatchUpdatesTo(this)
+    }
+
+    class RvDiffUtilCallback(
+        private val oldItems: List<ShopPageMockWidgetModel>,
+        private val newItems: List<ShopPageMockWidgetModel>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int {
+            return oldItems.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newItems.size
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldItems.getOrNull(oldItemPosition)
+            val newItem = newItems.getOrNull(newItemPosition)
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldItems.getOrNull(oldItemPosition)
+            val newItem = newItems.getOrNull(newItemPosition)
+            return oldItem == newItem
+        }
+
     }
 
     class ShopPageMockWidgetViewHolder(itemView: View, private val listener: Listener? = null) : RecyclerView.ViewHolder(itemView) {

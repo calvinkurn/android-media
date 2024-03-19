@@ -11,11 +11,17 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:orientation="vertical">
-
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/text_field_search_widget_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:text_field_input_type="text"
+            app:text_field_label_static="true"
+            app:text_field_placeholder="Search widget name"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_mock_shop_widget_option"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:layout_marginBottom="8dp"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
