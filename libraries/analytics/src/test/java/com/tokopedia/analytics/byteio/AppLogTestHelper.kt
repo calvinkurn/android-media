@@ -23,6 +23,6 @@ internal val ActivityEnterFrom = object : AppLogInterface {
 }
 
 internal val ActivityShadow = object : AppLogInterface {
-    override fun getPageName(): String = "Shadow"
+    override fun getPageName(): String = ""
     override fun isShadow(): Boolean = true
 }
