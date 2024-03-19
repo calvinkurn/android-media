@@ -27,8 +27,8 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.NULL
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
-import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST
-import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_IMPRESS_MINI_CART_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_CLICK_ADD_TO_CART_ON_BULK_ATC_BUTTON
+import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_IMPRESS_BULK_ATC_BUTTON
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.CATEGORY.EVENT_CATEGORY_TOKONOW_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.TRACKER_ID.TRACKER_ID_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.TRACKER_ID.TRACKER_ID_IMPRESS_MINI_CART_SHOPPING_LIST
@@ -67,7 +67,7 @@ class ShoppingListBottomBulkAtcAnalytic(
     ) {
         val dataLayer = Bundle().apply {
             putString(EVENT, EVENT_ADD_TO_CART)
-            putString(EVENT_ACTION, EVENT_ACTION_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST)
+            putString(EVENT_ACTION, EVENT_ACTION_CLICK_ADD_TO_CART_ON_BULK_ATC_BUTTON)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_TOKONOW_SHOPPING_LIST)
             putString(EVENT_LABEL, String.EMPTY)
             putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST)
@@ -99,7 +99,7 @@ class ShoppingListBottomBulkAtcAnalytic(
     fun trackImpressMiniCartShoppingList() {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_GROCERIES)
-            .setEventAction(EVENT_ACTION_IMPRESS_MINI_CART_SHOPPING_LIST)
+            .setEventAction(EVENT_ACTION_IMPRESS_BULK_ATC_BUTTON)
             .setEventCategory(EVENT_CATEGORY_TOKONOW_SHOPPING_LIST)
             .setEventLabel(String.EMPTY)
             .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_IMPRESS_MINI_CART_SHOPPING_LIST)

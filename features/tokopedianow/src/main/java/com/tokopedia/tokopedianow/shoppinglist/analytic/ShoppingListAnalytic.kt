@@ -38,11 +38,11 @@ class ShoppingListAnalytic @Inject constructor(
         const val EVENT_ACTION_IMPRESS_PRODUCT_ANOTHER_OPTION_BOTTOM_SHEET = "impression product on product card pilihan lain bottom sheet"
         const val EVENT_ACTION_CLICK_PRODUCT_ANOTHER_OPTION_BOTTOM_SHEET = "click product on product card pilihan lain bottom sheet"
         const val EVENT_ACTION_CLICK_ADD_SHOPPING_LIST_PRODUCT_ANOTHER_OPTION_BOTTOM_SHEET = "click list belanja on pilihan lain bottom sheet"
-        const val EVENT_ACTION_IMPRESS_MINI_CART_SHOPPING_LIST = "impression minicart shopping list"
-        const val EVENT_ACTION_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST = "click add to cart on minicart shopping list"
+        const val EVENT_ACTION_IMPRESS_BULK_ATC_BUTTON = "impression bulk atc button"
+        const val EVENT_ACTION_CLICK_ADD_TO_CART_ON_BULK_ATC_BUTTON = "click add to cart on bulk atc button"
         const val EVENT_ACTION_IMPRESS_CART_PRODUCT_WIDGET = "impression product on product add to card widget"
         const val EVENT_ACTION_CLICK_SEE_DETAIL_ON_CART_PRODUCT_WIDGET = "click lihat detail button on product add to card widget"
-        const val EVENT_ACTION_CLICK_ANOTHER_OPTION_ON_SHOPPING_LIST = "click pilihan lain on out of stock widget"
+        const val EVENT_ACTION_CLICK_ANOTHER_OPTION_ON_SHOPPING_LIST = "click pilihan lain on product card shopping list widget"
     }
 
     internal object CATEGORY {
