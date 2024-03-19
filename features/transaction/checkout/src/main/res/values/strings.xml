@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
-    <string name="checkout_module_title_activity_checkout_payment">Beli Langsung</string>
+    <string name="checkout_module_title_activity_checkout_payment">Checkout</string>
     <string name="show_case_finish">Mengerti</string>
     <string name="show_case_prev">Sebelumnya</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
