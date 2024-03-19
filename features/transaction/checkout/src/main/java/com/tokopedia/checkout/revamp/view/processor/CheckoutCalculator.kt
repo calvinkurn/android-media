@@ -483,11 +483,11 @@ class CheckoutCalculator @Inject constructor(
             }
         }
         val checkoutOrderModels = listData.filterIsInstance(CheckoutOrderModel::class.java)
-        val priceTotal: Double = if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+//        val priceTotal: Double = if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+//
+//        val paymentFee: Double = shipmentCost.finalPaymentFee
 
-        val paymentFee: Double = shipmentCost.finalPaymentFee
-
-        val finalPrice = priceTotal + paymentFee
+        val finalPrice = shipmentCost.totalPriceString
 
         payment = payment.copy(
             widget = payment.widget.copy(
@@ -500,16 +500,16 @@ class CheckoutCalculator @Inject constructor(
         )
 
         if ((cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) && payment.widget.isValidStateToContinue) {
-            val priceTotalFormatted =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    finalPrice,
-                    false
-                ).removeDecimalSuffix()
-            shipmentCost = shipmentCost.copy(totalPriceString = priceTotalFormatted)
+//            val priceTotalFormatted =
+//                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+//                    finalPrice,
+//                    false
+//                ).removeDecimalSuffix()
+            shipmentCost = shipmentCost.copy(totalPriceString = finalPrice)
             buttonPaymentModel = buttonPaymentModel.copy(
                 useInsurance = shouldShowInsuranceTnc,
                 enable = !hasLoadingItem,
-                totalPrice = priceTotalFormatted
+                totalPrice = finalPrice
             )
         } else {
             shipmentCost = shipmentCost.copy(totalPriceString = "-")
@@ -520,9 +520,9 @@ class CheckoutCalculator @Inject constructor(
             )
         }
 
-        buttonPaymentModel = buttonPaymentModel.copy(
-            totalPriceNum = finalPrice
-        )
+//        buttonPaymentModel = buttonPaymentModel.copy(
+//            totalPriceNum = finalPrice
+//        )
 
         return listData.toMutableList().apply {
             set(size - PAYMENT_INDEX_FROM_BOTTOM, payment)
@@ -561,6 +561,14 @@ class CheckoutCalculator @Inject constructor(
         }
         val finalPrice = priceTotal + paymentFee
 
+        val priceTotalFormatted =
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                finalPrice,
+                false
+            ).removeDecimalSuffix()
+        shipmentCost = shipmentCost.copy(
+            totalPriceString = priceTotalFormatted
+        )
         buttonPaymentModel = buttonPaymentModel.copy(
             totalPriceNum = finalPrice
         )

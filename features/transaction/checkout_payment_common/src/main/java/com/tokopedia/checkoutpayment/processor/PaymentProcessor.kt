@@ -17,6 +17,8 @@ import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -221,7 +223,7 @@ class PaymentProcessor @Inject constructor(
         if (!tenorList.isNullOrEmpty()) {
             if (selectedTenure > 0) {
                 tenorList.firstOrNull { it.tenure == selectedTenure }?.let {
-                    installmentText = "Cicil ${it.tenure}"
+                    installmentText = "Cicil ${it.tenure}x${CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false).removeDecimalSuffix()}"
                 }
             } else {
                 installmentText = "Bayar Penuh"
@@ -230,7 +232,7 @@ class PaymentProcessor @Inject constructor(
         if (installmentData != null) {
             if (selectedTenure > 0) {
                 installmentData.installmentOptions.firstOrNull { it.installmentTerm == selectedTenure }?.let {
-                    installmentText = "Cicil ${it.installmentTerm}"
+                    installmentText = "Cicil ${it.installmentTerm}x${CurrencyFormatUtil.convertPriceValueToIdrFormat(it.installmentAmountPerPeriod, false).removeDecimalSuffix()}"
                 }
             } else {
                 installmentText = "Bayar Penuh"

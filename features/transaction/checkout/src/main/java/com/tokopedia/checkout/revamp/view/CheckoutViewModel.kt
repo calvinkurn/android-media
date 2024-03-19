@@ -1649,7 +1649,7 @@ class CheckoutViewModel @Inject constructor(
         return ArrayList(promoProcessor.bboPromoCodes)
     }
 
-    private suspend fun validatePromo() {
+    private suspend fun validatePromo(skipEE: Boolean = false) {
         val checkoutItems = listData.value.toMutableList()
         var newItems = promoProcessor.validateUse(
             promoProcessor.generateValidateUsePromoRequest(
@@ -1667,7 +1667,9 @@ class CheckoutViewModel @Inject constructor(
         newItems = checkCrossSellImpressionState(newItems)
         listData.value = newItems
         calculateTotal()
-        sendEEStep3()
+        if (!skipEE) {
+            sendEEStep3()
+        }
     }
 
     fun doValidateUseLogisticPromoNew(
@@ -3158,7 +3160,7 @@ class CheckoutViewModel @Inject constructor(
             }
             updateTotalAndPayment(cost, payment)
             // validate promo after get payment
-            validatePromo()
+            validatePromo(skipEE = true)
             return
         } else {
             payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Normal))
@@ -3287,12 +3289,28 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             listData.value = checkoutItems
-            validatePromo()
+            validatePromo(skipEE = true)
         }
     }
 
     fun chooseInstallmentCC(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
         viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
+            val updateCartResult = cartProcessor.updateCart(
+                cartProcessor.generateUpdateCartRequest(listData.value),
+                "update_payment",
+                UpdateCartPaymentRequest(
+                    gatewayCode = currPayment.gatewayCode,
+                    metadata = currPayment.metadata,
+                    tenureType = selectedInstallment.tenure
+                )
+            )
+            if (!updateCartResult.isSuccess) {
+                pageState.value = CheckoutPageState.Normal
+                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+                return@launch
+            }
             val checkoutItems = listData.value.toMutableList()
             val payment = checkoutItems.payment()!!
             val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
@@ -3310,12 +3328,30 @@ class CheckoutViewModel @Inject constructor(
                 tenorList = installmentList
             )
             listData.value = checkoutItems
-            validatePromo()
+            validatePromo(skipEE = true)
+            pageState.value = CheckoutPageState.Normal
         }
     }
 
     fun chooseInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, silent: Boolean) {
         viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
+            val updateCartResult = cartProcessor.updateCart(
+                cartProcessor.generateUpdateCartRequest(listData.value),
+                "update_payment",
+                UpdateCartPaymentRequest(
+                    gatewayCode = currPayment.gatewayCode,
+                    metadata = currPayment.metadata,
+                    tenureType = selectedInstallment.installmentTerm,
+                    optionId = selectedInstallment.optionId
+                )
+            )
+            pageState.value = CheckoutPageState.Normal
+            if (!updateCartResult.isSuccess) {
+                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+                return@launch
+            }
             val checkoutItems = listData.value.toMutableList()
             val payment = checkoutItems.payment()!!
             val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
@@ -3336,7 +3372,7 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             listData.value = checkoutItems
-            validatePromo()
+            validatePromo(skipEE = true)
         }
     }
 
