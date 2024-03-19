@@ -38,17 +38,15 @@ class TopAdsImageView : AppCompatImageView {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    @JvmField @Inject
-    var viewModelFactory: ViewModelProvider.Factory? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val topAdsImageViewViewModel by lazy {
         findViewTreeViewModelStoreOwner()?.let { viewModelStoreOwner ->
-            viewModelFactory?.let {
-                ViewModelProvider(
-                    viewModelStoreOwner,
-                    it
-                )[TopAdsImageViewViewModel::class.java]
-            }
+            ViewModelProvider(
+                viewModelStoreOwner,
+                viewModelFactory
+            )[TopAdsImageViewViewModel::class.java]
         }
     }
 
