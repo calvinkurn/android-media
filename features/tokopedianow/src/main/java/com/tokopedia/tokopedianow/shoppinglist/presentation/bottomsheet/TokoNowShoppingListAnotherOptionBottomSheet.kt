@@ -136,7 +136,15 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         viewModel.toasterData.collect { data ->
             if (data?.any != null && data.any is ShoppingListHorizontalProductCardItemUiModel && data.event == ToasterModel.Event.ADD_WISHLIST) {
                 showToaster(data) {
-                    viewModel.addToWishlist(data.any)
+                    viewModel.addToWishlist(
+                        onTrackAddToWishlist = {
+                            analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(
+                                product = data.any,
+                                isFromBottomSheet = true
+                            )
+                        },
+                        product = data.any
+                    )
                 }
             }
         }
@@ -213,20 +221,33 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         override fun onClickAddToShoppingList(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(product)
-            viewModel.addToWishlist(product)
+            viewModel.addToWishlist(
+                onTrackAddToWishlist = {
+                    analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(
+                        product = product,
+                        isFromBottomSheet = true
+                    )
+                },
+                product = product
+            )
         }
 
         override fun onClickProduct(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            analytic.shoppingListHorizontalProductCardAnalytic.trackClickProduct(product)
+            analytic.shoppingListHorizontalProductCardAnalytic.trackClickProduct(
+                product = product,
+                isFromBottomSheet = true
+            )
         }
 
         override fun onImpressProduct(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            analytic.shoppingListHorizontalProductCardAnalytic.trackImpressProduct(product)
+            analytic.shoppingListHorizontalProductCardAnalytic.trackImpressProduct(
+                product = product,
+                isFromBottomSheet = true
+            )
         }
     }
 

@@ -143,20 +143,23 @@ class ShoppingListHorizontalProductCardAnalytic(
     ) {
         val eventAction: String
         val trackerId: String
+        val section: String
 
         if (isFromBottomSheet) {
             eventAction = EVENT_ACTION_CLICK_ADD_SHOPPING_LIST_PRODUCT_ANOTHER_OPTION_BOTTOM_SHEET
             trackerId = TRACKER_ID_CLICK_ADD_SHOPPING_LIST_PRODUCT_ANOTHER_OPTION_BOTTOM_SHEET
+            section = ANOTHER_OPTION_IN_BAHASA
         } else {
             eventAction = EVENT_ACTION_CLICK_ADD_SHOPPING_LIST_PRODUCT_RECOMMENDATION
             trackerId = TRACKER_ID_CLICK_ADD_SHOPPING_LIST_PRODUCT_RECOMMENDATION
+            section = RECOMMENDATION_FOR_YOU_IN_BAHASA
         }
 
         trackProduct(
             event = EVENT_SELECT_CONTENT,
             eventAction = eventAction,
             eventLabel = product.id,
-            section = RECOMMENDATION_FOR_YOU_IN_BAHASA,
+            section = section,
             widget = SHOPPING_LIST_IN_BAHASA,
             product = product,
             trackerId = trackerId
