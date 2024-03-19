@@ -49,7 +49,6 @@ import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
 import com.tokopedia.play_common.sse.model.SSEAction
-import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -488,9 +487,7 @@ class PlayUpcomingViewModel @Inject constructor(
                 when (it) {
                     is SSEAction.Message -> handleSSEMessage(it.message, channelId)
                     is SSEAction.Close -> {
-                        if (it.reason == SSECloseReason.ERROR) {
-                            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken)
-                        }
+                        connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken)
                     }
                 }
             }
