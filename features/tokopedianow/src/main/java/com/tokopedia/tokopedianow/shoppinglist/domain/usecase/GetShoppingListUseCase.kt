@@ -43,7 +43,10 @@ class GetShoppingListUseCase @Inject constructor(
         return if (response.header.errorCode.isBlank()) {
             response.data
         } else {
-            throw MessageErrorException(response.header.messages.joinToString(separator = ", "))
+            throw MessageErrorException(
+                response.header.messages.joinToString(separator = ", "),
+                response.header.errorCode
+            )
         }
     }
 }

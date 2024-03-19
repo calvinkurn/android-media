@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 /**
  * NOW! Shopping List Page Tracker
- * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3695
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/4500
  */
 
 class ShoppingListAnalytic @Inject constructor(

@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductRecommendati
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.doIf
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.resetIndices
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
@@ -79,7 +80,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
         )
 
         filteredRecommendedProducts.clear()
-        filteredRecommendedProducts.addAll(newRecommendedProducts)
+        filteredRecommendedProducts.addAll(newRecommendedProducts.resetIndices())
     }
 
     private fun getUpdatedLayout(): List<Visitable<*>> = mutableLayout.toList()
