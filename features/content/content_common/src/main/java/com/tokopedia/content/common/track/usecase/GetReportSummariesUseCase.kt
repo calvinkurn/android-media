@@ -18,7 +18,6 @@ class GetReportSummariesUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<GetReportSummariesUseCase.Param, ReportSummaries.Response>(dispatchers.io) {
 
-
     private val query = GetReportSummariesUseCaseQuery()
 
     @GqlQuery(QUERY_NAME, QUERY)

@@ -427,6 +427,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.getReportSummary(any()) }
         }
     }
 
@@ -448,6 +450,7 @@ class StoriesUnitTest {
                 actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
+            coVerify { mockRepository.getReportSummary(any()) }
         }
     }
 
@@ -466,6 +469,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.getReportSummary(any()) }
         }
     }
 
@@ -483,6 +488,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertFalse()
+
+            coVerify { mockRepository.getReportSummary(any()) }
         }
     }
 
@@ -505,6 +512,8 @@ class StoriesUnitTest {
                 actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.ErrorSetTracking(expectedThrowable))
+
+            coVerify { mockRepository.getReportSummary(any()) }
         }
     }
 

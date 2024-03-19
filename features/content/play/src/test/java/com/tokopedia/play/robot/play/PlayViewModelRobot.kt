@@ -1,6 +1,7 @@
 package com.tokopedia.play.robot.play
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.track.response.ReportSummaries
 import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -118,8 +119,8 @@ class PlayViewModelRobot(
         viewModel.defocusPage(shouldPauseVideo)
     }
 
-    fun setMockResponseReportSummaries(response: ReportSummaries) {
-        coEvery { getReportSummariesUseCase.executeOnBackground() } returns response
+    fun setMockResponseReportSummaries(response: ReportSummaries.Response) {
+        coEvery { getReportSummariesUseCase(GetReportSummariesUseCase.Param("", "")) } returns response
     }
 
     fun setMockResponseIsLike(response: Boolean) {
