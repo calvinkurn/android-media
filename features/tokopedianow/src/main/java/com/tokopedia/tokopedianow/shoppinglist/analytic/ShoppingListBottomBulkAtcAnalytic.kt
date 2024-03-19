@@ -25,7 +25,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.NONE_OTHER
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.NULL
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_IMPRESS_MINI_CART_SHOPPING_LIST
@@ -45,21 +45,20 @@ class ShoppingListBottomBulkAtcAnalytic(
         productId: String,
         productName: String,
         price: String,
-        category: String,
         quantity: Int,
         shopId: String,
     ): Bundle = Bundle().apply {
-        putString(KEY_CATEGORY_ID, NONE_OTHER)
-        putString(KEY_ITEM_BRAND, NONE_OTHER)
-        putString(KEY_ITEM_CATEGORY, category)
+        putString(KEY_CATEGORY_ID, NULL)
+        putString(KEY_ITEM_BRAND, NULL)
+        putString(KEY_ITEM_CATEGORY, NULL)
         putString(KEY_ITEM_ID, productId)
         putString(KEY_ITEM_NAME, productName)
-        putString(KEY_ITEM_VARIANT, NONE_OTHER)
+        putString(KEY_ITEM_VARIANT, NULL)
         putDouble(KEY_PRICE, price.getDigits().orZero().toDouble())
         putString(KEY_QUANTITY, quantity.toString())
         putString(KEY_SHOP_ID, shopId)
-        putString(KEY_SHOP_NAME, NONE_OTHER)
-        putString(KEY_SHOP_TYPE, NONE_OTHER)
+        putString(KEY_SHOP_NAME, NULL)
+        putString(KEY_SHOP_TYPE, NULL)
     }
 
     // Tracker ID: 50056
@@ -82,7 +81,6 @@ class ShoppingListBottomBulkAtcAnalytic(
                             productId = it.productId,
                             productName = it.productName,
                             price = it.productPrice.toString(),
-                            category = it.category,
                             quantity = it.qty,
                             shopId = it.shopId
                         )

@@ -330,6 +330,7 @@ class TokoNowShoppingListFragment :
                 binding.apply {
                     if (!isVisible) {
                         bottomBulkAtcView.show()
+                        analytic.shoppingListBottomBulkAtcAnalytic.trackImpressMiniCartShoppingList()
                         adjustRecyclerViewBottomPadding()
                     }
                     binding.bottomBulkAtcView.bind(

@@ -766,6 +766,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun refreshLayout() {
+        _isPageImpressionTracked.value = false
         loadLoadingState()
         loadLayout()
     }
@@ -989,6 +990,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
+                onTrackAddToWishlist.invoke()
+
                 _toasterData.value = null
 
                 mutableLayout
@@ -1007,7 +1010,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 val response = addToWishlistUseCase.executeOnBackground()
                 if (response is com.tokopedia.usecase.coroutines.Success) {
                     onSuccessAddingToWishlist(product)
-                    onTrackAddToWishlist.invoke()
                 } else {
                     onErrorAddingToWishlist(product)
                 }
@@ -1024,6 +1026,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
+                onTrackDeleteFromWishlist.invoke()
+
                 _toasterData.value = null
 
                 mutableLayout
@@ -1042,7 +1046,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 val response = deleteFromWishlistUseCase.executeOnBackground()
                 if (response is com.tokopedia.usecase.coroutines.Success) {
                     onSuccessDeletingFromWishlist(product)
-                    onTrackDeleteFromWishlist.invoke()
                 } else {
                     onErrorDeletingFromWishlist(product)
                 }
@@ -1074,13 +1077,14 @@ class TokoNowShoppingListViewModel @Inject constructor(
                         )
                     }
 
+                onTrackAddToCartMulti.invoke(addToCartMultiParams)
+
                 val response = addToCartMultiUseCase.invoke(
                     params = ArrayList(addToCartMultiParams)
                 )
 
                 if (response is com.tokopedia.usecase.coroutines.Success && response.data.atcMulti.buyAgainData.success == SUCCESS_STATUS) {
                     onSuccessAddingToCart(addToCartMultiParams.size)
-                    onTrackAddToCartMulti.invoke(addToCartMultiParams)
                 } else if (response is com.tokopedia.usecase.coroutines.Success) {
                     onErrorAddingToCart(response.data.atcMulti.buyAgainData.message.firstOrNull().orEmpty())
                 } else if (response is Fail) {

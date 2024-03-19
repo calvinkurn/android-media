@@ -7,12 +7,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_CLICK_BUY_MORE_ON_TOP_NAV
-import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_CLICK_CLOSE_BUTTON_ON_ANOTHER_OPTION_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.ACTION.EVENT_ACTION_IMPRESS_SHOPPING_LIST_PAGE
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.CATEGORY.EVENT_CATEGORY_TOKONOW_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.TRACKER_ID.TRACKER_ID_CLICK_BUY_MORE_ON_TOP_NAV
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.TRACKER_ID.TRACKER_ID_CLICK_CHECKBOX_TOP_ALL_ON_SHOPPING_LIST
-import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.TRACKER_ID.TRACKER_ID_CLICK_CLOSE_BUTTON_ON_ANOTHER_OPTION_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.TRACKER_ID.TRACKER_ID_IMPRESS_SHOPPING_LIST_PAGE
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,7 +40,6 @@ class ShoppingListAnalytic @Inject constructor(
         const val EVENT_ACTION_CLICK_ADD_SHOPPING_LIST_PRODUCT_ANOTHER_OPTION_BOTTOM_SHEET = "click list belanja on pilihan lain bottom sheet"
         const val EVENT_ACTION_IMPRESS_MINI_CART_SHOPPING_LIST = "impression minicart shopping list"
         const val EVENT_ACTION_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST = "click add to cart on minicart shopping list"
-        const val EVENT_ACTION_CLICK_CLOSE_BUTTON_ON_ANOTHER_OPTION_BOTTOM_SHEET = "click close button on pilihan lain bottom sheet"
         const val EVENT_ACTION_IMPRESS_CART_PRODUCT_WIDGET = "impression product on product add to card widget"
         const val EVENT_ACTION_CLICK_SEE_DETAIL_ON_CART_PRODUCT_WIDGET = "click lihat detail button on product add to card widget"
         const val EVENT_ACTION_CLICK_ANOTHER_OPTION_ON_SHOPPING_LIST = "click pilihan lain on out of stock widget"
@@ -68,7 +65,6 @@ class ShoppingListAnalytic @Inject constructor(
         const val TRACKER_ID_CLICK_ADD_SHOPPING_LIST_PRODUCT_ANOTHER_OPTION_BOTTOM_SHEET = "50065"
         const val TRACKER_ID_IMPRESS_MINI_CART_SHOPPING_LIST = "50055"
         const val TRACKER_ID_CLICK_ADD_TO_CART_ON_MINI_CART_SHOPPING_LIST = "50056"
-        const val TRACKER_ID_CLICK_CLOSE_BUTTON_ON_ANOTHER_OPTION_BOTTOM_SHEET = "50068"
         const val TRACKER_ID_IMPRESS_CART_PRODUCT_WIDGET = "50069"
         const val TRACKER_ID_CLICK_SEE_DETAIL_ON_CART_PRODUCT_WIDGET = "50070"
         const val TRACKER_ID_CLICK_ANOTHER_OPTION_ON_SHOPPING_LIST = "50059"
@@ -76,8 +72,12 @@ class ShoppingListAnalytic @Inject constructor(
 
     internal object VALUE {
         const val SHOPPING_LIST = "shopping list"
-        const val RECOMMENDATION_FOR_YOU = "rekomendasi untukmu"
+        const val RECOMMENDATION_FOR_YOU_IN_BAHASA = "rekomendasi untukmu"
         const val PRODUCT_CARD = "product card"
+        const val SHOPPING_LIST_IN_BAHASA = "list belanja"
+        const val CHECKLIST_BOX = "checklist box"
+        const val DELETE = "delete"
+        const val ANOTHER_OPTION_IN_BAHASA = "pilihan lain"
     }
 
     val shoppingListHorizontalProductCardAnalytic: ShoppingListHorizontalProductCardAnalytic
@@ -125,20 +125,6 @@ class ShoppingListAnalytic @Inject constructor(
             .setEventCategory(EVENT_CATEGORY_TOKONOW_SHOPPING_LIST)
             .setEventLabel(String.EMPTY)
             .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_CLICK_CHECKBOX_TOP_ALL_ON_SHOPPING_LIST)
-            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
-            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            .build()
-            .send()
-    }
-
-    // Tracker ID: 50068
-    fun trackClickCloseButtonOnAnotherOptionBottomSheet() {
-        Tracker.Builder()
-            .setEvent(EVENT_CLICK_GROCERIES)
-            .setEventAction(EVENT_ACTION_CLICK_CLOSE_BUTTON_ON_ANOTHER_OPTION_BOTTOM_SHEET)
-            .setEventCategory(EVENT_CATEGORY_TOKONOW_SHOPPING_LIST)
-            .setEventLabel(String.EMPTY)
-            .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_CLICK_CLOSE_BUTTON_ON_ANOTHER_OPTION_BOTTOM_SHEET)
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()

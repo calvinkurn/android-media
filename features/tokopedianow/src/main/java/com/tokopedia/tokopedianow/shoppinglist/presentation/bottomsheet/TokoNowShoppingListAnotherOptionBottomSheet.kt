@@ -236,7 +236,6 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         onClickCloseListener: () -> Unit
     ) {
         setOnDismissListener {
-            analytic.trackClickCloseButtonOnAnotherOptionBottomSheet()
             val isDataUpdated = viewModel.availableProducts != availableProducts
             if (isDataUpdated) onClickCloseListener.invoke()
             dismiss()
