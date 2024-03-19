@@ -18,10 +18,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- tokopedia://user/login -->
+                <!-- tokopedia://login-sdk -->
                 <data
-                    android:host="@string/host_user"
-                    android:pathPattern="@string/applink_login"
+                    android:pathPattern="/login-sdk"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
