@@ -2,7 +2,6 @@ package com.tokopedia.play.robot.play
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository

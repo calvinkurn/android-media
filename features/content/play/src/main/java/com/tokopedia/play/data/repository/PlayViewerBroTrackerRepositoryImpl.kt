@@ -3,7 +3,6 @@ package com.tokopedia.play.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.domain.repository.PlayViewerBroTrackerRepository
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
