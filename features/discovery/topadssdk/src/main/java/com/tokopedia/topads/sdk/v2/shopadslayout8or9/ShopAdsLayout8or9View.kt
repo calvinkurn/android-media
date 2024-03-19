@@ -7,6 +7,7 @@ import com.tokopedia.topads.sdk.common.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithThreeProductModel
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.widget.ITEM_3
 import com.tokopedia.topads.sdk.v2.base.BaseBannerAdsRendering
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
@@ -85,7 +86,7 @@ class ShopAdsLayout8or9View(
             )
         )
         if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
-            val productCardModelList = getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
+            val productCardModelList = MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
             for (i in 0 until productCardModelList.size) {
                 if (i < ITEM_3) {
                     val product = shop.products[i]

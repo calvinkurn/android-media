@@ -27,6 +27,7 @@ import com.tokopedia.topads.sdk.view.reimagine.BannerAdsAdapterTypeFactoryReimag
 import com.tokopedia.topads.sdk.widget.ITEM_3
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper
@@ -242,7 +243,7 @@ class ShopAdsProductListDefaultView(
         val shop = cpmData.cpm.cpmShop
 
         if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
-            val productCardModelList = getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
+            val productCardModelList = MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
 
             setProductCardItems(productCardModelList, shop, cpmData, items)
 
@@ -271,7 +272,7 @@ class ShopAdsProductListDefaultView(
             )
         )
         if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
-            val productCardModelList = getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
+            val productCardModelList = MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
             setProductCardItems(productCardModelList, shop, cpmData, items)
 
             if (productCardModelList.size < ITEM_3) {
