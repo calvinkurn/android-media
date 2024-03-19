@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
 import com.tokopedia.discovery2.di.getSubComponent
@@ -183,16 +184,21 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
 
                         val tab = tabsHolder.tabLayout.newTab()
                         ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
-                        tab.customView = CustomViewCreator.getCustomViewObject(
+                        val customViewObject = CustomViewCreator.getCustomViewObject(
                             itemView.context,
                             ComponentsList.PlainTabItem,
                             tabItem,
                             fragment
                         )
-                        tabsHolder.tabLayout.addTab(
-                            tab,
-                            isSelected
-                        )
+
+                        tab.customView = customViewObject
+
+                        tabsHolder.tabLayout.addTab(tab, isSelected)
+
+                        if (!isSelected) {
+                            val selectedTabItem = it[selectedPosition]
+                            selectedTabItem.setUnselectedTabColor(customViewObject)
+                        }
                     }
                 }
 
@@ -224,6 +230,13 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         }
     }
 
+    private fun ComponentsItem.setUnselectedTabColor(customViewObject: CustomViewCreator) {
+        val inactiveColor = data?.firstOrNull()?.inactiveFontColor
+
+        (customViewObject.viewModel as? PlainTabItemViewModel)
+            ?.setUnselectedTabColor(inactiveColor)
+    }
+
     private fun setTabsHolderShade() {
         tabsViewModel?.let {
             if (it.isBackgroundAvailable()) {
@@ -242,28 +255,13 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         if (!isFromCategory) {
             scrollToCurrentTabPositionRunnable = Runnable {
                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                tabsViewModel?.apply {
-                    switchThematicHeaderData(selectedPosition.inc())
-                    setInactiveColorTab(selectedPosition)
-                }
+                tabsViewModel?.switchThematicHeaderData(selectedPosition.inc())
             }
             scrollToCurrentTabPositionRunnable?.apply {
                 scrollToCurrentTabPositionHandler.removeCallbacks(this)
                 scrollToCurrentTabPositionHandler.postDelayed(
                     this,
                     DELAY_400
-                )
-            }
-        }
-    }
-
-    private fun TabsViewModel.setInactiveColorTab(selectedPosition: Int) {
-        if (selectedPosition == 0) {
-            val tabsComponentId = components.getComponentsItem()?.map { it.id }
-            if (!tabsComponentId.isNullOrEmpty()) {
-                setInactiveTabColor(
-                    selectedPosition,
-                    tabsComponentId
                 )
             }
         }
@@ -359,12 +357,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             }
 
             tabsViewModel.components.getComponentsItem()?.let {
-                setInactiveTabColor(tab.position, it.map { component -> component.id })
+                resetUnselectedTabColor(tab.position, it.map { component -> component.id })
             }
         }
     }
 
-    private fun setInactiveTabColor(
+    private fun resetUnselectedTabColor(
         selectedTabPosition: Int,
         tabsComponentId: List<String>
     ) {
