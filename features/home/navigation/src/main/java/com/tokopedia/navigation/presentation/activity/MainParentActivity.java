@@ -332,7 +332,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         sendNotificationUserSetting();
         showDarkModeIntroBottomSheet();
-//        throw new IllegalArgumentException("This is for testing slardar");
+        //throw new IllegalArgumentException("Slardar Illegal Argument Test");
 
     }
 
