@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.compose.ui.text.input.ImeOptions
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -57,6 +56,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import java.util.ArrayList
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @FlowPreview
 class VoucherSettingFragment : BaseDaggerFragment() {
@@ -122,7 +122,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         context?.let {
             ContextCompat.getColor(
                 it,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                unifyprinciplesR.color.Unify_Static_Black
             )
         }
     }
@@ -130,7 +130,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         context?.let {
             ContextCompat.getColor(
                 it,
-                com.tokopedia.unifyprinciples.R.color.Green_G500
+                unifyprinciplesR.color.Unify_GN500
             )
         }
     }
@@ -1380,7 +1380,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun ChipsUnify.disable() {
         val color = ContextCompat.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            unifyprinciplesR.color.Unify_NN400
         )
         chipType = ChipsUnify.TYPE_DISABLE
         chip_image_icon.setColorFilter(color)
