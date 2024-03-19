@@ -60,7 +60,7 @@
         android:id="@+id/group_review_interaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="layout_like_review, iv_review_menu, iv_review_share" />
+        app:constraint_referenced_ids="layout_like_review, iv_review_menu" />
 
     <include
         android:id="@+id/layout_author_review"
