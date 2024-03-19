@@ -18,6 +18,8 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.product.detail.common.R as productdetailcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yehezkiel on 17/05/21
@@ -32,16 +34,16 @@ class PartialAtcButtonView private constructor(
     private val btnChat = view.findViewById<UnifyButton>(R.id.btn_chat_variant)
 
     private var isShopOwner: Boolean = false
-    val shadowDrawable: Drawable? by lazy {
+    private val shadowDrawable: Drawable? by lazy {
         view.generateBackgroundWithShadow(
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
-            topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            topRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            elevation = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
-            shadowRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
+            backgroundColor = unifyprinciplesR.color.Unify_Background,
+            shadowColor = unifyprinciplesR.color.Unify_NN950_20,
+            topLeftRadius = unifyprinciplesR.dimen.layout_lvl0,
+            topRightRadius = unifyprinciplesR.dimen.layout_lvl0,
+            bottomLeftRadius = unifyprinciplesR.dimen.layout_lvl0,
+            bottomRightRadius = unifyprinciplesR.dimen.layout_lvl0,
+            elevation = unifyprinciplesR.dimen.spacing_lvl1,
+            shadowRadius = unifyprinciplesR.dimen.spacing_lvl1,
             shadowGravity = Gravity.TOP
         )
     }
@@ -174,7 +176,7 @@ class PartialAtcButtonView private constructor(
         btnBuy.run {
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN)
-            text = context.getString(com.tokopedia.product.detail.common.R.string.buy_now)
+            text = context.getString(productdetailcommonR.string.buy_now)
             setOnClickListener {
                 buttonListener.buyNowClick(text.toString())
             }
@@ -183,7 +185,7 @@ class PartialAtcButtonView private constructor(
         btnAtc.run {
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN)
-            text = context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+            text = context.getString(productdetailcommonR.string.plus_product_to_cart)
             setOnClickListener {
                 buttonListener.addToCartClick(text.toString())
             }
@@ -194,7 +196,7 @@ class PartialAtcButtonView private constructor(
 
     private fun showNoStockButton() {
         btnBuy.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.empty_stock_atc)
+            text = context.getString(productdetailcommonR.string.empty_stock_atc)
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_DISABLE)
         }

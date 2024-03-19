@@ -45,7 +45,6 @@ class AtcAnimator(private val context: Context) {
         private val TARGET_RADIUS = RADIUS_DEFAULT * 4
         private const val SCALE_AFTER_IN_CART = 0.05f
         private val IMAGE_SIZE_AFTER_IN_CENTER = 218f.dpToPx()
-        private const val START_DELAY_SECOND_ANIMATION = 150L
 
         private const val PROP_TRANSLATION_X = "translationX"
         private const val PROP_TRANSLATION_Y = "translationY"
@@ -60,7 +59,6 @@ class AtcAnimator(private val context: Context) {
     private val mBinding by lazyThreadSafetyNone {
         AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context)).apply {
             with(cardImage) {
-                radius = RADIUS_DEFAULT
                 borderWidth = STROKE_WIDTH
                 cardBorderColor = context.getColorChecker(unifyprinciplesR.color.Unify_NN50)
                 cardType = CardUnify2.TYPE_BORDER
@@ -91,7 +89,7 @@ class AtcAnimator(private val context: Context) {
         AnimatorSet().apply {
             interpolator = mBezierPath
             duration = UnifyMotion.T5
-            startDelay = START_DELAY_SECOND_ANIMATION
+            startDelay = UnifyMotion.T3.half
         }
     }
 
@@ -225,7 +223,7 @@ class AtcAnimator(private val context: Context) {
         )
         val alpha = animateBy(
             property = PROP_ALPHA,
-            from = Float.ZERO,
+            from = Float.ONE.half,
             to = Float.ONE
         )
         val translateX = animateBy(
