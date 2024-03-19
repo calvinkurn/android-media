@@ -16,7 +16,7 @@ class AppLogAnalyticsTest {
     }
 
     @Test
-    fun `when data is pushed multiple then data on first stack can be obtained`() {
+    fun `given data is pushed multiple then data on first stack can be obtained`() {
         val expected = "search123"
         SUT.pushPageData(ActivityBasicOne)
         SUT.putPageData(SEARCH_ID, expected)
@@ -29,7 +29,7 @@ class AppLogAnalyticsTest {
     }
 
     @Test
-    fun `when enterFrom activity is pushed then data can be obtained`() {
+    fun `given enterFrom activity is pushed then data can be obtained`() {
         val expected = "Page EnterFrom"
         SUT.pushPageData(ActivityEnterFrom)
         SUT.pushPageData(ActivityBasicOne)
@@ -40,7 +40,7 @@ class AppLogAnalyticsTest {
     }
 
     @Test
-    fun `when stack is popped with previous shadow then shadow activity is popped`() {
+    fun `given stack is popped with previous shadow then shadow activity is popped`() {
         SUT.pushPageData(ActivityBasicOne)
         SUT.pushPageData(ActivityShadow)
         SUT.pushPageData(ActivityBasicTwo)
