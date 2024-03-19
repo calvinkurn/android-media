@@ -405,7 +405,8 @@ class DiscoveryPageDataMapper(
 
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
 
-        if (component.properties?.background == TAB_DEFAULT_BACKGROUND) {
+        val hasPlainBackground = component.properties?.background == TAB_DEFAULT_BACKGROUND
+        if (component.name == ComponentNames.Tabs.componentName && hasPlainBackground) {
             component.name = ComponentNames.PlainTab.componentName
         }
 
