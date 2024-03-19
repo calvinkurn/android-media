@@ -78,6 +78,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
@@ -1451,12 +1452,12 @@ class AddEditProductDetailFragment :
             viewModel.validateProductNameInputFromNetwork(productNameField.getText())
         } else {
             submitButton?.isLoading = false
-            view?.post {
+            view?.postDelayed({
                 scrollViewParent?.smoothScrollTo(Int.ZERO, productSpecificationLayout?.top.orZero())
                 productSpecificationTextView?.text = MethodChecker.fromHtml(
                     getString(R.string.error_specification_signal_status_empty_red)
                 )
-            }
+            }, DEBOUNCE_DELAY_MILLIS)
         }
     }
 
