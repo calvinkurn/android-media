@@ -6,6 +6,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewParent
 import androidx.annotation.LayoutRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +42,7 @@ import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationCompo
 import com.tokopedia.feedplus.presentation.util.animation.FeedPostAlphaAnimator
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -45,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -92,7 +98,6 @@ class FeedPostImageViewHolder(
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
-    private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
     private val commentButtonView = FeedCommentButtonView(binding.feedCommentButton, listener)
@@ -108,6 +113,8 @@ class FeedPostImageViewHolder(
 
     private var mData: FeedCardImageContentModel? = null
 
+    private var isSelected by mutableStateOf(false)
+
     private val opacityViewList = listOf(
         binding.layoutAuthorInfo.root,
         binding.tvFeedCaption,
@@ -119,7 +126,7 @@ class FeedPostImageViewHolder(
         binding.btnDisableClearMode,
         binding.postLikeButton.root,
         binding.feedCommentButton.root,
-        binding.productTagView.root,
+        binding.productTagView.rootView,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
         binding.feedCampaignRibbon.root
@@ -138,11 +145,11 @@ class FeedPostImageViewHolder(
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
                 binding.root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
             indicatorFeedContent.inactiveColor = ContextCompat.getColor(
                 binding.root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+                unifyprinciplesR.color.Unify_Static_White_44
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
@@ -153,7 +160,7 @@ class FeedPostImageViewHolder(
 
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         mData?.let {
-                            updateProductTagText(it)
+                            updateProductTagText(it, false)
                             updateCampaignAvailability(it)
                         }
                     }
@@ -209,6 +216,7 @@ class FeedPostImageViewHolder(
                     MotionEvent.ACTION_DOWN -> {
                         firstX = event.x
                     }
+
                     MotionEvent.ACTION_UP -> {
                         secondX = event.x
                         val deltaX = secondX - firstX
@@ -229,6 +237,7 @@ class FeedPostImageViewHolder(
         }
 
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -375,10 +384,11 @@ class FeedPostImageViewHolder(
     }
 
     private fun onSelected(data: FeedCardImageContentModel) {
+        isSelected = true
         campaignView.resetView()
         campaignView.startAnimation()
         sendImpressionTracker(data)
-        updateProductTagText(data)
+        updateProductTagText(data, true)
         onScrolling(false)
 
         isAutoSwipeOn = true
@@ -386,6 +396,8 @@ class FeedPostImageViewHolder(
     }
 
     private fun onNotSelected() {
+        isSelected = false
+
         job?.cancel()
         campaignView.resetView()
         hideClearView()
@@ -394,31 +406,36 @@ class FeedPostImageViewHolder(
         isAutoSwipeOn = false
     }
 
-    private fun updateProductTagText(element: FeedCardImageContentModel) {
+    private fun updateProductTagText(element: FeedCardImageContentModel, isFocused: Boolean) {
         val index = layoutManager.findFirstVisibleItemPosition()
+
+        /**
+         * Condition: [check if its not OOB & tagging is not empty]
+         * 1. Only one product and first index of tagging is == product (not oob)
+         * 2.(or Else) bind Regular Text
+         *      1. If not met condition; hide
+         */
 
         if (index in PRODUCT_COUNT_ZERO until element.media.size) {
             element.media[index].let {
                 if (it.tagging.isNotEmpty()) {
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
-                        productTagView.bindText(
+                        setupProductLabel(
                             listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
-                            element.totalProducts
+                            element.totalProducts,
+                            element.id
                         )
                     } else {
-                        productTagView.bindText(
-                            element.products,
-                            element.totalProducts
-                        )
+                        setupProductLabel(element.products, element.totalProducts, element.id)
                     }
                 } else {
-                    productTagView.showClearView()
+                    binding.productTagView.gone()
                 }
             }
         }
 
         if (isInClearView) {
-            productTagView.showClearView()
+            binding.productTagView.gone()
         }
     }
 
@@ -501,19 +518,7 @@ class FeedPostImageViewHolder(
             } else {
                 model.products
             }
-
-        productTagView.bindData(
-            postId = model.id,
-            author = model.author,
-            postType = model.typename,
-            isFollowing = model.followers.isFollowed,
-            campaign = model.campaign,
-            products = products,
-            totalProducts = model.totalProducts,
-            trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition,
-            topAdsTrackerData = topAdsTrackerDataModel
-        )
+        setupProductLabel(products, model.totalProducts, model.id)
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -528,7 +533,7 @@ class FeedPostImageViewHolder(
             topAdsTrackerData = topAdsTrackerDataModel,
             contentType = model.contentType
         )
-        updateProductTagText(model)
+        updateProductTagText(model, false)
     }
 
     private fun bindIndicators(imageSize: Int) {
@@ -599,7 +604,7 @@ class FeedPostImageViewHolder(
             menuButton.hide()
             shareButton.hide()
             productTagButton.root.hide()
-            productTagView.root.hide()
+            productTagView.rootView.hide()
             overlayTop.root.hide()
             overlayBottom.root.hide()
             overlayRight.root.hide()
@@ -628,8 +633,7 @@ class FeedPostImageViewHolder(
                 }
             }
         }
-
-        productTagView.showIfPossible()
+        binding.productTagView.rootView.show()
         productButtonView.showIfPossible()
     }
 
@@ -694,6 +698,57 @@ class FeedPostImageViewHolder(
         if (element.isTopAds) {
             if (topAdsTrackerDataModel == null) setTopAdsTrackerModel(element)
             topAdsTrackerDataModel?.let { listener.onTopAdsClick(it) }
+        }
+    }
+
+    private fun setupProductLabel(
+        products: List<FeedCardProductModel>,
+        totalProducts: Int,
+        id: String,
+    ) {
+        if (mData == null) return
+        binding.productTagView.setContent {
+            ProductTagItems(
+                products = products,
+                totalProducts = totalProducts,
+                key = id,
+                isFocused = isSelected,
+                onProductLabelClick = {
+                    mData?.let { element ->
+                        listener.onProductTagViewClicked(
+                            element.id,
+                            element.author,
+                            element.type,
+                            element.followers.isFollowed,
+                            element.campaign,
+                            element.hasVoucher,
+                            element.products,
+                            element.totalProducts,
+                            trackerDataModel,
+                            absoluteAdapterPosition
+                        )
+                    }
+                },
+                onAtcClick = {
+                    listener.addToCartHighlight(
+                        it,
+                        mData?.campaign ?: FeedCardCampaignModel(),
+                        absoluteAdapterPosition
+                    )
+
+                },
+                onProductHighlightClose = {
+                    listener.onHighlightClose(trackerDataModel)
+                },
+                impressHighlight = {
+                   listener.impressHighlightCard(it, trackerDataModel)
+                },
+                onProductClick = {
+                    listener.onHighlightClick(
+                        it,
+                        absoluteAdapterPosition
+                    )
+                })
         }
     }
 

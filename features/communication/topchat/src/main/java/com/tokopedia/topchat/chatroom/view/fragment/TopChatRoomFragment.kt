@@ -20,8 +20,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +39,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -70,6 +74,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -78,6 +83,7 @@ import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -108,6 +114,7 @@ import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
+import com.tokopedia.topchat.chatroom.data.TopChatRoomOrderWidgetTypeEnum
 import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.di.ChatComponent
@@ -126,6 +133,7 @@ import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.util.TopChatRoomRedirectionUtil
+import com.tokopedia.topchat.chatroom.view.TopChatRoomAction
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -144,6 +152,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopChatRoomOrderCancellationListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
@@ -181,6 +190,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
@@ -213,6 +223,7 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -254,7 +265,8 @@ open class TopChatRoomFragment :
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
     BannedChatMessageViewHolder.TopChatMessageCensorListener,
-    StoriesWidgetListener {
+    StoriesWidgetListener,
+    TopChatRoomOrderCancellationListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -1285,7 +1297,8 @@ open class TopChatRoomFragment :
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this, session
+            this, this, this, this,
+            session
         )
     }
 
@@ -1598,6 +1611,7 @@ open class TopChatRoomFragment :
             REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
             REQUEST_REVIEW -> onReturnFromReview(data, resultCode)
             REQUEST_UPDATE_STOCK -> onReturnFromUpdateStock(data, resultCode)
+            REQUEST_CODE_ORDER_CANCELLATION -> onReturnFromOrderCancellation(data)
         }
     }
 
@@ -3223,6 +3237,31 @@ open class TopChatRoomFragment :
                 webSocketViewModel.roomMetaData = it
             }
         }
+
+        setupWebSocketFlowObserver()
+    }
+
+    private fun setupWebSocketFlowObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    observeChatRoomUiState()
+                }
+            }
+        }
+        webSocketViewModel.setupViewModelObserver()
+    }
+
+    private suspend fun observeChatRoomUiState() {
+        webSocketViewModel.chatRoomUiState.collectLatest {
+            if (it.isRefresh) {
+                viewModel.attachments.clear()
+                topchatViewState?.hideReplyBox()
+                resetItemList()
+                loadInitialData()
+                webSocketViewModel.processAction(TopChatRoomAction.PageRefreshed)
+            }
+        }
     }
 
     private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
@@ -3667,6 +3706,33 @@ open class TopChatRoomFragment :
         }
     }
 
+    override fun onClickOrderCancellationWidget(uiModel: TopChatRoomOrderCancellationUiModel?) {
+        if (uiModel == null) return
+        TopChatAnalyticsKt.eventClickOrderManagementWidget(
+            isSeller = isSeller(),
+            widgetType = TopChatRoomOrderWidgetTypeEnum.CANCEL,
+            orderId = uiModel.orderId,
+            orderStatus = uiModel.orderStatus,
+            invoiceId = uiModel.invoiceId
+        )
+        context?.let {
+            val appLink = uiModel.appLink.replace("#", "") // Remove all # for app link because app link cannot read #
+            val intent = RouteManager.getIntent(it, appLink)
+            startActivityForResult(intent, REQUEST_CODE_ORDER_CANCELLATION)
+        }
+    }
+
+    private fun onReturnFromOrderCancellation(data: Intent?) {
+        val isSuccess = data?.getBooleanExtra(INTENT_RESULT_SUCCESS, false).orFalse()
+        val message = data?.getStringExtra(INTENT_RESULT_MESSAGE).toBlankOrString()
+        if (message.isNotBlank()) {
+            when (isSuccess) {
+                true -> showToasterMsg(message)
+                false -> showToasterError(message)
+            }
+        }
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val BS_CHAT_BUBBLE_MENU = "CHAT_BUBBLE_MENU"
@@ -3682,6 +3748,7 @@ open class TopChatRoomFragment :
         private const val REQUEST_REVIEW = 119
         private const val REQUEST_UPDATE_STOCK = 120
         private const val REQUEST_CODE_IMAGE_MEDIA_PICKER = 121
+        private const val REQUEST_CODE_ORDER_CANCELLATION = 122
 
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
