@@ -827,6 +827,7 @@ class ProductListFragment :
 
     override fun onProductImpressedByteIO(item: ProductItemDataView?) {
         item ?: return
+        if(item.byteIOTrackingData.searchId != presenter?.searchId) return
         AppLogSearch.eventSearchResultShow(item.asByteIOSearchResult(null))
         AppLogSearch.eventProductShow(item.asByteIOProduct())
     }
