@@ -601,6 +601,7 @@ object CartUiModelMapper {
             cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
             showBmGmBottomDivider = shouldShowBmGmBottomDivider
             cartProductLabelData = mapProductLabel(product.productLabel)
+            isEnableCartVariant = product.isEnableCartVariant
         }
     }
 
