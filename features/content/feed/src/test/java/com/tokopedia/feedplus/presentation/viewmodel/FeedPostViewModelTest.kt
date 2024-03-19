@@ -89,6 +89,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -125,7 +126,6 @@ class FeedPostViewModelTest {
     private val mvcSummaryUseCase: MVCSummaryUseCase = mockk()
     private val topAdsAddressHelper: TopAdsAddressHelper = mockk()
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
     private val postReportUseCase: PostUserReportUseCase = mockk()
@@ -159,7 +159,6 @@ class FeedPostViewModelTest {
             topAdsAddressHelper = topAdsAddressHelper,
             getCountCommentsUseCase = getCountCommentsUseCase,
             affiliateCookieHelper = affiliateCookieHelper,
-            trackVisitChannelUseCase = trackVisitChannelUseCase,
             trackReportTrackViewerUseCase = trackReportViewerUseCase,
             submitReportUseCase = submitReportUseCase,
             getReportUseCase = getReportListUseCase,
@@ -1199,22 +1198,22 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun onTrackChannelPerformance() {
+    fun onTrackChannelProduct() {
         coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
         coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
 
         // when
-        viewModel.trackChannelPerformance(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+        viewModel.trackPerformance(getDummyFeedModel().items[1] as FeedCardVideoContentModel, BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
+
+        coVerify { trackReportViewerUseCase.executeOnBackground() }
     }
 
     @Test
-    fun onTrackVisiChannel() {
-        coEvery { trackVisitChannelUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { trackVisitChannelUseCase.executeOnBackground() } returns TrackVisitChannelResponse.Response(
-            TrackVisitChannelResponse()
-        )
+    fun onTrackVisitChannel() {
+        coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
+        viewModel.trackPerformance(getDummyFeedModel().items[1] as FeedCardVideoContentModel, BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
 
-        viewModel.trackVisitChannel(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+        coVerify { trackReportViewerUseCase.executeOnBackground() }
     }
 
     @Test

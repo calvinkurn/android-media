@@ -778,7 +778,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun trackVisitContent() {
-        viewModelScope.launchCatchError(block = { repository.getReportSummary(storyId)}) {}
+        viewModelScope.launchCatchError(block = { repository.trackVisitContent(storyId)}) {}
     }
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
