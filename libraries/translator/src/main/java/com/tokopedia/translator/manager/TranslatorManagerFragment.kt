@@ -13,14 +13,13 @@
  */
 package com.tokopedia.translator.manager
 
-import android.app.Activity
 import android.app.Application
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
-import com.tokopedia.translator.callback.ActivityTranslatorCallbacks
 import com.tokopedia.translator.repository.model.TextViewUpdateModel
 import com.tokopedia.translator.repository.source.GetDataService
 import com.tokopedia.translator.repository.source.RetrofitClientInstance
@@ -37,31 +36,29 @@ import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
-class TranslatorManager() : CoroutineScope {
+class TranslatorManagerFragment() : CoroutineScope {
 
     private val gson = Gson()
 
     private var mApplication: Application? = null
-    private var mSelectors = HashMap<String, String>()
     private var mStringPoolManager: StringPoolManager = StringPoolManager()
-    private var API_KEY: String? = null
+
+    private val service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
+
+    private var destinationLang: String = "en"
 
     private var isTranslationInProgress = false
 
-    var destinationLang: String = "en"
-
-    constructor(application: Application, apiKey: String) : this() {
+    constructor(application: Application) : this() {
         mApplication = application
-        API_KEY = SharedPrefsUtils.getStringPreference(application, API_KEY)
         SharedPrefsUtils.setStringPreference(application, SOURCE_LANGUAGE, "Indonesian-id")
 
-        if (API_KEY.isNullOrBlank()) {
-            API_KEY = apiKey
-        }
-
         try {
-            destinationLang = mApplication?.let { app ->
-                SharedPrefsUtils.getStringPreference(app.applicationContext, DESTINATION_LANGUAGE)?.split(DELIM_LANG_CODE.toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()?.getOrNull(1)
+            destinationLang = mApplication?.let { application ->
+                SharedPrefsUtils.getStringPreference(application.applicationContext, DESTINATION_LANGUAGE)
+                    ?.split(DELIM_LANG_CODE.toRegex())
+                    ?.dropLastWhile { it.isEmpty() }
+                    ?.toTypedArray()?.getOrNull(1)
             } ?: "en"
         } catch (e: Exception) {
             e.printStackTrace()
@@ -70,40 +67,41 @@ class TranslatorManager() : CoroutineScope {
 
     companion object {
         private var LOCK = Any()
-        val TAG = "Tkpd-TranslatorManager"
+        val TAG = "Tkpd-TranslatorManagerFragment"
 
-        private var mCurrentActivity: WeakReference<Activity>? = null
+        private var mCurrentFragment: WeakReference<Fragment>? = null
 
         @JvmStatic
-        private var sInstance: TranslatorManager? = null
+        private var sInstance: TranslatorManagerFragment? = null
 
-        private val service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
-
-        fun getCurrentActivity(): Activity? {
-            return mCurrentActivity?.get()
+        fun getCurrentFragment(): Fragment? {
+            return mCurrentFragment?.get()
         }
 
-        fun setCurrentActivity(mCurrentActivity: WeakReference<Activity>) {
-            this.mCurrentActivity = mCurrentActivity
+        fun setCurrentFragment(mCurrentFragment: WeakReference<Fragment>) {
+            this.mCurrentFragment = mCurrentFragment
         }
 
         @JvmStatic
-        fun init(application: Application, apiKey: String): TranslatorManager? {
+        fun init(application: Application): TranslatorManagerFragment? {
             if (sInstance == null) {
                 synchronized(LOCK) {
-                    TranslatorManagerFragment.init(application)
-                    sInstance = TranslatorManager(application, apiKey)
-                    application.registerActivityLifecycleCallbacks(ActivityTranslatorCallbacks())
+                    sInstance = TranslatorManagerFragment(application)
                 }
             }
 
             return sInstance
         }
 
-        internal fun getInstance(): TranslatorManager? {
+        internal fun getInstance(): TranslatorManagerFragment? {
             synchronized(LOCK) {
                 if (sInstance == null) {
-                    throw IllegalStateException("Default TranslatorManager is not initialized in this " + "process " + ". make sure to call " + "TranslatorManager.initTranslatorManager(Context) first.")
+                    throw IllegalStateException(
+                        "Default TranslatorManagerFragment is not initialized in this " +
+                            "process " +
+                            ". make sure to call " +
+                            "TranslatorManagerFragment.initTranslatorManager(Context) first."
+                    )
                 }
                 return sInstance
             }
@@ -137,7 +135,7 @@ class TranslatorManager() : CoroutineScope {
             Log.d(TAG, "current string pool $mStringPoolManager")
         }
 
-        getCurrentActivity()?.runOnUiThread {
+        getCurrentFragment()?.activity?.runOnUiThread {
             for (view in updateViewList) {
                 if (view.newText != view.textView.text) {
                     view.textView.text = view.newText
@@ -149,12 +147,8 @@ class TranslatorManager() : CoroutineScope {
         }
     }
 
-    fun clearSelectors() {
-        mSelectors.clear()
-    }
-
     suspend fun startTranslate() {
-        if (getCurrentActivity() == null || mApplication == null || isTranslationInProgress) {
+        if (getCurrentFragment() == null || mApplication == null || isTranslationInProgress) {
             return
         }
 
@@ -163,7 +157,7 @@ class TranslatorManager() : CoroutineScope {
         try {
             val views = coroutineScope {
                 async {
-                    ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()))
+                    ViewUtil.getChildren(ViewUtil.getContentView(getCurrentFragment()))
                 }.await()
             }
 
@@ -200,11 +194,13 @@ class TranslatorManager() : CoroutineScope {
 
                         updateScreenWithTranslatedString(views)
 
-                        SharedPrefsUtils.setIntegerPreference(
-                            mApplication!!.applicationContext,
-                            CHARS_COUNT,
-                            originStrList.size + charCountOld
-                        )
+                        mApplication?.applicationContext?.let {
+                            SharedPrefsUtils.setIntegerPreference(
+                                it,
+                                CHARS_COUNT,
+                                originStrList.size + charCountOld
+                            )
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -217,11 +213,7 @@ class TranslatorManager() : CoroutineScope {
 
     private fun jsonStringToArray(jsonString: String?): Array<String> {
         if (jsonString?.isBlank() == true) return emptyArray()
-        return try {
-            gson.fromJson(jsonString, Array<String>::class.java)
-        } catch (e: Exception) {
-            emptyArray()
-        }
+        return gson.fromJson(jsonString, Array<String>::class.java)
     }
 
     private fun updateScreenWithTranslatedString(views: List<TextView>) {
@@ -238,7 +230,7 @@ class TranslatorManager() : CoroutineScope {
                 }
             }
 
-            getCurrentActivity()?.runOnUiThread {
+            getCurrentFragment()?.activity?.runOnUiThread {
                 for (view in updateScreenViewList) {
                     if (view.newText != view.textView.text) {
                         view.textView.text = view.newText
