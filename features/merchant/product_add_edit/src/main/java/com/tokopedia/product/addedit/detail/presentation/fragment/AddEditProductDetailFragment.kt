@@ -2010,7 +2010,7 @@ class AddEditProductDetailFragment :
     private fun setupSpecificationField() {
         // get annotation category, if not already obtained from the server (specifications == null)
         val specifications = viewModel.productInputModel.detailInputModel.specifications
-        if (specifications != null) {
+        if (!specifications.isNullOrEmpty()) {
             viewModel.updateSelectedSpecification(specifications)
         } else {
             getAnnotationCategory()
