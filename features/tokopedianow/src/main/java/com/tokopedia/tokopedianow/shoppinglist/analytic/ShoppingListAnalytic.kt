@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 
 class ShoppingListAnalytic @Inject constructor(
-    private val userSession: UserSessionInterface
+    userSession: UserSessionInterface
 ) {
     internal object ACTION {
         const val EVENT_ACTION_IMPRESS_SHOPPING_LIST_PAGE = "impression shopping list page"
@@ -80,14 +80,13 @@ class ShoppingListAnalytic @Inject constructor(
         const val ANOTHER_OPTION_IN_BAHASA = "pilihan lain"
     }
 
-    val shoppingListHorizontalProductCardAnalytic: ShoppingListHorizontalProductCardAnalytic
-        get() = ShoppingListHorizontalProductCardAnalytic(userSession.userId)
+    private val shoppingListHorizontalProductCardAnalytic: ShoppingListHorizontalProductCardAnalytic = ShoppingListHorizontalProductCardAnalytic(userSession.userId)
+    private val shoppingListBottomBulkAtcAnalytic: ShoppingListBottomBulkAtcAnalytic = ShoppingListBottomBulkAtcAnalytic(userSession.userId)
+    private val shoppingListCartProductAnalytic: ShoppingListCartProductAnalytic = ShoppingListCartProductAnalytic()
 
-    val shoppingListBottomBulkAtcAnalytic: ShoppingListBottomBulkAtcAnalytic
-        get() = ShoppingListBottomBulkAtcAnalytic(userSession.userId)
-
-    val shoppingListCartProductAnalytic: ShoppingListCartProductAnalytic
-        get() = ShoppingListCartProductAnalytic()
+    fun getShoppingListHorizontalProductCardAnalytic() = shoppingListHorizontalProductCardAnalytic
+    fun getShoppingListBottomBulkAtcAnalytic() = shoppingListBottomBulkAtcAnalytic
+    fun getShoppingListCartProductAnalytic() = shoppingListCartProductAnalytic
 
     //Tracker ID: 50000
     fun trackImpressShoppingListPage() {
@@ -129,5 +128,10 @@ class ShoppingListAnalytic @Inject constructor(
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
             .send()
+    }
+
+    fun clear() {
+        shoppingListHorizontalProductCardAnalytic.clear()
+        shoppingListCartProductAnalytic.clear()
     }
 }

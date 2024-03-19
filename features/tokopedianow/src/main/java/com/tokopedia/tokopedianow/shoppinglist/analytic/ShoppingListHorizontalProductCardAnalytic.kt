@@ -61,6 +61,7 @@ import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.VAL
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.VALUE.SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.VALUE.SHOPPING_LIST_IN_BAHASA
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION
@@ -73,6 +74,8 @@ import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 class ShoppingListHorizontalProductCardAnalytic(
     private val userId: String
 ) {
+    private val impressionProducts: HashMap<String, ShoppingListProductLayoutType> = hashMapOf()
+
     private fun getItem(
         index: Int,
         productId: String,
@@ -278,14 +281,21 @@ class ShoppingListHorizontalProductCardAnalytic(
             }
         }
 
-        trackProduct(
-            event = EVENT_VIEW_ITEM_LIST,
-            eventAction = eventAction,
-            eventLabel = String.EMPTY,
-            section = section,
-            widget = PRODUCT_CARD,
-            product = product,
-            trackerId = trackerId
-        )
+        if (impressionProducts[product.id] == null) {
+            trackProduct(
+                event = EVENT_VIEW_ITEM_LIST,
+                eventAction = eventAction,
+                eventLabel = String.EMPTY,
+                section = section,
+                widget = PRODUCT_CARD,
+                product = product,
+                trackerId = trackerId
+            )
+            impressionProducts[product.id] = product.productLayoutType
+        }
+    }
+
+    fun clear() {
+        impressionProducts.clear()
     }
 }

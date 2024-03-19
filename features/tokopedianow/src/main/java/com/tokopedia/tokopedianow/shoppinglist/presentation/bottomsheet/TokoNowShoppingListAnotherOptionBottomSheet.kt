@@ -138,7 +138,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
                 showToaster(data) {
                     viewModel.addToWishlist(
                         onTrackAddToWishlist = {
-                            analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(
+                            analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(
                                 product = data.any,
                                 isFromBottomSheet = true
                             )
@@ -223,7 +223,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         ) {
             viewModel.addToWishlist(
                 onTrackAddToWishlist = {
-                    analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(
+                    analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(
                         product = product,
                         isFromBottomSheet = true
                     )
@@ -235,7 +235,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         override fun onClickProduct(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            analytic.shoppingListHorizontalProductCardAnalytic.trackClickProduct(
+            analytic.getShoppingListHorizontalProductCardAnalytic().trackClickProduct(
                 product = product,
                 isFromBottomSheet = true
             )
@@ -244,7 +244,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         override fun onImpressProduct(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            analytic.shoppingListHorizontalProductCardAnalytic.trackImpressProduct(
+            analytic.getShoppingListHorizontalProductCardAnalytic().trackImpressProduct(
                 product = product,
                 isFromBottomSheet = true
             )
