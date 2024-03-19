@@ -539,8 +539,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     fun getCurrentView(layoutId: Int): View? {
         currentView?.let {
             this.removeView(it)
+            currentView = null
         }
-        currentView = null
 
         currentView = LayoutInflater.from(context).inflate(layoutId, this, false)
         addView(currentView)

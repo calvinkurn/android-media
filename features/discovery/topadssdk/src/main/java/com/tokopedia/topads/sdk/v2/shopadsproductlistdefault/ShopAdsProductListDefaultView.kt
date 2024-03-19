@@ -16,10 +16,12 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.common.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.CpmShop
 import com.tokopedia.topads.sdk.domain.model.FlashSaleCampaignDetail
 import com.tokopedia.topads.sdk.old.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
 import com.tokopedia.topads.sdk.old.widget.ITEM_3
@@ -241,26 +243,8 @@ class ShopAdsProductListDefaultView(
 
         if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
             val productCardModelList = getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
-            for (i in 0 until productCardModelList.size) {
-                if (i < ITEM_3) {
-                    val product = shop.products[i]
-                    val model = BannerShopProductUiModel(
-                        cpmData,
-                        productCardModelList[i],
-                        product.applinks,
-                        product.image.m_url,
-                        product.imageProduct.imageClickUrl
-                    ).apply {
-                        productId = product.id
-                        productName = product.name
-                        productMinOrder = product.productMinimumOrder
-                        productCategory = product.categoryBreadcrumb
-                        productPrice = product.priceFormat
-                        shopId = cpmData.cpm.cpmShop.id
-                    }
-                    items.add(model)
-                }
-            }
+
+            setProductCardItems(productCardModelList, shop, cpmData, items)
 
             renderHeaderSeeMoreReimagine(cpmData, appLink, adsClickUrl)
 
@@ -288,26 +272,8 @@ class ShopAdsProductListDefaultView(
         )
         if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
             val productCardModelList = getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
-            for (i in 0 until productCardModelList.size) {
-                if (i < ITEM_3) {
-                    val product = shop.products[i]
-                    val model = BannerShopProductUiModel(
-                        cpmData,
-                        productCardModelList[i],
-                        product.applinks,
-                        product.image.m_url,
-                        product.imageProduct.imageClickUrl
-                    ).apply {
-                        productId = product.id
-                        productName = product.name
-                        productMinOrder = product.productMinimumOrder
-                        productCategory = product.categoryBreadcrumb
-                        productPrice = product.priceFormat
-                        shopId = cpmData.cpm.cpmShop.id
-                    }
-                    items.add(model)
-                }
-            }
+            setProductCardItems(productCardModelList, shop, cpmData, items)
+
             if (productCardModelList.size < ITEM_3) {
                 items.add(BannerShopViewMoreUiModel(cpmData, appLink, adsClickUrl))
             }
@@ -316,6 +282,29 @@ class ShopAdsProductListDefaultView(
         }
 
         bannerAdsAdapter.setList(items)
+    }
+
+    private fun setProductCardItems(productCardModelList: ArrayList<ProductCardModel>, shop: CpmShop, cpmData: CpmData, items: ArrayList<Item<*>>) {
+        for (i in 0 until productCardModelList.size) {
+            if (i < ITEM_3) {
+                val product = shop.products[i]
+                val model = BannerShopProductUiModel(
+                    cpmData,
+                    productCardModelList[i],
+                    product.applinks,
+                    product.image.m_url,
+                    product.imageProduct.imageClickUrl
+                ).apply {
+                    productId = product.id
+                    productName = product.name
+                    productMinOrder = product.productMinimumOrder
+                    productCategory = product.categoryBreadcrumb
+                    productPrice = product.priceFormat
+                    shopId = cpmData.cpm.cpmShop.id
+                }
+                items.add(model)
+            }
+        }
     }
 
     private fun hideFlashSaleToko(topAdsFlashSaleTimer: TimerUnifySingle?) {
