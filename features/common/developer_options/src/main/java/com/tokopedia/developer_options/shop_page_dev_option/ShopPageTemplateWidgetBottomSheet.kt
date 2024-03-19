@@ -1,12 +1,17 @@
 package com.tokopedia.developer_options.shop_page_dev_option
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.coroutines.CoroutineScope
@@ -50,8 +55,37 @@ class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageDevMockWid
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        configTextFieldSearchWidgetName()
         configShopPageMockWidgetOption()
         configToggleFestivity()
+    }
+
+    private fun configTextFieldSearchWidgetName() {
+        view?.findViewById<TextFieldUnify>(R.id.text_field_search_widget_name)?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                s?.toString()?.let {
+                    adapter.filterWidgetByName(it)
+                    val rv = view?.findViewById<RecyclerView>(R.id.rv_mock_shop_widget_option)
+                    rv?.scrollToPosition(0)
+                }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) { /* no need to implement */
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) { /* no need to implement */
+            }
+        })
     }
 
     private fun configToggleFestivity() {
