@@ -223,7 +223,6 @@ class TokoNowShoppingListFragment :
             rvShoppingList.removeOnScrollListener(loadMoreListener)
             rvShoppingList.addOnScrollListener(loadMoreListener)
             viewModel.refreshLayout()
-            analytic.clear()
         }
     }
 

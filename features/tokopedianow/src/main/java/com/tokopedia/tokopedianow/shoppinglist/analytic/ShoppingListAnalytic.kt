@@ -129,9 +129,4 @@ class ShoppingListAnalytic @Inject constructor(
             .build()
             .send()
     }
-
-    fun clear() {
-        shoppingListHorizontalProductCardAnalytic.clear()
-        shoppingListCartProductAnalytic.clear()
-    }
 }

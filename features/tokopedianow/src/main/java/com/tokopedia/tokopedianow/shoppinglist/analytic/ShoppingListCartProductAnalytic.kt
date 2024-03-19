@@ -14,23 +14,18 @@ import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic.TRA
 import com.tokopedia.track.builder.Tracker
 
 class ShoppingListCartProductAnalytic {
-    private var isImpressed = false
-
     // Tracker ID: 50069
     fun trackImpressCartProductWidget() {
-        if (!isImpressed) {
-            Tracker.Builder()
-                .setEvent(EVENT_VIEW_GROCERIES)
-                .setEventAction(EVENT_ACTION_IMPRESS_CART_PRODUCT_WIDGET)
-                .setEventCategory(EVENT_CATEGORY_TOKONOW_SHOPPING_LIST)
-                .setEventLabel(String.EMPTY)
-                .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_IMPRESS_CART_PRODUCT_WIDGET)
-                .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
-                .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-                .build()
-                .send()
-            isImpressed = true
-        }
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_GROCERIES)
+            .setEventAction(EVENT_ACTION_IMPRESS_CART_PRODUCT_WIDGET)
+            .setEventCategory(EVENT_CATEGORY_TOKONOW_SHOPPING_LIST)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_IMPRESS_CART_PRODUCT_WIDGET)
+            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .build()
+            .send()
     }
 
     // Tracker ID: 50070
@@ -45,9 +40,5 @@ class ShoppingListCartProductAnalytic {
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
             .send()
-    }
-
-    fun clear() {
-        isImpressed = false
     }
 }

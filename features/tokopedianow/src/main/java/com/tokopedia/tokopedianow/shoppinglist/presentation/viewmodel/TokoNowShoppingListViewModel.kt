@@ -193,8 +193,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
      * -- private suspend function section --
      */
 
-    private suspend fun getMiniCartDeferred(): Deferred<Unit> = async {
-        val miniCartData = if (isGettingMiniCartAllowed()) {
+    private suspend fun getMiniCartDeferred(): Deferred<MiniCartSimplifiedData?> = async {
+        return@async if (isGettingMiniCartAllowed()) {
             getMiniCartUseCase.setParams(
                 shopIds = listOf(addressData.getShopId().toString()),
                 source = MiniCartSource.TokonowShoppingList
@@ -204,7 +204,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
         } else {
             null
         }
-        mMiniCartData = miniCartData
     }
 
     private suspend fun getShoppingListDeferred() = async {
@@ -519,6 +518,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
          * 2. Update layout
          */
 
+        mMiniCartData = result.component1() as MiniCartSimplifiedData
         val shoppingListData = result.component2() as GetShoppingListDataResponse.Data
         val productRecommendationData = result.component3() as RecommendationWidget
 
@@ -951,9 +951,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
     ) {
         getMiniCartJob?.cancel()
         getMiniCartJob = launchCatchError(block = {
-            getMiniCartDeferred().await()
+            val miniCartData = getMiniCartDeferred().await()
 
-            updateLayout()
+            setMiniCartData(miniCartData)
 
             _isLoaderDialogShown.value = false
 
@@ -966,11 +966,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun setMiniCartData(
-        miniCartData: MiniCartSimplifiedData
+        miniCartData: MiniCartSimplifiedData?
     ) {
-        mMiniCartData = miniCartData
+        if (miniCartData != mMiniCartData) {
+            mMiniCartData = miniCartData
 
-        updateLayout()
+            updateLayout()
+        }
     }
 
     fun resumeLayout() {
