@@ -101,7 +101,7 @@ class ContentCommentBottomSheet @Inject constructor(
         object : EndlessRecyclerViewScrollListener(binding.rvComment.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 val currentSize = commentAdapter.getItems().filterIsInstance<CommentUiModel.Item>().filter { it.commentType == CommentType.Parent }.size
-                if (totalItemsCount >= currentSize - PAGE_THRESHOLD && currentSize >= commentAdapter.itemCount) { //item parent only~~~
+                if (currentSize >= totalItemsCount - PAGE_THRESHOLD) {
                     viewModel.submitAction(CommentAction.LoadNextPage(CommentType.Parent))
                 }
             }
