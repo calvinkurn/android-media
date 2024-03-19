@@ -1266,7 +1266,7 @@ class AddEditProductDetailFragment :
                     addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
                     val selectedSpecificationList =
-                        SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+                        SpecificationInputMapper.mapToSpecificationInputModelList(result.data)
                     viewModel.updateSelectedSpecification(selectedSpecificationList)
                     viewModel.updateHasRequiredSpecification(result.data)
                 }

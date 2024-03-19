@@ -47,12 +47,19 @@ object SpecificationInputMapper {
         it.id.isNotBlank() || it.data.isNotEmpty()
     }
 
-    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>): MutableList<SpecificationInputModel> {
+    fun mapToSpecificationInputModelList(annotationCategoryList: List<AnnotationCategoryData>): MutableList<SpecificationInputModel> {
         val selectedSpecificationList = mutableListOf<SpecificationInputModel>()
         annotationCategoryList.forEach {
             val selectedValue = it.data.firstOrNull { value -> value.selected }
             selectedValue?.apply {
-                val specificationInputModel = SpecificationInputModel(id, name, it.variant)
+                val specificationInputModel = SpecificationInputModel(
+                    id = id,
+                    data = name,
+                    specificationVariant = it.variant,
+                    isTextInput = it.isCustomAnnotType,
+                    required = it.isMandatory,
+                    variantId = it.variantId.toString()
+                )
                 selectedSpecificationList.add(specificationInputModel)
             }
         }

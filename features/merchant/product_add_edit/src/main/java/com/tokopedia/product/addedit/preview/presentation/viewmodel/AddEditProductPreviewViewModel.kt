@@ -571,7 +571,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 response.drogonAnnotationCategoryV2.data
             }
             productInputModel.getValueOrDefault().detailInputModel.specifications =
-                SpecificationInputMapper.updateSpecificationByAnnotationCategory(result)
+                SpecificationInputMapper.mapToSpecificationInputModelList(result)
             mIsLoading.value = false
         }, onError = {
                 AddEditProductErrorHandler.logExceptionToCrashlytics(it)

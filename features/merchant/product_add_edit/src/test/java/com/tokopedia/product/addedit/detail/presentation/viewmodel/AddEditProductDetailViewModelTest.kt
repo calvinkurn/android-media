@@ -1379,7 +1379,7 @@ class AddEditProductDetailViewModelTest {
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
-            val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+            val selectedSpec = SpecificationInputMapper.mapToSpecificationInputModelList(result.data)
             viewModel.updateSelectedSpecification(selectedSpec)
             val specificationText = viewModel.specificationText.getOrAwaitValue()
             Assert.assertTrue(specificationText.isEmpty())
@@ -1421,7 +1421,7 @@ class AddEditProductDetailViewModelTest {
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
-            val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+            val selectedSpec = SpecificationInputMapper.mapToSpecificationInputModelList(result.data)
             viewModel.updateSelectedSpecification(selectedSpec)
             val specificationList = viewModel.selectedSpecificationList.getOrAwaitValue()
             val specificationText = viewModel.specificationText.getOrAwaitValue()
@@ -1496,7 +1496,7 @@ class AddEditProductDetailViewModelTest {
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
-            val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+            val selectedSpec = SpecificationInputMapper.mapToSpecificationInputModelList(result.data)
             viewModel.updateSelectedSpecification(selectedSpec)
             val specificationText = viewModel.specificationText.getOrAwaitValue()
             Assert.assertEquals("Indomie, Bawang1, Bawang2, Bawang3, Bawang4, +1 lainnya", specificationText)
@@ -1531,7 +1531,7 @@ class AddEditProductDetailViewModelTest {
                 )
             )
         )
-        val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        val selectedSpec = SpecificationInputMapper.mapToSpecificationInputModelList(annotationCategoryData)
         viewModel.updateSelectedSpecification(selectedSpec)
         val specificationText = viewModel.specificationText.getOrAwaitValue()
         Assert.assertTrue(specificationText.isEmpty())
