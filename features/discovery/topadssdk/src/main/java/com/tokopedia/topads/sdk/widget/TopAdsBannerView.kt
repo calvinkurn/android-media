@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.widget
 
 import android.app.Activity
 import android.content.Context
@@ -35,7 +35,7 @@ import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_11
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_8
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.domain.model.*
-import com.tokopedia.topads.sdk.old.view.BannerAdsContract
+import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper
@@ -1189,7 +1189,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 if (data?.cpm != null) {
                     // new approach
-                    if (TopAdsSdkUtil.isEnableTopAdsSdkV2()) {
+                    if (TopAdsSdkUtil.isEnableTopAdsSdkV2(context)) {
                         if (data.cpm.cpmShop != null && isResponseValid(data)) {
                             renderTopAdsBannerV2(cpmModel, data.applinks, data.adClickUrl, index, isReimagine)
                         } else if (data.cpm.templateId == ITEM_4) {

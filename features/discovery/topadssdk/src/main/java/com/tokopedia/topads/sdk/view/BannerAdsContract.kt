@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.view
+package com.tokopedia.topads.sdk.view
 
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 

@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmShop
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithThreeProductModel
-import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener

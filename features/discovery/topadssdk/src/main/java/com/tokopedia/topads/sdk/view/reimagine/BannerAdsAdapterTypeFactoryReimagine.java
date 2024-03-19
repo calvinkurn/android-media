@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.view.reimagine;
+package com.tokopedia.topads.sdk.view.reimagine;
 
 import android.view.ViewGroup;
 

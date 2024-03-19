@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.widget
 
 import android.content.Context
 import android.util.AttributeSet

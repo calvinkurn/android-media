@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 
 object TopadsFeedXMapper {
     var authorName = ""

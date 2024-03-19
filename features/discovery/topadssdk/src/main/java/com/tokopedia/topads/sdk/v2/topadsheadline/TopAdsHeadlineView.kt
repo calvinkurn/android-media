@@ -14,7 +14,7 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.topads.sdk.v2.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener

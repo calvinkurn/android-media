@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -24,7 +24,7 @@ import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.old.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
+import com.tokopedia.topads.sdk.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper

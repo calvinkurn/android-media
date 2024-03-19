@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.tokopedia.topads.sdk.old.widget.TopAdsImageViewWithAspectRatio
+    <com.tokopedia.topads.sdk.widget.TopAdsImageViewWithAspectRatio
         android:id="@+id/home_recom_topads_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

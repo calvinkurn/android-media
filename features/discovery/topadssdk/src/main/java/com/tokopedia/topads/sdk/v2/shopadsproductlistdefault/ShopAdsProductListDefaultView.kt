@@ -23,9 +23,9 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.CpmShop
 import com.tokopedia.topads.sdk.domain.model.FlashSaleCampaignDetail
-import com.tokopedia.topads.sdk.old.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
-import com.tokopedia.topads.sdk.old.widget.ITEM_3
-import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
+import com.tokopedia.topads.sdk.widget.ITEM_3
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter

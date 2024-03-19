@@ -12,7 +12,7 @@
         android:layout_width="@dimen/shop_recommendation_width"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.topads.sdk.old.view.SquareImageView
+        <com.tokopedia.topads.sdk.view.SquareImageView
             android:id="@+id/ivImageLeft"
             android:layout_width="72dp"
             android:layout_height="0dp"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.topads.sdk.old.view.SquareImageView
+        <com.tokopedia.topads.sdk.view.SquareImageView
             android:id="@+id/ivImageMiddle"
             android:layout_width="72dp"
             android:layout_height="0dp"

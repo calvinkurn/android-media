@@ -22,8 +22,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.TemporaryBackwardCompatible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouOldTopadsBinding
-import com.tokopedia.topads.sdk.old.widget.BANNER_TYPE_HORIZONTAL
-import com.tokopedia.topads.sdk.old.widget.BANNER_TYPE_VERTICAL
+import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
+import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 

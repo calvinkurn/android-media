@@ -15,7 +15,7 @@ import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopUiModel;
-import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 /**
  * Created by errysuprayogi on 4/16/18.

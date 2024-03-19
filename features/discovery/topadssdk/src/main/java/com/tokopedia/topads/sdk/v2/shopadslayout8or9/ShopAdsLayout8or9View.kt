@@ -7,7 +7,7 @@ import com.tokopedia.topads.sdk.common.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithThreeProductModel
-import com.tokopedia.topads.sdk.old.widget.ITEM_3
+import com.tokopedia.topads.sdk.widget.ITEM_3
 import com.tokopedia.topads.sdk.v2.base.BaseBannerAdsRendering
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
