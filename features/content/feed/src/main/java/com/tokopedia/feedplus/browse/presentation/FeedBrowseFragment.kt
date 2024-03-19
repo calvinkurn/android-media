@@ -1,14 +1,15 @@
 package com.tokopedia.feedplus.browse.presentation
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -18,6 +19,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
@@ -53,6 +56,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.feedplus.R as feedplusR
+
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -66,6 +71,13 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
+
+    private val searchPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val resultKeyword = it.data?.getStringExtra(FeedLocalBrowseFragment.LOCAL_BROWSE_SEARCH_KEYWORD)
+            // Todo
+        }
+    }
 
     private val tracker by lazyThreadSafetyNone {
         trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_BROWSE_PAGE)
@@ -322,10 +334,17 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private fun setupView() {
-        (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader)
-        binding.feedBrowseHeader.setBackgroundColor(Color.TRANSPARENT)
-        binding.feedBrowseHeader.setNavigationOnClickListener {
-            onBackPressedCallback.handleOnBackPressed()
+        (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader.header)
+        binding.feedBrowseHeader.let { feedHeader ->
+            feedHeader.onBackClicked {
+                onBackPressedCallback.handleOnBackPressed()
+            }
+
+            feedHeader.setSearchbarFocusListener { view, focusState ->
+                searchbarFocusHandler(view, focusState)
+            }
+
+            feedHeader.setSearchPlaceholder(getString(feedplusR.string.feed_local_search_text_placeholder))
         }
 
         val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
@@ -384,8 +403,9 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private fun renderHeader(cachedTitle: String?, newTitle: String) {
+        // TODO: confirm to remove, title no use anymore
         if (cachedTitle == newTitle) return
-        binding.feedBrowseHeader.title = newTitle
+        binding.feedBrowseHeader.header?.title = newTitle
     }
 
     private fun renderContent(widgets: List<FeedBrowseStatefulModel>) {
@@ -393,11 +413,21 @@ internal class FeedBrowseFragment @Inject constructor(
         if (widgets.isEmpty()) {
             adapter.setPlaceholder()
         } else {
+
             adapter.setItems(widgets) {
                 if (_binding == null) return@setItems
                 binding.feedBrowseList.invalidateItemDecorations()
             }
         }
+    }
+
+    private fun searchbarFocusHandler(view: View, focusState: Boolean) {
+        if (focusState) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
+            searchPageLauncher.launch(intent)
+        }
+
+        view.clearFocus()
     }
 
     companion object {

@@ -1,0 +1,7 @@
+<!-- res/values/attrs.xml -->
+<resources>
+    <declare-styleable name="FeedHeaderView">
+        <attr name="isCleanable" format="boolean" />
+        <attr name="isShowShadow" format="boolean"/>
+    </declare-styleable>
+</resources>
