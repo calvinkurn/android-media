@@ -11,13 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tokopedia.translator.manager
+package com.tokopedia.translator.viewtree
 
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.tokopedia.translator.util.ViewUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 internal object ViewTreeManager {
@@ -29,51 +31,49 @@ internal object ViewTreeManager {
 
     private fun getChildIndexInsideViewGroup(parent: ViewGroup, viewToFindIndex: View): Int {
 
-            var initialIndex = -1
+        for (i in 0 until parent.childCount) {
+            val view = parent.getChildAt(i)
 
-            for (i in 0 until parent.childCount) {
-                val view = parent.getChildAt(i)
-                ++initialIndex
-
-                if (view === viewToFindIndex) {
-                    break
-                }
+            if (view === viewToFindIndex) {
+                return i
             }
+        }
 
-            return initialIndex
-
+        return -1
     }
 
     private fun lookupForView(view: View?, domeIdentifier: Array<String>): View {
         val viewPositioningSplitting = domeIdentifier[0].split(INDEX_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()
 
-        if (domeIdentifier.size > 1) {
-            return lookupForView(
-                (view as ViewGroup).getChildAt(Integer.parseInt(viewPositioningSplitting[1])),
+        val index = viewPositioningSplitting.getOrNull(1)?.toIntOrNull() ?: 0
+        val childView = (view as ViewGroup).getChildAt(index)
+
+        return if (domeIdentifier.size > 1) {
+            lookupForView(
+                childView,
                 Arrays.copyOfRange(domeIdentifier, 1, domeIdentifier.size)
             )
         } else {
-            return (view as ViewGroup).getChildAt(Integer.parseInt(viewPositioningSplitting[1]))
+            childView
         }
     }
 
     fun createDOMIdentifier(view: View, activity: Activity): String {
+
         var domIdentifier = ""
         var currentView = view
-
         do {
             if (currentView.id == Window.ID_ANDROID_CONTENT) {
-                domIdentifier =
-                    activity.localClassName + ACTIVITY_NAME_SEPARATOR + MAIN_CONTENT_LAYOUT_NAME + domIdentifier
+                domIdentifier = "${activity.localClassName}$ACTIVITY_NAME_SEPARATOR$MAIN_CONTENT_LAYOUT_NAME$domIdentifier"
                 break
             } else {
-                domIdentifier =
-                    CHILD_SEPARATOR + currentView.javaClass.simpleName + INDEX_SEPARATOR + getChildIndexInsideViewGroup(
+                domIdentifier = "$CHILD_SEPARATOR${currentView.javaClass.simpleName}$INDEX_SEPARATOR${
+                    getChildIndexInsideViewGroup(
                         currentView.parent as ViewGroup,
                         currentView
-                    ) + domIdentifier
-
+                    )
+                }$domIdentifier"
             }
 
             currentView = currentView.parent as View
@@ -82,24 +82,26 @@ internal object ViewTreeManager {
         return domIdentifier
     }
 
-    fun findViewByDOMIdentifier(domIdentifier: String, activity: Activity): View? {
-        val activitySplitting =
-            domIdentifier.split(ACTIVITY_NAME_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-        if (!activitySplitting[0].equals(activity.localClassName, ignoreCase = true)) {
-            return null
+    suspend fun findViewByDOMIdentifier(domIdentifier: String, activity: Activity): View? {
+        return withContext(Dispatchers.Default) {
+
+            val (activityClassName, childIdentifiers) = domIdentifier.split(ACTIVITY_NAME_SEPARATOR)
+
+            if (activityClassName.equals(activity.localClassName, ignoreCase = true).not()) {
+                return@withContext null
+            }
+
+            val viewSplitting =
+                childIdentifiers.split(CHILD_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            var viewLooker: View? = null
+
+            if (viewSplitting[0].equals(MAIN_CONTENT_LAYOUT_NAME, ignoreCase = true)) {
+                viewLooker = ViewUtil.getContentView(activity)
+            }
+
+            return@withContext lookupForView(viewLooker, viewSplitting.copyOfRange(1, viewSplitting.size))
         }
-
-        val viewSplitting =
-            activitySplitting[1].split(CHILD_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        var viewLooker: View? = null
-
-        if (viewSplitting[0].equals(MAIN_CONTENT_LAYOUT_NAME, ignoreCase = true)) {
-            viewLooker = ViewUtil.getContentView(activity)
-        }
-
-        return lookupForView(viewLooker, Arrays.copyOfRange(viewSplitting, 1, viewSplitting.size))
     }
-
-
 }

@@ -4,4 +4,5 @@
     <color name="stories_dms_top_gradient_center">#1A000000</color>
     <color name="stories_dms_top_gradient_end">#00000000</color>
     <color name="stories_dms_timer_background">#99FFFFFF</color>
+    <color name="stories_dms_onboard_bg">#AD000000</color>
 </resources>
