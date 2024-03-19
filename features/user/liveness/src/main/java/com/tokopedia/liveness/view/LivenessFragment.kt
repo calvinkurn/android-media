@@ -280,7 +280,7 @@ class LivenessFragment : BaseDaggerFragment(),
 
     private fun setLottieFile(url: String) {
         viewBinding?.lottieLivenessTips?.apply {
-            cancelAnimation()
+            pauseAnimation()
             clearAnimation()
             invalidate()
 

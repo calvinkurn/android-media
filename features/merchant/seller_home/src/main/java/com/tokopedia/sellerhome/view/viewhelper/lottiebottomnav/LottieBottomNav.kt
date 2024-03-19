@@ -400,7 +400,7 @@ class LottieBottomNav : LinearLayout {
 
         if (iconList[selectedItem.orZero()].second) {
             val pair = iconList[selectedItem.orZero()]
-            pair.first.cancelAnimation()
+            pair.first.pauseAnimation()
             menu[selectedItem.orZero()].animToEnabledName?.let {
                 pair.first.setAnimation(it)
                 pair.first.speed = menu[selectedItem.orZero()].animToEnabledSpeed
