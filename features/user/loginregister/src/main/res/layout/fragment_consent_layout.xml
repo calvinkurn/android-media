@@ -1,178 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_marginTop="12dp"
-        android:id="@+id/img_partner_logo"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:textAlignment="center"
-        android:id="@+id/txt_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Izin akses data dari akun Tokopedia berikut"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_partner_logo"
-        app:typographyType="heading_3" />
-
-    <com.tokopedia.unifycomponents.CardUnify2
-        android:id="@+id/cardUnify2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_header">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:padding="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/img_profile"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txt_full_name"
-                android:layout_width="wrap_content"
-                app:typographyType="body_2"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="12dp"
-                android:layout_toEndOf="@+id/img_profile"
-                android:text="User Fullname Here"
-                app:layout_constraintStart_toEndOf="@+id/img_profile"
-                app:layout_constraintTop_toTopOf="@+id/img_profile" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txt_phone_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_full_name"
-                android:layout_marginStart="12dp"
-                app:typographyType="paragraph_2"
-                android:layout_toEndOf="@+id/img_profile"
-                android:text="user.name.example@gmail.com"
-                app:layout_constraintBottom_toBottomOf="@+id/img_profile"
-                app:layout_constraintStart_toEndOf="@+id/img_profile"
-                app:layout_constraintTop_toBottomOf="@+id/txt_full_name" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.tokopedia.unifycomponents.CardUnify2>
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cardUnify22"
-        android:layout_width="0dp"
-        android:padding="10dp"
-        android:background="@drawable/bg_grey_rounded_corner"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardUnify2">
+        android:id="@+id/container_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_data_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Data yang akan diakses:"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_partner_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:lineSpacingMultiplier="0.5"
-            android:id="@+id/txt_data_list"
+            android:id="@+id/txt_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="20dp"
+            android:text="Izin akses data dari akun Tokopedia berikut"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_partner_logo"
+            app:typographyType="heading_3" />
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/cardUnify2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_header">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/img_profile"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txt_full_name"
+                    android:textColor="@color/Unify_NN950"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@+id/img_profile"
+                    android:text="User Fullname Here"
+                    app:layout_constraintStart_toEndOf="@+id/img_profile"
+                    app:layout_constraintTop_toTopOf="@+id/img_profile"
+                    app:typographyType="display_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txt_phone_number"
+                    android:textColor="@color/Unify_NN600"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_full_name"
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@+id/img_profile"
+                    android:text="user.name.example@gmail.com"
+                    app:layout_constraintBottom_toBottomOf="@+id/img_profile"
+                    app:layout_constraintStart_toEndOf="@+id/img_profile"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_full_name"
+                    app:typographyType="display_3" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.tokopedia.unifycomponents.CardUnify2>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardUnify22"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_grey_rounded_corner"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardUnify2">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txt_data_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold"
+                android:text="Data yang akan diakses:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txt_data_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="10dp"
+                android:lineSpacingMultiplier="0.8"
+                app:layout_constraintStart_toStartOf="@+id/txt_data_info"
+                app:layout_constraintTop_toBottomOf="@+id/txt_data_info"
+                app:typographyType="paragraph_2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_consent_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:text="Dengan klik tombol Izinkan, kamu menyetujui pembagian data akun di atas ke Partner untuk Login "
+            app:layout_constraintBottom_toTopOf="@+id/txt_tnc_priv_tkpd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="paragraph_3" />
+
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconUnify"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_tnc_priv_tkpd"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt_tnc_priv_tkpd" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconUnify2"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_tnc_priv_partner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt_tnc_priv_partner" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_tnc_priv_tkpd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            app:typographyType="body_2"
-            app:layout_constraintStart_toStartOf="@+id/txt_data_info"
-            app:layout_constraintTop_toBottomOf="@+id/txt_data_info" />
+            android:layout_marginBottom="10dp"
+            android:text="Syarat dan ketentuan serta Kebijakan Privasi Tokopedia"
+            app:layout_constraintBottom_toTopOf="@+id/txt_tnc_priv_partner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iconUnify"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_tnc_priv_partner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="6dp"
+            android:layout_marginBottom="24dp"
+            android:text="Syarat dan ketentuan serta Kebijakan Privasi Partner"
+            app:layout_constraintBottom_toTopOf="@+id/btn_login_consent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iconUnify2"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_login_consent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Izinkan"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.unifyprinciples.Typography
-        app:typographyType="paragraph_2"
-        android:id="@+id/txt_consent_info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Dengan klik tombol Izinkan, kamu menyetujui pembagian data akun di atas ke Partner untuk Login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardUnify22" />
-
-
-    <com.tokopedia.iconunify.IconUnify
-        android:layout_marginTop="14dp"
-        android:id="@+id/iconUnify"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:icon_name="INFORMATION"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_consent_info" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:layout_marginTop="6dp"
-        android:id="@+id/iconUnify2"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:icon_name="INFORMATION"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconUnify" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_tnc_priv_tkpd"
-        android:layout_marginStart="6dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Syarat dan ketentuan serta Kebijakan Privasi Tokopedia"
-        app:layout_constraintBottom_toBottomOf="@+id/iconUnify"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iconUnify"
-        app:layout_constraintTop_toTopOf="@+id/iconUnify"
-        app:typographyType="paragraph_3" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_tnc_priv_partner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        android:text="Syarat dan ketentuan serta Kebijakan Privasi Partner"
-        app:layout_constraintBottom_toBottomOf="@+id/iconUnify2"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="6dp"
-        app:layout_constraintStart_toEndOf="@+id/iconUnify2"
-        app:layout_constraintTop_toBottomOf="@+id/iconUnify"
-        app:typographyType="paragraph_3" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_login_consent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Izinkan"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/page_loader"
+        android:layout_gravity="center"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+</FrameLayout>

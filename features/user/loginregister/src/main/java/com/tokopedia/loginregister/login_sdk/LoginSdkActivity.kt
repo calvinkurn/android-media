@@ -13,6 +13,7 @@ class LoginSdkActivity : LoginActivity() {
         super.onCreate(savedInstanceState)
         val userSession = UserSession(this)
 
+        toolbar?.title = "Masuk ke Tokopedia"
         if (userSession.accessToken.isNotEmpty() &&
             userSession.freshToken.isNotEmpty() &&
             userSession.userId != "0" &&
@@ -30,14 +31,6 @@ class LoginSdkActivity : LoginActivity() {
         return LoginSdkFragment.createInstance(bundle)
     }
 
-//    override fun getToolbarResourceID(): Int {
-//        return R.id.unifytoolbar
-//    }
-//
-//    override fun getLayoutRes(): Int {
-//        return R.layout.activity_login_sdk
-//    }
-
     fun switchToConsentFragment() {
         supportFragmentManager.commit {
             val bundle = Bundle()
@@ -47,5 +40,14 @@ class LoginSdkActivity : LoginActivity() {
             }
             replace(R.id.parent_view, LoginSdkConsentFragment.createInstance(bundle), "")
         }
+    }
+
+    override fun onBackPressed() {
+        LoginSdkUtils.redirectToTargetUri(
+            activity = this,
+            redirectUrl = intent?.extras?.getString("redirect_uri") ?: "",
+            authCode = "",
+            error = "err:user:cancelled"
+        )
     }
 }

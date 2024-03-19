@@ -34,6 +34,7 @@ import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
 import com.tokopedia.loginregister.login_sdk.data.SdkAuthorizeParam
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentParam
+import com.tokopedia.loginregister.login_sdk.data.ValidateClientData
 import com.tokopedia.loginregister.login_sdk.data.ValidateClientParam
 import com.tokopedia.loginregister.login_sdk.usecase.AuthorizeSdkUseCase
 import com.tokopedia.loginregister.login_sdk.usecase.LoginSdkConsentUseCase
@@ -123,8 +124,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val sdkConsent: LiveData<Result<SdkConsentData>>
         get() = mutableConsent
 
-    private val mutableValidateClient = MutableLiveData<Boolean>()
-    val validateClient: LiveData<Boolean>
+    private val mutableValidateClient = MutableLiveData<Result<ValidateClientData>>()
+    val validateClient: LiveData<Result<ValidateClientData>>
         get() = mutableValidateClient
 
     private val mutableAuthorizeResponse = MutableLiveData<Result<AuthorizeData>>()
@@ -536,10 +537,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
                     packageName = packageName,
                     redirectUri = redirectUri
                 )
-//                mutableValidateClient.value = validateClientUseCase(param).data.status
-                mutableValidateClient.value = true
+                mutableValidateClient.value = Success(validateClientUseCase(param).data)
             } catch (e: Exception) {
-                mutableValidateClient.value = false
+                mutableValidateClient.value = Fail(e)
             }
         }
     }

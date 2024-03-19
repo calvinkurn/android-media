@@ -33,7 +33,7 @@ class ValidateClientUseCase @Inject constructor(
                     package_name:${'$'}package_name,
                     redirect_uri:${'$'}redirect_uri
                 ) {
-                    status
+                    is_valid
                     error
                 }
             }""".trimIndent()

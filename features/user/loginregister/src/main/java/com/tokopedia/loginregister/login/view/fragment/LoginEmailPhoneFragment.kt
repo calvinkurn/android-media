@@ -195,7 +195,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     var viewBinding by autoClearedNullable<FragmentLoginWithPhoneBinding>()
 
-    private var source: String = ""
+    protected var source: String = ""
     protected var isAutoLogin: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
@@ -1325,6 +1325,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return isEnableEncryptConfig
     }
 
+    open fun gotoRegisterEmail(activity: Activity, email: String, isPending: Boolean) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        activity.startActivity(intent)
+        activity.finish()
+    }
+
     override fun showNotRegisteredEmailDialog(email: String, isPending: Boolean) {
         dismissLoadingLogin()
         activity?.let {
@@ -1336,15 +1348,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     if (GlobalConfig.isSellerApp()) {
                         goToRegisterInitial(source)
                     } else {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
-                        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
-                        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                        it.startActivity(intent)
-                        it.finish()
+                        gotoRegisterEmail(requireActivity(), email, isPending)
                     }
                 }
                 dialog.setSecondaryCTAClickListener {

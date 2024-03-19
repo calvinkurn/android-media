@@ -8,7 +8,7 @@ data class ValidateClientResponse (
 )
 
 data class ValidateClientData(
-    @SerializedName("status")
+    @SerializedName("is_valid")
     val status: Boolean,
     @SerializedName("error")
     var error: String = ""

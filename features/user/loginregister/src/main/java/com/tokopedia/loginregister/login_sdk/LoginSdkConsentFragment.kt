@@ -1,9 +1,7 @@
 package com.tokopedia.loginregister.login_sdk
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -18,9 +16,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loginregister.databinding.FragmentConsentLayoutBinding
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.login_sdk.LoginSdkUtils.redirectToTargetUri
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
@@ -61,6 +63,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding?.btnLoginConsent?.setOnClickListener {
+            viewBinding?.btnLoginConsent?.isLoading = true
             viewModel.authorizeSdk(
                 clientId = arguments?.getString("client_id") ?: "",
                 redirectUri = redirectUrl,
@@ -77,6 +80,18 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             packageName = arguments?.getString("package_name") ?: "",
             redirectUri = redirectUrl
         )
+
+        showLoading(shouldShow = true)
+    }
+
+    private fun showLoading(shouldShow: Boolean) {
+        if(shouldShow) {
+            viewBinding?.pageLoader?.visible()
+            viewBinding?.containerView?.invisible()
+        } else {
+            viewBinding?.pageLoader?.gone()
+            viewBinding?.containerView?.visible()
+        }
     }
 
     private fun setupObserver() {
@@ -84,6 +99,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess) {
+                        showLoading(shouldShow = false)
                         if (it.data.showConsent) {
                             setUI(it.data)
                         } else {
@@ -95,7 +111,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                             )
                         }
                     } else {
-                        redirectToTargetUri(redirectUrl, authCode = "", it.data.error)
+                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
                     }
                 }
                 is Fail -> {
@@ -105,24 +121,32 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
         }
 
         viewModel.authorizeResponse.observe(viewLifecycleOwner) {
+            viewBinding?.btnLoginConsent?.isLoading = false
             when (it) {
                 is Success -> {
-                    redirectToTargetUri(it.data.redirectUri, it.data.code)
+                    redirectToTargetUri(requireActivity(), it.data.redirectUri, it.data.code)
                 }
                 is Fail -> {
-                    redirectToTargetUri(redirectUrl, authCode = "", it.throwable.message ?: "Error")
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error")
                 }
             }
         }
 
         viewModel.validateClient.observe(viewLifecycleOwner) {
-            if (it) {
-                viewModel.getConsent(
-                    clientId = arguments?.getString("client_id") ?: "",
-                    scopes = arguments?.getString("scopes") ?: ""
-                )
-            } else {
-                redirectToTargetUri(redirectUrl, authCode = "", "Invalid Client Certificate")
+            when (it ) {
+                is Success -> {
+                    if (it.data.status) {
+                        viewModel.getConsent(
+                            clientId = arguments?.getString("client_id") ?: "",
+                            scopes = arguments?.getString("scopes") ?: ""
+                        )
+                    } else {
+                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
+                    }
+                }
+                is Fail -> {
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error")
+                }
             }
         }
     }
@@ -204,18 +228,6 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
 
             }
         }
-    }
-
-    private fun redirectToTargetUri(redirectUrl: String, authCode: String, error: String = "") {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
-        if (authCode.isNotEmpty()) {
-            intent.putExtra("auth_code", authCode)
-        }
-        if (error.isNotEmpty()) {
-            intent.putExtra("error", error)
-        }
-        startActivity(intent)
-        activity?.finish()
     }
 
     override fun getScreenName(): String = ""

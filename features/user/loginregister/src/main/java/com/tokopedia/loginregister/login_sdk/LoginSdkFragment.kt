@@ -1,12 +1,21 @@
 package com.tokopedia.loginregister.login_sdk
 
+import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.loginregister.login_sdk.LoginSdkUtils.redirectToTargetUri
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 
 class LoginSdkFragment: LoginEmailPhoneFragment() {
@@ -27,6 +36,7 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
             packageName = arguments?.getString("package_name") ?: "",
             redirectUri = redirectUrl
         )
+        showLoadingLogin()
     }
 
     private fun checkLoginStatus() {
@@ -43,10 +53,17 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
 //        }
 
         viewModel.validateClient.observe(viewLifecycleOwner) {
-            if (!it) {
-                redirectToTargetUri(redirectUrl, authCode = "", "Invalid Client Certificate")
-            } else {
-//                goToConsentPage()
+            when (it ) {
+                is Success -> {
+                    if (!it.data.status) {
+                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
+                    } else {
+                        dismissLoadingLogin()
+                    }
+                }
+                is Fail -> {
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error")
+                }
             }
         }
     }
@@ -55,21 +72,41 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         (activity as LoginSdkActivity).switchToConsentFragment()
     }
 
-    private fun redirectToTargetUri(redirectUrl: String, authCode: String, error: String = "") {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
-        if (authCode.isNotEmpty()) {
-            intent.putExtra("auth_code", authCode)
-        }
-        if (error.isNotEmpty()) {
-            intent.putExtra("error", error)
-        }
-        startActivity(intent)
-        activity?.finish()
-    }
-
     override fun onSuccessLogin(shouldFinish: Boolean) {
         super.onSuccessLogin(shouldFinish = false)
         goToConsentPage()
+    }
+
+    override fun goToRegisterInitial(source: String) {
+        activity?.let {
+            analytics.eventClickRegisterFromLogin()
+            var intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            if (GlobalConfig.isSellerApp()) {
+                intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
+            }
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_INIT_REGISTER_SDK)
+        }
+    }
+
+    override fun gotoRegisterEmail(activity: Activity, email: String, isPending: Boolean) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_INIT_REGISTER_SDK)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            LoginConstants.Request.REQUEST_INIT_REGISTER_SDK -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    goToConsentPage()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     companion object {
