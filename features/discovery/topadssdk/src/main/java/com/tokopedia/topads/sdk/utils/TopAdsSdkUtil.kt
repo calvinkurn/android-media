@@ -1,5 +1,8 @@
 package com.tokopedia.topads.sdk.utils
 
+import android.content.Context
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -27,7 +30,12 @@ object TopAdsSdkUtil {
         }
     }
 
-    fun isEnableTopAdsSdkV2(): Boolean {
-        return true
+    fun isEnableTopAdsSdkV2(context: Context): Boolean {
+        return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            remoteConfig.getBoolean(RemoteConfigKey.ANDROID_TOP_ADS_SDK_V2, true)
+        } catch (e: Exception) {
+            false
+        }
     }
 }
