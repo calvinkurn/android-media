@@ -20,6 +20,7 @@ import com.tokopedia.shop.score.stub.common.util.scrollTo
 import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.MatcherAssert
 import org.junit.Rule
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 open class ShopScoreCassavaTest : BaseShopScoreTest() {
 
@@ -67,7 +68,7 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
 
     protected fun clickTickerPenalty() {
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
-        onIdVisibleView(com.tokopedia.unifycomponents.R.id.ticker_description).isViewDisplayed().onClick()
+        onIdVisibleView(unifycomponentsR.id.ticker_description).isViewDisplayed().onClick()
         validate(CLICK_TICKER_PENALTY_PATH)
     }
 
