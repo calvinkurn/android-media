@@ -64,4 +64,8 @@ interface StoriesRepository {
     suspend fun getReportSummary(
         storyId: String,
     ) : ReportSummaries.Response
+
+    suspend fun trackVisitContent(
+        storyId: String
+    )
 }

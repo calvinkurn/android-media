@@ -372,6 +372,7 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
         checkReportSummary()
+        trackVisitContent()
         setupOnboard()
 
         run {
@@ -773,6 +774,10 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun checkReportSummary() {
+        viewModelScope.launchCatchError(block = { repository.getReportSummary(storyId)}) {}
+    }
+
+    private fun trackVisitContent() {
         viewModelScope.launchCatchError(block = { repository.getReportSummary(storyId)}) {}
     }
 

@@ -45,7 +45,7 @@ class PlayViewerBroTrackerRepositoryImpl @Inject constructor(
     ) {
         trackEvent(
             channelId,
-            emptyList(),
+            emptyList(), //TODO() still in discussion with BE
             BroadcasterReportTrackViewerUseCase.Companion.Event.Visit,
         )
     }
