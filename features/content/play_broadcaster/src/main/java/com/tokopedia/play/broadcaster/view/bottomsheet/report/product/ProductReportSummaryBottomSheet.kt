@@ -81,6 +81,9 @@ class ProductReportSummaryBottomSheet @Inject constructor(
                         onEstimatedIncomeClicked = {
                             reportAnalytic.clickEstimatedIncomeInfoIcon()
                             showEstimatedIncomeInfoSheet()
+                        },
+                        onImpressErrorState = {
+                            reportAnalytic.impressProductReportBottomSheetError()
                         }
                     )
                 }
