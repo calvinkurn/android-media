@@ -1,13 +1,10 @@
 package com.tokopedia.developer_options.shop_page_dev_option
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.developer_options.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -40,11 +37,13 @@ class ShopPageDevMockWidgetAdapter(
 
     fun updateIsFestivity(isFestivity: Boolean) {
         val newItems = mutableListOf<ShopPageMockWidgetModel>().apply {
-            addAll(listShopPageMockWidget.map {
-                it.copy().apply {
-                    updateIsFestivity(isFestivity)
+            addAll(
+                listShopPageMockWidget.map {
+                    it.copy().apply {
+                        updateIsFestivity(isFestivity)
+                    }
                 }
-            })
+            )
         }
         submitList(newItems)
     }
@@ -53,7 +52,7 @@ class ShopPageDevMockWidgetAdapter(
         val newData = if (widgetName.isEmpty()) {
             originalListShopPageMockWidget
         } else {
-            originalListShopPageMockWidget.filter { it.getWidgetName().contains(widgetName, ignoreCase = true) } // Filter based on name or any field
+            originalListShopPageMockWidget.filter { it.getWidgetName().contains(widgetName, ignoreCase = true) }
         }
         submitList(newData)
     }
@@ -90,7 +89,6 @@ class ShopPageDevMockWidgetAdapter(
             val newItem = newItems.getOrNull(newItemPosition)
             return oldItem == newItem
         }
-
     }
 
     class ShopPageMockWidgetViewHolder(itemView: View, private val listener: Listener? = null) : RecyclerView.ViewHolder(itemView) {
