@@ -321,8 +321,6 @@ class ProductPreviewFragment @Inject constructor(
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
                     handleAtc(model)
-                }, onNavClicked = {
-                    router.route(requireContext(), ApplinkConst.PRODUCT_INFO, productPreviewSource.productId)
                 })
             }
         }
