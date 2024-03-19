@@ -1,11 +1,9 @@
 package com.tkpd.atcvariant.view
 
-import android.graphics.drawable.Drawable
-import android.view.Gravity
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.generateBackgroundWithShadow
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -18,6 +16,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * Created by Yehezkiel on 17/05/21
@@ -32,19 +31,6 @@ class PartialAtcButtonView private constructor(
     private val btnChat = view.findViewById<UnifyButton>(R.id.btn_chat_variant)
 
     private var isShopOwner: Boolean = false
-    val shadowDrawable: Drawable? by lazy {
-        view.generateBackgroundWithShadow(
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
-            topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            topRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            elevation = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
-            shadowRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
-            shadowGravity = Gravity.TOP
-        )
-    }
 
     var visibility: Boolean = false
         set(value) {
@@ -59,7 +45,6 @@ class PartialAtcButtonView private constructor(
     }
 
     init {
-        view.background = shadowDrawable
         btnChat.generateTopchatButtonPdp()
     }
 
@@ -88,10 +73,9 @@ class PartialAtcButtonView private constructor(
     }
 
     private fun UnifyButton.setLoading(isLoading: Boolean) {
-        if (!isVisible) {
-            this.isLoading = isLoading
-        }
-        this.isEnabled = !isLoading // when loading set enable false
+        if (!isVisible) return
+
+        this.isLoading = isLoading
     }
 
     private fun renderButton(
@@ -132,20 +116,22 @@ class PartialAtcButtonView private constructor(
             }
         }
 
+
         btnBuy.run {
             val firstButton = availableButton.firstOrNull()
             showWithCondition(firstButton != null)
-            generateTheme(firstButton?.color ?: "")
+            generateTheme(firstButton?.color.orEmpty())
             val fallbackTextIfEmpty = if (firstButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
             val textFirstButton = availableButton.getOrNull(0)?.text ?: fallbackTextIfEmpty
             text = textFirstButton
+
             setOnClickListener {
+                if (isLoading) return@setOnClickListener
+
                 buttonListener.buttonCartTypeClick(
-                    availableButton.getOrNull(0)?.cartType
-                        ?: "",
+                    availableButton.getOrNull(0)?.cartType.orEmpty(),
                     text.toString(),
-                    availableButton.getOrNull(0)?.showRecommendation
-                        ?: false
+                    availableButton.getOrNull(0)?.showRecommendation.orFalse()
                 )
             }
         }
@@ -153,16 +139,16 @@ class PartialAtcButtonView private constructor(
         btnAtc.run {
             val secondButton = availableButton.getOrNull(1)
             showWithCondition(secondButton != null)
-            generateTheme(secondButton?.color ?: "")
+            generateTheme(secondButton?.color.orEmpty())
             val fallbackTextIfEmpty = if (secondButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
             text = availableButton.getOrNull(1)?.text ?: fallbackTextIfEmpty
             setOnClickListener {
+                if (isLoading) return@setOnClickListener
+
                 buttonListener.buttonCartTypeClick(
-                    availableButton.getOrNull(1)?.cartType
-                        ?: "",
+                    availableButton.getOrNull(1)?.cartType.orEmpty(),
                     text.toString(),
-                    availableButton.getOrNull(1)?.showRecommendation
-                        ?: false
+                    availableButton.getOrNull(1)?.showRecommendation.orFalse()
                 )
             }
         }
@@ -172,7 +158,7 @@ class PartialAtcButtonView private constructor(
         btnBuy.run {
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN)
-            text = context.getString(com.tokopedia.product.detail.common.R.string.buy_now)
+            text = context.getString(productdetailcommonR.string.buy_now)
             setOnClickListener {
                 buttonListener.buyNowClick(text.toString())
             }
@@ -181,7 +167,7 @@ class PartialAtcButtonView private constructor(
         btnAtc.run {
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN)
-            text = context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+            text = context.getString(productdetailcommonR.string.plus_product_to_cart)
             setOnClickListener {
                 buttonListener.addToCartClick(text.toString())
             }
@@ -192,7 +178,7 @@ class PartialAtcButtonView private constructor(
 
     private fun showNoStockButton() {
         btnBuy.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.empty_stock_atc)
+            text = context.getString(productdetailcommonR.string.empty_stock_atc)
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_DISABLE)
         }

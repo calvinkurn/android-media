@@ -67,6 +67,7 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.postatc.PostAtcParams
+import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -1004,17 +1005,18 @@ class AtcVariantBottomSheet :
 
     private fun showWaitingIndicator(action: Int, source: String) {
         val shouldShowAnimation = shouldShowWithAnimation(action = action, source = source)
+        baseAtcBtn?.showLoading()
         if (shouldShowAnimation) {
             atcAnimator.show(onAnimateEnded = { viewModel.atcAnimationEnd() })
         } else {
-            baseAtcBtn?.showLoading()
             viewModel.atcAnimationEnd()
         }
     }
 
     private fun shouldShowWithAnimation(action: Int, source: String): Boolean {
         return action == ProductDetailCommonConstant.ATC_BUTTON &&
-            source == VariantPageSource.PDP_PAGESOURCE.source
+            source == VariantPageSource.PDP_PAGESOURCE.source &&
+            ProductRollenceHelper.rollenceAtcAnimationActive()
     }
 
     private fun doAddWishlistV2(productId: String) {

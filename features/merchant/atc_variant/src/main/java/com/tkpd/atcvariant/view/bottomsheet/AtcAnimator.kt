@@ -25,10 +25,12 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.getStatusBarHeight
 import com.tokopedia.kotlin.extensions.view.half
 import com.tokopedia.kotlin.extensions.view.third
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by yovi.putra on 3/4/24.
@@ -37,12 +39,12 @@ import com.tokopedia.unifyprinciples.UnifyMotion
 class AtcAnimator(private val context: Context) {
 
     companion object {
-        private val STROKE_WIDTH = 4.toPx()
-        private val RADIUS_DEFAULT = 24f.toPx()
+        private val STROKE_WIDTH = 2f.dpToPx()
+        private val CARD_ELEVATION = 8f.dpToPx()
+        private val RADIUS_DEFAULT = 24f.dpToPx()
         private val TARGET_RADIUS = RADIUS_DEFAULT * 4
-        private const val SCALE_BEFORE_TO_CENTER_SCREEN = 0.8f
         private const val SCALE_AFTER_IN_CART = 0.05f
-        private val IMAGE_SIZE_AFTER_IN_CENTER = 218f.toPx()
+        private val IMAGE_SIZE_AFTER_IN_CENTER = 218f.dpToPx()
 
         private const val PROP_TRANSLATION_X = "translationX"
         private const val PROP_TRANSLATION_Y = "translationY"
@@ -55,7 +57,14 @@ class AtcAnimator(private val context: Context) {
     }
 
     private val mBinding by lazyThreadSafetyNone {
-        AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context))
+        AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context)).apply {
+            with(cardImage) {
+                borderWidth = STROKE_WIDTH
+                cardBorderColor = context.getColorChecker(unifyprinciplesR.color.Unify_NN50)
+                cardType = CardUnify2.TYPE_BORDER
+                cardElevation = CARD_ELEVATION
+            }
+        }
     }
 
     private val mPopupWindow by lazyThreadSafetyNone {
@@ -80,6 +89,7 @@ class AtcAnimator(private val context: Context) {
         AnimatorSet().apply {
             interpolator = mBezierPath
             duration = UnifyMotion.T5
+            startDelay = UnifyMotion.T3.half
         }
     }
 
@@ -137,7 +147,7 @@ class AtcAnimator(private val context: Context) {
             val cardImage = mBinding.cardImage
             val actualX = x - STROKE_WIDTH - cardImage.marginStart
             val actualY = y - STROKE_WIDTH - cardImage.marginTop - context.getStatusBarHeight()
-            Point(actualX, actualY)
+            Point(actualX.toInt(), actualY.toInt())
         }
     }
 
@@ -205,17 +215,15 @@ class AtcAnimator(private val context: Context) {
         val targetScaleY = IMAGE_SIZE_AFTER_IN_CENTER / height
         val scaleX = animateBy(
             property = PROP_SCALE_X,
-            from = SCALE_BEFORE_TO_CENTER_SCREEN,
             to = targetScaleX
         )
         val scaleY = animateBy(
             property = PROP_SCALE_Y,
-            from = SCALE_BEFORE_TO_CENTER_SCREEN,
             to = targetScaleY
         )
         val alpha = animateBy(
             property = PROP_ALPHA,
-            from = Float.ZERO,
+            from = Float.ONE.half,
             to = Float.ONE
         )
         val translateX = animateBy(
@@ -249,7 +257,6 @@ class AtcAnimator(private val context: Context) {
                     onEnded()
                 }
             })
-            startDelay = UnifyMotion.T3
             playTogether(animators)
         }.start()
     }
