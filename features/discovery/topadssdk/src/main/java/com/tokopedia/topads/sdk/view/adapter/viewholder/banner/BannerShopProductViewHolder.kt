@@ -30,14 +30,16 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
             productCardGridView.run {
                 applyCarousel()
                 setProductModel(productCardViewModel)
-                setImageProductViewHintListener(model.cpmData.cpm.cpmShop.products
-                    .get(absoluteAdapterPosition).imageProduct, object : ViewHintListener {
-                    override fun onViewHint() {
-                        impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition-1), model.cpmData)
-                    }
-                })
+                var product = model.cpmData.cpm.cpmShop.products.getOrNull(absoluteAdapterPosition)
+                product?.let {
+                    setImageProductViewHintListener(it.imageProduct, object : ViewHintListener {
+                        override fun onViewHint() {
+                            impressionListener?.onImpressionProductAdsItem(absoluteAdapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition-1), model.cpmData)
+                        }
+                    })
+                }
                 setOnClickListener {
-                    topAdsBannerClickListener?.onBannerAdsClicked(adapterPosition,
+                    topAdsBannerClickListener?.onBannerAdsClicked(absoluteAdapterPosition,
                             model.appLink, model.cpmData)
                     topAdsUrlHitter.hitClickUrl(className, model.adsClickUrl, "", "", "")
                 }
