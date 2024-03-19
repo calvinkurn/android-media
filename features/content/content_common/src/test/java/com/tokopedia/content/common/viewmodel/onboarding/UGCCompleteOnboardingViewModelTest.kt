@@ -1,6 +1,5 @@
 package com.tokopedia.content.common.viewmodel.onboarding
 
-import com.tokopedia.content.common.model.CommonModelBuilder
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.onboarding.view.strategy.UGCCompleteOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
@@ -31,9 +30,7 @@ class UGCCompleteOnboardingViewModelTest {
 
     private val mockRepo: UGCOnboardingRepository = mockk(relaxed = true)
 
-    private val commonBuilder = CommonModelBuilder()
-
-    private val mockException = commonBuilder.buildException()
+    private val mockException = Exception("Network Error")
     private val mockValidUsername = "jonathandarwin"
     private val mockInvalidUsername = "aa"
     private val mockErrorUsernameValidation = "Username minimal 3 karakter"
