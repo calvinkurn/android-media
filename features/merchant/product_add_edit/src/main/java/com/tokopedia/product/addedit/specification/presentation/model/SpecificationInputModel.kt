@@ -19,12 +19,13 @@ data class SpecificationInputModel (
     val dataHasEmojiChar: Boolean get() = data.any { c -> c > 0x7F.toChar() }
 
     fun getValidatedData(): SpecificationInputModel {
+        data = data.trim()
         return if (requiredFieldNotFilled) {
-            apply { this.errorMessageRes = R.string.error_specification_required_empty }
+            apply { errorMessageRes = R.string.error_specification_required_empty }
         } else if (dataHasEmojiChar) {
-            apply { this.errorMessageRes = R.string.error_specification_emoji_input }
+            apply { errorMessageRes = R.string.error_specification_emoji_input }
         } else {
-            apply { this.errorMessageRes = 0 }
+            apply { errorMessageRes = 0 }
         }
     }
 }

@@ -142,8 +142,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
             val validatedSelectedList = result.second
 
             if (validationSuccess) {
-                val specificationList = specificationValueAdapter?.getDataSelectedList()
-                viewModel.updateProductInputModelSpecifications(specificationList.orEmpty())
+                viewModel.updateProductInputModelSpecifications(validatedSelectedList)
                 submitInputData()
             } else {
                 specificationValueAdapter?.setDataSelected(validatedSelectedList)
