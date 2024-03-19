@@ -100,7 +100,7 @@ class BroadcasterReportTrackViewerUseCase @Inject constructor(
         )
 
         enum class Event(val value: String) {
-            Visit("visit"),
+            Visit("visit_content"),
             ProductChanges("product_change"),
             Unknown("");
         }

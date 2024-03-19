@@ -9,40 +9,44 @@ import javax.inject.Inject
 
 class PlayViewerBroTrackerRepositoryImpl @Inject constructor(
     private val broadcasterReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
-    private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : PlayViewerBroTrackerRepository {
 
-    override suspend fun trackProducts(
+    private suspend fun trackEvent(
         channelId: String,
-        productIds: List<String>
+        productIds: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event
     ) {
-        //TODO: remove track view
         withContext(dispatchers.io) {
             broadcasterReportTrackViewerUseCase.apply {
                 params = BroadcasterReportTrackViewerUseCase.createParams(
                     channelId = channelId,
                     productIds = productIds,
-                    event = BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges,
+                    event = event,
                     type = TrackContentType.Play
                 )
             }.executeOnBackground()
         }
     }
 
+    override suspend fun trackProducts(
+        channelId: String,
+        productIds: List<String>
+    ) {
+        trackEvent(
+            channelId,
+            productIds,
+            BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges,
+        )
+    }
+
     override suspend fun trackVisitChannel(
         channelId: String,
         sourceType: String
     ) {
-        withContext(dispatchers.io) {
-            trackVisitChannelBroadcasterUseCase.apply {
-                setRequestParams(
-                    TrackVisitChannelBroadcasterUseCase.createParams(
-                        channelId,
-                        sourceType
-                    )
-                )
-            }.executeOnBackground()
-        }
+        trackEvent(
+            channelId,
+            emptyList(),
+            BroadcasterReportTrackViewerUseCase.Companion.Event.Visit,
+        )
     }
 }

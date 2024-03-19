@@ -50,6 +50,7 @@ import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsM
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
@@ -856,8 +857,8 @@ class FeedFragment :
         model: FeedCardVideoContentModel,
         trackerModel: FeedTrackerDataModel
     ) {
-        feedPostViewModel.trackVisitChannel(model)
-        feedPostViewModel.trackChannelPerformance(model)
+        feedPostViewModel.trackPerformance(model, BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
+        feedPostViewModel.trackPerformance(model, BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
         feedPostViewModel.getReportSummaries(model)
     }
 

@@ -116,7 +116,6 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val affiliateCookieHelper: AffiliateCookieHelper,
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
@@ -1215,44 +1214,26 @@ class FeedPostViewModel @Inject constructor(
     }
 
     /**
-     * Track Visit Channel
+     * Track
      */
-    fun trackVisitChannel(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
-        if (playChannelId.isBlank()) return
-
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            trackVisitChannelUseCase.apply {
-                setRequestParams(
-                    TrackVisitChannelBroadcasterUseCase.createParams(
-                        playChannelId,
-                        TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
-                    )
-                )
-            }.executeOnBackground()
-        }) {
-        }
-    }
-
-    fun trackChannelPerformance(model: FeedCardVideoContentModel) {
-        //TODO: remove track view
+    fun trackPerformance(model: FeedCardVideoContentModel, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         val playChannelId = model.playChannelId
         if (playChannelId.isBlank()) return
 
         val productIds = model.products.map { it.id }
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
             trackReportTrackViewerUseCase.apply {
                 setRequestParams(
                     BroadcasterReportTrackViewerUseCase.createParams(
                         channelId = playChannelId,
                         productIds = productIds,
-                        event = BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges,
+                        event = event,
                         type = TrackContentType.Play
                     )
                 )
             }.executeOnBackground()
-        }) {
-        }
+        }) {}
     }
 
     fun getReportSummaries(model: FeedCardVideoContentModel) {
