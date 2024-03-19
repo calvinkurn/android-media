@@ -46,6 +46,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
@@ -101,6 +102,7 @@ import javax.inject.Inject
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
+    private val reportAnalyticFactory: PlayBroadcastReportAnalytic.Factory,
     private val beautificationUiBridge: BeautificationUiBridge,
     private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
 ) : PlayBaseBroadcastFragment(),
@@ -230,6 +232,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private var isPausedFragment = false
 
     private val toasterManager = PlayBroadcastToasterManager(this)
+
+    private val reportAnalytic = reportAnalyticFactory.create(
+        getAccount = { parentViewModel.selectedAccount },
+        getChannelId = { parentViewModel.channelId },
+        getChannelTitle = { parentViewModel.channelTitle }
+    )
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -1256,7 +1264,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prev == curr) return
 
-        icStatistic.showWithCondition(curr.isShop)
+        icStatistic.shouldShowWithAction(curr.isShop) {
+            reportAnalytic.impressStatisticIconCoachMark()
+        }
     }
 
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {

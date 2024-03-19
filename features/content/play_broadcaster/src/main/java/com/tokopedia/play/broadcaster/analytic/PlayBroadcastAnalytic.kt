@@ -5,6 +5,7 @@ import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
@@ -14,8 +15,6 @@ import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAna
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -39,8 +38,7 @@ class PlayBroadcastAnalytic(
     private val accountAnalytic: PlayBroadcastAccountAnalytic,
     private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
     private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
-    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
-    private val reportAnalytic: PlayBroadcastReportAnalytic,
+    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic
 ) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
@@ -52,8 +50,7 @@ class PlayBroadcastAnalytic(
     PlayBroadcastAccountAnalytic by accountAnalytic,
     PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
     PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic,
-    PlayBroadcastBeautificationAnalytic by beautificationAnalytic,
-    PlayBroadcastReportAnalytic by reportAnalytic {
+    PlayBroadcastBeautificationAnalytic by beautificationAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
