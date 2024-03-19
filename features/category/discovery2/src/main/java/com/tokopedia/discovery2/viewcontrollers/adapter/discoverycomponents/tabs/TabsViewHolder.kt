@@ -156,17 +156,18 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             ) {
                 isParentUnifyTab = false
 
-                tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
-                tabsHolder.tabLayout.removeAllTabs()
-                if (tabsViewModel.isFromCategory()) {
-                    tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
+                tabsHolder.apply {
+                    hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
+                    tabLayout.removeAllTabs()
+                    if (tabsViewModel.isFromCategory()) {
+                        customTabMode = TabLayout.MODE_SCROLLABLE
+                    }
                 }
 
                 tabsHolder.getUnifyTabLayout().apply {
                     layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     layoutParams.height =
                         tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_60)
-                    tabMode = TabLayout.MODE_SCROLLABLE
                     removeAllTabs()
                 }
 
