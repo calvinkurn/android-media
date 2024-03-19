@@ -8,12 +8,14 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
@@ -72,6 +74,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("345", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(shipperProductId = 1, serviceId = 2, shipperId = 3, logPromoCode = "boCode", freeShippingMetadata = "metadata"))),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -184,6 +187,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -233,6 +237,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                     promo = LastApplyUiModel(),
                     isLoading = false
                 ),
+                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
                 CheckoutCostModel(totalPriceString = "Rp0"),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
@@ -319,6 +324,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutPromoModel(
                 promo = LastApplyUiModel()
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -409,6 +415,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                         )
                     )
                 ),
+                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
                 CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = false),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
@@ -486,6 +493,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutPromoModel(
                 promo = LastApplyUiModel()
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -521,6 +529,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                 CheckoutPromoModel(
                     promo = LastApplyUiModel()
                 ),
+                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
                 CheckoutCostModel(totalPriceString = "-", hasSelectAllShipping = false),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "-")
@@ -629,6 +638,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = true),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
@@ -666,6 +676,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
                 CheckoutCostModel(totalPriceString = "Rp0"),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
@@ -699,6 +710,7 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()

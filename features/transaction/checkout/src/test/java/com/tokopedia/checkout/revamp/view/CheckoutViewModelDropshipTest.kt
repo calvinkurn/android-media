@@ -9,6 +9,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
@@ -16,6 +17,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -30,7 +32,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coEvery
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
@@ -71,8 +73,8 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         viewModel.setValidationDropshipPhone("08181111", true, 5)
 
         // then
-        Assert.assertEquals("08181111", orderModel.dropshipPhone)
-        Assert.assertEquals(true, orderModel.isDropshipPhoneValid)
+        assertEquals("08181111", orderModel.dropshipPhone)
+        assertEquals(true, orderModel.isDropshipPhoneValid)
     }
 
     @Test
@@ -112,8 +114,8 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         viewModel.setValidationDropshipName("aaaaa", true, 5)
 
         // then
-        Assert.assertEquals("aaaaa", orderModel.dropshipName)
-        Assert.assertEquals(true, orderModel.isDropshipNameValid)
+        assertEquals("aaaaa", orderModel.dropshipName)
+        assertEquals(true, orderModel.isDropshipNameValid)
     }
 
     @Test
@@ -159,11 +161,11 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         viewModel.setDropshipSwitch(true, 5)
 
         // then
-        Assert.assertEquals(
+        assertEquals(
             CheckoutPageToaster(Toaster.TYPE_NORMAL, toasterMessage = "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"),
             latestToaster
         )
-        Assert.assertEquals(
+        assertEquals(
             CheckoutDropshipWidget.State.DISABLED,
             (viewModel.listData.value[5] as CheckoutOrderModel).stateDropship
         )
@@ -212,12 +214,12 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         viewModel.setDropshipSwitch(false, 5)
 
         // then
-        Assert.assertEquals(
+        assertEquals(
             CheckoutDropshipWidget.State.INIT,
             (viewModel.listData.value[5] as CheckoutOrderModel).stateDropship
         )
 
-        Assert.assertEquals(
+        assertEquals(
             false,
             (viewModel.listData.value[5] as CheckoutOrderModel).useDropship
         )
@@ -266,7 +268,7 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         viewModel.setDropshipSwitch(true, 5)
 
         // then
-        Assert.assertEquals(
+        assertEquals(
             true,
             (viewModel.listData.value[5] as CheckoutOrderModel).useDropship
         )
@@ -316,7 +318,7 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         viewModel.setAddon(true, AddOnProductDataItemModel(uniqueId = "a2"), 4)
 
         // then
-        Assert.assertEquals(
+        assertEquals(
             AddOnProductDataModel(
                 listAddOnProductData = arrayListOf(
                     AddOnProductDataItemModel(uniqueId = "a1", status = 0),
@@ -325,11 +327,11 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
             ),
             (viewModel.listData.value[4] as CheckoutProductModel).addOnProduct
         )
-        Assert.assertEquals(
+        assertEquals(
             CheckoutPageToaster(Toaster.TYPE_NORMAL, toasterMessage = "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"),
             latestToaster
         )
-        Assert.assertEquals(
+        assertEquals(
             CheckoutDropshipWidget.State.DISABLED,
             (viewModel.listData.value[5] as CheckoutOrderModel).stateDropship
         )
@@ -379,7 +381,7 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         viewModel.setAddon(false, AddOnProductDataItemModel(uniqueId = "a2"), 4)
 
         // then
-        Assert.assertEquals(
+        assertEquals(
             CheckoutDropshipWidget.State.INIT,
             (viewModel.listData.value[5] as CheckoutOrderModel).stateDropship
         )
@@ -461,12 +463,12 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         })
 
         // Then
-        Assert.assertEquals(false, invokeSuccess)
-        Assert.assertEquals(
+        assertEquals(false, invokeSuccess)
+        assertEquals(
             CheckoutPageToaster(Toaster.TYPE_NORMAL, toasterMessage = "Pastikan Anda telah melengkapi informasi tambahan."),
             latestToaster
         )
-        Assert.assertEquals(
+        assertEquals(
             CheckoutDropshipWidget.State.ERROR,
             (viewModel.listData.value[6] as CheckoutOrderModel).stateDropship
         )
@@ -518,6 +520,7 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -543,6 +546,6 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         })
 
         // Then
-        Assert.assertEquals(true, invokeSuccess)
+        assertEquals(true, invokeSuccess)
     }
 }

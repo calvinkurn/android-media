@@ -7,12 +7,14 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
@@ -45,6 +47,7 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -79,6 +82,7 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -129,6 +133,7 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -186,6 +191,7 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -255,6 +261,7 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -302,6 +309,7 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -347,6 +355,7 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
