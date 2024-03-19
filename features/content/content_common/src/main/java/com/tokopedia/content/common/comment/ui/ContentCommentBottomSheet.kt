@@ -62,9 +62,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -102,7 +100,10 @@ class ContentCommentBottomSheet @Inject constructor(
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvComment.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+                val currentSize = commentAdapter.getItems().filterIsInstance<CommentUiModel.Item>().filter { it.commentType == CommentType.Parent }.size
+                if (totalItemsCount >= currentSize - PAGE_THRESHOLD && currentSize >= commentAdapter.itemCount) { //item parent only~~~
+                    viewModel.submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+                }
             }
         }
     }
@@ -628,10 +629,10 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val TAG = "ContentCommentBottomSheet"
 
         private const val HEIGHT_PERCENT = 0.8
-        private const val KEYBOARD_HEIGHT_PERCENT = 0.35
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
+        private const val PAGE_THRESHOLD = 20
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
