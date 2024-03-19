@@ -48,6 +48,14 @@ class GetPaymentWidgetUseCase @Inject constructor(
                           error_message_unavailable_tenure
                           error_message_top_limit
                           error_message_bottom_limit
+                          credit_card_attribute {
+                            bank_code
+                            card_type
+                            tnc_info
+                            token_id
+                            tenure_signature
+                            masked_number
+                          }
                         }
                         wallet_data {
                           wallet_type
