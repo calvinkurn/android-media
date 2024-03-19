@@ -14,6 +14,8 @@ import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
+import com.tokopedia.content.common.track.response.ReportSummaries
+import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -134,6 +136,7 @@ class FeedPostViewModelTest {
     private val uiEventManager = UiEventManager<FeedPostEvent>()
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase = mockk()
+    private val getReportSummariesUseCase : GetReportSummariesUseCase = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -166,6 +169,7 @@ class FeedPostViewModelTest {
             uiEventManager = uiEventManager,
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             feedGetChannelStatusUseCase = feedGetChannelStatusUseCase,
+            getReportSummariesUseCase = getReportSummariesUseCase,
             dispatchers = testDispatcher
         )
     }
@@ -2474,4 +2478,11 @@ class FeedPostViewModelTest {
             )
         )
     )
+
+    @Test
+    fun getReportSummaryVideo() {
+        coEvery { getReportSummariesUseCase(any()) } returns ReportSummaries.Response()
+
+        viewModel.getReportSummaries(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+    }
 }
