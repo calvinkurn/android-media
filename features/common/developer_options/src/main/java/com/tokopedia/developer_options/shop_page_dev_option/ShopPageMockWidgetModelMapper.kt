@@ -1,0 +1,79 @@
+package com.tokopedia.developer_options.shop_page_dev_option
+
+import android.content.res.Resources
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.kotlin.extensions.view.orZero
+import java.io.IOException
+import java.io.InputStream
+import com.tokopedia.developer_options.R
+
+object ShopPageMockWidgetModelMapper {
+    private val SHOP_PAGE_MOCK_WIDGET_DATA_RESOURCE = R.raw.shop_page_template_mock_widget
+    private val gson by lazy {
+        Gson()
+    }
+
+    fun generateTemplateShopWidgetData(shopPageMockJsonData: JsonArray?): List<ShopPageMockWidgetModel> {
+        return shopPageMockJsonData?.map { mockDataItem ->
+            generateMockShopWidgetModel(mockDataItem)
+        } ?: listOf()
+
+    }
+
+    fun getShopPageMockJsonFromRaw(resources: Resources): JsonArray? {
+        val rawResource: InputStream = resources.openRawResource(SHOP_PAGE_MOCK_WIDGET_DATA_RESOURCE)
+        val content: String = GraphqlHelper.streamToString(rawResource)
+        try {
+            rawResource.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return JsonParser.parseString(content).asJsonArray
+    }
+
+    private fun generateMockShopWidgetModel(member: JsonElement): ShopPageMockWidgetModel {
+        val shopLayoutV2Data = member.asJsonObject
+        val dynamicTabMockResponseData = generateMockDynamicTabData(shopLayoutV2Data)
+        return ShopPageMockWidgetModel(Pair(
+            dynamicTabMockResponseData,
+            shopLayoutV2Data.toString()
+        ))
+    }
+
+    private fun generateMockDynamicTabData(jsonObjectData: JsonObject?): String {
+        val widgetId = jsonObjectData?.get("widgetID")?.asBigInteger.orZero()
+        val widgetMasterId = jsonObjectData?.get("widgetMasterID")?.asBigInteger.orZero()
+        val widgetType = jsonObjectData?.get("type")?.asString.orEmpty()
+        val widgetName = jsonObjectData?.get("name")?.asString.orEmpty()
+        return JsonObject().apply {
+            addProperty("widgetID", widgetId)
+            addProperty("widgetMasterID", widgetMasterId)
+            addProperty("widgetType", widgetType)
+            addProperty("widgetName", widgetName)
+        }.toString()
+    }
+
+    fun updateWidgetId(mockShopWidgetData: List<ShopPageMockWidgetModel>) {
+        mockShopWidgetData.mapIndexed { index, element ->
+            element.editWidgetId(index)
+        }
+    }
+
+    fun mapToShopPageMockWidgetModel(serializedList: String): List<ShopPageMockWidgetModel> {
+        val type = object : TypeToken<List<Pair<String, String>>>() {}.type
+        val listPairMockShopData = (gson.fromJson(serializedList, type) as List<Pair<String, String>>)
+        return listPairMockShopData.map {
+            ShopPageMockWidgetModel(it)
+        }
+    }
+
+    fun listMockWidgetDataToJson(listMockWidgetData: List<Pair<String, String>>): String? {
+        return gson.toJson(listMockWidgetData)
+    }
+}

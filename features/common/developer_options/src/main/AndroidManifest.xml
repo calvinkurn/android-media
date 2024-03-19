@@ -50,6 +50,11 @@
             android:label="@string/pdp_dev_option_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".shop_page_dev_option.ShopPageDevActivity"
+            android:label="@string/shop_page_option_title"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <activity
             android:name=".applink.presentation.activity.AppLinkListActivity"
