@@ -50,6 +50,25 @@ class AppLogAnalyticsTest {
         assertEquals("Page One", actual)
     }
 
+    @Test
+    fun `when getLastDataBeforeCurrent then n-1 data should be retrieved`() {
+        SUT.pushPageData(ActivityBasicOne)
+        SUT.pushPageData(ActivityBasicTwo)
+
+        val actual = SUT.getLastDataBeforeCurrent(PAGE_NAME)
+        assertEquals("Page One", actual)
+    }
+
+    @Test
+    fun `when getLastDataBeforeHash then hash-1 data should be retrieved`() {
+        SUT.pushPageData(ActivityBasicOne)
+        SUT.pushPageData(ActivityBasicTwo)
+        SUT.pushPageData(ActivityBasicThree)
+
+        val actual = SUT.getLastDataBeforeHash(PAGE_NAME, ActivityBasicTwo.hashCode())
+        assertEquals("Page One", actual)
+    }
+
 }
 
 
