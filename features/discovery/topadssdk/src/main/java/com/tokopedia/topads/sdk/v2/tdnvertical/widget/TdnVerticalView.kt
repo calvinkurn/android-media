@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -35,20 +35,18 @@ class TdnVerticalView : BaseCustomView {
     private val tdnShimmer: LoaderUnify by lazy { findViewById(R.id.tdnVerticalShimmer) }
     private var tdnVerticalBannerResponseListener: TdnVerticalBannerResponseListener? = null
 
-    @JvmField
     @Inject
-    var viewModelFactory: ViewModelProvider.Factory? = null
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         var counter = 0
     }
 
-    private var topAdsImageViewViewModel: TopAdsImageViewViewModel? = null
-    private fun initViewModel() {
-        topAdsImageViewViewModel = viewModelFactory?.let {
+    private val topAdsImageViewViewModel by lazy {
+        findViewTreeViewModelStoreOwner()?.let { viewTreeViewModelStoreOwner ->
             ViewModelProvider(
-                context as AppCompatActivity,
-                it
+                viewTreeViewModelStoreOwner,
+                viewModelFactory
             )[
                 (
                     TopAdsImageViewViewModel::class.java.canonicalName
@@ -97,7 +95,6 @@ class TdnVerticalView : BaseCustomView {
         productID: String = "",
         page: String = ""
     ) {
-        initViewModel()
         val qp = topAdsImageViewViewModel?.getQueryParams(
             query,
             source,
@@ -110,15 +107,17 @@ class TdnVerticalView : BaseCustomView {
         )
         qp?.let { topAdsImageViewViewModel?.getImageData(it) }
 
-        topAdsImageViewViewModel?.getResponse()?.observe(context as LifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    tdnVerticalBannerResponseListener?.onTdnVerticalBannerResponse(it.data)
-                    Timber.d("Response received successfully")
-                }
+        findViewTreeLifecycleOwner()?.let { lifeCycleOwner ->
+            topAdsImageViewViewModel?.getResponse()?.observe(lifeCycleOwner) {
+                when (it) {
+                    is Success -> {
+                        tdnVerticalBannerResponseListener?.onTdnVerticalBannerResponse(it.data)
+                        Timber.d("Response received successfully")
+                    }
 
-                is Fail -> {
-                    Timber.d("error in response")
+                    is Fail -> {
+                        Timber.d("error in response")
+                    }
                 }
             }
         }

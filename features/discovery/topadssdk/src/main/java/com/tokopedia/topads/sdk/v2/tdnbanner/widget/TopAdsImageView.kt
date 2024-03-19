@@ -2,11 +2,11 @@ package com.tokopedia.topads.sdk.v2.tdnbanner.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -24,7 +24,6 @@ import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class TopAdsImageView : AppCompatImageView {
@@ -43,13 +42,14 @@ class TopAdsImageView : AppCompatImageView {
     var viewModelFactory: ViewModelProvider.Factory? = null
 
     private val topAdsImageViewViewModel by lazy {
-        val vm = viewModelFactory?.let {
-            ViewModelProvider(
-                context as AppCompatActivity,
-                it
-            ).get(TopAdsImageViewViewModel::class.java)
+        findViewTreeViewModelStoreOwner()?.let { viewModelStoreOwner ->
+            viewModelFactory?.let {
+                ViewModelProvider(
+                    viewModelStoreOwner,
+                    it
+                )[TopAdsImageViewViewModel::class.java]
+            }
         }
-        WeakReference(vm)
     }
 
     /**
@@ -79,23 +79,27 @@ class TopAdsImageView : AppCompatImageView {
      * */
     fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "", page: String = "") {
         initViewModel()
-        val queryParams = topAdsImageViewViewModel.get()?.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
-        queryParams?.let { topAdsImageViewViewModel.get()?.getImageData(it) }
-        topAdsImageViewViewModel.get()?.getResponse()?.observe(
-            context as LifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
-                        Timber.d("Response received successfully")
-                    }
-                    is Fail -> {
-                        topAdsImageVieWApiResponseListener?.onError(it.throwable)
-                        Timber.d("error in response")
+        val queryParams = topAdsImageViewViewModel?.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
+        queryParams?.let { topAdsImageViewViewModel?.getImageData(it) }
+
+        findViewTreeLifecycleOwner()?.let { lifecycleOwner ->
+            topAdsImageViewViewModel?.getResponse()?.observe(
+                lifecycleOwner,
+                Observer {
+                    when (it) {
+                        is Success -> {
+                            topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
+                            Timber.d("Response received successfully")
+                        }
+
+                        is Fail -> {
+                            topAdsImageVieWApiResponseListener?.onError(it.throwable)
+                            Timber.d("error in response")
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 
     private fun initViewModel() {

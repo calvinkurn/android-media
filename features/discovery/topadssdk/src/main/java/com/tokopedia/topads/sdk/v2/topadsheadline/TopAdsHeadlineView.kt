@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -14,46 +14,48 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.topads.sdk.v2.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.v2.shopadslayout8or9.listener.ShopWidgetAddToCartClickListener
-import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.unifycomponents.LoaderUnify
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
-    @JvmField @Inject
-    var viewModelFactory: ViewModelProvider.Factory? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val topAdsHeadlineViewModel by lazy {
-        val vm = viewModelFactory?.let {
-            ViewModelProvider(context as AppCompatActivity,
-                it
-            ).get(TopAdsHeadlineViewModel::class.java)
+        findViewTreeViewModelStoreOwner()?.let { it1 ->
+            ViewModelProvider(
+                it1,
+                viewModelFactory
+            )[TopAdsHeadlineViewModel::class.java]
         }
-        WeakReference(vm)
     }
 
     var topadsBannerView: TopAdsBannerView
         private set
-    private val shimmerView: LoaderUnify
+
+    private
+    val shimmerView: LoaderUnify
 
     init {
         val view = View.inflate(context, R.layout.layout_widget_topads_headline, this)
         topadsBannerView = view.findViewById(R.id.top_ads_banner)
-        shimmerView= view.findViewById(R.id.shimmer_view)
+        shimmerView = view.findViewById(R.id.shimmer_view)
         initDagger()
         topadsBannerView.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
             override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
                 applink?.let { RouteManager.route(context, it) }
             }
         })
-        topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener(){
+        topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
         })
     }
 
@@ -66,10 +68,10 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     fun getHeadlineAds(params: String, onSuccess: ((CpmModel) -> Unit)? = null, onError: (() -> Unit)? = null) {
-        topAdsHeadlineViewModel.get()?.getTopAdsHeadlineData(params, onSuccess, onError)
+        topAdsHeadlineViewModel?.getTopAdsHeadlineData(params, onSuccess, onError)
     }
 
-    fun displayAds(cpmModel: CpmModel, index:Int = 0) {
+    fun displayAds(cpmModel: CpmModel, index: Int = 0) {
         topadsBannerView.displayAdsWithProductShimmer(cpmModel, index = index)
     }
 
@@ -108,5 +110,4 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     fun setShowCta(isShowCta: Boolean) {
         topadsBannerView.setShowCta(isShowCta)
     }
-
 }
