@@ -65,7 +65,7 @@ fun AnimatedImageAnchor(
     LaunchedEffect(resetLaunchEffect, relativeTargetPosition) {
         animateShow(alphaAnimatable, scaleAnimatable)
 
-        delay(UnifyMotion.T3)
+        delay(UnifyMotion.T3 / 2)
 
         animateTranslation(
             alphaAnimatable = alphaAnimatable,
