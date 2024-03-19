@@ -14,18 +14,19 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.utils.ImageLoader
-import com.tokopedia.topads.sdk.v2.dynamicfeedshop.listener.LocalAdsClickListener
 import com.tokopedia.topads.sdk.v2.dynamicfeedshop.adapter.DynamicFeedShopAdapter.DynamicFeedShopViewHolder
+import com.tokopedia.topads.sdk.v2.dynamicfeedshop.listener.LocalAdsClickListener
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.abstraction.R as abstractionR
-import com.tokopedia.topads.sdk.R as topadssdkR
 import com.tokopedia.gm.common.R as gmcommonR
+import com.tokopedia.topads.sdk.R as topadssdkR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by milhamj on 07/01/19.
@@ -41,8 +42,8 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicFeedShopViewHolder {
         val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_dynamic_feed_shop, parent, false)
+            .from(parent.context)
+            .inflate(R.layout.item_dynamic_feed_shop, parent, false)
         return DynamicFeedShopViewHolder(view)
     }
 
@@ -105,11 +106,14 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                     }
                     shop.isLoaded = true
                 }
-                ivProfile.addOnImpressionListener(shop.imageShop, object : ViewHintListener {
-                    override fun onViewHint() {
-                        itemImpressionListener?.onImpressionShopAds(shop.imageShop.sUrl, shop.id, shop.name, shop.imageShop.xsEcs)
+                ivProfile.addOnImpressionListener(
+                    shop.imageShop,
+                    object : ViewHintListener {
+                        override fun onViewHint() {
+                            itemImpressionListener?.onImpressionShopAds(shop.imageShop.sUrl, shop.id, shop.name, shop.imageShop.xsEcs)
+                        }
                     }
-                })
+                )
                 imageLoader.loadCircle(shop, ivProfile)
                 tvName.text = fromHtml(shop.name)
                 tvDescription.text = fromHtml(shop.tagline)
@@ -132,10 +136,10 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
 
         private fun loadImageOrDefault(imageView: ImageView, imageUrl: String) {
             if (!TextUtils.isEmpty(imageUrl)) {
-                imageLoader.loadImage(imageUrl, imageView)
+                imageView.loadImage(imageUrl)
             } else {
                 imageView.setBackgroundColor(
-                        ContextCompat.getColor(imageView.context, unifyprinciplesR.color.Unify_NN50)
+                    ContextCompat.getColor(imageView.context, unifyprinciplesR.color.Unify_NN50)
                 )
             }
         }
@@ -163,17 +167,17 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 shop.isShop_is_official -> {
                     ivBadge.show()
                     ivBadge.setImageDrawable(
-                            ImageLoader.getDrawable(ivBadge.context, topadssdkR.drawable.ic_badge_shop_official)
+                        ImageLoader.getDrawable(ivBadge.context, topadssdkR.drawable.ic_badge_shop_official)
                     )
                     layoutParams.leftMargin = ivBadge.context.resources.getDimension(abstractionR.dimen.dp_4).toInt()
                 }
                 shop.isGoldShopBadge -> {
                     ivBadge.show()
                     ivBadge.setImageDrawable(
-                            ImageLoader.getDrawable(
-                                    ivBadge.context,
-                                gmcommonR.drawable.ic_power_merchant
-                            )
+                        ImageLoader.getDrawable(
+                            ivBadge.context,
+                            gmcommonR.drawable.ic_power_merchant
+                        )
                     )
                     layoutParams.leftMargin = ivBadge.context.resources.getDimension(abstractionR.dimen.dp_4).toInt()
                 }
@@ -183,11 +187,9 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 }
             }
         }
-
     }
 
     interface TopAdsShopImpressionListener {
         fun onImpressionShopAds(url: String, shopId: String, shopName: String, imageUrl: String)
     }
-
 }
