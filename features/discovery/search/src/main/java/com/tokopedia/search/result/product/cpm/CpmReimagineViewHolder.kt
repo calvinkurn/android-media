@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutReimagineBinding
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_2
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
@@ -31,13 +32,18 @@ class CpmReimagineViewHolder(
     }
 
     private var binding: SearchResultProductTopAdsBannerLayoutReimagineBinding? by viewBinding()
+    private var byteIOTrackingData : ByteIOTrackingData? = null
 
     override fun bind(element: CpmDataView) {
+        this.byteIOTrackingData = element.byteIOTrackingData
         adjustMargin(reimagineSearch2Component.isReimagineShopAds(), element)
 
         binding?.adsBanner?.run {
             setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+                    byteIOTrackingData?.let {
+                        element.byteIOTrackingData = it
+                    }
                     bannerAdsListener?.onBannerAdsClicked(position, applink, data, element)
                 }
             })
@@ -54,6 +60,9 @@ class CpmReimagineViewHolder(
                     product: Product?,
                     data: CpmData
                 ) {
+                    byteIOTrackingData?.let {
+                        element.byteIOTrackingData = it
+                    }
                     bannerAdsListener?.onBannerAdsProductImpressionListener(
                         position,
                         product,
