@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders.mission.v3
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,20 +9,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.LayoutStaticMissionWidgetCardBinding
 import com.tokopedia.home_component.util.loadImageRounded
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
+import com.tokopedia.home_component.visitable.Mission4SquareUiModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-class MissionWidgetCardViewHolder constructor(
+class MissionWidgetCardViewHolder(
     view: View,
     private val listener: Mission4SquareWidgetListener?
 ) : RecyclerView.ViewHolder(view) {
 
     private val binding: LayoutStaticMissionWidgetCardBinding? by viewBinding()
 
-    fun bind(item: MissionWidgetDataModel) {
-        setupProductBannerImage(item.imageURL)
-        setTitle(item.title)
-        setSubtitle(item.subTitle)
+    fun bind(item: Mission4SquareUiModel) {
+        setupProductBannerImage(item.data.imageURL)
+
+        binding?.txtTitle?.shouldTypographyStyleApplied(item.title)
+        binding?.txtSubtitle?.shouldTypographyStyleApplied(item.subtitle)
 
         itemView.setOnClickListener {
             listener?.onMissionClicked(item, bindingAdapterPosition)
@@ -34,12 +37,19 @@ class MissionWidgetCardViewHolder constructor(
         binding?.imgBanner?.loadImageRounded(url, radius)
     }
 
-    private fun setTitle(title: String) {
-        binding?.txtTitle?.text = title
-    }
+    private fun Typography?.shouldTypographyStyleApplied(
+        content: Pair<String, Mission4SquareUiModel.TextStyle?>
+    ) {
+        val (title, textStyle) = content
 
-    private fun setSubtitle(subtitle: String) {
-        binding?.txtSubtitle?.text = subtitle
+        // text
+        this?.text = title
+
+        // style
+        textStyle?.let { style ->
+            this?.weightType = if (style.isBold) Typography.BOLD else Typography.REGULAR
+            this?.setTextColor(Color.parseColor(style.textColor))
+        }
     }
 
     companion object {

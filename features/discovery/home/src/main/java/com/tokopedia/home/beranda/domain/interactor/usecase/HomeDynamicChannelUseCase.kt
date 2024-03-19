@@ -349,10 +349,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
                     },
                     mapToWidgetData = { visitableFound, data, _ ->
-                        val resultList =
-                            LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions, false)
+                        val missionWidgetList = LazyLoadDataMapper
+                            .mapMissionWidgetData(data.getHomeMissionWidget.missions, false)
+                        val mission4SquareWidgetList = LazyLoadDataMapper
+                            .map4SquareMissionWidgetData(data.getHomeMissionWidget.missions, false)
                         visitableFound.copy(
-                            missionWidgetList = resultList,
+                            missionWidgetList = missionWidgetList,
+                            mission4SquareWidgetList = mission4SquareWidgetList,
                             header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),
                             config = data.getHomeMissionWidget.config.getAsChannelConfig(),
                             status = MissionWidgetListDataModel.STATUS_SUCCESS

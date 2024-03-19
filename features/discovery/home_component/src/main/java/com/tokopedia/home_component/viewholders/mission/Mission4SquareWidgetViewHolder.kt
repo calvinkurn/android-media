@@ -43,18 +43,11 @@ class Mission4SquareWidgetViewHolder(
     private fun setupMissionWidgetList(element: MissionWidgetListDataModel) {
         if (element.isShowMissionWidget()) {
             when (element.status) {
-                MissionWidgetListDataModel.STATUS_LOADING -> {
-                    shouldShowShimmerAndHideDataList()
-                }
-                MissionWidgetListDataModel.STATUS_ERROR -> {
-                    shouldHideSimmerAndShowDataList()
-                }
+                MissionWidgetListDataModel.STATUS_LOADING -> shouldShowShimmerAndHideDataList()
+                MissionWidgetListDataModel.STATUS_ERROR -> shouldHideSimmerAndShowDataList()
                 else -> {
                     shouldHideSimmerAndShowDataList()
-
-                    //TODO: create mapper for this one!
-                    val data = element.missionWidgetList.take(4)
-                    mAdapter?.submitList(data)
+                    mAdapter?.submitList(element.mission4SquareWidgetList)
                 }
             }
         }

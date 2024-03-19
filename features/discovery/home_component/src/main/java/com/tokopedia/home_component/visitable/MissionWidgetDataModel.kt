@@ -23,4 +23,20 @@ data class MissionWidgetDataModel(
     val campaignCode: String = "",
     val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
     val isCache: Boolean,
-)
+    val labelGroup: List<LabelGroup> = emptyList(),
+) {
+
+    data class LabelGroup(
+        val title: String = "",
+        val type: String = "",
+        val position: String = "",
+        val url: String = "",
+        val styles: List<Styles> = listOf()
+    ) {
+
+        data class Styles(
+            val key: String = "",
+            val value: String = "",
+        )
+    }
+}

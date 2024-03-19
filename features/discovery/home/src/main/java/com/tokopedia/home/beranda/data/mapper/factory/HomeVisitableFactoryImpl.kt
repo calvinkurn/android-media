@@ -348,7 +348,7 @@ class HomeVisitableFactoryImpl(
                                 )
                             }
 
-                            TYPE_MISSION, TYPE_MISSION_V2, TYPE_MISSION_V3 -> {
+                            TYPE_MISSION, TYPE_MISSION_V2 -> {
                                 data.atfStatusCondition(
                                     onLoading = {
                                         visitableList.add(
@@ -362,6 +362,29 @@ class HomeVisitableFactoryImpl(
                                     },
                                     onSuccess = {
                                         addMissionWidgetData(
+                                            data,
+                                            data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
+                                            index,
+                                            isCache,
+                                        )
+                                    }
+                                )
+                            }
+
+                            TYPE_MISSION_V3 -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(
+                                            MissionWidgetListDataModel(
+                                                status = MissionWidgetListDataModel.STATUS_LOADING,
+                                                showShimmering = data.isShimmer,
+                                                source = MissionWidgetListDataModel.SOURCE_ATF,
+                                                widgetParam = data.param,
+                                            )
+                                        )
+                                    },
+                                    onSuccess = {
+                                        addMission4SquareWidgetData(
                                             data,
                                             data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
                                             index,
@@ -487,6 +510,30 @@ class HomeVisitableFactoryImpl(
                 id = atfData.id.toString(),
                 name = atfData.name,
                 missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
+                verticalPosition = index,
+                status = MissionWidgetListDataModel.STATUS_SUCCESS,
+                showShimmering = atfData.isShimmer,
+                source = MissionWidgetListDataModel.SOURCE_ATF,
+                type = MissionWidgetMapper.getMissionWidgetType(atfData.component),
+                widgetParam = atfData.param
+            )
+            visitableList.add(mission)
+        }
+    }
+
+    private fun addMission4SquareWidgetData(
+        atfData: AtfData,
+        data: HomeMissionWidgetData.GetHomeMissionWidget?,
+        index: Int,
+        isCache: Boolean,
+    ) {
+        data?.let {
+            val mission = MissionWidgetListDataModel(
+                id = atfData.id.toString(),
+                name = atfData.name,
+                mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(it.missions, isCache),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),
                 verticalPosition = index,

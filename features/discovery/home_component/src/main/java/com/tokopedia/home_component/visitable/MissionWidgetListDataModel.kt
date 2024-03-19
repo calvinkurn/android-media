@@ -22,7 +22,8 @@ data class MissionWidgetListDataModel(
     val header: ChannelHeader = ChannelHeader(),
     val config: ChannelConfig = ChannelConfig(),
     val widgetParam: String = "",
-    val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
+    val missionWidgetList: List<MissionWidgetDataModel> = listOf(), // v1 and v2
+    val mission4SquareWidgetList: List<Mission4SquareUiModel> = listOf(), // v3 (static 4 square)
     val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING,
     val showShimmering: Boolean = true,
@@ -51,7 +52,7 @@ data class MissionWidgetListDataModel(
 
     fun isShowMissionWidget(): Boolean {
         return when(status) {
-            STATUS_SUCCESS -> missionWidgetList.isNotEmpty()
+            STATUS_SUCCESS -> missionWidgetList.isNotEmpty() || mission4SquareWidgetList.isNotEmpty()
             STATUS_LOADING -> showShimmering
             else -> true
         }

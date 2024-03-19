@@ -2,11 +2,11 @@ package com.tokopedia.home_component.viewholders.mission.v3
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
+import com.tokopedia.home_component.visitable.Mission4SquareUiModel
 
-class MissionWidgetAdapter constructor(
+class MissionWidgetAdapter(
     private val listener: Mission4SquareWidgetListener? = null
-) : ListAdapter<MissionWidgetDataModel, MissionWidgetCardViewHolder>(
+) : ListAdapter<Mission4SquareUiModel, MissionWidgetCardViewHolder>(
     MissionWidgetDiffUtil()
 ) {
 
