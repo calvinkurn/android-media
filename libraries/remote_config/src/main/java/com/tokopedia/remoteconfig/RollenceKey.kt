@@ -128,5 +128,9 @@ object RollenceKey {
     const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
     const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
     const val SEARCH_ROLLOUT_UNIVERSE_V2 = "rollout_universe_v2"
+    const val REVERSE_PRODUCT_CARD = "reverse_productcard"
+    const val REVERSE_PRODUCT_CARD_CONTROL = "control_variant"
+    const val REVERSE_PRODUCT_CARD_V4 = "v4_productcard"
+
     const val ANDROID_INTERNAL_TEST = "android_internal"
 }
