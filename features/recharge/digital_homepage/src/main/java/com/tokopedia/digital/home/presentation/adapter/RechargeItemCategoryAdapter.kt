@@ -45,6 +45,10 @@ class RechargeItemCategoryAdapter(
                 binding.categoryImage.loadImage(element.mediaUrl)
                 binding.categoryName.text = element.title
                 root.setOnClickListener {
+                    it.post({
+                        throw RuntimeException("Try Crash Monitoring Slardar on Toko")
+                        // you can test more Native Crash
+                    })
                     onItemBindListener.onRechargeSectionItemClicked(element)
                 }
 
