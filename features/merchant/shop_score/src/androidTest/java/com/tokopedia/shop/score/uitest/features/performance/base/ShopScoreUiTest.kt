@@ -467,6 +467,9 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_2)).isViewDisplayed()
         onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_2)).isViewDisplayed()
+        onContentDescPopup(coachMark2.stepButtonText).onClick()
+        onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_3)).isViewDisplayed()
+        onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_3)).isViewDisplayed()
         onContentDescPopup(coachMark2.stepButtonTextLastChild).onClick()
     }
 
