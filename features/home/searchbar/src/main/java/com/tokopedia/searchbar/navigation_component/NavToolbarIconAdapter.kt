@@ -344,7 +344,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.name
-        iconImage.cancelAnimation()
+        iconImage.pauseAnimation()
         iconImage.progress = INITIAL_LOTTIE_PROGRESS
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {
