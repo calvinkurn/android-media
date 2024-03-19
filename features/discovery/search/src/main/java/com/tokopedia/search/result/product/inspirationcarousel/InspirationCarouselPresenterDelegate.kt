@@ -32,6 +32,10 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.UseCase
 import dagger.Lazy
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.firstOrNull
 import org.json.JSONObject
 import rx.Subscriber
 import javax.inject.Inject
@@ -475,41 +479,44 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         }
     }
 
-    override suspend fun getInspirationCouponData(
+    override fun getInspirationCouponData(
         visitableList: MutableList<Visitable<*>>,
         dataView: CouponDataView,
-        isDarkMode: Boolean,
-    ) = suspendCoroutine {
+        isDarkMode: Boolean
+    ) = callbackFlow {
         val requestParams = dataView.createGetCouponDataRequestParam(isDarkMode)
         couponUseCase.execute(
             { couponDataModel ->
-                it.resumeWith(processCouponDataModel(visitableList, couponDataModel, dataView))
+                processCouponDataModel(visitableList, couponDataModel, dataView)
+                trySend(Unit)
             },
             { _ ->
-                it.resumeWith(processCouponDataModel(visitableList, null, dataView))
+                processCouponDataModel(visitableList, null, dataView)
+                trySend(Unit)
             },
             requestParams
         )
+
+        awaitClose { channel.close() }
     }
 
     private fun processCouponDataModel(
         visitableList: MutableList<Visitable<*>>,
         couponDataModel: SearchCouponModel?,
         dataView: CouponDataView
-    ): Result<List<Visitable<*>>> {
+    ): List<Visitable<*>> {
         val validCouponWidgetList =
             couponDataModel?.promoCatalogGetCouponListWidget?.couponListWidget?.filter {
                 it.widgetInfo?.ctaList?.get(0).isValidCoupon()
             }
 
-        if (couponDataModel == null || validCouponWidgetList.isNullOrEmpty()
-        ) {
+        if (couponDataModel == null || validCouponWidgetList.isNullOrEmpty()) {
             visitableList.remove(dataView)
-            return Result.success(visitableList)
+            return visitableList
         }
 
         dataView.updateCouponModel(couponDataModel)
-        return Result.success(visitableList)
+        return visitableList
     }
 
     override fun ctaCoupon(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget) {

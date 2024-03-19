@@ -466,7 +466,7 @@ object AppLogSearch {
         val sourcePageType: String,
     ) {
         val trackId: String
-            get() = "${searchID}_${(itemRank ?: rank)}"
+            get() = "${searchID}_${(rank)}"
 
         val isAdInt: Int
             get() = isAd.intValue

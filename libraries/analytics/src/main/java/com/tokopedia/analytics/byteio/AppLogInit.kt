@@ -8,6 +8,8 @@ import com.bytedance.applog.compress.CompressManager
 import com.bytedance.bdinstall.Env
 import com.bytedance.bdinstall.InstallUrl
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.user.session.UserSession
 
 internal fun initAppLog(context: Context) {
     val channel = if (GlobalConfig.isAllowDebuggingTools()) "local_test" else "googleplay"
@@ -52,8 +54,23 @@ internal fun initAppLog(context: Context) {
     config.setHandleLifeCycle(true)
     AppLog.setEncryptAndCompress(true)
     AppLog.init(context, config)
+    AppLog.setEnableEventUserId(true)
+    AppLog.setHeaderInfo("ban_odin", 1)
+    initUserIdForAppLog(context)
 
     AppLog.setAdjustTerminate(true)
     CompressManager.setReportStatsEnabled(false)
     AppLog.setMonitorEnabled(false)
+}
+
+fun initUserIdForAppLog(context: Context) {
+    AppLog.registerHeaderCustomCallback {
+        val userIdByTokopedia = UserSession(context).userId
+        val custom = it?.getJSONObject("custom")
+        custom?.put("user_id", userIdByTokopedia)
+    }
+    AppLog.setBDAccountCallback { // <user_type, user_id>
+        val userIdByTokopedia = UserSession(context).userId
+        android.util.Pair(12, userIdByTokopedia.toLongOrZero())
+    }
 }

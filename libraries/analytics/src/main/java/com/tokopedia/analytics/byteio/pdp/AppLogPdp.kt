@@ -1,6 +1,5 @@
 package com.tokopedia.analytics.byteio.pdp
 
-import android.annotation.SuppressLint
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
@@ -10,16 +9,19 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfoCart
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModulePdp
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeCurrent
+import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeHash
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
@@ -38,6 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 object AppLogPdp {
 
     val addToCart = AtomicBoolean(false)
+    private val confirmSku = AtomicBoolean(false)
 
     fun sendPDPEnterPage(product: TrackProductDetail?) {
         if (product == null) {
@@ -49,7 +52,7 @@ object AppLogPdp {
             it.put(PAGE_NAME, getLastData(PAGE_NAME))
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addEntranceInfo()
             it.addEnterFromInfo()
             it.put("product_id", product.productId)
@@ -65,15 +68,16 @@ object AppLogPdp {
     internal fun sendStayProductDetail(
         durationInMs: Long,
         product: TrackStayProductDetail,
-        quitType: String
+        quitType: String,
+        hash: Int
     ) {
         val isAddToCart = product.isAddCartSelected || addToCart.getAndSet(false)
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
-            it.put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
+            it.put(PREVIOUS_PAGE, getLastDataBeforeHash(PAGE_NAME, hash))
             it.put(PAGE_NAME, PageName.PDP)
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addTrackId()
             it.addEntranceInfo()
             it.addEnterFromInfo()
@@ -93,7 +97,6 @@ object AppLogPdp {
         })
     }
 
-    @SuppressLint("PII Data Exposure")
     fun sendConfirmSku(product: TrackConfirmSku) {
         AppLogAnalytics.send(EventName.CONFIRM_SKU, JSONObject().also {
             it.addPage()
@@ -101,7 +104,7 @@ object AppLogPdp {
             it.addRequestId()
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addEnterFromInfo()
             it.addEntranceInfo()
             it.put("product_id", product.productId)
@@ -115,6 +118,7 @@ object AppLogPdp {
             it.put("quantity", product.qty)
 //            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0)) // removed
         })
+        confirmSku.set(true)
     }
 
     fun sendConfirmCart(product: TrackConfirmCart) {
@@ -123,7 +127,7 @@ object AppLogPdp {
             it.addTrackId()
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addSourcePreviousPage()
             it.addEnterFromInfo()
             it.addRequestId()
@@ -148,7 +152,7 @@ object AppLogPdp {
             it.addTrackId()
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addEnterFromInfo()
             it.addSourcePreviousPage()
             it.addRequestId()
@@ -213,12 +217,14 @@ object AppLogPdp {
 
     fun sendSubmitOrderResult(model: SubmitOrderResult) {
         AppLogAnalytics.send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
+            if (confirmSku.getAndSet(false)) {
+                it.addTrackId()
+                it.put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
+                it.addEntranceForm()
+            }
             it.addPage()
-            it.addTrackId()
             it.addSourcePageType()
-            it.addEntranceForm()
             it.addEntranceInfo()
-            it.addSourceModule()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
             it.put("shipping_price", model.shippingPrice)

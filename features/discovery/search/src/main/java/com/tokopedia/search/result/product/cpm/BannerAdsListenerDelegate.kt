@@ -80,7 +80,7 @@ class BannerAdsListenerDelegate(
             if (dataView.isTrackByteIO()) {
                 if (position == 1 || position == 0) // Click on shop name
                     AppLogSearch.eventSearchResultClick(
-                        dataView.asByteIOSearchResult(CLICK_SHOP_NAME)
+                        dataView.asByteIOSearchResult(CLICK_SHOP_NAME, false)
                     )
                 else // Click on banner
                     AppLogSearch.eventSearchResultClick(

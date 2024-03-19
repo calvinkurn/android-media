@@ -58,15 +58,13 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
 
     private suspend fun suspendSendStayProductDetail(
         durationInMs: Long,
-        product: TrackStayProductDetail,
+        product: TrackStayProductDetail?,
         isFinishing: Boolean,
         hash: Int
     ) {
+        if (product == null) return
         if (isFinishing) {
-            sendStayProductDetail(
-                durationInMs,
-                product, QuitType.RETURN
-            )
+            sendStayProductDetail(durationInMs, product, QuitType.RETURN, hash)
             return
         }
         delay(300)
@@ -76,9 +74,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         } else {
             QuitType.CLOSE
         }
-        sendStayProductDetail(
-            durationInMs, product, quitType
-        )
+        sendStayProductDetail(durationInMs, product, quitType, hash)
     }
 
     override fun onActivityStopped(activity: Activity) {

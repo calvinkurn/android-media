@@ -544,7 +544,8 @@ class ProductDetailViewModel @Inject constructor(
             isSingleSku = isSingleSku,
             mainPhotoViewCount = mainCount,
             skuPhotoViewCount = skuCount,
-            isAddCartSelected = hasDoneAddToCart
+            isAddCartSelected = hasDoneAddToCart,
+            isSkuSelected = p1?.isProductVariant() == false
         )
     }
 
@@ -787,17 +788,16 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
-        val data = getProductInfoP1 ?: throw Exception()
         AppLogPdp.sendConfirmSku(
             TrackConfirmSku(
-                productId = data.parentProductId,
-                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
-                productType = data.productType,
-                originalPrice = data.originalPrice,
-                salePrice = data.finalPrice,
-                skuId = data.basic.productID,
+                productId = getProductInfoP1?.parentProductId.orEmpty(),
+                productCategory = getProductInfoP1?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
+                productType = getProductInfoP1?.productType ?: ProductType.NOT_AVAILABLE,
+                originalPrice = getProductInfoP1?.originalPrice.orZero(),
+                salePrice = getProductInfoP1?.finalPrice.orZero(),
+                skuId = getProductInfoP1?.basic?.productID.orEmpty(),
                 isSingleSku = isSingleSku,
-                qty = data.basic.minOrder.toString(),
+                qty = getProductInfoP1?.basic?.minOrder.orZero().toString(),
                 isHaveAddress = false
             )
         )

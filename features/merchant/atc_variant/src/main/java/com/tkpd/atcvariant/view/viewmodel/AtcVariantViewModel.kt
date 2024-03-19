@@ -46,6 +46,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -480,6 +481,40 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    private fun sendByteIoConfirmTracker(actionButton: Int, selectedChild: VariantChild?) {
+        val parentId = getVariantData()?.parentId.orEmpty()
+        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
+        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON
+            || actionButton == ProductDetailCommonConstant.OCS_BUTTON) {
+            AppLogPdp.addToCart.set(true)
+            AppLogPdp.sendConfirmCart(
+                TrackConfirmCart(
+                    productId = parentId,
+                    productCategory = categoryLvl1,
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    addSkuNum = selectedChild?.getFinalMinOrder().orZero()
+                )
+            )
+        } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
+            AppLogPdp.sendConfirmSku(
+                TrackConfirmSku(
+                    productId = parentId,
+                    productCategory = categoryLvl1,
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    isSingleSku = getVariantData()?.children?.size == 1,
+                    qty = selectedChild?.getFinalMinOrder().orZero().toString(),
+                    isHaveAddress = false
+                )
+            )
+        }
+    }
+
     fun hitAtc(
         actionButton: Int,
         shopId: String,
@@ -499,38 +534,7 @@ class AtcVariantViewModel @Inject constructor(
         val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
             ?: selectedChild?.getFinalMinOrder() ?: 1
 
-        val parentId = getVariantData()?.parentId.orEmpty()
-        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
-        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON
-            || actionButton == ProductDetailCommonConstant.OCS_BUTTON) {
-            AppLogPdp.addToCart.set(true)
-            AppLogPdp.sendConfirmCart(
-                TrackConfirmCart(
-                    productId = parentId,
-                    productCategory = categoryLvl1,
-                    productType = ProductType.AVAILABLE, // always available tbc
-                    originalPrice = selectedChild?.finalMainPrice.orZero(),
-                    salePrice = selectedChild?.finalPrice.orZero(),
-                    skuId = selectedChild?.productId.orEmpty(),
-                    addSkuNum = selectedChild?.getFinalMinOrder().orZero()
-                )
-            )
-        } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
-            AppLogPdp.sendConfirmSku(
-                TrackConfirmSku(
-                    productId = parentId,
-                    productCategory = categoryLvl1,
-                    productType = ProductType.AVAILABLE, // always available tbc
-                    originalPrice = selectedChild?.finalMainPrice.orZero(),
-                    salePrice = selectedChild?.finalPrice.orZero(),
-                    skuId = selectedChild?.productId.orEmpty(),
-                    isSingleSku = getVariantData()?.children?.size == 1,
-                    qty = selectedChild?.getFinalMinOrder().orZero().toString(),
-                    isHaveAddress = false
-                )
-            )
-        }
-
+        sendByteIoConfirmTracker(actionButton, selectedChild)
         if (selectedMiniCart != null && showQtyEditor) {
             getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
         } else {
@@ -646,7 +650,7 @@ class AtcVariantViewModel @Inject constructor(
         return TrackConfirmCartResult(
             productId = parentId,
             productCategory = categoryLvl1,
-            productType = ProductType.AVAILABLE,
+            productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
             originalPrice = selectedChild?.finalMainPrice.orZero(),
             salePrice = selectedChild?.finalPrice.orZero(),
             skuId = selectedChild?.productId.orEmpty(),
