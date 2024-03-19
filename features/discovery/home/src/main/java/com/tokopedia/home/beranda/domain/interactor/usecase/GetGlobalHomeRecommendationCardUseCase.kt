@@ -28,13 +28,15 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         location: String,
         refreshType: Int,
         bytedanceSessionId: String,
+        currentTotalData: Int = 0,
     ): HomeGlobalRecommendationDataModel {
         graphqlUseCase.setRequestParams(createRequestParams(productPage, paramSource, location, refreshType, bytedanceSessionId))
         return homeRecommendationCardMapper.mapToRecommendationCardDataModel(
             graphqlUseCase.executeOnBackground().getHomeRecommendationCard,
             tabIndex,
             tabName,
-            productPage
+            productPage,
+            currentTotalData
         )
     }
 

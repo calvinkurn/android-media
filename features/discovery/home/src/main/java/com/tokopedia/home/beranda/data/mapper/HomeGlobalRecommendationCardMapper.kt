@@ -32,12 +32,14 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         getHomeRecommendationCard: GetHomeRecommendationCardResponse.GetHomeRecommendationCard,
         tabIndex: Int,
         tabName: String,
-        pageNumber: Int
+        pageNumber: Int,
+        currentTotalData: Int,
     ): HomeGlobalRecommendationDataModel {
         val homeRecommendationTypeFactoryImplList =
             mutableListOf<ForYouRecommendationVisitable>()
 
         getHomeRecommendationCard.recommendationCards.forEachIndexed { index, card ->
+            val actualPosition = currentTotalData + index
             when (card.layout) {
                 TYPE_PRODUCT -> {
                     homeRecommendationTypeFactoryImplList.add(
@@ -47,7 +49,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                             getHomeRecommendationCard.pageName,
                             getHomeRecommendationCard.layoutName,
                             pageNumber,
-                            index,
+                            actualPosition,
                             getHomeRecommendationCard.recommendationCards.size,
                             tabIndex,
                             tabName
@@ -60,7 +62,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                         homeRecommendationTypeFactoryImplList.add(
                             mapToEntityCardRecommendationCard(
                                 card,
-                                index,
+                                actualPosition,
                                 getHomeRecommendationCard.pageName,
                                 getHomeRecommendationCard.appLog,
                                 tabIndex,
@@ -81,7 +83,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                     layoutCard = card.layout,
                                     layoutItem = card.layoutTracker,
                                     categoryId = card.categoryID,
-                                    position = index,
+                                    position = actualPosition,
                                     cardId = card.id,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
@@ -108,7 +110,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                     card = card,
                                     playVideoWidgetResponse = it,
                                     pageName = getHomeRecommendationCard.pageName,
-                                    position = index,
+                                    position = actualPosition,
                                     appLog = getHomeRecommendationCard.appLog,
                                     tabIndex = tabIndex,
                                     tabName = tabName

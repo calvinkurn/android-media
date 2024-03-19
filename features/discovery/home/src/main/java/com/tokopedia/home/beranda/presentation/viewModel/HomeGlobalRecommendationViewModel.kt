@@ -188,7 +188,8 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                 sourceType,
                 locationParam,
                 refreshType = REFRESH_TYPE_LOAD_MORE,
-                bytedanceSessionId = recSessionId
+                bytedanceSessionId = recSessionId,
+                currentTotalData = existingRecommendationData.size
             )
 
             recSessionId = result.appLog.sessionId
