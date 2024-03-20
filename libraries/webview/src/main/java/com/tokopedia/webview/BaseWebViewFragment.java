@@ -53,10 +53,6 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -136,6 +132,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String OTP_CODE = "otpCode";
     private static final String URL_PARAM = "?url=";
     private static final String OPEN_CONTACT_PICKER_APPLINK = "tokopedia://open-contact-picker";
+    private static final String SHARE_APPLINK = /*"tokopedia://share"*/ "tokopedia://topchat" ; // Todo : revert
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -188,6 +185,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private SmsRetrieverClient smsRetriever;
 
     private Boolean isSmsRegistered = false;
+
 
     /**
      * return the url to load in the webview
@@ -1042,6 +1040,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 Timber.w(e);
             }
+        } else if (url.contains(SHARE_APPLINK)) {
+            return shareFromWebview(uri);
         }
 
         if (url.contains(PARAM_EXTERNAL_TRUE)) {
@@ -1105,6 +1105,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean shareFromWebview(Uri uri) {
+        Context context = getContext();
+        if (context != null) {
+            ShareExperienceWebviewHandler.INSTANCE.init(context, uri);
+        }
+        return true;
     }
 
     private boolean handlePdfUri(Uri uri) {
@@ -1346,6 +1354,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         Intent intent = RouteManager.getIntent(getActivity(), applink);
         intent.putExtra(ApplinkConstInternalFintech.isV2, true);
         startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
+    }
+
+    private void shareFromWebview() {
+
     }
 
 }
