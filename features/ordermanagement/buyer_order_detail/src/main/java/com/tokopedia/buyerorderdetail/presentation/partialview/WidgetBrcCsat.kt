@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.partialview
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
 import android.text.method.LinkMovementMethod
@@ -30,12 +31,14 @@ class WidgetBrcCsat(
 ) : BaseCustomView(context, attrs) {
 
     companion object {
-        private const val ANIMATION_DURATION = 300L
+        private const val ANIMATION_DURATION = 3000L
         private const val CUBIC_BEZIER_X1 = 0.63f
         private const val CUBIC_BEZIER_X2 = 0.29f
         private const val CUBIC_BEZIER_Y1 = 0.01f
         private const val CUBIC_BEZIER_Y2 = 1f
-
+        private const val HEIGHT_HIDE = 0
+        private const val ALPHA_SHOW = 1f
+        private const val ALPHA_HIDE = 0f
     }
 
     private val binding = WidgetBrcCsatBinding.inflate(LayoutInflater.from(context), this, true)
@@ -51,7 +54,7 @@ class WidgetBrcCsat(
     }
 
     private var _navigator: BuyerOrderDetailNavigator? = null
-    private var animator: ValueAnimator? = null
+    private var animator: AnimatorSet? = null
 
     fun setup(navigator: BuyerOrderDetailNavigator) {
         _navigator = navigator
@@ -131,15 +134,23 @@ class WidgetBrcCsat(
         }.getOrNull().orZero()
     }
 
-    private fun animateHeight(target: Int, onAnimateEnd: (Animator) -> Unit = {}) {
+    private fun animateHeight(targetHeight: Int, targetAlpha: Float, onAnimateEnd: (Animator) -> Unit = {}) {
         animator?.cancel()
-        animator = ValueAnimator.ofInt(binding.root.height, target).apply {
+        animator = AnimatorSet().apply {
             duration = ANIMATION_DURATION
             interpolator = PathInterpolatorCompat.create(CUBIC_BEZIER_X1, CUBIC_BEZIER_Y1, CUBIC_BEZIER_X2, CUBIC_BEZIER_Y2)
-            addUpdateListener { newValue -> updateHeight((newValue.animatedValue as Int)) }
             addListener(onEnd = onAnimateEnd)
+            playTogether(createHeightAnimator(targetHeight), createAlphaAnimator(targetAlpha))
             start()
         }
+    }
+
+    private fun createHeightAnimator(targetHeight: Int) = ValueAnimator.ofInt(binding.root.height, targetHeight).apply {
+        addUpdateListener { newValue -> updateHeight((newValue.animatedValue as Int)) }
+    }
+
+    private fun createAlphaAnimator(targetAlpha: Float) = ValueAnimator.ofFloat(binding.root.alpha, targetAlpha).apply {
+        addUpdateListener { newValue -> updateAlpha((newValue.animatedValue as Float)) }
     }
 
     private fun updateHeight(height: Int) {
@@ -148,11 +159,15 @@ class WidgetBrcCsat(
         binding.root.layoutParams = layoutParamsCopy
     }
 
+    private fun updateAlpha(alpha: Float) {
+        binding.root.alpha = alpha
+    }
+
     private fun animateShow() {
-        animateHeight(calculateWrapHeight()) { updateHeight(ViewGroup.LayoutParams.WRAP_CONTENT) }
+        animateHeight(calculateWrapHeight(), ALPHA_SHOW) { updateHeight(ViewGroup.LayoutParams.WRAP_CONTENT) }
     }
 
     private fun animateHide() {
-        animateHeight(Int.ZERO)
+        animateHeight(HEIGHT_HIDE, ALPHA_HIDE)
     }
 }
