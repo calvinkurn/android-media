@@ -45,12 +45,16 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
+import com.tokopedia.play.broadcaster.util.coachmark.LiveMenuCoachMark
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
@@ -239,6 +243,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         getChannelTitle = { parentViewModel.channelTitle }
     )
 
+    private val liveMenuCoachMark by lazyThreadSafetyNone {
+        LiveMenuCoachMark(requireContext())
+    }
+
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -364,7 +372,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
         iconProduct.setOnClickListener {
             interactiveGameResultViewComponent?.hideCoachMark()
-            gameIconView.cancelCoachMark()
+            liveMenuCoachMark.dismiss()
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             productTagView.hideCoachMark()
@@ -372,7 +380,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
             interactiveGameResultViewComponent?.hideCoachMark()
-            gameIconView.cancelCoachMark()
+            liveMenuCoachMark.dismiss()
 
             if (message.isBlank()) {
                 analytic.clickAddPinChatMessage(
@@ -427,6 +435,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
             }
         }
+
+        liveMenuCoachMark.setListener(object : LiveMenuCoachMark.Listener {
+            override fun onImpress(coachMarkType: LiveMenuCoachMarkType) {
+                when (coachMarkType) {
+                    is LiveMenuCoachMarkType.Statistic -> {
+                        /** JOE TODO: handle analytic */
+                    }
+                    else -> {}
+                }
+
+                parentViewModel.submitAction(PlayBroadcastAction.ImpressCoachMark(coachMarkType))
+            }
+        })
     }
 
     private fun setupLiveStats() {
@@ -610,7 +631,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 secondaryListener = { dialog ->
                     analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
 
-                    gameIconView.cancelCoachMark()
+                    liveMenuCoachMark.dismiss()
                     interactiveGameResultViewComponent?.hideCoachMark()
                     productTagView.hideCoachMark()
                     stopBroadcast()
@@ -879,6 +900,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 renderStatisticMenu(prevState?.selectedContentAccount, state.selectedContentAccount)
 
+                renderLiveMenuCoachMark(
+                    prevState?.componentPreparation,
+                    state.componentPreparation,
+                    state.onBoarding,
+                )
+
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
                     exitDialog.dialogSecondaryCTA.isLoading = state.isExiting
@@ -1020,7 +1047,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 if (formView.visibility != View.VISIBLE) {
                     formView.setPinnedMessage(state.message)
                 } else {
-                    gameIconView.cancelCoachMark()
+                    liveMenuCoachMark.dismiss()
                 }
                 formView.setLoading(state.editStatus == PinnedMessageEditStatus.Uploading)
                 formView.visibility = View.VISIBLE
@@ -1098,11 +1125,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             if (prevState != state) {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
                 analytic.onImpressGameIconButton(parentViewModel.channelId, parentViewModel.channelTitle)
-            }
-            if (!hasPinnedFormView() && !isQuizFormVisible() && onboarding.firstInteractive) {
-                gameIconView.showCoachmark()
-            } else {
-                gameIconView.cancelCoachMark()
             }
         }
     }
@@ -1212,7 +1234,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
             if (dialog?.isAdded == true) dialog.dismiss()
         } else {
-            gameIconView.cancelCoachMark()
+            liveMenuCoachMark.dismiss()
             InteractiveSetupDialogFragment.getOrCreate(
                 childFragmentManager,
                 requireActivity().classLoader
@@ -1271,6 +1293,40 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun renderLiveMenuCoachMark(
+        prev: ComponentPreparationUiModel?,
+        curr: ComponentPreparationUiModel,
+        currOnboardingUiModel: OnboardingUiModel,
+    ) {
+        if (prev == curr) return
+
+        if (!curr.hasBeenHandled && curr.isAllComponentsReady) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(COACHMARK_INITIAL_DELAY)
+
+                val coachMarks = buildList {
+                    if (!hasPinnedFormView() && !isQuizFormVisible() && currOnboardingUiModel.firstInteractive) {
+                        add(LiveMenuCoachMarkType.Game(gameIconView.rootView))
+                    }
+
+                    if (icStatistic.isVisible && currOnboardingUiModel.firstStatisticIconShown) {
+                        add(LiveMenuCoachMarkType.Statistic(icStatistic))
+                    }
+                }
+
+                if (coachMarks.isEmpty()) return@launch
+
+                if (coachMarks.any { it is LiveMenuCoachMarkType.Game }) {
+                    delay(COACHMARK_GAME_DELAY)
+                }
+
+                liveMenuCoachMark.show(coachMarks)
+
+                parentViewModel.submitAction(PlayBroadcastAction.CoachMarkHasBeenShown)
+            }
+        }
+    }
+
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {
         interactiveGameResultViewComponent?.show()
         if (showCoachMark) {
@@ -1321,7 +1377,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     /** Game Region */
     private fun showQuizForm(isShow: Boolean) {
-        if (isShow) gameIconView.cancelCoachMark()
+        if (isShow) liveMenuCoachMark.dismiss()
 
         quizForm.showWithCondition(isShow)
     }
@@ -1395,5 +1451,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     companion object {
         private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
+
+        private const val COACHMARK_INITIAL_DELAY = 500L
+        private const val COACHMARK_GAME_DELAY = 3000L
     }
 }
