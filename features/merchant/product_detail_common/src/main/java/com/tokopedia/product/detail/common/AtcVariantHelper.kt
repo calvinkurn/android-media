@@ -223,4 +223,5 @@ enum class VariantPageSource(val source: String) {
     BUY_MORE_GET_MORE("offerpage"),
     CATALOG_PAGESOURCE("catalog"),
     STORIES_PAGESOURCE("stories"),
+    CART_CHANGE_VARIANT("cart_change_variant")
 }

@@ -43,6 +43,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
@@ -867,6 +868,11 @@ class AtcVariantBottomSheet :
                 )
                 viewModel.updateActivityResult(requestCode = REQUEST_CODE_TRADEIN_PDP)
                 onSaveButtonClicked()
+            }
+
+            ProductDetailCommonConstant.KEY_CART_TYPE_SAVE_BUTTON -> {
+                val showQtyEditor = sharedViewModel.aggregatorParams.value?.showQtyEditor.orFalse()
+                viewModel.updateCart(showQtyEditor = showQtyEditor)
             }
 
             else -> {

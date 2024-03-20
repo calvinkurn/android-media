@@ -72,24 +72,29 @@ object ProductCartHelper {
         }
     }
 
-    fun generateButtonAction(it: String, atcButton: Boolean): Int {
+    fun generateButtonAction(cartType: String, atcButton: Boolean): Int {
         return when {
             atcButton -> ProductDetailCommonConstant.ATC_BUTTON
-            it == ProductDetailCommonConstant.KEY_NORMAL_BUTTON -> {
+            cartType == ProductDetailCommonConstant.KEY_NORMAL_BUTTON -> {
                 ProductDetailCommonConstant.BUY_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_OCS_BUTTON -> {
+
+            cartType == ProductDetailCommonConstant.KEY_OCS_BUTTON -> {
                 ProductDetailCommonConstant.OCS_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_OCC_BUTTON -> {
+
+            cartType == ProductDetailCommonConstant.KEY_OCC_BUTTON -> {
                 ProductDetailCommonConstant.OCC_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_REMIND_ME -> {
+
+            cartType == ProductDetailCommonConstant.KEY_REMIND_ME -> {
                 ProductDetailCommonConstant.REMIND_ME_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_CHECK_WISHLIST -> {
+
+            cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST -> {
                 ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON
             }
+
             else -> ProductDetailCommonConstant.BUY_BUTTON
         }
     }

@@ -524,6 +524,7 @@ class AtcVariantViewModel @Inject constructor(
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
+
                 is AddToCartOccMultiRequestParams -> {
                     getAddToCartOccUseCase(atcParams)
                 }
@@ -533,7 +534,28 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun getUpdateCartUseCase(params: MiniCartItem.MiniCartItemProduct, updatedQuantity: Int, showQtyEditor: Boolean) {
+    fun updateCart(
+        showQtyEditor: Boolean
+    ) {
+        val variantData = getVariantData() ?: return
+        val optionIdsSelected = getSelectedOptionIds() ?: return
+        val selectedChild = variantData.getChildByOptionId(
+            selectedIds = optionIdsSelected.values.toList()
+        ) ?: return
+        val selectedMiniCart = getSelectedMiniCartItem(
+            productId = selectedChild.productId
+        ) ?: return
+        val updatedQuantity = localQuantityData[selectedChild.productId]
+            ?: selectedChild.getFinalMinOrder()
+
+        getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
+    }
+
+    private fun getUpdateCartUseCase(
+        params: MiniCartItem.MiniCartItemProduct,
+        updatedQuantity: Int,
+        showQtyEditor: Boolean
+    ) {
         viewModelScope.launchCatchError(block = {
             val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
             val updateCartRequest = UpdateCartRequest(
@@ -586,7 +608,7 @@ class AtcVariantViewModel @Inject constructor(
         } else {
             updateQuantityEditorDeleteButtonAfterAtc(showQtyEditor, true)
             updateMiniCartAndButtonData(
-                productId = result.data.productId.toString(),
+                productId = result.data.productId,
                 quantity = result.data.quantity,
                 showQtyEditor = showQtyEditor,
                 cartId = result.data.cartId,
