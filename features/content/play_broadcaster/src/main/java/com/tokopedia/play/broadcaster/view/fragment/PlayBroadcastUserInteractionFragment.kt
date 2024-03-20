@@ -440,7 +440,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onImpress(coachMarkType: LiveMenuCoachMarkType) {
                 when (coachMarkType) {
                     is LiveMenuCoachMarkType.Statistic -> {
-                        /** JOE TODO: handle analytic */
+                        reportAnalytic.impressStatisticIconCoachMark()
                     }
                     else -> {}
                 }
