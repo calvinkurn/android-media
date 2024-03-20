@@ -109,7 +109,6 @@ interface ProductListSectionContract {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
-        val searchId: String
         val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
