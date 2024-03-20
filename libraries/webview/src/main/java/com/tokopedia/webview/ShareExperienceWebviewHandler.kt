@@ -23,12 +23,14 @@ object ShareExperienceWebviewHandler {
         val defaultUrl: String = uri.getQueryParameter(ShareExConst.Applink.Param.DEFAULT_URL).orEmpty()
         val pageType: String = uri.getQueryParameter(ShareExConst.Applink.Param.PAGE_TYPE) ?: "0"
         val referralId: String = uri.getQueryParameter(ShareExConst.Applink.Param.REFERRAL_ID).orEmpty()
+        val utmCampaign: String = uri.getQueryParameter(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
+        val event_category: String = uri.getQueryParameter(ShareExConst.Applink.Param.EVENT_CATEGORY).orEmpty()
         val defaultImpressionLabel: String = uri.getQueryParameter(ShareExConst.Applink.Param.DEFAULT_IMPRESSION_LABEL).orEmpty()
         val defaultActionLabel: String = uri.getQueryParameter(ShareExConst.Applink.Param.DEFAULT_ACTION_LABEL).orEmpty()
 
         val pageTypeEnum = fromValue(pageType)
         val trackerArg = ShareExTrackerArg(
-            utmCampaign = "pdp-${ShareExTrackerArg.SHARE_ID_KEY}-2151019476",
+            utmCampaign = utmCampaign,
             labelImpressionBottomSheet = defaultImpressionLabel,
             labelActionClickShareIcon = defaultActionLabel,
             labelActionCloseIcon = defaultActionLabel,

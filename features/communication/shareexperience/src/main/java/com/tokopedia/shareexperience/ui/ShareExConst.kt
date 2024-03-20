@@ -4,7 +4,7 @@ object ShareExConst {
     object Applink {
         const val APPLINK = "tokopedia://share"
 
-        const val DUMMY_APPLINK = "tokopedia://share?page_type=1&default_url=https://staging.tokopedia.com/osstaging/celana-pendek-merahku-l-fcbb5&product_id=2151019476&event_category=pdp&default_impression_label=impression-label&default_action_label=action-label"
+        const val DUMMY_APPLINK = "tokopedia://share?page_type=1&default_url=https://staging.tokopedia.com/osstaging/celana-pendek-merahku-l-fcbb5&product_id=2151019476&event_category=pdp&default_impression_label=impression-label&default_action_label=action-label&utm_campaign=pdp-{share_id}-2151019476"
 
         object Param {
             const val PAGE_TYPE = "page_type"
@@ -17,6 +17,7 @@ object ShareExConst {
             const val ATTACHMENT_ID = "attachment_id"
             const val REFERRAL_ID = "referral_id"
 
+            const val UTM_CAMPAIGN = "utm_campaign"
             const val EVENT_CATEGORY = "event_category"
             const val DEFAULT_IMPRESSION_LABEL = "default_impression_label"
             const val DEFAULT_ACTION_LABEL = "default_action_label"
