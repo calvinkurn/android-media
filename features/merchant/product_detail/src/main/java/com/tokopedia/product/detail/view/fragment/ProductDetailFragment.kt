@@ -532,7 +532,7 @@ open class ProductDetailFragment :
     private var shopDomain: String? = null
     private var affiliateString: String? = null
     private var affiliateUniqueId: String = ""
-    private var affiliateSubIds: Bundle? = null
+    private var affiliateSubIds: MutableMap<String, String>? = null
     private var affiliateSource: String? = null
     private var deeplinkUrl: String = ""
     private var isFromDeeplink: Boolean = false
@@ -876,11 +876,6 @@ open class ProductDetailFragment :
             trackerListNamePdp = it.getString(ProductDetailConstant.ARG_TRACKER_LIST_NAME)
             affiliateString = it.getString(ProductDetailConstant.ARG_AFFILIATE_STRING)
             affiliateUniqueId = it.getString(ProductDetailConstant.ARG_AFFILIATE_UNIQUE_ID, "")
-            affiliateSubIds =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) it.getParcelable(
-                    ARG_AFFILIATE_SUB_IDS,
-                    Bundle::class.java
-                ) else it.getParcelable(ARG_AFFILIATE_SUB_IDS)
             affiliateSource = it.getString(ARG_AFFILIATE_SOURCE)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
@@ -891,6 +886,13 @@ open class ProductDetailFragment :
             campaignId = it.getString(ProductDetailConstant.ARG_CAMPAIGN_ID, "")
             variantId = it.getString(ProductDetailConstant.ARG_VARIANT_ID, "")
             prefetchCacheId = it.getString(ProductDetailConstant.ARG_PREFETCH_CACHE_ID, "")
+
+            processAffiliateSubIds(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) it.getParcelable(
+                    ARG_AFFILIATE_SUB_IDS,
+                    Bundle::class.java
+                ) else it.getParcelable(ARG_AFFILIATE_SUB_IDS)
+            )
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
@@ -6312,5 +6314,14 @@ open class ProductDetailFragment :
             ROLLENCE_SHARE_EX,
             ""
         ) == ROLLENCE_SHARE_EX
+    }
+
+    private fun processAffiliateSubIds(bundle: Bundle?) {
+        if (bundle == null || bundle.isEmpty) return
+
+        affiliateSubIds = mutableMapOf()
+        bundle.keySet().forEach {
+            affiliateSubIds!![it] = bundle.getString(it, "")
+        }
     }
 }
