@@ -181,7 +181,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String ANDROID_ENABLE_SLARDAR_INIT = "android_enable_slardar_init";
     private final String SLARDAR_AID = "573733";
     private final String SLARDAR_CHANNEL_LOCAL_TEST = "local_test";
-
     private final String SLARDAR_CHANNEL_GOOGLE_PLAY = "googleplay";
     private final String SLARDAR_HOST = "https://log.byteoversea.net";
 
