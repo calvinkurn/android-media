@@ -195,22 +195,35 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.Valid -> {
                 latestWidget.copy(
-                    isDescriptionRed = false
+                    isDescriptionRed = false,
+                    isTitleRed = false,
+                    actionButtonText = ""
                 )
             }
 
             PaymentValidationReport.WalletActivationError -> {
                 latestWidget.copy(
-                    errorMessage = currentData.walletData.activation.errorMessage,
+                    title = currentData.walletData.activation.errorMessage,
+                    subtitle = "",
+                    isTitleRed = true,
                     actionButtonText = currentData.walletData.activation.buttonTitle
                 )
             }
 
             PaymentValidationReport.WalletAmountError -> {
-                latestWidget.copy(
-                    errorMessage = currentData.walletData.topUp.errorMessage,
-                    actionButtonText = currentData.walletData.topUp.buttonTitle
-                )
+                if (currentData.mandatoryHit.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS)) {
+                    latestWidget.copy(
+                        description = currentData.walletData.topUp.errorMessage,
+                        isDescriptionRed = true,
+                        actionButtonText = currentData.walletData.topUp.buttonTitle
+                    )
+                } else {
+                    latestWidget.copy(
+                        title = currentData.walletData.topUp.errorMessage,
+                        isTitleRed = true,
+                        actionButtonText = currentData.walletData.topUp.buttonTitle
+                    )
+                }
             }
         }
     }
@@ -242,9 +255,17 @@ class PaymentProcessor @Inject constructor(
                 installmentText = "Bayar Penuh"
             }
         }
+        var subtitle = ""
+        if (currentData.installmentPaymentData.creditCardAttribute.maskedNumber.isNotEmpty()) {
+            subtitle = currentData.installmentPaymentData.creditCardAttribute.maskedNumber
+        }
+        if (currentData.walletData.walletType > 0) {
+            subtitle = "(${CurrencyFormatUtil.convertPriceValueToIdrFormat(currentData.walletData.walletAmount, false).removeDecimalSuffix()})"
+        }
         return currentWidget.copy(
             logoUrl = currentData.imageUrl,
             title = currentData.gatewayName,
+            subtitle = subtitle,
             description = currentData.description,
             installmentText = installmentText
         )

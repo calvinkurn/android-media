@@ -324,8 +324,8 @@ class CheckoutViewModel @Inject constructor(
                             enable = saf.cartShipmentAddressFormData.paymentWidget.enable,
                             defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage,
                             originalData = OriginalCheckoutPaymentData(
-                                gatewayCode = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode,
-                                tenureType = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
+                                gatewayCode = gatewayCode.ifBlank { saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode },
+                                tenureType = if (gatewayCode.isNotBlank()) tenor else saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
                                 optionId = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.optionId,
                                 metadata = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.metadata
                             )
@@ -3158,7 +3158,7 @@ class CheckoutViewModel @Inject constructor(
                 updateTotalAndPayment(cost, payment)
                 return
             }
-            updateTotalAndPayment(cost, payment)
+            updateTotalAndPayment(cost, payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading)), skipValidatePayment = true)
             // validate promo after get payment
             validatePromo(skipEE = true)
             return
@@ -3235,14 +3235,16 @@ class CheckoutViewModel @Inject constructor(
         updateTotalAndPayment(cost, payment)
     }
 
-    private fun updateTotalAndPayment(cost: CheckoutCostModel, payment: CheckoutPaymentModel) {
+    private fun updateTotalAndPayment(cost: CheckoutCostModel, payment: CheckoutPaymentModel, skipValidatePayment: Boolean = false) {
         listData.value = calculator.calculateTotalWithPayment(
             listData.value,
             cost,
             payment,
             summariesAddOnUiModel
         )
-        listData.value = paymentProcessor.validatePayment(listData.value)
+        if (!skipValidatePayment) {
+            listData.value = paymentProcessor.validatePayment(listData.value)
+        }
         listData.value = calculator.updateButtonPaymentWithPaymentData(listData.value, isTradeInByDropOff)
     }
 
