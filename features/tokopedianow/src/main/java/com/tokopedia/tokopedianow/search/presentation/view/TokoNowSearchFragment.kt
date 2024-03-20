@@ -205,7 +205,9 @@ class TokoNowSearchFragment :
     @Inject
     lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
-    private lateinit var viewModel: TokoNowSearchViewModel
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[TokoNowSearchViewModel::class.java]
+    }
 
     private val toolbarPageName = "TokoNow Search"
 
@@ -246,6 +248,15 @@ class TokoNowSearchFragment :
                     .orZero()
             return height + padding
         }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring(false)
+        super.onCreate(savedInstanceState)
+
+        context?.let {
+            trackingQueue = TrackingQueue(it)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -1073,24 +1084,6 @@ class TokoNowSearchFragment :
             message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
             toasterType = Toaster.TYPE_ERROR
         )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        initPerformanceMonitoring(false)
-        super.onCreate(savedInstanceState)
-
-        context?.let {
-            trackingQueue = TrackingQueue(it)
-        }
-
-        initViewModel()
-    }
-
-    private fun initViewModel() {
-        activity?.let {
-            viewModel =
-                ViewModelProvider(it, viewModelFactory).get(TokoNowSearchViewModel::class.java)
-        }
     }
 
     private fun getNavToolbarHint() =
