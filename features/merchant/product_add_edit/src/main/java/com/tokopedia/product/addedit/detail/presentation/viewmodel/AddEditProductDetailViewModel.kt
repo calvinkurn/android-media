@@ -802,7 +802,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun updateSpecificationText(selectedSpecificationList: List<SpecificationInputModel>) {
-        val specificationNames = selectedSpecificationList.map { it.data }
+        val specificationNames = selectedSpecificationList.filter { it.data.isNotEmpty() }.map { it.data }
         mSpecificationText.value = if (specificationNames.isEmpty()) {
             provider.getProductSpecificationTips()
         } else {
