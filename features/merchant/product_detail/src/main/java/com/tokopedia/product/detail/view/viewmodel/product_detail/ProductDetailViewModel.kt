@@ -7,7 +7,6 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
-import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -301,7 +300,7 @@ class ProductDetailViewModel @Inject constructor(
     val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
     private val isSingleSku: Boolean
         get() = if (getProductInfoP1?.isProductVariant() == false) true
-                    else variantData?.children?.size == 1
+        else variantData?.children?.size == 1
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -1248,7 +1247,7 @@ class ProductDetailViewModel @Inject constructor(
 
                     AdditionalParam(
                         key = key.toString(),
-                        value = it.getString(key.toString(), "")
+                        value = it.getString(key.toString(), "").replace(" ", "+")
                     )
                 }.toList()
             } ?: emptyList()
