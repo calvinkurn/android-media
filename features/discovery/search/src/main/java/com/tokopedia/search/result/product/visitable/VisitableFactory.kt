@@ -83,13 +83,6 @@ class VisitableFactory @Inject constructor(
             data.keyword,
             productDataView.seamlessCarouselDataViewList,
         )
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
-            processHeadlineAdsFirstPage(
-                data.searchProductModel,
-                visitableList,
-                data.isLocalSearch,
-            )
-        }
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             addInspirationCarousel(
                 productDataView.inspirationCarouselDataView,
