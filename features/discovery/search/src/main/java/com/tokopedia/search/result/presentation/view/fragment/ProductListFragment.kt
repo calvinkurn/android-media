@@ -89,6 +89,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
 import com.tokopedia.remoteconfig.RollenceKey
@@ -168,13 +169,11 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import kotlinx.coroutines.delay
 import org.json.JSONArray
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.filter.quick.SortFilter as SortFilterReimagine
 import com.tokopedia.filter.quick.SortFilter.Listener as SortFilterListener
@@ -537,7 +536,8 @@ class ProductListFragment :
                 activity,
                 redirectionListener,
                 presenter as BannerAdsPresenter,
-                getUserId()
+                getUserId(),
+                remoteConfig
             ),
             emptyStateListener = EmptyStateListenerDelegate(
                 activity,
@@ -827,10 +827,15 @@ class ProductListFragment :
 
     override fun onProductImpressedByteIO(item: ProductItemDataView?) {
         item ?: return
-        if(item.byteIOTrackingData.searchId != presenter?.searchId) return
+        if(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO, true)){
+            if(isValidProductToTrackByteIO(item)) return
+        }
         AppLogSearch.eventSearchResultShow(item.asByteIOSearchResult(null))
         AppLogSearch.eventProductShow(item.asByteIOProduct())
     }
+
+    private fun isValidProductToTrackByteIO(item: ProductItemDataView) =
+        item.byteIOTrackingData.searchId != presenter?.searchId
 
     private val additionalPositionMap: Map<String, String>
         get() = mapOf(

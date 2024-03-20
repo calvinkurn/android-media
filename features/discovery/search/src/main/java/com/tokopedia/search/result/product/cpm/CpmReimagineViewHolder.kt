@@ -41,8 +41,10 @@ class CpmReimagineViewHolder(
         binding?.adsBanner?.run {
             setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-                    byteIOTrackingData?.let {
-                        element.byteIOTrackingData = it
+                    if(bannerAdsListener?.isEnableFixByteIOCPM() == true) {
+                        byteIOTrackingData?.let {
+                            element.byteIOTrackingData = it
+                        }
                     }
                     bannerAdsListener?.onBannerAdsClicked(position, applink, data, element)
                 }
@@ -60,8 +62,10 @@ class CpmReimagineViewHolder(
                     product: Product?,
                     data: CpmData
                 ) {
-                    byteIOTrackingData?.let {
-                        element.byteIOTrackingData = it
+                    if(bannerAdsListener?.isEnableFixByteIOCPM() == true){
+                        byteIOTrackingData?.let {
+                            element.byteIOTrackingData = it
+                        }
                     }
                     bannerAdsListener?.onBannerAdsProductImpressionListener(
                         position,
