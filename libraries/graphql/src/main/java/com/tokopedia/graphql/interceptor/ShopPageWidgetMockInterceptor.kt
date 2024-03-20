@@ -41,7 +41,6 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
             requestBody.body?.writeTo(buffer)
             val requestString = buffer.readUtf8()
             if (requestString.isNotEmpty()) {
-                val networkResponse = chain.proceed(chain.request())
                 return if (null != stringListOfPairMockWidgetData) {
                     val listOfPairMockWidgetData = getListOfPairMockWidgetData(stringListOfPairMockWidgetData)
                     val mockResponseDynamicTabWidget = listOfPairMockWidgetData.map {
@@ -50,17 +49,16 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
                     val mockResponseShopLayoutV2Widget = listOfPairMockWidgetData.map {
                         it.second
                     }.toString()
-                    val networkResponseBody = networkResponse.body?.string().orEmpty()
                     val networkRequest = requestBody.newBuilder().build()
                     if (requestString.contains("shopPageGetDynamicTab")) {
-                        mockResponseDynamicTabWidget(networkRequest, networkResponseBody, mockResponseDynamicTabWidget)
+                        mockResponseDynamicTabWidget(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseDynamicTabWidget)
                     } else if (requestString.contains("get_shop_page_home_layout_v2")) {
-                        mockResponseShopLayoutV2(networkRequest, networkResponseBody, mockResponseShopLayoutV2Widget)
+                        mockResponseShopLayoutV2(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseShopLayoutV2Widget)
                     } else {
-                        networkResponse
+                        chain.proceed(chain.request())
                     }
                 } else {
-                    networkResponse
+                    chain.proceed(chain.request())
                 }
             }
         } catch (e: IOException) {
@@ -77,14 +75,11 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
     private fun mockResponseDynamicTabWidget(request: Request, responseString: String, mockWidget: String): Response {
         val networkDynamicTabResponse = JsonParser.parseString(responseString).asJsonArray
         val mockResponseDynamicTabWidget = JsonParser.parseString(mockWidget).asJsonArray
-        val mockDynamicTabResponse = networkDynamicTabResponse.get(0).asJsonObject.apply {
-            get("data").asJsonObject
-            .get("shopPageGetDynamicTab").asJsonObject
-            .get("tabData").asJsonArray.first { it.asJsonObject.get("name").asString == "HomeTab" }.asJsonObject
-            .get("data").asJsonObject
-            .get("homeLayoutData").asJsonObject.apply {
-                add("widgetIDList", mockResponseDynamicTabWidget)
-            }
+        val mockDynamicTabResponse = networkDynamicTabResponse.apply {
+            get(0).asJsonObject.get("data").asJsonObject.get("shopPageGetDynamicTab").asJsonObject
+                .get("tabData").asJsonArray.first { it.asJsonObject.get("name").asString == "HomeTab" }.asJsonObject
+                .get("data").asJsonObject
+                .get("homeLayoutData").asJsonObject.add("widgetIDList", mockResponseDynamicTabWidget)
         }.toString()
 
         return Response.Builder()
@@ -103,11 +98,9 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
     private fun mockResponseShopLayoutV2(copy: Request, responseString: String, mockWidget: String): Response {
         val networkShopLayoutV2Response = JsonParser.parseString(responseString).asJsonArray
         val mockResponseShopLayoutV2Widget = JsonParser.parseString(mockWidget).asJsonArray
-        val mockShopLayoutV2Response = networkShopLayoutV2Response.get(0).asJsonObject.apply {
-            get("data").asJsonObject
-            .get("shopPageGetLayoutV2").asJsonObject.apply {
-                add("widgets", mockResponseShopLayoutV2Widget)
-            }
+        val mockShopLayoutV2Response = networkShopLayoutV2Response.apply {
+            get(0).asJsonObject.get("data").asJsonObject.get("shopPageGetLayoutV2").asJsonObject
+                .add("widgets", mockResponseShopLayoutV2Widget)
         }.toString()
         return Response.Builder()
             .request(copy)
