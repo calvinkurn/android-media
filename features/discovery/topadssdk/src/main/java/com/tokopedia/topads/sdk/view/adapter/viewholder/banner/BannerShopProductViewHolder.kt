@@ -28,7 +28,6 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
         element?.let { model ->
             val productCardViewModel = model.product.copy(isInBackground = true)
             productCardGridView.run {
-                applyCarousel()
                 setProductModel(ProductCardModel.from(productCardViewModel))
                 val product = model.cpmData.cpm.cpmShop.products.getOrNull(absoluteAdapterPosition)
                 product?.let {
