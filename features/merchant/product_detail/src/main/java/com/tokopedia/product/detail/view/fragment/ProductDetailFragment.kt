@@ -16,7 +16,6 @@ import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -312,7 +311,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
@@ -1194,8 +1192,8 @@ open class ProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getProductInfoP1 == null ||
             context == null ||
@@ -1980,7 +1978,7 @@ open class ProductDetailFragment :
         } else {
             goToReviewMediaGallery(
                 position = position,
-                detailedMediaResult = detailedMediaResult,
+                detailedMediaResult = detailedMediaResult
             )
         }
     }
@@ -2875,7 +2873,7 @@ open class ProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -3403,7 +3401,7 @@ open class ProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getProductInfoP1?.parentProductId.orEmpty()
                         }"
                         ProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -5016,7 +5014,6 @@ open class ProductDetailFragment :
                 shopId
             )
 
-
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 
             val prefetch = ShopPagePrefetch()
@@ -6253,9 +6250,10 @@ open class ProductDetailFragment :
      * from old share to share 2.0
      */
     private fun isUsingShareEx(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            ROLLENCE_SHARE_EX,
-            ""
-        ) == ROLLENCE_SHARE_EX
+        return true
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+//            ROLLENCE_SHARE_EX,
+//            ""
+//        ) == ROLLENCE_SHARE_EX
     }
 }
