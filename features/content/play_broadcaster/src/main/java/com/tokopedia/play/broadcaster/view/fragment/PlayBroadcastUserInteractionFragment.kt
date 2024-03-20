@@ -45,6 +45,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
@@ -868,6 +869,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 renderStatisticMenu(prevState?.selectedContentAccount, state.selectedContentAccount)
 
+                renderCoachmark(prevState?.componentPreparation, state.componentPreparation)
+
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
                     exitDialog.dialogSecondaryCTA.isLoading = state.isExiting
@@ -1256,6 +1259,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (prev == curr) return
 
         icStatistic.showWithCondition(curr.isShop)
+    }
+
+    private fun renderCoachmark(
+        prev: ComponentPreparationUiModel?,
+        curr: ComponentPreparationUiModel
+    ) {
+        if (prev == curr) return
+
+        if (curr.isAllComponentsReady) {
+            /** JOE TODO: setup coachmark here */
+        }
     }
 
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {

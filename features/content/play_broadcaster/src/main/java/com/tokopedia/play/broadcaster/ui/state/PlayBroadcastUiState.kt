@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerMod
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -49,6 +50,7 @@ data class PlayBroadcastUiState(
     val beautificationConfig: BeautificationConfigUiModel,
     val tickerBottomSheetConfig: TickerBottomSheetUiModel,
     val liveStatsList: List<LiveStatsUiModel>,
+    val componentPreparation: ComponentPreparationUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -83,6 +85,7 @@ data class PlayBroadcastUiState(
                 beautificationConfig = BeautificationConfigUiModel.Empty,
                 tickerBottomSheetConfig = TickerBottomSheetUiModel.Empty,
                 liveStatsList = emptyList(),
+                componentPreparation = ComponentPreparationUiModel.Empty,
             )
     }
 }
