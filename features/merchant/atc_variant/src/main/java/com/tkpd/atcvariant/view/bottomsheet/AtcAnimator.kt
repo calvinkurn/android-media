@@ -13,6 +13,7 @@ import android.view.ViewGroup.LayoutParams
 import android.view.animation.PathInterpolator
 import android.widget.ImageView
 import android.widget.PopupWindow
+import androidx.compose.ui.geometry.Offset
 import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
@@ -264,8 +265,8 @@ class AtcAnimator(private val context: Context) {
 
     private fun prepareSecondAnimator(): List<Animator> = with(mBinding.cardImage) {
         val targetTranslation = getTargetTranslation()
-        val translateX = animateBy(property = PROP_TRANSLATION_X, to = targetTranslation.first)
-        val translateY = animateBy(property = PROP_TRANSLATION_Y, to = targetTranslation.second)
+        val translateX = animateBy(property = PROP_TRANSLATION_X, to = targetTranslation.x)
+        val translateY = animateBy(property = PROP_TRANSLATION_Y, to = targetTranslation.y)
         val scaleX = animateBy(property = PROP_SCALE_X, to = SCALE_AFTER_IN_CART)
         val scaleY = animateBy(property = PROP_SCALE_Y, to = SCALE_AFTER_IN_CART)
         val alpha = animateBy(property = PROP_ALPHA, to = Float.ZERO)
@@ -275,10 +276,10 @@ class AtcAnimator(private val context: Context) {
     }
 
     private fun getTargetTranslation() = mTargetLocation.run {
-        val source = mSourceImageView ?: return Float.ZERO to Float.ZERO
+        val source = mSourceImageView ?: return Offset(Float.ZERO, Float.ZERO)
         val actualX = x - source.width.toFloat().half
         val actualY = y - source.height.toFloat().half - context.getStatusBarHeight()
-        actualX to actualY
+        Offset(actualX, actualY)
     }
 
     private fun View.animateBy(property: String, from: Float, to: Float): Animator {

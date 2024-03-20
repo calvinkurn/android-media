@@ -295,7 +295,6 @@ class AtcVariantBottomSheet :
     private fun observeParamsData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner) {
             val previousData = getDataFromPreviousPage(it)
-            atcAnimator.setTargetLocation(it.cartPosition)
             // If complete data is coming from previous page, set params into this data (directly show without hit network)
             // if not just use general data from aggregatorParams (data do not complete, hit network)
             val data = if (previousData != null) {
@@ -305,6 +304,7 @@ class AtcVariantBottomSheet :
                 it
             }
 
+            atcAnimator.setTargetLocation(data.cartPosition)
             setupButtonAbility(data)
             viewModel.decideInitialValue(data, userSessionInterface.isLoggedIn)
         }
@@ -323,18 +323,15 @@ class AtcVariantBottomSheet :
 
     private fun getDataFromPreviousPage(productVariantBottomSheetParams: ProductVariantBottomSheetParams): ProductVariantBottomSheetParams? {
         context?.let { ctx ->
-            val cacheManager =
-                SaveInstanceCacheManager(
-                    ctx.applicationContext,
-                    productVariantBottomSheetParams.cacheId
-                )
-            val data: ProductVariantBottomSheetParams? = cacheManager.get(
+            val cacheManager = SaveInstanceCacheManager(
+                ctx.applicationContext,
+                productVariantBottomSheetParams.cacheId
+            )
+            return cacheManager.get(
                 AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE,
                 ProductVariantBottomSheetParams::class.java,
                 null
             )
-
-            return data
         }
 
         return null
@@ -986,7 +983,7 @@ class AtcVariantBottomSheet :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            showWaitingIndicator(action = buttonAction, source = pageSource)
+            showWaitingIndicator(action = buttonAction)
 
             viewModel.hitAtc(
                 buttonAction,
@@ -1017,6 +1014,7 @@ class AtcVariantBottomSheet :
         val aggregatorParams = sharedViewModel.aggregatorParams.value
         val cartPositionIsNull = aggregatorParams?.cartPosition == null
         val shouldShowQtyEditor = aggregatorParams?.showQtyEditor == true
+
         if (cartPositionIsNull || shouldShowQtyEditor) return false
 
         return action == ProductDetailCommonConstant.ATC_BUTTON &&

@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
-import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CART_POSITION
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.showImmediately
@@ -65,7 +64,6 @@ class AtcVariantActivity : BaseSimpleActivity() {
             paramsData.productId = productId
             paramsData.shopId = shopId
             paramsData.cacheId = bundle.getString(ATC_VARIANT_CACHE_ID, "") ?: ""
-            paramsData.cartPosition = bundle.getParcelable(ATC_VARIANT_CART_POSITION)
             paramsData.dismissAfterTransaction = intent
                 .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
             paramsData.saveAfterClose = intent

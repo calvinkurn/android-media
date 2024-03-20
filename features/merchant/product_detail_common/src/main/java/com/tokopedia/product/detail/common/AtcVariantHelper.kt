@@ -29,8 +29,6 @@ object AtcVariantHelper {
     const val PDP_PARCEL_KEY_RESULT = "pdp_page_result"
 
     const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
-    const val ATC_VARIANT_CART_POSITION = "atc_variant_cart_position"
-
     const val ATC_VARIANT_RESULT_CODE = 19202
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
     const val KEY_EXT_PARAMS = "ext_params"
@@ -98,7 +96,8 @@ object AtcVariantHelper {
             shopId = productInfoP1.basic.shopID,
             miniCartData = miniCart,
             minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
-            showQtyEditor = isTokoNow
+            showQtyEditor = isTokoNow,
+            cartPosition = cartViewLocation
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
@@ -111,9 +110,7 @@ object AtcVariantHelper {
             "",
             "",
             ""
-        )
-            .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
-            .putExtra(ATC_VARIANT_CART_POSITION, cartViewLocation)
+        ).putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
 
@@ -235,5 +232,5 @@ enum class VariantPageSource(val source: String) {
     FEED_PAGESOURCE("feed"),
     BUY_MORE_GET_MORE("offerpage"),
     CATALOG_PAGESOURCE("catalog"),
-    STORIES_PAGESOURCE("stories"),
+    STORIES_PAGESOURCE("stories")
 }
