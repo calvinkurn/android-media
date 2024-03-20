@@ -181,12 +181,14 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.ServerError -> {
                 latestWidget.copy(
+                    state = CheckoutPaymentWidgetState.Error,
                     errorMessage = currentData.errorDetails.message
                 )
             }
 
             PaymentValidationReport.UnavailableTenureError -> {
                 latestWidget.copy(
+                    state = CheckoutPaymentWidgetState.Error,
                     errorMessage = currentData.installmentPaymentData.errorMessageUnavailableTenure
                 )
             }
@@ -199,13 +201,15 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.WalletActivationError -> {
                 latestWidget.copy(
-                    errorMessage = currentData.walletData.activation.errorMessage
+                    errorMessage = currentData.walletData.activation.errorMessage,
+                    actionButtonText = currentData.walletData.activation.buttonTitle
                 )
             }
 
             PaymentValidationReport.WalletAmountError -> {
                 latestWidget.copy(
-                    errorMessage = currentData.walletData.topUp.errorMessage
+                    errorMessage = currentData.walletData.topUp.errorMessage,
+                    actionButtonText = currentData.walletData.topUp.buttonTitle
                 )
             }
         }

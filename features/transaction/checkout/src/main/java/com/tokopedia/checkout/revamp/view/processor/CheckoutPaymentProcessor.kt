@@ -439,10 +439,23 @@ class CheckoutPaymentProcessor @Inject constructor(
         checkoutItems: List<CheckoutItem>,
         cost: CheckoutCostModel
     ): CheckoutPaymentModel {
-        val tenorList = processor.getCreditCardTenorList(
-            generateCreditCardTenorRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
-        )
-        return payment.copy(tenorList = tenorList)
+        try {
+            val tenorList = processor.getCreditCardTenorList(
+                generateCreditCardTenorRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
+            )
+            val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
+            val widgetData = paymentWidgetData.first()
+            val selectedTenure = widgetData.installmentPaymentData.selectedTenure
+            if (tenorList?.firstOrNull { it.tenure == selectedTenure }?.disable != false) {
+                // reset selected tenure if current tenure is disabled
+                paymentWidgetData[0] = widgetData.copy(installmentPaymentData = widgetData.installmentPaymentData.copy(selectedTenure = 0))
+                return payment.copy(tenorList = tenorList, data = payment.data.copy(paymentWidgetData = paymentWidgetData))
+            }
+            return payment.copy(tenorList = tenorList)
+        } catch (e: Exception) {
+            Timber.d(e)
+            return payment.copy(tenorList = null)
+        }
     }
 
     fun generateInstallmentRequest(
@@ -517,10 +530,23 @@ class CheckoutPaymentProcessor @Inject constructor(
         checkoutItems: List<CheckoutItem>,
         cost: CheckoutCostModel
     ): CheckoutPaymentModel {
-        val installmentData = processor.getGocicilInstallmentOption(
-            generateInstallmentRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
-        )
-        return payment.copy(installmentData = installmentData)
+        try {
+            val installmentData = processor.getGocicilInstallmentOption(
+                generateInstallmentRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
+            )
+            val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
+            val widgetData = paymentWidgetData.first()
+            val selectedTenure = widgetData.installmentPaymentData.selectedTenure
+            if (installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.isActive != false) {
+                // reset selected tenure if current tenure is disabled
+                paymentWidgetData[0] = widgetData.copy(installmentPaymentData = widgetData.installmentPaymentData.copy(selectedTenure = 0))
+                return payment.copy(installmentData = installmentData, data = payment.data.copy(paymentWidgetData = paymentWidgetData))
+            }
+            return payment.copy(installmentData = installmentData)
+        } catch (e: Exception) {
+            Timber.d(e)
+            return payment.copy(installmentData = null)
+        }
     }
 
     fun validatePayment(
