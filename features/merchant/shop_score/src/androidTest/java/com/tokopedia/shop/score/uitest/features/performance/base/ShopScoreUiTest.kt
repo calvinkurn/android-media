@@ -458,7 +458,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
         closeBottomSheet()
     }
 
-    protected fun showCoachMarkShopScore() {
+    protected fun showCoachMarkShopScorePM() {
         Thread.sleep(2000)
         val coachMark2 = CoachMark2(activityRule.activity)
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_1)).isViewDisplayed()
@@ -470,6 +470,18 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
         onContentDescPopup(coachMark2.stepButtonText).onClick()
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_3)).isViewDisplayed()
         onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_3)).isViewDisplayed()
+        onContentDescPopup(coachMark2.stepButtonTextLastChild).onClick()
+    }
+
+    protected fun showCoachMarkShopScoreOS() {
+        Thread.sleep(2000)
+        val coachMark2 = CoachMark2(activityRule.activity)
+        onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_1)).isViewDisplayed()
+        onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_1)).isViewDisplayed()
+        onContentDescPopup(coachMark2.stepButtonText).onClick()
+        activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
+        onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_2)).isViewDisplayed()
+        onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_2)).isViewDisplayed()
         onContentDescPopup(coachMark2.stepButtonTextLastChild).onClick()
     }
 

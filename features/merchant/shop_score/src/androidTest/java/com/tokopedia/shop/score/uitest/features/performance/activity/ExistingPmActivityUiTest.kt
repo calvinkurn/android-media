@@ -23,7 +23,7 @@ class ExistingPmActivityUiTest : ShopScoreUiTest() {
     fun show_coachmark_when_existing_pm() {
         shopScorePrefManagerStub.setFinishCoachMark(false)
         activityRule.launchActivity(getShopPerformancePageIntent())
-        showCoachMarkShopScore()
+        showCoachMarkShopScorePM()
     }
 
     @Test

@@ -23,7 +23,7 @@ class ExistingOsActivityUiTest: ShopScoreUiTest() {
     fun show_coachmark_when_existing_os() {
         shopScorePrefManagerStub.setFinishCoachMark(false)
         activityRule.launchActivity(getShopPerformancePageIntent())
-        showCoachMarkShopScore()
+        showCoachMarkShopScoreOS()
     }
 
     @Test
