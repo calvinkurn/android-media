@@ -75,7 +75,8 @@ class ReviewContentViewHolder(
         binding.ivReviewMenu,
         binding.ivReviewStar,
         binding.tvReviewDescription,
-        binding.tvReviewDetails
+        binding.tvReviewDetails,
+        binding.ivReviewShare,
     )
 
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
@@ -136,7 +137,7 @@ class ReviewContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
-        setupTap()
+        setupTap(item)
     }
 
     fun bindScrolling(isScrolling: Boolean) {
@@ -247,9 +248,12 @@ class ReviewContentViewHolder(
         binding.ivDanceLike.removeAllAnimationListeners()
     }
 
-    private fun setupTap() {
+    private fun setupTap(item: ReviewContentUiModel) {
         binding.ivReviewMenu.setOnClickListener {
             reviewInteractionListener.onMenuClicked()
+        }
+        binding.ivReviewShare.setOnClickListener {
+            reviewInteractionListener.onShareClicked(item)
         }
     }
 

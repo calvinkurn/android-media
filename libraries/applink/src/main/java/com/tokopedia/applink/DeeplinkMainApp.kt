@@ -1230,6 +1230,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperContent.getRegisteredNavigation(deeplink)
             }
         ),
+        "product-preview" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
+        ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapper.getRegisteredNavigationTalk(deeplink)

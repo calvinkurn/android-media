@@ -10,6 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class ProductPreviewSourceModel(
     val productId: String,
+    val sourceName: ProductPreviewSourceName,
     val source: ProductPreviewSource
 ) : Parcelable {
 
@@ -30,9 +31,28 @@ data class ProductPreviewSourceModel(
     @Parcelize
     object UnknownSource : ProductPreviewSource
 
+    enum class ProductPreviewSourceName(val value: String) {
+        SHARE("share"),
+        PRODUCT("product"),
+        REVIEW("review"),
+        UNKNOWN("unknown");
+
+        companion object {
+            private val values = ProductPreviewSourceName.values()
+
+            fun getByValue(value: String): ProductPreviewSourceName {
+                values.forEach {
+                    if (it.value == value) return it
+                }
+                return UNKNOWN
+            }
+        }
+    }
+
     companion object {
         val Empty = ProductPreviewSourceModel(
             productId = "",
+            sourceName = ProductPreviewSourceName.UNKNOWN,
             source = UnknownSource
         )
     }
