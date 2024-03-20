@@ -37,7 +37,8 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
                             CartShopGroupTickerGroupMetadata.OrderData.GroupProduct.Product(
                                 uniqueId = cartItem.cartId,
                                 productId = cartItem.productId,
-                                quantity = cartItem.quantity
+                                quantity = cartItem.quantity,
+                                productMetadata = cartItem.productMetadata
                             )
                         )
                     }
