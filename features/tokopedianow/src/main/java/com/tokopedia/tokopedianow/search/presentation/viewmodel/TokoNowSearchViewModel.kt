@@ -25,7 +25,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -147,7 +146,7 @@ class TokoNowSearchViewModel @Inject constructor(
     private val visitableList = mutableListOf<Visitable<*>>()
     private val queryParamMutable = queryParamMap.toMutableMap()
     private var totalData = 0
-    private var chooseAddressData: LocalCacheModel? = null
+    private var chooseAddressData = chooseAddressWrapper.getChooseAddressData()
     private var hasBlockedAddToCart = false
 
     private var headerYCoordinate = 0f
@@ -289,7 +288,6 @@ class TokoNowSearchViewModel @Inject constructor(
         updateQueryParams()
 
         hasGlobalMenu = isABTestNavigationRevamp()
-        chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
     }
 
@@ -311,9 +309,9 @@ class TokoNowSearchViewModel @Inject constructor(
     }
 
     private fun processLoadDataPage(source: MiniCartSource? = null) {
-        val shopId = chooseAddressData?.shop_id.orEmpty()
-        val warehouseId = chooseAddressData?.warehouse_id.orEmpty()
-        val serviceType = chooseAddressData?.service_type.orEmpty()
+        val shopId = chooseAddressData.shop_id
+        val warehouseId = chooseAddressData.warehouse_id
+        val serviceType = chooseAddressData.service_type
         if (source != null) {
             miniCartSource = source
         }
@@ -429,8 +427,6 @@ class TokoNowSearchViewModel @Inject constructor(
     }
 
     private fun appendChooseAddressParams(tokonowQueryParam: MutableMap<String, Any>) {
-        val chooseAddressData = this.chooseAddressData ?: return
-
         if (chooseAddressData.city_id.isNotEmpty()) {
             tokonowQueryParam[SearchApiConst.USER_CITY_ID] = chooseAddressData.city_id
         }
@@ -536,7 +532,7 @@ class TokoNowSearchViewModel @Inject constructor(
         visitableList.addAll(createContentVisitableList(contentDataView))
         if (isLastPage() && feedbackFieldToggle && headerDataView.aceSearchProductHeader.totalData <= MIN_PRODUCT_COUNT) {
             _feedbackLoopTrackingMutableLivedata.value = Pair(
-                first = chooseAddressData?.warehouse_id.orEmpty(),
+                first = chooseAddressData.warehouse_id,
                 second = true
             )
             isFeedbackFieldVisible = true
@@ -1105,13 +1101,11 @@ class TokoNowSearchViewModel @Inject constructor(
     }
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        chooseAddressData?.let {
-            val outOfCoverage = it.isOutOfCoverage()
-            val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
-            val isShowMiniCartWidget = showMiniCart && !outOfCoverage
-            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.copy(isShowMiniCartWidget = isShowMiniCartWidget)
-            isShowMiniCartMutableLiveData.value = isShowMiniCartWidget
-        }
+        val outOfCoverage = chooseAddressData.isOutOfCoverage()
+        val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
+        val isShowMiniCartWidget = showMiniCart && !outOfCoverage
+        miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.copy(isShowMiniCartWidget = isShowMiniCartWidget)
+        isShowMiniCartMutableLiveData.value = isShowMiniCartWidget
     }
 
     private suspend fun updateMiniCartInBackground(
@@ -1188,9 +1182,7 @@ class TokoNowSearchViewModel @Inject constructor(
     }
 
     private fun getIsChooseAddressUpdated(): Boolean {
-        return chooseAddressData?.let {
-            chooseAddressWrapper.isChooseAddressUpdated(it)
-        } ?: false
+        return chooseAddressWrapper.isChooseAddressUpdated(chooseAddressData)
     }
 
     fun onViewATCProductNonVariant(
@@ -1294,17 +1286,16 @@ class TokoNowSearchViewModel @Inject constructor(
     }
 
     fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
-        chooseAddressData?.apply {
+        return chooseAddressData.run {
             val is20mServiceType = service_type == ServiceType.NOW_15M
-            return is20mServiceType && !has20mBottomSheetBeenShown && warehouse_id.isValidId()
+            is20mServiceType && !has20mBottomSheetBeenShown && warehouse_id.isValidId()
         }
-        return false
     }
 
     fun setUserPreference(serviceType: String) {
         launchCatchError(
             block = {
-                chooseAddressData?.let {
+                chooseAddressData.let {
                     val setUserPreference = setUserPreferenceUseCase.execute(it, serviceType)
                     setUserPreferenceMutableLiveData.postValue(Success(setUserPreference))
                 }
@@ -1316,7 +1307,7 @@ class TokoNowSearchViewModel @Inject constructor(
     }
 
     fun switchService() {
-        chooseAddressData?.let {
+        chooseAddressData.let {
             val currentServiceType = it.service_type
 
             val serviceType = if (
@@ -1533,7 +1524,7 @@ class TokoNowSearchViewModel @Inject constructor(
             )
             if (feedbackFieldToggle) {
                 _feedbackLoopTrackingMutableLivedata.value = Pair(
-                    first = chooseAddressData?.warehouse_id.orEmpty(),
+                    first = chooseAddressData.warehouse_id,
                     second = false
                 )
                 isFeedbackFieldVisible = true
