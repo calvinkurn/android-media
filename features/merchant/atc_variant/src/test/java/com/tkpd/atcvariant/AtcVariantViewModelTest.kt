@@ -1372,6 +1372,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         }
     }
 
+    // region wishlistv2
     @Test
     fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
@@ -1401,6 +1402,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verify { addToWishlistV2UseCase.setParams(productId, "") }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
+    // endregion wishlistv2
 
     //region promo price
     @Test
@@ -1425,7 +1427,6 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 bottomSheetParam = ""
             )
         )
-
 
         val warnaId = "121018"
         val merahId = "254081"

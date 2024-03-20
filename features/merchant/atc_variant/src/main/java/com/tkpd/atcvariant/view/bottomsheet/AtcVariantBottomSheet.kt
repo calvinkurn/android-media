@@ -311,7 +311,7 @@ class AtcVariantBottomSheet :
     }
 
     private fun dismissAfterAtc() {
-        val shouldDismiss = sharedViewModel.aggregatorParams.value?.dismissAfterTransaction ?: false
+        val shouldDismiss = aggregatorParams.dismissAfterTransaction
         if (shouldDismiss) {
             dismiss()
         }
@@ -443,11 +443,6 @@ class AtcVariantBottomSheet :
             return
         }
 
-        viewModel.updateActivityResult(
-            atcSuccessMessage = message,
-            requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
-            cartId = aggregatorParams.cartId
-        )
         dismissAfterAtc()
     }
 
