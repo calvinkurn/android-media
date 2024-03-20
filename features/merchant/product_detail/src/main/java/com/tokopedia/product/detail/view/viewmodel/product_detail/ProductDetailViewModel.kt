@@ -1134,7 +1134,8 @@ class ProductDetailViewModel @Inject constructor(
         affiliateUuid: String,
         uuid: String,
         affiliateChannel: String,
-        affiliateSubIds: Bundle?
+        affiliateSubIds: Bundle?,
+        affiliateSource: String?
     ) {
         launchCatchError(block = {
             val affiliatePageDetail =
@@ -1157,7 +1158,8 @@ class ProductDetailViewModel @Inject constructor(
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
                 uuid = uuid,
-                subIds = subIds
+                subIds = subIds,
+                source = affiliateSource ?: ""
             )
         }, onError = {
             // no op, expect to be handled by Affiliate SDK

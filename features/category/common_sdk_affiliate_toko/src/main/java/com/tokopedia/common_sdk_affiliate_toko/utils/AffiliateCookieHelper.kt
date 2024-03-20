@@ -48,6 +48,7 @@ class AffiliateCookieHelper @Inject constructor(
         uuid: String = "",
         additionalParam: List<AdditionalParam> = emptyList(),
         subIds: List<AdditionalParam> = emptyList(),
+        source: String = ""
     ) {
         val affiliateUuid = getAffiliateUUID(affiliateUUID)
         val params = AffiliateCookieParams(
@@ -56,7 +57,8 @@ class AffiliateCookieHelper @Inject constructor(
             affiliatePageDetail = affiliatePageDetail,
             uuid = uuid,
             additionalParam = additionalParam,
-            subIds = subIds
+            subIds = subIds,
+            source = source
         )
         when (affiliatePageDetail.source) {
             is AffiliateSdkPageSource.PDP,

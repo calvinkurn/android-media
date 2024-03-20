@@ -192,6 +192,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailAlreadyHit
 import com.tokopedia.product.detail.data.util.ProductDetailAlreadySwipe
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ARG_AFFILIATE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ARG_AFFILIATE_SUB_IDS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
@@ -397,6 +398,7 @@ open class ProductDetailFragment :
             variantId: String? = null,
             prefetchCacheId: String? = null,
             affiliateSubIds: Bundle? = null,
+            affiliateSource: String? = null
         ) = ProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
@@ -477,9 +479,10 @@ open class ProductDetailFragment :
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
                 query?.let { qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry) }
 
-                if (affiliateSubIds != null) {
-                    putParcelable(ARG_AFFILIATE_SUB_IDS, affiliateSubIds)
+                affiliateSubIds?.let{ subIds ->
+                    putParcelable(ARG_AFFILIATE_SUB_IDS, subIds)
                 }
+                affiliateSource?.let { source -> putString(ARG_AFFILIATE_SOURCE, source) }
             }
         }
     }
@@ -523,6 +526,7 @@ open class ProductDetailFragment :
     private var affiliateString: String? = null
     private var affiliateUniqueId: String = ""
     private var affiliateSubIds: Bundle? = null
+    private var affiliateSource: String? = null
     private var deeplinkUrl: String = ""
     private var isFromDeeplink: Boolean = false
     private var layoutId: String = ""
@@ -861,6 +865,7 @@ open class ProductDetailFragment :
                     ARG_AFFILIATE_SUB_IDS,
                     Bundle::class.java
                 ) else it.getParcelable(ARG_AFFILIATE_SUB_IDS)
+            affiliateSource = it.getString(ARG_AFFILIATE_SOURCE)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
@@ -3109,7 +3114,8 @@ open class ProductDetailFragment :
                 affiliateUuid = affiliateUniqueId,
                 uuid = uuid,
                 affiliateChannel = affiliateChannel,
-                affiliateSubIds = affiliateSubIds
+                affiliateSubIds = affiliateSubIds,
+                affiliateSource = affiliateSource
             )
 
             mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))

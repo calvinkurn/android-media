@@ -50,6 +50,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
         private const val PARAM_AFFILIATE_UNIQUE_ID = "aff_unique_id"
+        private const val PARAM_AFFILIATE_SOURCE = "source"
         private const val PARAM_LAYOUT_ID = "layoutID"
         const val PARAM_EXT_PARAM = "extParam"
         const val PARAM_CHANNEL = "channel"
@@ -103,6 +104,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var affiliateString: String? = null
     private var affiliateUniqueId: String? = null
     private var affiliateSubIds: Bundle? = null
+    private var affiliateSource: String? = null
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
     private var extParam: String? = null
@@ -275,7 +277,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         campaignId = campaignId,
         variantId = variantId,
         prefetchCacheId = intent.getStringExtra(ProductDetailPrefetch.PREFETCH_DATA_CACHE_ID),
-        affiliateSubIds = affiliateSubIds
+        affiliateSubIds = affiliateSubIds,
+        affiliateSource = affiliateSource
     )
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
@@ -328,20 +331,13 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
             affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
+            affiliateSource = uri.getQueryParameter(PARAM_AFFILIATE_SOURCE)
             extParam = uri.getQueryParameter(PARAM_EXT_PARAM)
             affiliateChannel = uri.getQueryParameter(PARAM_CHANNEL)
             campaignId = uri.getQueryParameter(PARAM_CAMPAIGN_ID)
             variantId = uri.getQueryParameter(PARAM_VARIANT_ID)
 
-            uri.queryParameterNames.forEach {
-                if (it.lowercase().startsWith(PARAM_START_SUBID)) {
-                    if (affiliateSubIds == null) affiliateSubIds = Bundle()
-                    affiliateSubIds?.putString(
-                        it.substring(PARAM_START_SUBID.length),
-                        uri.getQueryParameter(it) ?: ""
-                    )
-                }
-            }
+            processAffiliateSubId(keys = uri.queryParameterNames, uri = uri)
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")
@@ -371,16 +367,11 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             if (affiliateChannel.isNullOrBlank()) {
                 affiliateChannel = it.getString(PARAM_CHANNEL)
             }
+            if (affiliateSource.isNullOrBlank()) {
+                affiliateSource = it.getString(PARAM_AFFILIATE_SOURCE)
+            }
             if (affiliateSubIds == null) {
-                it.keySet().forEach { k ->
-                    if (k.lowercase().startsWith(PARAM_START_SUBID)) {
-                        if (affiliateSubIds == null) affiliateSubIds = Bundle()
-                        affiliateSubIds?.putString(
-                            k.substring(PARAM_START_SUBID.length),
-                            it.getString(k, "")
-                        )
-                    }
-                }
+                processAffiliateSubId(keys = it.keySet(), bundle = it)
             }
         }
 
@@ -500,6 +491,20 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     private fun getSource() = intent.data?.query ?: ""
+
+    private fun processAffiliateSubId(keys: Set<String>, uri: Uri? = null, bundle: Bundle? = null) {
+        if (uri == null && bundle == null) return
+
+        keys.forEach {
+            if (it.lowercase().startsWith(PARAM_START_SUBID)) {
+                if (affiliateSubIds == null) affiliateSubIds = Bundle()
+                affiliateSubIds?.putString(
+                    it.substring(PARAM_START_SUBID.length),
+                    uri?.getQueryParameter(it) ?: bundle?.getString(it) ?: ""
+                )
+            }
+        }
+    }
 }
 
 interface ProductDetailActivityInterface {

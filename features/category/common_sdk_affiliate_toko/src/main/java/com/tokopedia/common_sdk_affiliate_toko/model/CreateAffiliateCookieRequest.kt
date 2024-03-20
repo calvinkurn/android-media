@@ -53,6 +53,8 @@ data class CreateAffiliateCookieRequest(
     data class LinkDetail(
         @SerializedName("Channel")
         var channel: String?,
+        @SerializedName("Source")
+        val source: String?,
         @SerializedName("SubIDs")
         val subIds: List<AdditionalParam>,
     )
