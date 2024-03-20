@@ -1240,15 +1240,17 @@ class ProductDetailViewModel @Inject constructor(
             val affiliatePageDetail =
                 ProductDetailMapper.getAffiliatePageDetail(productInfo)
 
-            val subIds = affiliateSubIds?.let { map ->
-                map.mapNotNull {
-                    val key = it.key.toIntOrNull() ?: it.key.substring(PARAM_START_SUBID.length).toIntOrNull() ?: return@mapNotNull null
+            val subIds = affiliateSubIds?.mapNotNull {
+                val key = it.key.toIntOrNull()
+                    ?: if (it.key.length > PARAM_START_SUBID.length) it.key.substring(
+                        PARAM_START_SUBID.length
+                    ).toIntOrNull() else
+                        return@mapNotNull null
 
-                    AdditionalParam(
-                        key = key.toString(),
-                        value = it.value.replace(" ", "+")
-                    )
-                }
+                AdditionalParam(
+                    key = key.toString(),
+                    value = it.value.replace(" ", "+")
+                )
             } ?: emptyList()
 
             affiliateCookieHelper.get().initCookie(
@@ -1256,11 +1258,14 @@ class ProductDetailViewModel @Inject constructor(
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
                 uuid = uuid,
-//                subIds = subIds,
-//                source = affiliateSource ?: ""
+                subIds = subIds,
+                source = affiliateSource ?: ""
             )
         }, onError = {
             // no op, expect to be handled by Affiliate SDK
+            val stack = it
+            val stack1 = stack.stackTrace
+
         })
     }
 
