@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -52,6 +53,7 @@ data class PlayBroadcastUiState(
     val tickerBottomSheetConfig: TickerBottomSheetUiModel,
     val liveReportSummary: LiveReportSummaryUiModel,
     val productReportSummary: NetworkResult<ProductReportSummaryUiModel>,
+    val componentPreparation: ComponentPreparationUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -87,6 +89,7 @@ data class PlayBroadcastUiState(
                 tickerBottomSheetConfig = TickerBottomSheetUiModel.Empty,
                 liveReportSummary = LiveReportSummaryUiModel.Empty,
                 productReportSummary = NetworkResult.Unknown,
+                componentPreparation = ComponentPreparationUiModel.Empty,
             )
     }
 }
@@ -158,7 +161,8 @@ data class QuizFormUiState(
 
 data class OnboardingUiModel(
     val firstInteractive: Boolean,
-    val firstGameResult:Boolean,
+    val firstGameResult: Boolean,
+    val firstStatisticIconShown: Boolean,
 ) {
 
     companion object {
@@ -166,11 +170,13 @@ data class OnboardingUiModel(
             get() = OnboardingUiModel(
                 firstInteractive = false,
                 firstGameResult = false,
+                firstStatisticIconShown = false,
             )
 
         fun create(pref: HydraSharedPreferences) = OnboardingUiModel(
             firstInteractive = pref.isFirstInteractive(),
             firstGameResult = pref.isFirstGameResult(),
+            firstStatisticIconShown = pref.isFirstStatisticIconShown()
         )
     }
 

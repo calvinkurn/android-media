@@ -140,7 +140,7 @@
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="GRAPH"
             app:layout_constraintBottom_toBottomOf="@id/icon_product"
-            app:layout_constraintStart_toEndOf="@id/ic_game"
+            app:layout_constraintStart_toEndOf="@id/ic_face_filter"
             app:layout_constraintTop_toTopOf="@id/icon_product"
             tools:visibility="visible" />
 
