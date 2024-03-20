@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -21,6 +22,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -54,6 +56,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger;
 import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface;
 import com.tokopedia.applink.AppUtil;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -111,6 +114,7 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
+import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -177,6 +181,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
+        initTranslator();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             Timber.plant(new Timber.DebugTree());
@@ -366,8 +371,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     public void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
-            public void onShakeDetected(boolean isLongShake) {
-                openShakeDetectCampaignPage(isLongShake);
+            public void onShakeDetected(boolean isLongShake, Activity activity) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    openDeveloperOptionsViaShake(activity);
+                } else {
+                    openShakeDetectCampaignPage(isLongShake);
+                }
             }
         }));
 
@@ -405,6 +414,44 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
         registerActivityLifecycleCallbacks(new AppLogActivityLifecycleCallback());
+    }
+
+    private void openDeveloperOptionsViaShake(Activity activity) {
+        // Create AlertDialog Builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        // Set Title and Message
+        builder.setTitle("Developer Options");
+        builder.setMessage("Enter developer options?");
+
+        // Set Positive Button and its Listener
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.DEVELOPER_OPTIONS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+
+                dialogInterface.dismiss(); // Dismiss the dialog
+            }
+        });
+
+        // Set Negative Button and its Listener
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss(); // Dismiss the dialog
+            }
+        });
+
+        activity.findViewById(android.R.id.content).getRootView().post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        builder.show();
+                    }
+                }
+        );
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
@@ -701,6 +748,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
+    }
+
+    private void initTranslator() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            TranslatorManager.init(this, "");
+        }
     }
 
     private void initEmbraceConfig() {
