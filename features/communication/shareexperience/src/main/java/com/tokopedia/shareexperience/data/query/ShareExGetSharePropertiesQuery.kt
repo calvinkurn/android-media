@@ -52,6 +52,7 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                   androidUrl
                   iosUrl
                   iosDeeplinkPath
+                  androidDeeplinkPath
                   canonicalUrl
                   canonicalIdentifier
                   customMetaTags

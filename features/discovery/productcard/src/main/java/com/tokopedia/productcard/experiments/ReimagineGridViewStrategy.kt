@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -174,7 +175,14 @@ internal class ReimagineGridViewStrategy(
                 ?: 0
             else 0
 
-        guidelineBottom?.setGuidelineEnd(paddingBottomGuideline)
+        guidelineBottom?.run {
+            if (productCardModel.isInBackground)
+                productCardView.findViewById<View?>(R.id.productCardShopSection)
+                    .updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    bottomToBottom = id
+                }
+            setGuidelineEnd(paddingBottomGuideline)
+        }
     }
 
     override fun recycle() {

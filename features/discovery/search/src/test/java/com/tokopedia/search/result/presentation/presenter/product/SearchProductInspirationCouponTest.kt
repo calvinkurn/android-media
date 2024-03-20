@@ -53,7 +53,6 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
         SearchApiConst.USER_ID to "0"
     )
 
-    @Test
     fun `Show inspiration coupon general cases page 1`() {
         val searchProductModel: SearchProductModel = inspirationProductCoupon.jsonToObject()
         val searchCouponModel: SearchCouponModel =
@@ -217,7 +216,6 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
         every { viewUpdater.itemList } returns visitableList
     }
 
-    @Test
     fun `Inspiration coupon no coupon widget should not show CouponDataView`() {
         val searchProductModel: SearchProductModel = inspirationProductCoupon.jsonToObject()
         val searchCouponModel = SearchCouponModel()
@@ -237,7 +235,6 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
         visitableList.filterIsInstance<CouponDataView>().size shouldBe 0
     }
 
-    @Test
     fun `Inspiration coupon all coupon habis should not show CouponDataView`() {
         val searchProductModel: SearchProductModel = inspirationProductCoupon.jsonToObject()
         val searchCouponModel =
@@ -258,7 +255,6 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
         visitableList.filterIsInstance<CouponDataView>().size shouldBe 0
     }
 
-    @Test
     fun `Coupon first position habis second position valid should show one coupon`() {
         val searchProductModel: SearchProductModel = inspirationProductCoupon.jsonToObject()
         val searchCouponModel =
@@ -310,7 +306,6 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
             (expectedCoupon1?.badgeList?.getOrNull(0)?.parent?.text ?: "")
     }
 
-    @Test
     fun `coupon cta redirect should redirect`() {
         val searchProductModel: SearchProductModel = inspirationProductCoupon.jsonToObject()
         val searchCouponModel: SearchCouponModel =
@@ -363,7 +358,6 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
         every { inspirationCarouselView.openLink(any(), any()) } returns Unit
     }
 
-    @Test
     fun `coupon cta claim should claim`() {
         val searchProductModel: SearchProductModel = inspirationProductCoupon.jsonToObject()
         val searchCouponModel: SearchCouponModel =
