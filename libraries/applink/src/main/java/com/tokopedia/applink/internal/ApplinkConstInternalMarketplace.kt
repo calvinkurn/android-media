@@ -1,6 +1,5 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.constant.DeeplinkConstant
 
@@ -61,7 +60,8 @@ object ApplinkConstInternalMarketplace {
     val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/{shop_id}/" +
         "?pageSource={pageSource}&" +
         "isTokoNow={isTokoNow}&" +
-        "cdListName={cdListName}"
+        "cdListName={cdListName}&" +
+        "cartId={cartId}"
 
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
