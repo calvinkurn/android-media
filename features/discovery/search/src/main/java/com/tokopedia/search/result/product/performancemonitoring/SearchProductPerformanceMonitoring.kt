@@ -49,7 +49,8 @@ internal fun searchProductPerformanceMonitoring(): PageLoadTimePerformanceInterf
 internal fun stopPerformanceMonitoring(
     performanceMonitoring: PageLoadTimePerformanceInterface?,
     recyclerView: RecyclerView?,
-    enterMethod: String
+    enterMethod: String,
+    isLocalSearch: Boolean
 ) {
     performanceMonitoring ?: return
     recyclerView ?: return
@@ -63,7 +64,9 @@ internal fun stopPerformanceMonitoring(
                     stopCustomMetric(SEARCH_RESULT_PLT_RENDER_RECYCLER_VIEW)
                     stopRenderPerformanceMonitoring()
                     stopMonitoring{
-                        AppLogSearch.eventPerformanceTracking(AppLogSearch.Performance(it, enterMethod))
+                        if(isLocalSearch) {
+                            AppLogSearch.eventPerformanceTracking(AppLogSearch.Performance(it, enterMethod))
+                        }
                     }
                 }
 

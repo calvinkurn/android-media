@@ -124,5 +124,6 @@ interface ProductListSectionContract {
         fun onViewResumed()
         fun onLocalizingAddressSelected()
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
+        fun getIsLocalSearch(): Boolean
     }
 }

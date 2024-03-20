@@ -691,7 +691,9 @@ class ProductListFragment :
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
+        //add parameter for byteio performance tracker
         recyclerViewUpdater.enterMethod = enterMethod
+        recyclerViewUpdater.isLocalSearch = presenter?.getIsLocalSearch() == true
         recyclerViewUpdater.setItems(list)
         SearchIdlingResource.decrement()
     }
