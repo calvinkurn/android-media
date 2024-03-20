@@ -477,7 +477,19 @@ class CheckoutCostViewHolder(
 
             val originalPaymentFees = cost.originalPaymentFees
 
-            if ((paymentFees.size + originalPaymentFees.size) > 1) {
+            val installmentServiceFee = if (cost.isInstallment) {
+                listOf(cost.installmentFee)
+            } else {
+                emptyList()
+            }
+
+            val installmentFee = if (cost.isInstallment && cost.installmentDetail != null) {
+                listOf(cost.installmentDetail.interestAmount)
+            } else {
+                emptyList()
+            }
+
+            if ((paymentFees.size + originalPaymentFees.size + installmentServiceFee.size + installmentFee.size) > 1) {
                 // render in collapsible
                 binding.llCheckoutCostPaymentsExpanded.removeAllViews()
                 binding.tvCheckoutCostPaymentFeeTitle.isVisible = false
@@ -486,6 +498,30 @@ class CheckoutCostViewHolder(
                 binding.tvCheckoutCostPaymentFeeValue.isVisible = false
 
                 var totalPaymentFee = 0.0
+
+                for (installmentService in installmentServiceFee) {
+                    totalPaymentFee += installmentService
+                    val itemBinding = ItemCheckoutCostPaymentDynamicBinding.inflate(
+                        layoutInflater,
+                        binding.llCheckoutCostPaymentsExpanded,
+                        false
+                    )
+                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = "Biaya Layanan"
+                    itemBinding.icCheckoutCostPaymentFee.isVisible = true
+                    itemBinding.icCheckoutCostPaymentFee.setOnClickListener {
+                        listener.showPaymentFeeTooltipInfoBottomSheet(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu."
+                            )
+                        )
+                    }
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+                    itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentService, false).removeDecimalSuffix()
+                    (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                        8.dpToPx(binding.root.context.resources.displayMetrics)
+                    binding.llCheckoutCostPaymentsExpanded.addView(itemBinding.root)
+                }
 
                 for (originalPaymentFee in originalPaymentFees) {
                     totalPaymentFee += originalPaymentFee.amount
@@ -515,6 +551,7 @@ class CheckoutCostViewHolder(
                         8.dpToPx(binding.root.context.resources.displayMetrics)
                     binding.llCheckoutCostPaymentsExpanded.addView(itemBinding.root)
                 }
+
                 for (paymentFee in paymentFees) {
                     totalPaymentFee += paymentFee.fee
                     val itemBinding = ItemCheckoutCostPaymentDynamicBinding.inflate(
@@ -539,6 +576,22 @@ class CheckoutCostViewHolder(
                     itemBinding.tvCheckoutCostPaymentFeeSlashedValue.paintFlags =
                         itemBinding.tvCheckoutCostPaymentFeeSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.fee, false).removeDecimalSuffix()
+                    (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                        8.dpToPx(binding.root.context.resources.displayMetrics)
+                    binding.llCheckoutCostPaymentsExpanded.addView(itemBinding.root)
+                }
+
+                for (installment in installmentFee) {
+                    totalPaymentFee += installment
+                    val itemBinding = ItemCheckoutCostPaymentDynamicBinding.inflate(
+                        layoutInflater,
+                        binding.llCheckoutCostPaymentsExpanded,
+                        false
+                    )
+                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan"
+                    itemBinding.icCheckoutCostPaymentFee.isVisible = false
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+                    itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment, false).removeDecimalSuffix()
                     (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
                         8.dpToPx(binding.root.context.resources.displayMetrics)
                     binding.llCheckoutCostPaymentsExpanded.addView(itemBinding.root)
@@ -620,6 +673,46 @@ class CheckoutCostViewHolder(
                     tvCheckoutCostPaymentFeeSlashedValue.paintFlags =
                         tvCheckoutCostPaymentFeeSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.amount, false).removeDecimalSuffix()
+                    tvCheckoutCostPaymentFeeValue.isVisible = true
+                    tvCheckoutCostPaymentsTitle.isVisible = false
+                    tvCheckoutCostPaymentsValue.isVisible = false
+                    icCheckoutCostPaymentsToggle.isVisible = false
+                    vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                    llCheckoutCostPaymentsExpanded.isVisible = false
+                }
+            } else if (installmentServiceFee.isNotEmpty()) {
+                // render outside
+                val paymentFee = installmentServiceFee.first()
+                binding.apply {
+                    tvCheckoutCostPaymentFeeTitle.text = "Biaya Layanan"
+                    tvCheckoutCostPaymentFeeTitle.isVisible = true
+                    icCheckoutCostPaymentFee.isVisible = true
+                    icCheckoutCostPaymentFee.setOnClickListener {
+                        listener.showPaymentFeeTooltipInfoBottomSheet(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu."
+                            )
+                        )
+                    }
+                    tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+                    tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee, false).removeDecimalSuffix()
+                    tvCheckoutCostPaymentFeeValue.isVisible = true
+                    tvCheckoutCostPaymentsTitle.isVisible = false
+                    tvCheckoutCostPaymentsValue.isVisible = false
+                    icCheckoutCostPaymentsToggle.isVisible = false
+                    vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                    llCheckoutCostPaymentsExpanded.isVisible = false
+                }
+            } else if (installmentFee.isNotEmpty()) {
+                // render outside
+                val paymentFee = installmentFee.first()
+                binding.apply {
+                    tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan"
+                    tvCheckoutCostPaymentFeeTitle.isVisible = true
+                    icCheckoutCostPaymentFee.isVisible = false
+                    tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+                    tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee, false).removeDecimalSuffix()
                     tvCheckoutCostPaymentFeeValue.isVisible = true
                     tvCheckoutCostPaymentsTitle.isVisible = false
                     tvCheckoutCostPaymentsValue.isVisible = false

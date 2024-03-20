@@ -11,12 +11,14 @@ import com.tokopedia.checkout.revamp.view.PAYMENT_INDEX_FROM_BOTTOM
 import com.tokopedia.checkout.revamp.view.address
 import com.tokopedia.checkout.revamp.view.buttonPayment
 import com.tokopedia.checkout.revamp.view.cost
+import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.payment
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkoutpayment.data.AdditionalInfoData
@@ -241,34 +243,55 @@ class CheckoutPaymentProcessor @Inject constructor(
                                             checkoutItems,
                                             it.cartStringGroup
                                         ).groupBy { item ->
-                                            (item as CheckoutProductModel).cartStringOrder
-                                        }.values.map { order ->
-                                            val singleItem = order.first() as CheckoutProductModel
+                                            if (item is CheckoutProductModel) {
+                                                item.cartStringOrder
+                                            } else {
+                                                (item as CheckoutProductBenefitModel).cartStringOrder
+                                            }
+                                        }.values.mapNotNull orders@ { order ->
+                                            val singleItem = order.firstOrNullInstanceOf(CheckoutProductModel::class.java) ?: return@orders null
                                             CartShopOrderData(
                                                 shopId = singleItem.shopId,
                                                 warehouseId = singleItem.warehouseId.toLongOrZero(),
                                                 shopTier = singleItem.shopTier.toLong(),
-                                                products = order.mapNotNull { product ->
-                                                    val orderProduct = product as CheckoutProductModel
-                                                    if (!orderProduct.isError) {
+                                                products = order.mapNotNull products@ { product ->
+                                                    if (product is CheckoutProductModel) {
+                                                        if (!product.isError) {
+                                                            CartProductData(
+                                                                productId = product.productId.toString(),
+                                                                name = product.name,
+                                                                price = product.price.toLong(),
+                                                                quantity = product.quantity.toLong(),
+                                                                totalPrice = product.price.toLong() * product.quantity,
+                                                                bundleGroupId = "",
+                                                                addonItems = generateAddonProductLevel(
+                                                                    product
+                                                                ),
+                                                                category = CartProductCategoryData(
+                                                                    id = product.productCatId.toString(),
+                                                                    name = product.lastLevelCategory,
+                                                                    identifier = product.categoryIdentifier
+                                                                )
+                                                            )
+                                                        } else {
+                                                            null
+                                                        }
+                                                    } else {
+                                                        val orderProduct = product as CheckoutProductBenefitModel
                                                         CartProductData(
-                                                            productId = orderProduct.productId.toString(),
-                                                            name = orderProduct.name,
-                                                            price = orderProduct.price.toLong(),
+                                                            productId = orderProduct.productId,
+                                                            name = orderProduct.productName,
+                                                            price = orderProduct.finalPrice.toLong(),
                                                             quantity = orderProduct.quantity.toLong(),
-                                                            totalPrice = orderProduct.price.toLong() * orderProduct.quantity,
+                                                            totalPrice = orderProduct.finalPrice.toLong() * orderProduct.quantity,
                                                             bundleGroupId = "",
-                                                            addonItems = generateAddonProductLevel(
-                                                                orderProduct
-                                                            ),
+                                                            addonItems = emptyList(),
                                                             category = CartProductCategoryData(
-                                                                id = orderProduct.productCatId.toString(),
-                                                                name = orderProduct.lastLevelCategory,
-                                                                identifier = orderProduct.categoryIdentifier
+                                                                id = "",
+                                                                name = "",
+                                                                identifier = ""
                                                             )
                                                         )
-                                                    } else {
-                                                        null
                                                     }
                                                 },
                                                 bundle = emptyList(),

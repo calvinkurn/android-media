@@ -535,6 +535,7 @@ class CheckoutDataConverter @Inject constructor() {
                 weight = benefit.weight,
                 weightActual = benefit.weightActual,
                 shopId = product.shopId,
+                cartStringOrder = product.cartStringOrder,
                 headerText = bmgmTier.benefitWording,
                 shouldShowHeader = index == 0,
                 sumOfCheckoutProductsQuantity = totalProductsQuantityInOffer,

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.revamp.view.uimodel
 
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.PaymentFeeDetail
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 
@@ -45,6 +46,9 @@ data class CheckoutCostModel(
     val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList(),
     val originalPaymentFees: List<PaymentFeeDetail> = emptyList(),
     val usePaymentFees: Boolean = false,
+    val isInstallment: Boolean = false,
+    val installmentFee: Double = 0.0,
+    val installmentDetail: GoCicilInstallmentOption? = null,
     var isExpandPaymentFee: Boolean = false
 ) : CheckoutItem {
 
