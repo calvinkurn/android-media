@@ -29,7 +29,6 @@ import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenUseCaseStub
 import io.mockk.every
 import io.mockk.mockk
@@ -51,9 +50,6 @@ open class LoginBase : LoginRegisterBase() {
 
     @Inject
     lateinit var fakeRepo: FakeGraphqlRepository
-
-    @Inject
-    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @Inject
     lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub

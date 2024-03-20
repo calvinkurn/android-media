@@ -19,7 +19,6 @@ import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.CassavaTest
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +26,7 @@ import org.junit.runner.RunWith
 @CassavaTest
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class RegisterInitialTest: RegisterInitialBase() {
+class RegisterInitialTest : RegisterInitialBase() {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -36,9 +35,9 @@ class RegisterInitialTest: RegisterInitialBase() {
 
     @Test
     fun check_register_email_success_tracker() {
-        //Given
+        // Given
         val data = RegisterCheckData(
-            isExist = false ,
+            isExist = false,
             isPending = false,
             userID = "0",
             registerType = "email",
@@ -48,28 +47,28 @@ class RegisterInitialTest: RegisterInitialBase() {
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "Kelvin Saputra")
         val profilePojo = ProfilePojo(profileInfo)
-        getProfileUseCaseStub.response = profilePojo
+        fakeRepo.profileConfig = Config.WithResponse(profilePojo)
 
-        //When
+        // When
         runTest {
             checkRegisterEmail()
         }
 
-        //Then
+        // Then
         validate(cassavaTestRule, getAnalyticValidatorListSuccess())
     }
 
     @Test
     fun check_register_email_failed_tracker() {
-        //Given
+        // Given
         fakeRepo.registerCheckConfig = Config.Error
 
-        //When
+        // When
         runTest {
             checkRegisterEmail()
         }
 
-        //Then
+        // Then
         validate(cassavaTestRule, getAnalyticValidatorListFailed())
     }
 
@@ -77,11 +76,11 @@ class RegisterInitialTest: RegisterInitialBase() {
         Thread.sleep(1000)
 
         onView(ViewMatchers.withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
-                .perform(replaceText(""))
-                .perform(typeText(emailNotRegistered))
+            .perform(replaceText(""))
+            .perform(typeText(emailNotRegistered))
 
         onView(withId(R.id.register_btn))
-                .perform(click())
+            .perform(click())
     }
 
     private fun getAnalyticValidatorListSuccess(): List<Map<String, String>> {
