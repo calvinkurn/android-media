@@ -128,6 +128,8 @@ class CatalogDetailUiMapper @Inject constructor(
         }
         return CatalogDetailUiModel(
             widgets = widgets,
+            departmentId = remoteModel.basicInfo.departmentID.orEmpty(),
+            brand = remoteModel.basicInfo.brand.orEmpty(),
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
             priceCtaSellerOfferingProperties = mapToPriceCtaSellerOfferingProperties(remoteModel),

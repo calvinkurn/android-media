@@ -110,6 +110,7 @@
 /features/category/catalog				                @tokopedia/android-minionpaul-dev
 /features/category/catalog_common		                @tokopedia/android-minionpaul-dev
 /features/category/catalog_library		                @tokopedia/android-minionpaul-dev
+/features/category/category_levels		                @tokopedia/android-minionpaul-dev
 /features/category/moneyin     				            @tokopedia/android-minionpaul-dev
 /features/category/tradein       				        @tokopedia/android-minionpaul-dev
 /features/category/common_tradein       				@tokopedia/android-minionpaul-dev
