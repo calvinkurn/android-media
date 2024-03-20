@@ -60,6 +60,7 @@ import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.EventUiModel
 import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
@@ -662,6 +663,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
+
+            /** CoachMark */
+            is PlayBroadcastAction.CoachMarkHasBeenShown -> handleCoachMarkHasBeenShown()
+            is PlayBroadcastAction.ImpressCoachMark -> handleImpressCoachMark(event.coachMarkType)
 
             /** Log */
             is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
@@ -2036,6 +2041,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         saveBeautificationConfig()
+    }
+
+    private fun handleCoachMarkHasBeenShown() {
+        _componentPreparation.update {
+            it.copy(
+                hasBeenHandled = true
+            )
+        }
+    }
+
+    private fun handleImpressCoachMark(coachMarkType: LiveMenuCoachMarkType) {
+        when (coachMarkType) {
+            is LiveMenuCoachMarkType.Statistic -> {
+                sharedPref.setFirstStatisticIconShown()
+            }
+            else -> {}
+        }
     }
 
     private fun handleSendErrorLog(throwable: Throwable) {

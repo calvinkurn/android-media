@@ -157,7 +157,8 @@ data class QuizFormUiState(
 
 data class OnboardingUiModel(
     val firstInteractive: Boolean,
-    val firstGameResult:Boolean,
+    val firstGameResult: Boolean,
+    val firstStatisticIconShown: Boolean,
 ) {
 
     companion object {
@@ -165,11 +166,13 @@ data class OnboardingUiModel(
             get() = OnboardingUiModel(
                 firstInteractive = false,
                 firstGameResult = false,
+                firstStatisticIconShown = false,
             )
 
         fun create(pref: HydraSharedPreferences) = OnboardingUiModel(
             firstInteractive = pref.isFirstInteractive(),
             firstGameResult = pref.isFirstGameResult(),
+            firstStatisticIconShown = pref.isFirstStatisticIconShown()
         )
     }
 

@@ -6,6 +6,7 @@ package com.tokopedia.play.broadcaster.ui.model
 data class ComponentPreparationUiModel(
     val gameIcon: State,
     val statisticIcon: State,
+    val hasBeenHandled: Boolean,
 ) {
 
     val isAllComponentsReady: Boolean
@@ -16,6 +17,7 @@ data class ComponentPreparationUiModel(
             get() = ComponentPreparationUiModel(
                 gameIcon = State.NotDetermined,
                 statisticIcon = State.NotDetermined,
+                hasBeenHandled = false,
             )
     }
 
