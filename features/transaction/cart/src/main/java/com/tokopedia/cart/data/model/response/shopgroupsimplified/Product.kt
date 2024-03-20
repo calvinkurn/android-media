@@ -98,5 +98,5 @@ data class Product(
     @SerializedName("product_label")
     val productLabel: ProductLabel = ProductLabel(),
     @SerializedName("is_enable_cart_variant")
-    val isEnableCartVariant: Boolean = true
+    val isEnableCartVariant: Boolean = false
 )
