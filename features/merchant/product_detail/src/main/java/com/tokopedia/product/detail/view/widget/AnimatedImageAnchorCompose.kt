@@ -6,25 +6,29 @@ import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -41,28 +45,34 @@ private const val TARGET_IMAGE_RATIO = 0.1F
 
 private val customBezier = CubicBezierEasing(0.63F, 0.01F, 0.29F, 1F)
 
+@Stable
+data class AnimationData(
+    val resetLaunchEffect: Boolean,
+    val xTarget: Int,
+    val yTarget: Int,
+    val image: Bitmap,
+    val onFinishAnimated: () -> Unit = {}
+)
+
 @Composable
 fun AnimatedImageAnchor(
-    resetLaunchEffect: Boolean,
-    xTarget: Int,
-    yTarget: Int,
-    image: Bitmap,
-    onFinishAnimated: () -> Unit = {}
+    data: AnimationData
 ) {
-    val alphaAnimatable = remember(resetLaunchEffect) { Animatable(0F) }
-    val yAnimatable = remember(resetLaunchEffect) { Animatable(0F) }
-    val xAnimatable = remember(resetLaunchEffect) { Animatable(0F) }
-    val scaleAnimatable = remember(resetLaunchEffect) { Animatable(0F) }
-    val radiusAnimatable = remember(resetLaunchEffect) { Animatable(ROUNDED_SIZE.toFloat()) }
+    val alphaAnimatable = remember(data.resetLaunchEffect) { Animatable(0F) }
+    val yAnimatable = remember(data.resetLaunchEffect) { Animatable(0F) }
+    val xAnimatable = remember(data.resetLaunchEffect) { Animatable(0F) }
+    val scaleAnimatable = remember(data.resetLaunchEffect) { Animatable(0F) }
+    val radiusAnimatable = remember(data.resetLaunchEffect) { Animatable(ROUNDED_SIZE.toFloat()) }
 
-    val relativeTargetPosition = remember(resetLaunchEffect) {
+    val relativeTargetPosition = remember {
         mutableStateOf(IntOffset(0, 0))
     }
 
-    val shouldFindCoordinate =
-        { relativeTargetPosition.value.x == 0 && relativeTargetPosition.value.y == 0 }
+    val shouldFindCoordinate by remember {
+        derivedStateOf { relativeTargetPosition.value.x == 0 && relativeTargetPosition.value.y == 0 }
+    }
 
-    LaunchedEffect(resetLaunchEffect, relativeTargetPosition) {
+    LaunchedEffect(data.resetLaunchEffect, relativeTargetPosition) {
         animateShow(alphaAnimatable, scaleAnimatable)
 
         delay(UnifyMotion.T3 / 2)
@@ -77,24 +87,23 @@ fun AnimatedImageAnchor(
             yTarget = -relativeTargetPosition.value.y
         )
 
-        onFinishAnimated.invoke()
+        data.onFinishAnimated.invoke()
     }
 
     NestTheme {
-        Image(
-            painter = rememberAsyncImagePainter(image),
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
+        Card(
+            border = BorderStroke(BORDER_SIZE.dp, Color.White),
+            shape = RoundedCornerShape(radiusAnimatable.value.dp),
             modifier = Modifier
                 .size(IMAGE_SIZE.dp)
                 .findCenterCoordinateAfterInflate(
-                    shouldFindCoordinate(),
+                    shouldFindCoordinate,
                     scaleAnimatable.value == 1F
                 ) { x, y ->
                     relativeTargetPosition.value =
                         IntOffset(
-                            xTarget - x,
-                            y - yTarget
+                            data.xTarget - x,
+                            y - data.yTarget
                         )
                 }
                 .offset {
@@ -108,11 +117,14 @@ fun AnimatedImageAnchor(
                     shape = RoundedCornerShape(radiusAnimatable.value.dp)
                     clip = true
                 }
-                .border(
-                    BorderStroke(BORDER_SIZE.dp, Color.White),
-                    RoundedCornerShape(radiusAnimatable.value.dp)
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
+                drawImage(
+                    data.image.asImageBitmap(),
+                    dstSize = IntSize(size.width.toInt(), size.height.toInt())
                 )
-        )
+            })
+        }
     }
 }
 

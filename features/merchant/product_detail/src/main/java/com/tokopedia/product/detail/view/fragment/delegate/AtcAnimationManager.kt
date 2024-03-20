@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AnimatedImageAnchor
+import com.tokopedia.product.detail.view.widget.AnimationData
 import com.tokopedia.unifycomponents.toPx
 
 class AtcAnimationManager(
@@ -79,13 +80,15 @@ class AtcAnimationManager(
                     resetLaunchEffect = !resetLaunchEffect
 
                     AnimatedImageAnchor(
-                        resetLaunchEffect = resetLaunchEffect,
-                        xTarget = targetViewCenterCoordinate.x,
-                        yTarget = targetViewCenterCoordinate.y,
-                        image = image,
-                        onFinishAnimated = {
-                            viewModel.onFinishAnimation()
-                        }
+                        AnimationData(
+                            resetLaunchEffect = resetLaunchEffect,
+                            xTarget = targetViewCenterCoordinate.x,
+                            yTarget = targetViewCenterCoordinate.y,
+                            image = image,
+                            onFinishAnimated = {
+                                viewModel.onFinishAnimation()
+                            }
+                        )
                     )
                 }
             }
