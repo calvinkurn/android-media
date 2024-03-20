@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
+import com.bytedance.crash.Ensure
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
@@ -46,8 +47,8 @@ class RechargeItemCategoryAdapter(
                 binding.categoryName.text = element.title
                 root.setOnClickListener {
                     it.post({
-                        throw RuntimeException("Try Crash Monitoring Slardar on Toko")
-                        // you can test more Native Crash
+                        val e = RuntimeException("Try Send Ensure")
+                        Ensure.ensureNotReachHere(e, "Try Ensure Slardar")
                     })
                     onItemBindListener.onRechargeSectionItemClicked(element)
                 }

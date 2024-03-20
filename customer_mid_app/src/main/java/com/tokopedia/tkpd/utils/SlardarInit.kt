@@ -15,8 +15,6 @@ import com.tokopedia.config.GlobalConfig
 import com.bytedance.bdinstall.Level
 import com.bytedance.crash.ICommonParams
 import com.bytedance.crash.Npth
-import com.bytedance.crash.runtime.AllDefaultUrls
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object SlardarInit {
@@ -62,6 +60,9 @@ object SlardarInit {
             true // ANR Enabler
         )
 
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            Npth.getConfigManager().isDebugMode = true
+        }
         Npth.getConfigManager().javaCrashUploadUrl = "https://slardar-bd-sg.feishu.cn/monitor/collect/c/crash"
         Npth.getConfigManager().setNativeCrashUrl("https://slardar-bd-sg.feishu.cn/monitor/collect/c/native_bin_crash")
         Npth.getConfigManager().setLaunchCrashUrl("https://slardar-bd-sg.feishu.cn/monitor/collect/c/exception/dump_collection")
