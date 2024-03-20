@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardPaginationLoadState
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
@@ -182,7 +183,7 @@ class CalendarWidgetCarouselViewModelTest {
                     any(),
                     any()
                 )
-            } returns true
+            } returns ProductCardPaginationLoadState.LOAD_MORE
             every { viewModel.getCalendarList() } returns arrayListOf<ComponentsItem>(spyk())
             coEvery { viewModel.reSyncProductCardHeight(any()) } returns 100
             mockkObject(Utils)
@@ -207,7 +208,7 @@ class CalendarWidgetCarouselViewModelTest {
                     any(),
                     any()
                 )
-            } returns true
+            } returns ProductCardPaginationLoadState.LOAD_MORE
             every { viewModel.getCalendarList() } returns mockk(relaxed = true)
             coEvery { viewModel.reSyncProductCardHeight(any()) } returns 100
 

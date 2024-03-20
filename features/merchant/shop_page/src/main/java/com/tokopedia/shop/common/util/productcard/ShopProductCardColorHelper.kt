@@ -10,7 +10,7 @@ class ShopProductCardColorHelper {
         shouldOverrideTheme: Boolean,
         patternColorType: String,
         backgroundColor: String
-    ): ProductCardColor? {
+    ): ProductCardColor {
         val isShopReimagine = shouldOverrideTheme
         
         return if (isShopReimagine) {
@@ -28,9 +28,7 @@ class ShopProductCardColorHelper {
     private fun determineColorModeForShopReimagine(
         patternColorType: String,
         backgroundColor: String
-    ): ProductCardColor? {
-        if (patternColorType.isEmpty() || backgroundColor.isEmpty()) return null
-        
+    ): ProductCardColor {
         val isLightThemedShop = patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value
         
         return if (isLightThemedShop) {

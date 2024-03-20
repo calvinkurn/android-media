@@ -13,7 +13,15 @@
           {
             "key": "578",
             "value": "8768",
-            "operator": null
+            "operator": {
+              "id": "1015",
+              "attributes": {
+                "name": "Mandiri Emoney",
+                "image_url": "https://images.tokopedia.net/img/recharge/operator/e-money.png",
+                "default_product_id": "1065",
+                "status": 1
+              }
+            }
           }
         ]
       }

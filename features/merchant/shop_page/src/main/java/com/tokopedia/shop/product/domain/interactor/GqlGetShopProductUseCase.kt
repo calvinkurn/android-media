@@ -50,11 +50,13 @@ class GqlGetShopProductUseCase @Inject constructor(
         fun createParams(
             shopId: String,
             filter: ShopProductFilterInput
-        ): Map<String, Any> =
-            mapOf(
+        ): Map<String, Any> {
+            return mapOf(
                 PARAM_SHOP_ID to shopId,
                 PARAM_FILTER to filter,
                 PARAM_SOURCE to PARAM_VALUE_SOURCE
             )
+        }
+            
     }
 }

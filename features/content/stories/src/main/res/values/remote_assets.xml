@@ -2,4 +2,5 @@
 <resources>
     <string name="stories_onboard_tap_anim">https://assets.tokopedia.net/asts/content/stories/tap.json</string>
     <string name="stories_onboard_swipe_anim">https://assets.tokopedia.net/asts/content/stories/swipe.json</string>
+    <string name="stories_onboard_swipe_left_anim">https://images.tokopedia.net/img/content/stories/ic_stories_hand.png</string>
 </resources>

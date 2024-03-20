@@ -5,6 +5,7 @@ import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.sdui.extention.ActionHandler
+import com.tokopedia.sdui.extention.CustomActionInterface
 import com.tokopedia.sdui.extention.GlideDivImageLoader
 import com.tokopedia.sdui.extention.HTMLHandler
 import com.tokopedia.sdui.extention.TypeFaceProvider
@@ -27,21 +28,28 @@ class SDUIManager : SDUIinterface {
     private var context: Context? = null
     private var parsingEnvironment: DivParsingEnvironment? = null
     override fun initSDUI(context: Context,
-                          sduiTrackingInterface: SDUITrackingInterface?) {
+                          sduiTrackingInterface: SDUITrackingInterface?,
+                          customActionInterface: CustomActionInterface?) {
         this.context = context
-        initDivKit(context, sduiTrackingInterface)
+        initDivKit(context, sduiTrackingInterface, customActionInterface)
     }
 
-    private fun initDivKit(context: Context,
-                           sduiTrackingInterface: SDUITrackingInterface? = null) {
+    private fun initDivKit(
+        context: Context,
+        sduiTrackingInterface: SDUITrackingInterface? = null,
+        customActionInterface: CustomActionInterface? = null
+    ) {
         divContext = Div2Context(baseContext = context as ContextThemeWrapper,
-            configuration = createDivConfiguration(context, sduiTrackingInterface))
+            configuration = createDivConfiguration(context, sduiTrackingInterface, customActionInterface))
     }
 
-    private fun createDivConfiguration(context: Context,
-                                       sduiTrackingInterface: SDUITrackingInterface? = null): DivConfiguration {
+    private fun createDivConfiguration(
+        context: Context,
+        sduiTrackingInterface: SDUITrackingInterface? = null,
+        customActionInterface: CustomActionInterface? = null
+    ): DivConfiguration {
         return DivConfiguration.Builder(GlideDivImageLoader(context))
-            .actionHandler(ActionHandler(context, sduiTrackingInterface))
+            .actionHandler(ActionHandler(context, sduiTrackingInterface, customActionInterface))
             .extension(DivLottieExtensionHandler())
             .extension(HTMLHandler())
             .enableViewPool(false)

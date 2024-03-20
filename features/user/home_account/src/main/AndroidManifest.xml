@@ -81,7 +81,7 @@
         </activity>
 
         <activity
-            android:name=".ui.fundsAndInvestment.FundsAndInvestmentComposeActivity"
+            android:name=".ui.fundsAndInvestment.FundsAndInvestmentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:exported="false"/>

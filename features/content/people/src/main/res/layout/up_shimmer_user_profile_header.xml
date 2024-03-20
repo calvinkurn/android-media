@@ -78,7 +78,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/up_shimmer_user_feed" />
+    <com.tokopedia.people.views.custom.AdaptivePostShimmerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>
 

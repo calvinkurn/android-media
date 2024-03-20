@@ -264,16 +264,16 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `MA df_tokopedianow`() {
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.HOME, DF_TOKOPEDIA_NOW)
-        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.CATEGORY, DF_TOKOPEDIA_NOW)
-        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.OLD_CATEGORY, DF_TOKOPEDIA_NOW)
+        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.CATEGORY_L1, DF_TOKOPEDIA_NOW)
+        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.CATEGORY_L2, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.SEE_ALL_CATEGORY, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.REPURCHASE, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_DETAIL, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_BOOKMARK, DF_TOKOPEDIA_NOW)
-        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_BOOKMARK, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_HOME, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_SEARCH, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE, DF_TOKOPEDIA_NOW)
+        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.ALL_ANNOTATION, DF_TOKOPEDIA_NOW)
     }
 
     @Test
@@ -292,10 +292,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `MA df_user_settings`() {
-        every {
-            DeeplinkMapperUser.isProfileManagementM2Activated()
-        } returns true
-
         every {
             DeeplinkMapperUser.isRollenceGotoKycActivated()
         } returns true
@@ -318,10 +314,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `SA df_kyc_funnel`() {
-        every {
-            DeeplinkMapperUser.isProfileManagementM2Activated()
-        } returns true
-
         every {
             DeeplinkMapperUser.isRollenceGotoKycActivated()
         } returns true
