@@ -476,7 +476,7 @@ class TokoNowSearchViewModel @Inject constructor(
         headerDataView: HeaderDataView,
         contentDataView: ContentDataView,
         searchProduct: AceSearchProductModel.SearchProduct,
-        feedbackFieldIsActive: Boolean = false
+        feedbackFieldIsActive: Boolean
     ) {
         firstPageSuccessTriggerMutableLiveData.value = Unit
 
