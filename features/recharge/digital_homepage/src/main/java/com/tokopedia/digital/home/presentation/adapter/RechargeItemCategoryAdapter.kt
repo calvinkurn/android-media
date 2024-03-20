@@ -46,10 +46,10 @@ class RechargeItemCategoryAdapter(
                 binding.categoryImage.loadImage(element.mediaUrl)
                 binding.categoryName.text = element.title
                 root.setOnClickListener {
-                    it.post({
-                        val e = RuntimeException("Try Send Ensure")
-                        Ensure.ensureNotReachHere(e, "Try Ensure Slardar")
-                    })
+//                    it.post({
+//                        val e = RuntimeException("Try Send Ensure")
+//                        Ensure.ensureNotReachHere(e, "Try Ensure Slardar")
+//                    })
                     onItemBindListener.onRechargeSectionItemClicked(element)
                 }
 
