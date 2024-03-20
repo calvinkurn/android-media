@@ -6210,11 +6210,11 @@ class CartRevampFragment :
                 productId = productId,
                 pageSource = VariantPageSource.CART_PAGESOURCE,
                 shopId = shopId,
+                cartId = cartId,
                 dismissAfterTransaction = true,
                 startActivitResult = { intent: Intent, _ ->
                     changeVariantLauncher.launch(intent)
                 }
-                // TODO: send cartId for updateCart
             )
         }
     }
