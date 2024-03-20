@@ -64,7 +64,7 @@ object ProductDetailCommonConstant {
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val KEY_CART_TYPE_UPDATE_CART = "update_cart"
-    const val KEY_CART_TYPE_SAVE_BUTTON = "variant_editor"
+    const val KEY_CART_TYPE_OF_VARIANT_EDITOR = "variant_editor"
 
     const val TEXT_REMIND_ME = "Cek Wishlist Kamu"
     const val TEXT_SAVE_ATC = "Simpan Perubahan"

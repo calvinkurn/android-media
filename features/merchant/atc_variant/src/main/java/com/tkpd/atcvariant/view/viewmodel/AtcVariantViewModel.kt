@@ -26,6 +26,7 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
@@ -489,10 +490,14 @@ class AtcVariantViewModel @Inject constructor(
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
         val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
         val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
-            ?: selectedChild?.getFinalMinOrder() ?: 1
+            ?: selectedChild?.getFinalMinOrder() ?: Int.ONE
 
         if (selectedMiniCart != null && showQtyEditor) {
-            getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
+            getUpdateCartUseCase(
+                params = selectedMiniCart.copy(quantity = updatedQuantity),
+                showQtyEditor = true,
+                source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+            )
         } else {
             val atcRequestParam = AtcCommonMapper.generateAtcData(
                 actionButtonCart = actionButton,
@@ -535,37 +540,42 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun updateCart(
-        showQtyEditor: Boolean
-    ) {
-        val variantData = getVariantData() ?: return
-        val optionIdsSelected = getSelectedOptionIds() ?: return
+        params: ProductVariantBottomSheetParams
+    ) = viewModelScope.launch {
+        val variantData = getVariantData() ?: return@launch
+        val optionIdsSelected = getSelectedOptionIds() ?: return@launch
         val selectedChild = variantData.getChildByOptionId(
             selectedIds = optionIdsSelected.values.toList()
-        ) ?: return
-        val selectedMiniCart = getSelectedMiniCartItem(
-            productId = selectedChild.productId
-        ) ?: return
-        val updatedQuantity = localQuantityData[selectedChild.productId]
-            ?: selectedChild.getFinalMinOrder()
+        ) ?: return@launch
+        val selectedMiniCart = MiniCartItem.MiniCartItemProduct(
+            cartId = params.cartId,
+            productId = selectedChild.productId,
+            quantity = selectedChild.getFinalMinOrder(),
+            shopId = params.shopId
+        )
 
-        getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
+        getUpdateCartUseCase(
+            params = selectedMiniCart,
+            showQtyEditor = params.showQtyEditor,
+            source = params.pageSource
+        )
     }
 
     private fun getUpdateCartUseCase(
         params: MiniCartItem.MiniCartItemProduct,
-        updatedQuantity: Int,
-        showQtyEditor: Boolean
+        showQtyEditor: Boolean,
+        source: String
     ) {
         viewModelScope.launchCatchError(block = {
-            val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
             val updateCartRequest = UpdateCartRequest(
-                cartId = copyOfMiniCartItem.cartId,
-                quantity = copyOfMiniCartItem.quantity,
-                notes = copyOfMiniCartItem.notes
+                cartId = params.cartId,
+                quantity = params.quantity,
+                notes = params.notes,
+                productId = params.productId
             )
             updateCartUseCase.setParams(
                 updateCartRequestList = listOf(updateCartRequest),
-                source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+                source = source
             )
             val result = withContext(dispatcher.io) {
                 updateCartUseCase.executeOnBackground()
@@ -573,10 +583,10 @@ class AtcVariantViewModel @Inject constructor(
 
             if (result.error.isEmpty()) {
                 updateMiniCartAndButtonData(
-                    productId = copyOfMiniCartItem.productId,
+                    productId = params.productId,
                     showQtyEditor = showQtyEditor,
-                    quantity = copyOfMiniCartItem.quantity,
-                    notes = copyOfMiniCartItem.notes
+                    quantity = params.quantity,
+                    notes = params.notes
                 )
                 _updateCartLiveData.postValue(result.data.message.asSuccess())
             } else {

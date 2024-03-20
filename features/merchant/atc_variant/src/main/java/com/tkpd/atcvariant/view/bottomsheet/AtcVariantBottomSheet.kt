@@ -43,7 +43,6 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
@@ -151,6 +150,10 @@ class AtcVariantBottomSheet :
     private var alreadyHitQtyTrack = false
     private var shouldSetActivityResult = true
 
+    private val aggregatorParams
+        get() = sharedViewModel.aggregatorParams.value
+            ?: ProductVariantBottomSheetParams()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
@@ -215,8 +218,7 @@ class AtcVariantBottomSheet :
             })
         }
 
-        viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
-        viewContent?.let {
+        viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null).also {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
             txtStock = it.findViewById(R.id.txt_variant_empty_stock)
         }
@@ -421,17 +423,32 @@ class AtcVariantBottomSheet :
     }
 
     private fun observeUpdateCart() {
-        viewModel.updateCartLiveData.observe(viewLifecycleOwner, {
+        viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             loadingProgressDialog?.dismiss()
 
             when (it) {
-                is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
+                is Success -> onSuccessUpdateCart(it.data)
+
                 is Fail -> {
                     showToasterError(getErrorMessage(it.throwable))
                     logException(it.throwable)
                 }
             }
-        })
+        }
+    }
+
+    private fun onSuccessUpdateCart(message: String) {
+        if (aggregatorParams.pageSource != VariantPageSource.CART_CHANGE_VARIANT.source) {
+            showToasterSuccess(message, getString(R.string.atc_variant_oke_label))
+            return
+        }
+
+        viewModel.updateActivityResult(
+            atcSuccessMessage = message,
+            requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
+            cartId = aggregatorParams.cartId
+        )
+        dismissAfterAtc()
     }
 
     private fun observeInitialVisitablesData() {
@@ -870,9 +887,9 @@ class AtcVariantBottomSheet :
                 onSaveButtonClicked()
             }
 
-            ProductDetailCommonConstant.KEY_CART_TYPE_SAVE_BUTTON -> {
-                val showQtyEditor = sharedViewModel.aggregatorParams.value?.showQtyEditor.orFalse()
-                viewModel.updateCart(showQtyEditor = showQtyEditor)
+            ProductDetailCommonConstant.KEY_CART_TYPE_OF_VARIANT_EDITOR -> {
+                showProgressDialog()
+                viewModel.updateCart(params = aggregatorParams)
             }
 
             else -> {
