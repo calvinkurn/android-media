@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -43,9 +43,9 @@ class TdnVerticalView : BaseCustomView {
     }
 
     private val topAdsImageViewViewModel by lazy {
-        findViewTreeViewModelStoreOwner()?.let { viewTreeViewModelStoreOwner ->
+        (context as? AppCompatActivity)?.let {
             ViewModelProvider(
-                viewTreeViewModelStoreOwner,
+                it,
                 viewModelFactory
             )[
                 (
@@ -72,13 +72,38 @@ class TdnVerticalView : BaseCustomView {
         init()
     }
 
+    init {
+        initInjector()
+        observeTopAdsImageView()
+    }
+
     private fun init() {
         View.inflate(context, R.layout.layout_widget_vertical_tdn_view, this)
+    }
+
+    private fun initInjector() {
         val application = context.applicationContext as BaseMainApplication
         val component = DaggerTopAdsComponent.builder()
             .baseAppComponent(application.baseAppComponent)
             .build()
         component.inject(this)
+    }
+
+    private fun observeTopAdsImageView() {
+        (context as? LifecycleOwner)?.let { lifeCycleOwner ->
+            topAdsImageViewViewModel?.getResponse()?.observe(lifeCycleOwner) {
+                when (it) {
+                    is Success -> {
+                        tdnVerticalBannerResponseListener?.onTdnVerticalBannerResponse(it.data)
+                        Timber.d("Response received successfully")
+                    }
+
+                    is Fail -> {
+                        Timber.d("error in response")
+                    }
+                }
+            }
+        }
     }
 
     fun setTdnResponseListener(listener: TdnVerticalBannerResponseListener) {
@@ -106,21 +131,6 @@ class TdnVerticalView : BaseCustomView {
             page
         )
         qp?.let { topAdsImageViewViewModel?.getImageData(it) }
-
-        findViewTreeLifecycleOwner()?.let { lifeCycleOwner ->
-            topAdsImageViewViewModel?.getResponse()?.observe(lifeCycleOwner) {
-                when (it) {
-                    is Success -> {
-                        tdnVerticalBannerResponseListener?.onTdnVerticalBannerResponse(it.data)
-                        Timber.d("Response received successfully")
-                    }
-
-                    is Fail -> {
-                        Timber.d("error in response")
-                    }
-                }
-            }
-        }
     }
 
     fun renderTdnBanner(

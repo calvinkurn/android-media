@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.view.reimagine;
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory;
 
 import android.view.ViewGroup;
 

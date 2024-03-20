@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,7 +35,7 @@ class TdnBannerView : FrameLayout {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val topAdsImageViewViewModel by lazy {
-        findViewTreeViewModelStoreOwner()?.let {
+        (context as? AppCompatActivity)?.let {
             ViewModelProvider(
                 it,
                 viewModelFactory
@@ -59,11 +59,36 @@ class TdnBannerView : FrameLayout {
         init()
     }
 
+    init {
+        initInjector()
+        observeTdnBanner()
+    }
+
+    private fun observeTdnBanner() {
+        (context as? LifecycleOwner)?.let { lifecycleOwner ->
+            topAdsImageViewViewModel?.getResponse()?.observe(lifecycleOwner) {
+                when (it) {
+                    is Success -> {
+                        val categoriesList = TdnHelper.categoriesTdnBanners(it.data)
+                        tdnBannerResponseListener?.onTdnBannerResponse(categoriesList)
+                        Timber.d("Response received successfully")
+                    }
+
+                    is Fail -> {
+                        Timber.d("error in response")
+                    }
+                }
+            }
+        }
+    }
+
     private fun init() {
         val view = View.inflate(context, R.layout.layout_widget_tdn_view, this)
         tdnCarouselView = view.findViewById(R.id.tdnCarouselView)
         singleTdnView = view.findViewById(R.id.singleTdnView)
+    }
 
+    private fun initInjector() {
         val application = context.applicationContext as BaseMainApplication
         val component = DaggerTopAdsComponent.builder()
             .baseAppComponent(application.baseAppComponent)
@@ -96,22 +121,6 @@ class TdnBannerView : FrameLayout {
             page
         )
         qp?.let { topAdsImageViewViewModel?.getImageData(it) }
-
-        findViewTreeLifecycleOwner()?.let { treeLifecycleOwner ->
-            topAdsImageViewViewModel?.getResponse()?.observe(treeLifecycleOwner) {
-                when (it) {
-                    is Success -> {
-                        val categoriesList = TdnHelper.categoriesTdnBanners(it.data)
-                        tdnBannerResponseListener?.onTdnBannerResponse(categoriesList)
-                        Timber.d("Response received successfully")
-                    }
-
-                    is Fail -> {
-                        Timber.d("error in response")
-                    }
-                }
-            }
-        }
     }
 
     fun renderTdnBanner(

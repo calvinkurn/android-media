@@ -35,7 +35,6 @@ import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
 import com.tokopedia.topads.sdk.utils.MapperUtils
-import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper
@@ -71,6 +70,7 @@ import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerSh
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShopViewHolder
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShowMoreViewHolder
 import com.tokopedia.topads.sdk.v2.uimodel.ShopAdsWithSingleProductModel
+import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -78,7 +78,6 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import org.apache.commons.text.StringEscapeUtils
 import java.lang.ref.WeakReference
-import java.util.*
 import java.util.*
 
 /**
@@ -537,7 +536,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         bannerAdsRendering?.render(cpmModel, cpmData, appLink, adsClickUrl)
     }
 
-    fun getCurrentView(layoutId: Int): View? {
+    private fun getCurrentView(layoutId: Int): View? {
         currentView?.let {
             this.removeView(it)
             currentView = null

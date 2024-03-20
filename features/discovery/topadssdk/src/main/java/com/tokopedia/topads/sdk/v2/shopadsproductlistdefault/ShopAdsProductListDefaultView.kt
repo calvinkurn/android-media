@@ -23,9 +23,6 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.CpmShop
 import com.tokopedia.topads.sdk.domain.model.FlashSaleCampaignDetail
-import com.tokopedia.topads.sdk.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
-import com.tokopedia.topads.sdk.widget.ITEM_3
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
 import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
@@ -38,6 +35,7 @@ import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.BannerAdsAdapter
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory.BannerAdsAdapterTypeFactory
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory.BannerAdsAdapterTypeFactoryReimagine
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerProductShimmerUiModel
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopUiModel
@@ -47,6 +45,8 @@ import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerSh
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShopViewHolder
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShowMoreReimagineViewHolder
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShowMoreViewHolder
+import com.tokopedia.topads.sdk.widget.ITEM_3
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -364,29 +364,10 @@ class ShopAdsProductListDefaultView(
 
     private fun initAdapter() {
         if (isReimagine) {
-            initAdapterReimagine()
+            initViewHolderReimagine()
         } else {
-            initAdapterOld()
+            initViewHolderNonReimagine()
         }
-    }
-
-    private fun initAdapterOld() {
-        BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
-        BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
-        BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
-
-        list?.run {
-            layoutManager = LinearLayoutManager(contextRef.get(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = bannerAdsAdapter
-
-            val snapHelper = GravitySnapHelper(Gravity.START)
-            snapHelper.attachToRecyclerView(this)
-        }
-    }
-
-    private fun initAdapterReimagine() {
-        BannerShopProductReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
-        BannerShowMoreReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_reimagine
 
         list?.run {
             layoutManager = LinearLayoutManager(contextRef.get(), LinearLayoutManager.HORIZONTAL, false)
@@ -396,6 +377,17 @@ class ShopAdsProductListDefaultView(
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(this)
         }
+    }
+
+    private fun initViewHolderNonReimagine() {
+        BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
+        BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
+        BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
+    }
+
+    private fun initViewHolderReimagine() {
+        BannerShopProductReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
+        BannerShowMoreReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_reimagine
     }
 
     private fun renderHeaderSeeMoreReimagine(cpmData: CpmData, appLink: String, adsClickUrl: String) {

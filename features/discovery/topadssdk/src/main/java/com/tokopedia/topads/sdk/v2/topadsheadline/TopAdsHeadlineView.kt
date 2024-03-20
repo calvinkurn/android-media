@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,9 +31,9 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val topAdsHeadlineViewModel by lazy {
-        findViewTreeViewModelStoreOwner()?.let { it1 ->
+        (context as? AppCompatActivity)?.let {
             ViewModelProvider(
-                it1,
+                it,
                 viewModelFactory
             )[TopAdsHeadlineViewModel::class.java]
         }

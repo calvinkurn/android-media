@@ -2,11 +2,11 @@ package com.tokopedia.topads.sdk.v2.tdnbanner.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -42,11 +42,37 @@ class TopAdsImageView : AppCompatImageView {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val topAdsImageViewViewModel by lazy {
-        findViewTreeViewModelStoreOwner()?.let { viewModelStoreOwner ->
+        (context as? AppCompatActivity)?.let {
             ViewModelProvider(
-                viewModelStoreOwner,
+                it,
                 viewModelFactory
             )[TopAdsImageViewViewModel::class.java]
+        }
+    }
+
+    init {
+        initInjector()
+        observeImageData()
+    }
+
+    private fun observeImageData() {
+        (context as? LifecycleOwner)?.let { lifecycleOwner ->
+            topAdsImageViewViewModel?.getResponse()?.observe(
+                lifecycleOwner,
+                Observer {
+                    when (it) {
+                        is Success -> {
+                            topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
+                            Timber.d("Response received successfully")
+                        }
+
+                        is Fail -> {
+                            topAdsImageVieWApiResponseListener?.onError(it.throwable)
+                            Timber.d("error in response")
+                        }
+                    }
+                }
+            )
         }
     }
 
@@ -76,31 +102,11 @@ class TopAdsImageView : AppCompatImageView {
      * @param productID Required for filtering. Ads service will look for ads related to the product id.
      * */
     fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "", page: String = "") {
-        initViewModel()
         val queryParams = topAdsImageViewViewModel?.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
         queryParams?.let { topAdsImageViewViewModel?.getImageData(it) }
-
-        findViewTreeLifecycleOwner()?.let { lifecycleOwner ->
-            topAdsImageViewViewModel?.getResponse()?.observe(
-                lifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> {
-                            topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
-                            Timber.d("Response received successfully")
-                        }
-
-                        is Fail -> {
-                            topAdsImageVieWApiResponseListener?.onError(it.throwable)
-                            Timber.d("error in response")
-                        }
-                    }
-                }
-            )
-        }
     }
 
-    private fun initViewModel() {
+    private fun initInjector() {
         val application = context.applicationContext as BaseMainApplication
         val component = DaggerTopAdsComponent.builder()
             .baseAppComponent(application.baseAppComponent)

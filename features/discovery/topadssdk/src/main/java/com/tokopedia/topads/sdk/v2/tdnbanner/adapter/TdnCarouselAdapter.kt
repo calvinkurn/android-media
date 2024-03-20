@@ -53,9 +53,12 @@ class TdnCarouselAdapter(
     }
 
     fun setList(list: List<TopAdsImageUiModel>) {
+        val itemCount = itemCount
         shopAdsProductItemList.clear()
+        notifyItemRangeRemoved(0, itemCount)
+
         shopAdsProductItemList.addAll(list)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(0, shopAdsProductItemList.size)
     }
 
     inner class TdnCarouselViewHolder(
