@@ -738,6 +738,7 @@ class FeedBaseFragment :
             rect.left -= binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.paddingStart
             rect.right += binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.marginStart / 2
             containerFeedTouchDelegate.addDelegate(
+                binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab,
                 TouchDelegate(rect, binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab)
             )
         } else {
@@ -765,6 +766,7 @@ class FeedBaseFragment :
             rect.right += binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.paddingEnd
             rect.left -= binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.marginStart / 2
             containerFeedTouchDelegate.addDelegate(
+                binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab,
                 TouchDelegate(rect, binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab)
             )
         } else {
