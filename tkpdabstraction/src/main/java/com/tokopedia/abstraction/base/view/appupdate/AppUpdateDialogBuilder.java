@@ -38,6 +38,31 @@ public class AppUpdateDialogBuilder {
                 .setCancelable(false)
                 .create();
 
+        if (detail.isInAppUpdateEnabled()) {
+            if (detail.isForceUpdate()) {
+                AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, () -> {
+                    /* on Error */
+                    goToPlayStore();
+                    return null;
+                }, /* onFinished */ () -> {
+                    return null;
+                });
+            } else {
+                AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, onProgressMessage -> {
+                    // if in progress
+                    Toast.makeText(activity, onProgressMessage, Toast.LENGTH_LONG).show();
+                    return null;
+                }, () -> {
+                    // if flexible update fail or cannot be operated
+                    goToPlayStore();
+                    return null;
+                }, () -> {
+                    // action after do the checking, close the dialog
+                    return null;
+                });
+            }
+        }
+
         alertDialog.setOnShowListener(dialog -> {
             Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
             Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
@@ -91,6 +116,14 @@ public class AppUpdateDialogBuilder {
         });
 
         return alertDialog;
+    }
+
+    private Boolean isForceUpdate() {
+        return detail.isInAppUpdateEnabled() && detail.isForceUpdate();
+    }
+
+    private Boolean isFlexibleUpdate() {
+        return detail.isInAppUpdateEnabled() && !detail.isForceUpdate();
     }
 
     private void goToPlayStore() {

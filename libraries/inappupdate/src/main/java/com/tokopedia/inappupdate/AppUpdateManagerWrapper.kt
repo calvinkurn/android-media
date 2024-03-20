@@ -61,34 +61,28 @@ object AppUpdateManagerWrapper {
                 InAppUpdateLogUtil.logStatusCheck(activity, LOG_UPDATE_TYPE_FLEXIBLE, it.availableVersionCode(), it.updateAvailability(),
                         it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE), it.clientVersionStalenessDays(), it.updatePriority(), it.totalBytesToDownload())
             }
-            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
-                val onProgressUpdating = onProgressUpdating(it.installStatus())
-                if (onProgressUpdating) {
-                    val message: String = getProgressMessage(appContext, it.installStatus())
-                    onProgress(message)
-                    if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                        InAppUpdateLogUtil.logStatusDownload(LOG_UPDATE_TYPE_FLEXIBLE, "dl_success")
-                        LocalBroadcastManager.getInstance(appContext).sendBroadcast(Intent(INAPP_UPDATE))
-                    }
-                } else {
-                    try {
-                        val activityObj = weakRefActivity.get()
-                        if (activityObj!= null && !activityObj.isFinishing) {
-                            val successTriggerUpdate = doFlexibleUpdate(activityObj, it)
-                            if (!successTriggerUpdate) {
-                                InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
-                                onError()
-                            }
-                        }
-                    } catch (e: Exception) {
-                        InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, e.toString())
-                        onError()
-                    }
+            val onProgressUpdating = onProgressUpdating(it.installStatus())
+            if (onProgressUpdating) {
+                val message: String = getProgressMessage(appContext, it.installStatus())
+                onProgress(message)
+                if (it.installStatus() == InstallStatus.DOWNLOADED) {
+                    InAppUpdateLogUtil.logStatusDownload(LOG_UPDATE_TYPE_FLEXIBLE, "dl_success")
+                    LocalBroadcastManager.getInstance(appContext).sendBroadcast(Intent(INAPP_UPDATE))
                 }
             } else {
-                clearInAppPref(appContext)
-                onError()
+                try {
+                    val activityObj = weakRefActivity.get()
+                    if (activityObj!= null && !activityObj.isFinishing) {
+                        val successTriggerUpdate = doFlexibleUpdate(activityObj, it)
+                        if (!successTriggerUpdate) {
+                            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
+                            onError()
+                        }
+                    }
+                } catch (e: Exception) {
+                    InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, e.toString())
+                    onError()
+                }
             }
             onFinished()
         }.addOnFailureListener {
@@ -124,24 +118,13 @@ object AppUpdateManagerWrapper {
                 InAppUpdateLogUtil.logStatusCheck(activity, LOG_UPDATE_TYPE_IMMEDIATE, it.availableVersionCode(), it.updateAvailability(),
                         it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE), it.clientVersionStalenessDays(), it.updatePriority(), it.totalBytesToDownload())
             }
-            if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ||
-                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                    // If an in-app update is already running, launch the flow UI.
-                    val activityObj = weakRefActivity.get()
-                    if (activityObj != null && !activityObj.isFinishing) {
-                        val successTriggerUpdate = doImmediateUpdate(activityObj, it)
-                        if (!successTriggerUpdate) {
-                            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
-                            onError()
-                        }
-                    }
-                } else {
+            val activityObj = weakRefActivity.get()
+            if (activityObj != null && !activityObj.isFinishing) {
+                val successTriggerUpdate = doImmediateUpdate(activityObj, it)
+                if (!successTriggerUpdate) {
+                    InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
                     onError()
                 }
-            } else {
-                clearInAppPref(appContext)
-                onError()
             }
         }.addOnFailureListener {
             onError()
