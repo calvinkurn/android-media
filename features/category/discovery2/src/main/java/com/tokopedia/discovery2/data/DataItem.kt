@@ -6,6 +6,7 @@ import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.Properties.Header.OfferTier
+import com.tokopedia.discovery2.data.automatecoupon.TimeLimitData
 import com.tokopedia.discovery2.data.contentCard.LandingPage
 import com.tokopedia.discovery2.data.contentCard.Product
 import com.tokopedia.discovery2.data.contentCard.TotalItem
@@ -447,6 +448,13 @@ data class DataItem(
 
     @SerializedName("badges")
     var badges: List<Badges?>? = null,
+
+    // https://tokopedia.atlassian.net/wiki/spaces/HP/pages/1724552759/Merchant+Voucher+Single+Shop
+    @SerializedName("badge")
+    var badge: String = "",
+
+    @SerializedName("time_limit")
+    var timeLimit: TimeLimitData? = null,
 
     @SerializedName("text_date")
     var textDate: String? = null,

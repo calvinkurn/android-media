@@ -82,15 +82,14 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun renderExpiredDate(limit: TimeLimit?) {
-        if (limit?.isAvailable() != true) {
+        if (limit == null || !limit.isAvailable()) {
             binding.tvTimeLimitPrefix.hide()
             binding.tvTimeLimit.hide()
             binding.timerCoupon.hide()
-            return
+        } else {
+            limit.prefix?.let { binding.tvTimeLimitPrefix.render(it) }
+            limit.showExpiredInfo()
         }
-
-        limit.prefix?.let { binding.tvTimeLimitPrefix.render(it) }
-        limit.showExpiredInfo()
     }
 
     private fun TimeLimit.showExpiredInfo() {
@@ -121,8 +120,12 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun showTimeLimit(text: String?) {
-        binding.tvTimeLimit.text = text
-        binding.tvTimeLimit.show()
+        if (text.isNullOrEmpty()) {
+            binding.tvTimeLimit.hide()
+        } else {
+            binding.tvTimeLimit.text = text
+            binding.tvTimeLimit.show()
+        }
 
         binding.timerCoupon.hide()
     }
