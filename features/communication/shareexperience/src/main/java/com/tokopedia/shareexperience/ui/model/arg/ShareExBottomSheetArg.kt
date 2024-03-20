@@ -22,6 +22,7 @@ class ShareExBottomSheetArg private constructor(
     val attachmentId: String,
     val shopId: String,
     val campaignId: String,
+    val referralId: String,
     val generalId: String,
 
     /**
@@ -46,6 +47,7 @@ class ShareExBottomSheetArg private constructor(
         private var attachmentId: String? = null
         private var shopId: String? = null
         private var campaignId: String? = null
+        private var referralId: String? = null
         private var generalId: String? = null
         private var selectedChip: String? = null
         private var defaultImageUrl: String? = null
@@ -68,6 +70,10 @@ class ShareExBottomSheetArg private constructor(
 
         fun withCampaignId(campaignId: String) = apply {
             this.campaignId = campaignId
+        }
+
+        fun withReferralId(referralId: String) = apply {
+            this.referralId = referralId
         }
 
         fun withGeneralId(generalId: String) = apply {
@@ -93,6 +99,7 @@ class ShareExBottomSheetArg private constructor(
                 attachmentId = attachmentId.orEmpty(),
                 shopId = shopId.orEmpty(),
                 campaignId = campaignId.orEmpty(),
+                referralId = referralId.orEmpty(),
                 generalId = generalId.orEmpty(),
 
                 selectedChip = selectedChip.orEmpty(),
