@@ -1,9 +1,15 @@
 package com.tokopedia.buyerorderdetail.presentation.partialview
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.animation.addListener
+import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
@@ -13,8 +19,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.WidgetBrcCsatUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -23,6 +28,15 @@ class WidgetBrcCsat(
     context: Context,
     attrs: AttributeSet?
 ) : BaseCustomView(context, attrs) {
+
+    companion object {
+        private const val ANIMATION_DURATION = 300L
+        private const val CUBIC_BEZIER_X1 = 0.63f
+        private const val CUBIC_BEZIER_X2 = 0.29f
+        private const val CUBIC_BEZIER_Y1 = 0.01f
+        private const val CUBIC_BEZIER_Y2 = 1f
+
+    }
 
     private val binding = WidgetBrcCsatBinding.inflate(LayoutInflater.from(context), this, true)
     private val contentBinding by lazyThreadSafetyNone {
@@ -37,6 +51,7 @@ class WidgetBrcCsat(
     }
 
     private var _navigator: BuyerOrderDetailNavigator? = null
+    private var animator: ValueAnimator? = null
 
     fun setup(navigator: BuyerOrderDetailNavigator) {
         _navigator = navigator
@@ -52,29 +67,31 @@ class WidgetBrcCsat(
     }
 
     private fun onReloading(data: WidgetBrcCsatUiModel) {
-        show()
         with(binding.accordionBomBrcCsat) {
             contentBinding.setup(data.orderID, data.helpUrl)
+            onItemClick = { _, expanded -> data.expanded = expanded }
             if (!accordionData.contains(contentData)) addGroup(contentData)
             if (data.expanded) expandAllGroup() else collapseAllGroup()
         }
+        animateShow()
     }
 
     private fun onShowing(data: WidgetBrcCsatUiModel) {
-        show()
         with(binding.accordionBomBrcCsat) {
             contentBinding.setup(data.orderID, data.helpUrl)
+            onItemClick = { _, expanded -> data.expanded = expanded }
             if (!accordionData.contains(contentData)) addGroup(contentData)
             if (data.expanded) expandAllGroup() else collapseAllGroup()
         }
+        animateShow()
     }
 
     private fun onHidden() {
-        gone()
+        animateHide()
     }
 
     private fun onLoading() {
-        gone()
+        animateHide()
     }
 
     private fun WidgetBrcCsatContentBinding.setup(orderID: String, helpUrl: String) {
@@ -101,5 +118,41 @@ class WidgetBrcCsat(
         ).apply {
             urlList.forEach { it.onClick = { _navigator?.openAppLink(it.linkUrl, false) } }
         }.spannedString ?: String.EMPTY
+    }
+
+    private fun calculateWrapHeight(): Int {
+        return runCatching {
+            val wrapContentMeasureSpec = MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
+            val widthMeasureSpec = (binding.root.parent as? View)?.let { parent ->
+                MeasureSpec.makeMeasureSpec(parent.width, MeasureSpec.EXACTLY)
+            } ?: wrapContentMeasureSpec
+            binding.root.measure(widthMeasureSpec, wrapContentMeasureSpec)
+            binding.root.measuredHeight
+        }.getOrNull().orZero()
+    }
+
+    private fun animateHeight(target: Int, onAnimateEnd: (Animator) -> Unit = {}) {
+        animator?.cancel()
+        animator = ValueAnimator.ofInt(binding.root.height, target).apply {
+            duration = ANIMATION_DURATION
+            interpolator = PathInterpolatorCompat.create(CUBIC_BEZIER_X1, CUBIC_BEZIER_Y1, CUBIC_BEZIER_X2, CUBIC_BEZIER_Y2)
+            addUpdateListener { newValue -> updateHeight((newValue.animatedValue as Int)) }
+            addListener(onEnd = onAnimateEnd)
+            start()
+        }
+    }
+
+    private fun updateHeight(height: Int) {
+        val layoutParamsCopy = binding.root.layoutParams
+        layoutParamsCopy.height = height
+        binding.root.layoutParams = layoutParamsCopy
+    }
+
+    private fun animateShow() {
+        animateHeight(calculateWrapHeight()) { updateHeight(ViewGroup.LayoutParams.WRAP_CONTENT) }
+    }
+
+    private fun animateHide() {
+        animateHeight(Int.ZERO)
     }
 }
