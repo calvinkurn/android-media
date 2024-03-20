@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.databinding.HomeComponentMissionStaticWidgetBinding
+import com.tokopedia.home_component.databinding.HomeComponentItemSmallCardBinding
 import com.tokopedia.home_component.visitable.Mission4SquareUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -15,7 +15,7 @@ class MissionWidgetCardViewHolder(
     private val listener: Mission4SquareWidgetListener?
 ) : RecyclerView.ViewHolder(view) {
 
-    private val binding: HomeComponentMissionStaticWidgetBinding? by viewBinding()
+    private val binding: HomeComponentItemSmallCardBinding? by viewBinding()
 
     fun bind(item: Mission4SquareUiModel) {
         binding?.card?.setData(item.card)
@@ -27,7 +27,7 @@ class MissionWidgetCardViewHolder(
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.home_component_mission_static_widget
+        val LAYOUT = R.layout.home_component_item_small_card
 
         fun create(parent: ViewGroup, listener: Mission4SquareWidgetListener?) =
             MissionWidgetCardViewHolder(
