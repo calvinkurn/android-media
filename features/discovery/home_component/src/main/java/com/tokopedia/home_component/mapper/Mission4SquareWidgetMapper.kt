@@ -2,6 +2,7 @@ package com.tokopedia.home_component.mapper
 
 import com.tokopedia.home_component.visitable.Mission4SquareUiModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
+import com.tokopedia.home_component.widget.card.SmallProductModel
 
 object Mission4SquareWidgetMapper {
 
@@ -16,16 +17,19 @@ object Mission4SquareWidgetMapper {
 
         return Mission4SquareUiModel(
             data = data,
-            title = Pair(titleLabelGroup.title, titleLabelGroup.extract()),
-            subtitle = Pair(subtitleLabelGroup.title, subtitleLabelGroup.extract())
+            card = SmallProductModel(
+                bannerImageUrl = data.imageURL,
+                title = Pair(titleLabelGroup.title, titleLabelGroup.extract()),
+                subtitle = Pair(subtitleLabelGroup.title, subtitleLabelGroup.extract())
+            )
         )
     }
 
-    private fun MissionWidgetDataModel.LabelGroup.extract(): Mission4SquareUiModel.TextStyle {
-        if (styles.isEmpty()) return Mission4SquareUiModel.TextStyle()
+    private fun MissionWidgetDataModel.LabelGroup.extract(): SmallProductModel.TextStyle {
+        if (styles.isEmpty()) return SmallProductModel.TextStyle()
         val style = styles.associateBy { it.key }
 
-        return Mission4SquareUiModel.TextStyle(
+        return SmallProductModel.TextStyle(
             isBold = style[Const.TEXT_WEIGHT]?.value == Const.TEXT_WEIGHT_BOLD,
             textColor = style[Const.TEXT_COLOR]?.value.orEmpty()
         )

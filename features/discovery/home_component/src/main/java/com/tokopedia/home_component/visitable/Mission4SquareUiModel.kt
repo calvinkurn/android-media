@@ -1,13 +1,8 @@
 package com.tokopedia.home_component.visitable
 
+import com.tokopedia.home_component.widget.card.SmallProductModel
+
 data class Mission4SquareUiModel(
     val data: MissionWidgetDataModel,
-    val title: Pair<String, TextStyle?>,
-    val subtitle: Pair<String, TextStyle?>,
-) {
-
-    data class TextStyle(
-        val isBold: Boolean = false,
-        val textColor: String = ""
-    )
-}
+    val card: SmallProductModel
+)
