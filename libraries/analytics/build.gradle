@@ -85,6 +85,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.json
+    testImplementation rootProject.ext.testDependencies.mockk
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 }
