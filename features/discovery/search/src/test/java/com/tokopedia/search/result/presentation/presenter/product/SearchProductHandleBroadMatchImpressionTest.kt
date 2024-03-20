@@ -92,7 +92,7 @@ internal class SearchProductHandleBroadMatchImpressionTest: ProductListPresenter
             inspirationCarouselDynamicProductView.trackDynamicProductCarouselImpression(
                 any(),
                 any(),
-                any()
+                any(),
             )
         }
     }

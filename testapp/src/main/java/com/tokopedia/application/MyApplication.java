@@ -1,5 +1,6 @@
 package com.tokopedia.application;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
+import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
 import android.view.MotionEvent;
 
@@ -50,8 +53,10 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.libra.LibraAbTest;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tokochat.config.util.TokoChatConnection;
@@ -113,6 +118,7 @@ public class MyApplication extends BaseMainApplication
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this, true));
+        registerActivityLifecycleCallbacks(new AppLogActivityLifecycleCallback());
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -192,6 +198,9 @@ public class MyApplication extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+        AppLogAnalytics.init(this);
+        TTNetHelper.initTTNet(this);
+        LibraAbTest.init(this);
 
         PersistentCacheManager.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);

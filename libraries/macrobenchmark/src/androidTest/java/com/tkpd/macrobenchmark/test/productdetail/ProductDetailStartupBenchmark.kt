@@ -21,7 +21,7 @@ import org.junit.runners.Parameterized
 class ProductDetailStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
 
     override fun setupMock() {
-        MacroDevOps.setupEnvironment(MacroIntent.Mock.getProductDetailMockIntent())
+//        MacroDevOps.setupEnvironment(MacroIntent.Mock.getProductDetailMockIntent())
     }
 
     override fun setupEnvironment() {

@@ -200,6 +200,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
+    public static final String ENABLE_BYTEIO_PLATFORM = "android_enable_byteio_platform";
+
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
     public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";

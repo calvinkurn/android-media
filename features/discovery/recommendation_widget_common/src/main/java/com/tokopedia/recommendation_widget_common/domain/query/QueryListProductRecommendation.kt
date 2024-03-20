@@ -40,6 +40,11 @@ object QueryListProductRecommendation {
         "                        }\n" +
         "                        endDate\n" +
         "                      }\n" +
+        "                       appLog {\n" +
+        "                         sessionID\n" +
+        "                         requestID\n" +
+        "                         logID\n" +
+        "                       }\n" +
         "                      recommendation {\n" +
         "                        id\n" +
         "                        name\n" +
@@ -112,6 +117,8 @@ object QueryListProductRecommendation {
         "                        }\n" +
         "                        parentID\n" +
         "                        gridPosition\n" +
+        "                        recParam\n" +
+        "                        countSold\n" +
         "                      }\n" +
         "                    }\n" +
         "                  }\n" +

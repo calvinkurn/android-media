@@ -9,7 +9,9 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.grid.ProductGridType
@@ -59,12 +61,13 @@ interface ProductListSectionContract {
         fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView)
         fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView)
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
+        fun sendByteIOTrackingProductClick(item: ProductItemDataView)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
         fun openAddToCartToaster(message: String, isSuccess: Boolean)
         fun openVariantBottomSheet(data: ProductItemDataView)
         fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
-        fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String)
+        fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String, position: Int)
         fun initFilterController(quickFilterList: List<Filter>)
         fun setAutoFilterToggle(autoFilterParameter: String)
         fun setSortFilterIndicatorCounter()
@@ -77,20 +80,24 @@ interface ProductListSectionContract {
         val className: String
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
+        fun trackEventThreeDotsClickByteIO(productItemDataView: ProductItemDataView)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun refreshItemAtIndex(index: Int)
-        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
+        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter, position: Int)
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
         fun isDarkMode(): Boolean
+        fun sendTrackingByteIO()
+        fun cleanByteIOData()
     }
 
     interface Presenter :
         CustomerPresenter<View>,
         Pagination,
         BannerAdsPresenter,
+        DynamicFilterModelProvider,
         BroadMatchPresenter,
         TickerPresenter,
         SafeSearchPresenter,
@@ -112,6 +119,7 @@ interface ProductListSectionContract {
         fun trackProductClick(item: ProductItemDataView)
         fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
+        val threeDotsProductItem: ProductItemDataView?
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun onViewResumed()
         fun onLocalizingAddressSelected()

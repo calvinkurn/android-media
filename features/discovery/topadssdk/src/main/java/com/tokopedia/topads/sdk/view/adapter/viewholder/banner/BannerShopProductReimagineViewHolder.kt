@@ -2,12 +2,9 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -17,7 +14,7 @@ import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as Product
 class BannerShopProductReimagineViewHolder(
     container: View,
     private val topAdsBannerClickListener: TopAdsBannerClickListener?,
-    private val impressionListener: TopAdsItemImpressionListener?,
+    private val impressionListener: TopAdsItemImpressionListener?
 ) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
     private val productCardGridViewA: ProductCardGridCarouselView =
         itemView.findViewById(R.id.topAdsProductItem)
@@ -31,19 +28,20 @@ class BannerShopProductReimagineViewHolder(
             val cpmData = model.cpmData
             productCardGridViewA.run {
                 setProductModel(ProductCardModelReimagine.from(productCardViewModel))
-
-                addOnImpressionListener(element) {
-                    impressionListener?.onImpressionProductAdsItem(
-                        adapterPosition,
-                        model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1),
-                        model.cpmData
-                    )
-                    impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
+                var product = cpmData.cpm.cpmShop.products.getOrNull(absoluteAdapterPosition)
+                product?.let {
+                    addOnImpressionListener(it.imageProduct) {
+                        impressionListener?.onImpressionProductAdsItem(
+                            absoluteAdapterPosition,
+                            model.cpmData.cpm.cpmShop.products.getOrNull(absoluteAdapterPosition),
+                            model.cpmData
+                        )
+                    }
                 }
 
                 setOnClickListener {
                     topAdsBannerClickListener?.onBannerAdsClicked(
-                        adapterPosition,
+                        absoluteAdapterPosition,
                         model.appLink,
                         model.cpmData
                     )

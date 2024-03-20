@@ -48,6 +48,8 @@ dependencies {
     //for fingerprint model
     implementation projectOrAar(rootProject.ext.libraries.network)
 
+    implementation 'com.bytedance.frameworks.baselib:ttnet:4.1.120.3-dut'
+
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     ksp projectOrAar(rootProject.ext.libraries.gqlKspProcessor)
 
