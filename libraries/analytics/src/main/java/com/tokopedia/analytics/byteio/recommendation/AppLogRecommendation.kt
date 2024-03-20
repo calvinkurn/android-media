@@ -2,8 +2,6 @@ package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.getSourcePreviousPage
-import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -19,23 +17,17 @@ object AppLogRecommendation {
 
     fun sendProductShowAppLog(model: AppLogRecommendationProductModel) {
         AppLogAnalytics.send(EventName.PRODUCT_SHOW, model.toShowClickJson())
-        if (model.entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
+        if (model.shouldSendCardEvent()) {
             AppLogAnalytics.send(EventName.CARD_SHOW, model.asCardModel().toShowClickJson())
         }
     }
 
     fun sendProductClickAppLog(model: AppLogRecommendationProductModel) {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
-        if (model.entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
+        if (model.shouldSendCardEvent()) {
             AppLogAnalytics.send(EventName.CARD_CLICK, model.asCardModel().toShowClickJson())
         }
-        if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.CONTENT_GOODS_CARD.str ||
-            (model.entranceForm == EntranceForm.DETAIL_GOODS_CARD.str &&
-            model.isEligibleForRecTrigger)
-        ) {
+        if (shouldSendRecTrigger(model.entranceForm, model.isEligibleForRecTrigger)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()
@@ -47,9 +39,7 @@ object AppLogRecommendation {
 
     fun sendCardClickAppLog(model: AppLogRecommendationCardModel) {
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toShowClickJson())
-        if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.CONTENT_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.DETAIL_GOODS_CARD.str ) {
+        if (shouldSendRecTrigger(model.entranceForm)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()
@@ -59,8 +49,8 @@ object AppLogRecommendation {
         AppLogAnalytics.send(
             EventName.ENTER_PAGE,
             JSONObject().apply {
-                put(ENTER_FROM, AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM))
-                put(ENTER_METHOD, AppLogAnalytics.getLastData(AppLogParam.ENTER_METHOD))
+                put(ENTER_FROM, AppLogAnalytics.getLastData(ENTER_FROM))
+                put(ENTER_METHOD, AppLogAnalytics.getLastData(ENTER_METHOD))
                 addPage()
             }
         )
@@ -88,5 +78,20 @@ object AppLogRecommendation {
             sourcePageType = sourcePageType,
             requestId = requestId,
         )
+    }
+
+    private fun shouldSendRecTrigger(
+        entranceForm: String,
+        eligibleForRecTrigger: Boolean = false
+    ): Boolean {
+        return entranceForm == EntranceForm.PURE_GOODS_CARD.str ||
+            entranceForm == EntranceForm.CONTENT_GOODS_CARD.str ||
+            (entranceForm == EntranceForm.DETAIL_GOODS_CARD.str &&
+                eligibleForRecTrigger)
+    }
+
+    private fun AppLogRecommendationProductModel.shouldSendCardEvent(): Boolean {
+        return entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
+            entranceForm == EntranceForm.PURE_GOODS_CARD.str
     }
 }

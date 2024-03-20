@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationF
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
+import com.tokopedia.home.util.HomeRefreshType;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
@@ -31,18 +32,22 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     private final HomeTabFeedListener homeTabFeedListener;
     private final List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
 
+    private final HomeRefreshType refreshType;
+
     public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
                                 HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
                                 RecyclerView.RecycledViewPool parentPool,
-                                RemoteConfig remoteConfig) {
+                                RemoteConfig remoteConfig,
+                                HomeRefreshType refreshType) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;
         this.homeCategoryListener = homeCategoryListener;
+        this.refreshType = refreshType;
         updateData(recommendationTabDataModelList);
     }
 
@@ -61,6 +66,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
                 recommendationTabDataModelList.get(position).getName(),
                 recommendationTabDataModelList.get(position).getSourceType()
         );
+        homeFeedFragment.setRefreshType(refreshType);
         homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
         homeFeedFragment.setParentPool(parentPool);
         return homeFeedFragment;
