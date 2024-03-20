@@ -1232,7 +1232,7 @@ public class MainParentActivity extends BaseActivity implements
                         PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getPageLoadTimePerformanceInterface().stopMonitoring();
+            getPageLoadTimePerformanceInterface().stopMonitoring(null);
         }
     }
 

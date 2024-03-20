@@ -62,9 +62,9 @@ internal fun stopPerformanceMonitoring(
                 performanceMonitoring.run {
                     stopCustomMetric(SEARCH_RESULT_PLT_RENDER_RECYCLER_VIEW)
                     stopRenderPerformanceMonitoring()
-                    stopMonitoring()
-                    val durationMs: Long = getPltPerformanceData().overallDuration
-                    AppLogSearch.eventPerformanceTracking(AppLogSearch.Performance(durationMs, enterMethod))
+                    stopMonitoring{
+                        AppLogSearch.eventPerformanceTracking(AppLogSearch.Performance(it, enterMethod))
+                    }
                 }
 
                 recyclerView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
