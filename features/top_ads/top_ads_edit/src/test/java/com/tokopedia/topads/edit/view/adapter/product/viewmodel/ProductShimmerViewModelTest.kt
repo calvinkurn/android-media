@@ -28,7 +28,8 @@ class ProductShimmerViewModelTest {
     }
 
     @Test
-    fun `isChecked should be initially false`() {
-        assertFalse(viewModel.isChecked)
+    fun `isChecked should be set and retrieved correctly`() {
+        viewModel.isChecked = true
+        assertEquals(true, viewModel.isChecked)
     }
 }

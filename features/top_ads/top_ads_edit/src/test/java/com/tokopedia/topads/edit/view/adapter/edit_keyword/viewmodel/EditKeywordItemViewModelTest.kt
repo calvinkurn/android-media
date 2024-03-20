@@ -16,9 +16,17 @@ class EditKeywordItemViewModelTest {
     private val keySharedModel: KeySharedModel = mockk(relaxed = true)
     private lateinit var viewModel: EditKeywordItemViewModel
 
+
     @Before
     fun setUp() {
         viewModel = EditKeywordItemViewModel(keySharedModel)
+    }
+
+    @Test
+    fun `data should be set and retrieved correctly`() {
+        val newData: KeySharedModel = mockk(relaxed = true)
+        viewModel.data = newData
+        assertEquals(newData, viewModel.data)
     }
 
     @Test

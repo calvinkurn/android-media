@@ -2,6 +2,7 @@ package com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.edit.view.adapter.edit_product.EditProductListAdapterTypeFactory
 import io.mockk.every
 import io.mockk.mockk
@@ -23,6 +24,12 @@ class EditProductItemViewModelTest {
     }
 
     @Test
+    fun `data should be set and retrieved correctly`() {
+        val newData: GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem = mockk(relaxed = true)
+        viewModel.data = newData
+        assertEquals(newData, viewModel.data)
+    }
+    @Test
     fun `type should return type from typesFactory`() {
         val data = Int.ZERO
         every { typesFactory.type(viewModel) } returns Int.ZERO
@@ -31,7 +38,8 @@ class EditProductItemViewModelTest {
     }
 
     @Test
-    fun `isChecked should be initially false`() {
-        assertFalse(viewModel.isChecked)
+    fun `isChecked should be set and retrieved correctly`() {
+        viewModel.isChecked = true
+        assertEquals(true, viewModel.isChecked)
     }
 }

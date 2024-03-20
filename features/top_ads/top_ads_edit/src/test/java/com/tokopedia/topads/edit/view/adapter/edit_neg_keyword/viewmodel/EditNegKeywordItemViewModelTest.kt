@@ -21,6 +21,13 @@ class EditNegKeywordItemViewModelTest {
     }
 
     @Test
+    fun `data should be set and retrieved correctly`() {
+        val newData: GetKeywordResponse.KeywordsItem = mockk(relaxed = true)
+        viewModel.data = newData
+        assertEquals(newData, viewModel.data)
+    }
+
+    @Test
     fun `type should return type from typesFactory`() {
         val data = Int.ZERO
         every { typesFactory.type(viewModel) } returns Int.ZERO

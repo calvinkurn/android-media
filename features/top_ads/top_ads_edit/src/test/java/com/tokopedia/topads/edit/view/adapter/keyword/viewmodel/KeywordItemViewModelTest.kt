@@ -1,6 +1,7 @@
 package com.tokopedia.topads.edit.view.adapter.keyword.viewmodel
 
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapterTypeFactory
 import io.mockk.every
@@ -23,6 +24,13 @@ class KeywordItemViewModelTest {
     }
 
     @Test
+    fun `data should be set and retrieved correctly`() {
+        val newData: KeywordDataItem = mockk(relaxed = true)
+        viewModel.data = newData
+        assertEquals(newData, viewModel.data)
+    }
+
+    @Test
     fun `type should return type from typesFactory`() {
         val data = Int.ZERO
         every { typesFactory.type(viewModel) } returns Int.ZERO
@@ -31,7 +39,8 @@ class KeywordItemViewModelTest {
     }
 
     @Test
-    fun `isChecked should be initially false`() {
-        assertFalse(viewModel.isChecked)
+    fun `isChecked should be set and retrieved correctly`() {
+        viewModel.isChecked = true
+        assertEquals(true, viewModel.isChecked)
     }
 }

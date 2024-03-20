@@ -20,7 +20,12 @@ class ProductItemViewModelTest {
     fun setUp() {
         viewModel = ProductItemViewModel(productModel)
     }
-
+    @Test
+    fun `data should be set and retrieved correctly`() {
+        val newData: TopAdsProductModel = mockk(relaxed = true)
+        viewModel.data = newData
+        assertEquals(newData, viewModel.data)
+    }
     @Test
     fun `type should return type from typesFactory`() {
         val data = Int.ZERO
@@ -30,7 +35,8 @@ class ProductItemViewModelTest {
     }
 
     @Test
-    fun `isChecked should be initially false`() {
-        assertFalse(viewModel.isChecked)
+    fun `isChecked should be set and retrieved correctly`() {
+        viewModel.isChecked = true
+        assertEquals(true, viewModel.isChecked)
     }
 }
