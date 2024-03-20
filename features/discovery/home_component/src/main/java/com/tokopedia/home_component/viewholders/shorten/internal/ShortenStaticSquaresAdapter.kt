@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.tokopedia.home_component.viewholders.shorten
+package com.tokopedia.home_component.viewholders.shorten.internal
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,9 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactoryImpl
 
-class StaticSquaresAdapter(
+class ShortenStaticSquaresAdapter(
     private val adapterTypeFactory: ShortenViewFactoryImpl
-) : ListAdapter<ShortenVisitable, AbstractViewHolder<Visitable<*>>>(StaticSquaresDiffUtil()) {
+) : ListAdapter<ShortenVisitable, AbstractViewHolder<Visitable<*>>>(ShortenStaticSquaresDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)

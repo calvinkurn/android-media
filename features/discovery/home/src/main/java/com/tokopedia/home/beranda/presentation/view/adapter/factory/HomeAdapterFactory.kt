@@ -127,6 +127,7 @@ import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.viewholders.mission.v3.Mission4SquareWidgetListener
+import com.tokopedia.home_component.viewholders.shorten.ContainerStaticSquaresViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
@@ -153,6 +154,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
@@ -482,6 +484,10 @@ class HomeAdapterFactory(
         return OrigamiSDUIViewHolder.LAYOUT
     }
 
+    override fun type(model: DealsAndMissionWidgetUiModel): Int {
+        return ContainerStaticSquaresViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
@@ -660,6 +666,7 @@ class HomeAdapterFactory(
             OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
+            ContainerStaticSquaresViewHolder.LAYOUT -> viewHolder = ContainerStaticSquaresViewHolder(view, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

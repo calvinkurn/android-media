@@ -1,10 +1,10 @@
 package com.tokopedia.home_component.visitable.shorten
 
-import com.tokopedia.home_component.viewholders.shorten.ShortenVisitable
+import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactory
 
-data class DealsUiModel(
-    val title: String
+data class DealsWidgetUiModel(
+    val data: List<ItemDealsWidgetUiModel>
 ) : ShortenVisitable {
 
     override fun type(typeFactory: ShortenViewFactory) = typeFactory.type(this)
@@ -13,3 +13,9 @@ data class DealsUiModel(
 
     override fun equalsWith(o: Any?) = o == this
 }
+
+data class ItemDealsWidgetUiModel(
+    val title: String
+) : ShortenVisitable by ShortenVisitable.ItemShortenVisitable(
+    DealsAndMissionWidgetUiModel.Type.Deals.value
+)
