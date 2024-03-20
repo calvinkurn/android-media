@@ -49,16 +49,6 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
     }
 
     /**
-     * -- lateinit variable section --
-     */
-
-    @Inject
-    lateinit var viewModel: TokoNowShoppingListAnotherOptionBottomSheetViewModel
-
-    @Inject
-    lateinit var analytic: ShoppingListAnalytic
-
-    /**
      * -- private variable section --
      */
 
@@ -78,6 +68,16 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         by autoClearedNullable<BottomsheetTokopedianowShoppingListAnotherOptionBinding>()
 
     private val availableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
+
+    /**
+     * -- lateinit variable section --
+     */
+
+    @Inject
+    lateinit var viewModel: TokoNowShoppingListAnotherOptionBottomSheetViewModel
+
+    @Inject
+    lateinit var analytic: ShoppingListAnalytic
 
     /**
      * -- override function section --

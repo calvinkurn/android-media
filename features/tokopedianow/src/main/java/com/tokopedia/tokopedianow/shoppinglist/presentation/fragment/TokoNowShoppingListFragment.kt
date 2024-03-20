@@ -73,6 +73,7 @@ import com.tokopedia.tokopedianow.common.helper.AbstractEmptyStateOocListener
 import com.tokopedia.tokopedianow.common.helper.AbstractProductRecommendationListener
 import com.tokopedia.tokopedianow.shoppinglist.helper.AbstractShoppingListHorizontalProductCardItemListener
 import com.tokopedia.tokopedianow.common.helper.AbstractThematicHeaderListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowLocalLoadViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
@@ -117,16 +118,6 @@ class TokoNowShoppingListFragment :
     }
 
     /**
-     * -- lateinit variable section --
-     */
-
-    @Inject
-    lateinit var viewModel: TokoNowShoppingListViewModel
-
-    @Inject
-    lateinit var analytic: ShoppingListAnalytic
-
-    /**
      * -- private variable section --
      */
 
@@ -143,25 +134,40 @@ class TokoNowShoppingListFragment :
                 cartProductListener = createCartProductCallback(),
                 emptyStateOocListener = createEmptyStateOocCallback(),
                 productRecommendationOocListener = createProductRecommendationCallback(),
-                productRecommendationOocBindListener = createProductRecommendationCallback()
+                productRecommendationOocBindListener = createProductRecommendationCallback(),
+                localLoadListener = createLocalLoadCallback()
             )
         )
     }
-
-    private val loadMoreListener: RecyclerView.OnScrollListener
-        by lazy { createLoadMoreCallback() }
-
-    private var binding: FragmentTokopedianowShoppingListBinding?
-        by autoClearedNullable()
-
-    private var layoutManager: LinearLayoutManager?
-        by autoClearedNullable()
 
     private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
     private var isStickyTopCheckAllScrollingBehaviorEnabled: Boolean = false
     private var isShowFirstInstallSearch = false
     private var loader: LoaderDialog? = null
     private var pageCoachMark: CoachMarkModel? = null
+
+    /**
+     * -- lateinit variable section --
+     */
+
+    @Inject
+    lateinit var viewModel: TokoNowShoppingListViewModel
+
+    @Inject
+    lateinit var analytic: ShoppingListAnalytic
+
+    /**
+     * -- internal variable section --
+     */
+
+    internal val loadMoreListener: RecyclerView.OnScrollListener
+        by lazy { createLoadMoreCallback() }
+
+    internal var binding: FragmentTokopedianowShoppingListBinding?
+        by autoClearedNullable()
+
+    internal var layoutManager: LinearLayoutManager?
+        by autoClearedNullable()
 
     /**
      * -- override function section --
@@ -348,6 +354,7 @@ class TokoNowShoppingListFragment :
         viewModel.isNavToolbarScrollingBehaviourEnabled.collect { isEnabled ->
             binding.navToolbar.apply {
                 isNavToolbarScrollingBehaviourEnabled = isEnabled
+                binding.strRefreshLayout.isEnabled = isEnabled
                 setShowShadowEnabled(!isEnabled)
 
                 if (isEnabled) {
@@ -726,7 +733,7 @@ class TokoNowShoppingListFragment :
         }
 
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
-            getRefreshLayout()?.setContentChildViewPullRefresh(view)
+            binding?.strRefreshLayout?.setContentChildViewPullRefresh(view)
         }
     }
 
@@ -855,7 +862,7 @@ class TokoNowShoppingListFragment :
     private fun createLoadMoreCallback() = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            val lastVisiblePosition = getLayoutManager()?.findLastVisibleItemPosition()
+            val lastVisiblePosition = layoutManager?.findLastVisibleItemPosition()
             if (lastVisiblePosition != RecyclerView.NO_POSITION) {
                 val lastVisibleViewHolder = recyclerView.findViewHolderForAdapterPosition(lastVisiblePosition.orZero())
                 viewModel.loadMoreProductRecommendation(
@@ -901,7 +908,7 @@ class TokoNowShoppingListFragment :
     private fun createCartProductCallback() = object : ShoppingListCartProductViewHolder.ShoppingListCartProductListener {
         override fun onClickSeeDetail() {
             analytic.getShoppingListCartProductAnalytic().trackClickSeeDetail()
-            getMiniCart()?.showMiniCartListBottomSheet(this@TokoNowShoppingListFragment)
+            binding?.miniCartWidget?.showMiniCartListBottomSheet(this@TokoNowShoppingListFragment)
         }
 
         override fun onImpressWidget() {
@@ -942,6 +949,16 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private fun createLocalLoadCallback() = object : TokoNowLocalLoadViewHolder.TokoNowLocalLoadListener {
+        override fun onClickRetry() {
+            binding?.apply {
+                rvShoppingList.removeOnScrollListener(loadMoreListener)
+                rvShoppingList.addOnScrollListener(loadMoreListener)
+                viewModel.retryFirstPageProductRecommendation()
+            }
+        }
+    }
+
     /**
      * -- internal function section --
      */
@@ -949,10 +966,4 @@ class TokoNowShoppingListFragment :
     internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
 
     internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
-
-    internal fun getRefreshLayout(): ParentIconSwipeRefreshLayout? = binding?.strRefreshLayout
-
-    internal fun getMiniCart(): MiniCartWidget? = binding?.miniCartWidget
-
-    internal fun getLayoutManager(): LinearLayoutManager? = layoutManager
 }

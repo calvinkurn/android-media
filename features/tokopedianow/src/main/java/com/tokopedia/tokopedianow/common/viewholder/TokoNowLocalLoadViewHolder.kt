@@ -1,17 +1,17 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder.quest
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowLocalLoadUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowLocalLoadBinding
-import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeQuestReloadWidgetViewHolder(
+class TokoNowLocalLoadViewHolder(
     itemView: View,
-    private val listener: HomeQuestReloadWidgetListener? = null
-): AbstractViewHolder<HomeQuestReloadWidgetUiModel>(itemView) {
+    private val listener: TokoNowLocalLoadListener? = null
+): AbstractViewHolder<TokoNowLocalLoadUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_local_load
@@ -19,16 +19,17 @@ class HomeQuestReloadWidgetViewHolder(
 
     private val binding: ItemTokopedianowLocalLoadBinding? by viewBinding()
 
-    override fun bind(element: HomeQuestReloadWidgetUiModel) {
+    override fun bind(element: TokoNowLocalLoadUiModel?) {
         binding?.apply {
             root.setOnClickListener {
-                listener?.onReloadListener()
-                root.progressState = !root.progressState
+                root.progressState = false
+                root.progressState = true
+                listener?.onClickRetry()
             }
         }
     }
 
-    interface HomeQuestReloadWidgetListener {
-        fun onReloadListener()
+    interface TokoNowLocalLoadListener {
+        fun onClickRetry()
     }
 }

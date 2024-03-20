@@ -12,6 +12,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowLocalLoadUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
@@ -147,6 +148,11 @@ internal object MainVisitableExtension {
 
     fun MutableList<Visitable<*>>.addDivider(): MutableList<Visitable<*>> {
         add(TokoNowDividerUiModel())
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addLocalLoad(): MutableList<Visitable<*>> {
+        add(TokoNowLocalLoadUiModel())
         return this
     }
 

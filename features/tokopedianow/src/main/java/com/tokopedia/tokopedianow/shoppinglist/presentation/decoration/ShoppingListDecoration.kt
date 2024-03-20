@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowDividerViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowLocalLoadViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
@@ -41,6 +42,9 @@ class ShoppingListDecoration: RecyclerView.ItemDecoration() {
             isDivider(parent, absolutePos) -> {
                 outRect.bottom = view.getDimens(unifycomponentsR.dimen.unify_space_12)
             }
+            isLocalLoad(parent, absolutePos) -> {
+                outRect.bottom = view.getDimens(unifycomponentsR.dimen.unify_space_12)
+            }
         }
     }
 
@@ -51,6 +55,8 @@ class ShoppingListDecoration: RecyclerView.ItemDecoration() {
     private fun isTitle(parent: RecyclerView, viewPosition: Int): Boolean = TokoNowTitleViewHolder.LAYOUT == getRecyclerViewViewType(parent, viewPosition)
 
     private fun isDivider(parent: RecyclerView, viewPosition: Int): Boolean = TokoNowDividerViewHolder.LAYOUT == getRecyclerViewViewType(parent, viewPosition)
+
+    private fun isLocalLoad(parent: RecyclerView, viewPosition: Int): Boolean = TokoNowLocalLoadViewHolder.LAYOUT == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
         val adapter = parent.adapter ?: return INVALID_INDEX

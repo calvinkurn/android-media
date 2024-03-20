@@ -8,12 +8,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowDividerTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowErrorTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowLocalLoadTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowThematicHeaderTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTitleTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowErrorUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowLocalLoadUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
@@ -23,6 +25,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowLocalLoadViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.common.ShoppingListHorizontalProductCardItemTypeFactory
@@ -50,7 +53,8 @@ class ShoppingListAdapterTypeFactory(
     private val cartProductListener: ShoppingListCartProductViewHolder.ShoppingListCartProductListener? = null,
     private val emptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null,
     private val productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener? = null,
-    private val productRecommendationOocBindListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener? = null
+    private val productRecommendationOocBindListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener? = null,
+    private val localLoadListener: TokoNowLocalLoadViewHolder.TokoNowLocalLoadListener? = null
 ):
     BaseAdapterTypeFactory(),
     ShoppingListTypeFactory,
@@ -60,7 +64,8 @@ class ShoppingListAdapterTypeFactory(
     TokoNowTitleTypeFactory,
     TokoNowErrorTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
-    TokoNowProductRecommendationOocTypeFactory
+    TokoNowProductRecommendationOocTypeFactory,
+    TokoNowLocalLoadTypeFactory
 {
     override fun type(uiModel: TokoNowThematicHeaderUiModel): Int = TokoNowThematicHeaderViewHolder.LAYOUT
     override fun type(uiModel: TokoNowDividerUiModel): Int = TokoNowDividerViewHolder.LAYOUT
@@ -69,6 +74,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: TokoNowErrorUiModel): Int = TokoNowErrorViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowLocalLoadUiModel): Int = TokoNowLocalLoadViewHolder.LAYOUT
 
     override fun type(uiModel: ShoppingListHorizontalProductCardItemUiModel): Int = ShoppingListHorizontalProductCardItemViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListCartProductUiModel): Int = ShoppingListCartProductViewHolder.LAYOUT
@@ -105,6 +111,10 @@ class ShoppingListAdapterTypeFactory(
                 itemView = parent,
                 recommendationCarouselListener = productRecommendationOocListener,
                 recommendationCarouselWidgetBindPageNameListener = productRecommendationOocBindListener
+            )
+            TokoNowLocalLoadViewHolder.LAYOUT -> TokoNowLocalLoadViewHolder(
+                itemView = parent,
+                listener = localLoadListener
             )
 
             ShoppingListHorizontalProductCardItemViewHolder.LAYOUT -> ShoppingListHorizontalProductCardItemViewHolder(

@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase.Companion.SUCCESS_STATUS
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -18,7 +19,6 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
@@ -53,7 +53,6 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExt
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.removeProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.removeRetry
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.updateProductSelections
-import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.SaveShoppingListStateActionParam
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.SaveShoppingListStateUseCase
@@ -77,6 +76,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductRecommendati
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductShoppingListMapper.mapAvailableShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductShoppingListMapper.mapUnavailableShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addEmptyStateOoc
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addLocalLoad
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addProductCartItem
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addProductCarts
@@ -95,7 +95,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -156,10 +155,12 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val _isPageImpressionTracked: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var hasLoadedLayout: Boolean = false
+    private var isFirstPageProductRecommendationError: Boolean = false
     private var mMiniCartData: MiniCartSimplifiedData? = null
     private var loadLayoutJob: Job? = null
     private var saveShoppingListStateJob: Job? = null
     private var getMiniCartJob: Job? = null
+    private var getFirstPageProductRecommendationJob: Job? = null
     private var recommendationModel: RecommendationModel = RecommendationModel()
 
     /**
@@ -193,36 +194,91 @@ class TokoNowShoppingListViewModel @Inject constructor(
      * -- private suspend function section --
      */
 
-    private suspend fun getMiniCartDeferred(): Deferred<MiniCartSimplifiedData?> = async {
-        return@async if (isGettingMiniCartAllowed()) {
-            getMiniCartUseCase.setParams(
-                shopIds = listOf(addressData.getShopId().toString()),
-                source = MiniCartSource.TokonowShoppingList
-            )
-            val miniCartData = getMiniCartUseCase.executeOnBackground()
-            miniCartData.copy(isShowMiniCartWidget = miniCartData.isShowMiniCartWidget && !addressData.isOutOfCoverage())
-        } else {
-            null
+    private suspend fun getMiniCartDeferred(): Deferred<Result<MiniCartSimplifiedData?>?> = asyncCatchError(
+        block = {
+            val miniCartData = if (isGettingMiniCartAllowed()) {
+                getMiniCartUseCase.setParams(
+                    shopIds = listOf(addressData.getShopId().toString()),
+                    source = MiniCartSource.TokonowShoppingList
+                )
+                val miniCartData = getMiniCartUseCase.executeOnBackground()
+                miniCartData.copy(isShowMiniCartWidget = miniCartData.isShowMiniCartWidget && !addressData.isOutOfCoverage())
+            } else {
+                null
+            }
+            Result.success(miniCartData)
+        }, onError = {
+            Result.failure(it)
         }
-    }
+    )
+
+    private suspend fun getProductRecommendationDeferred(
+        pageNumber: Int
+    ) = asyncCatchError(
+        block = {
+            val param = GetRecommendationRequestParam(
+                pageNumber = pageNumber,
+                userId = userSession.userId.toIntSafely(),
+                pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
+                xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                isTokonow = true
+            )
+            Result.success(productRecommendationUseCase.getData(param))
+        }, onError = {
+            Result.failure(it)
+        }
+    )
 
     private suspend fun getShoppingListDeferred() = async {
         val warehouses = mapToWarehousesData(addressData.getAddressData())
         getShoppingListUseCase.execute(warehouses)
     }
 
-    private suspend fun getProductRecommendationDeferred(
-        pageNumber: Int
-    ) = async {
-        val param = GetRecommendationRequestParam(
-            pageNumber = pageNumber,
-            userId = userSession.userId.toIntSafely(),
-            pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
-            xDevice = X_DEVICE_RECOMMENDATION_PARAM,
-            xSource = X_SOURCE_RECOMMENDATION_PARAM,
-            isTokonow = true
-        )
-        productRecommendationUseCase.getData(param)
+    private suspend fun getFirstLoadMiniCart() {
+        getMiniCartDeferred()
+            .await()
+            ?.apply {
+                onSuccess {
+                    mMiniCartData = it
+                }
+                onFailure {
+                    mMiniCartData = null
+                }
+            }
+    }
+
+    private suspend fun getFirstLoadShoppingList() {
+        getShoppingListDeferred()
+            .await()
+            .apply {
+                availableProducts.clear()
+                unavailableProducts.clear()
+
+                availableProducts.addAll(mapAvailableShoppingList(listAvailableItem))
+                unavailableProducts.addAll(mapUnavailableShoppingList(listUnavailableItem))
+            }
+    }
+
+    private suspend fun getFirstLoadProductRecommendation() {
+        getProductRecommendationDeferred(pageNumber = Int.ZERO)
+            .await()
+            ?.apply {
+                onSuccess {
+                    recommendedProducts.clear()
+                    recommendationModel = RecommendationModel(
+                        pageCounter = if (it.hasNext) Int.ONE else Int.ZERO,
+                        hasNext = it.hasNext,
+                        title = it.title
+                    )
+                    recommendedProducts.addAll(mapRecommendedProducts(it))
+                    isFirstPageProductRecommendationError = false
+                }
+                onFailure {
+                    recommendedProducts.clear()
+                    isFirstPageProductRecommendationError = true
+                }
+            }
     }
 
     private suspend fun saveShoppingListState() {
@@ -234,7 +290,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private suspend fun saveAllAvailableProductsState() {
         checkUncheckStateParams.clear()
         checkUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(productId = it.id, isSelected = it.isSelected) })
-
         saveShoppingListState()
     }
 
@@ -406,7 +461,20 @@ class TokoNowShoppingListViewModel @Inject constructor(
                             }
                         )
                 },
-                ifNot = {
+                ifNot = layout@{
+                    this@layout
+                        .doIf(
+                            predicate = isFirstPageProductRecommendationError,
+                            then = {
+                                doIf(
+                                    predicate = isShoppingListAvailable,
+                                    then = {
+                                        addDivider()
+                                    }
+                                )
+                                addLocalLoad()
+                            }
+                        )
                     _isOnScrollNotNeeded.value = true
                 }
             )
@@ -504,37 +572,15 @@ class TokoNowShoppingListViewModel @Inject constructor(
          * block thread until the coroutine inside runBlocking completes
          */
 
-        val result = runBlocking {
-            listOf(
-                getMiniCartDeferred(),
-                getShoppingListDeferred(),
-                getProductRecommendationDeferred(pageNumber = Int.ZERO)
-            ).awaitAll()
+        runBlocking {
+            getFirstLoadMiniCart()
+            getFirstLoadShoppingList()
+            getFirstLoadProductRecommendation()
         }
 
         /**
-         * 1. Cast the results to their respective types.
-         * 2. Set some variables as the source of truth
-         * 2. Update layout
+         * Update layout
          */
-
-        mMiniCartData = result.component1() as MiniCartSimplifiedData
-        val shoppingListData = result.component2() as GetShoppingListDataResponse.Data
-        val productRecommendationData = result.component3() as RecommendationWidget
-
-        recommendationModel = RecommendationModel(
-            pageCounter = if (productRecommendationData.hasNext) Int.ONE else Int.ZERO,
-            hasNext = productRecommendationData.hasNext,
-            title = productRecommendationData.title
-        )
-
-        availableProducts.clear()
-        unavailableProducts.clear()
-        recommendedProducts.clear()
-
-        availableProducts.addAll(mapAvailableShoppingList(shoppingListData.listAvailableItem))
-        unavailableProducts.addAll(mapUnavailableShoppingList(shoppingListData.listUnavailableItem))
-        recommendedProducts.addAll(mapRecommendedProducts(productRecommendationData))
 
         updateLayout(
             isRequiredToScrollUp = true
@@ -606,7 +652,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
             isShoppingListAvailable = isShoppingListAvailable
         )
 
-        _layoutState.value = Success(getUpdatedLayout(isRequiredToScrollUp))
+        _layoutState.value = Success(getUpdatedLayout(isRequiredToScrollUp = isRequiredToScrollUp))
 
         setDataToBottomWidget(mMiniCartData)
     }
@@ -904,36 +950,46 @@ class TokoNowShoppingListViewModel @Inject constructor(
         if (isLastVisibleLoadingMore && loadLayoutJob?.isCompleted.orFalse()) {
             loadLayoutJob = launchCatchError(
                 block = {
-                    val productRecommendationData = getProductRecommendationDeferred(
-                        pageNumber = recommendationModel.pageCounter
-                    ).await()
-                    recommendationModel.hasNext = productRecommendationData.hasNext
+                    getProductRecommendationDeferred(recommendationModel.pageCounter)
+                        .await()
+                        ?.apply {
+                            onSuccess { productRecommendationData ->
+                                recommendationModel.hasNext = productRecommendationData.hasNext
 
-                    mutableLayout
-                        .removeLoadMore()
-                        .doIf(
-                            predicate = productRecommendationData.recommendationItemList.isNotEmpty(),
-                            then = layout@ {
-                                recommendedProducts.addAll(mapRecommendedProducts(productRecommendationData))
-                                this@layout
-                                    .addProducts(recommendedProducts)
+                                mutableLayout
+                                    .removeLoadMore()
                                     .doIf(
-                                        predicate = recommendationModel.hasNext,
-                                        then = {
-                                            addLoadMore()
-                                            recommendationModel.pageCounter = recommendationModel.pageCounter.inc()
+                                        predicate = productRecommendationData.recommendationItemList.isNotEmpty(),
+                                        then = layout@ {
+                                            recommendedProducts.addAll(mapRecommendedProducts(productRecommendationData))
+                                            this@layout
+                                                .addProducts(recommendedProducts)
+                                                .doIf(
+                                                    predicate = recommendationModel.hasNext,
+                                                    then = {
+                                                        addLoadMore()
+                                                        recommendationModel.pageCounter = recommendationModel.pageCounter.inc()
+                                                    },
+                                                    ifNot = {
+                                                        _isOnScrollNotNeeded.value = true
+                                                    }
+                                                )
                                         },
                                         ifNot = {
                                             _isOnScrollNotNeeded.value = true
                                         }
                                     )
-                            },
-                            ifNot = {
-                                _isOnScrollNotNeeded.value = true
-                            }
-                        )
 
-                    _layoutState.value = Success(getUpdatedLayout())
+                                _layoutState.value = Success(getUpdatedLayout())
+                            }
+                            onFailure {
+                                mutableLayout
+                                    .removeLoadMore()
+                                    .addRetry()
+
+                                _layoutState.value = Success(getUpdatedLayout())
+                            }
+                        }
                 },
                 onError = {
                     mutableLayout
@@ -950,19 +1006,30 @@ class TokoNowShoppingListViewModel @Inject constructor(
         onGetMiniCartSuccess: () -> Unit = {}
     ) {
         getMiniCartJob?.cancel()
-        getMiniCartJob = launchCatchError(block = {
-            val miniCartData = getMiniCartDeferred().await()
+        getMiniCartJob = launchCatchError(
+            block = {
+                getMiniCartDeferred()
+                    .await()
+                    ?.apply {
+                        onSuccess { miniCartSimplifiedData ->
+                            setMiniCartData(miniCartSimplifiedData)
 
-            setMiniCartData(miniCartData)
+                            _isLoaderDialogShown.value = false
 
-            _isLoaderDialogShown.value = false
+                            onGetMiniCartSuccess.invoke()
+                        }
+                        onFailure {
+                            _miniCartState.value = Error(throwable = it)
 
-            onGetMiniCartSuccess.invoke()
-        }) {
-            _miniCartState.value = Error(throwable = it)
+                            _isLoaderDialogShown.value = false
+                        }
+                    }
+            }, onError = {
+                _miniCartState.value = Error(throwable = it)
 
-            _isLoaderDialogShown.value = false
-        }
+                _isLoaderDialogShown.value = false
+            }
+        )
     }
 
     fun setMiniCartData(
@@ -1010,7 +1077,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 )
 
                 val response = addToWishlistUseCase.executeOnBackground()
-                if (response is com.tokopedia.usecase.coroutines.Success) {
+                if (response is com.tokopedia.usecase.coroutines.Success && response.data.success) {
                     onSuccessAddingToWishlist(product)
                 } else {
                     onErrorAddingToWishlist(product)
@@ -1046,7 +1113,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 )
 
                 val response = deleteFromWishlistUseCase.executeOnBackground()
-                if (response is com.tokopedia.usecase.coroutines.Success) {
+                if (response is com.tokopedia.usecase.coroutines.Success && response.data.success) {
                     onSuccessDeletingFromWishlist(product)
                 } else {
                     onErrorDeletingFromWishlist(product)
@@ -1095,6 +1162,22 @@ class TokoNowShoppingListViewModel @Inject constructor(
             },
             onError = {
                 onErrorAddingToCart(resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart))
+            }
+        )
+    }
+
+    fun retryFirstPageProductRecommendation() {
+        getFirstPageProductRecommendationJob?.cancel()
+        getFirstPageProductRecommendationJob = launchCatchError(
+            block = {
+                getFirstLoadProductRecommendation()
+
+                updateLayout()
+            },
+            onError = {
+                recommendedProducts.clear()
+
+                updateLayout()
             }
         )
     }

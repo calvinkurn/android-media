@@ -211,7 +211,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
                 )
                 val response = addToWishlistUseCase.executeOnBackground()
 
-                if (response is com.tokopedia.usecase.coroutines.Success) {
+                if (response is com.tokopedia.usecase.coroutines.Success && response.data.success) {
                     onSuccessAddingWishlist(product)
                 } else {
                     onErrorAddingWishlist(product)
