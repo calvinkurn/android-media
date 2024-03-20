@@ -1003,8 +1003,8 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun showWaitingIndicator(action: Int, source: String) {
-        val shouldShowAnimation = shouldShowWithAnimation(action = action, source = source)
+    private fun showWaitingIndicator(action: Int) {
+        val shouldShowAnimation = shouldLoadingWithAnimation(action = action)
         baseAtcBtn?.showLoading()
         if (shouldShowAnimation) {
             atcAnimator.show(onAnimateEnded = { viewModel.atcAnimationEnd() })
@@ -1013,9 +1013,13 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun shouldShowWithAnimation(action: Int, source: String): Boolean {
+    private fun shouldLoadingWithAnimation(action: Int): Boolean {
+        val aggregatorParams = sharedViewModel.aggregatorParams.value
+        val cartPositionIsNull = aggregatorParams?.cartPosition == null
+        val shouldShowQtyEditor = aggregatorParams?.showQtyEditor == true
+        if (cartPositionIsNull || shouldShowQtyEditor) return false
+
         return action == ProductDetailCommonConstant.ATC_BUTTON &&
-            source == VariantPageSource.PDP_PAGESOURCE.source &&
             ProductRollenceHelper.rollenceAtcAnimationActive()
     }
 
