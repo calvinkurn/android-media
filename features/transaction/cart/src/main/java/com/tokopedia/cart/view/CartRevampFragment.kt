@@ -6208,7 +6208,7 @@ class CartRevampFragment :
             AtcVariantHelper.goToAtcVariant(
                 context = it,
                 productId = productId,
-                pageSource = VariantPageSource.CART_PAGESOURCE,
+                pageSource = VariantPageSource.CART_CHANGE_VARIANT,
                 shopId = shopId,
                 cartId = cartId,
                 dismissAfterTransaction = true,
@@ -6227,6 +6227,7 @@ class CartRevampFragment :
                     requestCode = AtcVariantHelper.ATC_VARIANT_RESULT_CODE,
                     data = intent
                 ) {
+                    // TODO: Is there a better way to do auto scroll by not setting arguments directly?
                     arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
                     arguments?.putBoolean(CartActivity.EXTRA_SCROLL_TO_PRODUCT, true)
                     viewModel.processInitialGetCartData(
