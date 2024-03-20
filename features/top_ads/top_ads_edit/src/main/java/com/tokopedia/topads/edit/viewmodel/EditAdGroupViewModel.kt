@@ -62,10 +62,6 @@ class EditAdGroupViewModel @Inject constructor(
     private var _adsKeywordCount: MutableLiveData<Result<TopAdsGetTotalAdsAndKeywords>> = MutableLiveData()
     val adsKeywordCount: LiveData<Result<TopAdsGetTotalAdsAndKeywords>> = _adsKeywordCount
 
-    private val _searchPerformanceData = MutableLiveData<Result<ImpressionPredictionResponse>>()
-    val searchPerformanceData: LiveData<Result<ImpressionPredictionResponse>>
-        get() = _searchPerformanceData
-
     private val _browsePerformanceData = MutableLiveData<Result<ImpressionPredictionResponse>>()
     val browsePerformanceData: LiveData<Result<ImpressionPredictionResponse>>
         get() = _browsePerformanceData
