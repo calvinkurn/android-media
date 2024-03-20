@@ -7,33 +7,34 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.DEFAULT_P
  * Created by Yehezkiel on 11/05/21
  */
 data class ProductVariantBottomSheetParams(
-        // general info
-        var productId: String = "",
-        var pageSource: String = "",
-        var trackerCdListName: String = "",
-        var isTokoNow: Boolean = false,
-        var whId: String = "",
-        var shopId: String = "",
-        var dismissAfterTransaction: Boolean = false,
-        var saveAfterClose: Boolean = true,
-        var extParams: String = "",
-        var showQtyEditor: Boolean = false,
+    // general info
+    var productId: String = "",
+    var pageSource: String = "",
+    var trackerCdListName: String = "",
+    var isTokoNow: Boolean = false,
+    var whId: String = "",
+    var shopId: String = "",
+    var dismissAfterTransaction: Boolean = false,
+    var saveAfterClose: Boolean = true,
+    var extParams: String = "",
+    var showQtyEditor: Boolean = false,
+    var cartId: String = "",
 
-        /**
-         * PDP only
-         */
-        var pdpSession: String = "",
-        // only be used in AtcVariantViewModel, dont use this except from AtcVariantViewModel
-        var variantAggregator: ProductVariantAggregatorUiData = ProductVariantAggregatorUiData(),
-        var miniCartData: Map<String, MiniCartItem.MiniCartItemProduct>? = null,
-        var alreadyFollowShop: Boolean = false,
+    /**
+     * PDP only
+     */
+    var pdpSession: String = "",
+    // only be used in AtcVariantViewModel, dont use this except from AtcVariantViewModel
+    var variantAggregator: ProductVariantAggregatorUiData = ProductVariantAggregatorUiData(),
+    var miniCartData: Map<String, MiniCartItem.MiniCartItemProduct>? = null,
+    var alreadyFollowShop: Boolean = false,
 
-        //Basic info pdp
-        var minimumShippingPrice: Double = DEFAULT_PRICE_MINIMUM_SHIPPING,
-        var trackerAttribution: String = "",
-        var trackerListNamePdp: String = "",
-        var isShopOwner: Boolean = false,
-        var cacheId: String = ""
+    // Basic info pdp
+    var minimumShippingPrice: Double = DEFAULT_PRICE_MINIMUM_SHIPPING,
+    var trackerAttribution: String = "",
+    var trackerListNamePdp: String = "",
+    var isShopOwner: Boolean = false,
+    var cacheId: String = ""
 ) {
-        fun showQtyEditorOrTokoNow() : Boolean = isTokoNow || showQtyEditor
+    fun showQtyEditorOrTokoNow(): Boolean = isTokoNow || showQtyEditor
 }

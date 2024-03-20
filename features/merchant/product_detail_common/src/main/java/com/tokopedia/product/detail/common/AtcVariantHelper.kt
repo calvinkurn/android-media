@@ -126,6 +126,7 @@ object AtcVariantHelper {
         dismissAfterTransaction: Boolean = false,
         saveAfterClose: Boolean = true,
         showQuantityEditor: Boolean = false,
+        cartId: String = "",
         startActivitResult: (Intent, Int) -> Unit
     ) {
         val intent = RouteManager.getIntent(
@@ -135,7 +136,8 @@ object AtcVariantHelper {
             shopId,
             pageSource.source,
             isTokoNow.toString(),
-            trackerCdListName
+            trackerCdListName,
+            cartId
         )
         val qtyEditorData = if (isTokoNow) true else showQuantityEditor
         intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
@@ -223,4 +225,5 @@ enum class VariantPageSource(val source: String) {
     BUY_MORE_GET_MORE("offerpage"),
     CATALOG_PAGESOURCE("catalog"),
     STORIES_PAGESOURCE("stories"),
+    CART_CHANGE_VARIANT("cart_change_variant")
 }
