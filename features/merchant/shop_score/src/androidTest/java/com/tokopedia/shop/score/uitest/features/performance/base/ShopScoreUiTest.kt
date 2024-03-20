@@ -20,7 +20,6 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSelle
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.stub.common.util.getShopPerformanceFragment
-import com.tokopedia.shop.score.stub.common.util.getTextHtml
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.isViewNotDisplayed
 import com.tokopedia.shop.score.stub.common.util.onClick
@@ -458,22 +457,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
         closeBottomSheet()
     }
 
-    protected fun showCoachMarkShopScorePM() {
-        Thread.sleep(2000)
-        val coachMark2 = CoachMark2(activityRule.activity)
-        onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_1)).isViewDisplayed()
-        onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_1)).isViewDisplayed()
-        onContentDescPopup(coachMark2.stepButtonText).onClick()
-        activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
-        onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_2)).isViewDisplayed()
-        onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_2)).isViewDisplayed()
-        onContentDescPopup(coachMark2.stepButtonText).onClick()
-        onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_3)).isViewDisplayed()
-        onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_3)).isViewDisplayed()
-        onContentDescPopup(coachMark2.stepButtonTextLastChild).onClick()
-    }
-
-    protected fun showCoachMarkShopScoreOS() {
+    protected fun showCoachMarkShopScore() {
         Thread.sleep(2000)
         val coachMark2 = CoachMark2(activityRule.activity)
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_1)).isViewDisplayed()
