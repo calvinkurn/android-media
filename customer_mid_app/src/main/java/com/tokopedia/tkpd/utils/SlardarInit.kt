@@ -15,8 +15,6 @@ import com.tokopedia.config.GlobalConfig
 import com.bytedance.bdinstall.Level
 import com.bytedance.crash.ICommonParams
 import com.bytedance.crash.Npth
-import com.bytedance.crash.runtime.AllDefaultUrls
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object SlardarInit {
@@ -29,12 +27,7 @@ object SlardarInit {
         Npth.setApplication(application)
         Npth.init(application, object : ICommonParams {
             override fun getCommonParams(): MutableMap<String, Any> {
-                val params = mutableMapOf<String, String>()
-                params[AID] = aid
-                params[CHANNEL] = channel
-                params[APP_VERSION] = GlobalConfig.VERSION_NAME
-                params[VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
-                params[UPDATE_VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
+                val params = commonParams(aid, channel)
                 AppLog.putCommonParams(AppLog.getContext(), params, true, Level.L0)
                 AppLog.setUserID(userId.toLongOrZero())
                 val result = mutableMapOf<String, Any>()
@@ -62,8 +55,14 @@ object SlardarInit {
                 return null
             }
 
-        }, true, true, true)
+        },  true,  // JAVA CRASH Enabler
+            true, // NATIVE CRASH Enabler
+            true // ANR Enabler
+        )
 
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            Npth.getConfigManager().isDebugMode = true
+        }
         Npth.getConfigManager().javaCrashUploadUrl = "https://slardar-bd-sg.feishu.cn/monitor/collect/c/crash"
         Npth.getConfigManager().setNativeCrashUrl("https://slardar-bd-sg.feishu.cn/monitor/collect/c/native_bin_crash")
         Npth.getConfigManager().setLaunchCrashUrl("https://slardar-bd-sg.feishu.cn/monitor/collect/c/exception/dump_collection")
@@ -102,7 +101,7 @@ object SlardarInit {
     /**
      * can be invoke after app launched since it may cost time
      */
-    fun startApm() {
+    fun startApm(aid: String, channel: String) {
         val builder = ApmStartConfig.builder()
 //        val headerInfo: JSONObject = AppLog.getHeader() // todo better copy
         builder.blockDetectOnlySampled(true)
@@ -133,9 +132,9 @@ object SlardarInit {
                 "https://mon-sg.tiktokv.com/monitor/collect/"))
             .aid(573733)
             .deviceId(AppLog.getDid())
-            .appVersion("100") // todo
-            .updateVersionCode("10000") // todo
-            .channel("local_test") // todo
+            .appVersion(GlobalConfig.VERSION_NAME)
+            .updateVersionCode(GlobalConfig.VERSION_CODE.toString())
+            .channel(channel)
             .memoryReachTop { type -> /*do sth to trim mem*/ }
             .apmStartListener(object : IApmStartListener {
                 override fun onStartComplete() {}
@@ -160,7 +159,7 @@ object SlardarInit {
         builder.queryParams {
             val params =
                 HashMap<String, String>()
-            params["app_id"] = "573733"
+            params["app_id"] = aid
             params
         }
         builder.apmLogListener { logType, logSubType, log ->
@@ -172,5 +171,15 @@ object SlardarInit {
 //            ApmContext.setDebugMode(true)
 //            SDKContext.setDebugMode(true)
 //        }
+    }
+
+    private fun commonParams(aid: String, channel: String): MutableMap<String, String> {
+        val params = mutableMapOf<String, String>()
+        params[AID] = aid
+        params[CHANNEL] = channel
+        params[APP_VERSION] = GlobalConfig.VERSION_NAME
+        params[VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
+        params[UPDATE_VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
+        return params
     }
 }
