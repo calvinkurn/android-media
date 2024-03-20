@@ -96,5 +96,7 @@ data class Product(
     @SerializedName("add_ons_product")
     val addOn: AddOn = AddOn(),
     @SerializedName("product_label")
-    val productLabel: ProductLabel = ProductLabel()
+    val productLabel: ProductLabel = ProductLabel(),
+    @SerializedName("is_enable_cart_variant")
+    val isEnableCartVariant: Boolean = true
 )

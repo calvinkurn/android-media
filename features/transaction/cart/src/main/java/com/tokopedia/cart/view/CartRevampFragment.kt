@@ -382,6 +382,8 @@ class CartRevampFragment :
     }
 
     private var enablePromoEntryPointNewInterface: Boolean = false
+    private val shouldScrollToProduct: Boolean
+        get() = arguments?.getBoolean(CartActivity.EXTRA_SCROLL_TO_PRODUCT) ?: false
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -4431,7 +4433,7 @@ class CartRevampFragment :
         }
 
         validateGoToCheckout()
-        scrollToLastAddedProductShop()
+        scrollToProductShopWithCartId(getCartId(), shouldScrollToProduct)
 
         renderAdditionalWidget()
         resetArguments()
@@ -4766,8 +4768,7 @@ class CartRevampFragment :
         )
     }
 
-    private fun scrollToLastAddedProductShop() {
-        val cartId: String = getCartId()
+    private fun scrollToProductShopWithCartId(cartId: String, shouldScrollToProduct: Boolean) {
         if (cartId.isNotBlank()) {
             var hasProducts = false
             val allShopGroupDataList = CartDataHelper.getAllShopGroupDataList(
@@ -4779,18 +4780,25 @@ class CartRevampFragment :
             }
 
             if (hasProducts) {
-                val shopIndex = CartDataHelper.getCartShopHolderIndexByCartId(
-                    viewModel.cartDataList.value,
-                    cartId
-                )
-                if (shopIndex != RecyclerView.NO_POSITION) {
+                val index = if (shouldScrollToProduct) {
+                    CartDataHelper.getCartItemIndexByCartId(
+                        viewModel.cartDataList.value,
+                        cartId
+                    )
+                } else {
+                    CartDataHelper.getCartShopHolderIndexByCartId(
+                        viewModel.cartDataList.value,
+                        cartId
+                    )
+                }
+                if (index != RecyclerView.NO_POSITION) {
                     val offset =
                         context?.resources?.getDimensionPixelSize(R.dimen.select_all_view_holder_height)
                             ?: 0
                     val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
                     if (layoutManager != null) {
                         (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                            shopIndex,
+                            index,
                             offset
                         )
                     }
@@ -6200,12 +6208,13 @@ class CartRevampFragment :
             AtcVariantHelper.goToAtcVariant(
                 context = it,
                 productId = productId,
-                pageSource = VariantPageSource.CART_PAGESOURCE, // TODO: to be confirmed..
+                pageSource = VariantPageSource.CART_CHANGE_VARIANT,
                 shopId = shopId,
+                cartId = cartId,
+                dismissAfterTransaction = true,
                 startActivitResult = { intent: Intent, _ ->
                     changeVariantLauncher.launch(intent)
                 }
-                // TODO: should we send cartId to VBS for updateCart?
             )
         }
     }
@@ -6218,7 +6227,14 @@ class CartRevampFragment :
                     requestCode = AtcVariantHelper.ATC_VARIANT_RESULT_CODE,
                     data = intent
                 ) {
-                    // TODO: refresh cart after success change variant, then auto scroll to product after refresh cart
+                    // TODO: Is there a better way to do auto scroll by not setting arguments directly?
+                    arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
+                    arguments?.putBoolean(CartActivity.EXTRA_SCROLL_TO_PRODUCT, true)
+                    viewModel.processInitialGetCartData(
+                        cartId = "0",
+                        initialLoad = false,
+                        isLoadingTypeRefresh = true
+                    )
                 }
             }
         }

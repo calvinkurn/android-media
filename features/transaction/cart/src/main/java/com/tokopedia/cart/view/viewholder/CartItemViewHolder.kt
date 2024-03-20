@@ -1175,22 +1175,24 @@ class CartItemViewHolder(
             textProductVariant.text = data.variant
             textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
-            textProductVariant.setOnClickListener {
-                actionListener?.onChangeVariantClicked(
-                    data.productId,
-                    data.shopHolderData.shopId,
-                    data.cartId
-                )
+            if (data.isEnableCartVariant) {
+                textProductVariant.setOnClickListener {
+                    actionListener?.onChangeVariantClicked(
+                        data.productId,
+                        data.shopHolderData.shopId,
+                        data.cartId
+                    )
+                }
+                binding.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
+                binding.iconVariant.setOnClickListener {
+                    actionListener?.onChangeVariantClicked(
+                        data.productId,
+                        data.shopHolderData.shopId,
+                        data.cartId
+                    )
+                }
+                binding.iconVariant.show()
             }
-            binding.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
-            binding.iconVariant.setOnClickListener {
-                actionListener?.onChangeVariantClicked(
-                    data.productId,
-                    data.shopHolderData.shopId,
-                    data.cartId
-                )
-            }
-            binding.iconVariant.show()
         } else {
             textProductVariant.setOnClickListener(null)
             textProductVariant.gone()
