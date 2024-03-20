@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.view.compose.report.product.ProductReportSummaryLayout
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -23,13 +24,31 @@ import javax.inject.Inject
  */
 class ProductReportSummaryBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val reportAnalyticFactory: PlayBroadcastReportAnalytic.Factory,
 ): BottomSheetUnify() {
 
     private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
         parentViewModelFactoryCreator.create(requireActivity())
     }
 
+    private val reportAnalytic = reportAnalyticFactory.create(
+        getAccount = { parentViewModel.selectedAccount },
+        getChannelId = { parentViewModel.channelId },
+        getChannelTitle = { parentViewModel.channelTitle }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { fragmentManager, fragment ->
+            when (fragment) {
+                is EstimatedIncomeInfoBottomSheet -> {
+                    fragment.setListener(object : EstimatedIncomeInfoBottomSheet.Listener {
+                        override fun onImpress() {
+                            reportAnalytic.impressEstimatedIncomeInfoBottomSheet()
+                        }
+                    })
+                }
+            }
+        }
         super.onCreate(savedInstanceState)
         setupBottomSheet()
     }
@@ -39,6 +58,7 @@ class ProductReportSummaryBottomSheet @Inject constructor(
 
         setupBottomSheetHeight(view)
 
+        reportAnalytic.impressProductReportBottomSheet()
         parentViewModel.submitAction(PlayBroadcastAction.GetProductReportSummary)
     }
 
@@ -59,7 +79,11 @@ class ProductReportSummaryBottomSheet @Inject constructor(
                     ProductReportSummaryLayout(
                         productReportSummary = uiState.productReportSummary,
                         onEstimatedIncomeClicked = {
+                            reportAnalytic.clickEstimatedIncomeInfoIcon()
                             showEstimatedIncomeInfoSheet()
+                        },
+                        onImpressErrorState = {
+                            reportAnalytic.impressProductReportBottomSheetError()
                         }
                     )
                 }

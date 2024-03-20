@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet.report.product
 
 import android.os.Bundle
+import android.view.View
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
@@ -19,9 +20,16 @@ import com.tokopedia.play.broadcaster.R
  */
 class EstimatedIncomeInfoBottomSheet : BottomSheetUnify() {
 
+    private var mListener: Listener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mListener?.onImpress()
     }
 
     private fun setupBottomSheet() {
@@ -49,8 +57,16 @@ class EstimatedIncomeInfoBottomSheet : BottomSheetUnify() {
         setChild(composeView)
     }
 
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
     fun show(fragmentManager: FragmentManager) {
         if (!isAdded) show(fragmentManager, TAG)
+    }
+
+    interface Listener {
+        fun onImpress()
     }
 
     companion object {

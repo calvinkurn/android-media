@@ -59,6 +59,8 @@ import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.EventUiModel
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
@@ -433,6 +435,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private val _componentPreparation = MutableStateFlow(ComponentPreparationUiModel.Empty)
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
@@ -456,6 +460,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _tickerBottomSheetConfig,
         _liveReportSummary,
         _productReportSummary,
+        _componentPreparation,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -477,7 +482,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         beautificationConfig,
         tickerBottomSheetConfig,
         liveReportSummary,
-        productReportSummary ->
+        productReportSummary,
+        componentPreparation ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -501,6 +507,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             tickerBottomSheetConfig = tickerBottomSheetConfig,
             liveReportSummary = liveReportSummary,
             productReportSummary = productReportSummary,
+            componentPreparation = componentPreparation,
         )
     }.stateIn(
         viewModelScope,
@@ -637,6 +644,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** Report */
             is PlayBroadcastAction.GetLiveReportSummary -> handleGetLiveReportSummary()
             is PlayBroadcastAction.GetProductReportSummary -> handleGetProductReportSummary()
+
+            /** CoachMark */
+            is PlayBroadcastAction.CoachMarkHasBeenShown -> handleCoachMarkHasBeenShown()
+            is PlayBroadcastAction.ImpressCoachMark -> handleImpressCoachMark(event.coachMarkType)
 
             /** Log */
             is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
@@ -864,6 +875,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (!gameConfig.isNoGameActive()) {
                 initQuizFormData()
                 handleActiveInteractive()
+            }
+
+            updateComponentPreparation {
+                it.copy(
+                    gameIcon = ComponentPreparationUiModel.State.Ready
+                )
             }
         }) { }
     }
@@ -2038,6 +2055,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleCoachMarkHasBeenShown() {
+        _componentPreparation.update {
+            it.copy(
+                hasBeenHandled = true
+            )
+        }
+    }
+
+    private fun handleImpressCoachMark(coachMarkType: LiveMenuCoachMarkType) {
+        when (coachMarkType) {
+            is LiveMenuCoachMarkType.Statistic -> {
+                sharedPref.setFirstStatisticIconShown()
+            }
+            else -> {}
+        }
+    }
+
     private fun handleSendErrorLog(throwable: Throwable) {
         errorLogger.sendLog(throwable, buildErrorModel())
     }
@@ -2297,6 +2331,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         hydraConfigStore.setAuthor(selectedAccount)
 
         setupLiveStats(_selectedAccount.value)
+
+        updateComponentPreparation {
+            it.copy(
+                statisticIcon = ComponentPreparationUiModel.State.Ready
+            )
+        }
     }
 
     private fun handleSuccessOnBoardingUGC() {
@@ -2421,6 +2461,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         logger.sendBroadcasterLog(mappedMetric)
     }
 
+    /** Generated Cover */
     private fun handleSetCoverUploadedSource(source: Int) {
         sharedPref.setUploadedCoverSource(source, authorId, SOURCE_PREP_PAGE)
     }
@@ -2515,6 +2556,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun removePreparationMenu(menu: DynamicPreparationMenu.Menu) {
         _menuList.update {
             _menuList.value.filter { it.menu.id != menu.id }
+        }
+    }
+
+    /** Component Preparation */
+    private fun updateComponentPreparation(onUpdate: (ComponentPreparationUiModel) -> ComponentPreparationUiModel) {
+        _componentPreparation.update {
+            onUpdate(it)
         }
     }
 

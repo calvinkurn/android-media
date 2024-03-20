@@ -70,6 +70,7 @@ class SummaryInfoViewComponent(
                                     LiveStatsCardModel.Clickable(
                                         liveStats = it,
                                         clickableIcon = IconUnify.CHEVRON_RIGHT,
+                                        clickArea = LiveStatsCardModel.Clickable.ClickArea.Full,
                                         onClick = {
                                             listener.onMetricClicked(this@SummaryInfoViewComponent, it)
                                         }
@@ -79,6 +80,7 @@ class SummaryInfoViewComponent(
                                     LiveStatsCardModel.Clickable(
                                         liveStats = it,
                                         clickableIcon = IconUnify.CHEVRON_RIGHT,
+                                        clickArea = LiveStatsCardModel.Clickable.ClickArea.Full,
                                         onClick = {
                                             listener.onMetricClicked(this@SummaryInfoViewComponent, it)
                                         }

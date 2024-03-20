@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +35,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 fun ProductReportSummaryLayout(
     productReportSummary: NetworkResult<ProductReportSummaryUiModel>,
     onEstimatedIncomeClicked: () -> Unit,
+    onImpressErrorState: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -43,6 +45,15 @@ fun ProductReportSummaryLayout(
             Alignment.TopStart
         }
     ) {
+        LaunchedEffect(productReportSummary) {
+            when(productReportSummary) {
+                is NetworkResult.Fail -> {
+                    onImpressErrorState()
+                }
+                else -> {}
+            }
+        }
+
         when(productReportSummary) {
             is NetworkResult.Loading -> {
                 ProductReportSummaryContainer(isScrollable = false) {
@@ -66,6 +77,7 @@ fun ProductReportSummaryLayout(
                                         LiveStatsCardModel.Clickable(
                                             liveStats = it,
                                             clickableIcon = IconUnify.INFORMATION,
+                                            clickArea = LiveStatsCardModel.Clickable.ClickArea.IconOnly,
                                             onClick = onEstimatedIncomeClicked,
                                         )
                                     }
@@ -147,7 +159,8 @@ private fun ProductReportSummaryLayoutPreview() {
                         )
                     )
                 ),
-                onEstimatedIncomeClicked = {}
+                onEstimatedIncomeClicked = {},
+                onImpressErrorState = {},
             )
         }
     }
@@ -160,7 +173,8 @@ private fun ProductReportSummaryLayoutShimmerPreview() {
         Surface {
             ProductReportSummaryLayout(
                 productReportSummary = NetworkResult.Loading,
-                onEstimatedIncomeClicked = {}
+                onEstimatedIncomeClicked = {},
+                onImpressErrorState = {},
             )
         }
     }
@@ -173,7 +187,8 @@ private fun ProductReportSummaryLayoutErrorPreview() {
         Surface {
             ProductReportSummaryLayout(
                 productReportSummary = NetworkResult.Fail(Exception()),
-                onEstimatedIncomeClicked = {}
+                onEstimatedIncomeClicked = {},
+                onImpressErrorState = {},
             )
         }
     }

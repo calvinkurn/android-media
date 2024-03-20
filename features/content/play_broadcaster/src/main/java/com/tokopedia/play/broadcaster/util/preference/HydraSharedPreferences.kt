@@ -182,6 +182,20 @@ class HydraSharedPreferences @Inject constructor(
             true,
         )
     }
+    fun isFirstStatisticIconShown(): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, userSession.shopId),
+            true
+        )
+    }
+
+    fun setFirstStatisticIconShown() {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, userSession.shopId),
+                false
+            ).apply()
+    }
 
     companion object {
 
@@ -198,5 +212,6 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_UPLOADED_COVER_SOURCE = "saved_cover_source_%s_%s"
         private const val KEY_LIVE_TO_VOD_BOTTOM_SHEET = "live_to_vod_bottom_sheet_%s_%s"
         private const val KEY_LIVE_TO_VOD_TICKER = "live_to_vod_ticker_%s_%s"
+        private const val KEY_FIRST_STATISTIC_ICON_SHOWN = "first_statistic_icon_shown_%s"
     }
 }

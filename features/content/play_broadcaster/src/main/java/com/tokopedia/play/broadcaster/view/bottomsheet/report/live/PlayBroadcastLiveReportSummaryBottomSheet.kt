@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsCardModel
 import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
@@ -28,6 +29,7 @@ import javax.inject.Inject
  */
 class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val reportAnalyticFactory: PlayBroadcastReportAnalytic.Factory,
 ) : BottomSheetUnify() {
 
     private var mListener: Listener? = null
@@ -35,6 +37,12 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
     private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
         parentViewModelFactoryCreator.create(requireActivity())
     }
+
+    private val reportAnalytic = reportAnalyticFactory.create(
+        getAccount = { parentViewModel.selectedAccount },
+        getChannelId = { parentViewModel.channelId },
+        getChannelTitle = { parentViewModel.channelTitle }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +52,7 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        reportAnalytic.impressLiveReportBottomSheet()
         parentViewModel.submitAction(PlayBroadcastAction.GetLiveReportSummary)
     }
 
@@ -54,8 +63,8 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-
                 val uiState by parentViewModel.uiState.collectAsStateWithLifecycle()
+
                 NestTheme(
                     isOverrideStatusBarColor = false,
                 ) {
@@ -69,9 +78,10 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
                                         LiveStatsCardModel.Clickable(
                                             liveStats = it,
                                             clickableIcon = IconUnify.CHEVRON_RIGHT,
+                                            clickArea = LiveStatsCardModel.Clickable.ClickArea.Full,
                                             onClick = {
+                                                reportAnalytic.clickEstimatedIncomeCardOnLiveReport()
                                                 mListener?.onEstimatedIncomeClicked()
-                                                dismiss()
                                             }
                                         )
                                     }
