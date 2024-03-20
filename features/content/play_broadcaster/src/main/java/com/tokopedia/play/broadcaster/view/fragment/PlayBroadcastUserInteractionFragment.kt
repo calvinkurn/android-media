@@ -1288,9 +1288,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prev == curr) return
 
-        icStatistic.shouldShowWithAction(curr.isShop) {
-            reportAnalytic.impressStatisticIconCoachMark()
-        }
+        icStatistic.showWithCondition(curr.isShop)
     }
 
     private fun renderLiveMenuCoachMark(
