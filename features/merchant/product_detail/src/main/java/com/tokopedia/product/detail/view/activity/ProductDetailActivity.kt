@@ -509,6 +509,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                 )
             }
         }
+    }
 
     override fun getProductTrack(): TrackStayProductDetail? {
         val pdpFragment = supportFragmentManager.findFragmentByTag(tagFragment) as? ProductDetailFragment
