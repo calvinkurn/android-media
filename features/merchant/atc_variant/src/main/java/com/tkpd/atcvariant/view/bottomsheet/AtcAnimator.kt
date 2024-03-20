@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.getStatusBarHeight
 import com.tokopedia.kotlin.extensions.view.half
 import com.tokopedia.kotlin.extensions.view.third
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.dpToPx
@@ -89,7 +90,7 @@ class AtcAnimator(private val context: Context) {
         AnimatorSet().apply {
             interpolator = mBezierPath
             duration = UnifyMotion.T5
-            startDelay = UnifyMotion.T3.half
+            startDelay = ProductDetailCommonConstant.START_DELAY_SECOND_ANIMATION
         }
     }
 

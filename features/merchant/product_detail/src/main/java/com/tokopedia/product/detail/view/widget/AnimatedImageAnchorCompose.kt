@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.unifyprinciples.UnifyMotion
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -75,7 +76,7 @@ fun AnimatedImageAnchor(
     LaunchedEffect(data.resetLaunchEffect, relativeTargetPosition) {
         animateShow(alphaAnimatable, scaleAnimatable)
 
-        delay(UnifyMotion.T3 / 2)
+        delay(ProductDetailCommonConstant.START_DELAY_SECOND_ANIMATION)
 
         animateTranslation(
             alphaAnimatable = alphaAnimatable,
