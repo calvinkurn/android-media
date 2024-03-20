@@ -9,7 +9,7 @@ internal class AffiliateCookieParams(
     val affiliatePageDetail: AffiliatePageDetail,
     val uuid: String = "",
     val additionalParam: List<AdditionalParam> = emptyList(),
-    val subIds : List<AdditionalParam> = emptyList(),
+    val subIds: List<AdditionalParam> = emptyList(),
     val source: String = ""
 )
 
