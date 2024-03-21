@@ -4,11 +4,11 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import org.junit.Assert
 import org.junit.Test
 
-class SearchAgeRestrictionTest: SearchTestFixtures() {
+class SearchAgeRestrictionTest : SearchTestFixtures() {
 
     @Test
     fun `when on view created should give query safe model`() {
@@ -20,7 +20,7 @@ class SearchAgeRestrictionTest: SearchTestFixtures() {
 
         val localCacheModel = LocalCacheModel(service_type = "2h", shop_id = "12121", warehouse_id = "33333")
 
-        tokoNowSearchViewModel.mockSuperClassField("chooseAddressData", localCacheModel)
+        tokoNowSearchViewModel.mockPrivateField("chooseAddressData", localCacheModel)
 
         `When view created`()
 
