@@ -1216,11 +1216,16 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Track
      */
+    private val productIds = mutableListOf<String>()
     fun trackPerformance(model: FeedCardVideoContentModel, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         val playChannelId = model.playChannelId
         if (playChannelId.isBlank()) return
 
-        val productIds = model.products.map { it.id }
+        val hasChanged = model.products.filterNot { productIds.contains(it.id) }.isNotEmpty()
+        if (hasChanged) {
+            productIds.clear()
+            model.products.map { productIds.add(it.id) }
+        } else { return }
 
         viewModelScope.launchCatchError(dispatchers.io, block = {
             trackReportTrackViewerUseCase.apply {
