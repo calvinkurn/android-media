@@ -95,6 +95,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     override fun setOnItemClickedListener() {
+        val isOfferEnded = MiniCartUtils.checkIsOfferEnded(offerEndDate)
+        if (isOfferEnded) {
+            onOfferEndedCallback?.invoke(true)
+            return
+        }
+
         sendClickUpSellingEvent()
         when (offerType) {
             OfferType.PROGRESSIVE_DISCOUNT -> {
@@ -103,12 +109,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             }
 
             OfferType.GIFT_WITH_PURCHASE -> {
-                val isOfferEnded = MiniCartUtils.checkIsOfferEnded(offerEndDate)
-                if (isOfferEnded) {
-                    onOfferEndedCallback?.invoke(true)
-                    return
-                }
-
                 val intent = RouteManager.getIntent(context, ApplinkConstBmsm.BMGM_MINI_CART_EDITOR)
                 intent.putExtra(BmsmMiniCartDeepLinkMapper.EXTRA_PARAM, param)
                 intent.putExtra(BmsmMiniCartDeepLinkMapper.OFFER_END_DATE, offerEndDate)
@@ -292,21 +292,24 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         }
 
         binding?.stickyGiftView?.run {
-            if (offerType == OfferType.PROGRESSIVE_DISCOUNT) {
-                updateItemList(data.getProductList())
-                gone()
-            } else {
-                val allProducts = data.getProductList()
-                val atcProducts = allProducts.filter {
-                    it !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
+            when (offerType) {
+                OfferType.PROGRESSIVE_DISCOUNT -> {
+                    updateItemList(data.getProductList())
+                    gone()
                 }
-                updateItemList(atcProducts)
+                OfferType.GIFT_WITH_PURCHASE -> {
+                    val allProducts = data.getProductList()
+                    val atcProducts = allProducts.filter {
+                        it !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
+                    }
+                    updateItemList(atcProducts)
 
-                val gifts =
-                    allProducts.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
-                submitList(gifts)
-                setOnItemClickedListener(::setOnItemClickedListener)
-                isVisible = gifts.isNotEmpty()
+                    val gifts =
+                        allProducts.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
+                    submitList(gifts)
+                    setOnItemClickedListener(::setOnItemClickedListener)
+                    isVisible = gifts.isNotEmpty()
+                }
             }
         }
     }

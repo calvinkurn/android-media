@@ -35,4 +35,9 @@ data class FeedTopAdsTrackerDataModel(
 data class FeedProductActionModel(
     val cartId: String,
     val product: ContentTaggedProductUiModel,
-)
+    val source: Source,
+) {
+    enum class Source {
+        BottomSheet, CardHighlight,
+    }
+}

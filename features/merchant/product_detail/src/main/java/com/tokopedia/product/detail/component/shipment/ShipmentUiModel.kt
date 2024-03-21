@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentBody
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel.Ticker.mapTickerType
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.product.detail.common.data.model.rates.Ticker as ratesTicker
@@ -21,7 +21,7 @@ data class ShipmentUiModel(
 ) : DynamicPdpDataModel {
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int = typeFactory.type(this)
 
     override fun name(): String = name
 

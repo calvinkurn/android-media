@@ -5,8 +5,8 @@ import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.FileUtil
 import com.tokopedia.loginregister.shopcreation.data.GetUserProfileCompletionPojo
-import com.tokopedia.loginregister.shopcreation.data.RegisterCheckData
-import com.tokopedia.loginregister.shopcreation.data.RegisterCheckPojo
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoPojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
@@ -15,7 +15,7 @@ import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdatePojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidatePojo
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
-import com.tokopedia.loginregister.shopcreation.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCase
@@ -25,8 +25,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -45,7 +45,6 @@ import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 
 /**
  * Created by Ade Fulki on 18/01/21.
@@ -73,7 +72,7 @@ class ShopCreationViewModelTest {
     lateinit var updateUserProfileUseCase: UpdateUserProfileUseCase
 
     @RelaxedMockK
-    lateinit var getProfileUseCase: GetProfileUseCase
+    lateinit var getProfileUseCase: GetUserInfoAndSaveSessionUseCase
 
     @RelaxedMockK
     lateinit var shopInfoUseCase: ShopInfoUseCase
@@ -115,15 +114,14 @@ class ShopCreationViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewmodel = ShopCreationViewModel(
-                registerUseCase,
-                registerCheckUseCase,
-                getUserProfileCompletionUseCase,
-                validateUserProfileUseCase,
-                updateUserProfileUseCase,
-                getProfileUseCase,
-                shopInfoUseCase,
-                userSession,
-                CoroutineTestDispatchersProvider
+            registerUseCase,
+            registerCheckUseCase,
+            getUserProfileCompletionUseCase,
+            validateUserProfileUseCase,
+            updateUserProfileUseCase,
+            getProfileUseCase,
+            shopInfoUseCase,
+            CoroutineTestDispatchersProvider
         )
     }
 
@@ -231,7 +229,6 @@ class ShopCreationViewModelTest {
         MatcherAssert.assertThat((viewmodel.addPhoneResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
     }
 
-
     @Test
     fun `Failed add phone`() {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
@@ -326,11 +323,7 @@ class ShopCreationViewModelTest {
 
         viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
 
-        every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
-
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -349,9 +342,7 @@ class ShopCreationViewModelTest {
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
 
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -371,9 +362,7 @@ class ShopCreationViewModelTest {
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
 
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -384,9 +373,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed register phone and name`() {
         viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onError(throwable)
-        }
+        coEvery { registerUseCase(any()) } throws throwable
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -395,18 +382,6 @@ class ShopCreationViewModelTest {
 
         val result = viewmodel.registerPhoneAndName.value as Fail
         assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `on complete register phone and name`() {
-        viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onCompleted()
-        }
-
-        viewmodel.registerPhoneAndName("", "")
-
-        verify(exactly = 0) { registerPhoneAndNameObserver.onChanged(any<Fail>()) }
     }
 
     @Test
@@ -467,15 +442,14 @@ class ShopCreationViewModelTest {
 
     @Test
     fun `Success get user info`() {
+        // When
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
-        }
+        val response = Success(successGetUserInfoResponse)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewmodel.getUserInfo()
 
-        verify { getUserInfoObserver.onChanged(any<Success<ProfileInfo>>()) }
+        coVerify { getUserInfoObserver.onChanged(any<Success<ProfileInfo>>()) }
         assert(viewmodel.getUserInfoResponse.value is Success)
 
         val result = viewmodel.getUserInfoResponse.value as Success<ProfileInfo>
@@ -485,10 +459,8 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed get user info`() {
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile.invoke(throwable)
-        }
+        val response = Fail(throwable)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewmodel.getUserInfo()
 
@@ -499,49 +471,40 @@ class ShopCreationViewModelTest {
         assertEquals(throwable, result.throwable)
     }
 
-    @Test
-    fun `clear background task`() {
-        viewmodel.clearBackgroundTask()
-        verify {
-            registerUseCase.unsubscribe()
-            getProfileUseCase.unsubscribe()
-        }
-    }
-
     companion object {
         private val successAddNameResponse: UserProfileUpdatePojo = FileUtil.parse(
-                "/success_add_name_response.json",
-                UserProfileUpdatePojo::class.java
+            "/success_add_name_response.json",
+            UserProfileUpdatePojo::class.java
         )
         private val successAddPhoneResponse: UserProfileUpdatePojo = FileUtil.parse(
-                "/success_add_phone_response.json",
-                UserProfileUpdatePojo::class.java
+            "/success_add_phone_response.json",
+            UserProfileUpdatePojo::class.java
         )
         private val successRegisterCheckResponse: RegisterCheckPojo = FileUtil.parse(
-                "/success_register_check_response.json",
-                RegisterCheckPojo::class.java
+            "/success_register_check_response.json",
+            RegisterCheckPojo::class.java
         )
         private val successGetShopInfoResponse: ShopInfoPojo = FileUtil.parse(
-                "/success_get_shop_info_response.json",
-                ShopInfoPojo::class.java
+            "/success_get_shop_info_response.json",
+            ShopInfoPojo::class.java
         )
         private val successGetUserProfileResponse: GetUserProfileCompletionPojo = FileUtil.parse(
-                "/success_get_user_profile_response.json",
-                GetUserProfileCompletionPojo::class.java
+            "/success_get_user_profile_response.json",
+            GetUserProfileCompletionPojo::class.java
         )
         private val successValidateUserProfileResponse: UserProfileValidatePojo = FileUtil.parse(
-                "/success_validate_user_profile_response.json",
-                UserProfileValidatePojo::class.java
+            "/success_validate_user_profile_response.json",
+            UserProfileValidatePojo::class.java
         )
         private val successGetUserInfoResponse: ProfilePojo = FileUtil.parse(
-                "/success_get_user_info_response.json",
-                ProfilePojo::class.java
+            "/success_get_user_info_response.json",
+            ProfilePojo::class.java
         )
         private val successRegisterPhoneAndNameResponse: RegisterPojo = FileUtil.parse(
-                "/success_register_phone_and_name_response.json",
-                RegisterPojo::class.java
+            "/success_register_phone_and_name_response.json",
+            RegisterPojo::class.java
         )
-        private val throwable = Throwable()
+        private val throwable = Exception()
         private val errors = listOf("errors")
     }
 }

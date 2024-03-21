@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.ui.di.ProductDetailTestComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 
 /**
  * Created by Yehezkiel on 08/04/21
@@ -54,7 +54,7 @@ class ProductDetailActivityMock : ProductDetailActivity() {
         return PRODUCT_DETAIL_TAG
     }
 
-    fun getPdpFragment(): DynamicProductDetailFragment {
-        return supportFragmentManager.findFragmentByTag(tagFragment) as DynamicProductDetailFragment
+    fun getPdpFragment(): ProductDetailFragment {
+        return supportFragmentManager.findFragmentByTag(tagFragment) as ProductDetailFragment
     }
 }

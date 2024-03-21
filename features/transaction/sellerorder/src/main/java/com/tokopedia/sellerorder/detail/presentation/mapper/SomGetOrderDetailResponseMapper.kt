@@ -27,6 +27,8 @@ import com.tokopedia.order_management_common.R as order_management_commonR
 
 object SomGetOrderDetailResponseMapper {
 
+    private const val ORDER_LEVEL_KEY = "ORDER_LEVEL_KEY"
+
     private fun getBmgmList(
         bmgms: List<SomDetailOrder.GetSomDetail.Bmgm>?,
         orderId: String,
@@ -348,7 +350,7 @@ object SomGetOrderDetailResponseMapper {
             add(
                 SomDetailAddOnOrderLevelUiModel(
                     addOnSummaryUiModel = AddOnSummaryUiModel(
-                        addOnIdentifier = addOnSummary.label,
+                        addOnIdentifier = ORDER_LEVEL_KEY,
                         totalPriceText = if (addOnSummary.totalPriceStr.isNotBlank()) {
                             StringRes(
                                 order_management_commonR.string.om_add_on_collapsed_title_format,

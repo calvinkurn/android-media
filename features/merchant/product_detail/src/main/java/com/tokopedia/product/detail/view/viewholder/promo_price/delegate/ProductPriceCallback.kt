@@ -23,7 +23,7 @@ class ProductPriceCallback(
     private fun onPromoPriceClicked(
         data: ProductPriceEvent.OnPromoPriceClicked
     ) {
-        val p1 = viewModel.getDynamicProductInfoP1 ?: return
+        val p1 = viewModel.getProductInfoP1 ?: return
         PromoPriceTracker.onPromoPriceClicked(
             queueTracker = queueTracker,
             subtitle = data.subtitle,

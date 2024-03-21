@@ -7,6 +7,7 @@ object ShopPagePerformanceConstant {
     const val SHOP_HEADER_TRACE_V4 = "mp_shop_header_${ShopPageConstant.ShopPageFeatureImprovementType.V4_3}"
     const val SHOP_PRODUCT_TAB_TRACE_V4 = "mp_shop_product_${ShopPageConstant.ShopPageFeatureImprovementType.V4_3}"
     const val SHOP_HOME_TAB_TRACE_V4 = "mp_shop_home_${ShopPageConstant.ShopPageFeatureImprovementType.V4_3}"
+    const val SHOP_HOME_PREFETCH_V1 = "mp_shop_${ShopPageConstant.ShopPageFeatureImprovementType.PREFETCH_V1_0}"
     const val SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE = "mp_shop_home_image_slider_banner"
     const val SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE = "mp_shop_home_image_slider_square"
     const val SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE = "mp_shop_home_image_multiple_column"

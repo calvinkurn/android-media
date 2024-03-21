@@ -6,7 +6,7 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 data class OngoingCampaignUiModel(
     private val type: String = "",
@@ -21,7 +21,7 @@ data class OngoingCampaignUiModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int = typeFactory.type(this)
 
     override fun name(): String = name
 

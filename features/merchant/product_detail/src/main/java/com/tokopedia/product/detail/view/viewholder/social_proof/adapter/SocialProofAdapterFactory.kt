@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.view.viewholder.social_proof.adapter
 
 import android.view.ViewGroup
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofChipViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofLoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofOrangeChipViewHolder
@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_ho
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 
 class SocialProofAdapterFactory(
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) {
 
     fun getItemViewType(type: SocialProofUiModel.Type): Int = type.hashCode()

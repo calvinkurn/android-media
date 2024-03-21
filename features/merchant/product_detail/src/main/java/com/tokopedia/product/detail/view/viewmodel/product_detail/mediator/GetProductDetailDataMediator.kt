@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail.mediator
 
 import com.tokopedia.library.subviewmodel.SubViewModelMediator
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 
@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 
 interface GetProductDetailDataMediator : SubViewModelMediator {
 
-    fun getP1(): DynamicProductInfoP1?
+    fun getP1(): ProductInfoP1?
 
     fun getP2(): ProductInfoP2UiData?
 

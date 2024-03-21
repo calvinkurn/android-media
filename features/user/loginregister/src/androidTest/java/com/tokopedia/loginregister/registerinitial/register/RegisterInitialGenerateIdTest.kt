@@ -5,7 +5,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.ViewIdGenerator
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Test
@@ -23,8 +24,7 @@ class RegisterInitialGenerateIdTest : RegisterInitialBase() {
 
     @Test
     fun generate_view_id_file_bottom_sheet_socmed() {
-        isDefaultRegisterCheck = false
-        registerCheckUseCase.isError = true
+        fakeRepo.registerCheckConfig = Config.Error
 
         runTest {
             onView(withId(R.id.socmed_btn)).perform(click())

@@ -9,13 +9,13 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTabletLeftSectio
 import com.tokopedia.product.detail.databinding.ItemTabletModeBinding
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class TabletLeftSectionViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener,
-    adapterTypeFactory: DynamicProductDetailAdapterFactory
+    private val listener: ProductDetailListener,
+    adapterTypeFactory: ProductDetailAdapterFactory
 ) : AbstractViewHolder<ProductTabletLeftSectionDataModel>(view) {
 
     private val binding = ItemTabletModeBinding.bind(view)

@@ -14,8 +14,19 @@ const val MAX_MEDIA_ITEM = 5
 const val MEDIA_PICKER_REQUEST_CODE = 10020
 const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
 const val EPHARMACY_GROUP_ID = "epharmacy_group_id"
-const val EPHARMACY_ENABLER_NAME = "epharmacy_enabler_name"
-const val EPHARMACY_CONSULTATION_SOURCE_ID = "epharmacy_consultation_source_id"
+const val EPHARMACY_ENABLER_NAME = "enabler_name"
+const val EPHARMACY_ENABLER_ID = "enabler_id"
+const val EPHARMACY_TOKO_CONSULTATION_ID = "toko_consultation_id"
+const val EPHARMACY_TOKO_CONSULTATION_IDS = "toko_consultation_ids"
+const val EPHARMACY_CONS_DURATION = "epharmacy_cons_duration"
+const val EPHARMACY_CONS_PRICE = "epharmacy_cons_price"
+const val EPHARMACY_NOTE = "epharmacy_note"
+const val EPHARMACY_IS_ONLY_CONSULT = "epharmacy_is_only_consult"
+const val EPHARMACY_IS_OUTSIDE_WORKING_HOURS = "epharmacy_is_outside_working_hours"
+const val EPHARMACY_VERTICAL_ID = "vertical_id"
+const val EPHARMACY_WAITING_INVOICE = "waiting_invoice"
+const val EPHARMACY_SOURCE = "source"
+const val IS_SINGLE_CONSUL_FLOW = "single_consul_flow"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"
@@ -26,6 +37,9 @@ const val TICKER_COMPONENT = "ticker component"
 const val SHIMMER_COMPONENT = "shimmer component"
 const val SHIMMER_COMPONENT_1 = "shimmer 1"
 const val SHIMMER_COMPONENT_2 = "shimmer 2"
+const val ORDER_HEADER_COMPONENT = "order header component"
+const val ORDER_INFO_COMPONENT = "order info component"
+const val ORDER_PAYMENT_COMPONENT = "order payment component"
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 
@@ -55,9 +69,11 @@ const val ENTRY_POINT_CHECKOUT = "Checkout"
 const val ENABLER_IMAGE_URL = "enabler_image_url"
 const val UPLOAD_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons.jpg"
 const val MINI_CONS_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
+const val MINI_CONS_CHOOSER_IMAGE_URL_DISABLED = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc_disabled.png"
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
-const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
+const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser"
+const val EPHARMACY_QUANTITY_EDITOR = "quantity-editor"
 
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
@@ -76,7 +92,7 @@ enum class EPharmacyConsultationStatus(val status: Int) {
     DOCTOR_NOT_AVAILABLE(5)
 }
 
-const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"
+const val EPHARMACY_APP_CHECKOUT_APPLINK = "tokopedia://checkout"
 const val EPHARMACY_CART_APPLINK = "tokopedia://cart"
 
 enum class EPharmacyButtonState(val state: String) {
@@ -99,6 +115,9 @@ const val UTC = "UTC"
 
 const val WEB_LINK_PREFIX = "tokopedia://webview?url="
 const val TYPE_DOCTOR_NOT_AVAILABLE_REMINDER = 1
+const val TYPE_OUTSIDE_WORKING_HOURS_REMINDER = 2
+const val DEFAULT_OPEN_TIME = "2001-01-01T03:00:00Z"
+const val DEFAULT_CLOSE_TIME = "2001-01-01T21:00:00Z"
 
 const val ERROR_CODE_OUTSIDE_WORKING_HOUR = 404
 const val REMINDER_ILLUSTRATION_IMAGE = "https://images.tokopedia.net/img/pharmacy-illustration.png"
@@ -109,5 +128,7 @@ const val OUTSIDE_WORKING_HOURS_SOURCE = "outside_working_hours"
 const val WORKING_HOURS_SOURCE = "working_hours"
 const val EPHARMACY_HALF_ALPHA = 0.5f
 const val EPHARMACY_FULL_ALPHA = 1.0f
+const val EXTRA_CHECKOUT_PAGE_SOURCE = "EXTRA_CHECKOUT_PAGE_SOURCE"
+const val EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY = "EPharmacy"
 
 const val WEB_VIEW_MIN_VERSION_SUPPORT_CONSULTATION = 70

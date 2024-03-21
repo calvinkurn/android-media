@@ -2,6 +2,9 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.v
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.RedefineRegisterInputPhoneViewModel
@@ -13,12 +16,9 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileValidateParam
-import com.tokopedia.sessioncommon.data.RegisterCheckData
-import com.tokopedia.sessioncommon.data.RegisterCheckModel
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.Register
 import com.tokopedia.sessioncommon.data.register.RegisterV2Param
-import com.tokopedia.sessioncommon.domain.usecase.GetRegisterCheckUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetRegisterV2AndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -45,7 +45,7 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     private lateinit var viewModel: RedefineRegisterInputPhoneViewModel
 
-    private val getRegisterCheckUseCase = mockk<GetRegisterCheckUseCase>(relaxed = true)
+    private val getRegisterCheckUseCase = mockk<RegisterCheckUseCase>(relaxed = true)
 
     private val getUserInfoAndSaveSessionUseCase =
         mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
@@ -180,12 +180,14 @@ class RedefineRegisterInputPhoneViewModelTest {
         val phone = "08121234567890"
         val isRequiredInputPhone = true
         val message = "Nomor anda tidak eligible untuk mendaftar"
-        val response = RegisterCheckModel(
-            data = RegisterCheckData(errors = listOf(message))
+        val errors = arrayListOf<String>()
+        errors.add(message)
+        val response = RegisterCheckPojo(
+            data = RegisterCheckData(errors = errors)
         )
 
         // When
-        coEvery { getRegisterCheckUseCase(phone) } returns response
+        coEvery { getRegisterCheckUseCase(any()) } returns response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
             phone = phone,
@@ -207,12 +209,12 @@ class RedefineRegisterInputPhoneViewModelTest {
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = true
-        val response = RegisterCheckModel(
+        val response = RegisterCheckPojo(
             data = RegisterCheckData(isExist = true)
         )
 
         // When
-        coEvery { getRegisterCheckUseCase(phone) } returns response
+        coEvery { getRegisterCheckUseCase(any()) } returns response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
             phone = phone,
@@ -234,12 +236,12 @@ class RedefineRegisterInputPhoneViewModelTest {
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = true
-        val response = RegisterCheckModel(
+        val response = RegisterCheckPojo(
             data = RegisterCheckData(isExist = false)
         )
 
         // When
-        coEvery { getRegisterCheckUseCase(phone) } returns response
+        coEvery { getRegisterCheckUseCase(any()) } returns response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
             phone = phone,
@@ -264,7 +266,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         val response = Throwable()
 
         // When
-        coEvery { getRegisterCheckUseCase(phone) } throws response
+        coEvery { getRegisterCheckUseCase(any()) } throws response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
             phone = phone,

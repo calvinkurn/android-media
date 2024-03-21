@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.datamapper.discoveryPageData
@@ -117,7 +118,8 @@ data class ComponentsItem(
     var isFirstShown: Boolean = true,
     var itemPosition: Int = 0,
     var isBackgroundPresent: Boolean = false,
-    var isTargetedTabComponent: Boolean = false
+    var isTargetedTabComponent: Boolean = false,
+    var automateCoupons: List<AutomateCouponUiModel>? = null
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null

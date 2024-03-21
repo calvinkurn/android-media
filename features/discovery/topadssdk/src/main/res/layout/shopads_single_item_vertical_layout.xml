@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        app:labelType="highlight_light_green"
+        app:labelType="highlight_light_red"
         app:layout_constraintBottom_toBottomOf="@id/headerShopImage"
         app:layout_constraintStart_toEndOf="@id/shop_name"
         app:layout_constraintTop_toTopOf="@id/headerShopImage"

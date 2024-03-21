@@ -12,16 +12,18 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class LoginV2Mapper(val userSession: UserSessionInterface) {
 
-    fun map(loginToken: LoginToken,
-                    onSuccessLoginToken: (loginTokenPojo: LoginToken) -> Unit,
-                    onErrorLoginToken: (e: Throwable) -> Unit,
-                    onShowPopupError: (loginTokenPojo: LoginToken)  -> Unit,
-                    onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
-                    onGoToSecurityQuestion: () -> Unit) {
-
+    fun map(
+        loginToken: LoginToken,
+        onSuccessLoginToken: (loginTokenPojo: LoginToken) -> Unit,
+        onErrorLoginToken: (e: Throwable) -> Unit,
+        onShowPopupError: (loginTokenPojo: LoginToken) -> Unit,
+        onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
+        onGoToSecurityQuestion: () -> Unit
+    ) {
         val errors = loginToken.errors
-        if (loginToken.errors.isEmpty()
-            && loginToken.accessToken.isNotBlank()) {
+        if (loginToken.errors.isEmpty() &&
+            loginToken.accessToken.isNotBlank()
+        ) {
             saveAccessToken(loginToken)
             if (loginToken.sqCheck) {
                 onGoToSecurityQuestion()
@@ -34,7 +36,8 @@ class LoginV2Mapper(val userSession: UserSessionInterface) {
             removeUserSessionToken()
             if (loginToken.popupError.header.isNotEmpty() &&
                 loginToken.popupError.body.isNotEmpty() &&
-                loginToken.popupError.action.isNotEmpty()) {
+                loginToken.popupError.action.isNotEmpty()
+            ) {
                 onShowPopupError(loginToken)
             } else if (loginToken.errors.isNotEmpty()) {
                 onErrorLoginToken(MessageErrorException(loginToken.errors[0].message))
@@ -47,20 +50,24 @@ class LoginV2Mapper(val userSession: UserSessionInterface) {
     }
 
     private fun shouldGoToActivationPage(loginToken: LoginToken): Boolean {
-        val NOT_ACTIVATED = "belum diaktivasi"
         return loginToken.errors.isNotEmpty() && loginToken.errors[0].message.contains(NOT_ACTIVATED)
     }
 
     private fun saveAccessToken(loginToken: LoginToken?) {
         loginToken?.run {
             userSession.setToken(
-                    accessToken,
-                    tokenType,
-                    EncoderDecoder.Encrypt(refreshToken, userSession.refreshTokenIV))
+                accessToken,
+                tokenType,
+                EncoderDecoder.Encrypt(refreshToken, userSession.refreshTokenIV)
+            )
         }
     }
 
     private fun removeUserSessionToken() {
         userSession.setToken(null, null, null)
+    }
+
+    companion object {
+        const val NOT_ACTIVATED = "belum diaktivasi"
     }
 }

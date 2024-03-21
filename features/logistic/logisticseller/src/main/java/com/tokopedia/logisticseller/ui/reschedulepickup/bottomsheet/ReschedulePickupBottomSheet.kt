@@ -22,19 +22,19 @@ fun RescheduleBottomSheetLayout(
     onBottomSheetClosed: () -> Unit
 ) {
     when (currentScreen) {
-        RescheduleBottomSheetState.DAY -> RescheduleBottomSheetContent(
+        RescheduleBottomSheetState.DAY -> ListBottomSheetContent(
             items = options.dayOptions,
             onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectDay(it)) },
             onBottomSheetClosed = onBottomSheetClosed
         )
 
-        RescheduleBottomSheetState.TIME -> RescheduleBottomSheetContent(
+        RescheduleBottomSheetState.TIME -> ListBottomSheetContent(
             items = options.timeOptions,
             onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectTime(it)) },
             onBottomSheetClosed = onBottomSheetClosed
         )
 
-        RescheduleBottomSheetState.REASON -> RescheduleBottomSheetContent(
+        RescheduleBottomSheetState.REASON -> ListBottomSheetContent(
             items = options.reasonOptions,
             onItemClicked = { onEvent(ReschedulePickupUiEvent.SelectReason(it)) },
             onBottomSheetClosed = onBottomSheetClosed
@@ -46,7 +46,7 @@ fun RescheduleBottomSheetLayout(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun <T> RescheduleBottomSheetContent(
+fun <T> ListBottomSheetContent(
     items: List<T>,
     onItemClicked: (T) -> Unit,
     onBottomSheetClosed: () -> Unit
