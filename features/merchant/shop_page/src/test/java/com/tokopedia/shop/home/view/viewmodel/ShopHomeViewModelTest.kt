@@ -255,7 +255,6 @@ class ShopHomeViewModelTest {
             PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
             listOf()
         ),
-        widgetType = PlayWidgetType.Small,
         isLoading = false
     )
 
