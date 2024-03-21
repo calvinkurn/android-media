@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.ViewGroup;
 
 import androidx.collection.SparseArrayCompat;
@@ -15,7 +16,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
@@ -61,8 +61,9 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
+    @SuppressLint("Method Call Prohibited")
     public Fragment getItem(int position) {
-        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
+        if (shouldUseGlobalForYouComponent) {
             HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
                     position,
                     Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
@@ -88,7 +89,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
+        if (shouldUseGlobalForYouComponent) {
             HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
             homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
             homeFeedFragment.setParentPool(parentPool);

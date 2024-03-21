@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder.review.ui
 
+import android.text.TextUtils
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -16,9 +18,9 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.UserStatistic
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
@@ -36,7 +38,7 @@ import com.tokopedia.reviewcommon.R as reviewcommonR
 
 class ProductReviewViewHolder(
     val view: View,
-    val listener: DynamicProductDetailListener,
+    val listener: ProductDetailListener,
     val callback: ReviewCallback
 ) : ProductDetailPageViewHolder<ProductMostHelpfulReviewUiModel>(view) {
 
@@ -255,18 +257,28 @@ class ProductReviewViewHolder(
             binding.txtDescReviewPdp.hide()
             return
         }
-        binding.txtDescReviewPdp.apply {
-            maxLines = MAX_LINES_REVIEW_DESCRIPTION
-            val formattingResult = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
-            text = formattingResult.first
-            if (formattingResult.second) {
-                setOnClickListener {
-                    maxLines = Integer.MAX_VALUE
-                    text = HtmlLinkHelper(context, reviewData.message).spannedString
-                }
+
+        val txtReview = binding.txtDescReviewPdp
+        txtReview.show()
+        txtReview.text = HtmlLinkHelper(txtReview.context, reviewData.message).spannedString ?: ""
+        txtReview.post {
+            val lineCount = txtReview.layout?.lineCount ?: return@post
+            if (lineCount > MAX_LINES_REVIEW_DESCRIPTION) {
+                txtReview.maxLines = MAX_LINES_REVIEW_DESCRIPTION
+
+                val txtExpand = binding.txtDescReviewExpand
+                txtExpand.show()
+                txtExpand.setOnClickListener(onClickExpand)
+                txtReview.setOnClickListener(onClickExpand)
             }
-            show()
         }
+    }
+
+    private val onClickExpand = OnClickListener {
+        val txtReview = binding.txtDescReviewPdp
+        val txtExpand = binding.txtDescReviewExpand
+        txtReview.maxLines = Int.MAX_VALUE
+        txtExpand.hide()
     }
 
     private fun hideAllOtherElements() {
@@ -300,7 +312,7 @@ class ProductReviewViewHolder(
                             item.getReviewID(),
                             position,
                             getComponentTrackData(it),
-                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                            ProductDetailMapper.generateDetailedMediaResult(
                                 it.mediaThumbnails
                             )
                         )
@@ -313,7 +325,7 @@ class ProductReviewViewHolder(
                             item.getReviewID(),
                             position,
                             getComponentTrackData(it),
-                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                            ProductDetailMapper.generateDetailedMediaResult(
                                 it.mediaThumbnails
                             )
                         )

@@ -3,6 +3,7 @@ package com.tokopedia.buy_more_get_more.minicart.presentation.model
 import com.tokopedia.bmsm_widget.presentation.model.GiftWidgetState
 import com.tokopedia.bmsm_widget.presentation.model.ProductGiftUiModel
 import com.tokopedia.buy_more_get_more.common.OfferType
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 
@@ -76,7 +77,8 @@ private fun getProgressiveDiscountProductList(data: BmgmMiniCartDataUiModel): Li
     data.tiers.forEach { t ->
         if (t is BmgmMiniCartVisitable.TierUiModel) {
             if (t.isDiscountTier()) {
-                productList.add(t)
+                val tier = t.copy(products = getProgressiveDiscountProductTierProducts(t.products))
+                productList.add(tier)
             } else {
                 t.products.forEach { product ->
                     repeat(product.quantity) {
@@ -90,4 +92,14 @@ private fun getProgressiveDiscountProductList(data: BmgmMiniCartDataUiModel): Li
         productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
     }
     return productList.toList()
+}
+
+private fun getProgressiveDiscountProductTierProducts(products: List<BmgmMiniCartVisitable.ProductUiModel>): List<BmgmMiniCartVisitable.ProductUiModel> {
+    val tierProducts = mutableListOf<BmgmMiniCartVisitable.ProductUiModel>()
+    products.forEach { p ->
+        repeat(p.quantity) {
+            tierProducts.add(p.copy(quantity = Int.ONE))
+        }
+    }
+    return tierProducts.toList()
 }

@@ -12,17 +12,16 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductDetailInfoBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.nested_adapter.ProductDetailInfoAdapter
-import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by Yehezkiel on 12/10/20
  */
 class ProductDetailInfoViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductDetailInfoDataModel>(view) {
 
     companion object {

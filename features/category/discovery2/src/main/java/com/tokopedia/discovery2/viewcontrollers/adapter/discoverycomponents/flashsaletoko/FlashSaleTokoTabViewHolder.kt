@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flashsaletoko.FlashSaleTokoTabMapper.mapToShopTabDataModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.CLICK_UNIFY_TAB
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -22,6 +23,8 @@ class FlashSaleTokoTabViewHolder(
     private var viewModel: FlashSaleTokoTabViewModel? = null
 
     private val tab = itemView.findViewById<ShopTabView>(R.id.tab)
+
+    private val discoveryRecycleAdapter: DiscoveryRecycleAdapter by lazy { DiscoveryRecycleAdapter(fragment) }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as FlashSaleTokoTabViewModel
@@ -45,10 +48,15 @@ class FlashSaleTokoTabViewHolder(
         viewModel?.getSyncPageLiveData()?.observe(fragment.viewLifecycleOwner) { needReSync ->
             if (needReSync) (fragment as? DiscoveryFragment)?.reSync()
         }
+
+        viewModel?.notifyTargetInFestiveSection()?.observe(fragment.viewLifecycleOwner) { (sectionId, selectedFilterValue) ->
+            discoveryRecycleAdapter.notifyFestiveSectionId(sectionId, selectedFilterValue)
+        }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         viewModel?.getTabLiveData()?.removeObservers(fragment.viewLifecycleOwner)
+        viewModel?.notifyTargetInFestiveSection()?.removeObservers(fragment.viewLifecycleOwner)
         super.removeObservers(lifecycleOwner)
     }
 

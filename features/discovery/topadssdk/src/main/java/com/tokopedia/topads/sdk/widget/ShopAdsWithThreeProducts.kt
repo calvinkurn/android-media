@@ -9,10 +9,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
@@ -27,11 +27,13 @@ import com.tokopedia.topads.sdk.shopwidgetthreeproducts.adapter.ShopWidgetAdapte
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.factory.ShopWidgetFactoryImpl
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.*
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.escapeHTML
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 private const val PRODUCT_CARD_COUNT_THREE = 3
 
@@ -205,7 +207,6 @@ class ShopAdsWithThreeProducts : BaseCustomView {
                 }
             }
         }
-
     }
 
     private fun getList(
@@ -218,7 +219,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         items.add(EmptyShopCardModel(cpmData, shopApplink, adsClickUrl))
         if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
             val productCardModelList: ArrayList<ProductCardModel> =
-                getProductCardModels(cpmData.cpm.cpmShop.products, hasAddToCartButton)
+                MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddToCartButton)
             for (i in 0 until productCardModelList.size) {
                 if (i < PRODUCT_CARD_COUNT_THREE) {
                     val product = cpmData.cpm.cpmShop.products[i]
@@ -245,45 +246,6 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             repeat(PRODUCT_CARD_COUNT_THREE) { items.add(ShopWidgetShimmerUiModel()) }
         }
         return items
-    }
-
-    private fun getProductCardModels(
-        products: List<Product>,
-        hasAddToCartButton: Boolean
-    ): ArrayList<ProductCardModel> {
-        return ArrayList<ProductCardModel>().apply {
-            products.map {
-                add(getProductCardViewModel(it, hasAddToCartButton))
-            }
-        }
-    }
-
-    private fun getProductCardViewModel(
-        product: Product,
-        hasAddToCartButton: Boolean
-    ): ProductCardModel {
-        return ProductCardModel(
-            productImageUrl = product.imageProduct.imageUrl,
-            productName = product.name,
-            discountPercentage = if (product.campaign.discountPercentage != Int.ZERO) "${product.campaign.discountPercentage}%" else "",
-            slashedPrice = product.campaign.originalPrice,
-            formattedPrice = product.priceFormat,
-            reviewCount = product.countReviewFormat.toIntOrZero(),
-            ratingCount = product.productRating,
-            ratingString = product.productRatingFormat,
-            countSoldRating = product.headlineProductRatingAverage,
-            freeOngkir = ProductCardModel.FreeOngkir(
-                product.freeOngkir.isActive,
-                product.freeOngkir.imageUrl
-            ),
-            labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                product.labelGroupList.map {
-                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
-                }
-            },
-            hasAddToCartButton = hasAddToCartButton,
-            addToCartButtonType = UnifyButton.Type.MAIN
-        )
     }
 
     private fun initVars() {
@@ -367,14 +329,14 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             shopAdsText?.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
             )
         } else {
             shopAdsText?.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                    unifyprinciplesR.color.Unify_NN950_68
                 )
             )
         }
@@ -405,7 +367,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
 
         val labelVoucher = context?.let { Label(it) }
 
-        labelVoucher?.setLabelType(Label.GENERAL_LIGHT_GREEN)
+        labelVoucher?.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
         labelVoucher?.text = voucher
         labelVoucher?.layoutParams = layoutParams
 
@@ -425,15 +387,19 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         if (shopBadgeUrl.isNotEmpty()) {
             shopBadge?.loadImage(shopBadgeUrl)
             shopBadge?.show()
-        } else shopBadge?.hide()
+        } else {
+            shopBadge?.hide()
+        }
     }
 
     private fun getTextColor(variant: Int): Int {
-        return if (variant == LAYOUT_8) ContextCompat.getColor(
-            context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN0
-        )
-        else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-
+        return if (variant == LAYOUT_8) {
+            ContextCompat.getColor(
+                context,
+                unifyprinciplesR.color.Unify_NN0
+            )
+        } else {
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
+        }
     }
 }

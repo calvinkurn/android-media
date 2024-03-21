@@ -21,10 +21,9 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
@@ -32,14 +31,15 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHol
 import com.tokopedia.product.detail.view.viewholder.TabletLeftSectionViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
 
 /**
  * Created by Yehezkiel on 04/01/21
  */
 class ProductDetailAdapter(
     asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>,
-    private val listener: DynamicProductDetailListener?,
-    private val adapterTypeFactory: DynamicProductDetailAdapterFactory
+    private val listener: ProductDetailListener?,
+    private val adapterTypeFactory: ProductDetailAdapterFactory
 ) :
     ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
 
@@ -55,7 +55,11 @@ class ProductDetailAdapter(
         bind(holder as AbstractViewHolder<DynamicPdpDataModel>, getItem(position))
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<*>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (payloads.isNotEmpty()) {
             bind(holder as AbstractViewHolder<DynamicPdpDataModel>, getItem(position), payloads)
         } else {
@@ -157,8 +161,13 @@ class ProductDetailAdapter(
         holder.bind(item)
     }
 
-    fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel, payloads: MutableList<Any>) {
-        val payloadInt = (payloads.firstOrNull() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
+    fun bind(
+        holder: AbstractViewHolder<DynamicPdpDataModel>,
+        item: DynamicPdpDataModel,
+        payloads: MutableList<Any>
+    ) {
+        val payloadInt =
+            (payloads.firstOrNull() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
         if (payloads.isNotEmpty() && payloads.firstOrNull() != null && payloadInt != null) {
             holder.bind(item, listOf(payloadInt))
         } else {

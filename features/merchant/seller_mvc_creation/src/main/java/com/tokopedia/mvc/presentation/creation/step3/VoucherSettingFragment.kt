@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -44,6 +45,7 @@ import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.tracker.VoucherSettingTracker
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -54,6 +56,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import java.util.ArrayList
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @FlowPreview
 class VoucherSettingFragment : BaseDaggerFragment() {
@@ -119,7 +122,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         context?.let {
             ContextCompat.getColor(
                 it,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                unifyprinciplesR.color.Unify_Static_Black
             )
         }
     }
@@ -127,7 +130,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         context?.let {
             ContextCompat.getColor(
                 it,
-                com.tokopedia.unifyprinciples.R.color.Green_G500
+                unifyprinciplesR.color.Unify_GN500
             )
         }
     }
@@ -656,6 +659,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingNominalInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingNominal.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) {
                         tracker.sendClickFieldNominalCashbackEvent(
@@ -681,6 +685,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingMinimumBuyInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingMinimumBuy.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) {
                         tracker.sendClickFieldMinimumCashbackEvent(
@@ -706,6 +711,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingQuotaInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingQuota.apply {
+                enableActionDone()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(FREE_SHIPPING_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -797,6 +803,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setupCashbackNominalSection() {
         cashbackInputSectionBinding?.run {
             tfCashbackNominal.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldNominalCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -820,6 +827,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setupCashbackPercentageSection() {
         cashbackInputSectionBinding?.run {
             tfCashbackPercentage.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -853,6 +861,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMaxDeductionInput() {
         cashbackInputSectionBinding?.run {
             tfCahsbackMaxDeduction.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -873,6 +882,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMinimumBuyInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackMinimumBuy.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -893,6 +903,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackQuotaInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackQuota.apply {
+                enableActionDone()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -1003,6 +1014,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setupDiscountNominalSection() {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldNominalCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -1035,6 +1047,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setupDiscountPercentageSection() {
         discountInputSectionBinding?.run {
             tfDiscountPercentage.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -1058,6 +1071,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMaxDeductionInput() {
         discountInputSectionBinding?.run {
             tfDiscountMaxDeduction.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -1078,6 +1092,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMinimumBuyInput() {
         discountInputSectionBinding?.run {
             tfDiscountMinimumBuy.apply {
+                enableActionNext()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -1098,6 +1113,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountQuotaInput() {
         discountInputSectionBinding?.run {
             tfDiscountQuota.apply {
+                enableActionDone()
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
@@ -1364,7 +1380,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun ChipsUnify.disable() {
         val color = ContextCompat.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            unifyprinciplesR.color.Unify_NN400
         )
         chipType = ChipsUnify.TYPE_DISABLE
         chip_image_icon.setColorFilter(color)
@@ -1406,5 +1422,13 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
             })
         }
+    }
+
+    private fun TextFieldUnify2.enableActionNext() {
+        editText.imeOptions = EditorInfo.IME_ACTION_NEXT
+    }
+
+    private fun TextFieldUnify2.enableActionDone() {
+        editText.imeOptions = EditorInfo.IME_ACTION_DONE
     }
 }

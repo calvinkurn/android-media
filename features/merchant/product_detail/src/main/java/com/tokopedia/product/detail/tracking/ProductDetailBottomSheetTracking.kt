@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category
 import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit
 import com.tokopedia.product.detail.tracking.TrackingConstant.Item.CREATIVE_NAME
 import com.tokopedia.product.detail.tracking.TrackingConstant.Item.CREATIVE_SLOT
@@ -23,7 +23,7 @@ object ProductDetailBottomSheetTracking {
         "click - clickable information on product detail bottomsheet"
 
     fun impressInfoItem(
-        p1Data: DynamicProductInfoP1,
+        p1Data: ProductInfoP1,
         userId: String,
         infoTitle: String,
         infoValue: String,
@@ -63,7 +63,7 @@ object ProductDetailBottomSheetTracking {
     }
 
     fun impressSpecification(
-        p1Data: DynamicProductInfoP1,
+        p1Data: ProductInfoP1,
         key: String,
         value: String,
         position: Int,
@@ -102,7 +102,7 @@ object ProductDetailBottomSheetTracking {
     }
 
     fun clickInfoItem(
-        productInfo: DynamicProductInfoP1,
+        productInfo: ProductInfoP1,
         userId: String,
         infoTitle: String,
         infoValue: String,

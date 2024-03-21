@@ -14,11 +14,11 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoNavigator
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class ItemProductDetailInfoViewHolder(
     private val binding: ItemInfoProductDetailBinding,
-    private val listener: DynamicProductDetailListener,
+    private val listener: ProductDetailListener,
     private val isProductCatalog: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -142,7 +142,7 @@ class ItemProductDetailInfoViewHolder(
 
         fun create(
             parent: ViewGroup,
-            listener: DynamicProductDetailListener,
+            listener: ProductDetailListener,
             isProductCatalog: Boolean
         ): ItemProductDetailInfoViewHolder {
             val inflate = LayoutInflater.from(parent.context)

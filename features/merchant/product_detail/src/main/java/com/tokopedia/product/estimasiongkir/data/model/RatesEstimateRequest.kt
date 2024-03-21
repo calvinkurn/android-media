@@ -25,7 +25,7 @@ data class RatesEstimateRequest(
     val isTokoNow: Boolean = false,
     val addressId: String = "",
     val warehouseId: String = "",
-    val orderValue: Int = 0,
+    val orderValue: Double = 0.0,
     val boMetadata: String = "",
     val productMetadata: String = "",
     val categoryId: String = "",

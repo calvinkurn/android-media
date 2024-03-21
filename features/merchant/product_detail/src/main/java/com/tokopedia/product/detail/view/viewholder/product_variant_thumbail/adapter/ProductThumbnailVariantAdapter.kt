@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 /**
  * Created by Yovi.Putra on 10/01/23
  */
 class ProductThumbnailVariantAdapter(
     private val atcListener: AtcVariantListener,
-    private val pdpListener: DynamicProductDetailListener
+    private val pdpListener: ProductDetailListener
 ) : ListAdapter<VariantOptionWithAttribute, ThumbnailVariantViewHolder>(DIFF_ITEM) {
 
     override fun onBindViewHolder(holder: ThumbnailVariantViewHolder, position: Int) {

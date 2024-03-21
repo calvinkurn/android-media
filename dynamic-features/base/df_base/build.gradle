@@ -73,6 +73,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
+    //Communication
+    implementation projectOrAar(rootProject.ext.features.shareexperience)
+
     //Content
     implementation projectOrAar(rootProject.ext.features.play)
     implementation projectOrAar(rootProject.ext.features.kol)

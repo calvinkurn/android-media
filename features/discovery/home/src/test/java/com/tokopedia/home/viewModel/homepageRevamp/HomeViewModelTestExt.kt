@@ -43,6 +43,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRe
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeUserStatusRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeClaimCouponUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
@@ -129,6 +130,7 @@ fun createHomeViewModel(
     homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
     todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
     homeThematicUseCase: ThematicUseCase = mockk(relaxed = true),
+    homeClaimCouponUseCase: HomeClaimCouponUseCase = mockk(relaxed = true),
     remoteConfig: RemoteConfig = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
@@ -160,6 +162,7 @@ fun createHomeViewModel(
             homeAtfUseCase = { homeAtfUseCase },
             todoWidgetRepository = { todoWidgetRepository },
             homeThematicUseCase = { homeThematicUseCase },
+            claimCouponUseCase = { homeClaimCouponUseCase },
             remoteConfig = { remoteConfig }
         ),
         recordPrivateCalls = true

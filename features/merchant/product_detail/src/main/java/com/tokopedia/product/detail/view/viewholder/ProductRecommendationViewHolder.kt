@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicRecommendationBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
@@ -31,7 +31,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 class ProductRecommendationViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener,
+    private val listener: ProductDetailListener,
     private val affiliateCookieHelper: AffiliateCookieHelper
 ) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 

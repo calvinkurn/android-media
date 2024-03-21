@@ -10,7 +10,7 @@ import com.tokopedia.merchantvoucher.R as merchantvoucherR
 
 object VoucherResult {
 
-    fun assertInvoiceAttachmentDesc(
+    fun assertVoucherAttachmentDesc(
         position: Int,
         matcher: Matcher<View>
     ) {

@@ -53,7 +53,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.addItemDecoration(
+        recyclerView?.addItemDecoration(
             DividerItemDecoration(
                 activity
             )
