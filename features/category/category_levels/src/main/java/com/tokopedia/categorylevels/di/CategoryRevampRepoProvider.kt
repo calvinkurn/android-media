@@ -22,9 +22,14 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 class CategoryRevampRepoProvider(private val appComponent: BaseAppComponent, val departmentName: String, val departmentId: String, val categoryUrl: String?) : RepositoryProvider {
     override fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface {
         return PageLoadTimePerformanceCallback(
-                CATEGORY_LEVELS_PLT_PREPARE_METRICS,
-                CATEGORY_LEVELS_PLT_NETWORK_METRICS,
-                CATEGORY_LEVELS_PLT_RENDER_METRICS,0,0,0,0,null
+            CATEGORY_LEVELS_PLT_PREPARE_METRICS,
+            CATEGORY_LEVELS_PLT_NETWORK_METRICS,
+            CATEGORY_LEVELS_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
     }
 
