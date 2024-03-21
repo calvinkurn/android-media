@@ -54,6 +54,7 @@ import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.coachmark.LiveMenuCoachMark
 import com.tokopedia.play.broadcaster.util.extension.getDialog
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
@@ -105,7 +106,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
     private val beautificationUiBridge: BeautificationUiBridge,
-    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
+    private val sharedPref: HydraSharedPreferences,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView {
 
@@ -430,12 +431,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onImpress(coachMarkType: LiveMenuCoachMarkType) {
                 when (coachMarkType) {
                     is LiveMenuCoachMarkType.Statistic -> {
+                        sharedPref.setFirstStatisticIconShown()
                         /** JOE TODO: handle analytic */
                     }
                     else -> {}
                 }
-
-                parentViewModel.submitAction(PlayBroadcastAction.ImpressCoachMark(coachMarkType))
             }
         })
     }
@@ -1309,7 +1309,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 liveMenuCoachMark.show(coachMarks)
 
-                parentViewModel.submitAction(PlayBroadcastAction.CoachMarkHasBeenShown)
+                parentViewModel.submitAction(PlayBroadcastAction.ComponentHasBeenHandled)
             }
         }
     }

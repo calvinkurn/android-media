@@ -665,8 +665,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
 
             /** CoachMark */
-            is PlayBroadcastAction.CoachMarkHasBeenShown -> handleCoachMarkHasBeenShown()
-            is PlayBroadcastAction.ImpressCoachMark -> handleImpressCoachMark(event.coachMarkType)
+            is PlayBroadcastAction.ComponentHasBeenHandled -> handleComponentHasBeenHandled()
 
             /** Log */
             is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
@@ -2043,20 +2042,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         saveBeautificationConfig()
     }
 
-    private fun handleCoachMarkHasBeenShown() {
+    private fun handleComponentHasBeenHandled() {
         _componentPreparation.update {
             it.copy(
                 hasBeenHandled = true
             )
-        }
-    }
-
-    private fun handleImpressCoachMark(coachMarkType: LiveMenuCoachMarkType) {
-        when (coachMarkType) {
-            is LiveMenuCoachMarkType.Statistic -> {
-                sharedPref.setFirstStatisticIconShown()
-            }
-            else -> {}
         }
     }
 
