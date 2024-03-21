@@ -136,15 +136,11 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         viewModel.toasterData.collect { data ->
             if (data?.any != null && data.any is ShoppingListHorizontalProductCardItemUiModel && data.event == ToasterModel.Event.ADD_WISHLIST) {
                 showToaster(data) {
-                    viewModel.addToWishlist(
-                        onTrackAddToWishlist = {
-                            analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(
-                                product = data.any,
-                                isFromBottomSheet = true
-                            )
-                        },
-                        product = data.any
+                    analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(
+                        product = data.any,
+                        isFromBottomSheet = true
                     )
+                    viewModel.addToWishlist(data.any)
                 }
             }
         }
@@ -221,15 +217,11 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         override fun onClickAddToShoppingList(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            viewModel.addToWishlist(
-                onTrackAddToWishlist = {
-                    analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(
-                        product = product,
-                        isFromBottomSheet = true
-                    )
-                },
-                product = product
+            analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(
+                product = product,
+                isFromBottomSheet = true
             )
+            viewModel.addToWishlist(product)
         }
 
         override fun onClickProduct(

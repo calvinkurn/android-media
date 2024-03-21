@@ -194,13 +194,10 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
     }
 
     fun addToWishlist(
-        onTrackAddToWishlist: () -> Unit,
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
         launchCatchError(
             block = {
-                onTrackAddToWishlist.invoke()
-
                 _toasterData.value = null
 
                 showProductShimmering(product.id)

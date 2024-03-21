@@ -1054,13 +1054,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun addToWishlist(
-        onTrackAddToWishlist: () -> Unit,
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
         launchCatchError(
             block = {
-                onTrackAddToWishlist.invoke()
-
                 _toasterData.value = null
 
                 mutableLayout
@@ -1090,13 +1087,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun deleteFromWishlist(
-        onTrackDeleteFromWishlist: () -> Unit,
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
         launchCatchError(
             block = {
-                onTrackDeleteFromWishlist.invoke()
-
                 _toasterData.value = null
 
                 mutableLayout

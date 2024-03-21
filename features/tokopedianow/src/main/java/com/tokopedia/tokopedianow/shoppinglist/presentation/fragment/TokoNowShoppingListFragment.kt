@@ -1,12 +1,16 @@
 package com.tokopedia.tokopedianow.shoppinglist.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -17,13 +21,13 @@ import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
-import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -39,7 +43,6 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -138,6 +141,10 @@ class TokoNowShoppingListFragment :
                 localLoadListener = createLocalLoadCallback()
             )
         )
+    }
+
+    private val loginActivityResult: ActivityResultLauncher<Intent> = registerActivityResult {
+        refreshLayoutPage()
     }
 
     private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
@@ -399,24 +406,16 @@ class TokoNowShoppingListFragment :
                     ADD_WISHLIST -> {
                         showToaster(data) {
                             if (data.any is ShoppingListHorizontalProductCardItemUiModel) {
-                                viewModel.addToWishlist(
-                                    onTrackAddToWishlist = {
-                                       analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(data.any)
-                                    },
-                                    product = data.any
-                                )
+                                analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(data.any)
+                                viewModel.addToWishlist(data.any)
                             }
                         }
                     }
                     DELETE_WISHLIST -> {
                         showToaster(data) {
                             if (data.any is ShoppingListHorizontalProductCardItemUiModel) {
-                                viewModel.deleteFromWishlist(
-                                    onTrackDeleteFromWishlist = {
-                                        analytic.getShoppingListHorizontalProductCardAnalytic().trackClickDeleteButtonOnProduct(data.any)
-                                    },
-                                    product = data.any
-                                )
+                                analytic.getShoppingListHorizontalProductCardAnalytic().trackClickDeleteButtonOnProduct(data.any)
+                                viewModel.deleteFromWishlist(data.any)
                             }
                         }
                     }
@@ -484,6 +483,14 @@ class TokoNowShoppingListFragment :
     }
 
     private fun getBottomSpace(): Int = if (binding?.miniCartWidget?.isVisible.orFalse() || binding?.bottomBulkAtcView?.isVisible.orFalse()) context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_bottom_view_height).orZero() else Int.ZERO
+
+    private fun registerActivityResult(
+        onActivityResult: () -> Unit
+    ) = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            onActivityResult.invoke()
+        }
+    }
 
     /**
      * Create a new coroutine in the [lifecycleScope]. [repeatOnLifecycle] launches the block in a new coroutine
@@ -729,7 +736,11 @@ class TokoNowShoppingListFragment :
     private fun createHeaderCallback() = object : AbstractThematicHeaderListener() {
         override fun onClickCtaHeader() {
             analytic.trackClickBuyMoreOnTopNav()
-            RouteManager.route(context, ApplinkConstInternalTokopediaNow.REPURCHASE)
+            if (!viewModel.isLoggedIn()) {
+                openLoginPage()
+            } else {
+                RouteManager.route(context, ApplinkConstInternalTokopediaNow.REPURCHASE)
+            }
         }
 
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
@@ -820,23 +831,19 @@ class TokoNowShoppingListFragment :
         override fun onClickDeleteIcon(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            viewModel.deleteFromWishlist(
-                onTrackDeleteFromWishlist = {
-                    analytic.getShoppingListHorizontalProductCardAnalytic().trackClickDeleteButtonOnProduct(product)
-                },
-                product = product
-            )
+            analytic.getShoppingListHorizontalProductCardAnalytic().trackClickDeleteButtonOnProduct(product)
+            viewModel.deleteFromWishlist(product)
         }
 
         override fun onClickAddToShoppingList(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            viewModel.addToWishlist(
-                onTrackAddToWishlist = {
-                    analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(product)
-                },
-                product = product
-            )
+            analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(product)
+            if (!viewModel.isLoggedIn()) {
+                openLoginPage()
+            } else {
+                viewModel.addToWishlist(product)
+            }
         }
 
         override fun onClickProduct(
@@ -962,6 +969,11 @@ class TokoNowShoppingListFragment :
     /**
      * -- internal function section --
      */
+
+    internal fun openLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        loginActivityResult.launch(intent)
+    }
 
     internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
 
