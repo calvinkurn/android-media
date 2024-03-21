@@ -473,14 +473,17 @@ class AtcVariantBottomSheet :
             is Fail -> {
                 logException(result.throwable)
 
-                dismissWhenTransactionError(onDismissed = {
-                    viewModel.getActivityResultData().apply {
-                        requestCode = ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR
-                        atcMessage = getErrorMessage(result.throwable)
-                    }
-                }, onNothing = {
+                dismissWhenTransactionError(
+                    onDismissed = {
+                        viewModel.getActivityResultData().apply {
+                            requestCode = ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR
+                            atcMessage = getErrorMessage(result.throwable)
+                        }
+                    },
+                    onNothing = {
                         showToasterError(getErrorMessage(result.throwable))
-                    })
+                    }
+                )
             }
         }
     }
