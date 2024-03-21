@@ -257,7 +257,7 @@ class PaymentProcessor @Inject constructor(
         }
         var subtitle = ""
         if (currentData.installmentPaymentData.creditCardAttribute.maskedNumber.isNotEmpty()) {
-            subtitle = currentData.installmentPaymentData.creditCardAttribute.maskedNumber
+            subtitle = currentData.installmentPaymentData.creditCardAttribute.maskedNumber.replace('*', '\u2022')
         }
         if (currentData.walletData.walletType > 0) {
             subtitle = "(${CurrencyFormatUtil.convertPriceValueToIdrFormat(currentData.walletData.walletAmount, false).removeDecimalSuffix()})"
