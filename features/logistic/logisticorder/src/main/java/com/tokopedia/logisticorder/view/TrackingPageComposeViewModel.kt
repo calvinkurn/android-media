@@ -145,7 +145,8 @@ class TrackingPageComposeViewModel @Inject constructor(
             _uiState.update {
                 it.copy(tickerData = model)
             }
-        }, onError = { _error.emit(it) })
+        }, onError = { // no op
+        })
     }
 
     private fun retryBooking(orderId: String) {
