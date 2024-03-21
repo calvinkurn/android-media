@@ -61,6 +61,7 @@ class UpdateCartUseCase @Inject constructor(
         const val PARAM_SOURCE = "source"
         const val VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
         const val VALUE_SOURCE_PDP_UPDATE_QTY_NOTES = "pdp_update_qty_notes"
+        const val VALUE_SOURCE_CART_CHANGE_VARIANT = "cart_change_variant"
 
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
