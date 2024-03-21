@@ -348,5 +348,7 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW = "android_enable_pdp_recommendation_flow";
     public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
     public static final String ANDROID_ENABLE_PURCHASE_INFO = "android_enable_purchase_info";
+    public static final String ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO = "android_enable_fix_search_product_impression_byteio";
 
+    public static final String ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM = "android_search_enable_fix_byteio_cpm";
 }
