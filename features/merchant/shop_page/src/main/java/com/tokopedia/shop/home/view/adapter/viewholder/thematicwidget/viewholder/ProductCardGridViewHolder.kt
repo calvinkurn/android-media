@@ -1,21 +1,23 @@
-package com.tokopedia.shop_widget.thematicwidget.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.viewholder
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.shop_widget.R
-import com.tokopedia.shop_widget.common.util.ProductCardMapper.mapToProductCardCampaignModel
-import com.tokopedia.shop_widget.databinding.ItemProductCardGridBinding
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
+import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemProductCardGridBinding
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardGridViewHolder(
     itemView: View,
     private var listener: ProductCardListener? = null,
-    private val isOverrideWidgetTheme: Boolean
-) : AbstractViewHolder<ProductCardUiModel>(itemView) {
+    private val isOverrideWidgetTheme: Boolean,
+    private val thematicWidgetUiModel: ThematicWidgetUiModel
+) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -24,15 +26,17 @@ class ProductCardGridViewHolder(
 
     private var binding: ItemProductCardGridBinding? by viewBinding()
 
-    override fun bind(element: ProductCardUiModel) {
+    override fun bind(element: ShopHomeProductUiModel) {
         binding?.productCardGridView?.apply {
             applyCarousel()
             layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
             setProductModel(
-                mapToProductCardCampaignModel(
+                ShopPageHomeMapper.mapToProductCardCampaignModel(
                     isHasAddToCartButton = false,
                     hasThreeDots = false,
-                    productCardUiModel = element,
+                    shopHomeProductViewModel = element,
+                    widgetName = thematicWidgetUiModel.name,
+                    statusCampaign = thematicWidgetUiModel.statusCampaign,
                     forceLightModeColor = isOverrideWidgetTheme
                 )
             )
@@ -52,7 +56,7 @@ class ProductCardGridViewHolder(
     }
 
     interface ProductCardListener {
-        fun onProductCardClickListener(product: ProductCardUiModel)
-        fun onProductCardImpressListener(product: ProductCardUiModel)
+        fun onProductCardClickListener(product: ShopHomeProductUiModel)
+        fun onProductCardImpressListener(product: ShopHomeProductUiModel)
     }
 }

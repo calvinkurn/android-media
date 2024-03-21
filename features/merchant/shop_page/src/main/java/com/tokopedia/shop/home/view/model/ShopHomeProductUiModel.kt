@@ -9,6 +9,7 @@ import com.tokopedia.shop.campaign.view.adapter.ShopCampaignCarouselProductHighl
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.typefactory.ShopHomeThematicWidgetTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
@@ -74,6 +75,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
                 typeFactory.type(this)
             }
             is ShopCampaignCarouselProductHighlightAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+            is ShopHomeThematicWidgetTypeFactory -> {
                 typeFactory.type(this)
             }
             else -> {

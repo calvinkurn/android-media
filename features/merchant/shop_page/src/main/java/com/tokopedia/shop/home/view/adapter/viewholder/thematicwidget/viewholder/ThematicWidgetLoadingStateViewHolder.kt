@@ -1,10 +1,10 @@
-package com.tokopedia.shop_widget.thematicwidget.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop_widget.R
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop.R
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 
 class ThematicWidgetLoadingStateViewHolder (
     itemView: View

@@ -90,7 +90,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
