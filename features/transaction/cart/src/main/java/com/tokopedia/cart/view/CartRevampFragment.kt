@@ -4770,7 +4770,7 @@ class CartRevampFragment :
     }
 
     private fun scrollToProductShopWithCartId() {
-        val cartId = getCartId()
+        val cartId: String = getCartId()
         if (cartId.isNotBlank()) {
             var hasProducts = false
             val allShopGroupDataList = CartDataHelper.getAllShopGroupDataList(
