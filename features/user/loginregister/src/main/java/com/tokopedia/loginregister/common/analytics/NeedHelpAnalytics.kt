@@ -1,10 +1,13 @@
 package com.tokopedia.loginregister.common.analytics
 
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientLabelIfAvailable
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
 class NeedHelpAnalytics @Inject constructor() {
+
+    var clientName: String = ""
 
     //1
     fun trackPageClickButuhBantuan() {
@@ -12,7 +15,7 @@ class NeedHelpAnalytics @Inject constructor() {
             EVENT_CLICK_ACCOUNT,
             CATEGORY_LOGIN_PAGE,
             ACTION_CLICK_ON_BUTTON_BUTUH_BANTUAN,
-            LABEL_EMPTY
+            LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -26,7 +29,7 @@ class NeedHelpAnalytics @Inject constructor() {
             EVENT_CLICK_ACCOUNT,
             CATEGORY_WIDGET_LOGIN_PAGE,
             ACTION_CLICK_ON_BUTTON_CLOSE_BUTUH_BANTUAN,
-            LABEL_WIDGET_BUTUH_BANTUAN
+            LABEL_WIDGET_BUTUH_BANTUAN + getClientLabelIfAvailable(clientName)
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -40,7 +43,7 @@ class NeedHelpAnalytics @Inject constructor() {
             EVENT_CLICK_ACCOUNT,
             CATEGORY_WIDGET_LOGIN_PAGE,
             ACTION_CLICK_ON_BUTTON_LUPA_KATA_SANDI,
-            LABEL_WIDGET_BUTUH_BANTUAN
+            LABEL_WIDGET_BUTUH_BANTUAN + getClientLabelIfAvailable(clientName)
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -54,7 +57,7 @@ class NeedHelpAnalytics @Inject constructor() {
             EVENT_CLICK_ACCOUNT,
             CATEGORY_WIDGET_LOGIN_PAGE,
             ACTION_CLICK_ON_BUTTON_NOMOR_HP_TIDAK_AKTIF,
-            LABEL_WIDGET_BUTUH_BANTUAN
+            LABEL_WIDGET_BUTUH_BANTUAN + getClientLabelIfAvailable(clientName)
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -68,7 +71,7 @@ class NeedHelpAnalytics @Inject constructor() {
             EVENT_CLICK_ACCOUNT,
             CATEGORY_WIDGET_LOGIN_PAGE,
             ACTION_CLICK_ON_BUTTON_HUBUNGI_TOKOPEDIA_CARE,
-            LABEL_WIDGET_BUTUH_BANTUAN
+            LABEL_WIDGET_BUTUH_BANTUAN + getClientLabelIfAvailable(clientName)
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE

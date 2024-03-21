@@ -8,20 +8,13 @@
         <activity
             android:name=".login_sdk.LoginSdkActivity"
             android:exported="true"
-            android:label="@string/login"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- tokopedia://login-sdk -->
-                <data
-                    android:pathPattern="/login-sdk"
-                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
         <activity

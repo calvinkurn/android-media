@@ -16,16 +16,20 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentConsentLayoutBinding
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
-import com.tokopedia.loginregister.login_sdk.LoginSdkUtils.redirectToTargetUri
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -82,6 +86,11 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
         )
 
         showLoading(shouldShow = true)
+
+        activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
+            headerTitle = "Masuk ke Tokopedia"
+            actionTextView?.hide()
+        }
     }
 
     private fun showLoading(shouldShow: Boolean) {
@@ -136,6 +145,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             when (it ) {
                 is Success -> {
                     if (it.data.status) {
+                        requireContext().setAsLoginSdkFlow("Tiktok Shop")
                         viewModel.getConsent(
                             clientId = arguments?.getString("client_id") ?: "",
                             scopes = arguments?.getString("scopes") ?: ""

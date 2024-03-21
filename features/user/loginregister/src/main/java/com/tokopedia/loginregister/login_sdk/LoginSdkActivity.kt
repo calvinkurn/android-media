@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.sessioncommon.util.LoginSdkUtils
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.removeLoginSdkFlow
 import com.tokopedia.user.session.UserSession
 
 class LoginSdkActivity : LoginActivity() {
@@ -13,7 +15,6 @@ class LoginSdkActivity : LoginActivity() {
         super.onCreate(savedInstanceState)
         val userSession = UserSession(this)
 
-        toolbar?.title = "Masuk ke Tokopedia"
         if (userSession.accessToken.isNotEmpty() &&
             userSession.freshToken.isNotEmpty() &&
             userSession.userId != "0" &&
@@ -49,5 +50,10 @@ class LoginSdkActivity : LoginActivity() {
             authCode = "",
             error = "err:user:cancelled"
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeLoginSdkFlow()
     }
 }

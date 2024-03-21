@@ -5,18 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
-import com.tokopedia.loginregister.login_sdk.LoginSdkUtils.redirectToTargetUri
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
 
 class LoginSdkFragment: LoginEmailPhoneFragment() {
 
@@ -39,25 +40,14 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         showLoadingLogin()
     }
 
-    private fun checkLoginStatus() {
-        lifecycleScope.launch {
-            viewModel.checkLoginStatus()
-        }
-    }
-
     private fun initObserver() {
-//        viewModel.isLoggedIn.observe(viewLifecycleOwner) {
-//            if (it) {
-//                goToConsentPage()
-//            }
-//        }
-
         viewModel.validateClient.observe(viewLifecycleOwner) {
             when (it ) {
                 is Success -> {
                     if (!it.data.status) {
                         redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
                     } else {
+                        setupAsLoginSdkFlow("Tiktok Shop")
                         dismissLoadingLogin()
                     }
                 }
@@ -66,6 +56,21 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
                 }
             }
         }
+    }
+
+    override fun setupToolbar() {
+        super.setupToolbar()
+        activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
+            headerTitle = "Masuk ke Tokopedia"
+            actionText = getString(R.string.register)
+        }
+    }
+
+    private fun setupAsLoginSdkFlow(clientName: String) {
+        requireContext().setAsLoginSdkFlow(clientName)
+        analytics.clientName = clientName
+        registerAnalytics.clientName = clientName
+        needHelpAnalytics.clientName = clientName
     }
 
     private fun goToConsentPage() {
