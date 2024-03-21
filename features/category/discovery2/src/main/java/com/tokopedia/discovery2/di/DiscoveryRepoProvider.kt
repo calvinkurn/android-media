@@ -25,14 +25,9 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 class DiscoveryRepoProvider : RepositoryProvider {
     override fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface {
         return PageLoadTimePerformanceCallback(
-            DISCOVERY_PLT_PREPARE_METRICS,
-            DISCOVERY_PLT_NETWORK_METRICS,
-            DISCOVERY_PLT_RENDER_METRICS,
-            0,
-            0,
-            0,
-            0,
-            null
+                DISCOVERY_PLT_PREPARE_METRICS,
+                DISCOVERY_PLT_NETWORK_METRICS,
+                DISCOVERY_PLT_RENDER_METRICS,0,0,0,0,null
         )
     }
 
@@ -63,4 +58,5 @@ class DiscoveryRepoProvider : RepositoryProvider {
     override fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
         return DiscoveryTopAdsHeadlineRepository()
     }
+
 }
