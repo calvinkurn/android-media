@@ -118,6 +118,7 @@ class ProductPreviewFragment @Inject constructor(
         when (val source = viewModel.productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
             is ProductPreviewSourceModel.ReviewSourceData -> false
+            is ProductPreviewSourceModel.ShareSourceData -> true
             else -> false
         }
 
@@ -159,12 +160,20 @@ class ProductPreviewFragment @Inject constructor(
 
     private val coachMarkItems by lazyThreadSafetyNone {
         arrayListOf(
-            CoachMark2Item(
-                anchorView = binding.layoutProductPreviewTab.anchorCoachmark,
-                title = "",
-                description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
-                position = CoachMark2.POSITION_BOTTOM
-            )
+            when (viewModel.productPreviewSource.source) {
+                is ProductPreviewSourceModel.ShareSourceData -> CoachMark2Item(
+                    anchorView = binding.anchorAtc,
+                    title = "",
+                    description = getString(contentproductpreviewR.string.product_prev_coachmark_share),
+                    position = CoachMark2.POSITION_TOP
+                )
+                else -> CoachMark2Item(
+                    anchorView = binding.layoutProductPreviewTab.anchorCoachmark,
+                    title = "",
+                    description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            }
         )
     }
 

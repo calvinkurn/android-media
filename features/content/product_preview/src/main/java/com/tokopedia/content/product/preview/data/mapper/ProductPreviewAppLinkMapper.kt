@@ -16,6 +16,10 @@ class ProductPreviewAppLinkMapper(val productId: String) {
         val attachmentId = intent.data?.getQueryParameter(ATTACHMENT_ID_QUERY_PARAMS)
         val source = when {
             reviewId == null -> return null
+            entryPoint == "share" -> ProductPreviewSourceModel.ShareSourceData(
+                reviewSourceId = reviewId,
+                attachmentSourceId = attachmentId
+            )
             attachmentId == null -> {
                 ProductPreviewSourceModel.ReviewSourceData(reviewSourceId = reviewId)
             }

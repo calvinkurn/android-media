@@ -29,6 +29,12 @@ data class ProductPreviewSourceModel(
     ) : ProductPreviewSource
 
     @Parcelize
+    data class ShareSourceData(
+        val reviewSourceId: String,
+        val attachmentSourceId: String?
+    ) : ProductPreviewSource
+
+    @Parcelize
     object UnknownSource : ProductPreviewSource
 
     enum class ProductPreviewSourceName(val value: String) {
