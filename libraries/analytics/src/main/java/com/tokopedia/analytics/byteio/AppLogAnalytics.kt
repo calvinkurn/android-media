@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
+import android.graphics.pdf.PdfDocument.Page
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -146,7 +147,7 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addEntranceInfoCart() {
         val data = JSONObject().also {
-            it.addEnterFromInfo()
+            it.put(ENTER_FROM_INFO, getEnterFromBeforeCart())
             it.put(ENTRANCE_FORM, PageName.CART)
             it.put(SOURCE_PAGE_TYPE, PageName.CART)
         }.toString()
@@ -338,6 +339,23 @@ object AppLogAnalytics {
             val map = _pageDataList[idx]
             map[key]?.let {
                 return it
+            }
+            idx--
+        }
+        return null
+    }
+
+    private fun getEnterFromBeforeCart(): Any? {
+        if (_pageDataList.isEmpty()) return null
+        var idx = _pageDataList.lastIndex
+        var start = false
+        while (idx >= 0) {
+            val map = _pageDataList[idx]
+            if (map.containsKey(ENTER_FROM) && start) {
+                return map[ENTER_FROM]
+            }
+            if (map[PAGE_NAME] == PageName.CART) {
+                start = true
             }
             idx--
         }
