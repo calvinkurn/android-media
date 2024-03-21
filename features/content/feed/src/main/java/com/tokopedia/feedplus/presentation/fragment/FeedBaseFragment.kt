@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -337,6 +338,7 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.showAnimated()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
@@ -383,6 +385,8 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
+
+        binding.viewBlockInteraction.setOnTouchListener { _, _ -> true }
     }
 
     private fun setupInsets() {
@@ -794,6 +798,7 @@ class FeedBaseFragment :
                 )
                 .setListener(object : ImmersiveFeedOnboarding.Listener {
                     override fun onStarted() {
+                        binding.viewBlockInteraction.show()
                     }
 
                     override fun onCompleteCreateContentOnboarding() {
@@ -810,6 +815,7 @@ class FeedBaseFragment :
 
                     override fun onFinished(isForcedDismiss: Boolean) {
                         if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
+                        binding.viewBlockInteraction.hide()
                     }
                 }).build()
 
