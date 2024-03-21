@@ -736,11 +736,7 @@ class TokoNowShoppingListFragment :
     private fun createHeaderCallback() = object : AbstractThematicHeaderListener() {
         override fun onClickCtaHeader() {
             analytic.trackClickBuyMoreOnTopNav()
-            if (!viewModel.isLoggedIn()) {
-                openLoginPage()
-            } else {
-                RouteManager.route(context, ApplinkConstInternalTokopediaNow.REPURCHASE)
-            }
+            RouteManager.route(context, ApplinkConstInternalTokopediaNow.REPURCHASE)
         }
 
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
@@ -839,11 +835,7 @@ class TokoNowShoppingListFragment :
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
             analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(product)
-            if (!viewModel.isLoggedIn()) {
-                openLoginPage()
-            } else {
-                viewModel.addToWishlist(product)
-            }
+            viewModel.addToWishlist(product)
         }
 
         override fun onClickProduct(
@@ -969,11 +961,6 @@ class TokoNowShoppingListFragment :
     /**
      * -- internal function section --
      */
-
-    internal fun openLoginPage() {
-        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-        loginActivityResult.launch(intent)
-    }
 
     internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
 
