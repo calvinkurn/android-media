@@ -54,7 +54,7 @@ class PlayBroCoachMarkViewModelTest {
             val state = robot.recordState {
                 getAccountConfiguration()
 
-                it.getViewModel().submitAction(PlayBroadcastAction.CoachMarkHasBeenShown)
+                it.getViewModel().submitAction(PlayBroadcastAction.ComponentHasBeenHandled)
             }
 
             state.componentPreparation.hasBeenHandled.assertTrue()
