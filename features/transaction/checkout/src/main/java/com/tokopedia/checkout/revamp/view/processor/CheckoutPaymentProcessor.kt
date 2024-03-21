@@ -20,6 +20,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.revamp.view.uimodel.OriginalCheckoutPaymentData
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkoutpayment.data.AdditionalInfoData
 import com.tokopedia.checkoutpayment.data.BenefitSummaryInfoData
@@ -400,7 +401,18 @@ class CheckoutPaymentProcessor @Inject constructor(
 
     suspend fun getPaymentWidget(param: GetPaymentWidgetRequest, payment: CheckoutPaymentModel): CheckoutPaymentModel {
         val data = processor.getPaymentWidget(param)
-        return payment.copy(
+        val originalFirstData = data?.paymentWidgetData?.firstOrNull()
+        var newPayment = payment
+        if (originalFirstData != null) {
+            newPayment = newPayment.copy(
+                originalData = OriginalCheckoutPaymentData(
+                    gatewayCode = originalFirstData.gatewayCode,
+                    tenureType = originalFirstData.installmentPaymentData.selectedTenure,
+                    metadata = originalFirstData.metadata
+                )
+            )
+        }
+        return newPayment.copy(
             data = data,
             widget = payment.widget.copy(
                 state = if (data == null || data.paymentWidgetData.isEmpty()) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal
@@ -579,7 +591,8 @@ class CheckoutPaymentProcessor @Inject constructor(
                 latestPayment.defaultErrorMessage
             )
             checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                widget = newPaymentWidgetData
+                widget = newPaymentWidgetData,
+                validationReport = result
             )
         }
         return checkoutItems

@@ -41,7 +41,8 @@ fun CheckoutPaymentWidget(
     modifier: Modifier = Modifier,
     onRetryClickedListener: () -> Unit = {},
     onClickedListener: () -> Unit = {},
-    onInstallmentClickedListener: () -> Unit = {}
+    onInstallmentClickedListener: () -> Unit = {},
+    onActionClickedListener: () -> Unit = {}
 ) {
     if (data.state != CheckoutPaymentWidgetState.None) {
         NestTheme {
@@ -186,7 +187,7 @@ fun CheckoutPaymentWidget(
                                     size = ButtonSize.SMALL,
                                     modifier = Modifier.padding(start = 2.dp, end = 16.dp),
                                     onClick = {
-                                        onClickedListener()
+                                        onActionClickedListener()
                                     }
                                 )
                             }

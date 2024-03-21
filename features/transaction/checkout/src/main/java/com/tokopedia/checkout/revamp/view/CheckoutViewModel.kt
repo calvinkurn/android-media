@@ -3100,6 +3100,11 @@ class CheckoutViewModel @Inject constructor(
         val product = checkoutItems[position] as CheckoutProductModel
         checkoutItems[position] = product.copy(noteToSeller = note)
         listData.value = checkoutItems
+
+        viewModelScope.launch(dispatchers.immediate) {
+            // fire & forget
+            cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), "update_notes", cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
+        }
     }
 
     private fun shouldGetPayment(items: List<CheckoutItem>): Boolean {
@@ -3141,7 +3146,9 @@ class CheckoutViewModel @Inject constructor(
                     source = "one-click-checkout",
                     chosenPayment = GetPaymentWidgetChosenPaymentRequest(
                         gatewayCode = chosenPayment.gatewayCode,
-                        metadata = chosenPayment.metadata
+                        metadata = chosenPayment.metadata,
+                        tenureType = chosenPayment.tenureType,
+                        optionId = chosenPayment.optionId
                     ),
                     cartMetadata = payment.metadata,
                     paymentRequest = Gson().toJson(paymentRequest)
@@ -3371,6 +3378,23 @@ class CheckoutViewModel @Inject constructor(
                 installmentData = GoCicilInstallmentData(
                     tickerMessage = tickerMessage,
                     installmentOptions = installmentList
+                )
+            )
+            listData.value = checkoutItems
+            validatePromo(skipEE = true)
+        }
+    }
+
+    fun forceReloadPayment() {
+        viewModelScope.launch(dispatchers.immediate) {
+            val checkoutItems = listData.value.toMutableList()
+            val currentPayment = checkoutItems.payment()!!
+            checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = currentPayment.copy(
+                data = null,
+                tenorList = null,
+                installmentData = null,
+                widget = currentPayment.widget.copy(
+                    state = CheckoutPaymentWidgetState.Loading
                 )
             )
             listData.value = checkoutItems

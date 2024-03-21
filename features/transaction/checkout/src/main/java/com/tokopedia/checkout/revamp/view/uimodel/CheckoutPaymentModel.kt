@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view.uimodel
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.domain.TenorListData
+import com.tokopedia.checkoutpayment.processor.PaymentValidationReport
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 
 data class CheckoutPaymentModel(
@@ -14,7 +15,8 @@ data class CheckoutPaymentModel(
     val originalData: OriginalCheckoutPaymentData = OriginalCheckoutPaymentData(),
     val data: PaymentWidgetListData? = null,
     val tenorList: List<TenorListData>? = null,
-    val installmentData: GoCicilInstallmentData? = null
+    val installmentData: GoCicilInstallmentData? = null,
+    val validationReport: PaymentValidationReport = PaymentValidationReport.Valid
 ) : CheckoutItem
 
 data class OriginalCheckoutPaymentData(

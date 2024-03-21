@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
@@ -29,11 +30,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstBmsm
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutPaymentAddOnsAnalytics
@@ -74,6 +77,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
+import com.tokopedia.checkoutpayment.activation.PaymentActivationWebViewBottomSheet
 import com.tokopedia.checkoutpayment.data.PaymentRequest
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
@@ -82,6 +86,8 @@ import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.checkoutpayment.installment.CreditCardInstallmentDetailBottomSheet
 import com.tokopedia.checkoutpayment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.checkoutpayment.list.view.PaymentListingActivity
+import com.tokopedia.checkoutpayment.processor.PaymentValidationReport
+import com.tokopedia.checkoutpayment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.checkoutpayment.view.bottomsheet.PaymentFeeInfoBottomSheet
 import com.tokopedia.coachmark.CoachMark2
@@ -89,6 +95,9 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
@@ -781,6 +790,18 @@ class CheckoutFragment :
                 onActivityResultFromPaymentListing(resultCode, data)
             }
 
+            REQUEST_CODE_PAYMENT_TOP_UP -> {
+                onActivityResultFromTopUp()
+            }
+
+            REQUEST_CODE_LINK_ACCOUNT -> {
+                onResultFromLinkAccount(resultCode, data)
+            }
+
+            REQUEST_CODE_WALLET_ACTIVATION -> {
+                onActivityResultFromActivation()
+            }
+
             PaymentConstant.REQUEST_CODE -> {
                 onResultFromPayment(resultCode, data)
             }
@@ -1060,60 +1081,6 @@ class CheckoutFragment :
 
     private fun onDestroyViewBinding() {
         binding.countDown.timer?.cancel()
-    }
-
-    companion object {
-
-        private const val REQUEST_CODE_COURIER_PINPOINT = 13
-
-        private const val REQUEST_CODE_UPSELL = 777
-
-        const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
-        const val REQUEST_CODE_MINI_CONSULTATION = 10022
-
-        private const val REQUEST_CODE_PROMO = 954
-
-        const val REQUEST_CODE_EDIT_PAYMENT = 19
-
-        private const val SHIPMENT_TRACE = "mp_shipment"
-
-        private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
-        private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
-
-        private const val ARG_PROMOS = "promos"
-
-        const val QUERY_SOURCE = "source"
-        const val QUERY_GATEWAY_CODE = "gateway_code"
-        const val QUERY_TENURE_TYPE = "tenure_type"
-
-        fun newInstance(
-            isOneClickShipment: Boolean,
-            leasingId: String,
-            pageSource: String,
-            isPlusSelected: Boolean,
-            promos: ArrayList<PromoExternalAutoApply>,
-            gatewayCode: String?,
-            tenureType: String?,
-            source: String?,
-            bundle: Bundle?
-        ): CheckoutFragment {
-            val b = bundle ?: Bundle()
-            b.putString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID, leasingId)
-            if (leasingId.isNotEmpty()) {
-                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, true)
-            } else {
-                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment)
-            }
-            b.putString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE, pageSource)
-            b.putBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, isPlusSelected)
-            b.putParcelableArrayList(ARG_PROMOS, promos)
-            b.putString(QUERY_GATEWAY_CODE, gatewayCode)
-            b.putString(QUERY_TENURE_TYPE, tenureType)
-            b.putString(QUERY_SOURCE, source)
-            val checkoutFragment = CheckoutFragment()
-            checkoutFragment.arguments = b
-            return checkoutFragment
-        }
     }
 
     // region adapter listener
@@ -2876,6 +2843,28 @@ class CheckoutFragment :
         }
     }
 
+    private fun onActivityResultFromTopUp() {
+        viewModel.forceReloadPayment()
+    }
+
+    private fun onActivityResultFromActivation() {
+        viewModel.forceReloadPayment()
+    }
+
+    private fun onResultFromLinkAccount(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val status = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+            if (status.isNotEmpty()) {
+                val message = LinkStatusMatcher.getStatus(status)
+                val v = view
+                if (message.isNotEmpty() && v != null) {
+                    Toaster.build(v, message, Toaster.LENGTH_LONG).show()
+                }
+            }
+        }
+        viewModel.forceReloadPayment()
+    }
+
     override fun onChangeInstallment(payment: CheckoutPaymentModel) {
         if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
             // gocicil
@@ -2921,7 +2910,122 @@ class CheckoutFragment :
         }
     }
 
+    override fun onPaymentAction(payment: CheckoutPaymentModel) {
+        if (payment.validationReport is PaymentValidationReport.WalletAmountError) {
+            // top up
+            val paymentWidgetData = payment.data!!.paymentWidgetData.first()
+            val topUpData = paymentWidgetData.walletData.topUp
+            context?.let {
+                startActivityForResult(
+                    PaymentTopUpWebViewActivity.createIntent(
+                        it,
+                        topUpData.headerTitle,
+                        url = topUpData.urlLink,
+                        redirectUrl = paymentWidgetData.callbackUrl,
+                        isHideDigital = if (topUpData.isHideDigital) 1 else 0
+                    ),
+                    REQUEST_CODE_PAYMENT_TOP_UP
+                )
+//                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
+//                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
+//                }
+            }
+        } else if (payment.validationReport is PaymentValidationReport.WalletActivationError) {
+            // activation
+            val paymentWidgetData = payment.data!!.paymentWidgetData.first()
+            val activationData = paymentWidgetData.walletData.activation
+
+            if (!URLUtil.isNetworkUrl(activationData.urlLink) && RouteManager.isSupportApplink(context, activationData.urlLink)) {
+                if (activationData.urlLink.startsWith(ApplinkConst.LINK_ACCOUNT)) {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
+                        putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+                        putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
+                    }
+                    startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+                } else {
+                    val intent = RouteManager.getIntentNoFallback(context, activationData.urlLink) ?: return
+                    startActivityForResult(intent, REQUEST_CODE_WALLET_ACTIVATION)
+                }
+            } else {
+                PaymentActivationWebViewBottomSheet(
+                    activationData.urlLink,
+                    paymentWidgetData.callbackUrl,
+                    activationData.headerTitle,
+                    false,
+                    object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
+                        override fun onActivationResult(isSuccess: Boolean) {
+                            view?.let {
+                                it.post {
+                                    onActivityResultFromActivation()
+                                }
+                            }
+                        }
+                    }
+                ).show(this, userSessionInterface)
+            }
+        }
+    }
+
     override fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee) {
         PaymentFeeInfoBottomSheet().show(this, paymentFee)
+    }
+
+    companion object {
+
+        private const val REQUEST_CODE_COURIER_PINPOINT = 13
+
+        private const val REQUEST_CODE_UPSELL = 777
+
+        const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
+        const val REQUEST_CODE_MINI_CONSULTATION = 10022
+
+        private const val REQUEST_CODE_PROMO = 954
+
+        const val REQUEST_CODE_EDIT_PAYMENT = 19
+
+        const val REQUEST_CODE_PAYMENT_TOP_UP = 17
+
+        const val REQUEST_CODE_LINK_ACCOUNT = 22
+        const val REQUEST_CODE_WALLET_ACTIVATION = 23
+
+        private const val SHIPMENT_TRACE = "mp_shipment"
+
+        private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
+        private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
+
+        private const val ARG_PROMOS = "promos"
+
+        const val QUERY_SOURCE = "source"
+        const val QUERY_GATEWAY_CODE = "gateway_code"
+        const val QUERY_TENURE_TYPE = "tenure_type"
+
+        fun newInstance(
+            isOneClickShipment: Boolean,
+            leasingId: String,
+            pageSource: String,
+            isPlusSelected: Boolean,
+            promos: ArrayList<PromoExternalAutoApply>,
+            gatewayCode: String?,
+            tenureType: String?,
+            source: String?,
+            bundle: Bundle?
+        ): CheckoutFragment {
+            val b = bundle ?: Bundle()
+            b.putString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID, leasingId)
+            if (leasingId.isNotEmpty()) {
+                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, true)
+            } else {
+                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment)
+            }
+            b.putString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE, pageSource)
+            b.putBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, isPlusSelected)
+            b.putParcelableArrayList(ARG_PROMOS, promos)
+            b.putString(QUERY_GATEWAY_CODE, gatewayCode)
+            b.putString(QUERY_TENURE_TYPE, tenureType)
+            b.putString(QUERY_SOURCE, source)
+            val checkoutFragment = CheckoutFragment()
+            checkoutFragment.arguments = b
+            return checkoutFragment
+        }
     }
 }
