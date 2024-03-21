@@ -207,6 +207,10 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/note"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page-product-list/.*/etalase/.*/"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-info/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/widget/voucher/shop_id/.*/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/widget/operational-hour/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-favourites"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/shop-favourites"),
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
