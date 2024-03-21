@@ -105,9 +105,7 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -1584,7 +1582,8 @@ class ShopHomeViewModelTest {
                 type = widgetType,
                 widgetId = widgetId,
                 layoutOrder = layoutOrder,
-                header = DynamicHeaderUiModel()
+                header = BaseShopHomeWidgetUiModel.Header(),
+                isFestivity = true
             )
 
             val shopHomeWidgetContentData = async {
@@ -1659,7 +1658,7 @@ class ShopHomeViewModelTest {
                     colorSchema = any()
                 )
             } returns listOf(
-                ProductCardUiModel()
+                ShopHomeProductUiModel()
             )
 
             viewModel.getWidgetContentData(

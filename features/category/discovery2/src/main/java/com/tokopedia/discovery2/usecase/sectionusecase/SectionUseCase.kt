@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -280,7 +281,9 @@ class SectionUseCase @Inject constructor(
                 }
             }
         }
-        queryParameterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
+        if (ProductCardExperiment.isReimagine()) {
+            queryParameterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
+        }
         return Utils.getQueryString(queryParameterMap)
     }
 
