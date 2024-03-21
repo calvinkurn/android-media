@@ -37,7 +37,7 @@ class GetReportSummaryUseCase @Inject constructor(
         const val QUERY_NAME = "GetReportSummaryUseCaseQuery"
         const val QUERY = """
             query broadcasterReportSummariesBulkV2(
-                ${"$$PARAM_CONTENT_IDS"}: [String!],
+                ${"$$PARAM_CONTENT_IDS"}: [String]!,
                 ${"$$PARAM_CONTENT_TYPE"}: String!
             ) {
                 broadcasterReportSummariesBulkV2(
