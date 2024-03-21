@@ -215,6 +215,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.revamp.PromoEntryPointImprovementRollenceManager
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -6216,12 +6217,15 @@ class CartRevampFragment :
                     requestCode = AtcVariantHelper.ATC_VARIANT_RESULT_CODE,
                     data = intent
                 ) {
-                    arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
-                    viewModel.processInitialGetCartData(
-                        cartId = "0",
-                        initialLoad = false,
-                        isLoadingTypeRefresh = true
-                    )
+                    val shouldAutoScrollToChangedVariant = cartId.isNotBlankOrZero()
+                    if (shouldAutoScrollToChangedVariant) {
+                        arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
+                        viewModel.processInitialGetCartData(
+                            cartId = "0",
+                            initialLoad = false,
+                            isLoadingTypeRefresh = true
+                        )
+                    }
                 }
             }
         }
