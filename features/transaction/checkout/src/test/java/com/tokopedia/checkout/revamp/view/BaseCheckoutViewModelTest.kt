@@ -73,7 +73,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var releaseBookingUseCase: Lazy<ReleaseBookingUseCase>
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var updateCartUseCase: Lazy<UpdateCartUseCase>
 
     @MockK
