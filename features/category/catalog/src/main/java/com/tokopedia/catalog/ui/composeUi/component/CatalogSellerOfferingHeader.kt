@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.tokopedia.catalog.ui.composeUi.component
 
 import androidx.compose.foundation.background
@@ -13,10 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,6 +79,7 @@ fun CatalogSellerOfferingHeader(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CatalogSellerOfferingToolbar(
     title: String,
@@ -103,7 +110,10 @@ fun CatalogSellerOfferingToolbar(
                     }
                     NestTypography(
                         text = title,
-                        textStyle = textStyleTitle
+                        textStyle = textStyleTitle,
+                        modifier = Modifier.testTag("txtCatalogName").semantics {
+                            this.testTagsAsResourceId = true
+                        }
                     )
                     if (subTitle.isNotEmpty()) {
                         Row(
@@ -140,14 +150,20 @@ fun CatalogSellerOfferingToolbar(
                     icon = IconSource.Nest(IconUnify.CART),
                     notification = if (totalItemCart > Int.ZERO)
                         HeaderNotification(totalItemCart.toString(), color = com.tokopedia.nest.components.Color.PRIMARY)
-                    else null
+                    else null,
+                    modifier = Modifier.testTag("icAddToCartPage").semantics {
+                        this.testTagsAsResourceId = true
+                    }
                 ),
                 HeaderActionButton(
                     onClicked = {
                         onClickActionButtonMenu.invoke()
                     },
                     contentDescription = "",
-                    icon = IconSource.Nest(IconUnify.MENU_HAMBURGER)
+                    icon = IconSource.Nest(IconUnify.MENU_HAMBURGER),
+                    modifier = Modifier.testTag("icMenuBar").semantics {
+                        this.testTagsAsResourceId = true
+                    }
                 )
             )
         )
