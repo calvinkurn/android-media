@@ -24,6 +24,7 @@ data class ProductVariantBottomSheetParams(
     var extParams: String = "",
     var showQtyEditor: Boolean = false,
     var changeVariantOnCart: ChangeVariant = ChangeVariant(),
+    var dismissWhenTransactionError: Boolean = false,
 
     /**
      * PDP only

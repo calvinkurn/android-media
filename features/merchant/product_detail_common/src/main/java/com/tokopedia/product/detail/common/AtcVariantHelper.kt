@@ -31,6 +31,7 @@ object AtcVariantHelper {
 
     const val ATC_VARIANT_RESULT_CODE = 19202
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
+    const val KEY_DISMISS_WHEN_TRANSACTION_ERROR = "dismiss_when_transaction_error"
     const val KEY_EXT_PARAMS = "ext_params"
     const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
     const val KEY_SHOW_QTY_EDITOR = "show_qty_editor"
@@ -128,6 +129,7 @@ object AtcVariantHelper {
         saveAfterClose: Boolean = true,
         showQuantityEditor: Boolean = false,
         changeVariant: ProductVariantBottomSheetParams.ChangeVariant? = null,
+        dismissWhenTransactionError: Boolean = false,
         startActivitResult: (Intent, Int) -> Unit
     ) {
         val intent = RouteManager.getIntent(
@@ -145,6 +147,7 @@ object AtcVariantHelper {
         intent.putExtra(KEY_EXT_PARAMS, extParams)
         intent.putExtra(KEY_SHOW_QTY_EDITOR, qtyEditorData)
         intent.putExtra(KEY_CHANGE_VARIANT, changeVariant)
+        intent.putExtra(KEY_DISMISS_WHEN_TRANSACTION_ERROR, dismissWhenTransactionError)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 

@@ -298,8 +298,7 @@ class AtcVariantViewModel @Inject constructor(
                 _initialData.postValue(visitable.asSuccess())
                 updateActivityResult(
                     selectedProductId = selectedChild?.productId ?: "",
-                    mapOfSelectedVariantOption = initialSelectedOptionIds,
-                    cartId = aggregatorParams.changeVariantOnCart.cartId
+                    mapOfSelectedVariantOption = initialSelectedOptionIds
                 )
             } else {
                 _initialData.postValue(Throwable().asFail())
