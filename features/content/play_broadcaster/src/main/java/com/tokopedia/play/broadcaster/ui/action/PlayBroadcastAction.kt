@@ -91,11 +91,7 @@ sealed interface PlayBroadcastAction {
     object RemoveBeautificationMenu : PlayBroadcastAction
 
     /** CoachMark */
-    object CoachMarkHasBeenShown : PlayBroadcastAction
-
-    data class ImpressCoachMark(
-        val coachMarkType: LiveMenuCoachMarkType
-    ) : PlayBroadcastAction
+    object ComponentHasBeenHandled : PlayBroadcastAction
 
     /** Report */
     object GetLiveReportSummary : PlayBroadcastAction
