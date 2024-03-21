@@ -28,6 +28,10 @@ internal class SearchBarViewComponent(
         })
     }
 
+    fun setKeyword(keyword: String) {
+        view.text = keyword
+    }
+
     fun setPlaceholder(placeholder: String) {
         view.setHint(placeholder)
     }
