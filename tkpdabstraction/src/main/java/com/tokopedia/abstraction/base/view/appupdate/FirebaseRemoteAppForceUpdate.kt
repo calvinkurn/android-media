@@ -44,6 +44,10 @@ class FirebaseRemoteAppForceUpdate(context: Context) : ApplicationUpdate {
             detailUpdate.latestVersionCode = dataUpdateApp.latestVersionForceUpdate.toLong()
             detailUpdate.isNeedUpdate = true
             detailUpdate.isForceUpdate = true
+        } else if (dataUpdateApp.isIsOptionalEnabled && GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionOptionalUpdate) {
+            detailUpdate.latestVersionCode = dataUpdateApp.latestVersionForceUpdate.toLong()
+            detailUpdate.isNeedUpdate = true
+            detailUpdate.isForceUpdate = false
         } else {
             detailUpdate.isNeedUpdate = false
         }
