@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardPaginationLoadState
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase.Companion.PRODUCT_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -77,7 +78,7 @@ class ShopOfferHeroBrandViewModel(
     }
 
     private suspend fun setProductsList(
-        onEmptyListener: () -> Unit
+        onEmptyListener: () -> Unit,
     ) {
         isLoading = false
         val productList = getProductList()
@@ -151,12 +152,19 @@ class ShopOfferHeroBrandViewModel(
     fun loadMore() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase?.getCarouselPaginatedData(component.id, component.pageEndPoint) == true) {
-                setProductsList(
-                    onEmptyListener = { /* nothing to do */ }
-                )
-            } else {
-                handleErrorPagination()
+            when (productCardsUseCase?.getCarouselPaginatedData(
+                component.id,
+                component.pageEndPoint
+            )) {
+                ProductCardPaginationLoadState.FAILED -> {
+                    handleErrorPagination()
+                }
+
+                else -> {
+                    setProductsList(
+                        onEmptyListener = { /* nothing to do */ }
+                    )
+                }
             }
         }, onError = {
             handleErrorPagination()
@@ -193,7 +201,8 @@ class ShopOfferHeroBrandViewModel(
 
     fun getProductList(): List<ComponentsItem>? = component.getComponentsItem()
 
-    fun areFiltersApplied(): Boolean = ((component.selectedSort != null && component.selectedFilters != null) && (component.selectedSort?.isNotEmpty() == true || component.selectedFilters?.isNotEmpty() == true))
+    fun areFiltersApplied(): Boolean =
+        ((component.selectedSort != null && component.selectedFilters != null) && (component.selectedSort?.isNotEmpty() == true || component.selectedFilters?.isNotEmpty() == true))
 
     fun isGwp(): Boolean = header.value?.offerType.equals(HEADER_OFFER_TYPE_PD, true).not()
 

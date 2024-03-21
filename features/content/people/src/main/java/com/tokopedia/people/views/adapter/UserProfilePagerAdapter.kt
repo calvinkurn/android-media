@@ -57,6 +57,13 @@ class UserProfilePagerAdapter(
         }
     }
 
+    fun onRestoreTabs(tabs: List<ProfileTabUiModel.Tab>) {
+        listFragment.clear()
+        listFragment.addAll(tabs)
+        attachTab()
+        updateFragment(tabs)
+    }
+
     fun updateFragment(tabs: List<ProfileTabUiModel.Tab>) {
         if (isTabCountAndOrderStillSame(tabs)) {
             for (i in 0 until tabLayout.getUnifyTabLayout().tabCount) {
