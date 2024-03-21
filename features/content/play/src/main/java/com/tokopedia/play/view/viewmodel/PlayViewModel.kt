@@ -1866,6 +1866,12 @@ class PlayViewModel @AssistedInject constructor(
                         resultState = mappedData.resultState
                     )
                 }
+
+                sendProductTrackerToBro(
+                    productList = newProduct.productSectionList
+                        .filterIsInstance<ProductSectionUiModel.Section>()
+                        .flatMap { it.productList }
+                )
             }
             is MerchantVoucher -> {
                 val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result, _partnerInfo.value.name)
