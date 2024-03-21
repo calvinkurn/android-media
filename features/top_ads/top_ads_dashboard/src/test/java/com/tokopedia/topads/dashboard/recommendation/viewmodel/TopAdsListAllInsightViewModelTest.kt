@@ -85,18 +85,6 @@ class TopAdsListAllInsightViewModelTest {
         assertTrue(viewModel.productInsights.value is TopAdsListAllInsightState.Success)
     }
 
-//    @Test
-//    fun `getNextPageData failure`(){
-//        coEvery {
-//            topAdsListAllInsightCountsUseCase(any(),any(),any())
-//        } answers {
-//            throw Exception()
-//        }
-//
-//        viewModel.getNextPageData(String.EMPTY,Int.ZERO,String.EMPTY,InsightDataMapper())
-//        assertTrue(viewModel.productInsights.value is TopAdsListAllInsightState.Fail)
-//    }
-
     @Test
     fun `getNextPageData success adGroupType not PRODUCT_KEY`() {
         val data = TopAdsListAllInsightCountsResponse()
