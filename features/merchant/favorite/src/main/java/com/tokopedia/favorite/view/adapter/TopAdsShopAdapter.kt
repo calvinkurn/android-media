@@ -59,7 +59,7 @@ class TopAdsShopAdapter(
     private val data: MutableList<TopAdsShopItem> = ArrayList()
     private var context: Context? = null
     private val PATH_VIEW = "views"
-    private var imageLoader: com.tokopedia.topads.sdk.utils.ImageLoader? = null
+    private var imageLoader: ImageLoader? = null
 
     fun setData(data: List<TopAdsShopItem>) {
         this.data.clear()
@@ -69,7 +69,7 @@ class TopAdsShopAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        imageLoader = com.tokopedia.topads.sdk.utils.ImageLoader(context)
+        imageLoader = ImageLoader(context)
         val itemLayoutView = LayoutInflater.from(context)
                 .inflate(R.layout.favorite_listview_reccommend_shop, parent, false)
         createScaleAnimation()
