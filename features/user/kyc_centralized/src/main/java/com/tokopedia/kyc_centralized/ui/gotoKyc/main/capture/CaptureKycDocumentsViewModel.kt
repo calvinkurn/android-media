@@ -15,7 +15,7 @@ class CaptureKycDocumentsViewModel @Inject constructor(
     val retryExhausted : LiveData<Unit> get() = _retryExhausted
 
     fun onFailedUpload() {
-        _failedCounter += 1
+        _failedCounter++
         if (_failedCounter > 3) {
             _retryExhausted.value = Unit
         }
