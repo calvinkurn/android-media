@@ -35,6 +35,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import timber.log.Timber
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -236,6 +237,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel?.getSyncPageLiveData()?.removeObservers(it)
             masterProductCardItemViewModel?.getScrollSimilarProductComponentID()
                 ?.removeObservers(it)
+            Timber.d("Is notifyMeCurrentStatus removed -> ${masterProductCardItemViewModel?.getProductDataItem()?.name}")
         }
     }
 
@@ -342,35 +344,32 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun updateNotifyMeButton(notifyMeStatus: Boolean?) {
         val notifyText = masterProductCardItemViewModel?.getNotifyText(notifyMeStatus)
-        if (masterProductCardItemViewModel?.getTemplateType() == LIST) {
-            masterProductCardListView?.reRenderGenericCtaButton(
-                ProductCardModel(
-                    productCardGenericCta = ProductCardModel.ProductCardGenericCta(
-                        copyWriting = notifyText,
-                        mainButtonVariant = UnifyButton.Variant.GHOST,
-                        mainButtonType = if (notifyMeStatus == true) {
-                            UnifyButton.Type.ALTERNATE
-                        } else {
-                            UnifyButton.Type.MAIN
-                        }
-                    )
+        masterProductCardListView?.reRenderGenericCtaButton(
+            ProductCardModel(
+                productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                    copyWriting = notifyText,
+                    mainButtonVariant = UnifyButton.Variant.GHOST,
+                    mainButtonType = if (notifyMeStatus == true) {
+                        UnifyButton.Type.ALTERNATE
+                    } else {
+                        UnifyButton.Type.MAIN
+                    }
                 )
             )
-        } else {
-            masterProductCardGridView?.reRenderGenericCtaButton(
-                ProductCardModel(
-                    productCardGenericCta = ProductCardModel.ProductCardGenericCta(
-                        copyWriting = notifyText,
-                        mainButtonVariant = UnifyButton.Variant.GHOST,
-                        mainButtonType = if (notifyMeStatus == true) {
-                            UnifyButton.Type.ALTERNATE
-                        } else {
-                            UnifyButton.Type.MAIN
-                        }
-                    )
+        )
+        masterProductCardGridView?.reRenderGenericCtaButton(
+            ProductCardModel(
+                productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                    copyWriting = notifyText,
+                    mainButtonVariant = UnifyButton.Variant.GHOST,
+                    mainButtonType = if (notifyMeStatus == true) {
+                        UnifyButton.Type.ALTERNATE
+                    } else {
+                        UnifyButton.Type.MAIN
+                    }
                 )
             )
-        }
+        )
     }
 
     private fun updateNotifyMeState(notifyMeStatus: Boolean?) {
