@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_N700_32</item>
+        <item name="android:textColor">@color/Unify_NN700_32</item>
         <item name="android:lineSpacingExtra">@dimen/sp_5</item>
     </style>
 
     <style name="successTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_G400</item>
+        <item name="android:textColor">@color/Unify_GN400</item>
     </style>
 
     <style name="TextInputLayout">
@@ -16,9 +16,9 @@
     </style>
 
     <style name="HintTextInputLayout" parent="TextInputLayout">
-        <item name="defaultTextColorLabel">@color/Unify_N700_44</item>
-        <item name="focusedTextColorLabel">@color/Unify_N700_44</item>
-        <item name="disabledTextColorLabel">@color/Unify_N700_44</item>
+        <item name="defaultTextColorLabel">@color/Unify_NN700_44</item>
+        <item name="focusedTextColorLabel">@color/Unify_NN700_44</item>
+        <item name="disabledTextColorLabel">@color/Unify_NN700_44</item>
         <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
     </style>
 </resources>

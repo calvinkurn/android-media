@@ -45,11 +45,11 @@
     </style>
 
     <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_N700_32</item>
+        <item name="android:textColor">@color/Unify_NN700_32</item>
         <item name="android:lineSpacingExtra">@dimen/sp_5</item>
     </style>
 
     <style name="successTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_G400</item>
+        <item name="android:textColor">@color/Unify_GN400</item>
     </style>
 </resources>
