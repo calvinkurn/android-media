@@ -170,6 +170,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
@@ -6217,14 +6218,24 @@ class CartRevampFragment :
                     requestCode = AtcVariantHelper.ATC_VARIANT_RESULT_CODE,
                     data = intent
                 ) {
-                    val shouldAutoScrollToChangedVariant = cartId.isNotBlankOrZero()
-                    if (shouldAutoScrollToChangedVariant) {
-                        arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
-                        viewModel.processInitialGetCartData(
-                            cartId = "0",
-                            initialLoad = false,
-                            isLoadingTypeRefresh = true
-                        )
+                    when (requestCode) {
+                        ProductDetailCommonConstant.RC_VBS_UPDATE_VARIANT_SUCCESS -> {
+                            val shouldAutoScrollToChangedVariant = cartId.isNotBlankOrZero()
+                            if (shouldAutoScrollToChangedVariant) {
+                                arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
+                                viewModel.processInitialGetCartData(
+                                    cartId = "0",
+                                    initialLoad = false,
+                                    isLoadingTypeRefresh = true
+                                )
+                            }
+                        }
+                        ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR -> {
+                            val shouldShowErrorMessage = atcMessage.isNotBlank()
+                            if (shouldShowErrorMessage) {
+                                showToastMessageRed(message = atcMessage)
+                            }
+                        }
                     }
                 }
             }
