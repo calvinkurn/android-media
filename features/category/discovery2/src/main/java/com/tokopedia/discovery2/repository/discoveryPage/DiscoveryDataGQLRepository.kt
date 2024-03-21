@@ -79,6 +79,7 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
         	      color
     			  image
     		}
+            labels
           }
       additional_info
     }

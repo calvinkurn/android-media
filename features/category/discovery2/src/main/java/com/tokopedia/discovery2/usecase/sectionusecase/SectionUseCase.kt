@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.analytics.TrackingMapper.setAppLog
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -48,6 +49,9 @@ class SectionUseCase @Inject constructor(
                     comp.pageEndPoint = component.pageEndPoint
                     comp.pagePath = component.pagePath
                     comp.tabPosition = it.tabPosition
+                    comp.data.apply {
+                        setAppLog(comp.compAdditionalInfo?.tracker, comp.getSource())
+                    }
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {

@@ -20,8 +20,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
-import com.newrelic.agent.android.FeatureFlag;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -42,8 +40,13 @@ import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
+import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.mapper.ConfigMapper;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
@@ -57,6 +60,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
@@ -69,6 +73,7 @@ import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallback
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.device.info.model.AdditionalDeviceInfo;
@@ -87,8 +92,8 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
-import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
+import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.notifications.utils.PushTokenRefreshUtil;
@@ -98,16 +103,17 @@ import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubsc
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.remoteconfig.libra.LibraAbTest;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.telemetry.TelemetryActLifecycleCallback;
-import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
@@ -132,10 +138,6 @@ import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
 
-import com.tokopedia.developer_options.notification.DevOptNotificationManager;
-import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
-import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -182,6 +184,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initTranslator();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
+            Timber.plant(new Timber.DebugTree());
             new Cassava.Builder(this)
                     .setRemoteValidator(new RemoteSpec() {
                         @NonNull
@@ -224,12 +227,22 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+        initByteIOPlatform();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
         initializeAppPerformanceTrace();
     }
+
+    private void initByteIOPlatform() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
+            AppLogAnalytics.init(this);
+            TTNetHelper.initTTNet(this);
+            LibraAbTest.init(this);
+        }
+    }
+
     private void initializeAppPerformanceTrace() {
         if (GlobalConfig.isAllowDebuggingTools()) {
             AppPerformanceTrace.Companion.init(
@@ -257,7 +270,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                             return null;
                         }
                     },
-            new Function0<Unit>() {
+                    new Function0<Unit>() {
                         @Override
                         public Unit invoke() {
                             if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
@@ -400,6 +413,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }));
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
+        registerActivityLifecycleCallbacks(new AppLogActivityLifecycleCallback());
     }
 
     private void openDeveloperOptionsViaShake(Activity activity) {
