@@ -107,7 +107,7 @@ class FeedPostVideoViewHolder(
         binding.overlayBottom.root,
         binding.overlayRight.root,
         binding.btnDisableClearMode,
-        binding.productTagView.rootView,
+        binding.productTagView,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
         binding.feedCampaignRibbon.root
@@ -501,7 +501,7 @@ class FeedPostVideoViewHolder(
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
 
-        binding.productTagView.rootView.gone()
+        binding.productTagView.gone()
         productButtonView.showClearView()
     }
 

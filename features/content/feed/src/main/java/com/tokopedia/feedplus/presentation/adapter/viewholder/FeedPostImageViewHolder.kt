@@ -126,7 +126,7 @@ class FeedPostImageViewHolder(
         binding.btnDisableClearMode,
         binding.postLikeButton.root,
         binding.feedCommentButton.root,
-        binding.productTagView.rootView,
+        binding.productTagView,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
         binding.feedCampaignRibbon.root
@@ -604,7 +604,7 @@ class FeedPostImageViewHolder(
             menuButton.hide()
             shareButton.hide()
             productTagButton.root.hide()
-            productTagView.rootView.hide()
+            productTagView.hide()
             overlayTop.root.hide()
             overlayBottom.root.hide()
             overlayRight.root.hide()
