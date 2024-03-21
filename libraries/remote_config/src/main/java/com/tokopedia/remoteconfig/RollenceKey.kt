@@ -52,6 +52,9 @@ object RollenceKey {
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
+    const val CART_BUY_AGAIN = "buyagain_cart"
+    const val CART_BUY_AGAIN_CONTROL = "no_buyagain_cart"
+    const val CART_BUY_AGAIN_VARIANT = "with_buyagain_cart"
     const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
     const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
     const val UOH_BUY_AGAIN_WIDGET = "buyagain_uoh"
@@ -103,7 +106,6 @@ object RollenceKey {
     const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
 
     // TokopediaNOW
-    const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
     const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
     const val TOKOPEDIA_NOW_EXPERIMENT = "now_experiment"
 

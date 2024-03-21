@@ -131,6 +131,8 @@ import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
@@ -1508,6 +1510,7 @@ class ProductListFragment :
         searchNavigationListener?.updateSearchBarNotification()
     }
 
+    override fun isDarkMode() = activity?.isDarkMode() ?: false
     private fun onSafeProductClickInfo(itemProduct: ProductItemDataView?) {
         if (itemProduct == null) return
         presenter?.trackProductClick(itemProduct)

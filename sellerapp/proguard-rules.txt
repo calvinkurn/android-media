@@ -266,6 +266,9 @@
 -dontwarn com.jsoniter.output.DynamicCodegen
 -dontwarn com.jsoniter.DynamicCodegen
 
+-dontwarn dagger.internal.QualifierMetadata
+-dontwarn dagger.internal.ScopeMetadata
+
 # View Binding
 -keep class * implements androidx.viewbinding.ViewBinding {
     public static *** bind(android.view.View);

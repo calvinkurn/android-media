@@ -31,13 +31,13 @@
 
     <include
         android:id="@+id/chooser_upload"
-        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lbl_PAP_title_bottomsheet"
         layout="@layout/epharmacy_chooser_item"
+        android:layout_margin="16dp"
         />
 
     <include
@@ -48,7 +48,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/chooser_upload"
         layout="@layout/epharmacy_chooser_item"
+        android:layout_margin="16dp"
         />
+
+    <LinearLayout
+        android:id="@+id/know_more_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/chooser_mini_consultation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/know_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_3"
+            android:text="@string/epharmacy_mau_tahu_selengkapnya"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnPelajari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_GN500"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            android:text="@string/epharmacy_pelajari"
+            />
+
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/static_title_partner"
@@ -58,7 +94,7 @@
         android:textColor="@color/Unify_NN600"
         app:typographyType="paragraph_3"
         android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/chooser_mini_consultation"
+        app:layout_constraintTop_toBottomOf="@id/know_more_ll"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/epharmacy_dilayani_oleh"

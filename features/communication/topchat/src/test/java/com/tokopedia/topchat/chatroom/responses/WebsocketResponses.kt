@@ -248,4 +248,13 @@ object WebsocketResponses {
           }
         }
     """.trimIndent()
+
+    fun getRefreshEvent(msgId: String = "0") = """
+        {
+          "code": 205,
+          "data": {
+            "msg_id": $msgId
+          }
+        }
+    """.trimIndent()
 }

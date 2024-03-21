@@ -40,6 +40,11 @@ import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainFloatingButtonData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItem
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainViewAllData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cart.view.uimodel.CartDeleteItemData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
@@ -50,8 +55,8 @@ import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cart.view.uimodel.CartModel
 import com.tokopedia.cart.view.uimodel.CartMutableLiveData
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderActionType
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectedAmountHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
@@ -69,7 +74,6 @@ import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.cart.view.uimodel.FollowShopEvent
 import com.tokopedia.cart.view.uimodel.GetBmGmGroupProductTickerState
-import com.tokopedia.cart.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cart.view.uimodel.LoadRecommendationState
 import com.tokopedia.cart.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cart.view.uimodel.RemoveFromWishlistEvent
@@ -91,6 +95,7 @@ import com.tokopedia.cartcommon.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -124,6 +129,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -161,7 +168,6 @@ class CartViewModel @Inject constructor(
     private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-    private val getRecentViewUseCase: GetRecommendationUseCase,
     private val getWishlistV2UseCase: GetWishlistV2UseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addToCartUseCase: AddToCartUseCase,
@@ -208,8 +214,8 @@ class CartViewModel @Inject constructor(
         MutableLiveData()
     val cartCheckoutButtonState: LiveData<CartCheckoutButtonState> = _cartCheckoutButtonState
 
-    private val _recentViewState: MutableLiveData<LoadRecentReviewState> = MutableLiveData()
-    val recentViewState: LiveData<LoadRecentReviewState> = _recentViewState
+    private val _buyAgainFloatingButtonData: MutableLiveData<CartBuyAgainFloatingButtonData> = MutableLiveData()
+    val buyAgainFloatingButtonData: LiveData<CartBuyAgainFloatingButtonData> = _buyAgainFloatingButtonData
 
     private val _wishlistV2State: MutableLiveData<LoadWishlistV2State> = MutableLiveData()
     val wishlistV2State: LiveData<LoadWishlistV2State> = _wishlistV2State
@@ -281,14 +287,20 @@ class CartViewModel @Inject constructor(
         const val GET_CART_STATE_DEFAULT = 0
         const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1
 
+        private const val BUY_AGAIN_PRODUCTS_LIMIT = 6
+
         const val RECOMMENDATION_START_PAGE = 1
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
         const val ITEM_CHECKED_ALL_WITH_CHANGES = 1
         const val ITEM_CHECKED_PARTIAL_SHOP = 3
         const val ITEM_CHECKED_PARTIAL_ITEM = 4
         const val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
-        private const val RECENT_VIEW_XSOURCE = "recentview"
-        private const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
+        const val RECENT_VIEW_XSOURCE = "recentview"
+        const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
+        const val PAGE_NAME_RECOMMENDATION = "cart"
+        const val RECOMMENDATION_XSOURCE = "recom_widget"
+        const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
+        const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
@@ -403,7 +415,8 @@ class CartViewModel @Inject constructor(
                 item is ShipmentSellerCashbackModel ||
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
-                item is DisabledAccordionHolderData
+                item is DisabledAccordionHolderData ||
+                item is CartBuyAgainHolderData
             ) {
                 wishlistIndex = index
             }
@@ -411,10 +424,11 @@ class CartViewModel @Inject constructor(
 
         if (cartDataList.value.isNotEmpty()) {
             cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
-            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-                -1 -> wishlistIndex
-                else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
-            }
+            cartModel.firstCartSectionHeaderPosition =
+                when (cartModel.firstCartSectionHeaderPosition) {
+                    -1 -> wishlistIndex
+                    else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
+                }
             cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
             cartDataList.notifyObserver()
         }
@@ -509,6 +523,7 @@ class CartViewModel @Inject constructor(
         isLoadingTypeRefresh: Boolean,
         getCartState: Int = GET_CART_STATE_DEFAULT
     ) {
+        updateBuyAgainFloatingButtonVisibility(false)
         CartIdlingResource.increment()
         if (initialLoad) {
             _globalEvent.value = CartGlobalEvent.LoadGetCartData
@@ -938,37 +953,105 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun processGetRecentViewData() {
+    fun processGetBuyAgainData() {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
-                val recommendationWidgets = getRecentViewUseCase.getData(
+                val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = 1,
                         xSource = RECENT_VIEW_XSOURCE,
-                        pageName = PAGE_NAME_RECENT_VIEW,
-                        productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
-                        queryParam = ""
+                        pageName = PAGE_NAME_BUY_AGAIN,
+                        queryParam = "",
+                        hasNewProductCardEnabled = true
                     )
                 )
                 withContext(dispatchers.main) {
-                    _recentViewState.value = LoadRecentReviewState.Success(recommendationWidgets)
+                    _globalEvent.value = CartGlobalEvent.ItemLoading(false)
+                    if (recommendationWidgets.firstOrNull()?.recommendationItemList?.isNotEmpty() == true) {
+                        renderBuyAgain(recommendationWidgets[0])
+                    }
                 }
             },
             onError = { throwable ->
                 Timber.d(throwable)
                 withContext(dispatchers.main) {
-                    _recentViewState.value = LoadRecentReviewState.Failed(throwable)
+                    _globalEvent.value = CartGlobalEvent.ItemLoading(false)
                 }
             }
         )
     }
 
-    fun addCartRecentViewData(
+    private fun renderBuyAgain(recommendationWidget: RecommendationWidget) {
+        val buyAgainList = mutableListOf<CartBuyAgainItem>()
+        val mappedBuyAgainList = recommendationWidget.recommendationItemList.map {
+            CartBuyAgainItemHolderData(it)
+        }
+        buyAgainList.addAll(mappedBuyAgainList)
+
+        val cartBuyAgainHolderData = CartBuyAgainHolderData()
+        val isSeeMoreAppLinkExist = recommendationWidget.seeMoreAppLink?.isNotBlank() == true
+
+        val resultList = if (isSeeMoreAppLinkExist) {
+            val maxIndex = min(BUY_AGAIN_PRODUCTS_LIMIT, buyAgainList.size)
+            buyAgainList.subList(0, maxIndex).toMutableList()
+        } else {
+            buyAgainList
+        }
+        if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT && isSeeMoreAppLinkExist) {
+            resultList.add(CartBuyAgainViewAllData(recommendationWidget.seeMoreAppLink))
+        }
+        cartBuyAgainHolderData.buyAgainList = resultList
+
+        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
+        cartSectionHeaderHolderData.title = recommendationWidget.title.ifEmpty { "Waktunya beli lagi, nih!" }
+        cartSectionHeaderHolderData.showAllAppLink = if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT) {
+            recommendationWidget.seeMoreAppLink
+        } else {
+            String.EMPTY
+        }
+        cartSectionHeaderHolderData.type = CartSectionHeaderActionType.ICON_BUTTON
+
+        addCartBuyAgainData(cartSectionHeaderHolderData, cartBuyAgainHolderData)
+
+        _buyAgainFloatingButtonData.value = CartBuyAgainFloatingButtonData(
+            title = BUY_AGAIN_WORDING,
+            isVisible = buyAgainList.isNotEmpty()
+        )
+    }
+
+    private fun addCartBuyAgainData(
         cartSectionHeaderHolderData: CartSectionHeaderHolderData,
-        cartRecentViewHolderData: CartRecentViewHolderData
+        cartBuyAgainHolderData: CartBuyAgainHolderData
     ) {
+        var buyAgainIndex = 0
+        for ((index, item) in cartDataList.value.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                item is CartGroupHolderData ||
+                item is CartItemHolderData ||
+                item is CartShopBottomHolderData ||
+                item is ShipmentSellerCashbackModel ||
+                item is DisabledItemHeaderHolderData ||
+                item is DisabledReasonHolderData ||
+                item is DisabledAccordionHolderData
+            ) {
+                buyAgainIndex = index
+            }
+        }
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++buyAgainIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> buyAgainIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, buyAgainIndex)
+            }
+            cartDataList.value.add(++buyAgainIndex, cartBuyAgainHolderData)
+            cartDataList.notifyObserver()
+        }
+    }
+
+    fun addCartRecentViewData() {
         var recentViewIndex = 0
         for ((index, item) in cartDataList.value.withIndex()) {
             if (item is CartEmptyHolderData ||
@@ -976,21 +1059,31 @@ class CartViewModel @Inject constructor(
                 item is CartItemHolderData ||
                 item is CartShopBottomHolderData ||
                 item is ShipmentSellerCashbackModel ||
-                item is CartWishlistHolderData ||
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
-                item is DisabledAccordionHolderData
+                item is DisabledAccordionHolderData ||
+                item is CartBuyAgainHolderData ||
+                item is CartWishlistHolderData
             ) {
                 recentViewIndex = index
             }
         }
 
         if (cartDataList.value.isNotEmpty()) {
-            cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
-            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-                -1 -> recentViewIndex
-                else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
-            }
+            cartModel.firstCartSectionHeaderPosition =
+                when (cartModel.firstCartSectionHeaderPosition) {
+                    -1 -> recentViewIndex
+                    else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
+                }
+            val cartRecentViewHolderData = CartRecentViewHolderData(
+                recommendationWidgetMetadata = RecommendationWidgetMetadata(
+                    pageNumber = 1,
+                    pageName = PAGE_NAME_RECENT_VIEW,
+                    xSource = RECENT_VIEW_XSOURCE,
+                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
+                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
+                )
+            )
             cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
             cartDataList.notifyObserver()
         }
@@ -1047,10 +1140,11 @@ class CartViewModel @Inject constructor(
                 val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
-                        xSource = "recom_widget",
-                        pageName = "cart",
+                        xSource = RECOMMENDATION_XSOURCE,
+                        pageName = PAGE_NAME_RECOMMENDATION,
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
-                        queryParam = ""
+                        queryParam = "",
+                        hasNewProductCardEnabled = true
                     )
                 )
                 withContext(dispatchers.main) {
@@ -1082,6 +1176,7 @@ class CartViewModel @Inject constructor(
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
                 item is DisabledAccordionHolderData ||
+                item is CartBuyAgainHolderData ||
                 item is CartRecentViewHolderData ||
                 item is CartWishlistHolderData ||
                 item is CartTopAdsHeadlineData ||
@@ -1144,6 +1239,7 @@ class CartViewModel @Inject constructor(
                     item is DisabledItemHeaderHolderData ||
                     item is DisabledReasonHolderData ||
                     item is DisabledAccordionHolderData ||
+                    item is CartBuyAgainHolderData ||
                     item is CartRecentViewHolderData ||
                     item is CartWishlistHolderData
                 ) {
@@ -1314,13 +1410,13 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateRecentViewDataImpressionAnalytics(
-        cartRecentViewItemHolderDataList: List<CartRecentViewItemHolderData>,
+        recommendationItems: List<RecommendationItem>,
         isEmptyCart: Boolean
     ): Map<String, Any> {
         val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            for ((position, cartRecentViewItemHolderData) in cartRecentViewItemHolderDataList.withIndex()) {
+            for ((position, recommendationItem) in recommendationItems.withIndex()) {
                 val enhancedECommerceProductCartMapData = getProductRecentViewImpressionMapData(
-                    cartRecentViewItemHolderData,
+                    recommendationItem,
                     isEmptyCart,
                     position
                 )
@@ -1333,14 +1429,14 @@ class CartViewModel @Inject constructor(
     }
 
     private fun getProductRecentViewImpressionMapData(
-        recentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         isEmptyCart: Boolean,
         position: Int
     ): EnhancedECommerceProductCartMapData {
         return EnhancedECommerceProductCartMapData().apply {
-            setProductID(recentViewItemHolderData.id)
-            setProductName(recentViewItemHolderData.name)
-            setPrice(recentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
+            setProductID(recommendationItem.productId.toString())
+            setProductName(recommendationItem.name)
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -1562,17 +1658,6 @@ class CartViewModel @Inject constructor(
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
-        } else if (productModel is CartRecentViewItemHolderData) {
-            productId = productModel.id.toLongOrZero()
-            shopId = productModel.shopId.toIntOrZero()
-            productName = productModel.name
-            productPrice = productModel.price
-            quantity = productModel.minOrder
-            externalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
-            val clickUrl = productModel.clickUrl
-            if (clickUrl.isNotEmpty() && productModel.isTopAds) {
-                _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLRecent(productModel)
-            }
         } else if (productModel is CartRecommendationItemHolderData) {
             val recommendationItem = productModel.recommendationItem
             productId = recommendationItem.productId
@@ -1601,6 +1686,12 @@ class CartViewModel @Inject constructor(
             if (clickUrl.isNotEmpty()) {
                 _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLBanner(productModel)
             }
+        } else if (productModel is CartBuyAgainItemHolderData) {
+            productId = productModel.recommendationItem.productId
+            shopId = productModel.recommendationItem.shopId
+            productName = productModel.recommendationItem.name
+            productPrice = productModel.recommendationItem.price
+            quantity = productModel.recommendationItem.minOrder
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
@@ -1644,6 +1735,12 @@ class CartViewModel @Inject constructor(
         )
     }
 
+    fun processAddToCartRecentViewProduct(recommendationItem: RecommendationItem) {
+        if (recommendationItem.clickUrl.isNotEmpty() && recommendationItem.isTopAds) {
+            _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLRecent(recommendationItem)
+        }
+    }
+
     // ANALYTICS ATC
     fun generateAddToCartEnhanceEcommerceDataLayer(
         cartWishlistItemHolderData: CartWishlistItemHolderData,
@@ -1680,7 +1777,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateAddToCartEnhanceEcommerceDataLayer(
-        cartRecentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         addToCartDataResponseModel: AddToCartDataModel,
         isCartEmpty: Boolean
     ): Map<String, Any> {
@@ -1689,13 +1786,13 @@ class CartViewModel @Inject constructor(
             setList(if (isCartEmpty) EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART else EnhancedECommerceActionField.LIST_RECENT_VIEW)
         }
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartRecentViewItemHolderData.name)
-            setProductID(cartRecentViewItemHolderData.id)
-            setPrice(cartRecentViewItemHolderData.price)
-            setQty(cartRecentViewItemHolderData.minOrder)
-            setDimension52(cartRecentViewItemHolderData.shopId)
-            setDimension57(cartRecentViewItemHolderData.shopName)
-            setDimension59(cartRecentViewItemHolderData.shopType)
+            setProductName(recommendationItem.name)
+            setProductID(recommendationItem.productId.toString())
+            setPrice(recommendationItem.price)
+            setQty(recommendationItem.minOrder)
+            setDimension52(recommendationItem.shopId.toString())
+            setDimension57(recommendationItem.shopName)
+            setDimension59(recommendationItem.shopType)
             setDimension77(addToCartDataResponseModel.data.cartId)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategoryId("")
@@ -1778,13 +1875,13 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateRecentViewProductClickEmptyCartDataLayer(
-        cartRecentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         position: Int
     ): Map<String, Any> {
         val enhancedECommerceProductData = EnhancedECommerceProductData().apply {
-            setProductID(cartRecentViewItemHolderData.id)
-            setProductName(cartRecentViewItemHolderData.name)
-            setPrice(cartRecentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
+            setProductID(recommendationItem.productId.toString())
+            setProductName(recommendationItem.name)
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setPosition(position.toString())
@@ -1823,7 +1920,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateRecentViewProductClickDataLayer(
-        cartRecentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         position: Int
     ): Map<String, Any> {
         val stringObjectMap = HashMap<String, Any>()
@@ -1831,9 +1928,9 @@ class CartViewModel @Inject constructor(
             setList(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
         }
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartRecentViewItemHolderData.name)
-            setProductID(cartRecentViewItemHolderData.id)
-            setPrice(cartRecentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
+            setProductName(recommendationItem.name)
+            setProductID(recommendationItem.productId.toString())
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -1938,7 +2035,10 @@ class CartViewModel @Inject constructor(
                 if (result is Success) {
                     if (isFromCart) {
                         _removeFromWishlistEvent.value =
-                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(position)
+                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(
+                                position = position,
+                                message = result.data.message
+                            )
                     } else {
                         _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Success(
                             result.data,
@@ -2025,17 +2125,22 @@ class CartViewModel @Inject constructor(
                                 newCartGroupHolderData.productUiModelList[lastItemIndex]
                             val newCartItemHolderData = lastProductItem.copy()
                             newCartItemHolderData.isFinalItem = true
-                            val isValidGiftPurchase = newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.isValidGiftPurchase()
-                            newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider = isValidGiftPurchase
-                            val tierData = newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmTierProductList.firstOrNull()
+                            val isValidGiftPurchase =
+                                newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.isValidGiftPurchase()
+                            newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider =
+                                isValidGiftPurchase
+                            val tierData =
+                                newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmTierProductList.firstOrNull()
                             if (tierData != null) {
                                 tierData.purchaseBenefitData = tierData.purchaseBenefitData.copy(
                                     isShown = isValidGiftPurchase
                                 )
                             }
 
-                            newCartGroupHolderData.productUiModelList[lastItemIndex] = newCartItemHolderData
-                            newCartDataList[newCartDataList.indexOfFirst { it is CartItemHolderData && it.cartId == newCartItemHolderData.cartId }] = newCartItemHolderData
+                            newCartGroupHolderData.productUiModelList[lastItemIndex] =
+                                newCartItemHolderData
+                            newCartDataList[newCartDataList.indexOfFirst { it is CartItemHolderData && it.cartId == newCartItemHolderData.cartId }] =
+                                newCartItemHolderData
 
                             updateShopShownByCartGroup(newCartGroupHolderData)
                             newCartGroupHolderData.isAllSelected =
@@ -2201,7 +2306,11 @@ class CartViewModel @Inject constructor(
             val offerId = productWillDelete.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
             val cartStringOrder = productWillDelete.cartStringOrder
             val productListByOfferId =
-                CartDataHelper.getListProductByOfferIdAndCartStringOrder(cartDataList.value, offerId, cartStringOrder)
+                CartDataHelper.getListProductByOfferIdAndCartStringOrder(
+                    cartDataList.value,
+                    offerId,
+                    cartStringOrder
+                )
             if (productListByOfferId.size > 1) {
                 productListByOfferId.forEachIndexed { index, product ->
                     // move ticker to next index if product has ticker will be deleted
@@ -2678,24 +2787,6 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun updateRecentViewData(productId: String, isWishlist: Boolean) {
-        outerloop@ for (any in cartDataList.value) {
-            if (any is CartRecentViewHolderData) {
-                val recentViews = any.recentViewList
-                for (data in recentViews) {
-                    if (data.id == productId) {
-                        data.isWishlist = isWishlist
-                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(
-                            recentViews.indexOf(data)
-                        )
-                        break@outerloop
-                    }
-                }
-                break@outerloop
-            }
-        }
-    }
-
     fun removeWishlist(productId: String) {
         var wishlistItemIndex = 0
         var cartWishlistHolderData: CartWishlistHolderData? = null
@@ -2775,11 +2866,15 @@ class CartViewModel @Inject constructor(
         cartModel.availableCartItemImpressionList.addAll(availableCartItems)
     }
 
-    fun getBmGmGroupProductTicker(cartItemHolderData: CartItemHolderData, params: BmGmGetGroupProductTickerParams) {
+    fun getBmGmGroupProductTicker(
+        cartItemHolderData: CartItemHolderData,
+        params: BmGmGetGroupProductTickerParams
+    ) {
         if (cartModel.lastOfferId == "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}") {
             cartBmGmGroupTickerJob?.cancel()
         }
-        cartModel.lastOfferId = "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}"
+        cartModel.lastOfferId =
+            "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}"
         cartBmGmGroupTickerJob = viewModelScope.launch(dispatchers.io) {
             try {
                 val result = getGroupProductTickerUseCase(params)
@@ -2789,7 +2884,12 @@ class CartViewModel @Inject constructor(
                             GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, result))
                     } else {
                         _bmGmGroupProductTickerState.value =
-                            GetBmGmGroupProductTickerState.Failed(Pair(cartItemHolderData, CartResponseErrorException(result.getGroupProductTicker.errorMessage.joinToString())))
+                            GetBmGmGroupProductTickerState.Failed(
+                                Pair(
+                                    cartItemHolderData,
+                                    CartResponseErrorException(result.getGroupProductTicker.errorMessage.joinToString())
+                                )
+                            )
                     }
                 }
             } catch (t: Throwable) {
@@ -2888,5 +2988,11 @@ class CartViewModel @Inject constructor(
                 Timber.d(t)
             }
         }
+    }
+
+    fun updateBuyAgainFloatingButtonVisibility(isVisible: Boolean) {
+        _buyAgainFloatingButtonData.value = _buyAgainFloatingButtonData.value?.copy(
+            isVisible = isVisible
+        )
     }
 }
