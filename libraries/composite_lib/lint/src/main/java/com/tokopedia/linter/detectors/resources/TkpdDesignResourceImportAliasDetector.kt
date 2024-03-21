@@ -15,6 +15,9 @@ import org.jetbrains.uast.UFile
 /** Reports an error when an R class is imported using the wrong import alias. */
 class TkpdDesignResourceImportAliasDetector : Detector(), SourceCodeScanner {
 
+    val EXCLUDED_MODULES = listOf(
+        "tkpddesign"
+    )
     override fun getApplicableUastTypes(): List<Class<out UElement>>? {
         return listOf(UFile::class.java)
     }
@@ -22,6 +25,9 @@ class TkpdDesignResourceImportAliasDetector : Detector(), SourceCodeScanner {
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
             override fun visitFile(node: UFile) {
+                if (isInExcludedModule(context)) {
+                    return // Skip lint check for this module
+                }
                 node.imports.forEach { importStatement ->
                     val importedClassName = importStatement.importReference?.asRenderString()
                     if (importedClassName == "com.tokopedia.design.*" || importedClassName?.startsWith(
@@ -40,6 +46,16 @@ class TkpdDesignResourceImportAliasDetector : Detector(), SourceCodeScanner {
                 }
             }
         }
+    }
+
+    private fun isInExcludedModule(context: JavaContext): Boolean {
+        val sourceFilePath = context.file.path
+        for (excludedModule in EXCLUDED_MODULES) {
+            if (sourceFilePath.contains(excludedModule.replace(".", "/"))) {
+                return true
+            }
+        }
+        return false
     }
 
     companion object {
