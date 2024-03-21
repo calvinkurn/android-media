@@ -186,7 +186,7 @@ class TopupBillsAutoCompleteAdapter(
                     allFavorites
                         .filterIsInstance<TopupBillsAutoCompleteContactModel>()
                         .filter {
-                            it.phoneNumber.startsWith(constraint.toString()) ||
+                            it.phoneNumber.contains(constraint.toString()) ||
                                 it.name.contains(constraint.toString(), ignoreCase = true)
                         }
                 )
@@ -205,7 +205,7 @@ class TopupBillsAutoCompleteAdapter(
                     allContacts
                         .filterIsInstance<TopupBillsAutoCompleteContactModel>()
                         .filter {
-                            it.phoneNumber.startsWith(constraint.toString()) ||
+                            it.phoneNumber.contains(constraint.toString()) ||
                                 it.name.contains(constraint.toString(), ignoreCase = true)
                         }
                 )

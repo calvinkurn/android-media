@@ -499,6 +499,15 @@ object DeeplinkDFApp {
             DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
         ),
 
+        // Dynamic CSAT
+        DFP(
+            INTERNAL,
+            HOST_TICKET,
+            PathType.PATH,
+            "/csat",
+            OPERATIONAL_CONTACT_US
+        ),
+
         // telephony_masking
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/telephony-masking")
     )
@@ -546,7 +555,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/sort-filter"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/date-filter"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATH, "/search"),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category/l1"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category/l2"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATH, "/repurchase-page"),

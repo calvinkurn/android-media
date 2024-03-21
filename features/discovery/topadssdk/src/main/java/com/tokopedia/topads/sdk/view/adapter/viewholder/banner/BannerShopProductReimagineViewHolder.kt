@@ -31,14 +31,15 @@ class BannerShopProductReimagineViewHolder(
             val cpmData = model.cpmData
             productCardGridViewA.run {
                 setProductModel(ProductCardModelReimagine.from(productCardViewModel))
-
-                addOnImpressionListener(element) {
-                    impressionListener?.onImpressionProductAdsItem(
-                        adapterPosition,
-                        model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1),
-                        model.cpmData
-                    )
-                    impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
+                val product = cpmData.cpm.cpmShop.products.getOrNull(absoluteAdapterPosition)
+                product?.let {
+                    addOnImpressionListener(it.imageProduct) {
+                        impressionListener?.onImpressionProductAdsItem(
+                            absoluteAdapterPosition,
+                            product,
+                            model.cpmData
+                        )
+                    }
                 }
 
                 setOnClickListener {

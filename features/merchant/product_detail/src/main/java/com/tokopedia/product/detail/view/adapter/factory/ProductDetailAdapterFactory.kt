@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
@@ -49,6 +48,7 @@ import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiM
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 
@@ -92,7 +92,7 @@ interface ProductDetailAdapterFactory {
     fun type(data: ProductCustomInfoTitleDataModel): Int
     fun type(data: ProductShopReviewDataModel): Int
     fun type(data: OngoingCampaignUiModel): Int
-    fun type(data: DynamicOneLinerDataModel): Int
+    fun type(data: DynamicOneLinerUiModel): Int
     fun type(data: APlusImageUiModel): Int
     fun type(data: BMGMUiModel): Int
     fun type(data: ShipmentUiModel): Int
@@ -105,5 +105,6 @@ interface ProductDetailAdapterFactory {
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model
     fun type(data: PdpRecommendationWidgetDataModel): Int
+
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
