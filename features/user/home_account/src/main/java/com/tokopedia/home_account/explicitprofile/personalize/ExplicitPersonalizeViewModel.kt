@@ -175,7 +175,7 @@ class ExplicitPersonalizeViewModel @Inject constructor(
     }
 
     companion object {
-        private const val ABTEST_KEY_EXPLICIT_PERSONALIZE = "cat_affinity_android"
+        private const val ABTEST_KEY_EXPLICIT_PERSONALIZE = "s_cat_affinity_andro"
         private const val ABTEST_VARIANT_EXPLICIT_PERSONALIZE = "treatment_variant"
         private const val CATEGORY_PREFERENCE = "category_preference"
         private const val MULTIPLE_ANSWER = "MultipleAnswer"
