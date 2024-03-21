@@ -1528,6 +1528,7 @@ class ContentDetailFragment :
         createPostViewModel.caption = feedXCard.text
         createPostViewModel.postId = feedXCard.id
         createPostViewModel.editAuthorId = feedXCard.author.id
+        createPostViewModel.shopName = feedXCard.author.name
         createPostViewModel.authorType = ContentCommonUserType.getUserType(feedXCard.author.type)
 
         val intent = RouteManager.getIntent(
