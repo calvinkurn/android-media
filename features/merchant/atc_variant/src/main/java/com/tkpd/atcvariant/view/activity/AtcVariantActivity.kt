@@ -86,6 +86,10 @@ class AtcVariantActivity : BaseSimpleActivity() {
             changeVariantOnCart = intentGetParcelable(
                 key = AtcVariantHelper.KEY_CHANGE_VARIANT
             ) ?: ProductVariantBottomSheetParams.ChangeVariant()
+
+            dismissWhenTransactionError = intentGetBoolean(
+                key = AtcVariantHelper.KEY_DISMISS_WHEN_TRANSACTION_ERROR
+            )
         }
         return paramsData
     }

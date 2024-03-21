@@ -81,6 +81,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -310,10 +311,23 @@ class AtcVariantBottomSheet :
         shouldSetActivityResult = data.saveAfterClose
     }
 
-    private fun dismissAfterAtc() {
+    private fun dismissAfterTransaction() {
         val shouldDismiss = aggregatorParams.dismissAfterTransaction
         if (shouldDismiss) {
             dismiss()
+        }
+    }
+
+    private fun dismissWhenTransactionError(
+        onDismissed: () -> Unit = {},
+        onNothing: () -> Unit = {}
+    ) {
+        val shouldDismiss = aggregatorParams.dismissWhenTransactionError
+        if (shouldDismiss) {
+            onDismissed()
+            dismiss()
+        } else {
+            onNothing()
         }
     }
 
@@ -426,24 +440,49 @@ class AtcVariantBottomSheet :
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             loadingProgressDialog?.dismiss()
 
-            when (it) {
-                is Success -> onSuccessUpdateCart(it.data)
-
-                is Fail -> {
-                    showToasterError(getErrorMessage(it.throwable))
-                    logException(it.throwable)
-                }
+            when (aggregatorParams.pageSource) {
+                VariantPageSource.CART_CHANGE_VARIANT.source -> handleObserveUpdateCartByClient(it)
+                else -> handleObserveUpdateCartOnGeneral(result = it)
             }
         }
     }
 
-    private fun onSuccessUpdateCart(message: String) {
-        if (aggregatorParams.pageSource != VariantPageSource.CART_CHANGE_VARIANT.source) {
-            showToasterSuccess(message, getString(R.string.atc_variant_oke_label))
-            return
-        }
+    private fun handleObserveUpdateCartOnGeneral(result: Result<String>) {
+        when (result) {
+            is Success -> {
+                showToasterSuccess(result.data, getString(R.string.atc_variant_oke_label))
+            }
 
-        dismissAfterAtc()
+            is Fail -> {
+                showToasterError(getErrorMessage(result.throwable))
+                logException(result.throwable)
+            }
+        }
+    }
+
+    private fun handleObserveUpdateCartByClient(result: Result<String>) {
+        when (result) {
+            is Success -> {
+                viewModel.updateActivityResult(
+                    requestCode = ProductDetailCommonConstant.RC_VBS_UPDATE_VARIANT_SUCCESS,
+                    atcSuccessMessage = result.data
+                )
+                dismissAfterTransaction()
+            }
+
+            is Fail -> {
+                logException(result.throwable)
+
+                dismissWhenTransactionError(onDismissed = {
+                    viewModel.getActivityResultData().apply {
+                        requestCode = ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR
+                        atcMessage = getErrorMessage(result.throwable)
+                    }
+                }, onNothing = {
+                        showToasterError(getErrorMessage(result.throwable))
+                    })
+            }
+        }
     }
 
     private fun observeInitialVisitablesData() {
@@ -500,7 +539,7 @@ class AtcVariantBottomSheet :
             loadingProgressDialog?.dismiss()
             if (it is Success) {
                 onSuccessTransaction(it.data)
-                dismissAfterAtc()
+                dismissAfterTransaction()
             } else if (it is Fail) {
                 it.throwable.run {
                     trackAtcError(message ?: "")
