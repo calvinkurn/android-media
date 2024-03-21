@@ -32,7 +32,7 @@ class ImpresionTask {
         try {
             var traceElement: StackTraceElement
             var stackTraceElements = Thread.currentThread().stackTrace
-            if (stackTraceElements[CONST_FOUR].className.equals(com.tokopedia.topads.sdk.utils.TopAdsUrlHitter::class.qualifiedName)) {
+            if (stackTraceElements[CONST_FOUR].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
                 traceElement = stackTraceElements[CONST_FIVE]
             } else {
                 traceElement = stackTraceElements[CONST_FOUR]

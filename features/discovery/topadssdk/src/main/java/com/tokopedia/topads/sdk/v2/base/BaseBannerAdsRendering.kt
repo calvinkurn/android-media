@@ -2,20 +2,13 @@ package com.tokopedia.topads.sdk.v2.base
 
 import android.content.Context
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.LabelGroup
-import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.v2.uimodel.ShopAdsWithSingleProductModel
-import com.tokopedia.unifycomponents.UnifyButton
 import java.lang.ref.WeakReference
-import java.util.ArrayList
 
 abstract class BaseBannerAdsRendering(
     val view: View?,

@@ -28,6 +28,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,7 +63,7 @@ class HomeGlobalRecommendationViewModelTest {
     private val getHomeRecommendationCardUseCase =
         mockk<GetGlobalHomeRecommendationCardUseCase>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
-    private val topAdsUrlHitter = mockk<com.tokopedia.topads.sdk.utils.TopAdsUrlHitter>(relaxed = true)
+    private val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     private val getTopAdsHeadlineUseCase = mockk<GetTopAdsHeadlineUseCase>(relaxed = true)
     private val topAdsAddressHelper = mockk<TopAdsAddressHelper>(relaxed = true)
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
