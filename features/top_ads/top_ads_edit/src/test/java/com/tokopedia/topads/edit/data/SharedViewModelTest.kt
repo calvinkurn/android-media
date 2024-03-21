@@ -25,6 +25,11 @@ class SharedViewModelTest {
     private lateinit var negKeyword: MutableLiveData<List<GetKeywordResponse.KeywordsItem>>
     private lateinit var maxBudget: MutableLiveData<Int>
     private lateinit var bidSettings: MutableLiveData<List<TopAdsBidSettingsModel>>
+    private lateinit var bidForGroup: MutableLiveData<Int>
+    private lateinit var dailyBudget: MutableLiveData<Int>
+    private lateinit var rekomendedBudget: MutableLiveData<Int>
+    private lateinit var autoBidStatus: MutableLiveData<String>
+
 
 
     @Before
@@ -36,6 +41,10 @@ class SharedViewModelTest {
         negKeyword = mockk(relaxed = true)
         maxBudget = mockk(relaxed = true)
         bidSettings = mockk(relaxed = true)
+        bidForGroup = mockk(relaxed = true)
+        dailyBudget = mockk(relaxed = true)
+        rekomendedBudget = mockk(relaxed = true)
+        autoBidStatus = mockk(relaxed = true)
     }
 
     @After
@@ -125,5 +134,74 @@ class SharedViewModelTest {
         viewModel.setBidSettings(data)
         assertEquals(bidSettings.value, data)
     }
+
+    @Test
+    fun setBudget() {
+        val budget = 12345
+        every { bidForGroup.value } returns budget
+        viewModel.setBudget(budget)
+        assertEquals(bidForGroup.value, budget)
+    }
+
+    @Test
+    fun setDailyBudget() {
+        val budget = 12345
+        every { dailyBudget.value } returns budget
+        viewModel.setDailyBudget(budget)
+        assertEquals(dailyBudget.value, budget)
+    }
+
+    @Test
+    fun setRekomendedBudget() {
+        val budget = 12345
+        every { rekomendedBudget.value } returns budget
+        viewModel.setRekomendedBudget(budget)
+        assertEquals(rekomendedBudget.value, budget)
+    }
+
+    @Test
+    fun getBudget() {
+        val budget = 12345
+        every { bidForGroup.value } returns budget
+        viewModel.setBudget(budget)
+        val actual = viewModel.getBudget()
+        assertEquals(bidForGroup.value, actual.value)
+    }
+
+    @Test
+    fun getDailyBudget() {
+        val budget = 12345
+        every { dailyBudget.value } returns budget
+        viewModel.setDailyBudget(budget)
+        val actual = viewModel.getDailyBudget()
+        assertEquals(dailyBudget.value, actual.value)
+    }
+
+    @Test
+    fun getRekomendedBudget() {
+        val budget = 12345
+        every { rekomendedBudget.value } returns budget
+        viewModel.setRekomendedBudget(budget)
+        val actual = viewModel.getRekomendedBudget()
+        assertEquals(rekomendedBudget.value, actual.value)
+    }
+
+    @Test
+    fun setAutoBidStatus() {
+        val status = "status"
+        every { autoBidStatus.value } returns status
+        viewModel.setAutoBidStatus(status)
+        assertEquals(autoBidStatus.value, status)
+    }
+
+    @Test
+    fun getBidSettings() {
+        val data: List<TopAdsBidSettingsModel> = mockk()
+        every { bidSettings.value } returns data
+        viewModel.setBidSettings(data)
+        val actual = viewModel.getBidSettings()
+        assertEquals(bidSettings.value, actual.value)
+    }
+
 
 }
