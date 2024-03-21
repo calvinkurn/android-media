@@ -20,9 +20,11 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/dynamic_one_liner_icon_left"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:maxWidth="48dp"
+            android:maxHeight="48dp"
             app:layout_constraintBottom_toBottomOf="@id/dynamic_one_liner_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/dynamic_one_liner_title"
