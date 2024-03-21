@@ -514,14 +514,14 @@ class FeedPostVideoViewHolder(
             menuButton.show()
             shareButton.show()
             productTagButton.root.show()
-            productTagView.rootView.show()
+            productTagView.show()
             overlayTop.root.show()
             overlayBottom.root.show()
             overlayRight.root.show()
             btnDisableClearMode.hide()
         }
 
-        binding.productTagView.rootView.show()
+        binding.productTagView.show()
         productButtonView.showIfPossible()
     }
 

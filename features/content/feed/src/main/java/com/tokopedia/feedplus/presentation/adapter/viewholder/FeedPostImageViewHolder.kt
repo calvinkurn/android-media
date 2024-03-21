@@ -633,7 +633,7 @@ class FeedPostImageViewHolder(
                 }
             }
         }
-        binding.productTagView.rootView.show()
+        binding.productTagView.show()
         productButtonView.showIfPossible()
     }
 
