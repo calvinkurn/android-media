@@ -100,7 +100,9 @@ class CatalogDetailPageViewModelTest {
                         navigationProperties = NavigationProperties(),
                         priceCtaProperties = PriceCtaProperties(),
                         productSortingStatus = 0,
-                        catalogUrl = ""
+                        catalogUrl = "",
+                        brand = "",
+                        departmentId = ""
                     )
                 )
             )

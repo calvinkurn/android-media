@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
 
 object CategoryL2Mapper {
 

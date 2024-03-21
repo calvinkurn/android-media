@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingComposeViewModel
 import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingViewModel
 import dagger.Binds
 import dagger.Module
@@ -24,4 +25,9 @@ abstract class ConfirmShippingViewModelModule {
     @ActivityScope
     @ViewModelKey(ConfirmShippingViewModel::class)
     internal abstract fun somConfirmShippingViewModel(viewModel: ConfirmShippingViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(ConfirmShippingComposeViewModel::class)
+    internal abstract fun somConfirmShippingComposeViewModel(viewModel: ConfirmShippingComposeViewModel): ViewModel
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder.review.ui
 
+import android.text.TextUtils
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -255,18 +257,28 @@ class ProductReviewViewHolder(
             binding.txtDescReviewPdp.hide()
             return
         }
-        binding.txtDescReviewPdp.apply {
-            maxLines = MAX_LINES_REVIEW_DESCRIPTION
-            val formattingResult = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
-            text = formattingResult.first
-            if (formattingResult.second) {
-                setOnClickListener {
-                    maxLines = Integer.MAX_VALUE
-                    text = HtmlLinkHelper(context, reviewData.message).spannedString
-                }
+
+        val txtReview = binding.txtDescReviewPdp
+        txtReview.show()
+        txtReview.text = HtmlLinkHelper(txtReview.context, reviewData.message).spannedString ?: ""
+        txtReview.post {
+            val lineCount = txtReview.layout?.lineCount ?: return@post
+            if (lineCount > MAX_LINES_REVIEW_DESCRIPTION) {
+                txtReview.maxLines = MAX_LINES_REVIEW_DESCRIPTION
+
+                val txtExpand = binding.txtDescReviewExpand
+                txtExpand.show()
+                txtExpand.setOnClickListener(onClickExpand)
+                txtReview.setOnClickListener(onClickExpand)
             }
-            show()
         }
+    }
+
+    private val onClickExpand = OnClickListener {
+        val txtReview = binding.txtDescReviewPdp
+        val txtExpand = binding.txtDescReviewExpand
+        txtReview.maxLines = Int.MAX_VALUE
+        txtExpand.hide()
     }
 
     private fun hideAllOtherElements() {

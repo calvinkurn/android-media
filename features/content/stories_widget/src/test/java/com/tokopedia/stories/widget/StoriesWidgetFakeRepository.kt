@@ -29,7 +29,11 @@ class StoriesWidgetFakeRepository(
         return mHasSeenCoachMark
     }
 
-    override suspend fun getUpdatedSeenStatus(shopId: String, lastUpdated: TimeMillis): Boolean {
+    override suspend fun getUpdatedSeenStatus(
+        shopId: String,
+        currentHasSeenAll: Boolean,
+        lastUpdated: TimeMillis
+    ): Boolean {
         return seenStatusMap[shopId].orFalse()
     }
 

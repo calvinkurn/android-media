@@ -227,7 +227,9 @@ class FeedXProduct(
     @SerializedName("cashbackFmt")
     val cashbackFmt: String = "",
     @SerializedName("isStockAvailable")
-    val isAvailable: Boolean = false
+    val isAvailable: Boolean = false,
+    @SerializedName("isHighlighted")
+    val isHighlighted: Boolean = false
 )
 
 class FeedXProductAffiliate(

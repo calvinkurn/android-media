@@ -1,11 +1,11 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import org.junit.Assert
 import org.junit.Test
 
@@ -17,7 +17,7 @@ class ClickRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // WHEN
-        result = cartViewModel.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartViewModel.generateRecentViewProductClickDataLayer(RecommendationItem(), 0)
 
         // THEN
         val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
@@ -31,7 +31,7 @@ class ClickRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // WHEN
-        result = cartViewModel.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartViewModel.generateRecentViewProductClickDataLayer(RecommendationItem(), 0)
 
         // THEN
         val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
@@ -45,7 +45,7 @@ class ClickRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // WHEN
-        result = cartViewModel.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartViewModel.generateRecentViewProductClickEmptyCartDataLayer(RecommendationItem(), 0)
 
         // THEN
         val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
@@ -59,7 +59,7 @@ class ClickRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // WHEN
-        result = cartViewModel.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartViewModel.generateRecentViewProductClickEmptyCartDataLayer(RecommendationItem(), 0)
 
         // THEN
         val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
