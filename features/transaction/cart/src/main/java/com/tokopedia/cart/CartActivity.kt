@@ -56,7 +56,6 @@ class CartActivity :
     companion object {
         const val EXTRA_CART_ID = "cart_id"
         const val EXTRA_PRODUCT_ID = "product_id"
-        const val EXTRA_SCROLL_TO_PRODUCT = "scroll_to_product"
 
         const val INVALID_PRODUCT_ID = -1L
         const val APPLINK_PARAM_PRODUCT_ID = "product_id"
