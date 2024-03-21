@@ -3,6 +3,7 @@
 package com.tokopedia.topads.auto.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.domain.usecase.TopadsStatisticsEstimationAttributeUseCase
@@ -108,10 +109,7 @@ class AutoPsViewModelTest {
         coEvery {
             topAdsGetAutoAdsUseCase.executeOnBackground()
         } throws Throwable()
-
-
         viewModel.loadData()
-
         assertEquals(null, viewModel.autoAdsData.value)
         assertEquals(null, viewModel.bidInfo.value)
         assertEquals(null, viewModel.topAdsGetAutoAds.value)
@@ -133,13 +131,16 @@ class AutoPsViewModelTest {
 
     @Test
     fun `test result in getVariantById`() {
-        val data = GetVariantByIdResponse.GetVariantById.ExperimentVariant("","")
+        val data =
+            GetVariantByIdResponse.GetVariantById.ExperimentVariant(String.EMPTY, String.EMPTY)
         val dataList = listOf(data)
-        val result = GetVariantByIdResponse(GetVariantByIdResponse.GetVariantById(
-            userIdVariants = listOf(),
-            shopIdVariants = dataList,
-            sessionIdVariants = listOf()
-        ))
+        val result = GetVariantByIdResponse(
+            GetVariantByIdResponse.GetVariantById(
+                userIdVariants = listOf(),
+                shopIdVariants = dataList,
+                sessionIdVariants = listOf()
+            )
+        )
         coEvery {
             getVariantByIdUseCase()
         } answers {
@@ -289,7 +290,7 @@ class AutoPsViewModelTest {
     }
 
     @Test
-    fun `get budgetrecommendation`(){
+    fun `get budgetrecommendation`() {
         assertNull(viewModel.budgetrecommendation.value)
     }
 
