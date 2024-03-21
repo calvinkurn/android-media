@@ -94,10 +94,6 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
-    private val pageSource: String by lazyThreadSafetyNone {
-        pagerAdapter.getCurrentTabKey(binding.vpProductPreview.currentItem)
-    }
-
     private val currentTab: String get() =
         pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
 
@@ -197,7 +193,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun onClickHandler() = with(binding) {
         layoutProductPreviewTab.icBack.setOnClickListener {
-            analytics.onClickBackButton(pageSource)
+            analytics.onClickBackButton(currentTab)
             activity?.finish()
         }
         layoutProductPreviewTab.tvProductTabTitle.setOnClickListener {
@@ -318,8 +314,8 @@ class ProductPreviewFragment @Inject constructor(
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
-        analytics.onImpressATC(pageSource)
-        if (model.buttonState == OOS) analytics.onImpressRemindMe(pageSource)
+        analytics.onImpressATC(currentTab)
+        if (model.buttonState == OOS) analytics.onImpressRemindMe(currentTab)
 
         binding.viewFooter.apply {
             show()
@@ -333,7 +329,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleAtc(model: BottomNavUiModel) {
-        if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
+        if (model.buttonState == OOS) analytics.onClickRemindMe(currentTab)
         if (model.hasVariant) {
             analytics.onAtcVariant(model, currentTab)
             AtcVariantHelper.goToAtcVariant(
