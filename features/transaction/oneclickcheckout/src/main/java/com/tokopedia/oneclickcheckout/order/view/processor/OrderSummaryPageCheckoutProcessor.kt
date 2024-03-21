@@ -220,7 +220,10 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                         ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
                     }
                 ),
-                AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.INSTANT)
+                AppLogAnalytics.getEntranceInfoForCheckout(
+                    AtcBuyType.INSTANT,
+                    products.mapNotNull { if (it.isError) null else it.cartId }
+                )
             )
 
             try {
