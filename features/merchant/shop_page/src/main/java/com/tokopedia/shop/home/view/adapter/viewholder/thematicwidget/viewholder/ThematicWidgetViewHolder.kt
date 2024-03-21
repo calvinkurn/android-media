@@ -239,7 +239,8 @@ class ThematicWidgetViewHolder(
                 productCardSeeAllListener = productCardSeeAllListenerImpl(),
                 totalProductSize = uiModel?.productList?.size.orZero(),
                 isOverrideWidgetTheme = isOverrideTheme,
-                thematicWidgetUiModel = element
+                thematicWidgetUiModel = element,
+                isFestivity = element.isFestivity
             ),
             differ = ShopHomeThematicWidgetDiffUtil()
         )
@@ -379,6 +380,9 @@ class ThematicWidgetViewHolder(
             trackerProductsModel.add(product)
             listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel)
         }
+
+        override fun getPatternColorType() = listener.getPatternColorType()
+        override fun getBackgroundColor() = listener.getBackgroundColor()
     }
 
     private fun productCardListListenerImpl(): ProductCardListViewHolder.ProductCardListener = object : ProductCardListViewHolder.ProductCardListener {
@@ -394,6 +398,9 @@ class ThematicWidgetViewHolder(
             trackerProductsModel.add(product)
             listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel)
         }
+
+        override fun getPatternColorType() = listener.getPatternColorType()
+        override fun getBackgroundColor() = listener.getBackgroundColor()
     }
 
     private fun productCardSeeAllListenerImpl(): ProductCardSeeAllViewHolder.ProductCardSeeAllListener = object : ProductCardSeeAllViewHolder.ProductCardSeeAllListener {
@@ -413,5 +420,7 @@ class ThematicWidgetViewHolder(
         fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?)
+        fun getPatternColorType(): String
+        fun getBackgroundColor(): String
     }
 }

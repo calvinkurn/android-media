@@ -17,6 +17,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeFlashSaleProductCardGridViewHolder(
     itemView: View,
@@ -58,7 +59,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
         if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
             stockBarLabelColor = ShopUtil.getColorHexString(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                unifyprinciplesR.color.Unify_RN600
             )
         }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
@@ -67,9 +68,13 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
-            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
+            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget(),
+            patternColorType = listener.getPatternColorType(),
+            backgroundColor = listener.getBackgroundColor(),
+            isFestivity = fsUiModel?.isFestivity.orFalse()
         ).copy(
-            stockBarLabelColor = stockBarLabelColor
+            stockBarLabelColor = stockBarLabelColor,
+            isInBackground = true
         )
         productCardGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)

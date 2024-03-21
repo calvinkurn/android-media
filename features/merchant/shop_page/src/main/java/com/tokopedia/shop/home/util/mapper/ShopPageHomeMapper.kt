@@ -340,7 +340,11 @@ object ShopPageHomeMapper {
         shopHomeProductViewModel: ShopHomeProductUiModel,
         widgetName: String,
         statusCampaign: String,
-        forceLightModeColor: Boolean
+        forceLightModeColor: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isFestivity: Boolean,
+        makeProductCardTransparent: Boolean = false
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -381,7 +385,14 @@ object ShopPageHomeMapper {
                     imageUrl = it.imageUrl,
                     title = it.title
                 )
-            }
+            },
+            colorMode = productCardColorHelper.determineProductCardColorMode(
+                isFestivity = isFestivity,
+                shouldOverrideTheme = forceLightModeColor,
+                patternColorType = patternColorType,
+                backgroundColor = backgroundColor,
+                makeProductCardTransparent = makeProductCardTransparent
+            )
         )
         return if (isShopCampaignWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,

@@ -5187,6 +5187,14 @@ open class ShopPageHomeFragment :
                     shopHomeAdapter?.removeWidget(this)
                 }
             }
+
+            override fun getPatternColorType(): String {
+                return this@ShopPageHomeFragment.getPatternColorType()
+            }
+
+            override fun getBackgroundColor(): String {
+                return this@ShopPageHomeFragment.getBackgroundColor()
+            }
         }
 
     override fun onDisplayBannerTimerClicked(

@@ -34,4 +34,7 @@ interface ShopHomeCampaignNplWidgetListener {
     fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel)
 
     fun isForceLightModeColorOnCampaignNplWidget(): Boolean
+    fun getPatternColorType(): String
+
+    fun getBackgroundColor(): String
 }

@@ -274,18 +274,22 @@ class ShopHomeNplCampaignViewHolder(
                     isNestedScrollingEnabled = false
                     adapter = productListCampaignAdapter
                     setRecycledViewPool(recyclerviewPoolListener.parentPool)
-                    setHeightBasedOnProductCardMaxHeight(
-                        productList.map {
-                            ShopPageHomeMapper.mapToProductCardCampaignModel(
-                                isHasAddToCartButton = false,
-                                hasThreeDots = false,
-                                shopHomeProductViewModel = it,
-                                widgetName = model.name,
-                                statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty(),
-                                forceLightModeColor = shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget()
-                            )
-                        }
-                    )
+
+                    val products = productList.map {
+                        ShopPageHomeMapper.mapToProductCardCampaignModel(
+                            isHasAddToCartButton = false,
+                            hasThreeDots = false,
+                            shopHomeProductViewModel = it,
+                            widgetName = model.name,
+                            statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty(),
+                            forceLightModeColor = shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget(),
+                            patternColorType = shopHomeCampaignNplWidgetListener.getPatternColorType(),
+                            backgroundColor = shopHomeCampaignNplWidgetListener.getBackgroundColor(),
+                            isFestivity = model.isFestivity
+                        )
+                    }
+
+                    setHeightBasedOnProductCardMaxHeight(products)
                 } catch (throwable: Exception) {
                     throwable.printStackTrace()
                 }
