@@ -57,7 +57,8 @@ class CartItemAdapter {
         fun onChangeVariantClicked(
             productId: String,
             shopId: String,
-            cartId: String
+            cartId: String,
+            currentQuantity: Int
         )
     }
 }

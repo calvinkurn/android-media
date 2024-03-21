@@ -171,6 +171,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
@@ -382,8 +383,6 @@ class CartRevampFragment :
     }
 
     private var enablePromoEntryPointNewInterface: Boolean = false
-    private val shouldScrollToProduct: Boolean
-        get() = arguments?.getBoolean(CartActivity.EXTRA_SCROLL_TO_PRODUCT) ?: false
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -4433,7 +4432,7 @@ class CartRevampFragment :
         }
 
         validateGoToCheckout()
-        scrollToProductShopWithCartId(getCartId(), shouldScrollToProduct)
+        scrollToProductShopWithCartId()
 
         renderAdditionalWidget()
         resetArguments()
@@ -4768,7 +4767,8 @@ class CartRevampFragment :
         )
     }
 
-    private fun scrollToProductShopWithCartId(cartId: String, shouldScrollToProduct: Boolean) {
+    private fun scrollToProductShopWithCartId() {
+        val cartId = getCartId()
         if (cartId.isNotBlank()) {
             var hasProducts = false
             val allShopGroupDataList = CartDataHelper.getAllShopGroupDataList(
@@ -4780,17 +4780,10 @@ class CartRevampFragment :
             }
 
             if (hasProducts) {
-                val index = if (shouldScrollToProduct) {
-                    CartDataHelper.getCartItemIndexByCartId(
-                        viewModel.cartDataList.value,
-                        cartId
-                    )
-                } else {
-                    CartDataHelper.getCartShopHolderIndexByCartId(
-                        viewModel.cartDataList.value,
-                        cartId
-                    )
-                }
+                val index = CartDataHelper.getCartItemIndexByCartId(
+                    viewModel.cartDataList.value,
+                    cartId
+                )
                 if (index != RecyclerView.NO_POSITION) {
                     val offset =
                         context?.resources?.getDimensionPixelSize(R.dimen.select_all_view_holder_height)
@@ -6194,15 +6187,8 @@ class CartRevampFragment :
     override fun onChangeVariantClicked(
         productId: String,
         shopId: String,
-        cartId: String
-    ) {
-        openVariantBottomSheet(productId, shopId, cartId)
-    }
-
-    private fun openVariantBottomSheet(
-        productId: String,
-        shopId: String,
-        cartId: String
+        cartId: String,
+        currentQuantity: Int
     ) {
         context?.let {
             AtcVariantHelper.goToAtcVariant(
@@ -6210,7 +6196,10 @@ class CartRevampFragment :
                 productId = productId,
                 pageSource = VariantPageSource.CART_CHANGE_VARIANT,
                 shopId = shopId,
-                cartId = cartId,
+                changeVariant = ProductVariantBottomSheetParams.ChangeVariant(
+                    cartId = cartId,
+                    currentQuantity = currentQuantity
+                ),
                 dismissAfterTransaction = true,
                 startActivitResult = { intent: Intent, _ ->
                     changeVariantLauncher.launch(intent)
@@ -6227,9 +6216,7 @@ class CartRevampFragment :
                     requestCode = AtcVariantHelper.ATC_VARIANT_RESULT_CODE,
                     data = intent
                 ) {
-                    // TODO: Is there a better way to do auto scroll by not setting arguments directly?
                     arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
-                    arguments?.putBoolean(CartActivity.EXTRA_SCROLL_TO_PRODUCT, true)
                     viewModel.processInitialGetCartData(
                         cartId = "0",
                         initialLoad = false,

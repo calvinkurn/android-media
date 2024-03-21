@@ -1180,7 +1180,8 @@ class CartItemViewHolder(
                     actionListener?.onChangeVariantClicked(
                         data.productId,
                         data.shopHolderData.shopId,
-                        data.cartId
+                        data.cartId,
+                        data.quantity
                     )
                 }
                 binding.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
@@ -1188,7 +1189,8 @@ class CartItemViewHolder(
                     actionListener?.onChangeVariantClicked(
                         data.productId,
                         data.shopHolderData.shopId,
-                        data.cartId
+                        data.cartId,
+                        data.quantity
                     )
                 }
                 binding.iconVariant.show()
