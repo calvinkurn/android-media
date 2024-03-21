@@ -74,7 +74,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
 
         val listProductMetadata = getListProductMetadata(widgets)
 
-        if (listProductMetadata != null) {
+        if (!listProductMetadata.isNullOrEmpty()) {
             launchCatchError(
                 context = dispatcherProvider.io,
                 block = {
