@@ -1,5 +1,10 @@
 package com.tokopedia.imagepicker.picker.gallery;
 
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.common.model.AlbumItem.ALBUM_ID_ALL;
+import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
+import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,8 +33,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.GalleryType;
-import com.tokopedia.imagepicker.editor.widget.LabelView;
-import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter;
 import com.tokopedia.imagepicker.common.internal.entity.Album;
 import com.tokopedia.imagepicker.common.loader.AlbumLoader;
@@ -37,16 +40,12 @@ import com.tokopedia.imagepicker.common.loader.AlbumMediaLoader;
 import com.tokopedia.imagepicker.common.model.AlbumItem;
 import com.tokopedia.imagepicker.common.model.MediaItem;
 import com.tokopedia.imagepicker.common.widget.MediaGridInset;
+import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
-import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
-import static com.tokopedia.imagepicker.common.model.AlbumItem.ALBUM_ID_ALL;
 
 /**
  * Created by hendry on 19/04/18.
