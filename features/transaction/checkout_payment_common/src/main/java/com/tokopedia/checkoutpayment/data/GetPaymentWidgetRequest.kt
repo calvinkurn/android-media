@@ -11,7 +11,11 @@ data class GetPaymentWidgetRequest(
     val cartMetadata: String = "",
     @SerializedName("client_metadata")
     val paymentRequest: String = ""
-)
+) {
+    companion object {
+        const val SOURCE_OCC = "one-click-checkout"
+    }
+}
 
 data class GetPaymentWidgetChosenPaymentRequest(
     @SerializedName("gateway_code")

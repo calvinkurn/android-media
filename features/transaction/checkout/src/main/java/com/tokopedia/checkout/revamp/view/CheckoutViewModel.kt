@@ -20,6 +20,9 @@ import com.tokopedia.checkout.revamp.view.converter.CheckoutDataConverter
 import com.tokopedia.checkout.revamp.view.processor.CheckoutAddOnProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCalculator
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor
+import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_CHECKOUT
+import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_NOTES
+import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_PAYMENT
 import com.tokopedia.checkout.revamp.view.processor.CheckoutDataHelper
 import com.tokopedia.checkout.revamp.view.processor.CheckoutLogisticProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
@@ -709,6 +712,7 @@ class CheckoutViewModel @Inject constructor(
                     }
                     if (checkoutItem is CheckoutPromoModel) {
                         if (listData.value.promo()!!.entryPointInfo.messages.isEmpty()) {
+                            // only validate if not yet done so
                             validatePromo()
                         }
                         listPromoExternalAutoApplyCode = emptyList()
@@ -1480,7 +1484,7 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_NORMAL,
-                        "Bebas ongkir gagal diaplikasikan, silahkan coba lagi"
+                        BO_DEFAULT_ERROR_MESSAGE
                     )
                 )
             }
@@ -2140,7 +2144,7 @@ class CheckoutViewModel @Inject constructor(
                     commonToaster.emit(
                         CheckoutPageToaster(
                             Toaster.TYPE_NORMAL,
-                            "Pilih pengiriman dulu yuk sebelum lanjut bayar."
+                            SHIPMENT_NOT_COMPLETE_ERROR_MESSAGE
                         )
                     )
                     mTrackerShipment.eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete()
@@ -2154,7 +2158,7 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_ERROR,
-                        "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                        NO_VALID_ORDER_ERROR_MESSAGE
                     )
                 )
                 pageState.value = CheckoutPageState.Normal
@@ -2165,7 +2169,7 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_NORMAL,
-                        "Atur pembayaran dulu yuk sebelum lanjut bayar."
+                        INVALID_PAYMENT_ERROR_MESSAGE
                     )
                 )
                 pageState.value = CheckoutPageState.ScrollTo(listData.value.size - PAYMENT_INDEX_FROM_BOTTOM)
@@ -2198,7 +2202,7 @@ class CheckoutViewModel @Inject constructor(
                         commonToaster.emit(
                             CheckoutPageToaster(
                                 Toaster.TYPE_NORMAL,
-                                "Pastikan Anda telah melengkapi informasi tambahan."
+                                INVALID_DROPSHIP_ERROR_MESSAGE
                             )
                         )
                         pageState.value = CheckoutPageState.Normal
@@ -2324,7 +2328,7 @@ class CheckoutViewModel @Inject constructor(
         hasClearPromoBeforeCheckout: Boolean
     ) {
         cartProcessor.processSaveShipmentState(listData.value, recipientAddressModel)
-        val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), "checkout", cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
+        val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), UPDATE_CART_SOURCE_CHECKOUT, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
         if (!updateCartResult.isSuccess) {
             toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
         }
@@ -3103,7 +3107,7 @@ class CheckoutViewModel @Inject constructor(
 
         viewModelScope.launch(dispatchers.immediate) {
             // fire & forget
-            cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), "update_notes", cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
+            cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), UPDATE_CART_SOURCE_NOTES, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
         }
     }
 
@@ -3143,7 +3147,7 @@ class CheckoutViewModel @Inject constructor(
             val chosenPayment = payment.originalData
             payment = paymentProcessor.getPaymentWidget(
                 GetPaymentWidgetRequest(
-                    source = "one-click-checkout",
+                    source = GetPaymentWidgetRequest.SOURCE_OCC,
                     chosenPayment = GetPaymentWidgetChosenPaymentRequest(
                         gatewayCode = chosenPayment.gatewayCode,
                         metadata = chosenPayment.metadata,
@@ -3272,7 +3276,7 @@ class CheckoutViewModel @Inject constructor(
             pageState.value = CheckoutPageState.Loading
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
-                "update_payment",
+                UPDATE_CART_SOURCE_PAYMENT,
                 UpdateCartPaymentRequest(
                     gatewayCode = gatewayCode,
                     metadata = metadata
@@ -3308,7 +3312,7 @@ class CheckoutViewModel @Inject constructor(
             val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
-                "update_payment",
+                UPDATE_CART_SOURCE_PAYMENT,
                 UpdateCartPaymentRequest(
                     gatewayCode = currPayment.gatewayCode,
                     metadata = currPayment.metadata,
@@ -3348,7 +3352,7 @@ class CheckoutViewModel @Inject constructor(
             val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
-                "update_payment",
+                UPDATE_CART_SOURCE_PAYMENT,
                 UpdateCartPaymentRequest(
                     gatewayCode = currPayment.gatewayCode,
                     metadata = currPayment.metadata,
@@ -3408,6 +3412,13 @@ class CheckoutViewModel @Inject constructor(
         const val EGOLD_ID = 1L
         const val DG_ID = 2L
         const val DONATION_ID = 3L
+
+        const val BO_DEFAULT_ERROR_MESSAGE = "Bebas ongkir gagal diaplikasikan, silahkan coba lagi"
+
+        const val SHIPMENT_NOT_COMPLETE_ERROR_MESSAGE = "Pilih pengiriman dulu yuk sebelum lanjut bayar."
+        const val NO_VALID_ORDER_ERROR_MESSAGE = "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+        const val INVALID_PAYMENT_ERROR_MESSAGE = "Atur pembayaran dulu yuk sebelum lanjut bayar."
+        const val INVALID_DROPSHIP_ERROR_MESSAGE = "Pastikan Anda telah melengkapi informasi tambahan."
     }
 }
 

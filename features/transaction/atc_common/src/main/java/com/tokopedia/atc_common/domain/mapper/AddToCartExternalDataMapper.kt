@@ -59,7 +59,7 @@ class AddToCartExternalDataMapper @Inject constructor() {
         return AddToCartOccMultiData(
             success = dataResponse.success,
             message = dataResponse.message,
-            cart = mapCartData(dataResponse.data),
+            cart = mapCartData(dataResponse.data)
         )
     }
 

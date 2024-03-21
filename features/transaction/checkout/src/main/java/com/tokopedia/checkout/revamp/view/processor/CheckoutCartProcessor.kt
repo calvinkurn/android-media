@@ -474,6 +474,12 @@ class CheckoutCartProcessor @Inject constructor(
         }
         return null
     }
+
+    companion object {
+        const val UPDATE_CART_SOURCE_CHECKOUT = "checkout"
+        const val UPDATE_CART_SOURCE_NOTES = "update_notes"
+        const val UPDATE_CART_SOURCE_PAYMENT = "update_payment"
+    }
 }
 
 data class ChangeAddressResult(

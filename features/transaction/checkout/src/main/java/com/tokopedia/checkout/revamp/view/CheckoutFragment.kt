@@ -82,6 +82,7 @@ import com.tokopedia.checkoutpayment.data.PaymentRequest
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.checkoutpayment.installment.CreditCardInstallmentDetailBottomSheet
 import com.tokopedia.checkoutpayment.installment.GoCicilInstallmentDetailBottomSheet
@@ -2868,101 +2869,118 @@ class CheckoutFragment :
     override fun onChangeInstallment(payment: CheckoutPaymentModel) {
         if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
             // gocicil
-            val paymentData = payment.data.paymentWidgetData.first()
-            GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
-                this,
-                viewModel.generateGoCicilInstallmentRequest(payment),
-                payment.installmentData,
-                paymentData.installmentPaymentData.selectedTenure,
-                object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                    override fun onSelectInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, isSilent: Boolean) {
-                        viewModel.chooseInstallment(selectedInstallment, installmentList, tickerMessage, isSilent)
-                    }
-
-                    override fun onFailedLoadInstallment() {
-                        view?.let { v ->
-                            Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-                        }
-                    }
-                }
-            )
+            onChangeGoCicilInstallment(payment.data, payment)
         } else if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
             // cc
-            val paymentData = payment.data.paymentWidgetData.first()
-            CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
-                this,
-                viewModel.generateCreditCardTenorListRequest(payment),
-                userSessionInterface.userId,
-                payment.tenorList!!,
-                paymentData.installmentPaymentData.selectedTenure,
-                object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                    override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
-                        viewModel.chooseInstallmentCC(selectedInstallment, installmentList)
-                    }
+            onChangeCcInstallment(payment.data, payment)
+        }
+    }
 
-                    override fun onFailedLoadInstallment() {
-                        view?.let { v ->
-                            Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-                        }
+    private fun onChangeCcInstallment(data: PaymentWidgetListData, payment: CheckoutPaymentModel) {
+        val paymentData = data.paymentWidgetData.first()
+        CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
+            this,
+            viewModel.generateCreditCardTenorListRequest(payment),
+            userSessionInterface.userId,
+            payment.tenorList!!,
+            paymentData.installmentPaymentData.selectedTenure,
+            object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
+                    viewModel.chooseInstallmentCC(selectedInstallment, installmentList)
+                }
+
+                override fun onFailedLoadInstallment() {
+                    view?.let { v ->
+                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
                 }
-            )
-        }
+            }
+        )
+    }
+
+    private fun onChangeGoCicilInstallment(data: PaymentWidgetListData, payment: CheckoutPaymentModel) {
+        val paymentData = data.paymentWidgetData.first()
+        GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
+            this,
+            viewModel.generateGoCicilInstallmentRequest(payment),
+            payment.installmentData,
+            paymentData.installmentPaymentData.selectedTenure,
+            object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                override fun onSelectInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, isSilent: Boolean) {
+                    viewModel.chooseInstallment(selectedInstallment, installmentList, tickerMessage, isSilent)
+                }
+
+                override fun onFailedLoadInstallment() {
+                    view?.let { v ->
+                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    }
+                }
+            }
+        )
     }
 
     override fun onPaymentAction(payment: CheckoutPaymentModel) {
         if (payment.validationReport is PaymentValidationReport.WalletAmountError) {
             // top up
-            val paymentWidgetData = payment.data!!.paymentWidgetData.first()
-            val topUpData = paymentWidgetData.walletData.topUp
-            context?.let {
-                startActivityForResult(
-                    PaymentTopUpWebViewActivity.createIntent(
-                        it,
-                        topUpData.headerTitle,
-                        url = topUpData.urlLink,
-                        redirectUrl = paymentWidgetData.callbackUrl,
-                        isHideDigital = if (topUpData.isHideDigital) 1 else 0
-                    ),
-                    REQUEST_CODE_PAYMENT_TOP_UP
-                )
-//                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
-//                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
-//                }
-            }
+            onPaymentTopUp(payment)
         } else if (payment.validationReport is PaymentValidationReport.WalletActivationError) {
             // activation
-            val paymentWidgetData = payment.data!!.paymentWidgetData.first()
-            val activationData = paymentWidgetData.walletData.activation
+            onPaymentActivation(payment)
+        }
+    }
 
-            if (!URLUtil.isNetworkUrl(activationData.urlLink) && RouteManager.isSupportApplink(context, activationData.urlLink)) {
-                if (activationData.urlLink.startsWith(ApplinkConst.LINK_ACCOUNT)) {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
-                        putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
-                        putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
-                    }
-                    startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
-                } else {
-                    val intent = RouteManager.getIntentNoFallback(context, activationData.urlLink) ?: return
-                    startActivityForResult(intent, REQUEST_CODE_WALLET_ACTIVATION)
+    private fun onPaymentActivation(payment: CheckoutPaymentModel) {
+        val paymentWidgetData = payment.data!!.paymentWidgetData.first()
+        val activationData = paymentWidgetData.walletData.activation
+
+        if (!URLUtil.isNetworkUrl(activationData.urlLink) && RouteManager.isSupportApplink(context, activationData.urlLink)) {
+            if (activationData.urlLink.startsWith(ApplinkConst.LINK_ACCOUNT)) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
+                    putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+                    putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
                 }
+                startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
             } else {
-                PaymentActivationWebViewBottomSheet(
-                    activationData.urlLink,
-                    paymentWidgetData.callbackUrl,
-                    activationData.headerTitle,
-                    false,
-                    object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
-                        override fun onActivationResult(isSuccess: Boolean) {
-                            view?.let {
-                                it.post {
-                                    onActivityResultFromActivation()
-                                }
+                val intent = RouteManager.getIntentNoFallback(context, activationData.urlLink)
+                    ?: return
+                startActivityForResult(intent, REQUEST_CODE_WALLET_ACTIVATION)
+            }
+        } else {
+            PaymentActivationWebViewBottomSheet(
+                activationData.urlLink,
+                paymentWidgetData.callbackUrl,
+                activationData.headerTitle,
+                false,
+                object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
+                    override fun onActivationResult(isSuccess: Boolean) {
+                        view?.let {
+                            it.post {
+                                onActivityResultFromActivation()
                             }
                         }
                     }
-                ).show(this, userSessionInterface)
-            }
+                }
+            ).show(this, userSessionInterface)
+        }
+    }
+
+    private fun onPaymentTopUp(payment: CheckoutPaymentModel) {
+        val paymentWidgetData = payment.data!!.paymentWidgetData.first()
+        val topUpData = paymentWidgetData.walletData.topUp
+        context?.let {
+            startActivityForResult(
+                PaymentTopUpWebViewActivity.createIntent(
+                    it,
+                    topUpData.headerTitle,
+                    url = topUpData.urlLink,
+                    redirectUrl = paymentWidgetData.callbackUrl,
+                    isHideDigital = if (topUpData.isHideDigital) 1 else 0
+                ),
+                REQUEST_CODE_PAYMENT_TOP_UP
+            )
+    //                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
+    //                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
+    //                }
         }
     }
 

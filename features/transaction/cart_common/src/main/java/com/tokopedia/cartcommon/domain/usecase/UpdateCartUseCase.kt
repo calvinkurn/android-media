@@ -63,11 +63,11 @@ class UpdateCartUseCase @Inject constructor(
     }
 
     companion object {
-        val PARAM_CARTS = "carts"
-        val PARAM_SOURCE = "source"
-        val PARAM_PAYMENT = "payment_params"
-        val VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
-        val VALUE_SOURCE_PDP_UPDATE_QTY_NOTES = "pdp_update_qty_notes"
+        const val PARAM_CARTS = "carts"
+        const val PARAM_SOURCE = "source"
+        const val PARAM_PAYMENT = "payment_params"
+        const val VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
+        const val VALUE_SOURCE_PDP_UPDATE_QTY_NOTES = "pdp_update_qty_notes"
 
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
