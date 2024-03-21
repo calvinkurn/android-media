@@ -152,7 +152,7 @@ fun CheckoutPaymentWidget(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     NestTypography(
-                                        text = data.subtitle,
+                                        text = data.subtitle.replace('*', '\u2022'),
                                         textStyle = NestTheme.typography.display3.copy(
                                             color = NestTheme.colors.NN._600
                                         ),
