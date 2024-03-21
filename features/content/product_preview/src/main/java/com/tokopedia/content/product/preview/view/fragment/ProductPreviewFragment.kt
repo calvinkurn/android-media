@@ -35,6 +35,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel.ButtonState.OOS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_KEY
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
@@ -94,8 +95,12 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
-    private val currentTab: String get() =
-        pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
+    private val currentTab: String get() {
+        val index = binding.vpProductPreview.currentItem
+        return if (index > 0 ) {
+            pagerAdapter.getCurrentTabKey(index)
+        } else TAB_REVIEW_KEY
+    }
 
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
