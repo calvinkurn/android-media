@@ -24,7 +24,6 @@ class DynamicOneLinerViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_one_liner
-        private const val STATUS_HIDE = "hide"
         private const val STATUS_SHOW = "show"
         private const val CHEVRON_POS_FOLLOW = "follow_text"
         private const val CHEVRON_POS_END = "end"
