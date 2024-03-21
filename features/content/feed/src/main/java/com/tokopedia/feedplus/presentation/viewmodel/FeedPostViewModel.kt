@@ -35,6 +35,7 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_MEDIA_VIDEO
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
@@ -1217,14 +1218,13 @@ class FeedPostViewModel @Inject constructor(
      * Track
      */
     private val productIds = mutableListOf<String>()
-    fun trackPerformance(model: FeedCardVideoContentModel, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
-        val playChannelId = model.playChannelId
+    fun trackPerformance(playChannelId: String, ids: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         if (playChannelId.isBlank()) return
 
-        val hasChanged = model.products.filterNot { productIds.contains(it.id) }.isNotEmpty()
+        val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
         if (hasChanged) {
             productIds.clear()
-            model.products.map { productIds.add(it.id) }
+            ids.map { productIds.add(it) }
         } else { return }
 
         viewModelScope.launchCatchError(dispatchers.io, block = {
@@ -1289,7 +1289,8 @@ class FeedPostViewModel @Inject constructor(
     fun fetchFeedProduct(
         activityId: String,
         products: List<ContentTaggedProductUiModel>,
-        sourceType: ContentTaggedProductUiModel.SourceType
+        sourceType: ContentTaggedProductUiModel.SourceType,
+        mediaType: String,
     ) {
         viewModelScope.launch {
             try {
@@ -1316,6 +1317,8 @@ class FeedPostViewModel @Inject constructor(
                     it.id
                 }
                 _feedTagProductList.value = Success(distinctData)
+                if (mediaType == TYPE_MEDIA_VIDEO)
+                    trackPerformance(activityId, distinctData.map(ContentTaggedProductUiModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
             } catch (t: Throwable) {
                 _feedTagProductList.value = Fail(t)
             }

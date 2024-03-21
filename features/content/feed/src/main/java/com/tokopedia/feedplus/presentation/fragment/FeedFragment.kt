@@ -857,8 +857,8 @@ class FeedFragment :
         model: FeedCardVideoContentModel,
         trackerModel: FeedTrackerDataModel
     ) {
-        feedPostViewModel.trackPerformance(model, BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
-        feedPostViewModel.trackPerformance(model, BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
+        feedPostViewModel.trackPerformance(model.playChannelId, model.products.map(FeedCardProductModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
+        feedPostViewModel.trackPerformance(model.playChannelId, model.products.map(FeedCardProductModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
         feedPostViewModel.getReportSummaries(model)
     }
 
@@ -1919,7 +1919,8 @@ class FeedFragment :
         feedPostViewModel.fetchFeedProduct(
             activityId,
             if (isTopAds) taggedProductList else emptyList(),
-            sourceType
+            sourceType,
+            trackerData?.mediaType.orEmpty(),
         )
 
         productBottomSheet.show(
