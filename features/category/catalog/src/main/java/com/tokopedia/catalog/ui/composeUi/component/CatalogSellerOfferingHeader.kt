@@ -146,7 +146,7 @@ fun CatalogSellerOfferingToolbar(
                     onClicked = {
                         onClickActionButtonCart.invoke()
                     },
-                    contentDescription = "",
+                    contentDescription = "icAddToCartPage",
                     icon = IconSource.Nest(IconUnify.CART),
                     notification = if (totalItemCart > Int.ZERO)
                         HeaderNotification(totalItemCart.toString(), color = com.tokopedia.nest.components.Color.PRIMARY)
@@ -159,7 +159,7 @@ fun CatalogSellerOfferingToolbar(
                     onClicked = {
                         onClickActionButtonMenu.invoke()
                     },
-                    contentDescription = "",
+                    contentDescription = "icAddToCartPage",
                     icon = IconSource.Nest(IconUnify.MENU_HAMBURGER),
                     modifier = Modifier.testTag("icMenuBar").semantics {
                         this.testTagsAsResourceId = true
