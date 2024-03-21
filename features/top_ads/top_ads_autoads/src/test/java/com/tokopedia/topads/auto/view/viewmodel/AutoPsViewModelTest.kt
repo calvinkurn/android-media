@@ -39,6 +39,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -285,6 +286,11 @@ class AutoPsViewModelTest {
         val expected = false
         val result = viewModel.checkDeposits()
         assertEquals(expected, result)
+    }
+
+    @Test
+    fun `get budgetrecommendation`(){
+        assertNull(viewModel.budgetrecommendation.value)
     }
 
     @After

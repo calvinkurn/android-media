@@ -2,8 +2,11 @@ package com.tokopedia.topads.auto.view.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
@@ -11,25 +14,32 @@ import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment.Compani
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment.Companion.TOGGLE_OFF
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
+import io.mockk.MockKSettings.relaxed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
+import org.json.JSONException
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.Mockito.mock
+import java.lang.reflect.Method
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -49,6 +59,7 @@ class DailyBudgetViewModelTest {
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
     private val rawQueries: Map<String, String> = mapOf()
+    private lateinit var getParamsMethod: Method
 
     @Before
     fun setUp() {
@@ -62,6 +73,11 @@ class DailyBudgetViewModelTest {
                 rawQueries, topAdsGetShopDepositUseCase, bidInfoUseCase, queryPostAutoadsUseCase
             )
         )
+        getParamsMethod = DailyBudgetViewModel::class.java.getDeclaredMethod(
+            "getParams",
+            AutoAdsParam::class.java
+        )
+        getParamsMethod.isAccessible = true
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -301,6 +317,43 @@ class DailyBudgetViewModelTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun `getParams should return correct RequestParams`() {
+        val params: RequestParams = mockk(relaxed = true)
+        val autoAdsParam = AutoAdsParam(
+            input = AutoAdsParam.Input(
+                action = String.EMPTY,
+                channel = String.EMPTY,
+                dailyBudget = Int.ZERO,
+                shopID = String.EMPTY,
+                source = String.EMPTY
+            )
+        )
+        every {
+            params.putAll(any())
+        } answers {
+            firstArg<Map<String, Any>>()
+        }
+        val actualParams = getParamsMethod.invoke(viewModel, autoAdsParam)
+        assertTrue(actualParams is RequestParams)
+    }
+
+    @Test
+    fun `getParams should enter catch block when json conversion fails`() {
+        val autoAdsParam = AutoAdsParam(
+            input = AutoAdsParam.Input(
+                action = String.EMPTY,
+                channel = String.EMPTY,
+                dailyBudget = Int.ZERO,
+                shopID = String.EMPTY,
+                source = String.EMPTY
+            )
+        )
+        mockkStatic(Utils::class)
+        every { Utils.jsonToMap(any()) } throws JSONException("Mocked exception")
+        val actualParams = getParamsMethod.invoke(viewModel, autoAdsParam)
+        assertTrue(actualParams is RequestParams)
+    }
 
     @After
     fun tearDown() {
