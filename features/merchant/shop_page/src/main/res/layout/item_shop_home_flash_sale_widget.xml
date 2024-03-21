@@ -7,19 +7,17 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
     android:layout_marginBottom="12dp"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:paddingLeft="-12dp"
-    android:paddingRight="-12dp">
+    android:layout_marginLeft="-12dp"
+    android:layout_marginRight="-12dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tgp_flash_sale_campaign_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        app:typographyType="heading_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
         tools:text="@string/shop_page_label_flash_sale_toko" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -38,9 +36,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:text="@string/shop_page_label_flash_sale"
+        app:layout_constraintVertical_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="@id/tgp_flash_sale_campaign_name"
         app:layout_constraintTop_toBottomOf="@id/tgp_flash_sale_campaign_name"
-        app:layout_constraintVertical_chainStyle="spread"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -48,9 +46,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/tgp_flash_sale_timer_desc"
         app:layout_constraintStart_toEndOf="@id/tgp_flash_sale_timer_desc"
         app:layout_constraintTop_toTopOf="@id/tgp_flash_sale_timer_desc"
+        app:layout_constraintBottom_toBottomOf="@id/tgp_flash_sale_timer_desc"
         app:timer_unify_single_variant="main" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -58,10 +56,10 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        android:visibility="visible"
         app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer"
+        android:visibility="visible"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer"
         app:layout_constraintTop_toTopOf="@id/tgp_flash_sale_campaign_name"
         app:layout_constraintVertical_bias="0.5" />
 
@@ -69,19 +67,19 @@
         android:id="@+id/flash_sale_reminder_view"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:layout_marginTop="-12dp"
-        android:layout_marginEnd="16dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="-12dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tus_flash_sale_timer">
+        app:layout_constraintTop_toTopOf="@id/tus_flash_sale_timer"
+        app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer">
 
         <LinearLayout
             android:id="@+id/layout_container_remind_me"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:orientation="horizontal"
+            android:gravity="center"
             android:paddingHorizontal="8dp">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -99,10 +97,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:textColor="@color/Unify_NN950_68"
-                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_remind_me_bell"
                 app:layout_constraintLeft_toRightOf="@id/iv_remind_me_bell"
                 app:layout_constraintTop_toTopOf="@id/iv_remind_me_bell"
+                android:textSize="12sp"
                 app:typographyWeight="bold"
                 tools:text="Ingatkan" />
 
@@ -115,18 +113,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tgp_flash_sale_timer_desc">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bg_container"
             android:layout_width="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_rounded_rect_shop_flash_sale"
             android:layout_height="match_parent">
 
             <View
@@ -164,18 +156,15 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_flash_sale_product_carousel"
             android:layout_width="match_parent"
-            android:paddingStart="28dp"
-            android:paddingEnd="28dp"
-            android:paddingBottom="12dp"
-            android:paddingTop="16dp"
-            android:clipToPadding="false"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
     </FrameLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

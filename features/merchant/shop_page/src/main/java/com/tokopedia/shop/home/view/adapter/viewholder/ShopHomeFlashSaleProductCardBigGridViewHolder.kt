@@ -29,8 +29,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     companion object {
         // leftMargin + rightMargin + middleMargin
-        // 28 + 28 + 2
-        private const val PADDING_AND_MARGIN = 58
+        // 12 + 12 + 2
+        private const val PADDING_AND_MARGIN = 26
         private const val TWO = 2
         private val paddingOffset = 6f.dpToPx()
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
