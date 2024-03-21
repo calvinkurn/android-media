@@ -2,8 +2,8 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.reimagine.ProductCardGridView
+import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
@@ -26,16 +26,19 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
 
     override fun bind(element: BannerShopProductUiModel?) {
         element?.let { model ->
-            val productCardViewModel = model.product
+            val productCardViewModel = model.product.copy(isInBackground = true)
             productCardGridView.run {
-                applyCarousel()
-                setProductModel(productCardViewModel)
-                setImageProductViewHintListener(model, object : ViewHintListener {
-                    override fun onViewHint() {
-                        impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition-1), model.cpmData)
-                        impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
+                setProductModel(ProductCardModel.from(productCardViewModel))
+                val product = model.cpmData.cpm.cpmShop.products.getOrNull(absoluteAdapterPosition)
+                product?.let {
+                    addOnImpressionListener(it.imageProduct) {
+                        impressionListener?.onImpressionProductAdsItem(
+                            absoluteAdapterPosition,
+                            product,
+                            model.cpmData
+                        )
                     }
-                })
+                }
                 setOnClickListener {
                     topAdsBannerClickListener?.onBannerAdsClicked(adapterPosition,
                             model.appLink, model.cpmData)

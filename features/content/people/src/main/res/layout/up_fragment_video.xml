@@ -24,8 +24,6 @@
             android:paddingBottom="@dimen/user_profile_margin_8"
             tools:listitem="@layout/up_item_user_post_channel" />
 
-        <include layout="@layout/up_shimmer_user_post" />
-
         <com.tokopedia.unifycomponents.LocalLoad
             android:id="@+id/global_error_video"
             android:layout_width="match_parent"

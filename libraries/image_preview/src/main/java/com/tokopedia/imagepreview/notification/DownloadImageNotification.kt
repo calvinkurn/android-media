@@ -4,8 +4,8 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.graphics.Bitmap
+import com.tokopedia.imagepreview.R
 import androidx.core.app.NotificationCompat
-import com.tokopedia.resources.common.R as resourcescommonR
 
 class DownloadImageNotification (
     private val notificationId: Int,
@@ -20,7 +20,7 @@ class DownloadImageNotification (
     ) {
         notificationBuilder.setContentTitle(filenameParam)
             .setContentText(contentText)
-            .setSmallIcon(resourcescommonR.drawable.ic_status_bar_notif_customerapp)
+            .setSmallIcon(R.drawable.image_preview_ic_stat_notify_white)
             .setLargeIcon(largeIcon)
             .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true)
