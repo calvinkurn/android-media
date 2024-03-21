@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.extraGetString
 import com.tokopedia.kotlin.extensions.intentGetBoolean
+import com.tokopedia.kotlin.extensions.intentGetParcelable
 import com.tokopedia.kotlin.extensions.intentGetString
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
@@ -30,7 +31,6 @@ class AtcVariantActivity : BaseSimpleActivity() {
         const val TOKO_NOW_EXTRA = "isTokoNow"
         const val PAGE_SOURCE_EXTRA = "pageSource"
         const val CD_LIST_EXTRA = "cdListName"
-        const val CART_ID = "cartId"
         private const val KEY_BS_VARIANT = "atc variant bs"
     }
 
@@ -70,7 +70,6 @@ class AtcVariantActivity : BaseSimpleActivity() {
             isTokoNow = extraGetString(key = TOKO_NOW_EXTRA, defaultValue = "false").toBoolean()
             pageSource = extraGetString(key = PAGE_SOURCE_EXTRA)
             trackerCdListName = extraGetString(key = CD_LIST_EXTRA)
-            cartId = extraGetString(key = CART_ID)
 
             // get data from intent
             cacheId = intentGetString(key = ATC_VARIANT_CACHE_ID)
@@ -84,13 +83,16 @@ class AtcVariantActivity : BaseSimpleActivity() {
                 key = AtcVariantHelper.KEY_SHOW_QTY_EDITOR,
                 defaultValue = false
             )
+            changeVariantOnCart = intentGetParcelable(
+                key = AtcVariantHelper.KEY_CHANGE_VARIANT
+            ) ?: ProductVariantBottomSheetParams.ChangeVariant()
         }
         return paramsData
     }
 
     private fun observeData() {
         sharedViewModel.activityResult.observe(this) {
-            val cacheManager = SaveInstanceCacheManager(this, true)
+            val cacheManager = SaveInstanceCacheManager(applicationContext, true)
             val resultIntent = Intent().apply {
                 putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
             }

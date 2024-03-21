@@ -554,9 +554,7 @@ class AtcVariantBottomSheet :
 
         trackSuccessAtc(cartId)
 
-        if (sharedViewModel.aggregatorParams.value?.showQtyEditor == true ||
-            sharedViewModel.aggregatorParams.value?.isTokoNow == true
-        ) {
+        if (aggregatorParams.showQtyEditor || aggregatorParams.isTokoNow) {
             onSuccessAtcTokoNow(result.errorMessage.firstOrNull(), cartId)
             return
         }

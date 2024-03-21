@@ -2,6 +2,8 @@ package com.tokopedia.kotlin.extensions
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
+import android.os.Parcelable
 
 /**
  * Created by yovi.putra on 3/20/24.
@@ -16,6 +18,21 @@ fun Intent.extraGetBoolean(
     key: String,
     defaultValue: Boolean = false
 ) = extras?.getBoolean(key, defaultValue) ?: defaultValue
+
+inline fun <reified T : Parcelable> Intent.extraGetParcelable(
+    key: String
+): T? {
+    val result = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> extras?.getParcelable(
+            key,
+            T::class.java
+        )
+
+        else -> @Suppress("DEPRECATION") extras?.getParcelable(key) as? T
+    }
+
+    return result
+}
 
 /**
  * get intent extras data
@@ -52,3 +69,7 @@ fun Activity.intentGetBoolean(
     key: String,
     defaultValue: Boolean = false
 ) = intent.getBoolean(key, defaultValue)
+
+inline fun <reified T : Parcelable> Activity.intentGetParcelable(
+    key: String
+): T? = intent.extraGetParcelable(key = key)

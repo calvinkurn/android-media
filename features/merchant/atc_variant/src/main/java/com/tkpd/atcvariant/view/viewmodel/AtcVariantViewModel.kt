@@ -299,7 +299,7 @@ class AtcVariantViewModel @Inject constructor(
                 updateActivityResult(
                     selectedProductId = selectedChild?.productId ?: "",
                     mapOfSelectedVariantOption = initialSelectedOptionIds,
-                    cartId = aggregatorParams.cartId
+                    cartId = aggregatorParams.changeVariantOnCart.cartId
                 )
             } else {
                 _initialData.postValue(Throwable().asFail())
@@ -548,10 +548,11 @@ class AtcVariantViewModel @Inject constructor(
         val selectedChild = variantData.getChildByOptionId(
             selectedIds = optionIdsSelected.values.toList()
         ) ?: return@launch
+        val changeVariantParams = params.changeVariantOnCart
         val selectedMiniCart = MiniCartItem.MiniCartItemProduct(
-            cartId = params.cartId,
+            cartId = changeVariantParams.cartId,
             productId = selectedChild.productId,
-            quantity = selectedChild.getFinalMinOrder(),
+            quantity = changeVariantParams.currentQuantity,
             shopId = params.shopId
         )
 

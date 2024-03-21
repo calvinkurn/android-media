@@ -34,6 +34,7 @@ object AtcVariantHelper {
     const val KEY_EXT_PARAMS = "ext_params"
     const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
     const val KEY_SHOW_QTY_EDITOR = "show_qty_editor"
+    const val KEY_CHANGE_VARIANT = "change_variant"
 
     /**
      * For PDP and ProductBundle only
@@ -107,7 +108,7 @@ object AtcVariantHelper {
     fun onActivityResultAtcVariant(context: Context, requestCode: Int, data: Intent?, updateView: ProductVariantResult.() -> Unit) {
         if (requestCode != ATC_VARIANT_RESULT_CODE || data == null) return
         val cacheId = data.getStringExtra(ATC_VARIANT_CACHE_ID)
-        val cacheManager = SaveInstanceCacheManager(context, cacheId)
+        val cacheManager = SaveInstanceCacheManager(context.applicationContext, cacheId)
 
         val result: ProductVariantResult = cacheManager.get(PDP_PARCEL_KEY_RESULT, ProductVariantResult::class.java)
             ?: return
@@ -126,7 +127,7 @@ object AtcVariantHelper {
         dismissAfterTransaction: Boolean = false,
         saveAfterClose: Boolean = true,
         showQuantityEditor: Boolean = false,
-        cartId: String = "",
+        changeVariant: ProductVariantBottomSheetParams.ChangeVariant? = null,
         startActivitResult: (Intent, Int) -> Unit
     ) {
         val intent = RouteManager.getIntent(
@@ -136,14 +137,14 @@ object AtcVariantHelper {
             shopId,
             pageSource.source,
             isTokoNow.toString(),
-            trackerCdListName,
-            cartId
+            trackerCdListName
         )
         val qtyEditorData = if (isTokoNow) true else showQuantityEditor
         intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
         intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
         intent.putExtra(KEY_EXT_PARAMS, extParams)
         intent.putExtra(KEY_SHOW_QTY_EDITOR, qtyEditorData)
+        intent.putExtra(KEY_CHANGE_VARIANT, changeVariant)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 
