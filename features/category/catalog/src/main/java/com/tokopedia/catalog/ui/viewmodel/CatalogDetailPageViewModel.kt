@@ -60,8 +60,8 @@ class CatalogDetailPageViewModel @Inject constructor(
     val variantName: LiveData<String?>
         get() = _variantName
 
-    private val _scrollEvents = MutableStateFlow("")
-    val scrollEvents: Flow<String> = _scrollEvents.asStateFlow()
+    private val _scrollEvents = MutableStateFlow(0)
+    val scrollEvents: Flow<Int> = _scrollEvents.asStateFlow()
 
     var atcModel = CatalogProductAtcUiModel()
 
@@ -161,7 +161,7 @@ class CatalogDetailPageViewModel @Inject constructor(
         )
     }
 
-    fun emitScrollEvent(y: String) {
-        _scrollEvents.value = y
+    fun emitScrollEvent(position:Int) {
+        _scrollEvents.value = position
     }
 }
