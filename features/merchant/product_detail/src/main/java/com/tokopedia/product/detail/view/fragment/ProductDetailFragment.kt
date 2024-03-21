@@ -2310,6 +2310,7 @@ open class ProductDetailFragment :
         val productMediaRecomBasicInfo = productInfo.data.productMediaRecomBasicInfo
         val basicData = productInfo.basic
         val title = productMediaRecomBasicInfo.bottomsheetTitle
+        val iconText = productMediaRecomBasicInfo.iconText
         val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
 
         viewModel.showProductMediaRecomBottomSheet(
@@ -2319,7 +2320,7 @@ open class ProductDetailFragment :
             isTokoNow = basicData.isTokoNow.orFalse()
         )
         MediaTracking.onOverlayRecommClicked(
-            title = title,
+            title = iconText,
             componentTrackDataModel = componentTracker,
             commonTracker = commonTracker
         )
@@ -2327,7 +2328,7 @@ open class ProductDetailFragment :
 
     override fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?) {
         val productInfo = viewModel.getProductInfoP1 ?: return
-        val title = productInfo.data.productMediaRecomBasicInfo.bottomsheetTitle
+        val title = productInfo.data.productMediaRecomBasicInfo.iconText
         val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
         MediaTracking.onOverlayRecommImpressed(
             title = title,

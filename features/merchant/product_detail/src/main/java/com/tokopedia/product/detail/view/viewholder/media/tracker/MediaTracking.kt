@@ -10,6 +10,9 @@ import com.tokopedia.track.TrackApp
  * Copyright (c) 2024 android-tokopedia-core All rights reserved.
  */
 
+/**
+ * Tracker Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4526
+ */
 object MediaTracking {
 
     /**
@@ -78,12 +81,11 @@ object MediaTracking {
         val common = commonTracker ?: return
         val action = "click - overlay recomm component"
         val event = "clickPG"
-        val eventLabel = "text:$title;"
         val mapEvent = hashMapOf<String, Any>(
             "event" to event,
             "eventCategory" to "product detail page",
             "eventAction" to action,
-            "eventLabel" to eventLabel,
+            "eventLabel" to title,
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "50210",
