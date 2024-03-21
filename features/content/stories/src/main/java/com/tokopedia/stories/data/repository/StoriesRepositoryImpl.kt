@@ -245,12 +245,12 @@ class StoriesRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun trackVisitContent(storyId: String) {
+    override suspend fun trackContent(storyId: String, productIds: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         withContext(dispatchers.io) {
             broadcasterReportTrackViewerUseCase.apply {
                 params = BroadcasterReportTrackViewerUseCase.createParams(
                     channelId = storyId,
-                    productIds = emptyList(), //TODO() still in discussion with BE
+                    productIds = productIds,
                     event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit,
                     type = TrackContentType.Play
                 )

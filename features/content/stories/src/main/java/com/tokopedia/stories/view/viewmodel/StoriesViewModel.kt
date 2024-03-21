@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -372,7 +373,7 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
         checkReportSummary()
-        trackVisitContent()
+        trackVisitContent(event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
         setupOnboard()
 
         run {
@@ -595,6 +596,10 @@ class StoriesViewModel @AssistedInject constructor(
                     mGroup.groupName,
                 )
             _productsState.value = productList
+            trackVisitContent(
+                ids = productList.products.map(ContentTaggedProductUiModel::id),
+                event = BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges
+            )
         }) { exception ->
             _productsState.update { product -> product.copy(resultState = ResultState.Fail(exception)) }
         }
@@ -777,8 +782,14 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = { repository.getReportSummary(storyId)}) {}
     }
 
-    private fun trackVisitContent() {
-        viewModelScope.launchCatchError(block = { repository.trackVisitContent(storyId)}) {}
+    private val productIds = mutableListOf<String>()
+    private fun trackVisitContent(ids: List<String> = emptyList(), event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
+        val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
+        if (hasChanged) {
+            productIds.clear()
+            ids.map { productIds.add(it) }
+        } else { return }
+        viewModelScope.launchCatchError(block = { repository.trackContent(storyId, ids, event)}) {}
     }
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
