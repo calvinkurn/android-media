@@ -64,7 +64,7 @@ internal fun stopPerformanceMonitoring(
                     stopCustomMetric(SEARCH_RESULT_PLT_RENDER_RECYCLER_VIEW)
                     stopRenderPerformanceMonitoring()
                     stopMonitoring{
-                        if(isLocalSearch) {
+                        if(!isLocalSearch) {
                             AppLogSearch.eventPerformanceTracking(AppLogSearch.Performance(it, enterMethod))
                         }
                     }
