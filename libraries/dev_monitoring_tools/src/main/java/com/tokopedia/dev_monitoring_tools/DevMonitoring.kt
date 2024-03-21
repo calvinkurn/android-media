@@ -61,7 +61,7 @@ class DevMonitoring(private var context: Context) {
     private fun configCopyCrashStackTraceToClipboard(throwable: Throwable) {
         val ctx = context
         val clipboard =
-            ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+            ctx.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         clipboard?.let {
             val clip = ClipData.newPlainText("TkpdCrashLog", Log.getStackTraceString(throwable))
             it.setPrimaryClip(clip)
