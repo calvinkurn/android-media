@@ -102,8 +102,10 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
         linkerDeeplinkData.setActivity(SplashScreen.this);
 
         Map<String, String> additionalQueryParams = new HashMap<>();
-        for (String key: linkerDeeplinkData.getReferrable().getQueryParameterNames()) {
-            additionalQueryParams.put(key, linkerDeeplinkData.getReferrable().getQueryParameter(key));
+        if (linkerDeeplinkData.getReferrable() != null) {
+            for (String key : linkerDeeplinkData.getReferrable().getQueryParameterNames()) {
+                additionalQueryParams.put(key, linkerDeeplinkData.getReferrable().getQueryParameter(key));
+            }
         }
 
         LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
