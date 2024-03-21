@@ -26,11 +26,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.scp.auth.GotoSdk
-import com.scp.auth.common.utils.ScpUtils
-import com.scp.auth.common.utils.TkpdAdditionalHeaders
-import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListener
-import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -1112,22 +1107,8 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        if (ScpUtils.isGotoLoginEnabled()) {
-            GotoSdk.LSDKINSTANCE?.getOneTapStatus(
-                lifecycle,
-                additionalHeaders = TkpdAdditionalHeaders(requireContext()),
-                object : LSdkCheckOneTapStatusListener {
-                    override fun onCompleted(isEligible: Boolean) {
-                        viewModel.setOneTapStatus(isEligible)
-                    }
-
-                    override fun onError(error: OneTapLoginError) {}
-                }
-            )
-        } else {
-            if (oclUtils.isOclEnabled()) {
-                viewModel.getOclStatus()
-            }
+        if (oclUtils.isOclEnabled()) {
+            viewModel.getOclStatus()
         }
     }
 
@@ -1465,7 +1446,7 @@ open class HomeAccountUserFragment :
     private fun checkLogoutOffering() {
         if (viewModel.isOclEligible.value == true) {
             showOclBtmSheet()
-        } else if (DeeplinkMapperUser.isGotoLoginDisabled() && isEnableBiometricOffering()) {
+        } else if (isEnableBiometricOffering()) {
             homeAccountAnalytic.trackOnClickLogoutDialog()
             viewModel.getFingerprintStatus()
         } else {

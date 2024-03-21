@@ -281,7 +281,8 @@ class MapperFeedXHome @Inject constructor(
             cartable = product.cartable,
             isCashback = product.isCashback,
             cashbackFmt = product.cashbackFmt,
-            isAvailable = product.isAvailable
+            isAvailable = product.isAvailable,
+            isHighlight = product.isHighlighted,
         )
 
     private fun transformMedia(media: FeedXMedia): FeedMediaModel =

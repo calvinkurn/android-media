@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.FinalAdResponse
@@ -64,14 +65,17 @@ class MpAdsGroupsViewModel @Inject constructor(
       Always call updateVisitableLiveData() after updating visitable list
       to update the main recycler view
     */
-    private val _mainListLiveData: MutableLiveData<List<Visitable<*>>> = MutableLiveData(visitableList)
+    private val _mainListLiveData: MutableLiveData<List<Visitable<*>>> =
+        MutableLiveData(visitableList)
     val mainListLiveData: LiveData<List<Visitable<*>>> = _mainListLiveData
 
     private val _hasNextLiveData: MutableLiveData<Boolean> = MutableLiveData(true)
     val hasNextLiveData: LiveData<Boolean> = _hasNextLiveData
 
-    private val _topadsCreditLiveData: MutableLiveData<com.tokopedia.usecase.coroutines.Result<Pair<FinalAdResponse, Deposit>>> = SingleLiveEvent()
-    val topadsCreditLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<Pair<FinalAdResponse, Deposit>>> = _topadsCreditLiveData
+    private val _topadsCreditLiveData: MutableLiveData<com.tokopedia.usecase.coroutines.Result<Pair<FinalAdResponse, Deposit>>> =
+        SingleLiveEvent()
+    val topadsCreditLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<Pair<FinalAdResponse, Deposit>>> =
+        _topadsCreditLiveData
 
     private var adGroupListStartIndex = NO_POSITION
     private var selectedAdGroupIndex = NO_POSITION
@@ -310,14 +314,16 @@ class MpAdsGroupsViewModel @Inject constructor(
     }
 
     private fun selectGroup(index: Int) {
-        if (index < visitableList.size && visitableList[index] is AdGroupUiModel) {
-            visitableList[index] = (visitableList[index] as AdGroupUiModel).copy(selected = true)
+        if (index >= Int.ZERO && index < visitableList.size && visitableList.getOrNull(index) is AdGroupUiModel) {
+            visitableList[index] =
+                (visitableList.getOrNull(index) as AdGroupUiModel).copy(selected = true)
         }
     }
 
     private fun unselectGroup(index: Int) {
-        if (index < visitableList.size && visitableList[index] is AdGroupUiModel) {
-            visitableList[index] = (visitableList[index] as AdGroupUiModel).copy(selected = false)
+        if (index >= Int.ZERO && index < visitableList.size && visitableList.getOrNull(index) is AdGroupUiModel) {
+            visitableList[index] =
+                (visitableList.getOrNull(index) as AdGroupUiModel).copy(selected = false)
         }
     }
 

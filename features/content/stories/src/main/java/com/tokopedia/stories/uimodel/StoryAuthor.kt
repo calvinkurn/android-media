@@ -58,16 +58,23 @@ sealed class StoryAuthor {
     }
 }
 
-enum class AuthorType(val value: Int) {
-    Tokopedia(1),
-    Seller(2),
-    User(3),
-    Unknown(-1);
+enum class AuthorType(val value: Int, val type: String) {
+    Tokopedia(1, "-"),
+    Seller(2, "shop"),
+    User(3, "user"),
+    Unknown(-1, "");
 
     companion object {
+
+        private val values = values()
         fun convertValue(value: Int): AuthorType {
-            return AuthorType.values()
+            return values
                 .firstOrNull { it.value == value } ?: Unknown
+        }
+
+        fun getByType(type: String): AuthorType {
+            return values
+                .firstOrNull { it.type == type } ?: Unknown
         }
     }
 }

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -14,6 +13,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.Product;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.PurchaseData;
+import com.tokopedia.tkpd.utils.CurrencyFormatHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

@@ -26,7 +26,6 @@ import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
-import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -319,15 +318,6 @@ class VideoTabFragment :
     }
 
     override fun onToggleReminderClicked(
-        view: PlayWidgetJumboView,
-        channelId: String,
-        reminderType: PlayWidgetReminderType,
-        position: Int
-    ) {
-        playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(channelId, reminderType, position)
-    }
-
-    override fun onToggleReminderClicked(
         view: PlayWidgetMediumView,
         channelId: String,
         reminderType: PlayWidgetReminderType,
@@ -405,12 +395,6 @@ class VideoTabFragment :
                     if (rvWidget?.getViewHolderAtPosition(l) != null && rvWidget?.getViewHolderAtPosition(l) is PlayFeedWidgetViewHolder.Large) {
                         val vh = rvWidget?.getViewHolderAtPosition(l) as PlayFeedWidgetViewHolder.Large
                         val recyclerViewLargeWidget = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
-                        recyclerViewLargeWidget?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
-                    }
-                    if (rvWidget?.getViewHolderAtPosition(f) != null && rvWidget?.getViewHolderAtPosition(f) is PlayFeedWidgetViewHolder.Jumbo) {
-                        val vh = rvWidget?.getViewHolderAtPosition(f) as PlayFeedWidgetViewHolder.Jumbo
-                        val recyclerViewJumboWidget = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
-                        recyclerViewJumboWidget?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
                     }
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && isScrollingUp) {
@@ -420,15 +404,7 @@ class VideoTabFragment :
         }
     }
     fun autoplayJumboWidget() {
-        rvWidget?.let {
-            val f = (it.getLayoutManager() as LinearLayoutManager).findFirstVisibleItemPosition()
 
-            if (it.getViewHolderAtPosition(f) != null && it.getViewHolderAtPosition(f) is PlayFeedWidgetViewHolder.Jumbo) {
-                val vh = it.getViewHolderAtPosition(f) as PlayFeedWidgetViewHolder.Jumbo
-                val recyclerView = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
-                recyclerView?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(recyclerView) }
-            }
-        }
     }
 
     private fun callAPiOnTabCLick(item: PlaySlotTabMenuUiModel.Item) {
