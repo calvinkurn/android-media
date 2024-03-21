@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login_sdk
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -40,6 +41,16 @@ class LoginSdkActivity : LoginActivity() {
                 bundle.putAll(it)
             }
             replace(R.id.parent_view, LoginSdkConsentFragment.createInstance(bundle), "")
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            if(it.hasExtra("from_reset_password")) {
+                if (it.getBooleanExtra("from_reset_password", false)) {
+                }
+            }
         }
     }
 

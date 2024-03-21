@@ -16,11 +16,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -66,11 +68,17 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
         viewBinding?.ubInactivePhoneNumber?.setOnClickListener {
             needHelpAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
             goToInactivePhoneNumber()
+            dismiss()
+        }
+
+        if(context?.isLoginSdkFlow() == true) {
+            viewBinding?.ubInactivePhoneNumber?.gone()
         }
 
         viewBinding?.ubForgotPassword?.setOnClickListener {
             needHelpAnalytics.trackPageBottomSheetClickForgotPassword()
             goToForgotPassword()
+            dismiss()
         }
 
         setCloseClickListener {

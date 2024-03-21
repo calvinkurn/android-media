@@ -13,8 +13,17 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
                 <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_login_sdk"
+                    android:scheme="@string/internal_scheme" />
+
             </intent-filter>
         </activity>
         <activity

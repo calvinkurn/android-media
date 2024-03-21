@@ -19,6 +19,7 @@ import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_URL
@@ -109,20 +110,27 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     }
 
     private fun gotoLogin(uri: Uri? = null) {
-        val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-        if(uri != null) {
-            val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
-            val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
+        if (isLoginSdkFlow()) {
+            val intent = RouteManager.getIntent(this, "tokopedia-android-internal://user/login-sdk")
+            intent.putExtra("from_reset_password", true)
+            startActivity(intent)
+            finish()
+        } else {
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            if(uri != null) {
+                val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
+                val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
 
-            if (!email.isNullOrEmpty()) {
-                intent.putExtra(PARAM_AUTO_FILL, decodeParam(email))
-                userSession.autofillUserData = decodeParam(email)
-            } else if (!phone.isNullOrEmpty()) {
-                intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
-                userSession.autofillUserData = decodeParam(phone)
+                if (!email.isNullOrEmpty()) {
+                    intent.putExtra(PARAM_AUTO_FILL, decodeParam(email))
+                    userSession.autofillUserData = decodeParam(email)
+                } else if (!phone.isNullOrEmpty()) {
+                    intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
+                    userSession.autofillUserData = decodeParam(phone)
+                }
             }
+            startActivityForResult(intent, REQUEST_CODE_LOGIN)
         }
-        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     private fun gotoHome() {

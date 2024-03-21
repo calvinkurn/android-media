@@ -537,6 +537,9 @@ object ApplinkConstInternalUserPlatform {
 
     const val SHARING_WISHLIST = "$NEW_INTERNAL_USER/sharing-wishlist?tab={$PARAM_TAB}"
 
+
+    const val LOGIN_SDK = "$NEW_INTERNAL_USER/login-sdk"
+
     fun getGotoKYCApplink(projectId: String, source: String, callback: String = ""): String {
         return UriUtil.buildUri(GOTO_KYC, projectId, source, callback)
     }
