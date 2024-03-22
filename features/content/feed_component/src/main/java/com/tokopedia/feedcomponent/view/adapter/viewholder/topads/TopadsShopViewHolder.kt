@@ -20,11 +20,9 @@ import com.tokopedia.topads.sdk.v2.dynamicfeedshop.widget.TopAdsDynamicFeedShopV
  * @author by milhamj on 08/01/19.
  */
 class TopadsShopViewHolder(
-    v: View,
-    private val topadsShopListener: TopadsShopListener?,
+    v: View, private val topadsShopListener: TopadsShopListener?,
     private val cardTitleListener: CardTitleView.CardTitleListener?
-) : AbstractViewHolder<TopadsShopUiModel>(v),
-    TopAdsItemClickListener,
+) : AbstractViewHolder<TopadsShopUiModel>(v), TopAdsItemClickListener,
     DynamicFeedShopAdapter.TopAdsShopImpressionListener {
 
     private val viewPaddingBottom: View = itemView.findViewById(R.id.viewPaddingBottom)
@@ -62,6 +60,7 @@ class TopadsShopViewHolder(
         } else {
             cardTitle.gone()
         }
+
     }
 
     override fun bind(element: TopadsShopUiModel?, payloads: MutableList<Any>) {
