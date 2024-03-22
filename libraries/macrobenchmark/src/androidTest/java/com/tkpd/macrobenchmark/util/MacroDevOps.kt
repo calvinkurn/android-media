@@ -91,9 +91,9 @@ object MacroDevOps {
     }
 
     fun setupLoginFlow(
-        packageName: String = "com.tokopedia.tkpd",
         email: String = "pbs-hidayatullah+prod7@tokopedia.com",
-        password: String = "Prod1234"
+        password: String = "Prod1234",
+        packageName: String = "com.tokopedia.tkpd"
     ) {
         setupEnvironment(
             MacroIntent.Session.getSessionMacroSetupIntent(packageName)
