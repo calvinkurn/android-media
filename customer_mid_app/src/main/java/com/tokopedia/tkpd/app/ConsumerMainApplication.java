@@ -1,8 +1,6 @@
 package com.tokopedia.tkpd.app;
 
 import static android.os.Process.killProcess;
-import static com.tokopedia.analytics.byteio.AppLogInitKt.initAppLog;
-import static com.tokopedia.network.ttnet.TTNetHelper.initTTNet;
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 import android.app.Activity;
@@ -19,7 +17,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
@@ -27,12 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.bytedance.applog.AppLog;
 import com.bytedance.applog.util.EventsSenderUtils;
-import com.bytedance.dataplatform.ExperimentManager;
-import com.bytedance.dataplatform.IExposureService;
-import com.bytedance.dataplatform.INetService;
-import com.bytedance.dataplatform.ISerializationService;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
@@ -117,7 +109,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.utils.AppLogInitKt;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.tkpd.utils.SlardarInit;
 import com.tokopedia.track.TrackApp;
@@ -251,20 +242,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private void initByteIOPlatform() {
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
             AppLogAnalytics.init(this);
-            initTTNet(this);
+            TTNetHelper.initTTNet(this);
             LibraAbTest.init(this);
         }
     }
 
     private void initSlardar() {
         if (remoteConfig.getBoolean(ANDROID_ENABLE_SLARDAR_INIT, true)) {
-            Log.e("TOKOSLARDAR", "init application");
             EventsSenderUtils.setEventsSenderEnable(SLARDAR_AID, true, this);
             EventsSenderUtils.setEventVerifyHost(SLARDAR_AID, SLARDAR_HOST);
             SlardarInit.INSTANCE.initApm(this);
             SlardarInit.INSTANCE.initNpth(this, SLARDAR_AID, getSlardarChannel(),
                     getUserSession().getUserId());
-            AppLogInitKt.initAppLog(this);
             SlardarInit.INSTANCE.startApm(SLARDAR_AID, getSlardarChannel());
         }
     }

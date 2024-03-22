@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.bytedance.applog.util.EventsSenderUtils;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
@@ -62,8 +60,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.libra.LibraAbTest;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.utils.AppLogInitKt;
-import com.tokopedia.tkpd.utils.SlardarInit;
 import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -98,7 +94,6 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void onCreate() {
 
-        initSlardar();
         setVersionCode();
         initFileDirConfig();
 
@@ -231,16 +226,6 @@ public class MyApplication extends BaseMainApplication
         TokoChatConnection.init(this, false);
 
         UserSession userSession = new UserSession(this);
-    }
-
-    private void initSlardar() {
-        Log.e("TOKO", "init application");
-        EventsSenderUtils.setEventsSenderEnable("573733", true, this);
-        EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net");
-        SlardarInit.INSTANCE.initApm(this);
-        SlardarInit.INSTANCE.initNpth(this);
-        AppLogInitKt.initAppLog(this);
-        SlardarInit.INSTANCE.startApm();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {

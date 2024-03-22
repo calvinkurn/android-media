@@ -32,9 +32,6 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.slardarDependencies.npth
-    implementation rootProject.ext.slardarDependencies.npthCore
-
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.miscDependencies.coroutineAndroid
