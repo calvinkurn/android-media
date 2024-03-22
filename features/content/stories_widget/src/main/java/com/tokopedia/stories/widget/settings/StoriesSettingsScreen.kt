@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,8 +56,8 @@ internal fun StoriesSettingsScreen() {
                     )
 
                     LazyColumn {
-                        items(4) {
-                            SettingOptItem()
+                        items(settingOpts) { item ->
+                            SettingOptItem(item)
                         }
                     }
                 }
@@ -67,17 +68,19 @@ internal fun StoriesSettingsScreen() {
 }
 
 @Composable
-private fun SettingOptItem() {
-    Row(modifier = Modifier
-        .fillMaxSize()
-        .padding(12.dp),
+private fun SettingOptItem(item: StoriesSettingOpt) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween) {
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         NestTypography(
-            text = "Item",
+            text = item.text,
             textStyle = NestTheme.typography.paragraph3,
         )
-        NestCheckbox(isChecked = false, onCheckedChange = {})
+        NestCheckbox(isChecked = item.isSelected, onCheckedChange = {})
     }
 }
 
@@ -91,3 +94,11 @@ data class StoriesSettingOpt(
     val text: String,
     val isSelected: Boolean,
 ) //TODO: need to wait for BE for contract
+
+val settingOpts = buildList<StoriesSettingOpt> {
+    add(StoriesSettingOpt("Flash Sale", false))
+    add(StoriesSettingOpt("Rilisan Spesial", false))
+    add(StoriesSettingOpt("Restok", false))
+    add(StoriesSettingOpt("Diskon", false))
+    add(StoriesSettingOpt("Produk Baru", false))
+}
