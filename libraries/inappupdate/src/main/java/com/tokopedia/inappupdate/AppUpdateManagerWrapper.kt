@@ -15,6 +15,8 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import java.lang.ref.WeakReference
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 object AppUpdateManagerWrapper {
     private const val REQUEST_CODE_IMMEDIATE = 12135
@@ -23,6 +25,7 @@ object AppUpdateManagerWrapper {
     private var INAPP_UPDATE = "inappupdate"
     private var INAPP_UPDATE_PREF = "inappupdate_pref"
     private var KEY_INAPP_TYPE = "inapp_type"
+    private var KEY_LAST_TIME_SHOW_FLEXIBLE_UPDATE = "inapp_last_time_show_flexible_update"
 
     private var LOG_UPDATE_TYPE_FLEXIBLE = "flexible"
     private var LOG_UPDATE_TYPE_IMMEDIATE = "immediate"
@@ -74,7 +77,7 @@ object AppUpdateManagerWrapper {
                     val activityObj = weakRefActivity.get()
                     if (activityObj!= null && !activityObj.isFinishing) {
                         val successTriggerUpdate = doFlexibleUpdate(activityObj, it)
-                        if (!successTriggerUpdate) {
+                        if (successTriggerUpdate != null && !successTriggerUpdate) {
                             InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
                             onError()
                         }
@@ -96,8 +99,13 @@ object AppUpdateManagerWrapper {
                          requestCode: Int,
                          resultCode: Int) {
         if (requestCode == REQUEST_CODE_FLEXIBLE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Toast.makeText(activity, activity.getString(R.string.update_install_see_notif), Toast.LENGTH_LONG).show();
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    Toast.makeText(activity, activity.getString(R.string.update_install_see_notif), Toast.LENGTH_LONG).show();
+                }
+                else -> {
+                    setLastTimeShowFlexibleUpdate(activity)
+                }
             }
             // in else, we do not store the timestamp yet. No requirement for it.
         }
@@ -135,7 +143,9 @@ object AppUpdateManagerWrapper {
     }
 
     @JvmStatic
-    fun doFlexibleUpdate(activity: Activity, appUpdateInfo: AppUpdateInfo): Boolean {
+    fun doFlexibleUpdate(activity: Activity, appUpdateInfo: AppUpdateInfo): Boolean? {
+        if (!isNeedShowFlexibleUpdate(activity))
+            return null
         val appContext = activity.applicationContext
         val appUpdateManager = getInstance(appContext) ?: return false
         return try {
@@ -166,6 +176,26 @@ object AppUpdateManagerWrapper {
             InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_IMMEDIATE, e.toString())
             false
         }
+    }
+
+    private fun setLastTimeShowFlexibleUpdate(context: Context) {
+        val currentTime = getCurrentTime()
+        context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).edit().putLong(KEY_LAST_TIME_SHOW_FLEXIBLE_UPDATE, currentTime).apply()
+    }
+
+    private fun isNeedShowFlexibleUpdate(context: Context): Boolean {
+        val currentTime = getCurrentTime()
+        val lastTimeShowFlexibleUpdate = context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).getLong(KEY_LAST_TIME_SHOW_FLEXIBLE_UPDATE, 0L)
+        return if (lastTimeShowFlexibleUpdate == 0L) {
+            true
+        } else {
+            val differentTime = currentTime - lastTimeShowFlexibleUpdate
+            differentTime > TimeUnit.DAYS.toMillis(1)
+        }
+    }
+
+    private fun getCurrentTime(): Long {
+        return Calendar.getInstance(Locale.getDefault()).timeInMillis
     }
 
     private fun setPrefInAppType(context: Context, appUpdateType: Int) {
