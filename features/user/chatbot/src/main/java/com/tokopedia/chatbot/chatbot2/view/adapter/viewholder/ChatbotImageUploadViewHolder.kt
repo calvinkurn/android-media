@@ -1,13 +1,17 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder
 
+import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -33,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.network.authentication.AuthHelper
@@ -40,11 +45,13 @@ import com.tokopedia.network.utils.ThemeUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.chat_common.R as chat_commonR
 import com.tokopedia.resources.common.R as resourcescommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ChatbotImageUploadViewHolder(
     itemView: View?,
@@ -60,9 +67,11 @@ class ChatbotImageUploadViewHolder(
     override fun getLeftActionId() = R.id.left_action
     override fun getChatBalloonId() = R.id.fl_image_container
     override fun getReadStatusId() = chat_commonR.id.chat_status
-    private val datContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
 
+    private val datContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
+    private val imageRetry = itemView?.findViewById<ImageUnify>(R.id.image_retry)
+    private val imageShimmer = itemView?.findViewById<LoaderUnify>(R.id.image_shimmer)
 
     private val bgSender = generateRightMessageBackgroundWithoutCorner(
         chatBalloon
@@ -72,6 +81,7 @@ class ChatbotImageUploadViewHolder(
     )
 
     private val attachmentUnify get() = attachment as? ImageUnify
+    private var loader: AnimatedVectorDrawableCompat? = null
 
     override fun bind(element: ImageUploadUiModel) {
         super.bind(element)
@@ -90,12 +100,15 @@ class ChatbotImageUploadViewHolder(
     }
 
     override fun bindClickListener(element: ImageUploadUiModel) {
+        //        val url = "https://www.litmus.com/wp-content/uploads/2021/02/ease-applied-to-tween-with-bouncein-example.gif"
+        val url = "https://s6.ezgif.com/tmp/ezgif-6-83ae459ef9.gif"
+
         chatBalloon?.setOnClickListener { view ->
             val imageUrl = element.imageUrl.toEmptyStringIfNull()
             val replyTime = element.replyTime.toEmptyStringIfNull()
             if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
                 listener.onImageUploadClicked(
-                    imageUrl,
+                    url,
                     replyTime,
                     false
                 )
@@ -155,16 +168,14 @@ class ChatbotImageUploadViewHolder(
         attachmentType: String,
         messageId: String
     ) {
+//        val url = "https://s4.ezgif.com/tmp/ezgif-4-00c0sssbbbd56.gif"
         if (imageview.context != null) {
             val loadSecureImage = FirebaseRemoteConfigImpl(imageview.context)
                 .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_SECURE_IMAGE, true)
 
             if (loadSecureImage) {
                 if (url?.endsWith(GIF_EXTENSION, true) == true) {
-                    imageview.loadAsGif(url) {
-                        setPlaceHolder(resourcescommonR.drawable.chatbot_image_placeloader)
-                        setErrorDrawable(abstractionR.drawable.error_drawable)
-                    }
+                    loadGif(imageview, url)
                 } else {
                     imageview.loadSecureImage(url, userSession)
                 }
@@ -177,6 +188,32 @@ class ChatbotImageUploadViewHolder(
                     .error(abstractionR.drawable.error_drawable)
                     .into(imageview)
             }
+        }
+    }
+
+    private fun loadGif(imageview: ImageView, url: String) {
+        imageRetry?.gone()
+        imageShimmer?.show()
+        imageview.loadAsGif(url) {
+            setPlaceHolder(resourcescommonR.drawable.chatbot_image_placeloader)
+            setErrorDrawable(abstractionR.drawable.error_drawable)
+            listener(
+                onSuccess = { _, _ ->
+                    imageShimmer?.gone()
+                },
+                onSuccessGif = { gifDrawable, _ ->
+                    imageShimmer?.gone()
+                    gifDrawable?.setLoopCount(1)
+                },
+                onError = {
+                    imageShimmer?.gone()
+                    imageRetry?.visible()
+                    imageRetry?.setOnClickListener {
+//                        val urls = "https://s4.ezgif.com/tmp/ezgif-4-00c0bbbd56.gif"
+                        loadGif(imageview, url)
+                    }
+                }
+            )
         }
     }
 
