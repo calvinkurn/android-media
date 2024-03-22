@@ -151,7 +151,7 @@ ext {
     unifyEmptyStateVersion = '1.0.16'
     unifyGlobalErrorVersion = '1.0.22'
     unifyHeaderVersion = '1.2.5'
-    unifySortFilterVersion = '1.3.8'
+    unifySortFilterVersion = '1.3.9'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.11'
     unifyListVersion = '1.0.12'
@@ -365,7 +365,7 @@ ext {
             mp4parser             : "com.googlecode.mp4parser:isoparser:$mp4parserVersion",
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
-            ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
+            ffmpeg                : "com.arthenica:mobileffmpeg:4.4-bd-modified@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
             rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
     ]

@@ -46,7 +46,7 @@ data class RecommendationCarouselModel(
             listener: RecommendationWidgetListener?,
             userId: String
         ) = RecommendationCarouselModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel, userId),
+            visitable = RecommendationVisitable.create(metadata, trackingModel, userId, widget.appLog),
             widget = widget,
             source = source,
             listener = listener,
