@@ -2,6 +2,11 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.SourcePageType.PRODUCT_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
@@ -15,6 +20,9 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
@@ -25,8 +33,9 @@ data class InspirationCarouselDataView(
     val position: Int = 0,
     val layout: String = "",
     val trackingOption: Int = 0,
-    val options: List<Option> = listOf()
-) : Visitable<ProductListTypeFactory> {
+    val options: List<Option> = listOf(),
+    val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+) : Visitable<ProductListTypeFactory>, ByteIORanking by byteIORanking {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
@@ -47,6 +56,13 @@ data class InspirationCarouselDataView(
     fun isSeamlessProductLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
 
     fun isCouponLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_CARD_COUPON
+
+    override fun setRank(value: Int) {
+        byteIORanking.setRank(value)
+        options.forEach {
+            it.setRank(value)
+        }
+    }
 
     @Suppress("LongParameterList")
     data class Option(
@@ -74,8 +90,12 @@ data class InspirationCarouselDataView(
         val cardButton: CardButton = CardButton(),
         val bundle: Bundle = Bundle(),
         val keyword: String = "",
-        val externalReference: String = ""
-    ) : Visitable<InspirationCarouselOptionTypeFactory> {
+        val externalReference: String = "",
+        val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
+        val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+    ) : Visitable<InspirationCarouselOptionTypeFactory>, ByteIORanking by byteIORanking {
+
+        val byteIOImpressHolder = ImpressHolder()
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
@@ -101,6 +121,34 @@ data class InspirationCarouselDataView(
         fun hasProducts() = product.isNotEmpty()
 
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
+
+        fun asByteIOSearchResult() =
+            AppLogSearch.SearchResult(
+                imprId = byteIOTrackingData.imprId,
+                searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                searchResultId = getRank().toString(),
+                listItemId = null,
+                itemRank = null,
+                listResultType = null,
+                productID = "",
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = getRank(),
+                isAd = false,
+                isFirstPage = byteIOTrackingData.isFirstPage,
+                shopId = null,
+                aladdinButtonType = null,
+            )
+
+        override fun setRank(value: Int) {
+            byteIORanking.setRank(value)
+
+            product.forEachIndexed { index, product ->
+                product.setRank(value)
+                product.setItemRank(index)
+            }
+        }
 
         @Suppress("LongParameterList")
         data class Product(
@@ -145,13 +193,18 @@ data class InspirationCarouselDataView(
             val trackingOption: Int = 0,
             val stockBarDataView: StockBarDataView = StockBarDataView(),
             val warehouseID: String = "",
-            val categoryID: String = ""
+            val categoryID: String = "",
+            val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
+            val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
         ) : ImpressHolder(),
-            Visitable<InspirationCarouselOptionTypeFactory> {
+            Visitable<InspirationCarouselOptionTypeFactory>,
+            ByteIORanking by byteIORanking {
 
             companion object {
                 private const val ZERO_PARENT_ID = "0"
             }
+
+            val byteIOImpressHolder = ImpressHolder()
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)
@@ -174,7 +227,9 @@ data class InspirationCarouselDataView(
             }
 
             fun shouldOpenVariantBottomSheet(): Boolean =
-                parentId != "" && parentId != ZERO_PARENT_ID
+                hasParentId()
+
+            private fun hasParentId() = parentId != "" && parentId != ZERO_PARENT_ID
 
             fun getInspirationCarouselInfoProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
@@ -251,6 +306,46 @@ data class InspirationCarouselDataView(
                     applink = applink,
                     dimension90 = dimension90
                 )
+
+            fun asByteIOSearchResult(aladdinButtonType: String?) = AppLogSearch.SearchResult(
+                imprId = byteIOTrackingData.imprId,
+                searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                searchResultId = getRank().toString(),
+                listItemId = getByteIOProductId(),
+                itemRank = getItemRank(),
+                listResultType = AppLogSearch.ParamValue.GOODS,
+                productID = getByteIOProductId(),
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = getRank(),
+                isAd = isOrganicAds,
+                isFirstPage = byteIOTrackingData.isFirstPage,
+                shopId = shopId,
+                aladdinButtonType = aladdinButtonType,
+            )
+
+            private fun getByteIOProductId() =
+                if (hasParentId()) parentId
+                else id
+
+            fun asByteIOProduct() = AppLogSearch.Product(
+                entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
+                isAd = isOrganicAds,
+                productID = getByteIOProductId(),
+                searchID = byteIOTrackingData.searchId,
+                requestID = byteIOTrackingData.imprId,
+                searchResultID = getRank().toString(),
+                listItemId = getByteIOProductId(),
+                itemRank = getItemRank(),
+                listResultType = AppLogSearch.ParamValue.GOODS,
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = getRank(),
+                shopID = null,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                sourcePageType = if (customVideoURL.isBlank()) PRODUCT_CARD else VIDEO,
+            )
         }
     }
 

@@ -42,6 +42,13 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                   layoutOrder
                   name
                   type
+                  tracker {
+                    appLog {
+                      requestID
+                      sessionID
+                      logID
+                    }
+                  }
                   header {
                     title
                     subtitle
@@ -168,6 +175,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       stock
                       childIDs
                       parentID
+                      recParam
                     }
                     ... on PromoWidget {
                       voucherID

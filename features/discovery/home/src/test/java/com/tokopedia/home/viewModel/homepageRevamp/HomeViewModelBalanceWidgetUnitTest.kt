@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -68,7 +69,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         // On refresh
-        homeViewModel.refreshWithThreeMinsRules(true)
+        homeViewModel.refreshWithThreeMinsRules(true, refreshType = HomeRefreshType.ADDRESS_CHANGED)
 
         val list = homeViewModel.homeLiveDynamicChannel.value?.list
         val homeHeaderDataModel = list?.filterIsInstance<HomeHeaderDataModel>()?.get(0)
@@ -94,7 +95,7 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.refreshWithThreeMinsRules(false)
+        homeViewModel.refreshWithThreeMinsRules(false, refreshType = HomeRefreshType.AUTO_REFRESH)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
     }
@@ -119,7 +120,7 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
+        homeViewModel.refreshWithThreeMinsRules(mockForceRefresh, refreshType = HomeRefreshType.AUTO_REFRESH)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
         Assert.assertTrue(homeViewModel.searchHint.value?.data?.placeholders?.isNotEmpty() == false)
@@ -143,7 +144,7 @@ class HomeViewModelBalanceWidgetUnitTest {
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         // On refresh
-        homeViewModel.refreshWithThreeMinsRules(false)
+        homeViewModel.refreshWithThreeMinsRules(false, refreshType = HomeRefreshType.AUTO_REFRESH)
 
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == false)
@@ -293,7 +294,7 @@ class HomeViewModelBalanceWidgetUnitTest {
         )
         homeViewModel.getBalanceWidgetData()
         // On refresh
-        homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
+        homeViewModel.refreshWithThreeMinsRules(mockForceRefresh, refreshType = HomeRefreshType.FIRST_OPEN)
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
         Assert.assertTrue(homeViewModel.searchHint.value?.data?.placeholders?.isNotEmpty() == false)

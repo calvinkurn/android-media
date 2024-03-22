@@ -48,18 +48,6 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
             (
                 (
                     GqlQueryParser.parse(query).first() ==
-                        GqlResponseStub.productRecommendationResponse.query
-                    ) &&
-                    variables?.get(PARAM_X_SOURCE) == DEFAULT_VALUE_X_SOURCE
-                ) -> {
-                shouldThrow(GqlResponseStub.productRecommendationResponse)
-                GqlMockUtil.createSuccessResponse(
-                    GqlResponseStub.productRecommendationResponse.responseObject
-                )
-            }
-            (
-                (
-                    GqlQueryParser.parse(query).first() ==
                         GqlResponseStub.postPurchaseProductRecommendationResponse.query
                     ) &&
                     variables?.get(PARAM_PAGE_NAME) == WIDGET_PAGE_NAME_POST_PURCHASE
@@ -79,6 +67,18 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                 shouldThrow(GqlResponseStub.prePurchaseProductRecommendationResponse)
                 GqlMockUtil.createSuccessResponse(
                     GqlResponseStub.prePurchaseProductRecommendationResponse.responseObject
+                )
+            }
+            (
+                (
+                    GqlQueryParser.parse(query).first() ==
+                        GqlResponseStub.productRecommendationResponse.query
+                    ) &&
+                    variables?.get(PARAM_X_SOURCE) == DEFAULT_VALUE_X_SOURCE
+                ) -> {
+                shouldThrow(GqlResponseStub.productRecommendationResponse)
+                GqlMockUtil.createSuccessResponse(
+                    GqlResponseStub.productRecommendationResponse.responseObject
                 )
             }
             (

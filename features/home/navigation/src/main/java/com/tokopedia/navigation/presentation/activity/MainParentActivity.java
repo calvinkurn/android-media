@@ -1,5 +1,8 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
+import static com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT;
+import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_PARAM_TRUE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -50,6 +53,11 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
+import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.EnterMethod;
+import com.tokopedia.analytics.byteio.IAppLogActivity;
+import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -83,9 +91,9 @@ import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
-import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;
 import com.tokopedia.navigation.presentation.customview.IBottomHomeForYouClickListener;
+import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -1353,7 +1361,35 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
+        updateAppLogPageData(position);
+        handleAppLogEnterMethod(pageTitle);
         return true;
+    }
+
+    private void handleAppLogEnterMethod(String pageTitle) {
+        if (pageTitle.equals(getResources().getString(R.string.home))) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
+        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+        }
+    }
+
+    private void updateAppLogPageData(int position) {
+        Fragment fragment = fragmentList.get(position);
+        if (fragment instanceof AppLogInterface applogInterface) {
+            Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
+            if (currentPageName != null
+                    && applogInterface.getPageName().equals(currentPageName.toString())) {
+                return;
+            }
+            AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
+            AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
+
+            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
+            if (currentEnterMethod == null) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+            }
+        }
     }
 
     @Override
@@ -1387,7 +1423,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            bottomNavigation.setSelected(homePosition);
+            updateAppLogPageData(homePosition);
+            bottomNavigation.setInitialState(homePosition);
         }
     }
 
@@ -1402,8 +1439,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private IconJumper getIconJumper() {
-        if(HomeRollenceController.isIconJumper()) {
-            if(HomeRollenceController.isIconJumperSRE()) {
+        if (HomeRollenceController.isIconJumper()) {
+            if (HomeRollenceController.isIconJumperSRE()) {
                 return getSREIconJumper();
             } else {
                 return getForYouIconJumper();

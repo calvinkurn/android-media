@@ -12,7 +12,7 @@ public class CommonUtil {
             return;
         }
 
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 
         if (viewRequireUpdate != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
