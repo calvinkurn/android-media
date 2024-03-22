@@ -79,7 +79,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
                 message,
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
-                if (isSuccess) getFragment().getString(R.string.search_see_cart) else ""
+                if (isSuccess) getFragment().getString(R.string.search_see_cart) else "",
             ) {
                 if (isSuccess) openApplink(context, ApplinkConst.CART)
             }.show()

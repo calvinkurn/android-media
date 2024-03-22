@@ -14,8 +14,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ShopCpmViewHolder(
     itemView: View,
-    val bannerAdsListener: BannerAdsListener?
-) : AbstractViewHolder<ShopCpmDataView>(itemView) {
+    val bannerAdsListener: BannerAdsListener?,
+): AbstractViewHolder<ShopCpmDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -24,7 +24,7 @@ internal class ShopCpmViewHolder(
     private var binding: SearchResultShopCpmLayoutBinding? by viewBinding()
 
     init {
-        binding?.adsBannerViewSearchShop?.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
+        binding?.adsBannerViewSearchShop?.setTopAdsBannerClickListener(object : TopAdsBannerClickListener{
             override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
                 bannerAdsListener?.onBannerAdsClicked(position, applink, data)
             }

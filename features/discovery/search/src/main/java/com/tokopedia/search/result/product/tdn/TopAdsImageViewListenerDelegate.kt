@@ -9,13 +9,13 @@ import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class TopAdsImageViewListenerDelegate(
-    context: Context?
+    context: Context?,
 ) : TopAdsImageViewListener,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
     override fun onTopAdsImageViewImpressed(
         className: String?,
-        searchTopAdsImageDataView: SearchProductTopAdsImageDataView
+        searchTopAdsImageDataView: SearchProductTopAdsImageDataView,
     ) {
         if (className == null || context == null) return
 
@@ -26,6 +26,7 @@ class TopAdsImageViewListenerDelegate(
             "",
             searchTopAdsImageDataView.topAdsImageUiModel.imageUrl
         )
+
     }
 
     override fun onTopAdsImageViewClick(searchTopAdsImageDataView: SearchProductTopAdsImageDataView) {

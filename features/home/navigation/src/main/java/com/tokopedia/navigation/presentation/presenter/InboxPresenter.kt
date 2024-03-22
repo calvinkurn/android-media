@@ -33,12 +33,12 @@ import javax.inject.Inject
 const val TOPADS_HEADLINE_VALUE_SRC = "inbox"
 
 class InboxPresenter @Inject constructor(
-        private val getNotificationUseCase: GetDrawerNotificationUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val addToWishListV2UseCase: AddToWishlistV2UseCase,
-        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-        private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+    private val getNotificationUseCase: GetDrawerNotificationUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val addToWishListV2UseCase: AddToWishlistV2UseCase,
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel
 ) : BaseDaggerPresenter<CustomerView>() {
 
     private var inboxView: InboxView? = null

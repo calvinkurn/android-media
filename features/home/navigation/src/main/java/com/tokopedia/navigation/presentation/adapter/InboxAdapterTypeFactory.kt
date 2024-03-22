@@ -18,11 +18,11 @@ import com.tokopedia.user.session.UserSessionInterface
  * Author errysuprayogi on 13,March,2019
  */
 class InboxAdapterTypeFactory constructor(
-    private val userSessionInterface: UserSessionInterface,
-    private val listener: InboxAdapterListener,
-    private val recommendationListener: RecommendationListener,
-    private val tdnBannerResponseListener: TdnBannerResponseListener,
-    private val topAdsClickListener: TopAdsImageViewClickListener
+        private val userSessionInterface: UserSessionInterface,
+        private val listener: InboxAdapterListener,
+        private val recommendationListener: RecommendationListener,
+        private val tdnBannerResponseListener: TdnBannerResponseListener,
+        private val topAdsClickListener: TopAdsImageViewClickListener
 ) : BaseAdapterTypeFactory(), InboxTypeFactory {
 
     override fun type(inbox: Inbox): Int {

@@ -12,12 +12,11 @@ class InspirationProductPresenterDelegate @Inject constructor(
     private val inspirationProductTracker: InspirationProductView,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val classNameProvider: ClassNameProvider,
-    private val lastClickedProductIdProviderImpl: LastClickedProductIdProviderImpl
+    private val lastClickedProductIdProviderImpl: LastClickedProductIdProviderImpl,
 ) : InspirationProductPresenter {
     override fun onInspirationProductItemImpressed(inspirationProductData: InspirationProductItemDataView) {
-        if (inspirationProductData.isOrganicAds) {
+        if (inspirationProductData.isOrganicAds)
             sendTrackingImpressInspirationCarouselAds(inspirationProductData)
-        }
 
         val seamlessInspirationProductType = inspirationProductData.seamlessInspirationProductType
         inspirationProductTracker.trackInspirationProductSeamlessImpression(
@@ -35,9 +34,8 @@ class InspirationProductPresenterDelegate @Inject constructor(
 
         inspirationProductTracker.openLink(inspirationProductData.applink, inspirationProductData.url)
 
-        if (inspirationProductData.isOrganicAds) {
+        if (inspirationProductData.isOrganicAds)
             sendTrackingClickInspirationCarouselAds(inspirationProductData)
-        }
 
         lastClickedProductIdProviderImpl.lastClickedProductId = inspirationProductData.id
     }

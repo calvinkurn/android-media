@@ -7,15 +7,15 @@ import com.tokopedia.smart_recycler_helper.SmartVisitable
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 data class HomeRecommendationBannerTopAdsDataModel(
-        val topAdsImageUiModel: TopAdsImageUiModel? = null,
-        val position: Int = -1
+    val topAdsImageViewModel: TopAdsImageUiModel? = null,
+    val position: Int = -1
 ) : HomeRecommendationVisitable, ImpressHolder() {
     override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
         return dataModel == this
     }
 
     override fun getUniqueIdentity(): Any {
-        return topAdsImageUiModel?.bannerId ?: ""
+        return topAdsImageViewModel?.bannerId ?: ""
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
