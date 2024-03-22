@@ -170,7 +170,6 @@ class ShopHomeCarousellProductViewHolder(
                 forceLightModeColor = shopHomeListener.isOverrideTheme(),
                 patternColorType = shopHomeListener.getPatternColorType(),
                 backgroundColor = shopHomeListener.getBackgroundColor(),
-                isDeviceOnDarkModeTheme = recyclerView?.context?.isDarkMode().orFalse(),
                 isFestivity = isFestivity
             )
         }
