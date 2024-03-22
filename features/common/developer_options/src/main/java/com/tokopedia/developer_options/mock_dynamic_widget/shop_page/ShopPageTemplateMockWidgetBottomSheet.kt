@@ -29,7 +29,7 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
     }
 
     private val adapterSelectedListShopWidget by lazy {
-        ShopPageMockWidgetAdapter(this)
+        ShopPageMockWidgetAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +40,7 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
 
     private fun setDefaultParams() {
         setTitle(TITLE)
-        isHideable = true
+        isHideable = false
         showCloseIcon = true
         showHeader = true
     }
