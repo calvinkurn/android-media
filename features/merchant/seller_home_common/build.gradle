@@ -39,7 +39,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.tracingKtx
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.calendar

@@ -3,7 +3,6 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.tracing.trace
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
@@ -73,13 +72,11 @@ class RecommendationViewHolder(
     }
 
     override fun bind(element: RecommendationWidgetUiModel) {
-        trace("RecommendationViewHolder.bind") {
-            val data = element.data
-            when {
-                data == null || element.showLoadingState -> showLoadingState()
-                data.error.isNotBlank() -> showErrorState(element)
-                else -> setOnSuccess(element)
-            }
+        val data = element.data
+        when {
+            data == null || element.showLoadingState -> showLoadingState()
+            data.error.isNotBlank() -> showErrorState(element)
+            else -> setOnSuccess(element)
         }
     }
 
@@ -103,46 +100,44 @@ class RecommendationViewHolder(
     }
 
     private fun setOnSuccess(element: RecommendationWidgetUiModel) {
-        trace("RecommendationViewHolder.setOnSuccess") {
-            with(successStateBinding) {
-                loadingStateBinding.containerShcRecommendationLoading.gone()
-                errorStateBinding.containerShcRecommendationError.gone()
-                containerShcRecommendationSuccess.visible()
+        with(successStateBinding) {
+            loadingStateBinding.containerShcRecommendationLoading.gone()
+            errorStateBinding.containerShcRecommendationError.gone()
+            containerShcRecommendationSuccess.visible()
 
-                tvShcRecommendationTitle.text = element.title
-                val progressLevel = element.data?.progressLevel
-                slvShcShopLevel.show(progressLevel?.text.orEmpty(), progressLevel?.bar?.value.orZero())
+            tvShcRecommendationTitle.text = element.title
+            val progressLevel = element.data?.progressLevel
+            slvShcShopLevel.show(progressLevel?.text.orEmpty(), progressLevel?.bar?.value.orZero())
 
-                setupTicker(element)
-                setupRecommendations(element)
+            setupTicker(element)
+            setupRecommendations(element)
 
-                val progressBar = element.data?.progressBar
-                val progressTitle = progressBar?.text.orEmpty()
-                val currentProgressText = progressBar?.bar?.valueToDisplay.orEmpty()
-                val setMaxProgressText = progressBar?.bar?.maxValue.orZero().toString()
-                val currentProgressValue = progressBar?.bar?.value.orZero()
-                val setMaxProgressValue = progressBar?.bar?.maxValue.orZero()
-                val progressState = getProgressState(currentProgressValue, setMaxProgressValue)
-                setupProgressBar(
-                    progressTitle,
-                    currentProgressText,
-                    setMaxProgressText,
-                    currentProgressValue,
-                    setMaxProgressValue,
-                    progressState
-                )
+            val progressBar = element.data?.progressBar
+            val progressTitle = progressBar?.text.orEmpty()
+            val currentProgressText = progressBar?.bar?.valueToDisplay.orEmpty()
+            val setMaxProgressText = progressBar?.bar?.maxValue.orZero().toString()
+            val currentProgressValue = progressBar?.bar?.value.orZero()
+            val setMaxProgressValue = progressBar?.bar?.maxValue.orZero()
+            val progressState = getProgressState(currentProgressValue, setMaxProgressValue)
+            setupProgressBar(
+                progressTitle,
+                currentProgressText,
+                setMaxProgressText,
+                currentProgressValue,
+                setMaxProgressValue,
+                progressState
+            )
 
-                setupCta(element)
-                setTagNotification(element.tag)
-                setupTooltip(tvShcRecommendationTitle, element)
-                setupLastUpdatedInfo(element)
+            setupCta(element)
+            setTagNotification(element.tag)
+            setupTooltip(tvShcRecommendationTitle, element)
+            setupLastUpdatedInfo(element)
 
-                horLineShcRecommendationBtm.isVisible = luvShcRecommendation.isVisible
-                    || tvShcRecommendationCta.isVisible
+            horLineShcRecommendationBtm.isVisible = luvShcRecommendation.isVisible
+                || tvShcRecommendationCta.isVisible
 
-                itemView.addOnImpressionListener(element.impressHolder) {
-                    listener.sendRecommendationImpressionEvent(element)
-                }
+            itemView.addOnImpressionListener(element.impressHolder) {
+                listener.sendRecommendationImpressionEvent(element)
             }
         }
     }

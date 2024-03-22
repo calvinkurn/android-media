@@ -28,15 +28,4 @@ class SellerHomeFrameTimingBenchmark : BaseSellerAppFrameTimingBenchmark() {
     }
 
     override fun getIntent(): Intent = MacroIntent.SellerHome.getIntent()
-
-    override fun customTrace(): List<String> {
-        return listOf(
-            "CardViewHolder.bind",
-            "CardViewHolder.onSuccess",
-            "MultiLineGraphViewHolder.bind",
-            "MultiLineGraphViewHolder.setOnSuccessState",
-            "RecommendationViewHolder.bind",
-            "RecommendationViewHolder.setOnSuccess"
-        )
-    }
 }
