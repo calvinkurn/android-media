@@ -1293,7 +1293,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 delay(COACHMARK_INITIAL_DELAY)
 
                 val coachMarks = buildList {
-                    if (!hasPinnedFormView() && !isQuizFormVisible() && currOnboardingUiModel.firstInteractive) {
+                    if (gameIconView.isShown() && !hasPinnedFormView() && !isQuizFormVisible() && currOnboardingUiModel.firstInteractive) {
                         add(LiveMenuCoachMarkType.Game(gameIconView.rootView))
                     }
 
