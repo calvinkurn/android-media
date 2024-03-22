@@ -77,13 +77,14 @@ fun NormalPriceComponent(
         crossAxisAlignment = FlowCrossAxisAlignment.Center
     ) {
         NestTypography(
-            modifier = Modifier.tag("txt_main_price"),
             text = data.priceFmt,
             textStyle = NestTheme.typography.heading2.copy(
                 color = NestTheme.colors.NN._950,
                 fontWeight = FontWeight.Bold
             ),
-            modifier = Modifier.padding(end = 4.dp)
+            modifier = Modifier
+                .padding(end = 4.dp)
+                .tag("txt_main_price")
         )
         Row(
             verticalAlignment = Alignment.CenterVertically
