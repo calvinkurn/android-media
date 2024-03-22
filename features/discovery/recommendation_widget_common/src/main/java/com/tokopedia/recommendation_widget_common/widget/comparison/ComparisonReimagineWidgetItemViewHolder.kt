@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ComparisonReimagineWidgetItemViewHolder constructor(
     val view: View
-) : RecyclerView.ViewHolder(view), ComparisonViewHolder {
+): RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonReimagineWidgetBinding? by viewBinding()
 
@@ -85,3 +85,4 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
         }
     }
 }
+

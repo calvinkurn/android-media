@@ -42,8 +42,8 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
     @SearchContext
     context: Context,
     fragmentProvider: FragmentProvider,
-    queryKeyProvider: QueryKeyProvider
-) : InspirationListPostAtcView,
+    queryKeyProvider: QueryKeyProvider,
+): InspirationListPostAtcView,
     SearchParameterProvider by searchParameterProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -97,7 +97,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
             shopId = product.shopId,
             trackerCDListName = getInspirationCarouselUnificationListName(
                 type,
-                product.componentId
+                product.componentId,
             )
         ) {
             val trackingData =
@@ -105,7 +105,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
                     product,
                     getSearchParameter(),
                     it.cartId,
-                    product.minOrder.toIntOrZero()
+                    product.minOrder.toIntOrZero(),
                 )
 
             trackItemClick(trackingData)
@@ -156,7 +156,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
     }
 
     private fun trackCarouselClickCloseAction(
-        option: InspirationCarouselDataView.Option
+        option: InspirationCarouselDataView.Option,
     ) {
         val searchParams = searchParameterProvider.getSearchParameter()?.getSearchParameterMap().orEmpty()
         val keyword = searchParameterProvider.getSearchParameter()?.getSearchQuery().orEmpty()

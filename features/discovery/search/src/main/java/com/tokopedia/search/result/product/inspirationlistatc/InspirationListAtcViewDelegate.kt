@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.search.R
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
@@ -41,8 +42,8 @@ class InspirationListAtcViewDelegate @Inject constructor(
     @SearchContext
     context: Context,
     fragmentProvider: FragmentProvider,
-    queryKeyProvider: QueryKeyProvider
-) : InspirationListAtcView,
+    queryKeyProvider: QueryKeyProvider,
+): InspirationListAtcView,
     SearchParameterProvider by searchParameterProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -89,7 +90,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 message,
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
-                if (isSuccess) getFragment().getString(R.string.search_see_cart) else ""
+                if (isSuccess) getFragment().getString(R.string.search_see_cart) else "",
             ) {
                 if (isSuccess) openApplink(context, ApplinkConst.CART)
             }.show()
@@ -101,14 +102,14 @@ class InspirationListAtcViewDelegate @Inject constructor(
     override fun openVariantBottomSheet(
         product: InspirationCarouselDataView.Option.Product,
         type: String,
-        onCheckout: () -> Unit
+        onCheckout: () -> Unit,
     ) {
         atcVariantLauncher.launch(
             productId = product.id,
             shopId = product.shopId,
             trackerCDListName = getInspirationCarouselUnificationListName(
                 type,
-                product.componentId
+                product.componentId,
             )
         ) { productResult ->
             val trackingData =
@@ -116,7 +117,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
                     product,
                     getSearchParameter(),
                     productResult.cartId,
-                    product.minOrder.toIntOrZero()
+                    product.minOrder.toIntOrZero(),
                 )
 
             trackItemClick(trackingData, product)

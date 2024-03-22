@@ -5,13 +5,13 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonComparedWidgetBinding
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonViewHolder
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
-import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -20,7 +20,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ComparisonWidgetComparedItemViewHolder(
     val view: View
-) : RecyclerView.ViewHolder(view), ComparisonViewHolder {
+): RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonComparedWidgetBinding? by viewBinding()
 
@@ -35,8 +35,9 @@ class ComparisonWidgetComparedItemViewHolder(
         comparisonWidgetInterface: ComparisonWidgetInterface,
         recommendationTrackingModel: RecommendationTrackingModel,
         trackingQueue: TrackingQueue?,
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
     ) {
+
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
         if (comparisonModel.isClickable) {

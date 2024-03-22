@@ -43,12 +43,12 @@ private const val TDN_SEARCH_DIMENSION = 3
 private const val HEADLINE_IMPRESSION_COUNT_FIRST_PAGE = "0"
 
 class SearchProductFirstPageGqlUseCase(
-        private val graphqlUseCase: GraphqlUseCase,
-        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        private val coroutineDispatchers: CoroutineDispatchers,
-        private val searchLogger: SearchLogger,
-        private val reimagineRollence: ReimagineRollence,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val coroutineDispatchers: CoroutineDispatchers,
+    private val searchLogger: SearchLogger,
+    private val reimagineRollence: ReimagineRollence,
 ): UseCase<SearchProductModel>(), CoroutineScope {
 
     private val masterJob = SupervisorJob()
@@ -210,8 +210,8 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun setTopAdsImageViewModelList(
-            searchProductModel: SearchProductModel?,
-            topAdsImageUiModelList: List<TopAdsImageUiModel>?
+        searchProductModel: SearchProductModel?,
+        topAdsImageUiModelList: List<TopAdsImageUiModel>?
     ): SearchProductModel? {
         if (searchProductModel == null || topAdsImageUiModelList == null) return searchProductModel
 

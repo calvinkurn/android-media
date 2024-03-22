@@ -8,9 +8,9 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 @TemporaryBackwardCompatible
 class BannerOldTopAdsModel(
-        val topAdsImageUiModel: TopAdsImageUiModel? = null,
-        val position: Int = -1,
-        val bannerType: String
+    val topAdsImageUiModel: TopAdsImageUiModel? = null,
+    val position: Int = -1,
+    val bannerType: String
 ) : ForYouRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {
