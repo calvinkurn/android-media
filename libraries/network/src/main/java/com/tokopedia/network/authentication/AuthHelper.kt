@@ -49,7 +49,7 @@ class AuthHelper {
 
             val authString = "${method}\n${contentMD5}\n${newContentType}\n${date}\n${path}"
             val signature = calculateRFC2104HMAC(authString, authKey)
-            val bdDeviceId = runCatching { AppLog.getDid().orEmpty() }.getOrDefault("")
+            val bdDeviceId = getApplogDeviceId()
 
             val headerMap = ArrayMap<String, String>()
             headerMap[HEADER_CONTENT_TYPE] = newContentType
@@ -77,6 +77,8 @@ class AuthHelper {
             headerMap[HEADER_BD_DEVICE_ID] = bdDeviceId
             return headerMap
         }
+
+        private fun getApplogDeviceId(): String = runCatching { AppLog.getDid().orEmpty() }.getOrDefault("")
 
         @JvmStatic
         fun getDefaultHeaderMapOld(

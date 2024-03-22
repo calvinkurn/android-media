@@ -29,4 +29,5 @@ interface BannerAdsListener {
     fun onBannerAdsImpression1PxListener(data: CpmDataView)
 
     fun onImpressionSeeMoreItem(data: CpmDataView, position: Int)
+    fun isEnableFixByteIOCPM(): Boolean
 }
