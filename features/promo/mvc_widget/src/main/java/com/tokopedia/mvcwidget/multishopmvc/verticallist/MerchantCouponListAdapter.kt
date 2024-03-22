@@ -46,10 +46,10 @@ class MerchantCouponListAdapter(
     }
 
     private fun setData(vh: CouponListViewHolder, item: MultiShopModel) {
-        vh.multiShopView.setMultiShopModel(item, source)
+        vh.multiShopView.setMultiShopModel(item,source)
     }
 
-    override fun loadData(currentPageIndex: Int, vararg args: String?) {
+    override fun loadData(currentPageIndex: Int,vararg args: String?) {
         super.loadData(currentPageIndex, *args)
         viewmodel.merchantCouponData(currentPageIndex)
     }
@@ -96,7 +96,7 @@ class MerchantCouponListAdapter(
             val promotions = HashMap<String, Any>()
             promotions["promotions"] = listOf<Map<String, Any?>>(item)
             sendTopadsImpression(holder.itemView.context, items[holder.adapterPosition].AdInfo)
-            MvcTracker().viewMVCCoupon(eventLabel, promotions, source)
+            MvcTracker().viewMVCCoupon(eventLabel, promotions ,source)
         }
     }
 

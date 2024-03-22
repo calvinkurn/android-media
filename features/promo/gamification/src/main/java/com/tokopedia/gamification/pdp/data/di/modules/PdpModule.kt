@@ -54,12 +54,10 @@ class PdpModule {
 
     @GamificationPdpScope
     @Provides
-    fun getGamingRecommendationProductUseCase(
-        context: Context,
-        graphqlUseCase: GraphqlUseCase,
-        userSession: UserSessionInterface,
-        mapper: Mapper
-    ): GamingRecommendationProductUseCase {
+    fun getGamingRecommendationProductUseCase(context: Context,
+                                              graphqlUseCase: GraphqlUseCase,
+                                              userSession: UserSessionInterface,
+                                              mapper: Mapper): GamingRecommendationProductUseCase {
         return GamingRecommendationProductUseCase(context, graphqlUseCase, userSession, mapper)
     }
 
@@ -75,7 +73,7 @@ class PdpModule {
 
     @GamificationPdpScope
     @Provides
-    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase{
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 

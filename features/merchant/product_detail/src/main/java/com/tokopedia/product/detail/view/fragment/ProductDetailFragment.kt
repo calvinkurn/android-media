@@ -279,6 +279,7 @@ import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigator.goToMvc
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -1213,8 +1214,8 @@ open class ProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                ?.data
-                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                    ?.data
+                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getProductInfoP1 == null ||
             context == null ||
@@ -2834,7 +2835,7 @@ open class ProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false
+                        ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -3383,7 +3384,7 @@ open class ProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                        viewModel.getProductInfoP1?.parentProductId.orEmpty()
+                            viewModel.getProductInfoP1?.parentProductId.orEmpty()
                         }"
                         ProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -4997,6 +4998,7 @@ open class ProductDetailFragment :
                 ApplinkConst.SHOP,
                 shopId
             )
+
 
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 

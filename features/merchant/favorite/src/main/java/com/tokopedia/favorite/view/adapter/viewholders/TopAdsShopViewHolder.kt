@@ -97,8 +97,9 @@ class TopAdsShopViewHolder(
                                     null,
                                     getShopItem(shopProductModelItem)
                                 )
-                                element?.adsShopItems?.forEachIndexed { index, it -> if (it.shopId == shopProductModelItem.shopId) it.isFollowed = true }
+                                element?.adsShopItems?.forEachIndexed{index, it -> if(it.shopId == shopProductModelItem.shopId) it.isFollowed = true }
                             }
+
                         }
                     }
                 )
@@ -121,6 +122,7 @@ class TopAdsShopViewHolder(
     }
 
     private fun getShopItem(shopProductModelItem: ShopProductModel.ShopProductModelItem): TopAdsShopItem {
+
         return TopAdsShopItem(
             shopId = shopProductModelItem.shopId,
             shopName = shopProductModelItem.shopName,
@@ -151,4 +153,5 @@ class TopAdsShopViewHolder(
         }
         return list
     }
+
 }
