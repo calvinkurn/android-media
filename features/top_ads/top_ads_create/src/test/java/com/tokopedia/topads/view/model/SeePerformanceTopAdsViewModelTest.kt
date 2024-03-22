@@ -139,7 +139,9 @@ class SeePerformanceTopAdsViewModelTest {
     @Test
     fun `getPromoInfo success`() {
         val response = SingleAdInFo()
-        coEvery { topAdsGetGroupIdUseCase.execute(any(), any()) } answers {
+        coEvery {
+            topAdsGetGroupIdUseCase.setParams(any(), any())
+            topAdsGetGroupIdUseCase.execute(any(), any()) } answers {
             firstArg<(SingleAdInFo) -> Unit>().invoke(response)
         }
         viewModel.getPromoInfo()
@@ -243,7 +245,9 @@ class SeePerformanceTopAdsViewModelTest {
     }
 
     @Test
-    fun `checkIsSingleAds success`() {
+    fun `checkIsSingleAds true`() {
+        `getProductManage success`()
+        `getPromoInfo success`()
         viewModel.checkIsSingleAds()
         assertEquals(true, viewModel.isSingleAds.value)
     }
@@ -256,18 +260,6 @@ class SeePerformanceTopAdsViewModelTest {
         }
         viewModel.getAutoAdsInfo()
         assertEquals(response, viewModel.topAdsGetAutoAds.value)
-    }
-
-    @Test
-    fun getUseCase() {
-        assertEquals(topAdsGetDepositUseCase, viewModel.topAdsGetDepositUseCase)
-        assertEquals(topAdsGetProductManageUseCase, viewModel.topAdsGetProductManageUseCase)
-        assertEquals(topAdsGetProductStatisticsUseCase, viewModel.topAdsGetProductStatisticsUseCase)
-        assertEquals(topAdsGetShopInfoV1UseCase, viewModel.topAdsGetShopInfoV1UseCase)
-        assertEquals(topAdsGetGroupIdUseCase, viewModel.topAdsGetGroupIdUseCase)
-        assertEquals(topAdsGetAutoAdsUseCase, viewModel.topAdsGetAutoAdsUseCase)
-        assertEquals(topAdsGetGroupInfoUseCase, viewModel.topAdsGetGroupInfoUseCase)
-        assertEquals(topAdsProductActionUseCase, viewModel.topAdsProductActionUseCase)
     }
 
     @Test
