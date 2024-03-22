@@ -1263,8 +1263,6 @@ class ProductDetailViewModel @Inject constructor(
             )
         }, onError = {
             // no op, expect to be handled by Affiliate SDK
-            val stack = it
-            val stack1 = stack.stackTrace
 
         })
     }

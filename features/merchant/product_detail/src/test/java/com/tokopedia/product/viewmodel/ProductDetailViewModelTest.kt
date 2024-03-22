@@ -1,6 +1,5 @@
 package com.tokopedia.product.viewmodel
 
-import android.os.Bundle
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -1949,6 +1948,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val affiliateSource = "PDP"
 
         val slot = slot<AffiliatePageDetail>()
+        val subIdsSlot = slot<List<AdditionalParam>>()
 
         viewModel.hitAffiliateCookie(
             productInfo = mockProductInfoP1,
@@ -1965,16 +1965,8 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = capture(slot),
                 uuid = uuid,
-                subIds = listOf(
-                    AdditionalParam(
-                        key = "1",
-                        value = "subId1"
-                    ),
-                    AdditionalParam(
-                        key = "2",
-                        value = "subId2"
-                    )
-                ),
+                additionalParam = emptyList(),
+                subIds = capture(subIdsSlot),
                 source = affiliateSource
             )
         }
@@ -1982,6 +1974,16 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         with(slot.captured) {
             assertEquals(productId, this.pageId)
             assertTrue(source is AffiliateSdkPageSource.PDP)
+        }
+
+        with (subIdsSlot.captured) {
+            assertEquals(size, 2)
+
+            assertEquals(get(0).key, "1")
+            assertEquals(get(0).value, "subId1")
+
+            assertEquals(get(1).key, "2")
+            assertEquals(get(1).value, "subId2")
         }
     }
 
