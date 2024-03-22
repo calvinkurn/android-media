@@ -333,9 +333,9 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     }
 
     fun getImpressionBannerTopAdsOld(
-            topAdsImageUiModel: TopAdsImageUiModel?,
-            tabPosition: Int,
-            position: Int
+        topAdsImageUiModel: TopAdsImageUiModel?,
+        tabPosition: Int,
+        position: Int
     ) = BaseTrackerBuilder().constructBasicPromotionView(
         Event.PROMO_VIEW,
         Category.HOMEPAGE,
@@ -353,9 +353,9 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     ).build()
 
     fun getClickBannerTopAdsOld(
-            topAdsImageUiModel: TopAdsImageUiModel?,
-            tabPosition: Int,
-            position: Int
+        topAdsImageUiModel: TopAdsImageUiModel?,
+        tabPosition: Int,
+        position: Int
     ) = BaseTrackerBuilder().constructBasicPromotionClick(
         event = Event.PROMO_CLICK,
         eventCategory = Category.HOMEPAGE,
