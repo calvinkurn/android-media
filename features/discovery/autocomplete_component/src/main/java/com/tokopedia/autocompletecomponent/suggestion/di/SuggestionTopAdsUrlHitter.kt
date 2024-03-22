@@ -12,5 +12,5 @@ class SuggestionTopAdsUrlHitter {
     @SuggestionScope
     @Provides
     fun provideTopAdsUrlHitter(@ApplicationContext context: Context): TopAdsUrlHitter =
-            TopAdsUrlHitter(context)
+        TopAdsUrlHitter(context)
 }

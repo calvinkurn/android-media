@@ -49,14 +49,14 @@ import javax.inject.Named
 import com.tokopedia.usecase.UseCase as RxUseCase
 
 class SuggestionPresenter @Inject constructor(
-        @Named(GET_SUGGESTION_USE_CASE)
+    @Named(GET_SUGGESTION_USE_CASE)
     private val getSuggestionUseCase: UseCase<SuggestionUniverse>,
-        @Named(SUGGESTION_TRACKER_USE_CASE)
+    @Named(SUGGESTION_TRACKER_USE_CASE)
     private val suggestionTrackerUseCase: RxUseCase<Void?>,
-        private val topAdsUrlHitter: Lazy<TopAdsUrlHitter>,
-        private val userSession: UserSessionInterface,
-        private val coachMarkLocalCache: CoachMarkLocalCache,
-        private val schedulersProvider: SchedulersProvider,
+    private val topAdsUrlHitter: Lazy<TopAdsUrlHitter>,
+    private val userSession: UserSessionInterface,
+    private val coachMarkLocalCache: CoachMarkLocalCache,
+    private val schedulersProvider: SchedulersProvider,
 ) : BaseDaggerPresenter<SuggestionContract.View>(), SuggestionContract.Presenter {
 
     private val listVisitable = mutableListOf<Visitable<*>>()
