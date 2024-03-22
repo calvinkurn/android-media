@@ -2502,8 +2502,8 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onBannerTopAdsImpression(
-            topAdsImageUiModel: TopAdsImageUiModel,
-            position: Int
+        topAdsImageUiModel: TopAdsImageUiModel,
+        position: Int
     ) {
         TopAdsUrlHitter(context).hitImpressionUrl(
             this::class.java.simpleName,
