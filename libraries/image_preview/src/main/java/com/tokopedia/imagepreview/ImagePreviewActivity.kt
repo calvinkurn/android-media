@@ -100,7 +100,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 viewPager.SetAllowPageSwitching(true)
             }
 
-            override fun onStateZoom() {
+            override fun OnStateZoom() {
                 viewPager.SetAllowPageSwitching(false)
             }
         })
