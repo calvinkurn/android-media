@@ -165,6 +165,7 @@ class SeePerformanceTopAdsViewModelTest {
         val resources: Resources = mockk(relaxed = true)
         viewModel.getTopAdsProductStatistics(resources, String.EMPTY, String.EMPTY, Int.ZERO)
         assertEquals(Success(response), viewModel.productStatistics.value)
+        assertEquals(Int.ZERO, viewModel.goalId.value)
     }
 
     @Test
@@ -255,6 +256,18 @@ class SeePerformanceTopAdsViewModelTest {
         }
         viewModel.getAutoAdsInfo()
         assertEquals(response, viewModel.topAdsGetAutoAds.value)
+    }
+
+    @Test
+    fun getUseCase() {
+        assertEquals(topAdsGetDepositUseCase, viewModel.topAdsGetDepositUseCase)
+        assertEquals(topAdsGetProductManageUseCase, viewModel.topAdsGetProductManageUseCase)
+        assertEquals(topAdsGetProductStatisticsUseCase, viewModel.topAdsGetProductStatisticsUseCase)
+        assertEquals(topAdsGetShopInfoV1UseCase, viewModel.topAdsGetShopInfoV1UseCase)
+        assertEquals(topAdsGetGroupIdUseCase, viewModel.topAdsGetGroupIdUseCase)
+        assertEquals(topAdsGetAutoAdsUseCase, viewModel.topAdsGetAutoAdsUseCase)
+        assertEquals(topAdsGetGroupInfoUseCase, viewModel.topAdsGetGroupInfoUseCase)
+        assertEquals(topAdsProductActionUseCase, viewModel.topAdsProductActionUseCase)
     }
 
     @Test
