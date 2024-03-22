@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.util.TypedValue
 import android.view.View
+import androidx.tracing.trace
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
@@ -43,9 +44,11 @@ class CardViewHolder(
     }
 
     override fun bind(element: CardWidgetUiModel) {
-        binding.tvCardTitle.text = element.title
-        setCardBackground()
-        observeState(element)
+        trace("CardViewHolder.bind") {
+            binding.tvCardTitle.text = element.title
+            setCardBackground()
+            observeState(element)
+        }
     }
 
     private fun setupTag(element: CardWidgetUiModel) {
@@ -72,14 +75,16 @@ class CardViewHolder(
             }
 
             else -> {
-                if (element.data?.showWidget.orFalse()) {
-                    showOnError(element, false)
-                    showShimmer(false)
-                    showViewComponent(element, true)
-                    setupTag(element)
-                    listener.setCoachMarkView(element.dataKey, binding.root)
-                } else {
-                    listener.removeWidget(absoluteAdapterPosition, element)
+                trace("CardViewHolder.onSuccess") {
+                    if (element.data?.showWidget.orFalse()) {
+                        showOnError(element, false)
+                        showShimmer(false)
+                        showViewComponent(element, true)
+                        setupTag(element)
+                        listener.setCoachMarkView(element.dataKey, binding.root)
+                    } else {
+                        listener.removeWidget(absoluteAdapterPosition, element)
+                    }
                 }
             }
         }
