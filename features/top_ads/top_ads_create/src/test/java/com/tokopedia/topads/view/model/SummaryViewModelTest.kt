@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.topads.view.model
 
 import android.content.Context
@@ -6,8 +8,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.domain.model.GetVariantByIdResponse
 import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
@@ -18,6 +22,7 @@ import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,11 +53,15 @@ class SummaryViewModelTest {
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(SummaryViewModel(rule.dispatchers,
-            validGroupUseCase,
-            topAdsGetShopDepositUseCase,
-            topAdsCreateUseCase,
-            getVariantByIdUseCase))
+        viewModel = spyk(
+            SummaryViewModel(
+                rule.dispatchers,
+                validGroupUseCase,
+                topAdsGetShopDepositUseCase,
+                topAdsCreateUseCase,
+                getVariantByIdUseCase
+            )
+        )
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -98,7 +107,7 @@ class SummaryViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.validateGroup("name", {}){}
+        viewModel.validateGroup("name", {}) {}
 
         verify {
             validGroupUseCase.execute(any(), any())
@@ -122,17 +131,34 @@ class SummaryViewModelTest {
     }
 
     @Test
-    fun `validateGroup error`() {
-        var actual: ResponseGroupValidateName.TopAdsGroupValidateNameV2? = null
-
+    fun `validateGroup error response`() {
+        val data = ResponseGroupValidateName(
+            ResponseGroupValidateName.TopAdsGroupValidateNameV2(
+                errors = listOf(Error())
+            )
+        )
+        var onErrorCalled = false
         every {
             validGroupUseCase.execute(any(), captureLambda())
         } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
+            firstArg<(ResponseGroupValidateName) -> Unit>().invoke(data)
         }
+        viewModel.validateGroup("name", {}, {
+            onErrorCalled = true
+        })
+        assertTrue(onErrorCalled)
+    }
 
-        viewModel.validateGroup("name", { actual = it }, {})
-        Assert.assertEquals(null, actual)
+    @Test
+    fun `validateGroup error throwable `() {
+        val throwable: Throwable = mockk(relaxed = true)
+        every {
+            validGroupUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+        viewModel.validateGroup("name", {}, {})
+        verify { throwable.printStackTrace() }
     }
 
     @Test
@@ -149,50 +175,90 @@ class SummaryViewModelTest {
     @Test
     fun `topadscreated success check`() {
         every {
-            topAdsCreateUseCase.setParam(any(),
+            topAdsCreateUseCase.setParam(
                 any(),
                 any(),
-                any())
+                any(),
+                any()
+            )
         } returns mockk(relaxed = true)
         coEvery { topAdsCreateUseCase.execute(any<RequestParams>()) } returns FinalAdResponse()
 
         var successCalled = false
         viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
-        Assert.assertTrue(successCalled)
+        assertTrue(successCalled)
     }
 
     @Test
     fun `topadscreated error check`() {
         every {
-            topAdsCreateUseCase.setParam(any(),
+            topAdsCreateUseCase.setParam(
                 any(),
                 any(),
-                any())
+                any(),
+                any()
+            )
         } returns mockk(relaxed = true)
         coEvery { topAdsCreateUseCase.execute(any<RequestParams>()) } returns FinalAdResponse(
-            FinalAdResponse.TopadsManageGroupAds(FinalAdResponse.TopadsManageGroupAds.KeywordResponse(
-                errors = listOf(
-                    FinalAdResponse.TopadsManageGroupAds.ErrorsItem())),
-                FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem()))))
+            FinalAdResponse.TopadsManageGroupAds(
+                FinalAdResponse.TopadsManageGroupAds.KeywordResponse(
+                    errors = listOf(
+                        FinalAdResponse.TopadsManageGroupAds.ErrorsItem()
+                    )
+                ),
+                FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem()))
+            )
+        )
 
         var successCalled = false
         viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
-        Assert.assertTrue(!successCalled)
+        assertTrue(!successCalled)
     }
 
     @Test
     fun `topadscreated exception check`() {
         every {
-            topAdsCreateUseCase.setParam(any(),
+            topAdsCreateUseCase.setParam(
                 any(),
                 any(),
-                any())
+                any(),
+                any()
+            )
         } returns mockk(relaxed = true)
         coEvery { topAdsCreateUseCase.execute(requestParams = any()) } throws Throwable()
 
         var successCalled = false
         viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
-        Assert.assertTrue(!successCalled)
+        assertTrue(!successCalled)
+    }
+
+    @Test
+    fun `getVariantById success`() {
+        val response = GetVariantByIdResponse(
+            getVariantById = GetVariantByIdResponse.GetVariantById(
+                userIdVariants = listOf(),
+                shopIdVariants = listOf(),
+                sessionIdVariants = listOf()
+            )
+        )
+        val data = response.getVariantById.shopIdVariants
+        coEvery { getVariantByIdUseCase() } answers {
+            response
+        }
+        viewModel.getVariantById()
+        Assert.assertEquals(data, viewModel.shopVariant.value)
+    }
+
+    @Test
+    fun `getVariantById failure`() {
+        coEvery { getVariantByIdUseCase() } answers {
+            throw Throwable()
+        }
+        viewModel.getVariantById()
+        Assert.assertEquals(
+            listOf<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>(),
+            viewModel.shopVariant.value
+        )
     }
 
     @Test
