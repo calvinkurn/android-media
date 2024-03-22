@@ -40,13 +40,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
-        private val getHomeRecommendationUseCase: Lazy<GetHomeRecommendationUseCase>,
-        private val getHomeRecommendationCardUseCase: Lazy<GetHomeRecommendationCardUseCase>,
-        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-        private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
-        private val userSessionInterface: Lazy<UserSessionInterface>,
-        private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
-        homeDispatcher: Lazy<CoroutineDispatchers>
+    private val getHomeRecommendationUseCase: Lazy<GetHomeRecommendationUseCase>,
+    private val getHomeRecommendationCardUseCase: Lazy<GetHomeRecommendationCardUseCase>,
+    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+    private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
+    private val userSessionInterface: Lazy<UserSessionInterface>,
+    private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
+    homeDispatcher: Lazy<CoroutineDispatchers>
 ) : BaseViewModel(homeDispatcher.get().io) {
 
     companion object {
@@ -307,11 +307,11 @@ class HomeRecommendationViewModel @Inject constructor(
     }
 
     private fun handleTopAdsWidgets(
-            data: HomeRecommendationDataModel,
-            topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageUiModel>>>,
-            homeBannerTopAds: List<HomeRecommendationBannerTopAdsOldDataModel>,
-            headlineAds: TopAdsHeadlineResponse,
-            newList: MutableList<BaseHomeRecommendationVisitable>
+        data: HomeRecommendationDataModel,
+        topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageUiModel>>>,
+        homeBannerTopAds: List<HomeRecommendationBannerTopAdsOldDataModel>,
+        headlineAds: TopAdsHeadlineResponse,
+        newList: MutableList<BaseHomeRecommendationVisitable>
     ) {
         incrementTopadsPage()
         val headlineData = headlineAds.displayAds.data

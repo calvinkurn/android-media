@@ -42,13 +42,13 @@ import javax.inject.Inject
 
 @RecomTemporary
 class HomeGlobalRecommendationViewModel @Inject constructor(
-        private val getHomeRecommendationUseCase: Lazy<GetHomeGlobalRecommendationUseCase>,
-        private val getHomeRecommendationCardUseCase: Lazy<GetGlobalHomeRecommendationCardUseCase>,
-        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-        private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
-        private val userSessionInterface: Lazy<UserSessionInterface>,
-        private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
-        homeDispatcher: Lazy<CoroutineDispatchers>
+    private val getHomeRecommendationUseCase: Lazy<GetHomeGlobalRecommendationUseCase>,
+    private val getHomeRecommendationCardUseCase: Lazy<GetGlobalHomeRecommendationCardUseCase>,
+    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+    private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
+    private val userSessionInterface: Lazy<UserSessionInterface>,
+    private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
+    homeDispatcher: Lazy<CoroutineDispatchers>
 ) : BaseViewModel(homeDispatcher.get().io) {
 
     companion object {
@@ -328,11 +328,11 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
     }
 
     private fun handleTopAdsWidgets(
-            data: HomeGlobalRecommendationDataModel,
-            topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageUiModel>>>,
-            homeBannerTopAds: List<BannerOldTopAdsModel>,
-            headlineAds: TopAdsHeadlineResponse,
-            newList: MutableList<ForYouRecommendationVisitable>
+        data: HomeGlobalRecommendationDataModel,
+        topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageUiModel>>>,
+        homeBannerTopAds: List<BannerOldTopAdsModel>,
+        headlineAds: TopAdsHeadlineResponse,
+        newList: MutableList<ForYouRecommendationVisitable>
     ) {
         incrementTopadsPage()
         val headlineData = headlineAds.displayAds.data

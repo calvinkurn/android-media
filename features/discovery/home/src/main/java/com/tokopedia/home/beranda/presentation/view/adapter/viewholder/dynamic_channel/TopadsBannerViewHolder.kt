@@ -19,7 +19,7 @@ import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionL
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryListener) :
-    AbstractViewHolder<HomeTopAdsBannerDataModel>(view) {
+        AbstractViewHolder<HomeTopAdsBannerDataModel>(view) {
     private var binding: HomeDcTopadsBannerBinding? by viewBinding()
     companion object {
         @LayoutRes
@@ -29,14 +29,16 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
 
     override fun bind(element: HomeTopAdsBannerDataModel) {
         binding?.dynamicChannelHeader?.setChannel(
-            DynamicChannelComponentMapper.mapHomeChannelToComponent(element.channel, adapterPosition),
-            object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                }
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(element.channel, adapterPosition),
+                object: HeaderListener {
+                    override fun onSeeAllClick(link: String) {
 
-                override fun onChannelExpired(channelModel: ChannelModel) {
+                    }
+
+                    override fun onChannelExpired(channelModel: ChannelModel) {
+
+                    }
                 }
-            }
         )
 
         if (element.topAdsImageUiModel == null) {
@@ -56,43 +58,43 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
             }
         }
 
-        binding?.homeTopadsImageView?.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+        binding?.homeTopadsImageView?.setTopAdsImageViewImpression(object: TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
                 BannerAdsTracking.sendBannerAdsImpressionTracking(
-                    categoryListener.getTrackingQueueObj(),
-                    element.channel,
-                    categoryListener.userId,
-                    false,
-                    element.topAdsImageUiModel?.bannerId ?: ""
+                        categoryListener.getTrackingQueueObj(),
+                        element.channel,
+                        categoryListener.userId,
+                        false,
+                        element.topAdsImageUiModel?.bannerId?:""
                 )
                 BannerAdsTracking.sendBannerAdsImpressionTracking(
-                    categoryListener.getTrackingQueueObj(),
-                    element.channel,
-                    categoryListener.userId,
-                    true,
-                    element.topAdsImageUiModel?.bannerId ?: ""
+                        categoryListener.getTrackingQueueObj(),
+                        element.channel,
+                        categoryListener.userId,
+                        true,
+                        element.topAdsImageUiModel?.bannerId?:""
                 )
 
                 TopAdsUrlHitter(className).hitImpressionUrl(
-                    itemView.context,
-                    viewUrl,
-                    "",
-                    "",
-                    ""
+                        itemView.context,
+                        viewUrl,
+                        "",
+                        "",
+                        ""
                 )
             }
         })
 
-        binding?.homeTopadsImageView?.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+        binding?.homeTopadsImageView?.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
             override fun onTopAdsImageViewClicked(applink: String?) {
                 BannerAdsTracking.sendBannerAdsClickTracking(
-                    element.channel,
-                    categoryListener.userId,
-                    adapterPosition,
-                    element.topAdsImageUiModel?.bannerId ?: ""
+                        element.channel,
+                        categoryListener.userId,
+                        adapterPosition,
+                        element.topAdsImageUiModel?.bannerId?:""
                 )
 
-                categoryListener.onSectionItemClicked(applink ?: "")
+                categoryListener.onSectionItemClicked(applink?:"")
             }
         })
 

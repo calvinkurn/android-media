@@ -32,8 +32,8 @@ import com.tokopedia.home_component.R as home_componentR
 class BestSellerViewHolder(
     itemView: View,
     private val bestSellerListener: BestSellerListener,
-    private val recycledViewPool: RecycledViewPool? = null
-) : AbstractViewHolder<BestSellerDataModel>(itemView),
+    private val recycledViewPool: RecycledViewPool? = null,
+): AbstractViewHolder<BestSellerDataModel>(itemView),
     BestSellerChipListener {
 
     private var binding: HomeComponentBestSellerBinding? by viewBinding()
@@ -41,7 +41,7 @@ class BestSellerViewHolder(
     private val chipsLayoutManager = LinearLayoutManager(
         itemView.context,
         RecyclerView.HORIZONTAL,
-        false
+        false,
     )
     private val chipsAdapter = BestSellerChipAdapter(this)
 
@@ -53,11 +53,8 @@ class BestSellerViewHolder(
     }
 
     override fun bind(element: BestSellerDataModel) {
-        if (allGroupHasNoProducts(element)) {
-            binding?.root?.hide()
-        } else {
-            bindBestSeller(element)
-        }
+        if (allGroupHasNoProducts(element)) binding?.root?.hide()
+        else bindBestSeller(element)
     }
 
     private fun allGroupHasNoProducts(element: BestSellerDataModel) =
@@ -74,7 +71,7 @@ class BestSellerViewHolder(
         setChannelDivider(element)
     }
 
-    private fun initHeader(element: BestSellerDataModel) {
+    private fun initHeader(element: BestSellerDataModel){
         binding?.homeComponentHeaderBestSellerView?.setChannel(
             element.channelModel,
             object : HeaderListener {
@@ -113,9 +110,9 @@ class BestSellerViewHolder(
             model = CarouselPagingModel(
                 productCardGroupList = productCardGroupList(element),
                 currentGroupPosition = element.activeChipPosition,
-                currentPageInGroup = element.currentPageInGroup
+                currentPageInGroup = element.currentPageInGroup,
             ),
-            listener = object : CarouselPagingProductCardView.CarouselPagingListener {
+            listener = object: CarouselPagingProductCardView.CarouselPagingListener {
                 override fun onGroupChanged(selectedGroupModel: CarouselPagingSelectedGroupModel) {
                     onGroupChanged(element, selectedGroupModel)
                 }
@@ -128,7 +125,7 @@ class BestSellerViewHolder(
                     onItemClick(element, groupModel, itemPosition)
                 }
             },
-            recycledViewPool = recycledViewPool
+            recycledViewPool = recycledViewPool,
         )
     }
 
@@ -136,7 +133,7 @@ class BestSellerViewHolder(
         element.chipProductList.map {
             CarouselPagingGroupProductModel(
                 group = carouselPagingGroupModel(it),
-                productItemList = it.productModelList.map(BestSellerProductDataModel::productCardModel)
+                productItemList = it.productModelList.map(BestSellerProductDataModel::productCardModel),
             )
         }
 
@@ -160,14 +157,14 @@ class BestSellerViewHolder(
             bestSellerDataModel,
             bindingAdapterPosition,
             chipPosition,
-            selectedGroupModel.direction
+            selectedGroupModel.direction,
         )
     }
 
     private fun onItemImpress(
         element: BestSellerDataModel,
         groupModel: CarouselPagingGroupModel,
-        itemPosition: Int
+        itemPosition: Int,
     ) {
         val chipProductDataModel = element.chipProductList.find {
             it.chip.title == groupModel.title
@@ -234,7 +231,7 @@ class BestSellerViewHolder(
 
         binding?.homeComponentBestSellerCarouselPaging?.scrollToGroup(
             carouselPagingGroupModel(activatedChipProduct),
-            CarouselPagingModel.FIRST_PAGE_IN_GROUP
+            CarouselPagingModel.FIRST_PAGE_IN_GROUP,
         )
 
         bestSellerListener.onBestSellerFilterClick(activatedChipProduct, bestSellerDataModel)
@@ -260,7 +257,7 @@ class BestSellerViewHolder(
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerBestSellerHeader,
-            dividerBottom = binding?.homeComponentDividerBestSellerFooter
+            dividerBottom = binding?.homeComponentDividerBestSellerFooter,
         )
     }
 
