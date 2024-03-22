@@ -2,6 +2,11 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.SourcePageType.PRODUCT_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
@@ -15,6 +20,9 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
@@ -26,7 +34,8 @@ data class InspirationCarouselDataView(
     val layout: String = "",
     val trackingOption: Int = 0,
     val options: List<Option> = listOf(),
-) : Visitable<ProductListTypeFactory> {
+    val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+) : Visitable<ProductListTypeFactory>, ByteIORanking by byteIORanking {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
@@ -45,6 +54,15 @@ data class InspirationCarouselDataView(
     fun isCarouselSeamlessLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
 
     fun isSeamlessProductLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+
+    fun isCouponLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_CARD_COUPON
+
+    override fun setRank(value: Int) {
+        byteIORanking.setRank(value)
+        options.forEach {
+            it.setRank(value)
+        }
+    }
 
     @Suppress("LongParameterList")
     data class Option(
@@ -73,7 +91,11 @@ data class InspirationCarouselDataView(
         val bundle: Bundle = Bundle(),
         val keyword: String = "",
         val externalReference: String = "",
-    ): Visitable<InspirationCarouselOptionTypeFactory> {
+        val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
+        val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+    ) : Visitable<InspirationCarouselOptionTypeFactory>, ByteIORanking by byteIORanking {
+
+        val byteIOImpressHolder = ImpressHolder()
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
@@ -85,16 +107,48 @@ data class InspirationCarouselDataView(
 
         fun getBannerDataLayer(keyword: String): Any {
             return DataLayer.mapOf(
-                "creative", carouselTitle,
-                "id", "0",
-                "name", "/search - $keyword",
-                "position", position
+                "creative",
+                carouselTitle,
+                "id",
+                "0",
+                "name",
+                "/search - $keyword",
+                "position",
+                position
             )
         }
 
         fun hasProducts() = product.isNotEmpty()
 
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
+
+        fun asByteIOSearchResult() =
+            AppLogSearch.SearchResult(
+                imprId = byteIOTrackingData.imprId,
+                searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                searchResultId = getRank().toString(),
+                listItemId = null,
+                itemRank = null,
+                listResultType = null,
+                productID = "",
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = getRank(),
+                isAd = false,
+                isFirstPage = byteIOTrackingData.isFirstPage,
+                shopId = null,
+                aladdinButtonType = null,
+            )
+
+        override fun setRank(value: Int) {
+            byteIORanking.setRank(value)
+
+            product.forEachIndexed { index, product ->
+                product.setRank(value)
+                product.setItemRank(index)
+            }
+        }
 
         @Suppress("LongParameterList")
         data class Product(
@@ -129,9 +183,9 @@ data class InspirationCarouselDataView(
             val componentId: String = "",
             val inspirationCarouselTitle: String = "",
             val dimension90: String = "",
-            val customVideoURL : String = "",
+            val customVideoURL: String = "",
             val externalReference: String = "",
-            val discount : String = "",
+            val discount: String = "",
             val label: String = "",
             val bundleId: String = "",
             val parentId: String = "",
@@ -140,18 +194,23 @@ data class InspirationCarouselDataView(
             val stockBarDataView: StockBarDataView = StockBarDataView(),
             val warehouseID: String = "",
             val categoryID: String = "",
-        ): ImpressHolder(),
-            Visitable<InspirationCarouselOptionTypeFactory> {
+            val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
+            val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+        ) : ImpressHolder(),
+            Visitable<InspirationCarouselOptionTypeFactory>,
+            ByteIORanking by byteIORanking {
 
             companion object {
                 private const val ZERO_PARENT_ID = "0"
             }
 
+            val byteIOImpressHolder = ImpressHolder()
+
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)
             }
 
-            fun willShowSalesAndRating(): Boolean{
+            fun willShowSalesAndRating(): Boolean {
                 return ratingAverage.isNotEmpty() && getLabelIntegrity() != null
             }
 
@@ -168,15 +227,17 @@ data class InspirationCarouselDataView(
             }
 
             fun shouldOpenVariantBottomSheet(): Boolean =
-                parentId != "" && parentId != ZERO_PARENT_ID
+                hasParentId()
+
+            private fun hasParentId() = parentId != "" && parentId != ZERO_PARENT_ID
 
             fun getInspirationCarouselInfoProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
-                        "id", id,
-                        "name", "/search - carousel",
-                        "creative", name,
-                        "position", optionPosition,
-                        "category", "none / other"
+                    "id", id,
+                    "name", "/search - carousel",
+                    "creative", name,
+                    "position", optionPosition,
+                    "category", "none / other"
                 )
             }
 
@@ -196,14 +257,14 @@ data class InspirationCarouselDataView(
                     "dimension90", dimension90,
                     "dimension131", externalReference.orNone(),
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", isFulfillment(),
+                    "dimension58", isFulfillment()
                 )
             }
 
             fun asUnificationAtcObjectDataLayer(
                 filterSortParams: String,
                 cartId: String,
-                quantity: Int,
+                quantity: Int
             ): Any {
                 return DataLayer.mapOf(
                     "item_name", name,
@@ -225,13 +286,15 @@ data class InspirationCarouselDataView(
                     "shop_type", "none / other",
                     "variant", "none / other",
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", isFulfillment(),
+                    "dimension58", isFulfillment()
                 )
             }
 
             private fun isFulfillment() =
-                (hasFulfillment(labelGroupDataList)
-                    || inspirationCarouselType == TYPE_DILAYANI_TOKOPEDIA).toString()
+                (
+                    hasFulfillment(labelGroupDataList) ||
+                        inspirationCarouselType == TYPE_DILAYANI_TOKOPEDIA
+                    ).toString()
 
             fun asSearchComponentTracking(keyword: String): SearchComponentTracking =
                 searchComponentTracking(
@@ -243,6 +306,46 @@ data class InspirationCarouselDataView(
                     applink = applink,
                     dimension90 = dimension90
                 )
+
+            fun asByteIOSearchResult(aladdinButtonType: String?) = AppLogSearch.SearchResult(
+                imprId = byteIOTrackingData.imprId,
+                searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                searchResultId = getRank().toString(),
+                listItemId = getByteIOProductId(),
+                itemRank = getItemRank(),
+                listResultType = AppLogSearch.ParamValue.GOODS,
+                productID = getByteIOProductId(),
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = getRank(),
+                isAd = isOrganicAds,
+                isFirstPage = byteIOTrackingData.isFirstPage,
+                shopId = shopId,
+                aladdinButtonType = aladdinButtonType,
+            )
+
+            private fun getByteIOProductId() =
+                if (hasParentId()) parentId
+                else id
+
+            fun asByteIOProduct() = AppLogSearch.Product(
+                entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
+                isAd = isOrganicAds,
+                productID = getByteIOProductId(),
+                searchID = byteIOTrackingData.searchId,
+                requestID = byteIOTrackingData.imprId,
+                searchResultID = getRank().toString(),
+                listItemId = getByteIOProductId(),
+                itemRank = getItemRank(),
+                listResultType = AppLogSearch.ParamValue.GOODS,
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = getRank(),
+                shopID = null,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                sourcePageType = if (customVideoURL.isBlank()) PRODUCT_CARD else VIDEO,
+            )
         }
     }
 
@@ -254,7 +357,7 @@ data class InspirationCarouselDataView(
         val price: Long = 0,
         val originalPrice: String = "",
         val discount: String = "",
-        val discountPercentage: Int = 0,
+        val discountPercentage: Int = 0
     ) {
         companion object {
             fun create(option: SearchProductModel.InspirationCarouselOption): Bundle {
@@ -264,14 +367,14 @@ data class InspirationCarouselDataView(
                     option.bundle.price,
                     option.bundle.originalPrice,
                     option.bundle.discount,
-                    option.bundle.discountPercentage,
+                    option.bundle.discountPercentage
                 )
             }
         }
 
         data class Shop(
             val name: String = "",
-            val url: String = "",
+            val url: String = ""
         ) {
             companion object {
                 fun create(shop: SearchProductModel.InspirationCarouselBundle.Shop): Shop {
@@ -281,5 +384,3 @@ data class InspirationCarouselDataView(
         }
     }
 }
-
-

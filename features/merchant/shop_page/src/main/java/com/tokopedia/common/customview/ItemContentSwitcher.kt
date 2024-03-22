@@ -67,15 +67,15 @@ class ItemContentSwitcher : AppCompatTextView {
             setStyle(
                 colorPallete,
                 ColorPallete.ColorType.WHITE,
-                unifycomponentsR.color.labelunify_dark_green_background,
-                unifycomponentsR.color.labelunify_dark_time_general_text
+                shopR.color.dms_labelunify_dark_green_background,
+                shopR.color.dms_labelunify_dark_time_general_text
             )
         } else {
             setStyle(
                 colorPallete,
                 ColorPallete.ColorType.DARK_GREY,
                 0,
-                unifycomponentsR.color.labelunify_light_grey_text
+                shopR.color.dms_labelunify_light_grey_text
             )
         }
     }

@@ -2,7 +2,6 @@ package com.tokopedia.productcard.reimagine
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toDp
@@ -17,8 +16,8 @@ import com.tokopedia.productcard.utils.safeParseColor
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ProductCardStockInfo(view: View) {
 
@@ -61,13 +60,14 @@ internal class ProductCardStockInfo(view: View) {
                 icon = null,
                 offsetY = 0f,
                 width = ProgressBarUnify.SIZE_MEDIUM,
-                height = ProgressBarUnify.SIZE_MEDIUM,
+                height = ProgressBarUnify.SIZE_MEDIUM
             )
             progressBarStock.translationY = 0f
         }
 
         val color = ContextCompat.getColor(context, progressBarColor(stockInfo))
         progressBarStock.progressBarColor = intArrayOf(color, color)
+        progressBarStock.trackDrawable.setColor(ContextCompat.getColor(context, productcardR.color.dms_product_card_bg_stock_info_stockbar_track_color))
 
         progressBarStock.setValue(stockInfo?.percentage.orZero(), false)
     }
@@ -85,12 +85,15 @@ internal class ProductCardStockInfo(view: View) {
         if (textViewStockLabel == null) return
 
         textViewStockLabel.text = labelText(stockInfo)
-        textViewStockLabel.setTextColor(labelColor(stockInfo))
+        textViewStockLabel.setTextColor(labelColor())
     }
 
     private fun labelText(stockInfo: StockInfo?): String =
-        if (stockInfo?.label?.isNotBlank() == true) stockInfo.label
-        else WORDING_TERSEDIA
+        if (stockInfo?.label?.isNotBlank() == true) {
+            stockInfo.label
+        } else {
+            WORDING_TERSEDIA
+        }
 
     private fun labelColor(stockInfo: StockInfo?) = when {
         stockInfo?.labelColor?.isNotEmpty() == true ->
@@ -100,5 +103,10 @@ internal class ProductCardStockInfo(view: View) {
             )
         else ->
             ContextCompat.getColor(context, productcardR.color.dms_stock_info_label_color)
+    }
+    private fun labelColor() = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
+
+    companion object {
+        private const val PROGRESS_BAR_RADIUS_CLIP = 16f
     }
 }

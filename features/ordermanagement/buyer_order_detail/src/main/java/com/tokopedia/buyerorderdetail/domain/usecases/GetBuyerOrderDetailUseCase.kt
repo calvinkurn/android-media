@@ -275,13 +275,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       }
                       addon_summary {
                         addons {
-                          order_id
                           id
-                          level
                           name
                           price_str
-                          subtotal_price
-                          subtotal_price_str
                           quantity
                           type
                           image_url
@@ -297,10 +293,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           }
                           create_time
                         }
-                        total
-                        total_price
                         total_price_str
-                        total_quantity
                       }
                     }
                   }
@@ -338,13 +331,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     }
                     addon_summary {
                       addons {
-                        order_id
                         id
-                        level
                         name
                         price_str
-                        subtotal_price
-                        subtotal_price_str
                         quantity
                         type
                         image_url
@@ -360,10 +349,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         }
                         create_time
                       }
-                      total
-                      total_price
                       total_price_str
-                      total_quantity
                     }
                   }
                   partial_fulfillment {
@@ -412,13 +398,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         }
                         addon_summary {
                           addons {
-                            order_id
                             id
-                            level
                             name
                             price_str
-                            subtotal_price
-                            subtotal_price_str
                             quantity
                             type
                             image_url
@@ -434,10 +416,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                             }
                             create_time
                           }
-                          total
-                          total_price
                           total_price_str
-                          total_quantity
                         }
                       }
                     }
@@ -497,7 +476,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           id
                           name
                           price_str
-                          subtotal_price_str
                           quantity
                           type
                           image_url
@@ -537,14 +515,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   icon_url
                   order_level {
                     addons {
-                      order_id
                       id
-                      level
                       name
-                      price
                       price_str
-                      subtotal_price
-                      subtotal_price_str
                       quantity
                       type
                       image_url
@@ -559,13 +532,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         }
                       }
                     }
-                    total
-                    total_price
                     total_price_str
-                    total_quantity
                   }
                 }
-                
                 additional_data {
                   group_order_data {
                     tx_id

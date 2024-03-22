@@ -4,4 +4,6 @@ interface IAutomateCouponView {
     fun setModel(couponModel: AutomateCouponModel)
 
     fun setState(state: ButtonState)
+
+    fun onClick(action: () -> Unit)
 }

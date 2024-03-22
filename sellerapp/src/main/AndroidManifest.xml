@@ -1059,13 +1059,13 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:scheme="http" />
-                <data android:host="tokopedia.com" />
-                <data android:host="*.tokopedia.com" />
-                <data android:pathPattern="/topads" />
-                <data android:pathPattern="/topads/*" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="ta.tokopedia.com"
+                    android:pathPattern="/v2/manage/*" />
             </intent-filter>
         </activity>
 

@@ -20,10 +20,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SearchResultFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
-        MacroDevOps.setupLoginFlow(
-            email = "pbs-hidayatullah+prod7@tokopedia.com",
-            password = "Prod1234"
-        )
+//        MacroDevOps.setupLoginFlow(
+//            "pbs-hidayatullah+prod7@tokopedia.com",
+//            "Prod1234"
+//        )
         /**
          * Open search then kill to fetch rollence
          */

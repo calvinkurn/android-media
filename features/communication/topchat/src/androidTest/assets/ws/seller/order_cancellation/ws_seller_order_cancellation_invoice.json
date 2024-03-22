@@ -1,0 +1,52 @@
+{
+  "code":103,
+  "data":{
+    "msg_id":4018211,
+    "from":"bcdua",
+    "from_uid":9075738,
+    "from_user_name":"bcdua",
+    "from_role":"User",
+    "thumbnail":"https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/cf438cd7-a9f8-435f-910d-726100b587db.jpg",
+    "reminder_ticker":null,
+    "is_opposite":true,
+    "to_uid":9075737,
+    "message":{
+      "censored_reply":"\u003ca rel=\"nofollow\" target=\"_blank\" href=\"http://staging.tokopedia.com/invoice?id=INV/20240222/MPL/20929369\u0026source=som\"\u003ehttp://staging.tokopedia.com/invoice?id=INV/20240222/MPL/20929369\u0026source=som\u003c/a\u003e",
+      "original_reply":"\u003ca rel=\"nofollow\" target=\"_blank\" href=\"http://staging.tokopedia.com/invoice?id=INV/20240222/MPL/20929369\u0026source=som\"\u003ehttp://staging.tokopedia.com/invoice?id=INV/20240222/MPL/20929369\u0026source=som\u003c/a\u003e",
+      "timestamp":"2024-02-22T20:44:59.239204026+07:00",
+      "timestamp_fmt":"22 February 2024, 20:44 WIB",
+      "timestamp_unix":1708609499239,
+      "timestamp_unix_nano":1708609499239204000
+    },
+    "start_time":"2024-02-22 20:44:59.239204026 +0700 WIB m=+34516.444904010",
+    "attachment_id":742099,
+    "attachment":{
+      "attributes":{
+        "invoice_link":{
+          "attributes":{
+            "code":"INV/20240222/MPL/20929369",
+            "color":"green",
+            "href_url":"http://staging.tokopedia.com/invoice?id=INV/20240222/MPL/20929369\u0026source=som",
+            "id":167963320,
+            "image_url":"https://images.tokopedia.net/img/cache/100-square/VqbcmM/2024/1/2/871c10e5-1180-4c50-8dc1-44010eb27aeb.jpg",
+            "status":"Pesanan Diproses",
+            "status_id":400,
+            "total_amount":"Rp1.000"
+          },
+          "type":""
+        }
+      },
+      "fallback_attachment":{
+        "html":"\u003cdiv\u003ehttp://staging.tokopedia.com/invoice?id=INV/20240222/MPL/20929369\u0026source=som\u003c/div\u003e",
+        "message":"http://staging.tokopedia.com/invoice?id=INV/20240222/MPL/20929369\u0026source=som"
+      },
+      "id":742099,
+      "type":7
+    },
+    "show_rating":false,
+    "rating_status":0,
+    "client_connect_time":"0001-01-01T00:00:00Z",
+    "source":"widget_cancellation",
+    "label":"Dikirim otomatis oleh sistem"
+  }
+}

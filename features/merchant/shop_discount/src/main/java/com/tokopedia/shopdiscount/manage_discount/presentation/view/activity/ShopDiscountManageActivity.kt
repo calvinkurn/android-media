@@ -16,19 +16,28 @@ class ShopDiscountManageActivity : BaseSimpleActivity() {
     private var status: Int = -1
     private var mode: String = ""
     private var selectedProductVariantId: String = ""
+    private var optOutSuccessMessage: String = ""
 
     companion object {
         const val REQUEST_ID_PARAM = "REQUEST_ID_PARAM"
         const val STATUS_PARAM = "STATUS_PARAM"
         const val MODE_PARAM = "MODE_PARAM"
         const val SELECTED_PRODUCT_VARIANT_ID_PARAM = "SELECTED_PRODUCT_VARIANT_ID_PARAM"
+        const val OPT_OUT_SUCCESS_MESSAGE_PARAM = "OPT_OUT_SUCCESS_MESSAGE_PARAM"
 
         @JvmStatic
-        fun start(context: Context, requestId : String, discountStatus : Int, mode : String) {
+        fun start(
+            context: Context,
+            requestId: String,
+            discountStatus: Int,
+            mode: String,
+            optOutSuccessMessage: String = ""
+        ) {
             val starter = Intent(context, ShopDiscountManageActivity::class.java)
                 .putExtra(REQUEST_ID_PARAM, requestId)
                 .putExtra(STATUS_PARAM, discountStatus)
                 .putExtra(MODE_PARAM, mode)
+                .putExtra(OPT_OUT_SUCCESS_MESSAGE_PARAM, optOutSuccessMessage)
             context.startActivity(starter)
         }
     }
@@ -51,7 +60,8 @@ class ShopDiscountManageActivity : BaseSimpleActivity() {
         requestId,
         status,
         mode,
-        selectedProductVariantId
+        selectedProductVariantId,
+        optOutSuccessMessage
     )
 
     override fun getParentViewResourceID(): Int {
@@ -64,6 +74,7 @@ class ShopDiscountManageActivity : BaseSimpleActivity() {
             status = it.getInt(STATUS_PARAM).orZero()
             mode = it.getString(MODE_PARAM).orEmpty()
             selectedProductVariantId = it.getString(SELECTED_PRODUCT_VARIANT_ID_PARAM).orEmpty()
+            optOutSuccessMessage = it.getString(OPT_OUT_SUCCESS_MESSAGE_PARAM).orEmpty()
         }
     }
 }

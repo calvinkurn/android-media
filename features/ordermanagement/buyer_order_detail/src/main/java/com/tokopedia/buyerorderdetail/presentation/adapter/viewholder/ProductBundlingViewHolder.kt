@@ -13,7 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAd
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -21,7 +21,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingViewHolder(
     itemView: View?,
-    addOnListener: BmgmAddOnViewHolder.Listener,
+    addOnListener: AddOnViewHolder.Listener,
     private val listener: Listener,
     private val navigator: BuyerOrderDetailNavigator
 ) : BaseToasterViewHolder<ProductListUiModel.ProductBundlingUiModel>(itemView),

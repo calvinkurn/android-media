@@ -7,8 +7,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel.ContentStoriesDetails
-import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
-import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel.ContentStoriesGroups
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel.ContentStoriesGroups
 import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetail
@@ -21,6 +21,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Video
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItem
+import com.tokopedia.stories.view.model.StoriesType
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,7 +63,9 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         )
                     } else {
                         StoriesDetail()
-                    }
+                    },
+                    author = buildAuthor(group.author),
+                    type = StoriesType.get(group.type)
                 )
             }
         )
@@ -102,6 +105,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     isContentLoaded = false,
                     author = buildAuthor(stories.author),
                     category = StoriesDetailItem.StoryCategory.getByValue(stories.category),
+                    categoryName = stories.categoryName,
                     publishedAt = stories.publishedAt,
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(
@@ -157,6 +161,28 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
         }
 
     private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
+        val type = AuthorType.convertValue(author.type)
+        val name = MethodChecker.fromHtml(author.name).toString()
+
+        return if (type == AuthorType.User) {
+            StoryAuthor.Buyer(
+                userName = name,
+                userId = author.id,
+                avatarUrl = author.thumbnailURL,
+                appLink = author.appLink
+            )
+        } else {
+            StoryAuthor.Shop(
+                shopName = name,
+                shopId = author.id,
+                avatarUrl = author.thumbnailURL,
+                badgeUrl = author.badgeURL,
+                appLink = author.appLink
+            )
+        }
+    }
+
+    private fun buildAuthor(author: StoriesGroupsResponseModel.Author): StoryAuthor {
         val type = AuthorType.convertValue(author.type)
         val name = MethodChecker.fromHtml(author.name).toString()
 

@@ -73,7 +73,7 @@
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:background="@drawable/bg_button_disabled"
+        android:background="@color/Unify_NN200"
         android:enabled="false"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"

@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.AutocompleteSearchBarViewBinding
-import com.tokopedia.autocompletecomponent.util.animation.AnimatedDrawableLoopUtil
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.microinteraction.autocomplete.AutoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -78,10 +77,8 @@ class SearchBarView constructor(
     private var binding: AutocompleteSearchBarViewBinding? = null
 
     private var isMpsEnabled: Boolean = false
-    private var isMpsAnimationEnabled: Boolean = false
 
     private var viewListener: SearchBarViewListener? = null
-    private val animatedDrawableLoopUtil = AnimatedDrawableLoopUtil.getInstance()
 
     val addButton : ImageUnify?
         get() = binding?.autocompleteAddButton
@@ -155,7 +152,6 @@ class SearchBarView constructor(
         ).apply {
             try {
                 isMpsEnabled = getBoolean(R.styleable.SearchBarView_enable_mps, false)
-                isMpsAnimationEnabled = getBoolean(R.styleable.SearchBarView_enable_mps_animation, false)
             } finally {
                 recycle()
             }
@@ -304,15 +300,6 @@ class SearchBarView constructor(
         }
     }
 
-    private fun ImageUnify.startAnimationDrawable() {
-        if (!isMpsAnimationEnabled) return
-        animatedDrawableLoopUtil.startLoopAnimation(drawable)
-    }
-
-    private fun ImageUnify.stopAnimationDrawable() {
-        animatedDrawableLoopUtil.stopLoopAnimation(drawable)
-    }
-
     fun setMPSEnabled(isMPSEnabled: Boolean) {
         this.isMpsEnabled = isMPSEnabled
     }
@@ -361,22 +348,6 @@ class SearchBarView constructor(
             setText(searchBarKeyword.keyword)
             setSelection(searchBarKeyword.keyword.length)
         }
-    }
-
-    fun setMPSAnimationEnabled(isMPSAnimationEnabled: Boolean) {
-        this.isMpsAnimationEnabled = isMPSAnimationEnabled
-    }
-
-    fun startMpsAnimation() {
-        val binding = binding ?: return
-        if(isMpsEnabled) {
-            binding.autocompleteAddButton.startAnimationDrawable()
-        }
-    }
-
-    fun stopMpsAnimation() {
-        val binding = binding ?: return
-        binding.autocompleteAddButton.stopAnimationDrawable()
     }
 
     fun setViewListener(listener: SearchBarViewListener?) {
