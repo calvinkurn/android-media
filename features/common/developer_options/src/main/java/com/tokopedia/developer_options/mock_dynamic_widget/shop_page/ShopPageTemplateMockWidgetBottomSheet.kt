@@ -7,23 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifycomponents.toDp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidgetAdapter.ShopPageMockWidgetViewHolder.Listener, CoroutineScope {
+class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidgetAdapter.ShopPageMockWidgetViewHolder.Listener, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
+    private var onAddSelectedWidget: (List<ShopPageMockWidgetModel>) -> Unit = {}
     private val childLayoutRes = R.layout.shop_page_template_widget_bottom_sheet_layout
-    private val adapter by lazy {
+    private val adapterListShopWidget by lazy {
+        ShopPageMockWidgetAdapter(this)
+    }
+
+    private val adapterSelectedListShopWidget by lazy {
         ShopPageMockWidgetAdapter(this)
     }
 
@@ -35,11 +40,9 @@ class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidget
 
     private fun setDefaultParams() {
         setTitle(TITLE)
-        isDragable = true
         isHideable = true
         showCloseIcon = true
         showHeader = true
-        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
     private fun initBottomSheet() {
@@ -53,16 +56,37 @@ class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidget
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configTextFieldSearchWidgetName()
-        configShopPageMockWidgetOption()
         configToggleFestivity()
+        configListShopWidget()
+        configSelectedShopWidget()
+        configButtonAddSelectedShopWidget()
+        configButtonClearSelectedShopWidget()
+    }
+
+    private fun configButtonAddSelectedShopWidget() {
+        view?.findViewById<UnifyButton>(R.id.btn_add_selected_shop_widget)?.setOnClickListener {
+            val listSelectedData = adapterSelectedListShopWidget.getData()
+            if (listSelectedData.isEmpty()) {
+                Toaster.build(it.rootView, "Selected shop widget is empty").show()
+            } else {
+                onAddSelectedWidget.invoke(listSelectedData)
+                dismiss()
+            }
+        }
+    }
+
+    private fun configButtonClearSelectedShopWidget() {
+        view?.findViewById<UnifyButton>(R.id.btn_clear_selected_shop_widget)?.setOnClickListener {
+            adapterSelectedListShopWidget.clear()
+        }
     }
 
     private fun configTextFieldSearchWidgetName() {
         view?.findViewById<TextFieldUnify>(R.id.text_field_search_widget_name)?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 s?.toString()?.let {
-                    adapter.filterWidgetByName(it)
-                    val rv = view?.findViewById<RecyclerView>(R.id.rv_mock_shop_widget_option)
+                    adapterListShopWidget.filterWidgetByName(it)
+                    val rv = view?.findViewById<RecyclerView>(R.id.rv_list_mock_shop_widget)
                     rv?.scrollToPosition(0)
                 }
             }
@@ -87,18 +111,24 @@ class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidget
 
     private fun configToggleFestivity() {
         view?.findViewById<CheckboxUnify>(R.id.toggle_is_festivity)?.setOnCheckedChangeListener { _, isChecked ->
-            adapter.updateIsFestivity(isChecked)
+            adapterListShopWidget.updateIsFestivity(isChecked)
         }
     }
 
-    private fun configShopPageMockWidgetOption() {
+    private fun configListShopWidget() {
         launch {
             val listShopPageMockWidgetOption = generateTemplateShopWidgetOption()
-            val rv = view?.findViewById<RecyclerView>(R.id.rv_mock_shop_widget_option)
-            rv?.adapter = adapter
-            adapter.setListShopPageMockWidget(listShopPageMockWidgetOption)
+            val rv = view?.findViewById<RecyclerView>(R.id.rv_list_mock_shop_widget)
+            rv?.adapter = adapterListShopWidget
+            adapterListShopWidget.setListShopPageMockWidget(listShopPageMockWidgetOption)
         }
     }
+
+    private fun configSelectedShopWidget() {
+        val rv = view?.findViewById<RecyclerView>(R.id.rv_selected_mock_shop_widget)
+        rv?.adapter = adapterSelectedListShopWidget
+    }
+
 
     private fun generateTemplateShopWidgetOption(): List<ShopPageMockWidgetModel> {
         return context?.resources?.let {
@@ -107,22 +137,19 @@ class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidget
         } ?: listOf()
     }
 
-    fun setOnOptionSelected(onOptionSelected: (ShopPageMockWidgetModel) -> Unit) {
-        this.onOptionSelected = onOptionSelected
-    }
-
-    private var onOptionSelected: (ShopPageMockWidgetModel) -> Unit = {}
-
     companion object {
         const val TITLE = "Choose Widget Name From Template"
-        fun createInstance(): ShopPageTemplateWidgetBottomSheet {
-            return ShopPageTemplateWidgetBottomSheet()
+        fun createInstance(): ShopPageTemplateMockWidgetBottomSheet {
+            return ShopPageTemplateMockWidgetBottomSheet()
         }
     }
 
     override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
-        onOptionSelected.invoke(shopPageMockWidgetModel)
-        dismiss()
+        adapterSelectedListShopWidget.addMockWidgetModel(shopPageMockWidgetModel)
+    }
+
+    fun setOnAddSelectedShopWidget(onAddSelectedWidget: (List<ShopPageMockWidgetModel>) -> Unit) {
+        this.onAddSelectedWidget = onAddSelectedWidget
     }
 
 }
