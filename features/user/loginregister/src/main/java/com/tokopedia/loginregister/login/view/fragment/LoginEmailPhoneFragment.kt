@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.login.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -104,6 +105,7 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.P
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
@@ -138,8 +140,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.sessioncommon.R as sessioncommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by nisie on 18/01/19.
@@ -205,6 +207,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var validateToken = ""
     private var isLoginAfterSq = false
     private var isReturnHomeWhenBackPressed = false
+    private var isSuccessRegisterPhone = false
     private var socmedBottomSheet: SocmedBottomSheet? = null
 
     private var currentEmail = ""
@@ -1061,6 +1064,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.getUserInfo()
     }
 
+    @SuppressLint("PII Data Exposure")
     override fun onSuccessLogin() {
         dismissLoadingLogin()
         activityShouldEnd = true
@@ -1073,18 +1077,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 setLoginSuccessSellerApp()
             } else {
                 getDefaultChosenAddress()
-                val bundle = Bundle()
-
-                if (isFromRegister) {
-                    bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
-                }
 
                 if (isReturnHomeWhenBackPressed) {
                     goToHome()
                 }
 
-                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-                it.finish()
+                if (isSuccessRegisterPhone) {
+                    goToExplicitPersonalize()
+                } else {
+                    finishResultOk()
+                }
             }
 
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
@@ -1108,6 +1110,24 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         refreshRolloutVariant()
         saveFirstInstallTime()
+    }
+
+    private fun finishResultOk() {
+        activity?.let {
+            val bundle = Bundle()
+
+            if (isFromRegister) {
+                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
+            }
+
+            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+            it.finish()
+        }
+    }
+
+    private fun goToExplicitPersonalize() {
+        val intent = RouteManager.getIntent(this.context, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+        this.startActivityForResult(intent, RegisterConstants.Request.REQUEST_EXPLICIT_PERSONALIZE)
     }
 
     private fun initTokoChatConnection() {
@@ -1528,6 +1548,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else if (requestCode == LoginConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 isFromRegister = true
+                isSuccessRegisterPhone = true
                 showLoading(true)
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
@@ -1610,7 +1631,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         activity?.finish()
                     }
                 }
-            } else {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_EXPLICIT_PERSONALIZE) {
+                finishResultOk()
+            } else{
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
