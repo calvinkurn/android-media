@@ -1,107 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_template_shop_widget"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/container_template_shop_widget"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_search_widget_name"
         android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        app:text_field_input_type="text"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Search widget name" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/toggle_is_festivity"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:orientation="vertical">
+        android:text="Festivity" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/text_field_search_widget_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:text_field_input_type="text"
-            app:text_field_label_static="true"
-            app:text_field_placeholder="Search widget name" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
-        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-            android:id="@+id/toggle_is_festivity"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_list_shop_widget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="List Shop Widget"
+            app:layout_constraintBottom_toTopOf="@id/rv_list_mock_shop_widget"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_mock_shop_widget"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
             android:layout_marginBottom="8dp"
-            android:text="Festivity" />
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/rv_selected_mock_shop_widget"
+            app:layout_constraintTop_toBottomOf="@id/text_list_shop_widget"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_selected_shop_widget"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:text="Selected Shop Widget"
+            app:layout_constraintLeft_toLeftOf="@id/rv_selected_mock_shop_widget"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_selected_mock_shop_widget"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginBottom="8dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rv_list_mock_shop_widget"
+            app:layout_constraintTop_toBottomOf="@id/text_selected_shop_widget"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="List Shop Widget"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_list_mock_shop_widget"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_marginBottom="8dp"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_add_selected_shop_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Add Selected Shop Widget"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:orientation="vertical">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Selected Shop Widget"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_selected_mock_shop_widget"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_marginBottom="8dp"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_add_selected_shop_widget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Add Selected Shop Widget"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="main" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_clear_selected_shop_widget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Clear Selected Shop Widget"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost" />
-    </LinearLayout>
-
-</ScrollView>
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_clear_selected_shop_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Clear Selected Shop Widget"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+</LinearLayout>
