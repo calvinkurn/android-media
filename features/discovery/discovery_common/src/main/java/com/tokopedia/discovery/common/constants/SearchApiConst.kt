@@ -106,6 +106,7 @@ class SearchApiConst {
         const val POST_ATC_CAROUSEL_TYPE = "post_atc"
         const val L_NAME = "l_name"
         const val SRE = "sre"
+        const val ENTER_METHOD = "enter_method"
         const val USECASE = "usecase"
         const val COUNT_PRODUCT = "count_product"
 

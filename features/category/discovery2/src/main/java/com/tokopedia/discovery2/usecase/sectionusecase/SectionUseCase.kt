@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.analytics.TrackingMapper.setAppLog
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -12,6 +13,7 @@ import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -47,6 +49,9 @@ class SectionUseCase @Inject constructor(
                     comp.pageEndPoint = component.pageEndPoint
                     comp.pagePath = component.pagePath
                     comp.tabPosition = it.tabPosition
+                    comp.data.apply {
+                        setAppLog(comp.compAdditionalInfo?.tracker, comp.getSource())
+                    }
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
@@ -276,7 +281,9 @@ class SectionUseCase @Inject constructor(
                 }
             }
         }
-        queryParameterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
+        if (ProductCardExperiment.isReimagine()) {
+            queryParameterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
+        }
         return Utils.getQueryString(queryParameterMap)
     }
 

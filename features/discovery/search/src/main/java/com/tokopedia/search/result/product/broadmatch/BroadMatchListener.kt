@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.product.broadmatch
 
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 
 interface BroadMatchListener {

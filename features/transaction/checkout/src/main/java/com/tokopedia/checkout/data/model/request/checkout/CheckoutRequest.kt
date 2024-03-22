@@ -34,7 +34,9 @@ data class CheckoutRequest(
     @SerializedName("fingerprint_support")
     val fingerprintSupport: String,
     @SerializedName("fingerprint_publickey")
-    val fingerprintPublickey: String
+    val fingerprintPublickey: String,
+    @SerializedName("tracker")
+    val tracker: String
 )
 
 data class Carts(
