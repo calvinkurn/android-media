@@ -187,7 +187,7 @@ open class BuyerOrderDetailFragment :
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     protected var loaderBuyerOrderDetail: LoaderUnify? = null
 
-    private val handler by lazyThreadSafetyNone { Handler(Looper.getMainLooper()) }
+    private var brcCsatShowToasterRunnable: Runnable? = null
 
     private var binding by autoClearedNullable<FragmentBuyerOrderDetailBinding>()
 
@@ -365,6 +365,7 @@ open class BuyerOrderDetailFragment :
     override fun onDestroy() {
         super.onDestroy()
         coachMarkManager?.dismissCoachMark()
+        binding?.widgetBrcBom?.removeCallbacks(brcCsatShowToasterRunnable)
     }
 
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
@@ -1296,7 +1297,10 @@ open class BuyerOrderDetailFragment :
                     val isPreviouslyLoadingData = previousState is BuyerOrderDetailUiState.FullscreenLoading || previousState is BuyerOrderDetailUiState.HasData.PullRefreshLoading
                     previousState = newState
                     if (isCurrentlyShowingData && isPreviouslyLoadingData) {
-                        handler.postDelayed({ showCommonToaster(message) }, delay)
+                        brcCsatShowToasterRunnable = Runnable {
+                            showCommonToaster(message)
+                            brcCsatShowToasterRunnable = null
+                        }.also { binding?.widgetBrcBom?.postDelayed(it, delay) }
                         toasterShowed = true
                     }
                 }
