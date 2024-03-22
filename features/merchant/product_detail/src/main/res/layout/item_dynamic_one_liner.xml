@@ -32,8 +32,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/dynamic_one_liner_icon_right"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginEnd="16dp"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintBottom_toBottomOf="@id/dynamic_one_liner_title"
