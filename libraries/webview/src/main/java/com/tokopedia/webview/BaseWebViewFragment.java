@@ -83,6 +83,7 @@ import com.tokopedia.picker.common.MediaPicker;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.shareexperience.ui.ShareExConst;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -1041,7 +1042,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 Timber.w(e);
             }
         } else if (url.contains(SHARE_APPLINK)) {
-            return shareFromWebview(uri);
+            RouteManager.route(getContext(), ShareExConst.Applink.DUMMY_APPLINK);
+            return true;
         }
 
         if (url.contains(PARAM_EXTERNAL_TRUE)) {
@@ -1105,14 +1107,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
-    }
-
-    private boolean shareFromWebview(Uri uri) {
-        Context context = getContext();
-        if (context != null) {
-            ShareExperienceWebviewHandler.INSTANCE.init(context, uri);
-        }
-        return true;
     }
 
     private boolean handlePdfUri(Uri uri) {
@@ -1354,10 +1348,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         Intent intent = RouteManager.getIntent(getActivity(), applink);
         intent.putExtra(ApplinkConstInternalFintech.isV2, true);
         startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
-    }
-
-    private void shareFromWebview() {
-
     }
 
 }

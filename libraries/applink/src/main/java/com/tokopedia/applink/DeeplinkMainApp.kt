@@ -1029,6 +1029,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperLogistic.getRegisteredNavigationShareAddress(deeplink)
             }
         ),
+        "share" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
+            }
+        ),
         "sharing" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
