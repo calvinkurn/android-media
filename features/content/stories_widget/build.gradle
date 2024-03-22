@@ -8,6 +8,7 @@ android {
     testNamespace 'com.tokopedia.stories.widget.test'
     buildFeatures {
         viewBinding true
+        compose true
     }
 
     composeOptions {
@@ -54,6 +55,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.components
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
@@ -77,3 +79,4 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'
