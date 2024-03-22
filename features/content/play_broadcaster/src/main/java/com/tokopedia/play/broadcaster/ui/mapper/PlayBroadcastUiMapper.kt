@@ -135,7 +135,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdp),
             TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShop),
             TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCart),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.productSlotQuantity)
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.productSoldQuantity)
         )
     }
 
@@ -148,7 +148,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdp),
             TrafficMetricUiModel(TrafficMetricType.ProfileVisit, metrics.visitProfile),
             TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCart),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.productSlotQuantity)
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.productSoldQuantity)
         )
     }
 
