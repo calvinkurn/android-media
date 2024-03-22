@@ -5,12 +5,12 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/shop_page_dev_btn"
+        android:id="@+id/mock_dynamic_widget_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/shop_page_dev"
+        android:text="@string/mock_dynamic_widget"
         app:unifyButtonType="main"
         app:unifyButtonSize="medium" />
 

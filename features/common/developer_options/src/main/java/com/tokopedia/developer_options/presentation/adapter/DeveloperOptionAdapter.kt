@@ -113,7 +113,7 @@ class DeveloperOptionAdapter(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
-        ShopPageDevUiModel(listOf(KEYWORD_SHOP_PAGE_DEV)),
+        MockDynamicWidgetUiModel(listOf(KEYWORD_SHOP_PAGE_DEV)),
         SystemNonSystemAppsUiModel(
             listOf(
                 KEYWORD_SYSTEM_APPS,
