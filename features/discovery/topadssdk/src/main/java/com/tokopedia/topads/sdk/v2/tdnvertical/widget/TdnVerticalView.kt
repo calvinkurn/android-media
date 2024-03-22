@@ -149,14 +149,14 @@ class TdnVerticalView : BaseCustomView {
     }
 
     private fun setTdnModel(
-        topAdsImageViewModel: TopAdsImageUiModel,
+        topAdsImageUiModel: TopAdsImageUiModel,
         onTdnBannerClicked: (imageData: TopAdsImageUiModel) -> Unit,
         cornerRadius: Int,
         onLoadFailed: () -> Unit,
         onTdnBannerImpressed: (imageData: TopAdsImageUiModel) -> Unit
     ) {
         loadImage(
-            topAdsImageViewModel,
+            topAdsImageUiModel,
             onTdnBannerClicked = onTdnBannerClicked,
             cornerRadius = cornerRadius,
             onLoadFailed = onLoadFailed,
