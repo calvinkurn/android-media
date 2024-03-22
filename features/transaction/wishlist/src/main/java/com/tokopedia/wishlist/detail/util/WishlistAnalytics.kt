@@ -560,8 +560,8 @@ object WishlistAnalytics {
     }
 
     private fun convertBannerTopAdsToDataTrackingObject(
-            item: TopAdsImageUiModel,
-            position: Int
+        item: TopAdsImageUiModel,
+        position: Int
     ): Any {
         return DataLayer.mapOf(
             FIELD_PROMOTION_ID, item.bannerId ?: "0",
