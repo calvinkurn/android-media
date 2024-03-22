@@ -40,26 +40,28 @@ class TopAdsBannerViewHolder(
                     if (topAdsBannerList.isNotEmpty()) {
                         bindTopAdsBanner(topAdsBannerList.first())
                     }
+
                 }
             }
 
             override fun onError(t: Throwable) {
+
             }
+
         })
     }
 
     private fun bindTopAdsBanner(topAdsBanner: TopAdsImageUiModel) {
         topAdsImageView.loadImage(topAdsBanner)
         topAdsImageView.setTopAdsImageViewImpression(object :
-                TopAdsImageViewImpressionListener {
-                override fun onTopAdsImageViewImpression(viewUrl: String) {
-                    topAdsBannerListener?.onTopAdsViewImpression(
-                        topAdsBanner.bannerId
-                            ?: "",
-                        topAdsBanner.imageUrl ?: ""
-                    )
-                }
-            })
+            TopAdsImageViewImpressionListener {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
+                topAdsBannerListener?.onTopAdsViewImpression(
+                    topAdsBanner.bannerId
+                        ?: "", topAdsBanner.imageUrl ?: ""
+                )
+            }
+        })
         shimmerView.hide()
         topAdsImageView.show()
     }
