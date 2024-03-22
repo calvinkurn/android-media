@@ -12,13 +12,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoSimpleBinding
 import com.tokopedia.promousage.domain.entity.list.PromoSimpleItem
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import timber.log.Timber
 
 class PromoSimpleView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-): ConstraintLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var _binding: PromoUsageItemPromoSimpleBinding? = null
     private val binding get() = _binding!!
@@ -37,12 +38,22 @@ class PromoSimpleView @JvmOverloads constructor(
     }
 
     private fun bindCardBackground(promo: PromoSimpleItem) {
-        binding.promoIvBackgroundMiniCard.loadImageWithoutPlaceholder(promo.backgroundUrl)
+        val backgroundUrl = if (this.context.isDarkMode()) {
+            promo.backgroundUrlDark
+        } else {
+            promo.backgroundUrl
+        }
+        binding.promoIvBackgroundMiniCard.loadImageWithoutPlaceholder(backgroundUrl)
     }
 
     private fun bindIcon(promo: PromoSimpleItem, isFullWidth: Boolean) {
+        val iconUrl = if (this.context.isDarkMode()) {
+            promo.iconUrlDark
+        } else {
+            promo.iconUrl
+        }
         if (isFullWidth) {
-            binding.promoIvIconBigMiniCard.loadImage(promo.iconUrl)
+            binding.promoIvIconBigMiniCard.loadImage(iconUrl)
             binding.promoIvIconBigMiniCard.show()
             binding.promoIvIconSmallMiniCard.hide()
         } else {
@@ -59,8 +70,13 @@ class PromoSimpleView @JvmOverloads constructor(
     private fun bindTypeText(promo: PromoSimpleItem) {
         binding.promoTvTypeMiniCard.text = promo.type
         try {
+            val color = if (this.context.isDarkMode()) {
+                promo.typeColorDark
+            } else {
+                promo.typeColor
+            }
             binding.promoTvTypeMiniCard.setTextColor(
-                Color.parseColor(promo.typeColor)
+                Color.parseColor(color)
             )
         } catch (throwable: Throwable) {
             Timber.d(throwable)

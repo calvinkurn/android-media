@@ -8,7 +8,10 @@ data class PromoSimpleItem(
     val title: String,
     val type: String,
     val typeColor: String,
+    val typeColorDark: String,
     val desc: String,
     val backgroundUrl: String,
-    val iconUrl: String
-): Parcelable
+    val backgroundUrlDark: String,
+    val iconUrl: String,
+    val iconUrlDark: String
+) : Parcelable
