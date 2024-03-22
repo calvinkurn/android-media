@@ -12,6 +12,7 @@ import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
 import com.tokopedia.catalog.ui.model.ProductListConfig
 import com.tokopedia.catalog.ui.model.ShareProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
+import com.tokopedia.catalogcommon.R as catalogcommonR
 import com.tokopedia.catalog.util.ColorConst.COLOR_DEEP_AZURE
 import com.tokopedia.catalog.util.ColorConst.COLOR_OCEAN_BLUE
 import com.tokopedia.catalog.util.ColorConst.COLOR_WHITE
@@ -58,7 +59,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.catalog.R as catalogR
-import com.tokopedia.catalogcommon.R as catalogcommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -128,6 +128,8 @@ class CatalogDetailUiMapper @Inject constructor(
         }
         return CatalogDetailUiModel(
             widgets = widgets,
+            departmentId = remoteModel.basicInfo.departmentID.orEmpty(),
+            brand = remoteModel.basicInfo.brand.orEmpty(),
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
             priceCtaSellerOfferingProperties = mapToPriceCtaSellerOfferingProperties(remoteModel),
@@ -663,7 +665,12 @@ class CatalogDetailUiMapper @Inject constructor(
                     author = it.author,
                     videoLink = it.url,
                     textTitleColor = getTextColor(darkMode),
-                    textSubTitleColor = getTextColor(darkMode)
+                    textSubTitleColor = getTextColor(darkMode),
+                    backgroundColor = if (darkMode) {
+                        catalogcommonR.drawable.bg_rounded_border_dark
+                    } else {
+                        catalogcommonR.drawable.bg_rounded_border_light
+                    }
                 )
             }
         )

@@ -126,6 +126,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
     private fun `Then verify view interaction is correct for non Top Ads Product`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.sendGTMTrackingProductClick(productItemDataView, userId, any())
+            productListView.sendByteIOTrackingProductClick(productItemDataView)
             productListView.routeToProductDetail(productItemDataView, adapterPosition)
         }
     }
@@ -157,6 +158,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             )
 
             productListView.sendGTMTrackingProductClick(productItemDataView, userId, any())
+            productListView.sendByteIOTrackingProductClick(productItemDataView)
             productListView.routeToProductDetail(productItemDataView, adapterPosition)
         }
     }
@@ -182,6 +184,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
                 userId,
                 searchProductModel.searchProduct.relatedKeyword,
             )
+            productListView.sendByteIOTrackingProductClick(productItem)
         }
     }
 
@@ -207,6 +210,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
                 userId,
                 searchProductModel.searchProduct.data.suggestion.suggestion,
             )
+            productListView.sendByteIOTrackingProductClick(productItem)
         }
     }
 
@@ -232,6 +236,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
                 userId,
                 searchProductModel.searchProductV5.relatedKeyword,
             )
+            productListView.sendByteIOTrackingProductClick(productItem)
         }
     }
 
@@ -257,6 +262,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
                 userId,
                 searchProductModel.searchProductV5.data.suggestion.suggestion,
             )
+            productListView.sendByteIOTrackingProductClick(productItem)
         }
     }
 }

@@ -2,12 +2,12 @@ package com.tokopedia.play.broadcaster.analytic.ugc
 
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
-import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.content.common.producttag.view.uimodel.SearchHeaderUiModel
-import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
-import com.tokopedia.content.common.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SearchHeaderUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SearchParamUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ShopUiModel
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
 import com.tokopedia.play.broadcaster.analytic.currentSite
 import com.tokopedia.play.broadcaster.analytic.sessionIris

@@ -1,0 +1,10 @@
+{
+  "data": {
+    "catalogGetProductList": {
+      "header": {
+        "totalData": 2000
+      },
+      "products": []
+    }
+  }
+}
