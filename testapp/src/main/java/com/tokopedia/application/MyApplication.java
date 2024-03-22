@@ -8,7 +8,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
