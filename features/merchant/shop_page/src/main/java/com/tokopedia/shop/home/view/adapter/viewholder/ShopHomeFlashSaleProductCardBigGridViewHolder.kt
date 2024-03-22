@@ -99,6 +99,9 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
                 unifyprinciplesR.color.Unify_RN600
             )
         }
+        val shopBadges = uiModel.shopBadgeList.map {
+            ProductCardModel.ShopBadge(imageUrl = it.imageUrl, title = it.title)
+        }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
             hasThreeDots = false,
@@ -111,7 +114,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             isFestivity = fsUiModel?.isFestivity.orFalse()
         ).copy(
             stockBarLabelColor = stockBarLabelColor,
-            isInBackground = true
+            isInBackground = true,
+            shopBadgeList = shopBadges
         )
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
