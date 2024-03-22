@@ -114,15 +114,11 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
                     public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
                         PersistentCacheManager.instance.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
                                 linkerDefferedDeeplinkData.getPromoCode() : "");
-                        StringBuilder deeplink = new StringBuilder(linkerDefferedDeeplinkData.getDeeplink());
+                        Uri.Builder deeplink = Uri.parse(linkerDefferedDeeplinkData.getDeeplink()).buildUpon();
                         if (!TextUtils.isEmpty(deeplink.toString())) {
                             if (!additionalQueryParams.isEmpty()) {
                                 for (Map.Entry<String, String> set : additionalQueryParams.entrySet()) {
-                                    if (deeplink.toString().contains("?")) {
-                                        deeplink.append("&" + set.getKey() + "=" + set.getValue());
-                                    } else {
-                                        deeplink.append("?" + set.getKey() + "=" + set.getValue());
-                                    }
+                                    deeplink.appendQueryParameter(set.getKey(), set.getValue());
                                 }
                             }
                             navigateBranchDeeplink(deeplink.toString(), linkerDefferedDeeplinkData.getMinVersion());
