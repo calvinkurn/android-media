@@ -98,16 +98,25 @@ object AppUpdateManagerWrapper {
     fun onActivityResult(activity: Activity,
                          requestCode: Int,
                          resultCode: Int) {
-        if (requestCode == REQUEST_CODE_FLEXIBLE) {
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    Toast.makeText(activity, activity.getString(R.string.update_install_see_notif), Toast.LENGTH_LONG).show();
+        when (requestCode) {
+            REQUEST_CODE_FLEXIBLE -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        Toast.makeText(activity, activity.getString(R.string.update_install_see_notif), Toast.LENGTH_LONG).show();
+                    }
+                    else -> {
+                        setLastTimeShowFlexibleUpdate(activity)
+                    }
                 }
-                else -> {
-                    setLastTimeShowFlexibleUpdate(activity)
+                // in else, we do not store the timestamp yet. No requirement for it.
+            }
+            REQUEST_CODE_IMMEDIATE -> {
+                when (resultCode) {
+                    Activity.RESULT_CANCELED -> {
+                        activity.finishAffinity()
+                    }
                 }
             }
-            // in else, we do not store the timestamp yet. No requirement for it.
         }
         //request code immediate always forcing
     }
