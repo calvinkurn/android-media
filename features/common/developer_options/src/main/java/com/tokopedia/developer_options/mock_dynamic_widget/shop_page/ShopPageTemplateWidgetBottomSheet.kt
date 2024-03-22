@@ -1,14 +1,12 @@
-package com.tokopedia.developer_options.shop_page_dev_option
+package com.tokopedia.developer_options.mock_dynamic_widget.shop_page
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -16,18 +14,17 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageDevMockWidgetAdapter.ShopPageMockWidgetViewHolder.Listener, CoroutineScope {
+class ShopPageTemplateWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidgetAdapter.ShopPageMockWidgetViewHolder.Listener, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
     private val childLayoutRes = R.layout.shop_page_template_widget_bottom_sheet_layout
     private val adapter by lazy {
-        ShopPageDevMockWidgetAdapter(this)
+        ShopPageMockWidgetAdapter(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

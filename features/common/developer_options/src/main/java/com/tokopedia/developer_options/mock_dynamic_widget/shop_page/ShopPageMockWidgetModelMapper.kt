@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.shop_page_dev_option
+package com.tokopedia.developer_options.mock_dynamic_widget.shop_page
 
 import android.content.res.Resources
 import com.google.gson.Gson

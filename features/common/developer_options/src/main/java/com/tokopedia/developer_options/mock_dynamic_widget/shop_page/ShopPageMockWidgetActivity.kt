@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.shop_page_dev_option
+package com.tokopedia.developer_options.mock_dynamic_widget.shop_page
 
 import android.content.Context
 import android.os.Bundle
@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 
-class ShopPageDevActivity : BaseActivity() {
+class ShopPageMockWidgetActivity : BaseActivity() {
     companion object {
         private const val SHARED_PREF_NAME = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
         private const val SHARED_PREF_MOCK_WIDGET_DATA = "SHARED_PREF_MOCK_WIDGET_DATA"
@@ -23,13 +23,13 @@ class ShopPageDevActivity : BaseActivity() {
         getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
     private val adapter by lazy {
-        ShopPageDevMockWidgetAdapter()
+        ShopPageMockWidgetAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (GlobalConfig.isAllowDebuggingTools()) {
-            setContentView(R.layout.activity_shop_page_dev)
+            setContentView(R.layout.activity_shop_page_mock_dynamic_widget)
             setupView()
         } else {
             finish()
@@ -39,9 +39,15 @@ class ShopPageDevActivity : BaseActivity() {
     private fun setupView() {
         configButtonRouteToShopPage()
         configButtonTemplateShopWidget()
-//        configButtonCustomShopWidget()
+        configButtonCustomShopWidget()
         configButtonClearShopWidgetMockData()
         renderListMockShopWidgetData()
+    }
+
+    private fun configButtonCustomShopWidget() {
+        findViewById<View>(R.id.shop_widget_mock_button_custom).setOnClickListener {
+
+        }
     }
 
     private fun configButtonClearShopWidgetMockData() {

@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.shop_page_dev_option
+package com.tokopedia.developer_options.mock_dynamic_widget.shop_page
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopPageDevMockWidgetAdapter(
+class ShopPageMockWidgetAdapter(
     private val listenerShopPageMockWidgetViewHolder: ShopPageMockWidgetViewHolder.Listener? = null
-) : RecyclerView.Adapter<ShopPageDevMockWidgetAdapter.ShopPageMockWidgetViewHolder>() {
+) : RecyclerView.Adapter<ShopPageMockWidgetAdapter.ShopPageMockWidgetViewHolder>() {
 
     private var listShopPageMockWidget: MutableList<ShopPageMockWidgetModel> = mutableListOf()
     private var originalListShopPageMockWidget: List<ShopPageMockWidgetModel> = listOf()
