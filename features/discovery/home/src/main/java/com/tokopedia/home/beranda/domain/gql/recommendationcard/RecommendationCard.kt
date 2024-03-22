@@ -28,6 +28,8 @@ data class RecommendationCard(
     val iconUrl: String = "",
     @SerializedName("id")
     val id: String = "0",
+    @SerializedName("parentProductID")
+    val parentProductId: String = "0",
     @SerializedName("categoryID")
     val categoryID: String = "0",
     @SerializedName("imageUrl")
@@ -76,7 +78,11 @@ data class RecommendationCard(
     @SerializedName("url")
     val url: String = "",
     @SerializedName("wishlistUrl")
-    val wishlistUrl: String = ""
+    val wishlistUrl: String = "",
+    @SerializedName("recParam")
+    val recParam: String = "",
+    @SerializedName("countSold")
+    val countSold: Int = 0,
 ) {
 
     fun mapToHomeRecommendationProductItem(): HomeRecommendationItemDataModel.HomeRecommendationProductItem {
@@ -86,6 +92,7 @@ data class RecommendationCard(
             imageUrl = imageUrl,
             recommendationType = recommendationType,
             priceInt = priceInt,
+            slashedPriceInt = slashedPriceInt,
             freeOngkirIsActive = freeOngkir.isActive,
             labelGroup = labelGroup.map {
                 HomeRecommendationItemDataModel.HomeRecommendationProductItem.LabelGroup(
@@ -101,7 +108,20 @@ data class RecommendationCard(
             trackerImageUrl = trackerImageUrl,
             clickUrl = clickUrl,
             isWishlist = isWishlist,
-            wishListUrl = wishlistUrl
+            wishListUrl = wishlistUrl,
+            shop = shop.let {
+                HomeRecommendationItemDataModel.HomeRecommendationProductItem.Shop(
+                    id = it.id,
+                    applink = it.applink,
+                    city = it.city,
+                    domain = it.domain,
+                    imageUrl = it.imageUrl,
+                    name = it.name,
+                    reputation = it.reputation,
+                    url = it.url,
+                )
+            },
+            recParam = recParam
         )
     }
 
@@ -109,6 +129,7 @@ data class RecommendationCard(
     fun mapToHomeGlobalRecommendationProductItem(): RecommendationCardModel.ProductItem {
         return RecommendationCardModel.ProductItem(
             id = id,
+            parentProductId = parentProductId,
             name = name,
             imageUrl = imageUrl,
             recommendationType = recommendationType,
@@ -128,7 +149,17 @@ data class RecommendationCard(
             trackerImageUrl = trackerImageUrl,
             clickUrl = clickUrl,
             isWishlist = isWishlist,
-            wishListUrl = wishlistUrl
+            wishListUrl = wishlistUrl,
+            countSold = countSold,
+            shop = RecommendationCardModel.ProductItem.Shop(
+                id = shop.id,
+                city = shop.city,
+                applink = shop.applink,
+                domain = shop.domain,
+                imageUrl = shop.imageUrl,
+                name = shop.name,
+                reputation = shop.reputation,
+            )
         )
     }
 

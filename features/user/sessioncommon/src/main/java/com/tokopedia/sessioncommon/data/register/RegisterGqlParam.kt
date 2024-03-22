@@ -8,7 +8,9 @@ data class InputRegisterGqlParam(
     private val input: RegisterGqlParam
 ) : GqlParam
 
-open class RegisterGqlParam(
+interface RegisterGqlParam : GqlParam
+
+data class RegisterPhoneGqlParam(
     @SerializedName("phone")
     private val phone: String,
 
@@ -20,7 +22,7 @@ open class RegisterGqlParam(
 
     @SerializedName("reg_type")
     private val regType: String
-) : GqlParam
+): RegisterGqlParam
 
 data class ShopCreationRegisterGqlParam(
     @SerializedName("phone")
@@ -37,4 +39,4 @@ data class ShopCreationRegisterGqlParam(
 
     @SerializedName("accounts_type_name")
     private val accountsTypeName: String
-) : RegisterGqlParam(phone, fullname, osType, regType)
+) : RegisterGqlParam

@@ -78,11 +78,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private int getDeepLinkType(Uri uriData) {
-        List<String> linkSegment = uriData.getPathSegments();
-
         //Note: since Product and shop is the most general deeplink, always check at the end of the ifs!
         try {
-            if (isTopAds(linkSegment))
+            if (isTopAds(uriData))
                 return TOPADS;
             else if (isExcludedHostUrl(uriData))
                 return OTHER;
@@ -95,8 +93,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private boolean isTopAds(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("topads");
+    private boolean isTopAds(Uri uriData) {
+        return uriData.toString().contains("ta.tokopedia.com/v2/manage");
     }
 
     @Override
