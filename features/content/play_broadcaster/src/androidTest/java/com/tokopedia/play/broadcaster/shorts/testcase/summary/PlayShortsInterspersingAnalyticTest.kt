@@ -28,6 +28,7 @@ import com.tokopedia.play.broadcaster.shorts.helper.clickNextInterspersingConfir
 import com.tokopedia.play.broadcaster.shorts.helper.clickUploadVideo
 import com.tokopedia.play.broadcaster.shorts.helper.clickVideoPdpOnInterspersingConfirmation
 import com.tokopedia.play.broadcaster.shorts.helper.completeMandatoryMenu
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -38,6 +39,7 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on January 16, 2024
  */
+@CassavaTest
 class PlayShortsInterspersingAnalyticTest {
 
     @get:Rule

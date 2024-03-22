@@ -62,10 +62,13 @@ class BeautificationRobot {
         mockUserSession = mockUserSession,
         mockBroadcaster = mockBroadcaster,
         mockCoachMarkSharedPref = mockContentCoachMarkSharedPref,
+        mockHydraSharedPreferences = mockk(relaxed = true),
         mockBroadcastTimer = mockBroadcastTimer,
         mockGetChannelUseCase = mockGetChannelUseCase,
         mockGetAddedTagUseCase = mockGetAddedTagUseCase,
         mockValueWrapper = mockValueWrapper,
+        mockGetLiveStatisticsUseCase = mockk(relaxed = true),
+        mockGetSellerLeaderboardUseCase = mockk(relaxed = true),
         mockBroadcasterErrorLogger = mockk(relaxed = true),
     )
 

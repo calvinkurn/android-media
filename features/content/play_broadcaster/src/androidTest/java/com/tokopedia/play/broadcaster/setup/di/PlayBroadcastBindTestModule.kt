@@ -57,13 +57,6 @@ import dagger.Module
 abstract class PlayBroadcastBindTestModule {
 
     /**
-     * Pref
-     */
-    @Binds
-    @ActivityRetainedScope
-    abstract fun bindPermissionSharedPrefs(sharedPref: HydraSharedPreferences): PermissionSharedPreferences
-
-    /**
      * Util
      */
     @Binds

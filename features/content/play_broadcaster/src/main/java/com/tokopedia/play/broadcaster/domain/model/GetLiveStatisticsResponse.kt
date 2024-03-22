@@ -38,7 +38,7 @@ data class GetLiveStatisticsResponse(
         @SerializedName("addToCartFmt")
         val addToCart: String = "",
         @SerializedName("productSoldQtyFmt")
-        val productSlotQuantity: String = "",
+        val productSoldQuantity: String = "",
         @SerializedName("followShopFmt")
         val followShop: String = "",
         @SerializedName("likeChannelFmt")
@@ -69,7 +69,7 @@ data class GetLiveStatisticsResponse(
         @SerializedName("addToCartFmt")
         val addToCart: String = "",
         @SerializedName("productSoldQtyFmt")
-        val productSlotQuantity: String = "",
+        val productSoldQuantity: String = "",
         @SerializedName("maxConcurrentUsersFmt")
         val maxConcurrentUsers: String = "",
     )
