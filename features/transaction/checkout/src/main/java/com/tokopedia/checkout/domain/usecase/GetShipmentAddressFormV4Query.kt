@@ -704,6 +704,12 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 metadata
                 enable
                 error_message
+                chosen_payment {
+                    gateway_code
+                    tenure_type
+                    option_id
+                    metadata
+                }
               }
               cart_type
             }

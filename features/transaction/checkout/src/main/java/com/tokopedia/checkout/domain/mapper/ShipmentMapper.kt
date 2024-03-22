@@ -32,6 +32,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ChosenPayment
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
@@ -1419,7 +1420,13 @@ class ShipmentMapper @Inject constructor() {
         return PaymentWidget(
             metadata = response.metadata,
             enable = response.enable,
-            errorMessage = response.errorMessage
+            errorMessage = response.errorMessage,
+            chosenPayment = ChosenPayment(
+                response.chosenPayment.gatewayCode,
+                response.chosenPayment.tenureType,
+                response.chosenPayment.optionId,
+                response.chosenPayment.metadata
+            )
         )
     }
 
