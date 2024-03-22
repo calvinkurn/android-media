@@ -71,7 +71,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
-            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget(),
+            forceLightModeColor = listener.isOverrideTheme(),
             patternColorType = listener.getPatternColorType(),
             backgroundColor = listener.getBackgroundColor(),
             isFestivity = fsUiModel?.isFestivity.orFalse()

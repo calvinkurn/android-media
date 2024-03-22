@@ -5519,14 +5519,6 @@ open class ShopPageHomeFragment :
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
     }
 
-    override fun isForceLightModeColorOnShopFlashSaleWidget(): Boolean {
-        return isOverrideTheme()
-    }
-
-    override fun isForceLightModeColorOnCampaignNplWidget(): Boolean {
-        return isOverrideTheme()
-    }
-
     override fun getShopPageHomeFragment(): ShopPageHomeFragment {
         return this
     }

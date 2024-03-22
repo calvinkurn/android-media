@@ -64,7 +64,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                 shopHomeProductViewModel = shopHomeProductViewModel,
                 widgetName = shopHomeNewProductLaunchCampaignUiModel.name,
                 statusCampaign = shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.statusCampaign.orEmpty(),
-                forceLightModeColor = shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget(),
+                forceLightModeColor = shopHomeCampaignNplWidgetListener.isOverrideTheme(),
                 patternColorType = shopHomeCampaignNplWidgetListener.getPatternColorType(),
                 backgroundColor = shopHomeCampaignNplWidgetListener.getBackgroundColor(),
                 isFestivity = shopHomeNewProductLaunchCampaignUiModel.isFestivity.orFalse()

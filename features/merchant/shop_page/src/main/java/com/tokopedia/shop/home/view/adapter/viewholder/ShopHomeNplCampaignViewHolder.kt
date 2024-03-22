@@ -282,7 +282,7 @@ class ShopHomeNplCampaignViewHolder(
                             shopHomeProductViewModel = it,
                             widgetName = model.name,
                             statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty(),
-                            forceLightModeColor = shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget(),
+                            forceLightModeColor = shopHomeCampaignNplWidgetListener.isOverrideTheme(),
                             patternColorType = shopHomeCampaignNplWidgetListener.getPatternColorType(),
                             backgroundColor = shopHomeCampaignNplWidgetListener.getBackgroundColor(),
                             isFestivity = model.isFestivity
