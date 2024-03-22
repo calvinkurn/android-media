@@ -65,6 +65,22 @@ class ShopPageMockWidgetAdapter(
         result.dispatchUpdatesTo(this)
     }
 
+    fun addMockWidgetModel(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
+        submitList(listShopPageMockWidget.toMutableList().apply {
+            add(shopPageMockWidgetModel)
+        })
+    }
+
+    fun clear() {
+        submitList(listShopPageMockWidget.toMutableList().apply {
+            clear()
+        })
+    }
+
+    fun getData(): List<ShopPageMockWidgetModel> {
+        return listShopPageMockWidget.toList()
+    }
+
     class RvDiffUtilCallback(
         private val oldItems: List<ShopPageMockWidgetModel>,
         private val newItems: List<ShopPageMockWidgetModel>
@@ -104,7 +120,7 @@ class ShopPageMockWidgetAdapter(
             itemView.findViewById<Typography>(R.id.text_shop_widget_name).apply {
                 var optionText = shopPageMockWidgetModel.getWidgetName()
                 if (shopPageMockWidgetModel.isFestivity()) {
-                    optionText += " {isFestivity: true}"
+                    optionText += " (festivity)"
                 }
                 text = optionText
                 listener?.let {

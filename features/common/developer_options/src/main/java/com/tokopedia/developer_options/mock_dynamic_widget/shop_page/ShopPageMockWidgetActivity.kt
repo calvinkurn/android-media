@@ -46,8 +46,11 @@ class ShopPageMockWidgetActivity : BaseActivity() {
 
     private fun configButtonCustomShopWidget() {
         findViewById<View>(R.id.shop_widget_mock_button_custom).setOnClickListener {
-
+            showBottomSheetChooseCustomMockShopWidget()
         }
+    }
+
+    private fun showBottomSheetChooseCustomMockShopWidget() {
     }
 
     private fun configButtonClearShopWidgetMockData() {
@@ -70,13 +73,13 @@ class ShopPageMockWidgetActivity : BaseActivity() {
 
     private fun configButtonTemplateShopWidget() {
         findViewById<View>(R.id.shop_widget_mock_button_template).setOnClickListener {
-            showBottomSheetChooseTemplateShopWidget()
+            showBottomSheetChooseTemplateMockShopWidget()
         }
     }
 
-    private fun showBottomSheetChooseTemplateShopWidget() {
-        val bottomSheet = ShopPageTemplateWidgetBottomSheet.createInstance()
-        bottomSheet.setOnOptionSelected {
+    private fun showBottomSheetChooseTemplateMockShopWidget() {
+        val bottomSheet = ShopPageTemplateMockWidgetBottomSheet.createInstance()
+        bottomSheet.setOnAddSelectedShopWidget {
             addShopWidgetMockDataToSharedPref(it)
             renderListMockShopWidgetData()
         }
@@ -106,15 +109,15 @@ class ShopPageMockWidgetActivity : BaseActivity() {
         findViewById<View>(R.id.text_empty_state).show()
     }
 
-    private fun addShopWidgetMockDataToSharedPref(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
+    private fun addShopWidgetMockDataToSharedPref(shopPageMockWidgetModel: List<ShopPageMockWidgetModel>) {
         val mockShopWidgetData = if (sharedPref.getString(SHARED_PREF_MOCK_WIDGET_DATA, null) != null) {
             val stringShopPageMockWidgetData = sharedPref.getString(SHARED_PREF_MOCK_WIDGET_DATA, null)
             val listShopPageMockData = ShopPageMockWidgetModelMapper.mapToShopPageMockWidgetModel(stringShopPageMockWidgetData.orEmpty())
             listShopPageMockData.toMutableList().apply {
-                add(shopPageMockWidgetModel)
+                addAll(shopPageMockWidgetModel)
             }.toList()
         } else {
-            listOf(shopPageMockWidgetModel)
+            shopPageMockWidgetModel
         }
         ShopPageMockWidgetModelMapper.updateWidgetId(mockShopWidgetData)
         ShopPageMockWidgetModelMapper.listMockWidgetDataToJson(mockShopWidgetData.map { it.getMockShopWidgetData() })?.let {
