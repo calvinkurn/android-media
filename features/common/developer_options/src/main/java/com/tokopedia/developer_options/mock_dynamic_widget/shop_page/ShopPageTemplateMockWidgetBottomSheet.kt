@@ -138,7 +138,7 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
     }
 
     companion object {
-        const val TITLE = "Choose Widget Name From Template"
+        const val TITLE = "Select Template Shop Widget"
         fun createInstance(): ShopPageTemplateMockWidgetBottomSheet {
             return ShopPageTemplateMockWidgetBottomSheet()
         }
