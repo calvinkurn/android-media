@@ -145,7 +145,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             when (it ) {
                 is Success -> {
                     if (it.data.status) {
-                        requireContext().setAsLoginSdkFlow("Tiktok Shop")
+                        requireContext().setAsLoginSdkFlow(it.data.appName)
                         viewModel.getConsent(
                             clientId = arguments?.getString("client_id") ?: "",
                             scopes = arguments?.getString("scopes") ?: ""

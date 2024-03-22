@@ -47,7 +47,7 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
                     if (!it.data.status) {
                         redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
                     } else {
-                        setupAsLoginSdkFlow("Tiktok Shop")
+                        setupAsLoginSdkFlow(it.data.appName)
                         dismissLoadingLogin()
                     }
                 }

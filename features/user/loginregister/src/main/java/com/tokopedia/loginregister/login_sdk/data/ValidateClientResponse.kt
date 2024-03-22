@@ -11,5 +11,7 @@ data class ValidateClientData(
     @SerializedName("is_valid")
     val status: Boolean,
     @SerializedName("error")
-    var error: String = ""
+    var error: String = "",
+    @SerializedName("app_name")
+    var appName: String = ""
 )

@@ -34,6 +34,7 @@ class ValidateClientUseCase @Inject constructor(
                     redirect_uri:${'$'}redirect_uri
                 ) {
                     is_valid
+                    app_name
                     error
                 }
             }""".trimIndent()
