@@ -56,20 +56,20 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class UohListViewModel @Inject constructor(
-        dispatcher: CoroutineDispatchers,
-        private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
-        private val uohListUseCase: UohListUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val uohFinishOrderUseCase: UohFinishOrderUseCase,
-        private val atcMultiProductsUseCase: AddToCartMultiUseCase,
-        private val addToCartOccUseCase: AddToCartOccMultiUseCase,
-        private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
-        private val flightResendEmailUseCase: FlightResendEmailUseCase,
-        private val trainResendEmailUseCase: TrainResendEmailUseCase,
-        private val rechargeSetFailUseCase: RechargeSetFailUseCase,
-        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        private val atcUseCase: AddToCartUseCase,
-        private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase
+    dispatcher: CoroutineDispatchers,
+    private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
+    private val uohListUseCase: UohListUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val uohFinishOrderUseCase: UohFinishOrderUseCase,
+    private val atcMultiProductsUseCase: AddToCartMultiUseCase,
+    private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+    private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
+    private val flightResendEmailUseCase: FlightResendEmailUseCase,
+    private val trainResendEmailUseCase: TrainResendEmailUseCase,
+    private val rechargeSetFailUseCase: RechargeSetFailUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val atcUseCase: AddToCartUseCase,
+    private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory>>()
