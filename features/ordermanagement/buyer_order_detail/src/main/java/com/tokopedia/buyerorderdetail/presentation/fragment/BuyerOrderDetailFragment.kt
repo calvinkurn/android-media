@@ -1300,7 +1300,7 @@ open class BuyerOrderDetailFragment :
                         toasterShowed = true
                     }
                 }
-        }.invokeOnCompletion { Log.d("BOMLOG", "Toaster showed, job finished!") }
+        }
     }
 
     inner class AddOnListener : BmgmAddOnViewHolder.Listener {
