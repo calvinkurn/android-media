@@ -120,7 +120,7 @@ class BudgetingAdsViewModelTest {
         every {
             bidInfoUseCase.executeQuerySafeMode(any(), captureLambda())
         } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockk())
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
 
         var actual: List<TopadsBidInfo.DataItem>? = null
@@ -170,7 +170,7 @@ class BudgetingAdsViewModelTest {
         every {
             suggestionKeywordUseCase.executeQuerySafeMode(any(), captureLambda())
         } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockk())
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
 
         var actual: List<KeywordData>? = null
@@ -211,7 +211,7 @@ class BudgetingAdsViewModelTest {
         every {
             bidInfoUseCaseDefault.executeQuerySafeMode(any(), captureLambda())
         } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockk())
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
 
         var actual: List<TopadsBidInfo.DataItem>? = null

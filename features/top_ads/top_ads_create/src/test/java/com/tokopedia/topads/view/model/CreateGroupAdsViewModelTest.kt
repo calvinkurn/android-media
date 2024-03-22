@@ -120,7 +120,7 @@ class CreateGroupAdsViewModelTest {
     fun `validateGroup test exception`() {
         var errorCalled = false
         every { topAdsGroupValidateNameUseCase.execute(any(), captureLambda()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockk())
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
         viewModel.validateGroup("", {}, { errorCalled = true })
         Assert.assertTrue(errorCalled)

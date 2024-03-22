@@ -122,7 +122,7 @@ class KeywordAdsViewModelTest {
         every {
             suggestionKeywordUseCase.executeQuerySafeMode(any(), captureLambda())
         } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockk())
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
 
         var successCalled = false
