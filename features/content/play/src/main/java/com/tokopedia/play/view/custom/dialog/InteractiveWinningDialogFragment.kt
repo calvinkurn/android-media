@@ -23,6 +23,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/06/21
  */
+@Suppress("LateinitUsage")
 class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
 
     private var mTitle = ""
