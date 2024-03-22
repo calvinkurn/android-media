@@ -134,6 +134,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
@@ -621,7 +622,7 @@ class CheckoutFragment :
                 var message = it.toasterMessage
                 if (message.isEmpty()) {
                     message = it.throwable?.message ?: ""
-                    if (!(it.throwable is CartResponseErrorException || it.throwable is AkamaiErrorException)) {
+                    if (!(it.throwable is CartResponseErrorException || it.throwable is AkamaiErrorException || it.throwable is ResponseErrorException)) {
                         message = ErrorHandler.getErrorMessage(context, it.throwable)
                     }
                     if (message.isEmpty()) {

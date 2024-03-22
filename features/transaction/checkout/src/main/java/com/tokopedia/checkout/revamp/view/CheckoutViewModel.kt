@@ -2331,6 +2331,12 @@ class CheckoutViewModel @Inject constructor(
         val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), UPDATE_CART_SOURCE_CHECKOUT, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
         if (!updateCartResult.isSuccess) {
             toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+            loadSAF(
+                isReloadData = true,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHigher = false
+            )
+            return
         }
         val checkoutResult = checkoutProcessor.doCheckout(
             listData.value,
@@ -3118,7 +3124,7 @@ class CheckoutViewModel @Inject constructor(
             if (checkoutItem is CheckoutOrderModel) {
                 if (!checkoutItem.isError && checkoutItem.shipment.courierItemData == null) {
                     return false
-                } else {
+                } else if (!checkoutItem.isError) {
                     hasValidOrder = true
                 }
             }
