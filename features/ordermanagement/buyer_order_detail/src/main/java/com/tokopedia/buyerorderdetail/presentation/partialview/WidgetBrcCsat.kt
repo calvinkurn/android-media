@@ -31,7 +31,7 @@ class WidgetBrcCsat(
 ) : BaseCustomView(context, attrs) {
 
     companion object {
-        private const val ANIMATION_DURATION = 300L
+        const val ANIMATION_DURATION = 300L
         private const val CUBIC_BEZIER_X1 = 0.63f
         private const val CUBIC_BEZIER_X2 = 0.29f
         private const val CUBIC_BEZIER_Y1 = 0.01f

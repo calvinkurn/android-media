@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,6 +75,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
+import com.tokopedia.buyerorderdetail.presentation.partialview.WidgetBrcCsat
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
@@ -88,6 +92,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.linker.model.LinkerData.PRODUCT_TYPE
 import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
@@ -127,6 +132,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -180,6 +186,8 @@ open class BuyerOrderDetailFragment :
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     protected var loaderBuyerOrderDetail: LoaderUnify? = null
+
+    private val handler by lazyThreadSafetyNone { Handler(Looper.getMainLooper()) }
 
     private var binding by autoClearedNullable<FragmentBuyerOrderDetailBinding>()
 
@@ -973,8 +981,8 @@ open class BuyerOrderDetailFragment :
     private fun handleBrcCsatFormResult(data: Intent?) {
         val message = data?.getStringExtra("message")
         if (!message.isNullOrBlank()) {
+            showToasterOnRefreshed(message, WidgetBrcCsat.ANIMATION_DURATION)
             loadBuyerOrderDetail(false)
-            showCommonToaster(message)
         }
     }
 
@@ -1274,6 +1282,25 @@ open class BuyerOrderDetailFragment :
                 }
             }
         }
+    }
+
+    private fun showToasterOnRefreshed(message: String, delay: Long = 0L) {
+        var previousState = viewModel.buyerOrderDetailUiState.value
+        var toasterShowed = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel
+                .buyerOrderDetailUiState
+                .takeWhile { !toasterShowed }
+                .collectLatest { newState ->
+                    val isCurrentlyShowingData = newState is BuyerOrderDetailUiState.HasData.Showing
+                    val isPreviouslyLoadingData = previousState is BuyerOrderDetailUiState.FullscreenLoading || previousState is BuyerOrderDetailUiState.HasData.PullRefreshLoading
+                    previousState = newState
+                    if (isCurrentlyShowingData && isPreviouslyLoadingData) {
+                        handler.postDelayed({ showCommonToaster(message) }, delay)
+                        toasterShowed = true
+                    }
+                }
+        }.invokeOnCompletion { Log.d("BOMLOG", "Toaster showed, job finished!") }
     }
 
     inner class AddOnListener : BmgmAddOnViewHolder.Listener {

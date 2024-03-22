@@ -18,7 +18,7 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/iconunify_smile" />
+        app:srcCompat="@drawable/ic_brc_csat_smiley_1" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_bom_brc_csat_smiley_2"
@@ -28,7 +28,7 @@
         app:layout_constraintEnd_toStartOf="@id/iv_bom_brc_csat_smiley_3"
         app:layout_constraintStart_toEndOf="@id/iv_bom_brc_csat_smiley_1"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/iconunify_smile" />
+        app:srcCompat="@drawable/ic_brc_csat_smiley_2" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_bom_brc_csat_smiley_3"
@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toStartOf="@id/iv_bom_brc_csat_smiley_4"
         app:layout_constraintStart_toEndOf="@id/iv_bom_brc_csat_smiley_2"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/iconunify_smile" />
+        app:srcCompat="@drawable/ic_brc_csat_smiley_3" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_bom_brc_csat_smiley_4"
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toStartOf="@id/iv_bom_brc_csat_smiley_5"
         app:layout_constraintStart_toEndOf="@id/iv_bom_brc_csat_smiley_3"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/iconunify_smile" />
+        app:srcCompat="@drawable/ic_brc_csat_smiley_4" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_bom_brc_csat_smiley_5"
@@ -58,16 +58,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_bom_brc_csat_smiley_4"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/iconunify_smile" />
+        app:srcCompat="@drawable/ic_brc_csat_smiley_5" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <View
         android:id="@+id/divider_bom_brc_csat"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_marginTop="12dp"
-        android:tint="@color/Unify_NN200"
         app:layout_constraintTop_toBottomOf="@id/iv_bom_brc_csat_smiley_1"
-        app:srcCompat="@drawable/ic_dash_divider" />
+        android:background="@drawable/ic_brc_dashed_divider" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bom_brc_csat_help"
