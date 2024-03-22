@@ -373,7 +373,7 @@ ext {
     sduiDependencies = [
             divcore               : "com.yandex.div:div-core:$divKitVersion",
             div                   : "com.yandex.div:div:$divKitVersion",
-            divjson               : "com.yandex.div:div-json:$divKitVersion-tkpd",
+            divjson               : "com.yandex.div:div-json:28.4.1-tkpd",
             divlottie             : "com.yandex.div:div-lottie:$divKitLottieVersion",
             divutils              : "com.yandex.div:utils:$divKitVersion",
     ]
