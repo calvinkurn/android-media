@@ -71,6 +71,8 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
             price_str
         }
         item_list{
+            unique_id
+            parent_product_id
             product_id
             product_name
             product_brand
@@ -105,6 +107,8 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
         }
         shipping_amount
         shipping_amount_str
+        total_discount_shipping
+        total_discount_product
         shipping_desc
         insurance_amount
         insurance_amount_str

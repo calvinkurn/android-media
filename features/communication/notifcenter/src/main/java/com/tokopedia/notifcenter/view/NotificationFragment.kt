@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -106,6 +108,8 @@ class NotificationFragment @Inject constructor(
     private var trackingQueue: TrackingQueue? = null
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
     private val scrollState = ScrollToBottomState()
+    private var hasTrackEnterPage = false
+    private var hasApplogScrollListener = false
 
     override fun hasInitialSwipeRefresh(): Boolean = true
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
@@ -434,10 +438,17 @@ class NotificationFragment @Inject constructor(
     }
 
     private fun renderRecomList(recoms: RecommendationDataModel) {
+        trackEnterPage()
         hideLoading()
         rvAdapter?.addRecomProducts(recoms.item)
         loadShopAds()
         updateScrollListenerState(recoms)
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun loadShopAds() {
@@ -479,6 +490,9 @@ class NotificationFragment @Inject constructor(
                 }
             }
         })
+        if(hasApplogScrollListener) return
+        rv?.addVerticalTrackListener()
+        hasApplogScrollListener = true
     }
 
     private fun getLastVisibleItemPosition(): Int? {

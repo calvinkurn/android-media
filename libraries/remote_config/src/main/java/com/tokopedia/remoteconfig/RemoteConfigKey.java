@@ -200,6 +200,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
+    public static final String ENABLE_BYTEIO_PLATFORM = "android_enable_byteio_platform";
+
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
     public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
@@ -346,6 +348,11 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW = "android_enable_pdp_recommendation_flow";
     public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
     public static final String ANDROID_ENABLE_PURCHASE_INFO = "android_enable_purchase_info";
+    public static final String ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO = "android_enable_fix_search_product_impression_byteio";
+
+    public static final String ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM = "android_search_enable_fix_byteio_cpm";
+  
+    public static final String ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD = "android_main_app_enable_copy_crash_stack_trace_to_clipboard";
 
     public static final String ANDROID_TOP_ADS_SDK_V2 = "android_top_ads_sdk_v2";
 

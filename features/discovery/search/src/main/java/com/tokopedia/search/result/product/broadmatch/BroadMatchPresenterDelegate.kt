@@ -22,7 +22,7 @@ class BroadMatchPresenterDelegate @Inject constructor(
     private val classNameProvider: ClassNameProvider,
     private val applinkModifier: ApplinkModifier,
     private val pagination: Pagination,
-    private val suggestionPresenter: SuggestionPresenter
+    private val suggestionPresenter: SuggestionPresenter,
 ) : BroadMatchPresenter {
 
     var relatedDataView: RelatedDataView? = null
@@ -63,7 +63,7 @@ class BroadMatchPresenterDelegate @Inject constructor(
 
     fun processBroadMatchInEmptyLocalSearch(
         responseCode: String,
-        action: (List<Visitable<*>>) -> Unit
+        action: (List<Visitable<*>>) -> Unit,
     ) {
         if (isShowBroadMatchWithEmptyLocalSearch(responseCode)) {
             action(createBroadMatchToVisitableList())
@@ -71,24 +71,23 @@ class BroadMatchPresenterDelegate @Inject constructor(
     }
 
     private fun isShowBroadMatchWithEmptyLocalSearch(responseCode: String) =
-        responseCode == EMPTY_LOCAL_SEARCH_RESPONSE_CODE &&
-            hasBroadMatch()
+        responseCode == EMPTY_LOCAL_SEARCH_RESPONSE_CODE
+            && hasBroadMatch()
 
     fun processBroadMatch(
         totalProductItem: Int,
         responseCode: String,
-        action: (Int, List<Visitable<*>>) -> Unit
+        action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         try {
             if (!isShowBroadMatch(responseCode)) return
 
-            if (isLastPositionBroadMatch) {
+            if (isLastPositionBroadMatch)
                 processBroadMatchAtBottom(action)
-            } else if (isFirstPositionBroadMatch) {
+            else if (isFirstPositionBroadMatch)
                 processBroadMatchAtTop(action)
-            } else if (broadMatchPosition > 1) {
+            else if (broadMatchPosition > 1)
                 processBroadMatchAtPosition(totalProductItem, action)
-            }
         } catch (exception: Throwable) {
             Timber.w(exception)
         }
@@ -123,7 +122,7 @@ class BroadMatchPresenterDelegate @Inject constructor(
 
     private fun processBroadMatchAtPosition(
         totalProductItem: Int,
-        action: (Int, List<Visitable<*>>) -> Unit
+        action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         if (totalProductItem < broadMatchPosition) return
 
@@ -137,10 +136,11 @@ class BroadMatchPresenterDelegate @Inject constructor(
         relatedDataView = null
     }
 
-    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
-        if (broadMatchItemDataView.isOrganicAds) {
+    override fun onBroadMatchItemImpressed(
+        broadMatchItemDataView: BroadMatchItemDataView,
+    ) {
+        if (broadMatchItemDataView.isOrganicAds)
             sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
-        }
 
         when (val carouselProductType = broadMatchItemDataView.carouselProductType) {
             is BroadMatchProduct ->
@@ -149,7 +149,7 @@ class BroadMatchPresenterDelegate @Inject constructor(
                 dynamicProductView.trackDynamicProductCarouselImpression(
                     broadMatchItemDataView,
                     carouselProductType.type,
-                    carouselProductType.inspirationCarouselProduct
+                    carouselProductType.inspirationCarouselProduct,
                 )
         }
     }
@@ -165,7 +165,9 @@ class BroadMatchPresenterDelegate @Inject constructor(
         )
     }
 
-    override fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun onBroadMatchItemClick(
+        broadMatchItemDataView: BroadMatchItemDataView,
+    ) {
         when (val carouselProductType = broadMatchItemDataView.carouselProductType) {
             is BroadMatchProduct ->
                 broadMatchView.trackEventClickBroadMatchItem(broadMatchItemDataView)
@@ -173,15 +175,14 @@ class BroadMatchPresenterDelegate @Inject constructor(
                 dynamicProductView.trackDynamicProductCarouselClick(
                     broadMatchItemDataView,
                     carouselProductType.type,
-                    carouselProductType.inspirationCarouselProduct
+                    carouselProductType.inspirationCarouselProduct,
                 )
         }
 
         broadMatchView.openLink(broadMatchItemDataView)
 
-        if (broadMatchItemDataView.isOrganicAds) {
+        if (broadMatchItemDataView.isOrganicAds)
             sendTrackingClickBroadMatchAds(broadMatchItemDataView)
-        }
     }
 
     private fun sendTrackingClickBroadMatchAds(broadMatchItemDataView: BroadMatchItemDataView) {
@@ -196,9 +197,10 @@ class BroadMatchPresenterDelegate @Inject constructor(
     }
 
     override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
-        if (broadMatchDataView.carouselOptionType == BroadMatch) {
+        if (broadMatchDataView.carouselOptionType is BroadMatch)
             broadMatchView.trackEventImpressionBroadMatch(broadMatchDataView)
-        }
+        else if (broadMatchDataView.carouselOptionType is DynamicCarouselOption)
+            dynamicProductView.trackDynamicCarouselImpression(broadMatchDataView)
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
@@ -213,7 +215,7 @@ class BroadMatchPresenterDelegate @Inject constructor(
 
     private fun handleBroadMatchSeeMoreClick(
         broadMatchDataView: BroadMatchDataView,
-        applink: String
+        applink: String,
     ) {
         trackBroadMatchSeeMoreClick(broadMatchDataView)
 
@@ -228,7 +230,7 @@ class BroadMatchPresenterDelegate @Inject constructor(
                 dynamicProductView.trackEventClickSeeMoreDynamicProductCarousel(
                     broadMatchDataView,
                     carouselOptionType.option.inspirationCarouselType,
-                    carouselOptionType.option
+                    carouselOptionType.option,
                 )
         }
     }

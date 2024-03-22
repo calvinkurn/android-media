@@ -1,5 +1,6 @@
 package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel;
 
+import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.topads.sdk.common.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory.BannerAdsTypeFactory;
@@ -12,6 +13,8 @@ public class BannerShopViewMoreUiModel implements Item<BannerAdsTypeFactory> {
     private final CpmData cpmData;
     private final String appLink;
     private final String adsClickUrl;
+
+    public final ImpressHolder impressHolder = new ImpressHolder();
 
     public BannerShopViewMoreUiModel(CpmData cpmData, String appLink, String adsClickUrl) {
         this.cpmData = cpmData;

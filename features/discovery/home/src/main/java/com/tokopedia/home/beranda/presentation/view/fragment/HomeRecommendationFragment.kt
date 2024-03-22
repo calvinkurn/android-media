@@ -28,6 +28,8 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asCardTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistNonLogin
@@ -55,6 +57,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -543,7 +546,8 @@ class HomeRecommendationFragment :
                     )
                 )
             }
-        } else {
+        }
+        else {
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     getRecommendationProductClickLogin(
@@ -707,7 +711,7 @@ class HomeRecommendationFragment :
             recomId,
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
-            sourceType = sourceType
+            sourceType = sourceType,
         )
     }
 
@@ -783,7 +787,7 @@ class HomeRecommendationFragment :
                 recomId,
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
-                sourceType = sourceType
+                sourceType = sourceType,
             )
         }
     }
@@ -801,6 +805,10 @@ class HomeRecommendationFragment :
             recyclerView?.scrollToPosition(BASE_POSITION)
         }
         recyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun setRefreshType(refreshType: HomeRefreshType) {
+        // no-op
     }
 
     private fun createProductCardOptionsModel(

@@ -4,22 +4,25 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.reimagine.Search2Component
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutReimagineBinding
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_2
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_6
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CpmReimagineViewHolder(
     itemView: View,
-    bannerAdsListener: BannerAdsListener?,
-    private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL
+    private val bannerAdsListener: BannerAdsListener?,
+    private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
 ) : AbstractViewHolder<CpmDataView>(itemView) {
 
     companion object {
@@ -29,28 +32,59 @@ class CpmReimagineViewHolder(
     }
 
     private var binding: SearchResultProductTopAdsBannerLayoutReimagineBinding? by viewBinding()
+    private var byteIOTrackingData : ByteIOTrackingData? = null
 
-    init {
-        binding?.adsBanner?.let {
-            it.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
+    override fun bind(element: CpmDataView) {
+        this.byteIOTrackingData = element.byteIOTrackingData
+        adjustMargin(reimagineSearch2Component.isReimagineShopAds(), element)
+
+        binding?.adsBanner?.run {
+            setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-                    bannerAdsListener?.onBannerAdsClicked(position, applink, data)
+                    if(bannerAdsListener?.isEnableFixByteIOCPM() == true) {
+                        byteIOTrackingData?.let {
+                            element.byteIOTrackingData = it
+                        }
+                    }
+                    bannerAdsListener?.onBannerAdsClicked(position, applink, data, element)
                 }
             })
-            it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+            setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
                 override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
-                    bannerAdsListener?.onBannerAdsImpressionListener(position, data)
+                    bannerAdsListener?.onBannerAdsImpressionListener(position, data, element, bindingAdapterPosition)
                     if (data.cpm.layout == LAYOUT_6 || data.cpm.layout == LAYOUT_5) {
                         bannerAdsListener?.onTopAdsCarouselItemImpressionListener(binding?.adsBanner?.impressionCount ?: 0)
                     }
                 }
-            })
-        }
-    }
 
-    override fun bind(element: CpmDataView) {
-        adjustMargin(reimagineSearch2Component.isReimagineShopAds(), element)
-        binding?.adsBanner?.displayHeadlineAdsReimagine(element.cpmModel)
+                override fun onImpressionProductAdsItem(
+                    position: Int,
+                    product: Product?,
+                    data: CpmData
+                ) {
+                    if(bannerAdsListener?.isEnableFixByteIOCPM() == true){
+                        byteIOTrackingData?.let {
+                            element.byteIOTrackingData = it
+                        }
+                    }
+                    bannerAdsListener?.onBannerAdsProductImpressionListener(
+                        position,
+                        product,
+                        element,
+                    )
+                }
+
+                override fun onImpressionSeeMoreItem(position: Int, data: CpmData) {
+                    bannerAdsListener?.onImpressionSeeMoreItem(element, position)
+                }
+            })
+
+            addOnImpression1pxListener(element.byteIOImpressHolder) {
+                bannerAdsListener?.onBannerAdsImpression1PxListener(element)
+            }
+
+            displayHeadlineAdsReimagine(element.cpmModel)
+        }
     }
 
     private fun adjustMargin(isReimagine: Boolean, itemCPM: CpmDataView) {
@@ -67,11 +101,11 @@ class CpmReimagineViewHolder(
         val context = adsBannerLayout.context
         val marginTopBottom = context.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
         val marginLeftRight = context.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_4)
-        binding?.adsBanner?.setMargin(left = marginLeftRight, top = marginTopBottom, right = marginLeftRight, bottom = marginTopBottom)
+        binding?.adsBanner?.setMargin(left = marginLeftRight, top= marginTopBottom, right= marginLeftRight, bottom= marginTopBottom)
     }
 
     private fun adjustMarginLayoutControl() {
         val adsBannerLayout = binding?.adsBanner ?: return
-        adsBannerLayout.setMargin(left = 0, top = 0, right = 0, bottom = 0)
+        adsBannerLayout.setMargin(left = 0, top= 0, right= 0, bottom= 0)
     }
 }

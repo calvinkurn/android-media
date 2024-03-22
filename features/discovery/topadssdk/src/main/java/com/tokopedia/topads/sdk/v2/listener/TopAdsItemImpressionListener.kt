@@ -6,4 +6,6 @@ import com.tokopedia.topads.sdk.domain.model.Product
 abstract class TopAdsItemImpressionListener {
     open fun onImpressionProductAdsItem(position: Int, product: Product?, data: CpmData) {}
     open fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {}
+
+    open fun onImpressionSeeMoreItem(position: Int, data: CpmData) { }
 }

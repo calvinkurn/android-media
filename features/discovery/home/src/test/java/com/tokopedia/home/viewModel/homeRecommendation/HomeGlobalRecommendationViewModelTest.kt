@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendatio
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.EmptyStateModel
@@ -111,7 +112,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -150,7 +151,7 @@ class HomeGlobalRecommendationViewModelTest {
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -180,7 +181,7 @@ class HomeGlobalRecommendationViewModelTest {
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(
             observerHomeRecommendation
         )
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -245,9 +246,10 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         homeRecommendationViewModel.fetchNextHomeRecommendation(
+            1,
             "",
             1,
             0,
@@ -319,9 +321,9 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
+        homeRecommendationViewModel.fetchNextHomeRecommendation(1, "", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -381,7 +383,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         homeRecommendationViewModel.updateWhistlist("12", 0, true)
 
@@ -435,7 +437,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         homeRecommendationViewModel.updateWhistlist("12", 100, true)
 
@@ -488,7 +490,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         homeRecommendationViewModel.updateWhistlist("1332", 0, true)
 
@@ -562,7 +564,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         homeRecommendationViewModel.updateWhistlist("1332", 0, true)
 
@@ -669,7 +671,7 @@ class HomeGlobalRecommendationViewModelTest {
         )
 
         // viewModel load first page data
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         // Try click update wishlist
         homeRecommendationViewModel.updateWhistlist("1332", 0, true)
@@ -755,7 +757,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -806,7 +808,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -857,7 +859,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -929,9 +931,9 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
+        homeRecommendationViewModel.fetchNextHomeRecommendation(1, "", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -1036,9 +1038,9 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
+        homeRecommendationViewModel.fetchNextHomeRecommendation(1, "", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -1142,9 +1144,9 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
-        homeRecommendationViewModel.fetchNextHomeRecommendation("", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
+        homeRecommendationViewModel.fetchNextHomeRecommendation(1, "", 1, 0, 2, sourceType = "", existingRecommendationData = model.homeRecommendations)
 
         verifyOrder {
             // check on loading
@@ -1217,7 +1219,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1270,7 +1272,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1330,7 +1332,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1390,7 +1392,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1463,7 +1465,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1525,7 +1527,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1596,7 +1598,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1668,7 +1670,7 @@ class HomeGlobalRecommendationViewModelTest {
             observerHomeRecommendation
         )
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 1, 0, tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         verifyOrder {
             // check on loading
@@ -1721,7 +1723,7 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
@@ -1770,7 +1772,7 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
@@ -1813,7 +1815,7 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", 1, "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", 1, "", RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.EmptyData)
@@ -1843,7 +1845,7 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Fail)
@@ -1866,7 +1868,7 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Fail)
@@ -1906,7 +1908,7 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
@@ -1937,7 +1939,7 @@ class HomeGlobalRecommendationViewModelTest {
 
             getHomeRecommendationCardUseCase.givenDataReturnMatch(homeRecommendationNextDataModel, givenProductPage)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, givenProductPage, locationParam = "", sourceType = "", existingRecommendationData = model.homeRecommendations)
+            homeRecommendationViewModel.fetchNextHomeRecommendation(1, "", 0, 1, givenProductPage, locationParam = "", sourceType = "", existingRecommendationData = model.homeRecommendations)
 
             val actualNextResult = (it[1] as HomeRecommendationCardState.Success)
             val expectedNextResult = homeRecommendationNextDataModel.homeRecommendations.toMutableList().apply {
@@ -1984,7 +1986,7 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
@@ -2004,7 +2006,7 @@ class HomeGlobalRecommendationViewModelTest {
 
             getHomeRecommendationCardUseCase.givenThrows(exception, givenProductPage)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, givenProductPage, locationParam = "", sourceType = "", existingRecommendationData = model.homeRecommendations)
+            homeRecommendationViewModel.fetchNextHomeRecommendation(1, "", 0, 1, givenProductPage, locationParam = "", sourceType = "", existingRecommendationData = model.homeRecommendations)
 
             val actualNextResult = (it[1] as HomeRecommendationCardState.FailNextPage)
 
@@ -2033,12 +2035,12 @@ class HomeGlobalRecommendationViewModelTest {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Loading)
         }
 
-        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "")
+        homeRecommendationViewModel.fetchHomeRecommendation("", 0, 1, "", tabIndex = 1, sourceType = "", refreshType = RefreshType.OPEN)
 
         assertCollectingRecommendationCardState {
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Fail)
 
-            homeRecommendationViewModel.fetchNextHomeRecommendation("", 0, 1, productPage, locationParam = "", sourceType = "", existingRecommendationData = (it.first() as HomeRecommendationCardState.Fail).data.homeRecommendations)
+            homeRecommendationViewModel.fetchNextHomeRecommendation(1, "", 0, 1, productPage, locationParam = "", sourceType = "", existingRecommendationData = (it.first() as HomeRecommendationCardState.Fail).data.homeRecommendations)
             Assert.assertTrue(it.first() is HomeRecommendationCardState.Fail)
         }
     }

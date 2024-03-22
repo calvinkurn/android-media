@@ -59,7 +59,7 @@ public class BannerAdsAdapterTypeFactoryReimagine implements BannerAdsTypeFactor
         }  else if(viewType == BannerShopProductReimagineViewHolder.LAYOUT) {
             holder = new BannerShopProductReimagineViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         } else if(viewType == BannerShowMoreReimagineViewHolder.LAYOUT){
-            holder = new BannerShowMoreReimagineViewHolder(view, topAdsBannerClickListener);
+            holder = new BannerShowMoreReimagineViewHolder(view, itemImpressionListener, topAdsBannerClickListener);
         } else if (viewType == BannerProductShimmerViewHolder.Companion.getLAYOUT()) {
             holder = new BannerProductShimmerViewHolder(view);
         } else {

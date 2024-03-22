@@ -14,7 +14,7 @@ import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as Product
 class BannerShopProductReimagineViewHolder(
     container: View,
     private val topAdsBannerClickListener: TopAdsBannerClickListener?,
-    private val impressionListener: TopAdsItemImpressionListener?,
+    private val impressionListener: TopAdsItemImpressionListener?
 ) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
     private val productCardGridViewA: ProductCardGridCarouselView =
         itemView.findViewById(R.id.topAdsProductItem)
@@ -41,7 +41,7 @@ class BannerShopProductReimagineViewHolder(
 
                 setOnClickListener {
                     topAdsBannerClickListener?.onBannerAdsClicked(
-                        adapterPosition,
+                        absoluteAdapterPosition,
                         model.appLink,
                         model.cpmData
                     )

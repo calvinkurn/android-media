@@ -986,8 +986,9 @@
                 "wishlist": false,
                 "component_id": "03.02.01.01",
                 "shop": {
-                  "name": "",
-                  "city": ""
+                  "id": "shop-id",
+                  "name": "samsung",
+                  "city": "jakarta"
                 },
                 "badges": [],
                 "label_groups": [

@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.inspirationlistatc
 
 import android.content.Context
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -53,8 +54,15 @@ class InspirationListAtcViewDelegate @Inject constructor(
         InspirationCarouselTracking.trackCarouselClickSeeAll(data.keyword, data)
     }
 
-    override fun trackItemClick(trackingData: InspirationCarouselTracking.Data) {
+    override fun trackItemClick(
+        trackingData: InspirationCarouselTracking.Data,
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         InspirationCarouselTracking.trackCarouselClick(trackingData)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultClick(product.asByteIOSearchResult(""))
+//        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackItemImpress(product: InspirationCarouselDataView.Option.Product) {
@@ -64,6 +72,10 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 getSearchParameter()
             )
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, trackingData)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(product.asByteIOSearchResult(null))
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
     override fun trackAddToCart(trackingData: InspirationCarouselTracking.Data) {
@@ -107,7 +119,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
                     product.minOrder.toIntOrZero()
                 )
 
-            trackItemClick(trackingData)
+            trackItemClick(trackingData, product)
             trackAddToCart(trackingData)
             onCheckout.invoke()
         }
@@ -143,5 +155,10 @@ class InspirationListAtcViewDelegate @Inject constructor(
             product.imgUrl,
             SearchConstant.TopAdsComponent.ORGANIC_ADS
         )
+    }
+
+    override fun trackImpression(option: InspirationCarouselDataView.Option) {
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(option.asByteIOSearchResult())
     }
 }

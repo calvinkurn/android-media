@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMapWithWareHouse
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -19,6 +20,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
@@ -46,13 +48,16 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         if (isAlreadyLoaded(component)) return false
         component?.let {
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
-            val isDynamic = it.properties?.dynamic ?: false
+
+            val request = ProductCardRequest(
+                it.getComponentId(),
+                pageEndPoint,
+                it.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
+                it.name
+            )
+
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
-                    component.dynamicOriginalId!!
-                } else {
-                    componentId
-                },
+                request,
                 getQueryParameterMap(
                     PAGE_START,
                     parentComponentsItem?.chipSelectionData,
@@ -67,9 +72,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     paramWithoutRpc,
                     it.userAddressData,
                     component.properties?.warehouseTco
-                ),
-                pageEndPoint,
-                it.name
+                )
             )
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
@@ -106,14 +109,17 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
-            val isDynamic = component1.properties?.dynamic ?: false
             val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
+
+            val request = ProductCardRequest(
+                component1.getComponentId(),
+                pageEndPoint,
+                component1.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
+                component1.name
+            )
+
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
-                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty()) {
-                    component1.dynamicOriginalId!!
-                } else {
-                    component1.id
-                },
+                request,
                 getQueryParameterMap(
                     component1.pageLoadedCounter,
                     parentComponentsItem?.chipSelectionData,
@@ -128,9 +134,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     paramWithoutRpc,
                     component.userAddressData,
                     component.properties?.warehouseTco
-                ),
-                pageEndPoint,
-                component1.name
+                )
             )
             component1.nextPageKey = additionalInfo?.nextPage
             if (productListData.isEmpty()) {
@@ -164,9 +168,16 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 }
             }
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
-            val isDynamic = it.properties?.dynamic ?: false
+
+            val request = ProductCardRequest(
+                it.getComponentId(),
+                pageEndPoint,
+                it.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
+                it.name
+            )
+
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
+                request,
                 getQueryParameterMap(
                     it.pageLoadedCounter,
                     parentComponentsItem?.chipSelectionData,
@@ -181,9 +192,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     paramWithoutRpc,
                     it.userAddressData,
                     component.properties?.warehouseTco
-                ),
-                pageEndPoint,
-                it.name
+                )
             )
             component.nextPageKey = additionalInfo?.nextPage
             if (productListData.isEmpty() && component.nextPageKey.isNullOrEmpty()) {
@@ -276,7 +285,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
+        if (ProductCardExperiment.isReimagine()) {
         queryParameterMap[PARAM_L_NAME] = VALUE_L_NAME_SRE
+        }
         return queryParameterMap
     }
 
@@ -288,6 +299,15 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             it.parentComponentId = parentComponentsItem.id
             it.pageEndPoint = parentComponentsItem.pageEndPoint
             it.parentComponentPosition = parentComponentsItem.position
+        }
+    }
+
+    private fun ComponentsItem.getComponentId(): String {
+        val isDynamic = properties?.dynamic ?: false
+        return if (isDynamic && !dynamicOriginalId.isNullOrEmpty()) {
+            dynamicOriginalId!!
+        } else {
+            id
         }
     }
 }

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -41,7 +43,6 @@ import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
-import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
@@ -131,6 +132,8 @@ class UniversalInboxFragment @Inject constructor(
     // Tracker
     private var trackingQueue: TrackingQueue? = null
     private var shouldImpressTracker = true
+    private var hasTrackEnterPage = false
+    private var hasApplogScrollListener = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -175,6 +178,7 @@ class UniversalInboxFragment @Inject constructor(
         setupRecyclerViewLoadMore()
         setupObservers()
         setupListeners()
+        addRecommendationScrollListener()
     }
 
     private fun setupRecyclerView() {
@@ -189,6 +193,12 @@ class UniversalInboxFragment @Inject constructor(
         binding?.inboxRv?.adapter = adapter
         binding?.inboxRv?.isNestedScrollingEnabled = false
         binding?.inboxRv?.addItemDecoration(UniversalInboxRecommendationDecoration())
+    }
+
+    private fun addRecommendationScrollListener() {
+        if(hasApplogScrollListener) return
+        binding?.inboxRv?.addVerticalTrackListener()
+        hasApplogScrollListener = true
     }
 
     private fun setupRecyclerViewLoadMore() {
@@ -211,6 +221,12 @@ class UniversalInboxFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeProductRecommendation()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeInboxMenuAndCounter()
             }
         }
@@ -218,12 +234,6 @@ class UniversalInboxFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeInboxNavigation()
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeProductRecommendation()
             }
         }
 
@@ -339,12 +349,19 @@ class UniversalInboxFragment @Inject constructor(
             // Update view only when not loading (not waiting for network)
             // Or product recommendation is empty (refresh / re-shuffle)
             if (!it.isLoading && it.productRecommendation.isNotEmpty()) {
+                trackEnterPage()
                 addProductRecommendation(
                     title = it.title,
                     newList = it.productRecommendation
                 )
             }
         }
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun toggleLoadingProductRecommendation(isLoading: Boolean) {
@@ -359,10 +376,17 @@ class UniversalInboxFragment @Inject constructor(
         title: String,
         newList: List<Visitable<in UniversalInboxTypeFactory>>
     ) {
+        removeProductRecommendation()
         val editedNewList = newList.toMutableList()
         setHeadlineAndBannerExperiment(editedNewList)
         adapter.tryAddProductRecommendation(title, editedNewList)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    private fun removeProductRecommendation() {
+        if (endlessRecyclerViewScrollListener?.currentPage.toZeroIfNull() <= 0) {
+            adapter.tryRemoveProductRecommendation()
+        }
     }
 
     private suspend fun observeAutoScrollUiState() {
@@ -949,25 +973,6 @@ class UniversalInboxFragment @Inject constructor(
             }
             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, view)
         }
-    }
-
-    private fun getUserCurrentProductRecommendationPosition(): Int {
-        var result = -1
-        val layoutManager = binding?.inboxRv?.layoutManager as? StaggeredGridLayoutManager
-        layoutManager?.let { lm ->
-            val spanArray = IntArray(lm.spanCount)
-            val firstVisiblePosition = lm.findFirstVisibleItemPositions(spanArray).minOrNull() ?: -1
-            val lastVisiblePosition = lm.findLastVisibleItemPositions(spanArray).minOrNull() ?: -1
-
-            for (position in firstVisiblePosition..lastVisiblePosition) {
-                val viewHolder = binding?.inboxRv?.findViewHolderForAdapterPosition(position)
-                if (viewHolder is UniversalInboxRecommendationProductViewHolder) {
-                    result = position
-                    break
-                }
-            }
-        }
-        return result
     }
 
     companion object {

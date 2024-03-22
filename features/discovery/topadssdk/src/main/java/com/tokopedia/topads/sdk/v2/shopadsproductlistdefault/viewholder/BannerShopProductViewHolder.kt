@@ -43,11 +43,8 @@ class BannerShopProductViewHolder(
                     }
                 }
                 setOnClickListener {
-                    topAdsBannerClickListener?.onBannerAdsClicked(
-                        adapterPosition,
-                        model.appLink,
-                        model.cpmData
-                    )
+                    topAdsBannerClickListener?.onBannerAdsClicked(absoluteAdapterPosition,
+                            model.appLink, model.cpmData)
                     topAdsUrlHitter.hitClickUrl(className, model.adsClickUrl, "", "", "")
                 }
                 addToCartClickListener?.let { listener ->

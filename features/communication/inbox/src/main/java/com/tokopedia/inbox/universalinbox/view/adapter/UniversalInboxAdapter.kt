@@ -308,6 +308,18 @@ class UniversalInboxAdapter(
         }
     }
 
+    fun tryRemoveProductRecommendation() {
+        try {
+            if (visitables.isEmpty()) return
+            getProductRecommendationFirstPosition()?.let { startPosition ->
+                val editedList = visitables.slice(0 until startPosition)
+                updateItems(editedList)
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
     fun getInboxItem(position: Int): Visitable<in UniversalInboxTypeFactory> {
         return visitables[position]
     }

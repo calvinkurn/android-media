@@ -5,12 +5,13 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 data class HomeRecommendationBannerTopAdsUiModel(
-        val topAdsImageUiModel: TopAdsImageUiModel? = null,
-        val cardId: String,
-        val layoutCard: String,
-        val layoutItem: String,
-        val categoryId: String,
-        val position: Int = -1
+    val topAdsImageUiModel: TopAdsImageUiModel? = null,
+    val cardId: String,
+    val layoutCard: String,
+    val layoutItem: String,
+    val categoryId: String,
+    val position: Int = -1,
+    val pageName: String
 ) : BaseHomeRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
@@ -19,7 +20,7 @@ data class HomeRecommendationBannerTopAdsUiModel(
 
     override fun areItemsTheSame(other: Any): Boolean {
         return other is HomeRecommendationBannerTopAdsUiModel &&
-            topAdsImageUiModel?.bannerId == other.topAdsImageUiModel?.bannerId
+            topAdsImageUiModel?.bannerId == other.topAdsImageViewModel?.bannerId
     }
 
     override fun areContentsTheSame(other: Any): Boolean {
