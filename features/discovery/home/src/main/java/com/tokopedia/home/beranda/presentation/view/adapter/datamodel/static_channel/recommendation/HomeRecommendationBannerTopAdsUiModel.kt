@@ -20,7 +20,7 @@ data class HomeRecommendationBannerTopAdsUiModel(
 
     override fun areItemsTheSame(other: Any): Boolean {
         return other is HomeRecommendationBannerTopAdsUiModel &&
-            topAdsImageUiModel?.bannerId == other.topAdsImageViewModel?.bannerId
+            topAdsImageUiModel?.bannerId == other.topAdsImageUiModel?.bannerId
     }
 
     override fun areContentsTheSame(other: Any): Boolean {
