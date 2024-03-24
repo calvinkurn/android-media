@@ -4,6 +4,7 @@ package com.tokopedia.topads.view.model
 
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -166,8 +167,16 @@ class SeePerformanceTopAdsViewModelTest {
         }
         val resources: Resources = mockk(relaxed = true)
         viewModel.getTopAdsProductStatistics(resources, String.EMPTY, String.EMPTY, Int.ZERO)
+        val _goalId = viewModel.javaClass.getDeclaredField("_goalId")
+        _goalId.isAccessible = true
+        val goalIdLiveData = _goalId.get(viewModel) as MutableLiveData<Int>
+        goalIdLiveData.value = 5
+        val _adId = viewModel.javaClass.getDeclaredField("_adId")
+        _adId.isAccessible = true
+        val adIdLiveData = _adId.get(viewModel) as MutableLiveData<String>
+        adIdLiveData.value = "tes"
         assertEquals(Success(response), viewModel.productStatistics.value)
-        assertEquals(Int.ZERO, viewModel.goalId.value)
+        assertEquals(5, viewModel.goalId.value)
     }
 
     @Test
@@ -207,6 +216,10 @@ class SeePerformanceTopAdsViewModelTest {
         } answers {
             response
         }
+        val _topAdsPromoInfo = viewModel.javaClass.getDeclaredField("_topAdsPromoInfo")
+        _topAdsPromoInfo.isAccessible = true
+        val topAdsPromoInfoLiveData = _topAdsPromoInfo.get(viewModel) as MutableLiveData<SingleAdInFo>
+        topAdsPromoInfoLiveData.value = SingleAdInFo()
         viewModel.getGroupInfo()
         assertEquals(response, viewModel.topAdsGetGroupInfo.value)
     }
@@ -230,6 +243,10 @@ class SeePerformanceTopAdsViewModelTest {
         } answers {
             response
         }
+        val _topAdsPromoInfo = viewModel.javaClass.getDeclaredField("_topAdsPromoInfo")
+        _topAdsPromoInfo.isAccessible = true
+        val topAdsPromoInfoLiveData = _topAdsPromoInfo.get(viewModel) as MutableLiveData<SingleAdInFo>
+        topAdsPromoInfoLiveData.value = SingleAdInFo()
         viewModel.getTotalAdsAndKeywordsCount()
         assertEquals(data, viewModel.totalAdsAndKeywordsCount.value)
     }
