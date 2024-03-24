@@ -170,13 +170,6 @@ internal object MainVisitableExtension {
         return this
     }
 
-    fun MutableList<Visitable<*>>.addProducts(
-        products: List<ShoppingListHorizontalProductCardItemUiModel>
-    ): MutableList<Visitable<*>> {
-        addAll(products)
-        return this
-    }
-
     fun MutableList<Visitable<*>>.addProductCarts(
         products: List<ShoppingListCartProductItemUiModel>
     ): MutableList<Visitable<*>> {
@@ -251,10 +244,6 @@ internal object MainVisitableExtension {
         return this
     }
 
-    fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.addProduct(
-        product: ShoppingListHorizontalProductCardItemUiModel
-    ) = add(product)
-
     fun MutableList<Visitable<*>>.addEmptyStateOoc(): MutableList<Visitable<*>> {
         add(
             TokoNowEmptyStateOocUiModel(
@@ -281,15 +270,6 @@ internal object MainVisitableExtension {
     fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.removeProduct(
         productId: String
     ) = removeFirst { it.id == productId }
-
-    fun MutableList<Visitable<*>>.doIf(
-        predicate: Boolean,
-        then: MutableList<Visitable<*>>.() -> Unit,
-        ifNot: MutableList<Visitable<*>>.() -> Unit = {}
-    ): MutableList<Visitable<*>> {
-        if (predicate) then.invoke(this) else ifNot.invoke(this)
-        return this
-    }
 
     fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.updateProductSelections(
         productId: String = String.EMPTY,
@@ -338,6 +318,4 @@ internal object MainVisitableExtension {
         }
         return this
     }
-
-    fun List<ShoppingListHorizontalProductCardItemUiModel>.resetIndices() = mapIndexed { index, uiModel -> uiModel.copy(index = index) }
 }

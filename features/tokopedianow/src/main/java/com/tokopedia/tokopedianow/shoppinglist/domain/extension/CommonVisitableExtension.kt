@@ -51,6 +51,28 @@ internal object CommonVisitableExtension {
         }
     }
 
+    fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.addProduct(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) = add(product)
+
+    fun List<ShoppingListHorizontalProductCardItemUiModel>.resetIndices() = mapIndexed { index, uiModel -> uiModel.copy(index = index) }
+
+    fun MutableList<Visitable<*>>.addProducts(
+        products: List<ShoppingListHorizontalProductCardItemUiModel>
+    ): MutableList<Visitable<*>> {
+        addAll(products)
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.doIf(
+        predicate: Boolean,
+        then: MutableList<Visitable<*>>.() -> Unit,
+        ifNot: MutableList<Visitable<*>>.() -> Unit = {}
+    ): MutableList<Visitable<*>> {
+        if (predicate) then.invoke(this) else ifNot.invoke(this)
+        return this
+    }
+
     fun MutableList<Visitable<*>>.addErrorState(
         isFullPage: Boolean,
         throwable: Throwable

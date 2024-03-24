@@ -20,12 +20,12 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.extension.AnotherOptionBot
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.AnotherOptionBottomSheetVisitableExtension.addLoadingState
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.AnotherOptionBottomSheetVisitableExtension.switchToProductRecommendationAdded
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addErrorState
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProduct
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.doIf
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.modifyProduct
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.resetIndices
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductRecommendationMapper.mapRecommendedProducts
-import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addProduct
-import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addProducts
-import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.doIf
-import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.resetIndices
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
@@ -43,7 +43,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io)  {
-    private companion object {
+    companion object {
         const val RECOMMENDATION_PAGE_NAME = "tokonow_similar"
     }
 
