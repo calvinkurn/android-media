@@ -24,13 +24,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shop_performance_toolbar">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvShopPerformance"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.tokopedia.targetedticker.ui.TargetedTickerWidget
+                android:id="@+id/shopPerformanceUnifiedTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/shop_performance_toolbar"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvShopPerformance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical" />
+
+        </LinearLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
