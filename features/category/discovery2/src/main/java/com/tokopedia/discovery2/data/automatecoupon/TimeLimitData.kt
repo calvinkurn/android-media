@@ -6,9 +6,11 @@ data class TimeLimitData(
     @SerializedName("title")
     val title: String = "",
 
-    @SerializedName("timestamp")
+    @SerializedName("value")
     val timestamp: Long = 0L,
 
     @SerializedName("show_timer")
-    val showTimer: Boolean = true
-)
+    private val showTimer: Boolean = false
+) {
+    fun canShowTimer() = showTimer && timestamp > 0L
+}

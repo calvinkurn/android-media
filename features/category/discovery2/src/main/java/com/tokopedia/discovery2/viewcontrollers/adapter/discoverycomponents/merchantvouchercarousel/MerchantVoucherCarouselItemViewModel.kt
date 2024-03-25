@@ -56,7 +56,7 @@ class MerchantVoucherCarouselItemViewModel(
                     colorHex = fontColor.orEmpty(),
                 ),
                 timeLimit = if (timeLimitObj != null) {
-                    if (timeLimitObj.showTimer) {
+                    if (timeLimitObj.canShowTimer()) {
                         TimeLimit.Timer(
                             prefix = DynamicColorText(timeLimitObj.title),
                             endDate = Date(timeLimitObj.timestamp * 1000L)
