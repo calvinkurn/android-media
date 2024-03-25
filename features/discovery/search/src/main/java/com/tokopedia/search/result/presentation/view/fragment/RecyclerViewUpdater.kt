@@ -38,6 +38,8 @@ class RecyclerViewUpdater @Inject constructor(
     LifecycleObserver,
     ContextProvider by WeakReferenceContextProvider(context) {
 
+    var enterMethod: String = ""
+    var isLocalSearch: Boolean = false
     var recyclerView: RecyclerView? = null
         private set
     var productListAdapter: ProductListAdapter? = null
@@ -122,7 +124,7 @@ class RecyclerViewUpdater @Inject constructor(
     override fun setItems(list: List<Visitable<*>>) {
         productListAdapter?.clearData()
 
-        stopPerformanceMonitoring(performanceMonitoring, recyclerView)
+        stopPerformanceMonitoring(performanceMonitoring, recyclerView, enterMethod, isLocalSearch)
         appendItems(list)
     }
 
