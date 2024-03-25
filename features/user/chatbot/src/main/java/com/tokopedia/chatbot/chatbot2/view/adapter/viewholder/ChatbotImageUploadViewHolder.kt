@@ -1,34 +1,16 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder
 
-import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
-import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
-import com.tokopedia.chatbot.ChatbotConstant
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.AUTHORIZATION
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.CONTENT_TYPE
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.DATE_FORMAT
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.POST
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.TKPD_USERID
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_APP_VERSION
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_DEVICE
-import com.tokopedia.chatbot.ChatbotConstant.SecureImageUpload.X_USER_ID
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackgroundWithoutCorner
 import com.tokopedia.chatbot.chatbot2.view.util.generateRightMessageBackgroundWithoutCorner
@@ -40,10 +22,6 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadSecureImage
-import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.network.utils.ThemeUtils
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -51,7 +29,6 @@ import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.chat_common.R as chat_commonR
 import com.tokopedia.resources.common.R as resourcescommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ChatbotImageUploadViewHolder(
     itemView: View?,
@@ -81,7 +58,6 @@ class ChatbotImageUploadViewHolder(
     )
 
     private val attachmentUnify get() = attachment as? ImageUnify
-    private var loader: AnimatedVectorDrawableCompat? = null
 
     override fun bind(element: ImageUploadUiModel) {
         super.bind(element)
@@ -100,15 +76,12 @@ class ChatbotImageUploadViewHolder(
     }
 
     override fun bindClickListener(element: ImageUploadUiModel) {
-        //        val url = "https://www.litmus.com/wp-content/uploads/2021/02/ease-applied-to-tween-with-bouncein-example.gif"
-        val url = "https://s6.ezgif.com/tmp/ezgif-6-83ae459ef9.gif"
-
         chatBalloon?.setOnClickListener { view ->
             val imageUrl = element.imageUrl.toEmptyStringIfNull()
             val replyTime = element.replyTime.toEmptyStringIfNull()
             if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
                 listener.onImageUploadClicked(
-                    url,
+                    imageUrl,
                     replyTime,
                     false
                 )
@@ -133,9 +106,7 @@ class ChatbotImageUploadViewHolder(
             attachmentUnify?.let { attachementUnify ->
                 loadImage(
                     attachementUnify,
-                    imageUrl,
-                    element.attachmentType,
-                    element.messageId
+                    imageUrl
                 )
             }
         }
@@ -143,12 +114,10 @@ class ChatbotImageUploadViewHolder(
 
     private fun loadImage(
         imageview: ImageView,
-        url: String?,
-        attachmentType: String,
-        messageId: String
+        url: String?
     ) {
         try {
-            loadSecureImage(imageview, url, attachmentType, messageId)
+            loadSecureImage(imageview, url)
         } catch (e: Exception) {
             if (imageview.context != null) {
                 imageview.setImageDrawable(
@@ -164,29 +133,13 @@ class ChatbotImageUploadViewHolder(
 
     private fun loadSecureImage(
         imageview: ImageView,
-        url: String?,
-        attachmentType: String,
-        messageId: String
+        url: String?
     ) {
-//        val url = "https://s4.ezgif.com/tmp/ezgif-4-00c0sssbbbd56.gif"
         if (imageview.context != null) {
-            val loadSecureImage = FirebaseRemoteConfigImpl(imageview.context)
-                .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_SECURE_IMAGE, true)
-
-            if (loadSecureImage) {
-                if (url?.endsWith(GIF_EXTENSION, true) == true) {
-                    loadGif(imageview, url)
-                } else {
-                    imageview.loadSecureImage(url, userSession)
-                }
+            if (url?.endsWith(GIF_EXTENSION, true) == true) {
+                loadGif(imageview, url)
             } else {
-                Glide.with(imageview.context)
-                    .load(getGlideUrl(messageId, attachmentType, url, userSession))
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(resourcescommonR.drawable.chatbot_image_placeloader)
-                    .error(abstractionR.drawable.error_drawable)
-                    .into(imageview)
+                imageview.loadSecureImage(url, userSession)
             }
         }
     }
@@ -209,42 +162,10 @@ class ChatbotImageUploadViewHolder(
                     imageShimmer?.gone()
                     imageRetry?.visible()
                     imageRetry?.setOnClickListener {
-//                        val urls = "https://s4.ezgif.com/tmp/ezgif-4-00c0bbbd56.gif"
                         loadGif(imageview, url)
                     }
                 }
             )
-        }
-    }
-
-    private fun getGlideUrl(
-        messageId: String,
-        attachmentType: String,
-        url: String?,
-        userSession: UserSessionInterface
-    ): GlideUrl {
-        val map = AuthHelper.getDefaultHeaderMap(
-            path = ChatbotConstant.SecureImageUploadUrl.getUploadSecureUrl(),
-            strParam = messageId,
-            method = POST,
-            contentType = CONTENT_TYPE,
-            authKey = AuthUtil.KEY.KEY_WSV4,
-            dateFormat = DATE_FORMAT,
-            userSession = userSession,
-            theme = ThemeUtils.getHeader(itemView.context)
-        )
-        return if (attachmentType == TYPE_SECURE_IMAGE_UPLOAD) {
-            GlideUrl(
-                url,
-                LazyHeaders.Builder()
-                    .addHeader(AUTHORIZATION, map[AUTHORIZATION] ?: "")
-                    .addHeader(TKPD_USERID, map[X_USER_ID] ?: "")
-                    .addHeader(X_APP_VERSION, map[X_APP_VERSION] ?: "")
-                    .addHeader(X_DEVICE, map[X_DEVICE] ?: "")
-                    .build()
-            )
-        } else {
-            GlideUrl(url)
         }
     }
 
