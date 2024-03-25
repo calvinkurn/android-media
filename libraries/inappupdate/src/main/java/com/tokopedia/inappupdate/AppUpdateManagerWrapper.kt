@@ -3,6 +3,7 @@ package com.tokopedia.inappupdate
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -60,6 +61,9 @@ object AppUpdateManagerWrapper {
         val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
 
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
+
+            Log.i("in app update", "Check update staleness flexible: ${it.clientVersionStalenessDays()}")
+
             weakRefActivity.get()?.let {activity ->
                 InAppUpdateLogUtil.logStatusCheck(activity, LOG_UPDATE_TYPE_FLEXIBLE, it.availableVersionCode(), it.updateAvailability(),
                         it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE), it.clientVersionStalenessDays(), it.updatePriority(), it.totalBytesToDownload())
@@ -131,6 +135,9 @@ object AppUpdateManagerWrapper {
         }
         val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
+
+            Log.i("in app update", "Check update staleness immediate: ${it.clientVersionStalenessDays()}")
+
             weakRefActivity.get()?.let { activity ->
                 InAppUpdateLogUtil.logStatusCheck(activity, LOG_UPDATE_TYPE_IMMEDIATE, it.availableVersionCode(), it.updateAvailability(),
                         it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE), it.clientVersionStalenessDays(), it.updatePriority(), it.totalBytesToDownload())
