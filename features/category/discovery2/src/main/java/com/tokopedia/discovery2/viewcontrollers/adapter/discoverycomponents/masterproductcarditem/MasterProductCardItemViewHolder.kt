@@ -343,33 +343,35 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun updateNotifyMeButton(notifyMeStatus: Boolean?) {
-        val notifyText = masterProductCardItemViewModel?.getNotifyText(notifyMeStatus)
-        masterProductCardListView?.reRenderGenericCtaButton(
-            ProductCardModel(
-                productCardGenericCta = ProductCardModel.ProductCardGenericCta(
-                    copyWriting = notifyText,
-                    mainButtonVariant = UnifyButton.Variant.GHOST,
-                    mainButtonType = if (notifyMeStatus == true) {
-                        UnifyButton.Type.ALTERNATE
-                    } else {
-                        UnifyButton.Type.MAIN
-                    }
+        if (dataItem?.hasNotifyMe == true) {
+            val notifyText = masterProductCardItemViewModel?.getNotifyText(notifyMeStatus)
+            masterProductCardListView?.reRenderGenericCtaButton(
+                ProductCardModel(
+                    productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                        copyWriting = notifyText,
+                        mainButtonVariant = UnifyButton.Variant.GHOST,
+                        mainButtonType = if (notifyMeStatus == true) {
+                            UnifyButton.Type.ALTERNATE
+                        } else {
+                            UnifyButton.Type.MAIN
+                        }
+                    )
                 )
             )
-        )
-        masterProductCardGridView?.reRenderGenericCtaButton(
-            ProductCardModel(
-                productCardGenericCta = ProductCardModel.ProductCardGenericCta(
-                    copyWriting = notifyText,
-                    mainButtonVariant = UnifyButton.Variant.GHOST,
-                    mainButtonType = if (notifyMeStatus == true) {
-                        UnifyButton.Type.ALTERNATE
-                    } else {
-                        UnifyButton.Type.MAIN
-                    }
+            masterProductCardGridView?.reRenderGenericCtaButton(
+                ProductCardModel(
+                    productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                        copyWriting = notifyText,
+                        mainButtonVariant = UnifyButton.Variant.GHOST,
+                        mainButtonType = if (notifyMeStatus == true) {
+                            UnifyButton.Type.ALTERNATE
+                        } else {
+                            UnifyButton.Type.MAIN
+                        }
+                    )
                 )
             )
-        )
+        }
     }
 
     private fun updateNotifyMeState(notifyMeStatus: Boolean?) {
