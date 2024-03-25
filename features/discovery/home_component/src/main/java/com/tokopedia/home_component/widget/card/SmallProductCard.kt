@@ -47,7 +47,7 @@ class SmallProductCard @JvmOverloads constructor(
 
         // style
         textStyle?.let { style ->
-            this?.weightType = if (style.isBold) Typography.BOLD else Typography.REGULAR
+            this?.setWeight(if (style.isBold) Typography.BOLD else Typography.REGULAR)
             this?.setTextColor(Color.parseColor(style.textColor))
         }
     }

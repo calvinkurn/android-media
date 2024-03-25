@@ -27,11 +27,11 @@ object Mission4SquareWidgetMapper {
 
     private fun MissionWidgetDataModel.LabelGroup.extract(): SmallProductModel.TextStyle {
         if (styles.isEmpty()) return SmallProductModel.TextStyle()
-        val style = styles.associateBy { it.key }
+        val style = styles.associate { it.key to it.value }
 
         return SmallProductModel.TextStyle(
-            isBold = style[Const.TEXT_WEIGHT]?.value == Const.TEXT_WEIGHT_BOLD,
-            textColor = style[Const.TEXT_COLOR]?.value.orEmpty()
+            isBold = style[Const.TEXT_WEIGHT] == Const.TEXT_WEIGHT_BOLD,
+            textColor = style[Const.TEXT_COLOR].orEmpty()
         )
     }
 
