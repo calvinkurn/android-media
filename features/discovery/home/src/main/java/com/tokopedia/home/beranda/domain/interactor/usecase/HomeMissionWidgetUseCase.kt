@@ -32,11 +32,17 @@ class HomeMissionWidgetUseCase @Inject constructor(
                     )
                 }
             )
-            val missionWidgetList = LazyLoadDataMapper
-                .mapMissionWidgetData(results.getHomeMissionWidget.missions, false)
+            val missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(
+                results.getHomeMissionWidget.missions,
+                false,
+                results.getHomeMissionWidget.appLog
+            )
 
-            val mission4SquareWidgetList = LazyLoadDataMapper
-                .map4SquareMissionWidgetData(results.getHomeMissionWidget.missions, false)
+            val mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
+                results.getHomeMissionWidget.missions,
+                false,
+                results.getHomeMissionWidget.appLog
+            )
 
             currentMissionWidgetListDataModel.copy(
                 header = results.getHomeMissionWidget.header.getAsHomeComponentHeader(),

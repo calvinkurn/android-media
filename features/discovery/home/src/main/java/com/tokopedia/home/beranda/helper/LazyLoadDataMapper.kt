@@ -6,15 +6,18 @@ import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import com.tokopedia.home_component.visitable.Mission4SquareUiModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetDataModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by dhaba
  */
 object LazyLoadDataMapper {
+
     fun mapMissionWidgetData(
         missionWidgetList: List<HomeMissionWidgetData.Mission>,
-        isCache: Boolean
+        isCache: Boolean,
+        appLog: HomeMissionWidgetData.AppLog,
     ): List<MissionWidgetDataModel> {
         return missionWidgetList.map {
             MissionWidgetDataModel(
@@ -26,6 +29,7 @@ object LazyLoadDataMapper {
                 pageName = it.pageName,
                 categoryID = it.categoryID,
                 productID = it.productID,
+                parentProductID = it.parentProductID,
                 productName = it.productName,
                 recommendationType = it.recommendationType,
                 buType = it.buType,
@@ -35,6 +39,12 @@ object LazyLoadDataMapper {
                 campaignCode = it.campaignCode,
                 animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE,
                 isCache = isCache,
+                appLog = RecommendationAppLog(
+                    sessionId = appLog.bytedanceSessionId,
+                    requestId = appLog.requestId,
+                    logId = appLog.logId,
+                    recParam = it.recParam
+                ),
                 labelGroup = it.labelGroup.map { labelGroup ->
                     MissionWidgetDataModel.LabelGroup(
                         title = labelGroup.title,
@@ -55,9 +65,10 @@ object LazyLoadDataMapper {
 
     fun map4SquareMissionWidgetData(
         missionWidgetList: List<HomeMissionWidgetData.Mission>,
-        isCache: Boolean
+        isCache: Boolean,
+        appLog: HomeMissionWidgetData.AppLog,
     ): List<Mission4SquareUiModel> {
-        return mapMissionWidgetData(missionWidgetList, isCache)
+        return mapMissionWidgetData(missionWidgetList, isCache, appLog)
             .take(4)
             .map { Mission4SquareWidgetMapper.map(it) }
     }

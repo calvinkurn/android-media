@@ -10,29 +10,33 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.animation.Interpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asCardTrackModel
+import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.home_component.databinding.HomeComponentItemMissionWidgetClearBinding
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.home_component.util.loadImageRounded
 import com.tokopedia.home_component.util.overlay
-import com.tokopedia.home_component.viewholders.DynamicIconItemViewHolder
-import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by dhaba
  */
 class MissionWidgetClearItemViewHolder(
     view: View,
-    private val missionWidgetComponentListener: MissionWidgetComponentListener,
+    private val missionWidgetComponentListener: MissionWidgetComponentListener
 ) : AbstractViewHolder<CarouselMissionWidgetDataModel>(view) {
     val pathInputClick = UnifyMotion.EASE_OUT
     val pathOutputClick = UnifyMotion.EASE_IN_OUT
@@ -70,10 +74,28 @@ class MissionWidgetClearItemViewHolder(
         setOnTouchListener()
         binding?.run {
             containerMissionWidget.setOnClickListener {
+                if (element.isProduct()) {
+                    AppLogRecommendation.sendProductClickAppLog(
+                        element.asProductTrackModel(
+                            isCache = element.isCache,
+                            enterMethod = "${element.data.pageName}_${element.cardPosition+1}"
+                        )
+                    )
+                } else {
+                    AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
+                }
+                AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, "${element.data.pageName}_${element.cardPosition + 1}")
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             containerMissionWidget.addOnImpressionListener(element) {
                 missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
+            }
+            containerMissionWidget.addOnImpression1pxListener(element.appLogImpressHolder) {
+                if (element.isProduct()) {
+                    AppLogRecommendation.sendProductShowAppLog(element.asProductTrackModel(element.isCache))
+                } else {
+                    AppLogRecommendation.sendCardShowAppLog(element.asCardTrackModel(element.isCache))
+                }
             }
         }
     }
@@ -96,7 +118,7 @@ class MissionWidgetClearItemViewHolder(
                 imageUrl,
                 itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_image_corner_radius)
             )
-            if(HomeComponentFeatureFlag.isMissionExpVariant()) {
+            if (HomeComponentFeatureFlag.isMissionExpVariant()) {
                 overlay()
             }
         }
@@ -110,10 +132,10 @@ class MissionWidgetClearItemViewHolder(
     }
 
     private fun Typography.renderTitle(element: CarouselMissionWidgetDataModel) {
-        if(element.data.title.isEmpty()) {
+        if (element.data.title.isEmpty()) {
             hide()
         } else {
-            val fontWeight = if(element.withSubtitle) {
+            val fontWeight = if (element.withSubtitle) {
                 Typography.BOLD
             } else {
                 Typography.REGULAR
@@ -125,7 +147,7 @@ class MissionWidgetClearItemViewHolder(
     }
 
     private fun Typography.renderSubtitle(element: CarouselMissionWidgetDataModel) {
-        if(element.data.subTitle.isEmpty() || !element.withSubtitle) {
+        if (element.data.subTitle.isEmpty() || !element.withSubtitle) {
             hide()
         } else {
             text = element.data.subTitle

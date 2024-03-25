@@ -52,7 +52,7 @@ data class ShopCardModel(
             val priceFormat: String = "",
             val imageUrl: String = "",
             val isRecommendation: Boolean = false,
-            val impressHolder: ImpressHolder? = null
+            val impressHolder: ImpressHolder? = ImpressHolder(),
     )
 
     data class ShopItemVoucher(

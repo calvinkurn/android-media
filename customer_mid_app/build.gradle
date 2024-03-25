@@ -392,4 +392,26 @@ dependencies {
     debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+
+    // applog
+    implementation rootProject.appLogDependencies.bdTrackerGlobal
+    implementation rootProject.appLogDependencies.sampling
+    implementation rootProject.appLogDependencies.compress
+    implementation rootProject.appLogDependencies.monitor
+    implementation rootProject.appLogDependencies.encrypt
+    implementation rootProject.appLogDependencies.baseLibsUtility
+    implementation rootProject.appLogDependencies.bdNetworkTag
+    implementation rootProject.appLogDependencies.bdTrackerEtGlobal // debugOnly
+
+    // Tik tok Slardar
+    implementation rootProject.ext.slardarDependencies.commonMonitor
+    implementation rootProject.ext.slardarDependencies.npth
+    implementation rootProject.ext.slardarDependencies.npthCore
+
+    // ttnet
+    implementation rootProject.ext.ttnetDependencies.chromiumCronet
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.ttnetDependencies.boringSsl
+    implementation rootProject.ext.ttnetDependencies.cppShared
+
 }

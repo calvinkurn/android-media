@@ -17,6 +17,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -99,7 +103,8 @@ class WishlistCollectionFragment :
     WishlistCollectionAdapter.ActionListener,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener,
-    ActionListenerBottomSheetMenu {
+    ActionListenerBottomSheetMenu,
+    AppLogInterface {
     private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
@@ -146,7 +151,18 @@ class WishlistCollectionFragment :
 
     private var isAffiliateRegistered: Boolean = false
 
+    private var hasTrackEnterPage: Boolean = false
+    private var hasApplogScrollListener: Boolean = false
+
     override fun getScreenName(): String = ""
+
+    override fun getPageName(): String {
+        return PageName.WISHLIST
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
 
     override fun initInjector() {
         activity?.let { activity ->
@@ -294,6 +310,7 @@ class WishlistCollectionFragment :
             wishlistCollectionNavtoolbar.setIcon(icons)
         }
         addEndlessScrollListener()
+        addRecommendationScrollListener()
     }
 
     private fun addEndlessScrollListener() {
@@ -333,8 +350,20 @@ class WishlistCollectionFragment :
         }
     }
 
+    private fun addRecommendationScrollListener() {
+        if(hasApplogScrollListener) return
+        binding?.rvWishlistCollection?.addVerticalTrackListener()
+        hasApplogScrollListener = true
+    }
+
     private fun loadRecommendationList(page: Int) {
         collectionViewModel.loadRecommendation(page)
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun setToolbarTitle(title: String) {
@@ -368,6 +397,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        trackEnterPage()
                         showRvWishlistCollection()
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }

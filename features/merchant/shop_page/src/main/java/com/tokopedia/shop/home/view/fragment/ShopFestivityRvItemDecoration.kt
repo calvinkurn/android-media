@@ -20,7 +20,7 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
