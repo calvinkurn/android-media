@@ -85,6 +85,7 @@ import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.discoveryPageData
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.di.DiscoveryComponent
@@ -667,8 +668,7 @@ open class DiscoveryFragment :
                         lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
                     )
                 ) {
-                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
-                        .getComponent(
+                    lastVisibleComponent = getComponent(
                             lastVisibleComponent!!.parentComponentId,
                             lastVisibleComponent!!.pageEndPoint
                         )
@@ -2678,17 +2678,17 @@ open class DiscoveryFragment :
         pinnedAlreadyScrolled = false
         if (activeTab != null) {
             this.arguments?.putString(FORCED_NAVIGATION, "true")
-            if (componentId != null) {
+
+            componentId?.let {
                 this.arguments?.putString(COMPONENT_ID, componentId.toString())
                 isFromForcedNavigation = true
             }
-            discoveryViewModel.getDiscoveryData(
-                discoveryViewModel.getQueryParameterMapFromBundle(
-                    arguments
-                ),
-                userAddressData,
-                true
-            )
+
+            discoveryAdapter.getFirstViewModel(TabsViewModel::class.java)?.let { viewModel ->
+                if (viewModel is TabsViewModel) {
+                    viewModel.selectTab(activeTab)
+                }
+            }
         } else if (componentId != null) {
             scrollToPinnedComponent(discoveryAdapter.currentList, componentId.toString())
         }

@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.usecase.tabsusecase.DynamicTabsUseCase
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.OfTypeMatcher
@@ -288,6 +289,23 @@ class TabsViewModelTest {
         assert(viewModel.isFromCategory())
         every { componentsItem.isFromCategory } returns false
         assert(!viewModel.isFromCategory())
+    }
+
+    /**************************** test for selectTab() *******************************************/
+    @Test
+    fun `given invalid position should not post value to redirect to other tab`() {
+        val position = (Int.MIN_VALUE..0).random()
+        viewModel.selectTab(position)
+
+        assert(viewModel.redirectToOther().value == null)
+    }
+
+    @Test
+    fun `given valid position should post position value`() {
+        val position = (Int.ONE..Int.MAX_VALUE).random()
+        viewModel.selectTab(position)
+
+        assert(viewModel.redirectToOther().value == position.dec())
     }
 
 
