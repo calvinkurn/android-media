@@ -226,7 +226,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
     private val router: Router,
-    private val commentAnalytics: com.tokopedia.feed.common.comment.analytic.ContentCommentAnalytics.Creator
+    private val commentAnalytics: ContentCommentAnalytics.Creator
 ) :
     TkpdBaseV4Fragment(),
     PlayMoreActionBottomSheet.Listener,
@@ -353,7 +353,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private var localCache: LocalCacheModel = LocalCacheModel()
 
-    private var commentAnalyticsModel: com.tokopedia.feed.common.comment.analytic.ContentCommentAnalyticsModel? = null
+    private var commentAnalyticsModel: ContentCommentAnalyticsModel? = null
 
     /**
      * Animation
@@ -379,8 +379,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private val commentEntrySource = object : com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet.EntrySource {
-        override fun getPageSource(): com.tokopedia.feed.common.comment.PageSource = com.tokopedia.feed.common.comment.PageSource.Play(channelId)
+    private val commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+        override fun getPageSource(): PageSource = PageSource.Play(channelId)
         override fun onCommentDismissed() {
             playViewModel.submitAction(CommentVisibilityAction(isOpen = false))
         }
@@ -513,12 +513,12 @@ class PlayUserInteractionFragment @Inject constructor(
             is InteractiveDialogFragment -> {
                 childFragment.setDataSource(interactiveDialogDataSource)
             }
-            is com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet -> {
+            is ContentCommentBottomSheet -> {
                 childFragment.setEntrySource(commentEntrySource)
                 commentAnalyticsModel?.let {
                     childFragment.setAnalytic(
                         commentAnalytics.create(
-                            com.tokopedia.feed.common.comment.PageSource.Play(channelId),
+                            PageSource.Play(channelId),
                             model = it
                         )
                     )
@@ -1153,12 +1153,12 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is CommentVisibilityEvent -> {
-                        val sheet = com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet.getOrCreate(
+                        val sheet = ContentCommentBottomSheet.getOrCreate(
                             childFragmentManager,
                             requireActivity().classLoader
                         )
                         commentAnalyticsModel =
-                            com.tokopedia.feed.common.comment.analytic.ContentCommentAnalyticsModel(
+                            ContentCommentAnalyticsModel(
                                 eventCategory = "groupchat room",
                                 eventLabel = "$channelId - ${playViewModel.partnerId}"
                             )

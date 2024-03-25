@@ -81,6 +81,8 @@
     <string name="performance_dashboard_coachmark_title">Kini udah bisa pantau performa video dari sini</string>
     <string name="performance_dashboard_coachmark_subtitle">Supaya kamu selalu update perkembangannya &amp; analisa performa jadi lebih mudah.</string>
 
+    <string name="content_global_error_secondary_text">Ke Pengaturan</string>
+
     <!--Report Bottom Sheet -->
     <string name="content_comment_edit_text_hint">Ketik komentarmu…</string>
     <string name="content_comment_error_connection">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>

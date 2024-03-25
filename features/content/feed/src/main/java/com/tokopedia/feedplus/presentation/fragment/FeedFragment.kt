@@ -203,7 +203,7 @@ class FeedFragment :
     private var feedAnalytics: FeedAnalytics? = null
 
     @Inject
-    lateinit var commentAnalytics: com.tokopedia.feed.common.comment.analytic.ContentCommentAnalytics.Creator
+    lateinit var commentAnalytics: ContentCommentAnalytics.Creator
 
     @Inject
     lateinit var feedFollowRecommendationAnalytics: FeedFollowRecommendationAnalytics
@@ -218,7 +218,7 @@ class FeedFragment :
     lateinit var router: Router
 
     @Inject
-    lateinit var commentFactory: com.tokopedia.feed.common.comment.ContentCommentFactory.Creator
+    lateinit var commentFactory: ContentCommentFactory.Creator
 
     private var mDataSource: DataSource? = null
 
@@ -263,7 +263,7 @@ class FeedFragment :
         TopAdsUrlHitter(context)
     }
 
-    private var commentEntrySource: com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet.EntrySource? = null
+    private var commentEntrySource: ContentCommentBottomSheet.EntrySource? = null
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -475,7 +475,7 @@ class FeedFragment :
         childFragmentManager.fragmentFactory = object : FragmentFactory() {
             override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
                 return when (className) {
-                    com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet::class.java.name -> com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet(
+                    ContentCommentBottomSheet::class.java.name -> ContentCommentBottomSheet(
                         commentFactory,
                         router
                     )
@@ -1149,15 +1149,15 @@ class FeedFragment :
 
     private fun onAttachChildFragment(fragmentManager: FragmentManager, childFragment: Fragment) {
         when (childFragment) {
-            is com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet -> {
+            is ContentCommentBottomSheet -> {
                 val eventLabel = currentTrackerData?.let {
                     feedAnalytics?.getEventLabel(it)
                 } ?: ""
                 childFragment.setEntrySource(commentEntrySource)
                 childFragment.setAnalytic(
                     commentAnalytics.create(
-                        com.tokopedia.feed.common.comment.PageSource.Feed(currentTrackerData?.activityId.orEmpty()), // PostId
-                        model = com.tokopedia.feed.common.comment.analytic.ContentCommentAnalyticsModel(
+                        PageSource.Feed(currentTrackerData?.activityId.orEmpty()), // PostId
+                        model = ContentCommentAnalyticsModel(
                             eventCategory = FeedAnalytics.CATEGORY_UNIFIED_FEED,
                             eventLabel = eventLabel
                         )
@@ -1699,14 +1699,14 @@ class FeedFragment :
         trackerModel?.let {
             currentTrackerData = trackerModel
             feedAnalytics?.eventClickComment(it)
-            commentEntrySource = object : com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet.EntrySource {
-                override fun getPageSource(): com.tokopedia.feed.common.comment.PageSource = com.tokopedia.feed.common.comment.PageSource.Feed(it.activityId)
+            commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+                override fun getPageSource(): PageSource = PageSource.Feed(it.activityId)
                 override fun onCommentDismissed() {
                     feedPostViewModel.updateCommentsCount(contentId, isPlayContent)
                 }
             }
 
-            val sheet = com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet.getOrCreate(
+            val sheet = ContentCommentBottomSheet.getOrCreate(
                 childFragmentManager,
                 requireActivity().classLoader
             )
@@ -2172,7 +2172,7 @@ class FeedFragment :
     }
 
     private fun dismissCommentBottomSheet() {
-        com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).dismiss()
+        ContentCommentBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).dismiss()
     }
 
     private fun updateBottomActionView(position: Int) {

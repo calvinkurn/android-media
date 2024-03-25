@@ -44,6 +44,7 @@ ext {
             contentAnalytic                 : ":features:content:analytic",
             contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
+			feedCommon						: ":features:content:feed_common",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
             kol                             : ":features:content:kol",
@@ -61,9 +62,9 @@ ext {
             playWidget                      : ":features:content:play_widget",
 			storiesWidget					: ":features:content:stories_widget",
 			storiesInternal					: ":features:content:stories_internal",
+			storiesCreation					: ":features:content:stories_creation",
 			contentProductPicker            : ":features:content:product_picker",
 			creationCommon					: ":features:content:creation_common",
-			storiesCreation					: ":features:content:stories_creation",
 
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
