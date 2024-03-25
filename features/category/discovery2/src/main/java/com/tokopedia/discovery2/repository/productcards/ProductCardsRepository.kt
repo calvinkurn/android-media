@@ -2,7 +2,11 @@ package com.tokopedia.discovery2.repository.productcards
 
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
 
 interface ProductCardsRepository {
-    suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?>
+    suspend fun getProducts(
+        requestParams: ProductCardRequest,
+        queryParameterMap: MutableMap<String, Any>
+    ): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?>
 }

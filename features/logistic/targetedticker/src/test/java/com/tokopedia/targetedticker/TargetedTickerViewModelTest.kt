@@ -201,7 +201,7 @@ class TargetedTickerViewModelTest {
         val response = TickerDataProvider.provideDummy()
         val tickerItemWithAction = response.getTargetedTickerData.list.first()
         val expected =
-            "${tickerItemWithAction.content} <a href=\"${tickerItemWithAction.action.appURL}\">${tickerItemWithAction.action.label}</a>"
+            "${tickerItemWithAction.content} <a href=\"${tickerItemWithAction.action.appURL}\"><b>${tickerItemWithAction.action.label}</b></a>"
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
