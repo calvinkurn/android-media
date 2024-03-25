@@ -65,6 +65,7 @@ import kotlinx.coroutines.Job
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 class MiniCartViewModel @Inject constructor(
     private val executorDispatchers: CoroutineDispatchers,
@@ -89,7 +90,7 @@ class MiniCartViewModel @Inject constructor(
         const val DEFAULT_OFFER_ID = 0L
     }
 
-    private var updateGwpUseCaseJob: Job? = null
+    private val updateGwpUseCaseJob: HashMap<Long, Job> = hashMapOf()
     private var paramsToUpdateGwp: BmGmGetGroupProductTickerParams? = null
 
     // Global Data
@@ -714,8 +715,8 @@ class MiniCartViewModel @Inject constructor(
 
     private fun getBmGmGroupProductTicker(offerId: Long) {
         if (offerId > DEFAULT_OFFER_ID) {
-            updateGwpUseCaseJob?.cancel()
-            updateGwpUseCaseJob = launchCatchError(
+            updateGwpUseCaseJob[offerId]?.cancel()
+            updateGwpUseCaseJob[offerId] = launchCatchError(
                 block = {
                     val params = mapParamsFilteredToUpdateGwp(
                         params = paramsToUpdateGwp,
