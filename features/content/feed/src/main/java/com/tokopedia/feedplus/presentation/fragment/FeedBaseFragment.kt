@@ -25,6 +25,8 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -71,6 +73,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -79,10 +82,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.play_common.util.extension.withCache
-import kotlinx.coroutines.flow.filterNotNull
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -91,7 +93,8 @@ import com.tokopedia.creation.common.R as creationcommonR
 class FeedBaseFragment :
     TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
-    FragmentListener {
+    FragmentListener,
+    AppLogInterface {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -297,6 +300,14 @@ class FeedBaseFragment :
     }
 
     override fun getScreenName(): String = "Feed Fragment"
+
+    override fun getPageName(): String {
+        return PageName.FEED
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
 
     override fun onCreationNextClicked(data: ContentCreationItemModel) {
         when (data.type) {
