@@ -8,17 +8,17 @@ import com.tokopedia.content.common.types.ResultState
  */
 class CommentHelper {
     fun buildCommentWidget(
-        list: List<CommentUiModel> = buildCommentList(),
+        list: List<com.tokopedia.feed.common.comment.uimodel.CommentUiModel> = buildCommentList(),
         cursor: String = "",
         nextRepliesCount: String = "",
-        commentType: CommentType = CommentType.Parent,
+        commentType: com.tokopedia.feed.common.comment.uimodel.CommentType = com.tokopedia.feed.common.comment.uimodel.CommentType.Parent,
         state: ResultState = ResultState.Success,
-        commenterType: UserType = UserType.People,
-    ) = CommentWidgetUiModel(
+        commenterType: com.tokopedia.feed.common.comment.uimodel.UserType = com.tokopedia.feed.common.comment.uimodel.UserType.People,
+    ) = com.tokopedia.feed.common.comment.uimodel.CommentWidgetUiModel(
         list, cursor, nextRepliesCount, commentType, state, commenterType
     )
 
-    fun buildCommentList(list: List<CommentUiModel> = emptyList()) = list
+    fun buildCommentList(list: List<com.tokopedia.feed.common.comment.uimodel.CommentUiModel> = emptyList()) = list
 
     fun buildItemComment(
         id: String = "123",
@@ -27,13 +27,13 @@ class CommentHelper {
         createdTime: String = "2023-05-08T10:24:04+07:00",
         photo: String = "blob.com",
         appLink: String = "",
-        commentType: CommentType = CommentType.Parent,
+        commentType: com.tokopedia.feed.common.comment.uimodel.CommentType = com.tokopedia.feed.common.comment.uimodel.CommentType.Parent,
         childCount: String = "0",
         isOwner: Boolean = false,
         isReportAllowed: Boolean = true,
         userId: String = "1",
-        userType: UserType = UserType.People,
-    ) = CommentUiModel.Item(
+        userType: com.tokopedia.feed.common.comment.uimodel.UserType = com.tokopedia.feed.common.comment.uimodel.UserType.People,
+    ) = com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item(
         id,
         username,
         content,
@@ -49,14 +49,14 @@ class CommentHelper {
     )
 
     fun buildItemExpandable(
-        commentType: CommentType = CommentType.Parent,
+        commentType: com.tokopedia.feed.common.comment.uimodel.CommentType = com.tokopedia.feed.common.comment.uimodel.CommentType.Parent,
         repliesCount: String = "",
         isExpanded: Boolean = false,
-    ) = CommentUiModel.Expandable(
+    ) = com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Expandable(
         commentType = commentType,
         repliesCount = repliesCount,
         isExpanded = isExpanded,
     )
 
-    fun buildCommentParam() = CommentParam()
+    fun buildCommentParam() = com.tokopedia.feed.common.comment.uimodel.CommentParam()
 }

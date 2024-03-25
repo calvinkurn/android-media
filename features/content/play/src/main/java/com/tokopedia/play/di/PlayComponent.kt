@@ -2,13 +2,12 @@ package com.tokopedia.play.di
 
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.content.common.comment.di.ContentCommentModule
+import com.tokopedia.feed.common.comment.di.ContentCommentModule
 import com.tokopedia.play.di.module.PlayRepositoryModule
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Component.Builder
 
 /**
  * Created by jegul on 29/11/19
@@ -22,7 +21,7 @@ import dagger.Component.Builder
             PlayBindModule::class,
             PlayRepositoryModule::class,
             PlayWidgetModule::class,
-            ContentCommentModule::class,
+            com.tokopedia.feed.common.comment.di.ContentCommentModule::class,
         ],
         dependencies = [BaseAppComponent::class]
 )

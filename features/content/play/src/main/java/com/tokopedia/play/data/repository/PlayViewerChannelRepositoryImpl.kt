@@ -2,8 +2,8 @@ package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
-import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.feed.common.comment.PageSource
+import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
@@ -28,7 +28,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val getChannelDetailsUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChatHistory: GetChatHistoryUseCase,
     private val getCartCountUseCase: UpdateCartCounterUseCase,
-    private val getCountComment: GetCountCommentsUseCase,
+    private val getCountComment: com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase,
     private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
     private val channelMapper: PlayChannelDetailsWithRecomMapper,
@@ -87,9 +87,9 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCountComment(channelId: String): PlayCommentUiModel {
-        val source = PageSource.Play(channelId)
+        val source = com.tokopedia.feed.common.comment.PageSource.Play(channelId)
         val result = getCountComment(
-            GetCountCommentsUseCase.Param(
+            com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase.Param(
                 sourceId = listOf(source.id),
                 sourceType = source.type
             )

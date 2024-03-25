@@ -7,8 +7,6 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import com.tokopedia.content.common.comment.model.CountComment
-import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
@@ -21,6 +19,8 @@ import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.feed.common.comment.model.CountComment
+import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
@@ -123,7 +123,7 @@ class FeedPostViewModelTest {
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase = mockk()
     private val mvcSummaryUseCase: MVCSummaryUseCase = mockk()
     private val topAdsAddressHelper: TopAdsAddressHelper = mockk()
-    private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
+    private val getCountCommentsUseCase: com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase = mockk()
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
@@ -1170,14 +1170,14 @@ class FeedPostViewModelTest {
     fun onUpdateCommentsCount_whenSuccess_shouldUpdateData() {
         // given
         provideDefaultFeedPostMockData()
-        coEvery { getCountCommentsUseCase(any()) } returns CountComment(
-            parent = CountComment.Parent(
-                child = CountComment.Child(
+        coEvery { getCountCommentsUseCase(any()) } returns com.tokopedia.feed.common.comment.model.CountComment(
+            parent = com.tokopedia.feed.common.comment.model.CountComment.Parent(
+                child = com.tokopedia.feed.common.comment.model.CountComment.Child(
                     data = listOf(
-                        CountComment.Data(
+                        com.tokopedia.feed.common.comment.model.CountComment.Data(
                             contentId = "image 1 id"
                         ),
-                        CountComment.Data(
+                        com.tokopedia.feed.common.comment.model.CountComment.Data(
                             contentId = "video 1 id"
                         )
                     )
