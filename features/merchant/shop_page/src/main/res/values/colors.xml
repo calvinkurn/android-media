@@ -85,4 +85,7 @@
     <color name="dms_clr_thematic_widget_bg_default_first_color">#008849</color>
     <color name="dms_clr_thematic_widget_bg_default_second_color">#00AA5B</color>
 
+    <color name="dms_static_shop_flash_sale_start_bg_color">#60BB55</color>
+    <color name="dms_static_shop_flash_sale_end_bg_color">#26A110</color>
+
 </resources>
