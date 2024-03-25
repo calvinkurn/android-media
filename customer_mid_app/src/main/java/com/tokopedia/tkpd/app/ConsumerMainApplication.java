@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bytedance.applog.util.EventsSenderUtils;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
@@ -112,6 +113,7 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
+import com.tokopedia.tkpd.utils.SlardarInit;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.translator.manager.TranslatorManager;
@@ -171,6 +173,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
     private final String PUSH_DELETION_TIME_GAP = "android_push_deletion_time_gap";
     private final String ENABLE_PUSH_TOKEN_DELETION_WORKER = "android_push_token_deletion_rollence";
+    private final String ANDROID_ENABLE_SLARDAR_INIT = "android_enable_slardar_init";
+    private final String SLARDAR_AID = "573733";
+    private final String SLARDAR_CHANNEL_LOCAL_TEST = "local_test";
+    private final String SLARDAR_CHANNEL_GOOGLE_PLAY = "googleplay";
+    private final String SLARDAR_HOST = "https://log.byteoversea.net";
+
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -228,6 +236,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         showDevOptNotification();
         initByteIOPlatform();
+        initSlardar();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
@@ -240,6 +249,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             AppLogAnalytics.init(this);
             TTNetHelper.initTTNet(this);
             LibraAbTest.init(this);
+        }
+    }
+
+    private void initSlardar() {
+        if (remoteConfig.getBoolean(ANDROID_ENABLE_SLARDAR_INIT, true)) {
+            EventsSenderUtils.setEventsSenderEnable(SLARDAR_AID, true, this);
+            EventsSenderUtils.setEventVerifyHost(SLARDAR_AID, SLARDAR_HOST);
+            SlardarInit.INSTANCE.initApm(this);
+            SlardarInit.INSTANCE.initNpth(this, SLARDAR_AID, getSlardarChannel(),
+                    getUserSession().getUserId());
+            SlardarInit.INSTANCE.startApm(SLARDAR_AID, getSlardarChannel());
         }
     }
 
@@ -908,6 +928,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void showDevOptNotification() {
         new DevOptNotificationManager(this).start();
+    }
+
+    private String getSlardarChannel() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            return SLARDAR_CHANNEL_LOCAL_TEST;
+        } else {
+            return SLARDAR_CHANNEL_GOOGLE_PLAY;
+        }
     }
 
     @Override
