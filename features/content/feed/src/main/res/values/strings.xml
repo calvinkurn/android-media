@@ -107,4 +107,12 @@
     <!-- Feed Local Search -->
     <string name="feed_local_search_text_placeholder">Konten, kreator, atau produk</string>
     <string name="feed_local_search_page_text_placeholder">Cari Kontent di Tokopedia Feed</string>
+
+    <string name="feed_local_search_not_found_title">Oops, kontennya nggak ketemu</string>
+    <string name="feed_local_search_not_found_desc">Coba periksa lagi kata kuncinya, ya.</string>
+    <string name="feed_local_search_not_found_cta">Periksa Kata Kunci</string>
+
+    <string name="feed_local_search_restricted_title">Oops, kontennya nggak ada</string>
+    <string name="feed_local_search_restricted_desc">Coba cari kata kunci yang lain, atau pelajari info selengkapnya, ya.</string>
+    <string name="feed_local_search_restricted_cta">Pelajari Selengkapnya</string>
 </resources>

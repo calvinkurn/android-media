@@ -75,8 +75,15 @@ internal class FeedBrowseFragment @Inject constructor(
     private val searchPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             val resultKeyword = it.data?.getStringExtra(FeedLocalBrowseFragment.LOCAL_BROWSE_SEARCH_KEYWORD)
-            // Todo
+
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT)
+            intent.putExtra(FeedSearchResultActivity.KEYWORD_PARAM, resultKeyword)
+            searchResultPageLauncher.launch(intent)
         }
+    }
+
+    private val searchResultPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // Todo
     }
 
     private val tracker by lazyThreadSafetyNone {

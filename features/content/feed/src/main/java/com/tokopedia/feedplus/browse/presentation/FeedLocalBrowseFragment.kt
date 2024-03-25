@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.browse.presentation
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

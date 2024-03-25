@@ -56,5 +56,6 @@
     <string name="path_content_browse" translatable="false">/browse</string>
     <string name="path_content_browse_local" translatable="false">/browse-local</string>
     <string name="path_content_browse_category_inspiration" translatable="false">/browse/inspirational</string>
+    <string name="path_content_browse_search_result" translatable="false">/browse/search</string>
 
 </resources>
