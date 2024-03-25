@@ -12,10 +12,11 @@ data class WidgetRequestModel(
 ) {
     companion object {
         val Empty = WidgetRequestModel(
-            "",
-            "",
-            "",
-            "",
+            group = "",
+            sourceType = "",
+            sourceId = "",
+            cursor = "",
+            searchKeyword = "",
         )
     }
 }

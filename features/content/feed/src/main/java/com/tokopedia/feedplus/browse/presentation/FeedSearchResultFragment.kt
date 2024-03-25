@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
+import com.tokopedia.feedplus.browse.presentation.factory.FeedSearchResultViewModelFactory
 import com.tokopedia.feedplus.browse.presentation.model.FeedSearchResultUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedSearchResultBinding
 import com.tokopedia.globalerror.GlobalError
@@ -21,13 +21,19 @@ import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedplusR
 
 class FeedSearchResultFragment @Inject constructor(
-    viewModelFactory: ViewModelProvider.Factory
-) : BaseDaggerFragment() {
+    private val viewModelFactoryCreator: FeedSearchResultViewModelFactory.Creator,
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedSearchResultBinding? = null
     private val binding: FragmentFeedSearchResultBinding get() = _binding!!
 
-    private val viewModel: FeedSearchResultViewModel by viewModels { viewModelFactory }
+    private val viewModel: FeedSearchResultViewModel by viewModels {
+        viewModelFactoryCreator.create(
+            this,
+            arguments?.getString(FeedSearchResultActivity.KEYWORD_PARAM).orEmpty()
+        )
+    }
+
     private var rvAdapter: FeedSearchResultAdapter? = null
 
     override fun onCreateView(
@@ -38,7 +44,6 @@ class FeedSearchResultFragment @Inject constructor(
         _binding = FragmentFeedSearchResultBinding.inflate(inflater)
 
         setupHeader()
-        setupParam()
         initObserver()
         initRecyclerView()
 
@@ -57,17 +62,10 @@ class FeedSearchResultFragment @Inject constructor(
 
     override fun getScreenName(): String = "Search Result Fragment"
 
-    override fun initInjector() {}
-
     private fun setupHeader() {
         binding.srpHeader.onBackClicked {
             activity?.finish()
         }
-    }
-
-    private fun setupParam() {
-        val keyword = arguments?.getString(FeedSearchResultActivity.KEYWORD_PARAM)
-        viewModel.setKeyword(keyword ?: "")
     }
 
     private fun initObserver() {

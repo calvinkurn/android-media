@@ -23,9 +23,4 @@ internal abstract class FeedBrowseViewModelModule {
     @IntoMap
     @ViewModelKey(FeedBrowseViewModel::class)
     abstract fun getFeedBrowseViewModel(viewModel: FeedBrowseViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(FeedSearchResultViewModel::class)
-    abstract fun getFeedSearchResultViewModel(viewModel: FeedSearchResultViewModel): ViewModel
 }

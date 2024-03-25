@@ -5,14 +5,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.feedplus.browse.presentation.model.FeedSearchResultUiState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
-class FeedSearchResultViewModel @Inject constructor(
-
+class FeedSearchResultViewModel @AssistedInject constructor(
+    @Assisted private val searchKeyword: String,
 ): ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            searchKeyword: String
+        ): FeedSearchResultViewModel
+    }
+
     private val _resultUiState = MutableLiveData<FeedSearchResultUiState>()
     val resultState: LiveData<FeedSearchResultUiState> get() = _resultUiState
 
