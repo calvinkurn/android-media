@@ -14,3 +14,31 @@ internal const val CPM_KEY_TEMPLATE = "template"
 internal const val CPM_TEMPLATE = "3"
 
 internal const val SCREEN_UNIVERSEARCH = "SCREEN_UNIVERSEARCH"
+
+internal const val ACTION_DELETE = "delete"
+internal const val ACTION_REPLACE = "replace"
+
+// Feature ID Initial State
+internal const val FEATURE_ID_RECENT_SEARCH = "recent_search"
+internal const val FEATURE_ID_POPULAR_CURATED = "popular_curated"
+internal const val FEATURE_ID_POPULAR_RELATED = "popular_related"
+
+// Feature ID Suggestion
+internal const val FEATURE_ID_RECENT_KEYWORD = "recent_keyword"
+internal const val FEATURE_ID_KEYWORD = "keyword"
+internal const val FEATURE_ID_CURATED = "curated"
+internal const val FEATURE_ID_RELATED_KEYWORD = "related_keyword"
+
+internal val EXCLUDED_NAV_SOURCE = listOf(
+    "tokonow",
+)
+
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT = "Power Merchant"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE = "Official Store"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO = "Power Merchant Pro"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_FLAG = "shop_tier_icon:1"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE_FLAG= "shop_tier_icon:2"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO_FLAG = "shop_tier_icon:3"
+
+internal const val AUTOCOMPLETE_UNIFY_SHOP_ADS_SUBTITLE = "Dipromosikan"
+

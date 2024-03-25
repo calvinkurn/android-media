@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
@@ -597,6 +598,9 @@ data class DataItem(
     @SerializedName("active_image_url")
     val tabActiveImageUrl: String? = null,
 
+    @SerializedName("rec_param")
+    private val recommendationParam: String? = null,
+
     @SerializedName("layout")
     val couponLayout: String? = null,
 
@@ -648,7 +652,11 @@ data class DataItem(
     var typeProductHighlightComponentCard: String? = "",
 
     @SerializedName("warehouse_id")
-    var warehouseId: Long? = null
+    var warehouseId: Long? = null,
+
+    var itemPosition: Int = 0,
+
+    var topLevelTab: TopLevelTab = UnknownTab
 ) {
     val leftMargin: Int
         get() {
@@ -660,12 +668,32 @@ data class DataItem(
             return rightMarginMobile?.toIntOrNull() ?: 0
         }
 
+    val appLogImpressHolder: ImpressHolder = ImpressHolder()
+    private var appLog: RecommendationAppLog? = null
+    var source: ComponentSourceData = ComponentSourceData.Unknown
+
     fun getLabelPrice(): LabelsGroup? {
         return findLabelGroup(LABEL_PRICE)
     }
 
     fun getLabelProductStatus(): LabelsGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
+    }
+
+    fun setAppLog(tracker: ComponentTracker) {
+        appLog = with(tracker) {
+            RecommendationAppLog(
+                logId.orEmpty(),
+                requestId.orEmpty(),
+                sessionId.orEmpty(),
+                recommendationParam.orEmpty(),
+                recommendationPageName.orEmpty()
+            )
+        }
+    }
+
+    fun getAppLog(): RecommendationAppLog? {
+        return appLog
     }
 
     private fun findLabelGroup(position: String): LabelsGroup? {

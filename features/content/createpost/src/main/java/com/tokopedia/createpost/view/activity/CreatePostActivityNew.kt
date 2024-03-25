@@ -291,7 +291,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
         val cacheManager = SaveInstanceCacheManager(this, true)
         val createPostViewModel = (fragment as? BaseCreatePostFragmentNew)?.getLatestCreatePostData()
-        createPostViewModel?.authorType = selectedContentAccount.type
+
+        if (createPostViewModel?.postId.isNullOrEmpty()) {
+            createPostViewModel?.authorType = selectedContentAccount.type
+        }
 
         cacheManager.put(
             CreatePostViewModel.TAG,

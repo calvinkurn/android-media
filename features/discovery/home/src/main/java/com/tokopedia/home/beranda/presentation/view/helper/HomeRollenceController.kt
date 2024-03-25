@@ -14,6 +14,7 @@ object HomeRollenceController {
     var rollenceLoadTime: String = ""
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
+    var shouldGlobalComponentRecomEnabled: Boolean = false
     var iconJumperSREValue: String = ""
     var isMegaTabEnabled = false
 

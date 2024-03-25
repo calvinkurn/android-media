@@ -7,6 +7,8 @@ data class GetHomeRecommendationCardResponse(
     val getHomeRecommendationCard: GetHomeRecommendationCard = GetHomeRecommendationCard()
 ) {
     data class GetHomeRecommendationCard(
+        @SerializedName("appLog")
+        val appLog: AppLog = AppLog(),
         @SerializedName("cards")
         val recommendationCards: List<RecommendationCard> = listOf(),
         @SerializedName("hasNextPage")
@@ -15,5 +17,14 @@ data class GetHomeRecommendationCardResponse(
         val layoutName: String = "",
         @SerializedName("pageName")
         val pageName: String = ""
-    )
+    ) {
+        data class AppLog(
+            @SerializedName("bytedanceSessionID")
+            val sessionId: String = "",
+            @SerializedName("requestID")
+            val requestId: String = "",
+            @SerializedName("logID")
+            val logId: String = ""
+        )
+    }
 }

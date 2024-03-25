@@ -7,4 +7,7 @@
             <enum name="custom" value="2"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="PlayWidgetCardLargeView">
+        <attr name="dimensionRatio" format="string" />
+    </declare-styleable>
 </resources>

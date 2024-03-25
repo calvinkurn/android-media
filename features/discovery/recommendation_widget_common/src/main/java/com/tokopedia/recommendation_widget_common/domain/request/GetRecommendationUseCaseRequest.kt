@@ -31,6 +31,11 @@ internal class GetRecommendationUseCaseRequest {
                           }
                         }
                       }
+                      appLog {
+                        sessionID
+                        requestID
+                        logID
+                      }
                       recommendation {
                         id
                         name
@@ -96,6 +101,8 @@ internal class GetRecommendationUseCaseRequest {
                             value
                         }
                         parentID
+                        recParam
+                        countSold
                       }
                     }
                   }
@@ -125,6 +132,11 @@ internal class GetRecommendationUseCaseRequest {
                             apps
                           }
                         }
+                       }
+                       appLog {
+                         sessionID
+                         requestID
+                         logID
                        }
                        recommendation {
                            id
@@ -187,6 +199,8 @@ internal class GetRecommendationUseCaseRequest {
                             key
                             value
                         }
+                        recParam
+                        countSold
                        }
                    }
                  }
