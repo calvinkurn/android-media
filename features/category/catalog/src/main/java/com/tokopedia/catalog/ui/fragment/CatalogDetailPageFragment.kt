@@ -457,14 +457,17 @@ class CatalogDetailPageFragment :
 
                     }
                 }
-                else -> {
+                Int.ONE -> {
                     if (widgetAdapter.getCurrentTabNav() > tabPosition){
-                        smoothScroller.targetPosition = anchorToPosition
+                        smoothScroller.targetPosition = anchorToPosition-1
                         layoutManager?.startSmoothScroll(smoothScroller)
                     }else{
                         layoutManager?.scrollToPositionWithOffset(anchorToPosition, calculateOffsetForTop(layoutManager, anchorToPosition))
-
                     }
+                }
+                else -> {
+                    smoothScroller.targetPosition = anchorToPosition
+                    layoutManager?.startSmoothScroll(smoothScroller)
                 }
             }
 
