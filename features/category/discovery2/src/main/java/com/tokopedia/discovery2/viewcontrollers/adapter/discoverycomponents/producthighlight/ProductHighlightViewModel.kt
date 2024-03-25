@@ -121,6 +121,7 @@ class ProductHighlightViewModel(
             category = dataItem.category.orEmpty()
             price = dataItem.price.orEmpty()
             shopName = dataItem.shopName.orEmpty()
+            atcFromExternalSource = OCS_SOURCE_PARAM
         }
 
         launchCatchError(block = {
@@ -167,5 +168,9 @@ class ProductHighlightViewModel(
         val message = "Failed to request ATC"
         _ocsErrorState.postValue(message)
         Timber.e(message)
+    }
+
+    companion object {
+        private const val OCS_SOURCE_PARAM = "product_highlight_atc"
     }
 }
