@@ -111,6 +111,7 @@ class FeedBrowseMapper @Inject constructor() {
             }
             FEED_TYPE_CHANNEL_BLOCK -> {
                 ContentSlotModel.ChannelBlock(
+                    firstWidget.title,
                     mapChannel(firstWidget),
                     mapPlayWidgetConfig(response.playGetContentSlot.meta),
                     nextCursor

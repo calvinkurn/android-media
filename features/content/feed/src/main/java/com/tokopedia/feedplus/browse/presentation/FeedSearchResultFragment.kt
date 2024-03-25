@@ -10,17 +10,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
 import com.tokopedia.feedplus.browse.presentation.factory.FeedSearchResultViewModelFactory
 import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
+import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
 import com.tokopedia.feedplus.databinding.FragmentFeedSearchResultBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,7 +44,20 @@ internal class FeedSearchResultFragment @Inject constructor(
         )
     }
 
-    private var rvAdapter: FeedSearchResultAdapter? = null
+    private val adapter: FeedSearchResultAdapter by lazyThreadSafetyNone {
+        FeedSearchResultAdapter(this.viewLifecycleOwner.lifecycleScope)
+    }
+
+    private val loadMoreListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+
+            val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+            if (lastVisibleItemPosition >= adapter.itemCount - LOAD_PAGE_THRESHOLD) {
+                viewModel.submitAction(FeedSearchResultAction.LoadResult)
+            }
+        }
+    }
 
     override fun getScreenName(): String = "Search Result Fragment"
 
@@ -64,6 +81,8 @@ internal class FeedSearchResultFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.resultRv.removeOnScrollListener(loadMoreListener)
+
         _binding = null
     }
 
@@ -73,24 +92,19 @@ internal class FeedSearchResultFragment @Inject constructor(
         }
 
         binding.resultRv.let {
-            FeedSearchResultAdapter(this.viewLifecycleOwner.lifecycleScope).also { adapter ->
-                rvAdapter = adapter
-
-                val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
-                    spanSizeLookup = adapter.getSpanSizeLookup()
-                }
-                it.layoutManager = layoutManager
-                it.itemAnimator = null
-                it.addItemDecoration(
-                    CategoryInspirationItemDecoration(
-                        it.resources,
-                        layoutManager.spanCount
-                    )
-                )
-                it.adapter = adapter
-
-                adapter.setLoadingState()
+            val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
+                spanSizeLookup = adapter.getSpanSizeLookup()
             }
+            it.layoutManager = layoutManager
+            it.itemAnimator = null
+            it.addOnScrollListener(loadMoreListener)
+            it.addItemDecoration(
+                CategoryInspirationItemDecoration(
+                    it.resources,
+                    layoutManager.spanCount
+                )
+            )
+            it.adapter = adapter
         }
 
         binding.errorView.setActionClickListener {
@@ -105,7 +119,8 @@ internal class FeedSearchResultFragment @Inject constructor(
                     val (prev, curr) = it
 
                     renderSearchBar(prev?.searchKeyword, curr.searchKeyword)
-                    renderPageState(prev?.pageState, curr.pageState)
+                    renderPageState(prev?.pageState, curr.pageState, curr.contents, curr.hasNextPage)
+                    renderContents(prev?.contents, curr.contents)
                 }
             }
         }
@@ -123,14 +138,26 @@ internal class FeedSearchResultFragment @Inject constructor(
     private fun renderPageState(
         prevPageState: FeedSearchResultPageState?,
         pageState: FeedSearchResultPageState,
+        contents: List<FeedSearchResultContent>,
+        hasNextPage: Boolean,
     ) {
         if (prevPageState == pageState) return
 
         when(pageState) {
             is FeedSearchResultPageState.Loading -> {
+                if (contents.isEmpty()) {
+                    adapter.setShimmer()
+                }
                 showResult()
             }
             is FeedSearchResultPageState.Success -> {
+                val finalContents = contents + if (hasNextPage) {
+                    listOf(FeedSearchResultContent.Loading)
+                } else {
+                    emptyList()
+                }
+
+                adapter.setItems(finalContents)
                 showResult()
             }
             is FeedSearchResultPageState.Restricted -> {
@@ -170,6 +197,15 @@ internal class FeedSearchResultFragment @Inject constructor(
         }
     }
 
+    private fun renderContents(
+        prevContents: List<FeedSearchResultContent>?,
+        contents: List<FeedSearchResultContent>
+    ) {
+        if (prevContents == contents) return
+
+        adapter.setItems(contents)
+    }
+
     private fun showResult() {
         binding.resultRv.show()
         binding.errorView.hide()
@@ -181,6 +217,9 @@ internal class FeedSearchResultFragment @Inject constructor(
     }
 
     companion object {
+
+        private const val LOAD_PAGE_THRESHOLD = 2
+
         fun create(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,

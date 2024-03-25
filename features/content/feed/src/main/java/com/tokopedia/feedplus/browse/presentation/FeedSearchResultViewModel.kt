@@ -3,8 +3,10 @@ package com.tokopedia.feedplus.browse.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
+import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
+import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -27,15 +29,22 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
         ): FeedSearchResultViewModel
     }
 
+    private val _cursor = MutableStateFlow("")
+
     private val _pageState = MutableStateFlow<FeedSearchResultPageState>(FeedSearchResultPageState.Unknown)
+    private val _contents = MutableStateFlow<List<FeedSearchResultContent>>(emptyList())
+    private val _hasNextPage = MutableStateFlow(true)
 
     val uiState = combine(
         _pageState,
-        _pageState
-    ) { pageState, _ ->
+        _contents,
+        _hasNextPage,
+    ) { pageState, contents, hasNextPage  ->
         FeedSearchResultUiState(
             searchKeyword = searchKeyword,
             pageState = pageState,
+            contents = contents,
+            hasNextPage = hasNextPage,
         )
     }
 
@@ -48,34 +57,56 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
     private fun handleLoadResult() {
         viewModelScope.launchCatchError(block = {
 
-            if (_pageState.value is FeedSearchResultPageState.Loading) return@launchCatchError
+            if (_pageState.value is FeedSearchResultPageState.Loading ||
+                !_hasNextPage.value
+            ) return@launchCatchError
 
             _pageState.update { FeedSearchResultPageState.Loading }
             
             val response = repo.getWidgetContentSlot(
                 extraParam = WidgetRequestModel(
-                    group = "content_browse_search",
+                    group = FEED_LOCAL_SEARCH_GROUP,
                     sourceType = "",
                     sourceId = "0",
+                    cursor = _cursor.value,
                     searchKeyword = searchKeyword,
                 )
             )
 
-            _pageState.update { FeedSearchResultPageState.Success }
+            when (response) {
+                is ContentSlotModel.ChannelBlock -> {
+                    val newContents = response.channels.map {
+                        FeedSearchResultContent.Channel(it, response.config)
+                    }
+                    _contents.update {
+                        val prevContents = it.ifEmpty {
+                            listOf(FeedSearchResultContent.Title(response.title))
+                        }
+                        prevContents + newContents
+                    }
+                    _cursor.update { response.nextCursor }
+                    _pageState.update { FeedSearchResultPageState.Success }
+                }
+                is ContentSlotModel.NoData -> {
+                    _hasNextPage.update { false }
+
+                    if (_contents.value.isEmpty()) {
+                        _pageState.update { FeedSearchResultPageState.NotFound }
+                    } else {
+                        _pageState.update { FeedSearchResultPageState.Success }
+                    }
+                }
+                else -> {
+                    throw Exception("not handled")
+                }
+            }
 
         }) {
-            _pageState.update { FeedSearchResultPageState.Loading }
+            _pageState.update { FeedSearchResultPageState.InternalError }
         }
     }
-}
 
-// Temp data model
-data class SearchTempDataModel (
-    val resultList: List<CardDetail>?,
-    val uiState: FeedSearchResultUiState
-) {
-    data class CardDetail(
-        val title: String,
-        val imgUrl: String
-    )
+    companion object {
+        private const val FEED_LOCAL_SEARCH_GROUP = "content_browse_search"
+    }
 }
