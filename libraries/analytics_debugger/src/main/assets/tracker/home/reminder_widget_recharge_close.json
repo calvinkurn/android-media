@@ -3,7 +3,7 @@
   "mode": "exact",
   "query": [
     {
-      "eventCategory": "homepage-digital",
+      "eventCategory": "homepage - digital",
       "event": "clickHomepage",
       "eventAction": "click close on digital bills",
       "sessionIris": ".+",

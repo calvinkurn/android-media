@@ -24,7 +24,7 @@ object DeeplinkMapperTokopediaNow {
         val uriSegments = uri.pathSegments
         val urlPath = uriSegments.getOrNull(INDEX_URL_PATH).orEmpty()
 
-        val queryString = if(isRecipeSlug(urlPath)) {
+        val queryString = if (isRecipeSlug(urlPath)) {
             getQueryString(uri, "&")
         } else {
             getQueryString(uri, "?")
@@ -80,8 +80,8 @@ object DeeplinkMapperTokopediaNow {
         val indexCategoryId = 4
 
         return if (content.getOrElse(indexCategoryId) { "" } == PARAM_L1) {
-            val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId+1) { "" }}"
-            "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$queryString"
+            val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId + 1) { "" }}"
+            "${ApplinkConstInternalTokopediaNow.CATEGORY_L1}?$categoryL1$queryString"
         } else if (content.getOrElse(indexCategoryId) { "" } == PARAM_L2) {
             val categoryL1IdIndex = indexCategoryId + 1
             val categoryL2IdIndex = indexCategoryId + 2
@@ -94,10 +94,10 @@ object DeeplinkMapperTokopediaNow {
             "${ApplinkConstInternalTokopediaNow.CATEGORY_L2}?$categoryL1$categoryL2$queryString"
         } else {
             val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId) { "" }}"
-            val categoryL2 = content.getOrElse(indexCategoryId+1) { "" }.let {
+            val categoryL2 = content.getOrElse(indexCategoryId + 1) { "" }.let {
                 if (it.isNotEmpty()) "&$PARAM_CATEGORY_L2=$it" else ""
             }
-            "${ApplinkConstInternalTokopediaNow.OLD_CATEGORY}?$categoryL1$categoryL2$queryString"
+            "${ApplinkConstInternalTokopediaNow.CATEGORY_L2}?$categoryL1$categoryL2$queryString"
         }
     }
 
@@ -150,6 +150,15 @@ object DeeplinkMapperTokopediaNow {
         val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
 
         return ApplinkConstInternalTokopediaNow.RECIPE_AUTO_COMPLETE + queryString
+    }
+
+    fun getRegisteredNavigationTokopediaNowAllAnnotation(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+
+        val query = uri.encodedQuery
+        val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
+
+        return ApplinkConstInternalTokopediaNow.ALL_ANNOTATION + queryString
     }
 
     private fun isRecipeSlug(string: String): Boolean {

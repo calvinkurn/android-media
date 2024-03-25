@@ -8,15 +8,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
-| --- | --- |
-| **Project Lead** | [Muh Isfhani Ghiath](https://tokopedia.atlassian.net/wiki/people/5c5b988f0551865e5bc7986c?ref=confluence) [Calvin Kurniawan](https://tokopedia.atlassian.net/wiki/people/5c6beecd9170244d98d7d0c4?ref=confluence)  |
-| Product Manager | [Gilbert .](https://tokopedia.atlassian.net/wiki/people/612c2c400f8ff40068adbfae?ref=confluence)  |
-| Team | [Minion Kevin](https://tokopedia.atlassian.net/people/team/153506bb-d29a-494d-8c56-5ebcc53c2dc7)  |
-| Release date | 22 Jan 2020 / <!--start status:GREY-->MA-3.63<!--end status-->  |
-| Module type | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->  |
-| Product PRD | [Link](/wiki/spaces/CO/pages/702507056/PRD+-+Uploadpedia) |
-| Module Location | `features.mediaUploader` | `features/media/mediauploader` |
+| **Status** | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                               |
+| --- |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Project Lead** | [Muh Isfhani Ghiath](https://tokopedia.atlassian.net/wiki/people/5c5b988f0551865e5bc7986c?ref=confluence) [Calvin Kurniawan](https://tokopedia.atlassian.net/wiki/people/5c6beecd9170244d98d7d0c4?ref=confluence) |
+| Product Manager | [Gilbert .](https://tokopedia.atlassian.net/wiki/people/612c2c400f8ff40068adbfae?ref=confluence)                                                                                                                |
+| Team | [Minion Jerry]                                                                                                                  |
+| Release date | 22 Jan 2020 / <!--start status:GREY-->MA-3.63<!--end status-->                                                                                                                                                  |
+| Module type | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->                                                                                                                                                     |
+| Product PRD | [Link](/wiki/spaces/CO/pages/702507056/PRD+-+Uploadpedia)                                                                                                                                                       |
+| Module Location | `features.mediaUploader`                                                                                                                                                                                        | `features/media/mediauploader` |
 
 ## Table of Contents
 
@@ -37,6 +37,7 @@ Therefore, mediauploader has developed in Q4 so that it is possible to upload vi
 ## Flow Diagram
 
 Let's take a look at mediauploader's module architecture overview.
+![](https://docs-android.tokopedia.net/images/docs/images_in_zip/image_media_uploader_flow.png)
 
 ![](https://docs-android.tokopedia.net/images/docs/mediauploader/Untitled%20Diagram.drawio%20%281%29.png)
 

@@ -19,12 +19,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingItemAdapter(
-    private val listener: ViewHolder.Listener
+    private val listener: ViewHolder.Listener,
+    private val addOnListener: AddOnViewHolder.Listener
 ) : RecyclerView.Adapter<ProductBundlingItemAdapter.ViewHolder>() {
 
     private val itemList = arrayListOf<ProductListUiModel.ProductUiModel>()
@@ -32,7 +35,7 @@ class ProductBundlingItemAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_buyer_order_detail_product_bundling_list_item, parent, false)
-        return ViewHolder(view, listener)
+        return ViewHolder(view, listener, addOnListener)
     }
 
     override fun getItemCount(): Int = itemList.size
@@ -55,8 +58,11 @@ class ProductBundlingItemAdapter(
 
     class ViewHolder(
         itemView: View,
-        private val listener: Listener
-    ) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView) {
+        private val listener: Listener,
+        private val addOnListener: AddOnViewHolder.Listener
+    ) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView),
+        AddOnSummaryViewHolder.Delegate.Mediator,
+        AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
         private val containerProductInfo = itemView.findViewById<ConstraintLayout>(R.id.container_product_info)
         private val ivBundleItemInsuranceLogo = itemView.findViewById<ImageUnify>(R.id.iv_item_bom_detail_bundling_insurance_logo)
@@ -69,6 +75,10 @@ class ProductBundlingItemAdapter(
 
         private var element: ProductListUiModel.ProductUiModel? = null
 
+        init {
+            registerAddOnSummaryDelegate(this)
+        }
+
         override fun bind(model: ProductListUiModel.ProductUiModel?) {
             model?.let {
                 element = it
@@ -79,6 +89,7 @@ class ProductBundlingItemAdapter(
                 setupBundleItemProductNote(it.productNote)
                 setItemOnClickListener(it.orderId, it.orderDetailId, it.orderStatusId)
                 setupBundleItemButton(model.button, model.isProcessing)
+                bindAddonSummary(it.addOnSummaryUiModel)
                 setupImpressListener(model)
             }
         }
@@ -125,6 +136,9 @@ class ProductBundlingItemAdapter(
                         ) {
                             setupBundleItemButton(newItem.button, newItem.isProcessing)
                         }
+                        if (oldItem.addOnSummaryUiModel != newItem.addOnSummaryUiModel) {
+                            bindAddonSummary(newItem.addOnSummaryUiModel)
+                        }
                         setupImpressListener(newItem)
                         containerProductInfo?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                         return
@@ -132,6 +146,18 @@ class ProductBundlingItemAdapter(
                 }
             }
             bind(element)
+        }
+
+        override fun getAddOnSummaryLayout(): View? {
+            return itemView.findViewById(R.id.layout_bom_detail_product_bundle_add_on)
+        }
+
+        override fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool? {
+            return null
+        }
+
+        override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
+            return addOnListener
         }
 
         private fun setBundleItemInsuranceLogo(insurance: ProductListUiModel.ProductUiModel.Insurance?) {

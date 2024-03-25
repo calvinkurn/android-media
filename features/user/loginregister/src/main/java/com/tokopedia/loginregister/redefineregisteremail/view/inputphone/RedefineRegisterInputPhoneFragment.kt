@@ -230,20 +230,23 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun registrationProsesObserver() {
         viewModel.getUserInfo.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    actionAfterLoggedIn()
+            it?.let {
+                when (it) {
+                    is Success -> {
+                        actionAfterLoggedIn()
 
-                    if (parameter.isRequiredInputPhone) {
-                        goToHome()
-                    } else {
-                        showNavigateBackToolbar(false)
-                        onSuccessRegistered()
+                        if (parameter.isRequiredInputPhone) {
+                            goToHome()
+                        } else {
+                            showNavigateBackToolbar(false)
+                            onSuccessRegistered()
+                        }
                     }
-                }
-                is Fail -> {
-                    onEntireLoadingFailed()
-                    showToasterError(it.throwable)
+
+                    is Fail -> {
+                        onEntireLoadingFailed()
+                        showToasterError(it.throwable)
+                    }
                 }
             }
         }
@@ -265,6 +268,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                         )
                     }
                 }
+
                 is Fail -> {
                     idlingResource.decrement()
                     val messageError = it.throwable.getMessage(requireActivity())
@@ -307,6 +311,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                         onUserPhoneUpdateFailed(MessageErrorException(messageError))
                     }
                 }
+
                 is Fail -> {
                     val messageError = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(
@@ -348,6 +353,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     )
                     showDialogOfferLogin()
                 }
+
                 is RegistrationPhoneState.Unregistered -> {
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(
                         RedefineRegisterEmailAnalytics.ACTION_SUCCESS,
@@ -355,6 +361,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     )
                     showDialogConfirmPhone(phone = it.message)
                 }
+
                 is RegistrationPhoneState.Ineligible -> {
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(
                         RedefineRegisterEmailAnalytics.ACTION_FAILED,
@@ -363,6 +370,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     )
                     binding?.fieldInputPhone?.setMessageField(it.message)
                 }
+
                 is RegistrationPhoneState.Failed -> {
                     val message = it.throwable?.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(
@@ -375,6 +383,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                         is AkamaiErrorException -> {
                             showDialogFailed()
                         }
+
                         else -> {
                             it.throwable?.let { throwable -> showToasterError(throwable) }
                         }
@@ -402,6 +411,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                         onUserProfileValidateFailed(MessageErrorException(message))
                     }
                 }
+
                 is Fail -> {
                     val message = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPnPageOptionalEvent(
@@ -477,17 +487,21 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     showGlobalError(GlobalError.NO_CONNECTION)
                 }
             }
+
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> {
                         showGlobalError(GlobalError.NO_CONNECTION)
                     }
+
                     ReponseStatus.NOT_FOUND -> {
                         showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     }
+
                     ReponseStatus.INTERNAL_SERVER_ERROR -> {
                         showGlobalError(GlobalError.SERVER_ERROR)
                     }
+
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
@@ -495,6 +509,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     }
                 }
             }
+
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
@@ -509,6 +524,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             is AkamaiErrorException -> {
                 showDialogFailed()
             }
+
             else -> {
                 showToasterError(throwable)
             }
@@ -626,6 +642,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     )
                 }
             }
+
             RedefineRegisterEmailConstants.VERIFICATION_PHONE_UPDATE_PROFILE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     parameter.token =

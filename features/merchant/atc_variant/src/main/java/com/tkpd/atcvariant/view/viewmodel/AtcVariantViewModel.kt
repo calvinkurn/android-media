@@ -15,6 +15,12 @@ import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanS
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.ProductType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
+import com.tokopedia.analytics.byteio.TrackConfirmSku
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -26,9 +32,11 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -38,6 +46,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -472,9 +481,43 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    private fun sendByteIoConfirmTracker(actionButton: Int, selectedChild: VariantChild?) {
+        val parentId = getVariantData()?.parentId.orEmpty()
+        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
+        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON
+            || actionButton == ProductDetailCommonConstant.OCS_BUTTON) {
+            AppLogPdp.addToCart.set(true)
+            AppLogPdp.sendConfirmCart(
+                TrackConfirmCart(
+                    productId = parentId,
+                    productCategory = categoryLvl1,
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    addSkuNum = selectedChild?.getFinalMinOrder().orZero()
+                )
+            )
+        } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
+            AppLogPdp.sendConfirmSku(
+                TrackConfirmSku(
+                    productId = parentId,
+                    productCategory = categoryLvl1,
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    isSingleSku = getVariantData()?.children?.size == 1,
+                    qty = selectedChild?.getFinalMinOrder().orZero().toString(),
+                    isHaveAddress = false
+                )
+            )
+        }
+    }
+
     fun hitAtc(
         actionButton: Int,
-        shopIdInt: Int,
+        shopId: String,
         categoryName: String,
         userId: String,
         shippingMinPrice: Double,
@@ -491,6 +534,7 @@ class AtcVariantViewModel @Inject constructor(
         val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
             ?: selectedChild?.getFinalMinOrder() ?: 1
 
+        sendByteIoConfirmTracker(actionButton, selectedChild)
         if (selectedMiniCart != null && showQtyEditor) {
             getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
         } else {
@@ -498,7 +542,7 @@ class AtcVariantViewModel @Inject constructor(
                 actionButtonCart = actionButton,
                 selectedChild = selectedChild,
                 selectedWarehouse = selectedWarehouse,
-                shopIdInt = shopIdInt,
+                shopId = shopId,
                 trackerAttributionPdp = trackerAttributionPdp,
                 trackerListNamePdp = trackerListNamePdp,
                 categoryName = categoryName,
@@ -580,6 +624,7 @@ class AtcVariantViewModel @Inject constructor(
         val result = withContext(dispatcher.io) {
             addToCartUseCase.createObservable(requestParams).toBlocking().single()
         }
+
         if (result.isDataError()) {
             val errorMessage = result.errorMessage.firstOrNull() ?: ""
             _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
@@ -594,6 +639,23 @@ class AtcVariantViewModel @Inject constructor(
             )
             _addToCartLiveData.postValue(result.asSuccess())
         }
+    }
+
+    fun getConfirmCartResultModel(): TrackConfirmCartResult {
+        val selectedChild = getVariantData()?.getChildByOptionId(
+            getSelectedOptionIds()?.values.orEmpty().toList()
+        )
+        val parentId = getVariantData()?.parentId.orEmpty()
+        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
+        return TrackConfirmCartResult(
+            productId = parentId,
+            productCategory = categoryLvl1,
+            productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+            originalPrice = selectedChild?.finalMainPrice.orZero(),
+            salePrice = selectedChild?.finalPrice.orZero(),
+            skuId = selectedChild?.productId.orEmpty(),
+            addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
+        )
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {

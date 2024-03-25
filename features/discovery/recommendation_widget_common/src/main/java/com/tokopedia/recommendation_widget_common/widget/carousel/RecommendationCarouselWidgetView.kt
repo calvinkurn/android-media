@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -32,7 +34,6 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.RecomTemporary
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -59,6 +60,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by yfsx on 5/3/21.
@@ -98,7 +100,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     private var lifecycleOwner: LifecycleOwner? = null
     private var widgetMetadata: RecomWidgetMetadata = RecomWidgetMetadata()
-    private var forceUseOldProductCard: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -132,14 +133,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         tokonowListener: RecommendationCarouselTokonowListener?,
         chipListener: RecomCarouselChipListener? = null,
         scrollToPosition: Int = RecyclerView.NO_POSITION,
-        @RecomTemporary forceUseOldProductCard: Boolean = false,
     ) {
         try {
             widgetMetadata = widgetMetadata.copy(
                 adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition
             )
-            this.forceUseOldProductCard = forceUseOldProductCard
             this.basicListener = basicListener
             this.tokonowListener = tokonowListener
             this.basicChipListener = chipListener
@@ -321,10 +320,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun initVar() {
         if (widgetMetadata.isInitialized) return
         carouselData?.let {
-            typeFactory = CommonRecomCarouselCardTypeFactoryImpl(
-                it.recommendationData,
-                forceUseOldProductCard
-            )
+            typeFactory = CommonRecomCarouselCardTypeFactoryImpl(it.recommendationData)
         }
         adapter = RecommendationCarouselAdapter(typeFactory)
         layoutManager = createLayoutManager()
@@ -409,7 +405,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
         return productCardModelList.getMaxHeightForGridView(
             context = itemView.context,
             coroutineDispatcher = Dispatchers.Default,
@@ -486,6 +482,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
         this.carouselData = carouselData
         initVar()
+        trackHorizontalScroll(carouselData.recommendationData)
         initChips()
         doActionBasedOnRecomState(carouselData.state,
             onLoad = {
@@ -607,6 +604,15 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun destroyEvent() {
 
+    }
+
+    private fun trackHorizontalScroll(model: RecommendationWidget) {
+        recyclerView.addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = model.pageName,
+                barName = model.pageName,
+            )
+        )
     }
 
     private fun observeLiveData() {

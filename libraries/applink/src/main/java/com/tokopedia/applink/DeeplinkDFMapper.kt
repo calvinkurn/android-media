@@ -165,7 +165,8 @@ object DeeplinkDFMapper : CoroutineScope {
                     DYNAMIC_FEATURE_INSTALL,
                     moduleId,
                     Uri.encode(deeplink).toString(),
-                    if (fallbackUrl.isNullOrEmpty()) {
+                    if (fallbackUrl
+                .isNullOrEmpty()) {
                         getDefaultFallbackUrl(deeplink)
                     } else {
                         fallbackUrl

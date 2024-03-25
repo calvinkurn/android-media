@@ -6,7 +6,6 @@ object DeepLinkUrlConstant {
     const val PROMO_DETAIL_LINK_URL = "https://www.tokopedia.com/promo/finansial-citibank/?cta_src=0"
     const val PROMO_LIST_LINK_URL = "https://www.tokopedia.com/promo"
     const val SALE_LINK_URL = "https://www.tokopedia.com/sale"
-    const val INVOICE_LINK_URL = "https://www.tokopedia.com/invoice.pl?id=601307061"
     const val BLOG_LINK_URL = "https://www.tokopedia.com/blog/"
     const val NEW_CATEGORY_LINK_URL = "https://www.tokopedia.com/category"
     const val OLD_CATEGORY_LINK_URL = "https://www.tokopedia.com/p"

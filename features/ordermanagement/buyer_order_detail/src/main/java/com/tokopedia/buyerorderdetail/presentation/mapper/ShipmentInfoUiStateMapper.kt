@@ -90,7 +90,7 @@ object ShipmentInfoUiStateMapper {
     ): ShipmentInfoUiState {
         return ShipmentInfoUiState.HasData.Showing(
             mapShipmentInfoUiModel(
-                buyerOrderDetailData.additionalData.groupOrderData,
+                buyerOrderDetailData.additionalData?.groupOrderData,
                 buyerOrderDetailData.groupType,
                 buyerOrderDetailData.shipment,
                 buyerOrderDetailData.meta,

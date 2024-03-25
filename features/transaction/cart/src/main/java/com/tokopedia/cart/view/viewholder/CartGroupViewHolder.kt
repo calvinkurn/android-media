@@ -369,7 +369,7 @@ class CartGroupViewHolder(
                     cartGroupHolderData.hasSeenFreeShippingBadge = true
                     actionListener.onViewFreeShippingPlusBadge()
                 }
-                if (cartGroupHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
+                if (plusCoachmark != null && cartGroupHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
                     val coachMarkItem = ArrayList<CoachMark2Item>()
                     coachMarkItem.add(
                         CoachMark2Item(
@@ -546,6 +546,10 @@ class CartGroupViewHolder(
             cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
             binding.itemCartBasketBuilding.layoutBasketBuildingTicker.gone()
         }
+    }
+
+    fun getItemViewBinding(): ItemGroupRevampBinding {
+        return binding
     }
 
     companion object {

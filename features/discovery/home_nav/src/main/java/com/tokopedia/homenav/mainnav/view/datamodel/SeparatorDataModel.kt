@@ -5,7 +5,6 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class SeparatorDataModel(
         val sectionId: Int? = null,
-        val isMePageVariant: Boolean = false,
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = sectionId.toString()
 

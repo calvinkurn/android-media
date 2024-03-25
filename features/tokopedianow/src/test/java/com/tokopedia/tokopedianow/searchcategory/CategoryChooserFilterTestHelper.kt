@@ -7,11 +7,11 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.CapturingSlot
@@ -23,15 +23,15 @@ import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryChooserFilterTestHelper(
-        private val baseViewModel: BaseSearchCategoryViewModel,
-        private val getProductCountUseCase: UseCase<String>,
-        private val getFilterUseCase: GetFilterUseCase,
-        private val callback: Callback,
+    private val baseViewModel: TokoNowSearchViewModel,
+    private val getProductCountUseCase: UseCase<String>,
+    private val getFilterUseCase: GetFilterUseCase,
+    private val callback: Callback
 ) {
     private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
     private var chosenCategoryFilter = Option()
 
-    fun `test category chooser cannot be spammed` () {
+    fun `test category chooser cannot be spammed`() {
         var isOpenCount = 0
         val observer = Observer<Filter?> {
             if (it != null) isOpenCount++
@@ -42,7 +42,7 @@ class CategoryChooserFilterTestHelper(
         `Given view will observe is L3 Category filter open live data`(observer)
 
         val categoryL3QuickFilterDataView =
-                baseViewModel.visitableListLiveData.value.getCategoryL3FilterFromQuickFilter()
+            baseViewModel.visitableListLiveData.value.getCategoryL3FilterFromQuickFilter()
 
         `When user spam click open category chooser`(categoryL3QuickFilterDataView)
 
@@ -59,8 +59,9 @@ class CategoryChooserFilterTestHelper(
     }
 
     private fun List<Visitable<*>>?.getCategoryL3FilterFromQuickFilter(): SortFilterItemDataView {
-        if (this == null)
+        if (this == null) {
             throw AssertionError("Visitable List is null")
+        }
 
         val quickFilterDataView = getQuickFilterDataView()
 
@@ -70,15 +71,16 @@ class CategoryChooserFilterTestHelper(
     }
 
     private fun List<Visitable<*>>?.getQuickFilterDataView(): QuickFilterDataView {
-        if (this == null)
+        if (this == null) {
             throw AssertionError("Visitable List is null")
+        }
 
         return find { it is QuickFilterDataView } as? QuickFilterDataView
-                ?: throw AssertionError("Quick filter data view not found")
+            ?: throw AssertionError("Quick filter data view not found")
     }
 
     private fun `When user spam click open category chooser`(
-            categoryL3QuickFilterDataView: SortFilterItemDataView
+        categoryL3QuickFilterDataView: SortFilterItemDataView
     ) {
         categoryL3QuickFilterDataView.sortFilterItem.chevronListener!!.invoke()
         categoryL3QuickFilterDataView.sortFilterItem.chevronListener!!.invoke()
@@ -112,15 +114,15 @@ class CategoryChooserFilterTestHelper(
         `Given view already created`()
 
         val categoryL3QuickFilterDataView =
-                baseViewModel.visitableListLiveData.value.getCategoryL3FilterFromQuickFilter()
+            baseViewModel.visitableListLiveData.value.getCategoryL3FilterFromQuickFilter()
 
         `Given view already open category chooser`(categoryL3QuickFilterDataView)
         `Given view choose option from category chooser`(categoryL3QuickFilterDataView)
     }
 
     private fun `Given get product count API will be successful`(
-            requestParamsSlot: CapturingSlot<RequestParams>,
-            successResponse: String,
+        requestParamsSlot: CapturingSlot<RequestParams>,
+        successResponse: String
     ) {
         every {
             getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
@@ -130,13 +132,13 @@ class CategoryChooserFilterTestHelper(
     }
 
     private fun `Given view already open category chooser`(
-            categoryL3QuickFilterDataView: SortFilterItemDataView
+        categoryL3QuickFilterDataView: SortFilterItemDataView
     ) {
         categoryL3QuickFilterDataView.sortFilterItem.chevronListener!!.invoke()
     }
 
     private fun `Given view choose option from category chooser`(
-            categoryL3QuickFilterDataView: SortFilterItemDataView
+        categoryL3QuickFilterDataView: SortFilterItemDataView
     ) {
         chosenCategoryFilter = categoryL3QuickFilterDataView.filter.options[2]
     }
@@ -146,9 +148,9 @@ class CategoryChooserFilterTestHelper(
     }
 
     private fun `Then assert get product count query params`(
-            mandatoryParams: Map<String, String>,
-            chosenCategoryFilter: Option,
-            requestParams: RequestParams,
+        mandatoryParams: Map<String, String>,
+        chosenCategoryFilter: Option,
+        requestParams: RequestParams
     ) {
         val chosenCategoryFilterKey = OptionHelper.getKeyRemoveExclude(chosenCategoryFilter)
         val expectedGetProductCountParams =
@@ -213,9 +215,9 @@ class CategoryChooserFilterTestHelper(
         val reason = "Query param key \"${chosenCategoryFilter.key}\" value is incorrect"
 
         assertThat(
-                reason,
-                queryParams[chosenCategoryFilter.key].toString(),
-                shouldBe(chosenCategoryFilter.value)
+            reason,
+            queryParams[chosenCategoryFilter.key].toString(),
+            shouldBe(chosenCategoryFilter.value)
         )
     }
 
@@ -283,7 +285,7 @@ class CategoryChooserFilterTestHelper(
     interface Callback {
         fun `Given first page use case will be successful`()
         fun `Then assert first page use case is called twice`(
-                requestParamsSlot: MutableList<RequestParams>
+            requestParamsSlot: MutableList<RequestParams>
         )
     }
 }

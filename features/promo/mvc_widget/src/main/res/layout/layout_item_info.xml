@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="12dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="\u2022"
+        app:typographyWeight="bold"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="display_3"
+        tools:text="Nominal promo bisa berubah dikarenakan waktu pembelian, ketersediaan produk, periode promosi, ketentuan promo. " />
+</androidx.appcompat.widget.LinearLayoutCompat>
+
+

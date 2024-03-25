@@ -171,7 +171,7 @@ open class DeepLinkDFMapperTestFixture {
         if (patternInList == null) {
             hostInList.dfpPathObj.add(DFPPath(pattern, dfModuleName, dfp.webviewFallbackLogic))
         } else {
-            throw RuntimeException("Duplicate Pattern: " + pattern?.pattern + " " + patternInList.pattern + " " + pattern?.pattern)
+            throw RuntimeException("There's duplicate activity in manifest with the same pattern: " + pattern?.pattern + " " + patternInList.pattern)
         }
     }
 

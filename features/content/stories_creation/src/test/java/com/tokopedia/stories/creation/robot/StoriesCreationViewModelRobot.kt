@@ -49,6 +49,15 @@ class StoriesCreationViewModelRobot(
     val maxProductTag: Int
         get() = viewModel.maxProductTag
 
+    val minVideoDuration: Int
+        get() = viewModel.minVideoDuration
+
+    val maxVideoDuration: Int
+        get() = viewModel.maxVideoDuration
+
+    val mediaFilePath: String
+        get() = viewModel.mediaFilePath
+
     fun recordState(fn: suspend StoriesCreationViewModelRobot.() -> Unit): StoriesCreationUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: StoriesCreationUiState

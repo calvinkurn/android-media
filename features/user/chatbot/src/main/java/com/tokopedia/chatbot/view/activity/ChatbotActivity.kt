@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.activity
 
-import RemoteConfigHelper
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,9 +13,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.fragment.ChatbotFragment2
+import com.tokopedia.chatbot.chatbot2.view.util.view.isInDarkMode
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.view.fragment.ChatbotFragment
-import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageFitCenter
@@ -53,20 +51,9 @@ class ChatbotActivity : BaseChatToolbarActivity() {
             bundle.putString(MESSAGE_ID, list[0])
         }
 
-        val state = remoteConfigForChatbotMVVM()
-        return if (state) {
-            val fragment = ChatbotFragment2()
-            fragment.arguments = bundle
-            fragment
-        } else {
-            val fragment = ChatbotFragment()
-            fragment.arguments = bundle
-            fragment
-        }
-    }
-
-    private fun remoteConfigForChatbotMVVM(): Boolean {
-        return RemoteConfigHelper.isRemoteConfigForMVVM(this)
+        val fragment = ChatbotFragment2()
+        fragment.arguments = bundle
+        return fragment
     }
 
     companion object {

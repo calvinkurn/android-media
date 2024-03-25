@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.listener
 
 import android.content.Context
 import com.tokopedia.home.analytics.v2.CampaignWidgetTracking
+import com.tokopedia.home.analytics.v2.Kd4SquareTracker
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
 import com.tokopedia.home_component.model.ChannelGrid

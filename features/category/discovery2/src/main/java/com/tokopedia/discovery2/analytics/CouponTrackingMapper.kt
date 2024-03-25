@@ -75,6 +75,28 @@ object CouponTrackingMapper {
     }
     //endregion
 
+    //region automate claim coupon
+    fun ComponentsItem.toTrackingProperties(ctaText: String = ""): CouponTrackingProperties {
+        val slug = data?.firstOrNull()?.catalogSlug?.firstOrNull().orEmpty()
+        val gtmItemName = data?.firstOrNull()
+            ?.gtmItemName
+            .orEmpty()
+
+        return CouponTrackingProperties(
+            componentName = parentComponentName.orEmpty(),
+            name = slug,
+            id = id.substringAfter("_"),
+            promoCode = slug,
+            creativeName = creativeName.orEmpty(),
+            position = position,
+            action = ctaText,
+            gtmItem = gtmItemName,
+            tabName = tabName.orEmpty()
+        )
+    }
+
+    //endregion
+
     private fun getGTMItemName(componentId: String, pageName: String) =
         getComponent(componentId, pageName)
             ?.data?.firstOrNull()

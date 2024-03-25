@@ -9,8 +9,10 @@ import com.tokopedia.shop.campaign.view.adapter.ShopCampaignCarouselProductHighl
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.typefactory.ShopHomeThematicWidgetTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 
 /**
  * Created by nathan on 2/6/18.
@@ -40,6 +42,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
     var labelGroupList: List<LabelGroupUiModel> = listOf()
+    var shopBadgeList: List<ShopBadgeUiModel> = emptyList()
     var stockLabel: String = ""
     var hideGimmick: Boolean = false
     var stockSoldPercentage: Int = 0
@@ -60,6 +63,13 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var averageRating: String = ""
     var isFulfillment: Boolean? = null
     var warehouseId: String? = null
+    var shopId: String = ""
+    var widgetName: String = ""
+    var recommendationPageName: String = ""
+    var requestId: String = ""
+    var recParam: String = ""
+    var recSessionId: String = ""
+
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when (typeFactory) {
             is ShopHomeAdapterTypeFactory -> {
@@ -72,6 +82,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
                 typeFactory.type(this)
             }
             is ShopCampaignCarouselProductHighlightAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+            is ShopHomeThematicWidgetTypeFactory -> {
                 typeFactory.type(this)
             }
             else -> {

@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.recipelist.base.viewmodel
 
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.model.TokoNowGetRecipes
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeEmptyStateUiModel

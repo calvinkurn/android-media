@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop_showcase.databinding.ItemProductCardHorizontalBinding
@@ -12,7 +13,7 @@ import com.tokopedia.shop_showcase.shop_showcase_add.presentation.viewholder.Sho
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 
-class ShopShowcaseAddAdapter(private val context: Context, private var listener: ShopShowcasePreviewListener): RecyclerView.Adapter<ShowcaseProductPreviewViewHolder>() {
+class ShopShowcaseAddAdapter(private val context: Context, private var listener: ShopShowcasePreviewListener) : RecyclerView.Adapter<ShowcaseProductPreviewViewHolder>() {
 
     private var selectedProductList: ArrayList<BaseShowcaseProduct> = arrayListOf()
     private var deletedProductList: ArrayList<BaseShowcaseProduct> = arrayListOf()
@@ -20,9 +21,9 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowcaseProductPreviewViewHolder {
         val binding = ItemProductCardHorizontalBinding.inflate(
-                LayoutInflater.from(context),
-                parent,
-                false
+            LayoutInflater.from(context),
+            parent,
+            false
         )
         return ShowcaseProductPreviewViewHolder(binding, listener)
     }
@@ -41,8 +42,9 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
             it.map { showcaseProduct ->
                 showcaseProduct.isCloseable = true
                 showcaseProduct.ishighlighted = false
-                if(!selectedProductList.contains(showcaseProduct))
+                if (!selectedProductList.contains(showcaseProduct)) {
                     selectedProductList.add(showcaseProduct)
+                }
             }
         }
         notifyDataSetChanged()
@@ -52,8 +54,9 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         newAppendedProductList?.let { newAppendedList ->
             appendedProductList.clear()
             newAppendedList.forEach {
-                if(it.isNewAppended)
+                if (it.isNewAppended) {
                     appendedProductList.add(it)
+                }
             }
         }
     }
@@ -74,8 +77,10 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         appendedProductList.remove(selectedProductList[position])
         selectedProductList.removeAt(position)
         notifyDataSetChanged()
-        if(deletedProductList.size.isMoreThanZero()) {
-            listener.setupDeleteCounter(deletedProductList[0] as ShowcaseProduct)
+        if (deletedProductList.size.isMoreThanZero()) {
+            val productToBeDeleted = deletedProductList.getOrNull(Int.ZERO) ?: return
+            val product = (productToBeDeleted as? ShowcaseProduct) ?: return
+            listener.setupDeleteCounter(product)
             listener.showDeleteCounter()
         }
     }
@@ -83,13 +88,15 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
     fun undoDeleteSelectedProduct() {
         deletedProductList.forEach {
             selectedProductList.add(0, it)
-            if((it as ShowcaseProduct).isNewAppended)
+            if ((it as ShowcaseProduct).isNewAppended) {
                 appendedProductList.add(it)
+            }
             notifyDataSetChanged()
         }
         deletedProductList.clear()
-        if(deletedProductList.size.isZero())
+        if (deletedProductList.size.isZero()) {
             listener.hideDeleteCounter()
+        }
     }
 
     fun getDeletedProductList(): ArrayList<BaseShowcaseProduct> {

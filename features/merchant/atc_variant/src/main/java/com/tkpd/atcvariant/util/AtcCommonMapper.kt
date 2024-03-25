@@ -7,6 +7,8 @@ import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
 import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
@@ -23,6 +25,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoPriceUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -40,7 +43,7 @@ object AtcCommonMapper {
         actionButtonCart: Int,
         selectedChild: VariantChild?,
         selectedWarehouse: WarehouseInfo?,
-        shopIdInt: Int,
+        shopId: String,
         trackerAttributionPdp: String,
         trackerListNamePdp: String,
         categoryName: String,
@@ -54,7 +57,7 @@ object AtcCommonMapper {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 AddToCartOcsRequestParams().apply {
                     productId = selectedChild?.productId.toZeroStringIfNull()
-                    shopId = shopIdInt.toString()
+                    this.shopId = shopId
                     quantity = selectedChild?.getFinalMinOrder() ?: 0
                     notes = ""
                     customerId = userId
@@ -68,6 +71,7 @@ object AtcCommonMapper {
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
                     this.shopName = shopName
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.OCS)
                 }
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
@@ -75,7 +79,7 @@ object AtcCommonMapper {
                     carts = listOf(
                         AddToCartOccMultiCartParam(
                             productId = selectedChild?.productId ?: "",
-                            shopId = shopIdInt.toString(),
+                            shopId = shopId,
                             quantity = selectedChild?.getFinalMinOrder().toString()
                         ).apply {
                             warehouseId = selectedWarehouse?.id ?: ""
@@ -88,7 +92,8 @@ object AtcCommonMapper {
                         }
                     ),
                     userId = userId,
-                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP,
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.INSTANT)
                 )
             }
             else -> {
@@ -100,7 +105,7 @@ object AtcCommonMapper {
 
                 AddToCartRequestParams().apply {
                     productId = selectedChild?.productId.toZeroStringIfNull()
-                    shopId = shopIdInt.toString()
+                    this.shopId = shopId
                     quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp
@@ -111,6 +116,7 @@ object AtcCommonMapper {
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
                 }
             }
         }
@@ -381,7 +387,8 @@ object AtcCommonMapper {
             isCampaignActive = isCampaignActive,
             productSlashPrice = price.slashPriceFmt,
             productStockFmt = selectedChild?.stock?.stockFmt ?: "",
-            hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse()
+            hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse(),
+            promoPrice = selectedChild?.promoPrice?.mapIntoPromoPriceUiModel(price.slashPriceFmt)
         )
         return productImage to headerData
     }

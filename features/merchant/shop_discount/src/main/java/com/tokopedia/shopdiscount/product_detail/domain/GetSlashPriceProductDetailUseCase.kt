@@ -75,10 +75,46 @@ class GetSlashPriceProductDetailUseCase @Inject constructor(
                     discounted_price
                     discounted_percentage
                     original_price
+                    subsidy_info {
+                        cta_program_link
+                        subsidy_type
+                        discounted_price
+                        discounted_percentage
+                        remaining_quota
+                        quota_subsidy
+                        subsidy_date_start
+                        subsidy_date_stop
+                        max_order
+                        seller_discount_price
+                        seller_discount_percentage
+                    }
+                    join_subsidy
                   }
                   is_variant
                   is_expand
                   parent_id
+                  rule {
+                    able_to_opt_out
+                  }
+                  subsidy_info {
+                    cta_program_link
+                    subsidy_type
+                    discounted_price
+                    discounted_percentage
+                    remaining_quota
+                    quota_subsidy
+                    subsidy_date_start
+                    subsidy_date_stop
+                    max_order
+                    seller_discount_price
+                    seller_discount_percentage
+                  }
+                  join_subsidy
+                  subsidy_status_text
+                  parent_info{
+                    is_parent
+                    name
+                  }
                 }
               }
             }

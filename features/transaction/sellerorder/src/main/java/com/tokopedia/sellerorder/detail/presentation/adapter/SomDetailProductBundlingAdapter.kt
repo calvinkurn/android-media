@@ -9,10 +9,12 @@ import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingProductBinding
-import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
+import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -20,10 +22,12 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class SomDetailProductBundlingAdapter(
-    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?
+    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
+    private val addOnListener: AddOnViewHolder.Listener,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : RecyclerView.Adapter<SomDetailProductBundlingAdapter.ViewHolder>() {
 
-    var products = emptyList<SomDetailOrder.GetSomDetail.Details.Product>()
+    var products = emptyList<ProductBundleUiModel.ProductUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -37,32 +41,53 @@ class SomDetailProductBundlingAdapter(
 
     override fun getItemCount(): Int = products.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(
+        itemView: View
+    ) : RecyclerView.ViewHolder(itemView),
+        AddOnSummaryViewHolder.Delegate.Mediator,
+        AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
         private val binding by viewBinding<ItemSomProductBundlingProductBinding>()
 
-        fun bind(product: SomDetailOrder.GetSomDetail.Details.Product) {
+        init {
+            registerAddOnSummaryDelegate(this)
+        }
+
+        override fun getAddOnSummaryLayout(): View? {
+            return itemView.findViewById(R.id.layoutProductBundleAddOn)
+        }
+
+        override fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool? {
+            return recyclerViewSharedPool
+        }
+
+        override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
+            return addOnListener
+        }
+
+        fun bind(product: ProductBundleUiModel.ProductUiModel) {
             binding?.run {
                 root.setOnClickListener {
-                    actionListener?.onClickProduct(product.orderDetailId.toLongOrZero())
+                    actionListener?.onClickProduct(product.detail.orderDetailId.toLongOrZero())
                 }
                 imgSomBundleProduct.loadProductImage(
-                    url = product.thumbnail,
+                    url = product.detail.thumbnail,
                     archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
                 )
-                tvSomBundleProductName.text = product.name
-                tvSomBundlePrice.text = StringBuilder("${product.quantity} x ${product.priceText}")
-                if (product.note.isNotEmpty()) {
+                tvSomBundleProductName.text = product.detail.name
+                tvSomBundlePrice.text =
+                    StringBuilder("${product.detail.quantity} x ${product.detail.priceText}")
+                if (product.detail.note.isNotEmpty()) {
                     tvSomBundleNotes.visible()
-                    tvSomBundleNotes.text = product.note.replace(
+                    tvSomBundleNotes.text = product.detail.note.replace(
                         "\\n",
-                        System.getProperty("line.separator")
-                            ?: ""
+                        System.getProperty("line.separator") ?: ""
                     )
                 } else {
                     tvSomBundleNotes.gone()
                 }
             }
+            bindAddonSummary(product.addOnSummaryUiModel)
         }
     }
 }

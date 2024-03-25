@@ -4,9 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -17,14 +15,15 @@ import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.carousellayoutmanager.DefaultChildSelectionListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
-import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -44,9 +43,12 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.shop_advance_carousel_banner_viewholder_layout
-        private const val DEFAULT_RATIO = "1:1"
         private const val AUTO_SCROLL_DURATION = 5000L
-        private const val RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA = 16
+        private const val RV_HORIZONTAL_PADDING = 16
+        private const val INT_TWO = 2
+        private const val ONE_ITEM_PADDING_MULTIPLIER = 2
+        private const val TWO_ITEM_PADDING_MULTIPLIER = 3
+        private const val MORE_THAN_TWO_ITEM_PADDING_MULTIPLIER = 4
     }
 
     private val viewBinding: ShopAdvanceCarouselBannerViewholderLayoutBinding? by viewBinding()
@@ -184,7 +186,6 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     }
 
     private fun initRecyclerView(uiModel: ShopHomeDisplayWidgetUiModel) {
-        val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
         carouselLayoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
         carouselLayoutManager?.setPostLayoutListener(CarouselZoomPostLayoutListener())
         carouselLayoutManager?.maxVisibleItems = Int.ONE
@@ -192,7 +193,6 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         carouselLayoutManager?.addOnItemSelectionListener(itemSelectionListener)
         recyclerView?.apply {
             isNestedScrollingEnabled = false
-            (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
             this.layoutManager = carouselLayoutManager
             this.setHasFixedSize(true)
             this.addOnScrollListener(CenterScrollListener())
@@ -208,18 +208,60 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
             this.setRecycledViewPool(recyclerviewPoolListener.parentPool)
+            configRvPadding()
+            configRvHeight(uiModel)
+        }
+    }
+
+    /**
+     * Need to calculate rv height manually before render to prevent jumpy scroll by finding rv item
+     * height using it's width and ratio
+     * rvHeight = (rvItem width without horizontal padding) * ratioDenominator / ratioNumerator
+     * multiplier differences:
+     * - ONE_ITEM_PADDING_MULTIPLIER: used for only rv with 1 item since we're adding horizontal padding to rv item
+     * - TWO_ITEM_PADDING_MULTIPLIER: used for only rv with 2 items since we're adding half of horizontal padding to rv item
+     *   and another horizontal padding to rv
+     * - MORE_THAN_TWO_ITEM_PADDING_MULTIPLIER: used for only rv with more that 2 items since we're adding horizontal padding to both rv item and rv
+     */
+    private fun configRvHeight(uiModel: ShopHomeDisplayWidgetUiModel) {
+        recyclerView?.apply {
+            val numerator = getIndexRatio(uiModel, Int.ZERO)
+            val denominator = getIndexRatio(uiModel, Int.ONE)
+            val rvItemWidth = when (uiModel.data?.size.orZero()) {
+                Int.ONE -> {
+                    getScreenWidth() - (RV_HORIZONTAL_PADDING.toPx() * ONE_ITEM_PADDING_MULTIPLIER)
+                }
+
+                INT_TWO -> {
+                    getScreenWidth() - (RV_HORIZONTAL_PADDING.toPx() * TWO_ITEM_PADDING_MULTIPLIER)
+                }
+
+                else -> {
+                    getScreenWidth() - (RV_HORIZONTAL_PADDING.toPx() * MORE_THAN_TWO_ITEM_PADDING_MULTIPLIER)
+                }
+            }
+            layoutParams?.height = rvItemWidth * denominator / numerator
+        }
+    }
+
+    private fun configRvPadding() {
+        recyclerView?.apply {
             if (uiModel.data?.size.orZero() > Int.ONE) {
                 setPadding(
-                    RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA.toPx(),
+                    RV_HORIZONTAL_PADDING.toPx(),
                     Int.ZERO,
-                    RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA.toPx(),
+                    RV_HORIZONTAL_PADDING.toPx(),
                     Int.ZERO
                 )
             } else {
                 setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
             }
         }
-        updateRecyclerViewHeightBasedOnFirstChild()
+    }
+
+
+    private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
+        return data.header.ratio.split(":").getOrNull(index)?.toIntOrNull() ?: Int.ONE
     }
 
     private fun setupFlingListener(
@@ -236,21 +278,6 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
 
     private fun isCircularRvLayout(uiModel: ShopHomeDisplayWidgetUiModel): Boolean {
         return uiModel.data?.size.orZero() > 2
-    }
-
-    private fun updateRecyclerViewHeightBasedOnFirstChild() {
-        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    val firstChildHeight = recyclerView.findViewHolderForAdapterPosition(
-                        Int.ZERO
-                    )?.itemView?.height.orZero()
-                    val lp = recyclerView.layoutParams
-                    lp?.height = firstChildHeight
-                    recyclerView.layoutParams = lp
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
     }
 
     private fun setHeaderSection() {

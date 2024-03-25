@@ -13,12 +13,12 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.databinding.ItemHierarchycalSocialProofStockBinding
 import com.tokopedia.product.detail.view.adapter.MiniSocialProofAdapter
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifycomponents.toPx
 
 class ProductMiniSocialProofStockViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : AbstractViewHolder<ProductMiniSocialProofStockDataModel>(view) {
 
     companion object {

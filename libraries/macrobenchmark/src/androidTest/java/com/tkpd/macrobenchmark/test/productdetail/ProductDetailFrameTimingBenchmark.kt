@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
 
     override fun setupMock() {
-        MacroDevOps.setupEnvironment(MacroIntent.Mock.getProductDetailMockIntent())
+//        MacroDevOps.setupEnvironment(MacroIntent.Mock.getProductDetailMockIntent())
     }
 
     override fun setupEnvironment() {
@@ -32,7 +32,7 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
         MacroInteration.basicFlingInteraction(
             MacroIntent.ProductDetail.PACKAGE_NAME,
             MacroIntent.ProductDetail.RECYCLER_VIEW_ID,
-            flingSpeed = 3000
+            flingSpeed = 4500
         )
     }
 

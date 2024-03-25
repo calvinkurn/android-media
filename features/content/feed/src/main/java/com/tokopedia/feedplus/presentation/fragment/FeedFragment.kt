@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,13 +94,14 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
+import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.uiview.PRODUCT_COUNT_ONE
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.feedplus.presentation.util.OverscrollEdgeEffectFactory
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -960,7 +962,7 @@ class FeedFragment :
         currentTrackerData = trackerModel
 
         val action: () -> Unit = {
-            if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
+            if (products.size == PRODUCT_COUNT_ONE) {
                 val appLink = products.firstOrNull()?.applink
                 if (appLink?.isNotEmpty() == true) {
                     trackerModel?.let {
@@ -1452,28 +1454,57 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     currentTrackerData?.let { data ->
-                        feedAnalytics?.eventClickBuyButton(
-                            trackerData = data,
-                            productInfo = it.data
-                        )
+                        if (it.data.source == FeedProductActionModel.Source.CardHighlight) {
+                           feedAnalytics?.atcFromProductHighlight(
+                               trackerModel = data,
+                               product = it.data
+                           )
+                        } else {
+                            feedAnalytics?.eventClickBuyButton(
+                                trackerData = data,
+                                productInfo = it.data
+                            )
+                        }
                     }
 
-                    productBottomSheet?.doShowToaster(
-                        message = getString(feedplusR.string.feeds_add_to_cart_success_text),
-                        actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
-                        actionClickListener = {
-                            currentTrackerData?.let { trackerData ->
-                                feedAnalytics?.eventClickViewCart(trackerData)
+                    if (productBottomSheet != null) {
+                        productBottomSheet.doShowToaster(
+                            message = getString(feedplusR.string.feeds_add_to_cart_success_text),
+                            actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
+                            actionClickListener = {
+                                currentTrackerData?.let { trackerData ->
+                                    feedAnalytics?.eventClickViewCart(trackerData)
+                                }
+                                goToCartPage()
                             }
-                            goToCartPage()
-                        }
-                    )
+                        )
+                    } else {
+                        showToast(
+                            message = getString(feedplusR.string.feeds_add_to_cart_success_text),
+                            actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
+                            actionClickListener = {
+                                currentTrackerData?.let { trackerData ->
+                                    feedAnalytics?.eventClickViewCart(trackerData)
+                                }
+                                goToCartPage()
+                            }
+                        )
+                    }
                 }
 
-                is Fail -> productBottomSheet?.doShowToaster(
-                    message = it.throwable.localizedMessage.orEmpty(),
-                    type = Toaster.TYPE_ERROR
-                )
+                is Fail -> {
+                    if (productBottomSheet != null) {
+                        productBottomSheet.doShowToaster(
+                            message = it.throwable.localizedMessage.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        )
+                    } else {
+                        showToast(
+                            message = it.throwable.localizedMessage.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        )
+                    }
+                }
             }
         }
     }
@@ -1806,18 +1837,19 @@ class FeedFragment :
                 product.campaign.isExclusiveForMember
             ) {}
         ) {
-            checkAddToCartAction(product)
+            checkAddToCartAction(product, FeedProductActionModel.Source.BottomSheet)
         }
     }
 
-    private fun checkAddToCartAction(product: ContentTaggedProductUiModel) {
+    private fun checkAddToCartAction(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
         when {
             userSession.isLoggedIn -> {
                 if (product.showGlobalVariant) {
+                    checkAvailableTracker(product, source)
                     dismissFeedProductBottomSheet()
                     openVariantBottomSheet(product)
                 } else {
-                    feedPostViewModel.addProductToCart(product)
+                    feedPostViewModel.addProductToCart(product, source)
                 }
             }
 
@@ -1825,7 +1857,7 @@ class FeedFragment :
                 if (product.showGlobalVariant) {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 } else {
-                    feedPostViewModel.suspendAddProductToCart(product)
+                    feedPostViewModel.suspendAddProductToCart(product, source)
                     addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
                 }
             }
@@ -1956,10 +1988,10 @@ class FeedFragment :
                     dismissFeedProductBottomSheet()
                     openVariantBottomSheet(product)
                 } else {
-                    feedPostViewModel.buyProduct(product)
+                    feedPostViewModel.buyProduct(product, FeedProductActionModel.Source.BottomSheet)
                 }
             } else {
-                feedPostViewModel.suspendBuyProduct(product)
+                feedPostViewModel.suspendBuyProduct(product, FeedProductActionModel.Source.BottomSheet)
                 buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
             }
         }
@@ -2196,7 +2228,6 @@ class FeedFragment :
     private fun initAnalytic() {
         feedAnalytics = feedFactory.create(userSession, feedEntrySource)
     }
-
     private fun handleResume() {
         updateArgumentsFromParentFragment()
 
@@ -2216,7 +2247,9 @@ class FeedFragment :
     }
 
     private fun updateArgumentsFromParentFragment() {
-        arguments?.putAll(parentFragment?.arguments)
+        parentFragment?.arguments?.let { parentArguments ->
+            arguments?.putAll(parentArguments)
+        }
     }
 
     private fun removeRefreshForRelevantPostArgument(isRemoveParent: Boolean) {
@@ -2244,6 +2277,58 @@ class FeedFragment :
             isNewData = true,
             postSource = postSourceModel
         )
+    }
+
+    override fun impressHighlightCard(
+        product: FeedCardProductModel,
+        trackerModel: FeedTrackerDataModel?
+    ) {
+        if (trackerModel != null) {
+            currentTrackerData = trackerModel
+            feedAnalytics?.impressProductHighlight(product, trackerModel)
+        }
+    }
+
+    override fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int) {
+        val taggedProduct = MapperProductsToXProducts.transform(product, campaign, ContentTaggedProductUiModel.SourceType.Organic)
+
+        if (!checkForFollowerBottomSheet(
+                currentTrackerData?.activityId ?: "",
+                position,
+                when (taggedProduct.campaign.status) {
+                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    else -> FeedCardCampaignModel.NO
+                },
+                taggedProduct.campaign.isExclusiveForMember
+            ) {}
+        ) {
+            checkAddToCartAction(taggedProduct, FeedProductActionModel.Source.CardHighlight)
+        }
+    }
+
+    private fun checkAvailableTracker(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
+        currentTrackerData?.let { data ->
+            if (source == FeedProductActionModel.Source.CardHighlight) {
+                feedAnalytics?.atcFromProductHighlightWithVariant(
+                    trackerModel = data,
+                    product = FeedProductActionModel(
+                        cartId = "",
+                        product = product,
+                        source = source
+                    )
+                )
+            }
+        }
+    }
+
+    override fun onHighlightClick(product: FeedCardProductModel, position: Int) {
+        currentTrackerData?.let { data -> feedAnalytics?.sendClickProductHighlight(product, data) }
+        RouteManager.route(requireContext(), product.applink)
+    }
+
+    override fun onHighlightClose(trackerModel: FeedTrackerDataModel?) {
+        trackerModel?.let { data -> feedAnalytics?.closeProductHighlight(data) }
     }
 
     companion object {

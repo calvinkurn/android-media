@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -42,7 +42,7 @@ object AtcVariantHelper {
         context: Context,
         pageSource: VariantPageSource,
         productId: String,
-        productInfoP1: DynamicProductInfoP1,
+        productInfoP1: ProductInfoP1,
         warehouseId: String,
         pdpSession: String,
         isTokoNow: Boolean,

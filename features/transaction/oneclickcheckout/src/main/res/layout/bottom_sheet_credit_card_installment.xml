@@ -80,7 +80,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/iv_installment_terms"
                 app:unify_image_corner_radius="0"
-                app:unify_image_placeholder="@drawable/ic_arrow_drop_down_grey_checkout_module"
+                app:unify_image_placeholder="@drawable/ic_arrow_drop_down_grey_occ"
                 app:unify_image_type="rect"
                 tools:ignore="ContentDescription" />
 

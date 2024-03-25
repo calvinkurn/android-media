@@ -1,8 +1,5 @@
 package com.tokopedia.notifications.inApp.ketupat
 
-import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
 import kotlin.math.abs
 import kotlin.math.atan2
 
@@ -58,8 +55,6 @@ open class MyGestureListener {
         percentageDy = (dy.div(maxY)).times(100)
         percentageDx = (dx.div(maxX)).times(100)
         val isInRange = slicedInRange(percentageX1, percentageY1, percentageX2, percentageY2, direction)
-//        Log.d("Percentage->", "x1 = $percentageX1, y1 = $percentageY1, x2 = $percentageX2, y2 = $percentageY2")
-//        Log.d("Percentage->>>", "dx = $percentageDx, dy = $percentageDy")
         if (percentageDy > 11 || percentageDx > 11) {
             return if (isHorizontalCut(direction, percentageY1, percentageY2)) {
                 true

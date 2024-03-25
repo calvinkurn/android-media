@@ -31,6 +31,7 @@ class AnimationPopupGqlGetData: CoroutineScope {
     fun getAnimationCrackCouponData(
         onSuccess: (GamiScratchCardCrack) -> Unit,
         onError: (Throwable) -> Unit,
+        onErrorState: (GamiScratchCardCrack) -> Unit,
         slug: String?
     ) {
         try {
@@ -38,7 +39,7 @@ class AnimationPopupGqlGetData: CoroutineScope {
                 onSuccess(it)
             }, {
                 onError(it)
-            }, slug)
+            }, {onErrorState(it)}, slug)
 
     } catch (_: Exception) {
         }

@@ -34,13 +34,11 @@ import com.tokopedia.product.detail.data.util.CenterLayoutManagerTablet
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_LEFT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_RIGHT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_TYPE
-import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
+import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -74,7 +72,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     protected abstract fun observeData()
 
-    protected var binding by autoClearedNullable<DynamicProductDetailFragmentBinding>()
+    protected var binding by autoClearedNullable<ProductDetailFragmentBinding>()
 
     open fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = true
@@ -100,7 +98,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
+        binding = ProductDetailFragmentBinding.inflate(inflater, container, false)
         getProductDetailActivity()?.getBlocksPerformanceMonitoring()
             ?.addViewPerformanceBlocks(binding?.pdpNavtoolbar)
         return binding?.root

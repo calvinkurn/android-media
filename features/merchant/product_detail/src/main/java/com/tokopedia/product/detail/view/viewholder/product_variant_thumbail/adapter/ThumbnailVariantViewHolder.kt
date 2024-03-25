@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.databinding.ItemThumbnailVariantBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 /**
  * Created by yovi.putra on 10/01/23"
@@ -19,7 +19,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 class ThumbnailVariantViewHolder(
     val view: View,
     private val atcListener: AtcVariantListener,
-    private val pdpListener: DynamicProductDetailListener
+    private val pdpListener: ProductDetailListener
 ) : RecyclerView.ViewHolder(view) {
 
     companion object {

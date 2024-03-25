@@ -3,10 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
     const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
@@ -24,15 +20,12 @@ object RollenceKey {
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
+    const val HOME_MEGATAB = "megatab_ff"
     const val HOME_MISSION_SIZE_KEY = "mission_px"
     const val HOME_MISSION_SIZE_CONTROL = "control_var"
     const val HOME_MISSION_SIZE_VARIANT = "exp_var"
+    const val HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom"
     // end of home rollence section
-
-    // navigation rollence section
-    const val ME_PAGE_EXP = "GlobalMenuRV"
-    const val ME_PAGE_VARIANT = "Varian1"
-    // end of navigation rollence section
 
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -60,6 +53,9 @@ object RollenceKey {
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
+    const val CART_BUY_AGAIN = "buyagain_cart"
+    const val CART_BUY_AGAIN_CONTROL = "no_buyagain_cart"
+    const val CART_BUY_AGAIN_VARIANT = "with_buyagain_cart"
     const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
     const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
     const val UOH_BUY_AGAIN_WIDGET = "buyagain_uoh"
@@ -111,7 +107,6 @@ object RollenceKey {
     const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
 
     // TokopediaNOW
-    const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
     const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
     const val TOKOPEDIA_NOW_EXPERIMENT = "now_experiment"
 
@@ -135,6 +130,6 @@ object RollenceKey {
     const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_1_ac"
     const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
     const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
-
+    const val SEARCH_ROLLOUT_UNIVERSE_V2 = "rollout_universe_v2"
     const val ANDROID_INTERNAL_TEST = "android_internal"
 }

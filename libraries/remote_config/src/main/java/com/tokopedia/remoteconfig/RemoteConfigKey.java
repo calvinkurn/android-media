@@ -200,6 +200,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
+    public static final String ENABLE_BYTEIO_PLATFORM = "android_enable_byteio_platform";
+
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
     public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
@@ -226,7 +228,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE = "android_enable_webview_partner_kyc_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
-    public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
@@ -276,6 +277,8 @@ public class RemoteConfigKey {
 
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
+    public static final String HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom";
+
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
     public static final String APP_CONTENT_CREATION_STORIES_CONFIG = "android_app_content_creation_stories_config";
@@ -299,6 +302,8 @@ public class RemoteConfigKey {
     public static final String ANDROID_PM_OPT_OUT_DATE = "android_pm_opt_out_date";
 
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
+
+    public static final String ENABLE_SHOP_PAGE_PREFETCH = "android_shop_page_enable_prefetch";
 
     public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
 
@@ -324,6 +329,8 @@ public class RemoteConfigKey {
 
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
+    public static final String ANDROID_ENABLE_THANKYOUPAGE_V2 = "android_enable_new_thankyoupage";
+
     public static final String ANDROID_PDP_THEMATIC_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_thematic_campaign_compose";
 
     public static final String ANDROID_PDP_UPCOMING_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_upcoming_campaign_compose";
@@ -331,5 +338,20 @@ public class RemoteConfigKey {
     public static final String ANDROID_PDP_ENABLE_TABLET_MODE = "android_pdp_enable_tablet_mode";
 
     public static final String ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME = "android_home_enable_sdui";
+
+    public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
+
+    public static final String ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER = "android_enable_auto_apply_promo_tracker";
+
+    public static final String ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE = "android_disable_recipe_bookmark_compose";
+
+    public static final String ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW = "android_enable_pdp_recommendation_flow";
+    public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
+    public static final String ANDROID_ENABLE_PURCHASE_INFO = "android_enable_purchase_info";
+    public static final String ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO = "android_enable_fix_search_product_impression_byteio";
+
+    public static final String ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM = "android_search_enable_fix_byteio_cpm";
+  
+    public static final String ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD = "android_main_app_enable_copy_crash_stack_trace_to_clipboard";
 
 }

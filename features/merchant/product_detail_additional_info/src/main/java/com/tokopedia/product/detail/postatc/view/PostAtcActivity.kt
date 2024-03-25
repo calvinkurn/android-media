@@ -55,7 +55,7 @@ class PostAtcActivity : BaseSimpleActivity() {
     }
 
     private fun overridePostAtcParams(extras: Bundle, cacheId: String) {
-        val cacheManager = SaveInstanceCacheManager(this, cacheId)
+        val cacheManager = SaveInstanceCacheManager(applicationContext, cacheId)
         val postAtcParams = cacheManager.get(
             POST_ATC_PARAMS,
             PostAtcParams::class.java

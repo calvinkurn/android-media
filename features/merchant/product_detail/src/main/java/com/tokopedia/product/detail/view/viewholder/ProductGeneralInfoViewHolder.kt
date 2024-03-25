@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicGeneralInfoBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicInfoContentBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.utils.resources.isDarkMode
 
 /**
@@ -32,7 +32,7 @@ import com.tokopedia.utils.resources.isDarkMode
  */
 class ProductGeneralInfoViewHolder(
     val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductGeneralInfoDataModel>(view) {
 
     companion object {

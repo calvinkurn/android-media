@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductPictureViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder.Companion.VIDEO_TYPE
@@ -18,7 +18,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
  * Created by Yehezkiel on 23/11/20
  */
 class VideoPictureAdapter(
-    private val listener: DynamicProductDetailListener?,
+    private val listener: ProductDetailListener?,
     private val componentTrackDataModel: ComponentTrackDataModel?,
     private val containerType: MediaContainerType
 ) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {

@@ -51,6 +51,9 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.PointModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 /**
@@ -444,6 +447,12 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 chatItemPojoByDateByTime.attachment.attributes,
                 CsatAttributesPojo::class.java
             )
+
+        var dynamicCsatModel: CsatModel? = null
+        if ((csatAttributesPojo.csat?.dynamicCsat?.points?.size ?: 0) > 0) {
+            dynamicCsatModel = convertToDynamicCsatModel(csatAttributesPojo.csat)
+        }
+
         return CsatOptionsUiModel(
             chatItemPojoByDateByTime.msgId.toString(),
             chatItemPojoByDateByTime.senderId.toString(),
@@ -454,8 +463,33 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             chatItemPojoByDateByTime.replyTime,
             chatItemPojoByDateByTime.msg,
             csatAttributesPojo.csat,
-            chatItemPojoByDateByTime.source
+            chatItemPojoByDateByTime.source,
+            false,
+            dynamicCsatModel
         )
+    }
+
+    private fun convertToDynamicCsatModel(response: CsatAttributesPojo.Csat?): CsatModel? {
+        if (response != null) {
+            return CsatModel(
+                caseId = response.caseId.orEmpty(),
+                caseChatId = response.caseChatId.orEmpty(),
+                title = response.dynamicCsat?.title.orEmpty(),
+                service = response.dynamicCsat?.service.orEmpty(),
+                points = response.dynamicCsat?.points?.map {
+                    PointModel(
+                        score = it.score,
+                        caption = it.caption,
+                        reasonTitle = it.reasonTitle,
+                        otherReasonTitle = it.otherReasonTitle,
+                        reasons = it.reasons
+                    )
+                }?.toMutableList() ?: mutableListOf(),
+                minimumOtherReasonChar = response.dynamicCsat?.minimumOtherReasonChar.orZero()
+            )
+        } else {
+            return null
+        }
     }
 
     // ///////// STICKY BUTTON

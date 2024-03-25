@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_PAYLOAD
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 data class ProductTabletRightSectionDataModel(
     val name: String = "",
@@ -13,7 +13,7 @@ data class ProductTabletRightSectionDataModel(
 ) : DynamicPdpDataModel {
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int = typeFactory.type(this)
 
     override fun name(): String = name
 

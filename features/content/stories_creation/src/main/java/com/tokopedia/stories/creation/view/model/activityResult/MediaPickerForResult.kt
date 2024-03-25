@@ -31,7 +31,9 @@ class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, Stori
             withEditor {
                 setCustomCtaText(context.getString(storiescreationR.string.stories_creation_next))
             }
-            withImmersiveEditor()
+            withImmersiveEditor {
+                videoFileResultAppendix = input.storiesId
+            }
             previewActionText(input.previewActionText)
         }
 

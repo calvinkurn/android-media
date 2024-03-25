@@ -9,25 +9,31 @@ import com.tkpd.atcvariant.util.AtcVariantJsonHelper
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import io.mockk.MockK
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 
 /**
  * Created by Yehezkiel on 28/05/21
@@ -76,7 +82,8 @@ abstract class BaseAtcVariantViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-
+        mockkObject(AppLogAnalytics)
+        every { AppLogAnalytics.getEntranceInfo(any()) } returns "{}"
         coEvery {
             remoteConfig.getBoolean(REMOTE_CONFIG_NEW_VARIANT_LOG, true)
         } returns true
@@ -142,13 +149,33 @@ abstract class BaseAtcVariantViewModelTest {
 
     fun decideFailValueHitGqlAggregator() {
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any()
+            )
         } throws Throwable()
 
         viewModel.decideInitialValue(ProductVariantBottomSheetParams(), true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any()
+            )
         }
 
         Assert.assertTrue(viewModel.initialData.value is Fail)
@@ -161,16 +188,37 @@ abstract class BaseAtcVariantViewModelTest {
         showQtyEditor: Boolean
     ) {
         val mockData = AtcVariantJsonHelper.generateAggregatorData(isTokoNow)
-        val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow, showQtyEditor)
+        val aggregatorParams =
+            AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow, showQtyEditor)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                isTokoNow,
+                any(),
+                any()
+            )
         } returns mockData
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any(), any())
+            aggregatorMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                isTokoNow,
+                any(),
+                any()
+            )
         }
     }
 
@@ -204,7 +252,7 @@ abstract class BaseAtcVariantViewModelTest {
         cashBackPercentage: Int,
         uspImageUrl: String,
         isTokoCabang: Boolean,
-        expectedMinOrder: Int
+        expectedMinOrder: Int,
     ) {
         visitables.forEach {
             when (it) {
@@ -219,21 +267,44 @@ abstract class BaseAtcVariantViewModelTest {
                     Assert.assertEquals(it.uspImageUrl, uspImageUrl)
                     Assert.assertEquals(it.isTokoCabang, isTokoCabang)
                 }
+
                 is VariantComponentDataModel -> {
-                    val currentSelectedLevelOne = it.listOfVariantCategory?.first()?.getSelectedOption()?.variantId
-                        ?: "0"
-                    val currentSelectedLevelTwo = it.listOfVariantCategory?.get(1)?.getSelectedOption()?.variantId
-                        ?: "0"
+                    val currentSelectedLevelOne =
+                        it.listOfVariantCategory?.first()?.getSelectedOption()?.variantId
+                            ?: "0"
+                    val currentSelectedLevelTwo =
+                        it.listOfVariantCategory?.get(1)?.getSelectedOption()?.variantId
+                            ?: "0"
 
                     Assert.assertEquals(currentSelectedLevelOne, expectedSelectedOptionIdsLevelOne)
                     Assert.assertEquals(currentSelectedLevelTwo, expectedSelectedOptionIdsLevelTwo)
-                    Assert.assertTrue(it.mapOfSelectedVariant.values.toList().containsAll(listOf(expectedSelectedOptionIdsLevelOne, expectedSelectedOptionIdsLevelOne, expectedSelectedOptionIdsLevelTwo)))
+                    Assert.assertTrue(
+                        it.mapOfSelectedVariant.values.toList().containsAll(
+                            listOf(
+                                expectedSelectedOptionIdsLevelOne,
+                                expectedSelectedOptionIdsLevelOne,
+                                expectedSelectedOptionIdsLevelTwo
+                            )
+                        )
+                    )
                 }
+
                 is VariantQuantityDataModel -> {
                     Assert.assertEquals(it.quantity, expectedQuantity)
                     Assert.assertEquals(it.minOrder, expectedMinOrder)
                     Assert.assertEquals(it.shouldShowView, showQuantityEditor)
                 }
+            }
+        }
+    }
+
+    fun assertPromoPrice(
+        visitables: List<AtcVariantVisitable>,
+        expectedPromoPrice: PromoPriceUiModel? = null
+    ) {
+        visitables.forEach {
+            if (it is VariantHeaderDataModel) {
+                Assert.assertEquals(it.headerData.promoPrice, expectedPromoPrice)
             }
         }
     }

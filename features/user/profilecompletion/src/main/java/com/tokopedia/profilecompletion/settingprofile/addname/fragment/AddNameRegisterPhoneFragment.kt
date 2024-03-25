@@ -15,8 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -26,42 +26,50 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.kotlin.util.getParamBoolean
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.settingprofile.addname.AddNameRegisterPhoneAnalytics
-import com.tokopedia.profilecompletion.settingprofile.addname.di.DaggerAddNameComponent
-import com.tokopedia.profilecompletion.settingprofile.addname.listener.AddNameListener
-import com.tokopedia.profilecompletion.settingprofile.addname.presenter.AddNamePresenter
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.databinding.FragmentAddNameRegisterBinding
+import com.tokopedia.profilecompletion.settingprofile.addname.AddNameRegisterPhoneAnalytics
+import com.tokopedia.profilecompletion.settingprofile.addname.di.DaggerAddNameComponent
+import com.tokopedia.profilecompletion.settingprofile.addname.viewmodel.AddNameViewModel
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by nisie on 22/04/19.
  */
-open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
+open class AddNameRegisterPhoneFragment : BaseDaggerFragment() {
 
     private var _binding: FragmentAddNameRegisterBinding? = null
     private val binding get() = _binding
     var phoneNumber: String? = ""
     var uuid: String = ""
-    private var isFromScp = false
 
     private var isError = false
-
-    @Inject
-    lateinit var presenter: AddNamePresenter
 
     @Inject
     lateinit var analytics: AddNameRegisterPhoneAnalytics
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+    private val addNameViewModel by lazy {
+        viewModelProvider.get(AddNameViewModel::class.java)
+    }
 
     companion object {
         val MIN_NAME = 3
@@ -107,7 +115,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         )
         uuid =
             getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
-        isFromScp = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, arguments, savedInstanceState, false)
     }
 
     override fun onCreateView(
@@ -128,8 +135,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.attachView(this)
         setView()
+        setObserver()
         setViewListener()
         binding?.btnContinue?.let { disableButton(it) }
     }
@@ -167,7 +174,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     private fun registerPhoneAndName(name: String, phoneNumber: String) {
         if (isValidate(name)) {
-            presenter.registerPhoneNumberAndName(name, phoneNumber, uuid, isFromScp)
+            addNameViewModel.registerPhoneNumberAndName(name, phoneNumber, uuid)
+            showLoading()
         }
     }
 
@@ -193,6 +201,19 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         initTermPrivacyView()
     }
 
+    private fun setObserver() {
+        viewLifecycleOwner.observe(addNameViewModel.registerLiveData) {
+            when (it) {
+                is Success -> {
+                    onSuccessRegister(it.data)
+                }
+                is Fail -> {
+                    onErrorRegister(it.throwable)
+                }
+            }
+        }
+    }
+
     private fun initTermPrivacyView() {
         context?.let {
             val msg = getString(R.string.profile_completion_detail_term_and_privacy)
@@ -210,7 +231,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            unifyprinciplesR.color.Unify_GN500
                         )
                     ),
                     SPAN_34,
@@ -221,7 +242,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            unifyprinciplesR.color.Unify_GN500
                         )
                     ),
                     SPAN_61,
@@ -255,7 +276,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                 ds.isUnderlineText = false
                 ds.color = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             }
         }
@@ -281,7 +302,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         button.isEnabled = false
     }
 
-    override fun showLoading() {
+    fun showLoading() {
         binding?.mainContent?.visibility = View.GONE
         binding?.progressBar?.visibility = View.VISIBLE
     }
@@ -291,7 +312,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         binding?.progressBar?.visibility = View.GONE
     }
 
-    override fun onErrorRegister(throwable: Throwable) {
+    fun onErrorRegister(throwable: Throwable) {
         userSession.clearToken()
         dismissLoading()
         showValidationError(ErrorHandler.getErrorMessage(context, throwable))
@@ -304,11 +325,9 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             BEARER,
             EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV)
         )
-        /* Migrate token to lsdk */
-        ScpUtils.saveTokens(accessToken = data.accessToken, refreshToken = data.refreshToken)
     }
 
-    override fun onSuccessRegister(registerInfo: RegisterInfo) {
+    fun onSuccessRegister(registerInfo: RegisterInfo) {
         userSession.clearToken()
         saveTokens(registerInfo)
 

@@ -27,6 +27,7 @@ data class Voucher(
     val discountUsingPercent: Boolean = false,
     val discountAmt: Int = 0,
     val discountAmtFormatted: String = "",
+    val discountAmtDecimalFormatted: String = "",
     val discountAmtMax: Int = 0,
     val minimumAmt: Int = 0,
     val quota: Int = 0,

@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.tracking
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.PDP
 import com.tokopedia.product.detail.common.ProductTrackingConstant.PDP.EVENT_CLICK_PG
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit.SHOP_ID
@@ -25,7 +25,7 @@ object ShopAdditionalTracking {
 
     fun clickLearnButton(
         component: ComponentTrackDataModel,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         userId: String,
         eventLabel: String
     ) {

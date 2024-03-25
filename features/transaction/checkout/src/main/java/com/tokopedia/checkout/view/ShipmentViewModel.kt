@@ -6,6 +6,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
@@ -76,6 +78,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_APPROVED
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_REJECTED
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
@@ -1055,7 +1058,8 @@ class ShipmentViewModel @Inject constructor(
                 checkoutId = cartShipmentAddressFormData.epharmacyData.checkoutId,
                 frontEndValidation = cartShipmentAddressFormData.epharmacyData.frontEndValidation,
                 consultationFlow = cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording
+                rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording,
+                isBlockCheckoutFlowMessage = cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlowMessage
             )
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
@@ -1360,7 +1364,8 @@ class ShipmentViewModel @Inject constructor(
             true,
             false,
             fingerprintSupport.toString(),
-            publicKey
+            publicKey,
+            AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC)
         )
     }
 
@@ -4561,11 +4566,11 @@ class ShipmentViewModel @Inject constructor(
     }
 
     fun fetchEpharmacyData() {
-        epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse ->
+        epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse, _ ->
             processEpharmacyData(ePharmacyPrepareProductsGroupResponse)
-        }) { throwable: Throwable? ->
+        }, { throwable: Throwable? ->
             Timber.d(throwable)
-        }
+        }, source = EPHARMACY_PPG_SOURCE_CHECKOUT, mutableMapOf(EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_SOURCE_CHECKOUT))
     }
 
     private fun processEpharmacyData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
@@ -4735,6 +4740,7 @@ class ShipmentViewModel @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
+                uploadPrescriptionUiModel.isBlockCheckoutFlowMessage = ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.checkoutIsBlockErrorMessage.orEmpty()
                 view?.updateUploadPrescription(uploadPrescriptionUiModel)
                 view?.showCoachMarkEpharmacy(uploadPrescriptionUiModel)
             }

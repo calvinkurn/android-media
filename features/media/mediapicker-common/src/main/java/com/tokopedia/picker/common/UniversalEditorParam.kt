@@ -1,6 +1,7 @@
 package com.tokopedia.picker.common
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.picker.common.types.ToolType
 import com.tokopedia.picker.common.utils.MediaFile
 import kotlinx.parcelize.IgnoredOnParcel
@@ -9,9 +10,10 @@ import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class ConfigurableUniversalEditorParam(
-    var headerTitle: String = "",
-    var headerActionButton: String = "",
-    var trackerExtra: Map<String, String> = mapOf(),
+    @SerializedName("headerTitle") var headerTitle: String = "",
+    @SerializedName("headerActionButton") var headerActionButton: String = "",
+    @SerializedName("trackerExtra") var trackerExtra: Map<String, String> = mapOf(),
+    @SerializedName("videoResultAppendix") var videoFileResultAppendix: String = ""
 ) : Parcelable {
 
     /**

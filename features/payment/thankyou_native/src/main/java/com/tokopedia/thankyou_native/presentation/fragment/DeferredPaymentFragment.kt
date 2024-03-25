@@ -329,6 +329,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
         const val SCREEN_NAME = "Selesaikan Pembayaran"
 
         const val GATEWAY_KLIK_BCA = "KlikBCA"
+        const val JENIUS = "Jenius Pay"
 
         fun getFragmentInstance(
             bundle: Bundle,

@@ -284,7 +284,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             PlayBroadcastSetupCoverBottomSheet.TAG
         )
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
-        getSetupCoverBottomSheet()?.show(childFragmentManager)
+        getSetupCoverBottomSheet().show(childFragmentManager)
     }
 
     private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
@@ -339,7 +339,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     override fun dismissSetupCover(source: Int) {
-        if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+        if (getSetupCoverBottomSheet().isAdded) getSetupCoverBottomSheet().dismiss()
 
         if (parentViewModel.uploadedCoverSource == TAB_AUTO_GENERATED && source != TAB_AUTO_GENERATED) {
             toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))

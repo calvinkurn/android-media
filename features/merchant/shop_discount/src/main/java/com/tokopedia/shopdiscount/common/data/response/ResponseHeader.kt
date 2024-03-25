@@ -1,7 +1,10 @@
 package com.tokopedia.shopdiscount.common.data.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ResponseHeader(
     @SerializedName("error_code")
     val errorCode: String = "",
@@ -15,4 +18,4 @@ data class ResponseHeader(
     val success: Boolean = false,
     @SerializedName("error_message")
     val errorMessages: List<String> = listOf()
-)
+) : Parcelable

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.mvcwidget.views.MvcView
+    <com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
         android:id="@+id/disco_single_mv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

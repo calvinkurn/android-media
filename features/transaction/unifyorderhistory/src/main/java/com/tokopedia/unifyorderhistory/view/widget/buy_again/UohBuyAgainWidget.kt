@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.view.widget.buy_again
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -50,7 +51,8 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.LIMIT_BUY_AGAIN_WIDGET_PRO
 import com.tokopedia.viewallcard.compose.NestViewAllCard
 import com.tokopedia.nest.principles.utils.ImageSource as ImageSource
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun BuyAgainPreview() {
     UohBuyAgainWidget(
@@ -116,118 +118,121 @@ fun UohBuyAgainWidget(
 ) {
     onWidgetImpressed()
     val backgroundImg = "https://images.tokopedia.net/img/android/uoh/buy_again_bg.png"
-    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-        val (
-            topDivider,
-            background,
-            title,
-            chevron,
-            uohCard,
-            list,
-            bottomDivider
-        ) = createRefs()
+    NestTheme {
+        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+            val (
+                topDivider,
+                background,
+                title,
+                chevron,
+                uohCard,
+                list,
+                bottomDivider
+            ) = createRefs()
 
-        NestDivider(
-            size = NestDividerSize.Small,
-            modifier = Modifier.constrainAs(topDivider) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            }
-        )
-
-        NestImage(
-            type = NestImageType.Rect(0.dp),
-            contentScale = ContentScale.FillWidth,
-            source = ImageSource.Remote(backgroundImg),
-            modifier = Modifier
-                .tag("background")
-                .constrainAs(background) {
+            NestDivider(
+                size = NestDividerSize.Small,
+                modifier = Modifier.constrainAs(topDivider) {
                     top.linkTo(parent.top)
-                    end.linkTo(parent.end)
                     start.linkTo(parent.start)
-                    if (recom.recommendationItemList.size > 1) {
-                        bottom.linkTo(list.bottom)
-                    } else {
-                        bottom.linkTo(uohCard.bottom)
-                    }
+                    end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                },
-            contentDescription = null
-        )
-
-        HtmlLinkHelper(LocalContext.current, recom.title).spannedString?.let {
-            NestTypography(
-                text = it,
-                modifier = Modifier.constrainAs(title) {
-                    top.linkTo(parent.top, margin = 12.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                },
-                textStyle = NestTheme.typography.display2.copy(
-                    fontWeight = FontWeight.Bold
-                )
+                }
             )
-        }
 
-        if (recom.recommendationItemList.size == 1) {
-            UohBuyAgainCard(
-                index = 0,
+            NestImage(
+                type = NestImageType.Rect(0.dp),
+                contentScale = ContentScale.FillWidth,
+                source = ImageSource.Remote(backgroundImg),
                 modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .constrainAs(uohCard) {
+                    .tag("background")
+                    .constrainAs(background) {
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                        start.linkTo(parent.start)
+                        if (recom.recommendationItemList.size > 1) {
+                            bottom.linkTo(list.bottom)
+                        } else {
+                            bottom.linkTo(uohCard.bottom)
+                        }
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    },
+                contentDescription = null
+            )
+
+            HtmlLinkHelper(LocalContext.current, recom.title).spannedString?.let {
+                NestTypography(
+                    text = it,
+                    modifier = Modifier.constrainAs(title) {
+                        top.linkTo(parent.top, margin = 12.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                    },
+                    textStyle = NestTheme.typography.display2.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = NestTheme.colors.NN._950
+                    )
+                )
+            }
+
+            if (recom.recommendationItemList.size == 1) {
+                UohBuyAgainCard(
+                    index = 0,
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .constrainAs(uohCard) {
+                            top.linkTo(title.bottom, margin = 4.dp)
+                            start.linkTo(parent.start, margin = 35.dp)
+                            end.linkTo(parent.end, margin = 38.dp)
+                            bottom.linkTo(bottomDivider.top, margin = 10.dp)
+                        },
+                    recommItem = recom.recommendationItemList[0],
+                    onProductCardClick = onProductCardClick,
+                    onBuyAgainButtonClicked = onButtonBuyAgainClick,
+                    onItemScrolled = onItemScrolled,
+                    isSingleCard = true
+                )
+            } else {
+                if (recom.recommendationItemList.size > 3) {
+                    NestIcon(
+                        iconId = IconUnify.CHEVRON_RIGHT,
+                        modifier = Modifier
+                            .constrainAs(chevron) {
+                                top.linkTo(title.top)
+                                bottom.linkTo(title.bottom)
+                                end.linkTo(parent.end, margin = 16.dp)
+                            }
+                            .width(20.dp)
+                            .height(20.dp)
+                            .clickable { onChevronClicked.invoke() }
+                    )
+                }
+
+                UohBuyAgainList(
+                    listBuyAgain = recom.recommendationItemList,
+                    modifier = Modifier.constrainAs(list) {
                         top.linkTo(title.bottom, margin = 4.dp)
-                        start.linkTo(parent.start, margin = 35.dp)
-                        end.linkTo(parent.end, margin = 38.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(chevron.end)
                         bottom.linkTo(bottomDivider.top, margin = 10.dp)
                     },
-                recommItem = recom.recommendationItemList[0],
-                onProductCardClick = onProductCardClick,
-                onBuyAgainButtonClicked = onButtonBuyAgainClick,
-                onItemScrolled = onItemScrolled,
-                isSingleCard = true
-            )
-        } else {
-            if (recom.recommendationItemList.size > 3) {
-                NestIcon(
-                    iconId = IconUnify.CHEVRON_RIGHT,
-                    modifier = Modifier
-                        .constrainAs(chevron) {
-                            top.linkTo(title.top)
-                            bottom.linkTo(title.bottom)
-                            end.linkTo(parent.end, margin = 16.dp)
-                        }
-                        .width(20.dp)
-                        .height(20.dp)
-                        .clickable { onChevronClicked.invoke() }
+                    onProductCardClick = onProductCardClick,
+                    onButtonBuyAgainClick = onButtonBuyAgainClick,
+                    onSeeAllCardClick = { onSeeAllCardClick.invoke() },
+                    onItemScrolled = onItemScrolled
                 )
             }
 
-            UohBuyAgainList(
-                listBuyAgain = recom.recommendationItemList,
-                modifier = Modifier.constrainAs(list) {
-                    top.linkTo(title.bottom, margin = 4.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                    end.linkTo(chevron.end)
-                    bottom.linkTo(bottomDivider.top, margin = 10.dp)
-                },
-                onProductCardClick = onProductCardClick,
-                onButtonBuyAgainClick = onButtonBuyAgainClick,
-                onSeeAllCardClick = { onSeeAllCardClick.invoke() },
-                onItemScrolled = onItemScrolled
+            NestDivider(
+                size = NestDividerSize.Large,
+                modifier = Modifier.constrainAs(bottomDivider) {
+                    bottom.linkTo(parent.bottom, margin = 10.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
             )
         }
-
-        NestDivider(
-            size = NestDividerSize.Large,
-            modifier = Modifier.constrainAs(bottomDivider) {
-                bottom.linkTo(parent.bottom, margin = 10.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            }
-        )
     }
 }
 
@@ -301,7 +306,9 @@ fun UohBuyAgainCard(
                     modifier = Modifier
                         .padding(start = 8.dp, top = 8.dp)
                         .widthIn(max = if (isSingleCard) 220.dp else 142.dp),
-                    textStyle = NestTheme.typography.paragraph3,
+                    textStyle = NestTheme.typography.paragraph3.copy(
+                        color = NestTheme.colors.NN._950
+                    ),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
@@ -311,7 +318,8 @@ fun UohBuyAgainCard(
                     NestTypography(
                         text = recommItem.price,
                         textStyle = NestTheme.typography.display2.copy(
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = NestTheme.colors.NN._950
                         ),
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -346,11 +354,13 @@ fun UohBuyAgainCard(
                 variant = ButtonVariant.GHOST,
                 size = ButtonSize.MICRO,
                 modifier = if (isSingleCard) {
-                    Modifier.padding(start = 12.dp, end = 12.dp)
+                    Modifier
+                        .padding(start = 12.dp, end = 12.dp)
                         .align(Alignment.CenterVertically)
                         .widthIn(76.dp)
                 } else {
-                    Modifier.padding(start = 12.dp, end = 12.dp)
+                    Modifier
+                        .padding(start = 12.dp, end = 12.dp)
                         .align(Alignment.CenterVertically)
                         .weight(1f)
                 }

@@ -2,9 +2,7 @@ package com.tokopedia.tkpd.deeplink.presenter;
 
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
-import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
 import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
-import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +12,10 @@ import android.text.TextUtils;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
+import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
+import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -25,7 +27,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow;
 import com.tokopedia.applink.travel.DeeplinkMapperTravel;
@@ -237,10 +238,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openSimilarProduct(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
                     break;
-                case DeepLinkChecker.INVOICE:
-                    openInvoice(uriData);
-                    screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
-                    break;
                 case DeepLinkChecker.HOTEL:
                     openHotel(uriData, defaultBundle);
                     screenName = "";
@@ -326,6 +323,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = uriData.getPath();
                     break;
             }
+            addEnterMethodAppLog();
             if (!keepActivityOn && context != null) {
                 sendCampaignGTM(activity, uriData.toString(), screenName, isAmp);
                 context.finish();
@@ -532,14 +530,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void login(Uri uriData) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
-        context.startActivity(intent);
-        context.finish();
-    }
-
-    private void openInvoice(Uri uriData) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INVOICE);
-        intent.putExtra(KEY_URL, uriData.toString());
-        intent.putExtra(KEY_TITLE, "Invoice");
         context.startActivity(intent);
         context.finish();
     }
@@ -777,10 +767,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData, boolean isAmp) {
+        addProductAppLog();
         gqlGetShopIdByDomainUseCaseRx.execute(
                 GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
                 getOpenProductSubscriber(linkSegment, uriData, isAmp)
         );
+    }
+
+    private void addProductAppLog() {
+        AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
+    }
+
+    private void addEnterMethodAppLog() {
+        AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_EXTERNAL_ADS);
     }
 
     private Subscriber<String> getOpenProductSubscriber(final List<String> linkSegment,

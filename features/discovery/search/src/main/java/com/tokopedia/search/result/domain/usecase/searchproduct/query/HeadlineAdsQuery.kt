@@ -55,6 +55,7 @@ object HeadlineAdsQuery {
                             merchant_vouchers
                             product {
                                 id
+                                parent_id
                                 name
                                 price_format
                                 applinks
@@ -63,11 +64,20 @@ object HeadlineAdsQuery {
                                 product_new_label
                                 count_review_format
                                 rating_average
+                                badges {
+                                    image_url
+                                    title
+                                    show
+                                }
                                 label_group {
                                     title
                                     type
                                     position
                                     url
+                                    styles {
+                                        key
+                                        value
+                                    }
                                 }
                                 free_ongkir {
                                     is_active

@@ -50,7 +50,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.rxJava
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 

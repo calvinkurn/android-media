@@ -284,6 +284,34 @@
             "type": "product_content"
           },
           {
+            "data": [
+              {
+                "componentPriceType": 2,
+                "promo": {
+                  "applink": "",
+                  "background": "#FFF5F6",
+                  "bottomsheetParam": "{\"request_list\":[{\"product_id\":7171434892,\"is_low_benefit\":false,\"additional_data\":[{\"field\":\"nett_price\",\"value\":\"79895\"},{\"field\":\"price\",\"value\":\"84100\"},{\"field\":\"benefit_cashback\",\"value\":\"4205\"},{\"field\":\"benefit_cashback_currency\",\"value\":\"GoPay Coins\"},{\"field\":\"benefit_discount\",\"value\":\"0\"},{\"field\":\"background_color\",\"value\":\"#FFF5F6\"},{\"field\":\"background_image\",\"value\":\"https://images.tokopedia.net/img/red_supergraphics.png\"}]}]}",
+                  "color": "#F94D63",
+                  "iconURL": "https://images.tokopedia.net/img/ic_promo-discount.png",
+                  "priceAdditionalFmt": "Tanpa Promo: Rp84.100",
+                  "promoCodes": [
+                    {
+                      "promoCode": "PIEB72105",
+                      "promoCodeType": "mv",
+                      "promoID": "35897341"
+                    }
+                  ],
+                  "promoPriceFmt": "Rp79.895",
+                  "separatorColor": "#FED3D9",
+                  "subtitle": "Cashback 4,21rb",
+                  "superGraphicURL": "https://images.tokopedia.net/img/red_supergraphics.png"
+                }
+              }
+            ],
+            "name": "promo_price",
+            "type": "promo_price"
+          },
+          {
             "data": [],
             "name": "social_proof_mini",
             "type": "social_proof_mini"

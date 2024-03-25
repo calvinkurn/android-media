@@ -415,9 +415,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun expandCollapseAddOn(addOnIdentifier: String, isExpand: Boolean) {
         if (isExpand) {
-            addOnsExpandableState.remove(addOnIdentifier)
-        } else {
             addOnsExpandableState.add(addOnIdentifier)
+        } else {
+            addOnsExpandableState.remove(addOnIdentifier)
         }
     }
 

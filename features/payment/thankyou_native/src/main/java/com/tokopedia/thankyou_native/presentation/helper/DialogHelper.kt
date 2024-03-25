@@ -79,5 +79,8 @@ interface OnDialogRedirectListener {
     fun gotoPaymentWaitingPage()
     fun gotoOrderList()
     fun gotoOrderList(applink: String)
+    fun openHowToPay()
+    fun refreshThanksPageData()
+    fun openInvoiceDetail()
 }
 
