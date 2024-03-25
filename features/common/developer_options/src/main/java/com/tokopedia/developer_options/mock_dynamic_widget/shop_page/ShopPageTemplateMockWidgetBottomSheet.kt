@@ -145,8 +145,10 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
     }
 
     override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
-        adapterSelectedListShopWidget.addMockWidgetModel(shopPageMockWidgetModel)
+        adapterSelectedListShopWidget.addMockWidgetModel(listOf(shopPageMockWidgetModel))
     }
+
+    override fun onClearMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {}
 
     fun setOnAddSelectedShopWidget(onAddSelectedWidget: (List<ShopPageMockWidgetModel>) -> Unit) {
         this.onAddSelectedWidget = onAddSelectedWidget

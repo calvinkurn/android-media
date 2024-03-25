@@ -41,22 +41,22 @@ object ShopPageMockWidgetModelMapper {
         val shopLayoutV2Data = member.asJsonObject
         val dynamicTabMockResponseData = generateMockDynamicTabData(shopLayoutV2Data)
         return ShopPageMockWidgetModel(Pair(
-            dynamicTabMockResponseData,
+            dynamicTabMockResponseData.toString(),
             shopLayoutV2Data.toString()
         ))
     }
 
-    private fun generateMockDynamicTabData(jsonObjectData: JsonObject?): String {
+    fun generateMockDynamicTabData(jsonObjectData: JsonObject?): JsonObject {
         val widgetId = jsonObjectData?.get("widgetID")?.asBigInteger.orZero()
         val widgetMasterId = jsonObjectData?.get("widgetMasterID")?.asBigInteger.orZero()
-        val widgetType = jsonObjectData?.get("type")?.asString.orEmpty()
-        val widgetName = jsonObjectData?.get("name")?.asString.orEmpty()
+        val widgetType = jsonObjectData?.get("type")?.asString
+        val widgetName = jsonObjectData?.get("name")?.asString
         return JsonObject().apply {
             addProperty("widgetID", widgetId)
             addProperty("widgetMasterID", widgetMasterId)
             addProperty("widgetType", widgetType)
             addProperty("widgetName", widgetName)
-        }.toString()
+        }
     }
 
     fun updateWidgetId(mockShopWidgetData: List<ShopPageMockWidgetModel>) {
