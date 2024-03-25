@@ -1,8 +1,19 @@
 package com.tokopedia.home_component.visitable
 
 import com.tokopedia.home_component.widget.card.SmallProductModel
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 
 data class Mission4SquareUiModel(
     val data: MissionWidgetDataModel,
-    val card: SmallProductModel
-)
+    val cardPosition: Int,
+    val isCache: Boolean,
+    val card: SmallProductModel,
+    val appLog: RecommendationAppLog,
+    val appLogImpressHolder: ImpressHolder = ImpressHolder(),
+) : ImpressHolder() {
+
+    fun isProduct(): Boolean {
+        return this.data.productID.isNotBlank() && this.data.productID != "0"
+    }
+}

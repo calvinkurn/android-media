@@ -70,7 +70,12 @@ object LazyLoadDataMapper {
     ): List<Mission4SquareUiModel> {
         return mapMissionWidgetData(missionWidgetList, isCache, appLog)
             .take(4)
-            .map { Mission4SquareWidgetMapper.map(it) }
+            .mapIndexed { index, model ->
+                Mission4SquareWidgetMapper.map(
+                    data = model,
+                    cardPosition = index
+                )
+            }
     }
 
     fun mapTodoWidgetData(todoWidgetList: List<HomeTodoWidgetData.Todo>): List<TodoWidgetDataModel> {

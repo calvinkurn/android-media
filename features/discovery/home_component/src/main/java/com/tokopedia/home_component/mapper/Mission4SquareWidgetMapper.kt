@@ -6,7 +6,7 @@ import com.tokopedia.home_component.widget.card.SmallProductModel
 
 object Mission4SquareWidgetMapper {
 
-    fun map(data: MissionWidgetDataModel): Mission4SquareUiModel {
+    fun map(data: MissionWidgetDataModel, cardPosition: Int): Mission4SquareUiModel {
         val content = data.labelGroup.associateBy { it.position }
 
         val titleLabelGroup = content[Const.TITLE]
@@ -21,7 +21,10 @@ object Mission4SquareWidgetMapper {
                 bannerImageUrl = data.imageURL,
                 title = Pair(titleLabelGroup.title, titleLabelGroup.extract()),
                 subtitle = Pair(subtitleLabelGroup.title, subtitleLabelGroup.extract())
-            )
+            ),
+            cardPosition = cardPosition,
+            isCache = data.isCache,
+            appLog = data.appLog
         )
     }
 

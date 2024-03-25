@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentItemSmallCardBinding
 import com.tokopedia.home_component.visitable.Mission4SquareUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class MissionWidgetCardViewHolder(
@@ -19,8 +20,13 @@ class MissionWidgetCardViewHolder(
 
     fun bind(item: Mission4SquareUiModel) {
         binding?.card?.setData(item.card)
+
         binding?.root?.setOnClickListener {
             listener?.onMissionClicked(item, bindingAdapterPosition)
+        }
+
+        binding?.root?.addOnImpression1pxListener(item.appLogImpressHolder) {
+            listener?.onMissionImpressed(item, bindingAdapterPosition)
         }
     }
 
