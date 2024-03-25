@@ -24,7 +24,10 @@ data class ProductrevGetProductRatingAndTopic(
     val availableFilters: AvailableFilters = AvailableFilters(),
     @SerializedName("keywords")
     @Expose
-    val keywords: List<Keyword> = emptyList()
+    val keywords: List<Keyword> = emptyList(),
+    @SerializedName("variantsData")
+    @Expose
+    val variantsData: List<VariantData> = emptyList()
 ) {
     fun getTopicsMap(): Map<String, String> {
         val topicsMap = mutableMapOf<String, String>()
@@ -117,4 +120,25 @@ data class Keyword(
     @SerializedName("count")
     @Expose
     val count: String = ""
+)
+
+data class VariantData(
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("level")
+    @Expose
+    val level: Int = 0,
+    @SerializedName("option")
+    @Expose
+    val options: List<Option>
+)
+
+data class Option(
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("image")
+    @Expose
+    val image: String = ""
 )

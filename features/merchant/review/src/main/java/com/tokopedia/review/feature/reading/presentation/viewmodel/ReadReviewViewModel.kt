@@ -311,6 +311,15 @@ class ReadReviewViewModel @Inject constructor(
         resetPage(isProductReview)
     }
 
+    fun setVariantFilter(
+        variantFilter: String,
+        isProductReview: Boolean
+    ){
+        this.filter.variant = if(variantFilter.isEmpty()) null
+        else FilterType.FilterVariant(variantFilter)
+        resetPage(isProductReview)
+    }
+
     fun setFilterFromHighlightedTopic(topic: String, isProductReview: Boolean) {
         val topicsMap = getTopicsMap(isProductReview)
         this.filter.topic = FilterType.FilterTopic(topicsMap[topic] ?: "")
@@ -412,7 +421,6 @@ class ReadReviewViewModel @Inject constructor(
             val filterBy = filter.getSelectedParam()
             getProductRatingAndTopicsUseCase.setParams(
                 productId.value ?: "",
-                "filter",
                 filterBy
             )
             val data = getProductRatingAndTopicsUseCase.executeOnBackground()

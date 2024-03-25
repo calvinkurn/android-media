@@ -67,6 +67,10 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                   url
                   image
                 }
+                variantFilter {
+                  isUnavailable
+                  ticker
+                }
                 hasNext
               }
             }

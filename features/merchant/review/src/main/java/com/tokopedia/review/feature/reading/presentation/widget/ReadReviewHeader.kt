@@ -58,6 +58,7 @@ class ReadReviewHeader @JvmOverloads constructor(
     private var topicFilterChipIndex: Int = 0
 
     private var isTopicExtraction = false
+    private var filterVariantItem: SortFilterItem? = null
 
     init {
         setupViews()
@@ -156,6 +157,14 @@ class ReadReviewHeader @JvmOverloads constructor(
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
             topicFilterChipIndex = filter.indexOf(topicFilter)
+        }
+        if(availableFilters.variant){
+            val variantFilter = SortFilterItem("Varian", ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
+            setListenerAndChevronListener(variantFilter){
+                listener.onFilterWithVariantClicked()
+            }
+            filter.add(variantFilter)
+            filterVariantItem = variantFilter
         }
         val sortOption = getSortFilterItem(getDefaultSortTitle())
         setListenerAndChevronListener(sortOption) { listener.onSortClicked(mapSortTitleToBottomSheetInput(sortOption)) }
@@ -322,6 +331,16 @@ class ReadReviewHeader @JvmOverloads constructor(
                 title = selectedSort
                 type = ChipsUnify.TYPE_SELECTED
             }
+        }
+    }
+
+    fun updateSelectedVariant(count:Int){
+        if (count > 0){
+            filterVariantItem?.title = "$count Varian"
+            filterVariantItem?.type = ChipsUnify.TYPE_SELECTED
+        }else{
+            filterVariantItem?.title = "Varian"
+            filterVariantItem?.type = ChipsUnify.TYPE_NORMAL
         }
     }
 

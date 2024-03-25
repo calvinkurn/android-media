@@ -76,6 +76,9 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilter
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.review.feature.reading.presentation.widget.SelectVariantUiModel
+import com.tokopedia.review.feature.reading.presentation.widget.VariantFilterBottomSheet
+import com.tokopedia.review.feature.reading.presentation.widget.toVariantUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -166,6 +169,8 @@ open class ReadReviewFragment :
     private var imageClickedPosition = 0
 
     private var selectedTopic: String? = null
+
+    private var filterVariants:List<SelectVariantUiModel.Variant> = emptyList()
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -515,6 +520,13 @@ open class ReadReviewFragment :
         }
     }
 
+    override fun onFilterWithVariantClicked() {
+        VariantFilterBottomSheet.instance(
+            this,
+            filterVariants
+        ).show(parentFragmentManager, "Test")
+    }
+
     override fun onFilterSubmitted(
         filterName: String,
         selectedFilter: Set<ListItemUnify>,
@@ -564,6 +576,14 @@ open class ReadReviewFragment :
         reviewHeader?.updateSelectedSort(selectedSort.listTitleText)
         viewModel.setSort(selectedSort.listTitleText, isProductReview)
         showListOnlyLoading()
+    }
+
+    override fun onFilterVariant(count: Int, variantFilter: String) {
+        clearAllData()
+        reviewHeader?.updateSelectedVariant(count)
+        viewModel.setVariantFilter(variantFilter, isProductReview)
+        showListOnlyLoading()
+        updateTopicExtraction()
     }
 
     override fun onReportOptionClicked(reviewId: String, shopId: String) {
@@ -981,6 +1001,8 @@ open class ReadReviewFragment :
             setSeeAll(false)
             show()
         }
+
+        filterVariants = ratingAndTopics.variantsData.toVariantUiModel()
     }
 
     open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {

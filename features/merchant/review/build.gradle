@@ -137,6 +137,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.imageGallery
     implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.unifyDependencies.nestComponents
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
