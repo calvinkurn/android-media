@@ -1,0 +1,36 @@
+package com.tokopedia.stories.widget.settings
+
+import com.google.gson.annotations.SerializedName
+
+/**
+ * @author by astidhiyaa on 3/25/24
+ */
+data class StoriesSettingOption(
+    @SerializedName("contentCreatorStoryGetAuthorOptions")
+    val data: Response = Response()
+) {
+    data class Response(
+        @SerializedName("options")
+        val options: Options = Options(),
+        @SerializedName("config")
+        val config: Config = Config(),
+    )
+
+    data class Options(
+        @SerializedName("copy")
+        val copy: String = "",
+        @SerializedName("optionType")
+        val optionType: String = "",
+        @SerializedName("isDisabled")
+        val isDisabled: Boolean = false,
+    )
+
+    data class Config(
+        @SerializedName("copy")
+        val copy: String = "",
+        @SerializedName("weblink")
+        val webLink: String = "",
+        @SerializedName("applink")
+        val appLink: String = "",
+        )
+}
