@@ -445,8 +445,9 @@ class CatalogDetailPageFragment :
                 Int.ZERO -> {
                     var newAnchorPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
                     if (newAnchorPosition == -1) {
-                        newAnchorPosition = anchorToPosition
+                        newAnchorPosition = 0
                     }
+
                     smoothScroller.targetPosition = newAnchorPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }

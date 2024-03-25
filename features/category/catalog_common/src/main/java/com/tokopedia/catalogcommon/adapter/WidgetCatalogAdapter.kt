@@ -124,6 +124,10 @@ class WidgetCatalogAdapter(
                 indexPartOfNavigation = 0
             }
 
+
+            if (indexPartOfNavigation == -1 && visitables.size-1 in position.second..position.first){
+                indexPartOfNavigation = stickyNav.content.size-1
+            }
             changeNavigationTabActive(indexPartOfNavigation,position)
         }
     }
@@ -165,8 +169,14 @@ class WidgetCatalogAdapter(
         }
     }
     private fun widgetStillShowing(position: Pair<Int, Int>): Boolean {
-        return currentIndexWidgetAfterNavigation in position.first..position.second
+        val range = if (position.first > position.second){
+            position.first..position.second
+        }else{
+            position.second..position.first
+        }
+        return currentIndexWidgetAfterNavigation in range
             && position.first !=0 && position.second != visitables.size-1
+            && position.first != visitables.size-1
     }
 
     fun findPositionWidget(widgetName: String): Int {
