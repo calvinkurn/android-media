@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -16,6 +17,7 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.coachmark.R as coachmarkR
 import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
@@ -24,6 +26,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
+import com.tokopedia.play.broadcaster.fake.FakeBroadcastManager
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.setup.accountListResponse
@@ -79,7 +82,7 @@ class ReportAnalyticTest {
     private val mockHydraSharedPreferences: HydraSharedPreferences = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-    private val mockBroadcaster: Broadcaster = mockk(relaxed = true)
+    private val fakeBroadcaster = FakeBroadcastManager()
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
@@ -90,8 +93,9 @@ class ReportAnalyticTest {
     private val playBroadcastTestModule = PlayBroadcastTestModule(
         activityContext = context,
         mockUserSession = mockUserSession,
-        mockBroadcaster = mockBroadcaster,
+        mockBroadcaster = fakeBroadcaster,
         mockCoachMarkSharedPref = mockContentCoachMarkSharedPref,
+        mockPermissionSharedPreferences = mockk(relaxed = true),
         mockHydraSharedPreferences = mockHydraSharedPreferences,
         mockBroadcastTimer = mockBroadcastTimer,
         mockGetChannelUseCase = mockGetChannelUseCase,
@@ -135,6 +139,7 @@ class ReportAnalyticTest {
         /** Mock Start Broadcaster */
         coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns InteractiveConfigUiModel.empty()
         coEvery { mockRepo.getReportProductSummary(any()) } returns buildProductReportSummary()
+        coEvery { mockRepo.getActivePinnedMessage(any()) } returns null
 
         /** Mock Live Summary Page */
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns buildLiveReportSummary()
@@ -154,46 +159,54 @@ class ReportAnalyticTest {
     @Test
     fun testReport_liveRoom() {
         composeActivityTestRule.apply {
-            performDelay(1000)
+
             clickDialogPrimaryCTA()
-            performDelay(3000)
+            performDelay()
+            verify("view - estimasi pendapatan coachmark")
+            closeCoachMark()
 
             click(R.id.ic_statistic)
             verify("click - estimasi pendapatan icon")
-            performDelay(1000)
+            performDelay()
             verify("view - estimasi pendapatan bottomsheet")
 
             clickEstimatedIncomeInfoIcon()
             verify("click - estimasi pendapatan info icon bottomsheet")
-            performDelay(1000)
+            performDelay()
             verify("view - estimasi pendapatan explanation bottomsheet")
 
             pressBack()
-            delay(1000)
+            performDelay()
             pressBack()
 
             clickLiveStatsView()
             verify("click - top area")
-            performDelay(1000)
+            performDelay()
             verify("view - information bottomsheet")
 
             coEvery { mockRepo.getReportProductSummary(any()) } throws Exception()
             clickEstimatedIncomeCard()
             verify("click - estimasi pendapatan card bottomsheet")
-            delay(1000)
+            performDelay()
             verify("view - estimasi pendapatan error bottomsheet")
 
             pressBack()
-            delay(1000)
+            performDelay()
             pressBack()
 
             click(R.id.ic_bro_end_stream)
             click(dialogR.id.dialog_btn_secondary)
 
-            delay(1000)
+            performDelay()
 
             clickEstimatedIncomeCard()
             verify("click - estimasi pendapatan icon card")
+        }
+    }
+
+    private fun closeCoachMark() {
+        click(coachmarkR.id.simple_ic_close) {
+            inRoot(RootMatchers.isPlatformPopup())
         }
     }
 
@@ -201,7 +214,7 @@ class ReportAnalyticTest {
         click(dialogR.id.dialog_btn_primary)
     }
 
-    private fun performDelay(delayInMillis: Long = 500) {
+    private fun performDelay(delayInMillis: Long = 1000) {
         delay(delayInMillis)
     }
 

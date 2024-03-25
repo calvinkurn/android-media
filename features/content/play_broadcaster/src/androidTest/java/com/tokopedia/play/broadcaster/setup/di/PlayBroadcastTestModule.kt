@@ -64,7 +64,8 @@ class PlayBroadcastTestModule(
     private val mockUserSession: UserSessionInterface,
     private val mockBroadcaster: Broadcaster,
     private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref,
-    private val mockHydraSharedPreferences: PermissionSharedPreferences,
+    private val mockPermissionSharedPreferences: PermissionSharedPreferences,
+    private val mockHydraSharedPreferences: HydraSharedPreferences,
     private val mockBroadcastTimer: PlayBroadcastTimer,
     private val mockGetChannelUseCase: GetChannelUseCase,
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase,
@@ -92,7 +93,11 @@ class PlayBroadcastTestModule(
 
     @ActivityRetainedScope
     @Provides
-    fun providePermissionSharedPreferences(): PermissionSharedPreferences = mockHydraSharedPreferences
+    fun providePermissionSharedPreferences(): PermissionSharedPreferences = mockPermissionSharedPreferences
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideHydraSharedPreferences(): HydraSharedPreferences = mockHydraSharedPreferences
 
     @ActivityRetainedScope
     @Provides
