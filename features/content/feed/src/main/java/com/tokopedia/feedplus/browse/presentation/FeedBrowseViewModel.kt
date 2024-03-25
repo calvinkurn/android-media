@@ -6,6 +6,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDataModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
@@ -32,24 +33,24 @@ internal class FeedBrowseViewModel @Inject constructor(
     private val repository: FeedBrowseRepository
 ) : ViewModel() {
 
-    private val _title = MutableStateFlow("")
+    private val _headerDetail = MutableStateFlow(HeaderDataModel.DEFAULT)
     private val _slots = MutableStateFlow<ResultState>(ResultState.Loading)
     private val _widgets = MutableStateFlow<FeedBrowseModelMap>(emptyMap())
 
     private val updateMutex = Mutex()
 
     val uiState: StateFlow<FeedBrowseUiState> = combine(
-        _title,
+        _headerDetail,
         _slots,
         _widgets
-    ) { title, slots, widgets ->
+    ) { headerData, slots, widgets ->
         if (slots is ResultState.Fail) {
             FeedBrowseUiState.Error(
                 slots.error
             )
         } else {
             FeedBrowseUiState.Success(
-                title = title,
+                headerData = headerData,
                 widgets = widgets.values.toList()
             )
         }
@@ -74,15 +75,21 @@ internal class FeedBrowseViewModel @Inject constructor(
         }
     }
 
+    fun getHeaderData(): HeaderDataModel {
+        return _headerDetail.value
+    }
+
     private fun handleInitialPage() {
-        handleFetchTitle()
+        handleFetchHeaderDetail()
         handleFetchSlots()
     }
 
-    private fun handleFetchTitle() {
+    private fun handleFetchHeaderDetail() {
         viewModelScope.launch {
-            val title = repository.getTitle()
-            _title.update { title }
+            val data = repository.getHeaderData()
+            data?.let {
+                _headerDetail.value = it
+            }
         }
     }
 

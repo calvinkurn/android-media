@@ -3,5 +3,6 @@
     <declare-styleable name="FeedHeaderView">
         <attr name="isCleanable" format="boolean" />
         <attr name="isShowShadow" format="boolean"/>
+        <attr name="withSearchbar" format="boolean"/>
     </declare-styleable>
 </resources>

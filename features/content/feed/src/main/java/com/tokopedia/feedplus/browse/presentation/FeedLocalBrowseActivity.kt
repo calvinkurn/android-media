@@ -65,6 +65,7 @@ class FeedLocalBrowseActivity: BaseActivity() {
 
     companion object {
         private const val TAG_BROWSE_FRAGMENT = "feed_local_browse"
+        const val TAG_PLACEHOLDER_PARAM = "search_placeholder_param"
     }
 
 }
