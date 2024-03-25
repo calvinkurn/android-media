@@ -38,6 +38,7 @@ class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?) :
 
         setInactive()
         addView(textContent)
+        borderWidth = 0f
     }
 
     fun setActive() {

@@ -1,0 +1,2091 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "XRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d",
+        "source": "custom",
+        "title": "Rekomendasi Untuk Anda",
+        "subtitle": "",
+        "foreignTitle": "Recommendation For You",
+        "widgetUrl": "",
+        "pageName": "inbox",
+        "seeMoreAppLink": "",
+        "layoutType": "Custom-vertical",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          },
+          "endDate": ""
+        },
+        "recommendation": [
+          {
+            "id": 6014196383,
+            "name": "Tas Messenger Kanvas Premium Tebal Jepang Wanita Pria Korea Import",
+            "categoryBreadcrumbs": "Fashion Wanita/Tas Wanita/Tas Selempang Wanita",
+            "url": "https://www.tokopedia.com/shoeking/tas-messenger-kanvas-premium-tebal-jepang-wanita-pria-korea-import-frog-keychain?src\u003dtopads",
+            "appUrl": "tokopedia://product/6014196383?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_yfHpHfHpJpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstfHAnDUMVj9RosQR-BUstpo_1XH_UdH_UNopJRosUdo_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1OJqR2ozcH7_S2uoJY11_uvzcPNZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEu_VHqjuN_7zV81Y1yRx68BBN_7zuH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_KDH_jhoiFh6_Uh9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst76AJNomFirI-2yfuwyMBjUstfHAnDUMP5y3hwq3ei6soY?page\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fshoeking%2Ftas-messenger-kanvas-premium-tebal-jepang-wanita-pria-korea-import-frog-keychain%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_yfHpHfHpJpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstfHAnDUMVj9RosQR-BUstpo_1XH_UdH_UNopJRosUdo_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1OJqR2ozcH7_S2uoJY11_uvzcPNZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEu_VHqjuN_7zV81Y1yRx68BBN_7zuH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_KDH_jhoiFh6_Uh9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst76AJNomFirI-2yfuwyMBjUstfHAnDUMP5y3hwq3ei6soY?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fshoeking%2Ftas-messenger-kanvas-premium-tebal-jepang-wanita-pria-korea-import-frog-keychain%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026t\u003dandroid\u0026uid\u003d148201295\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026product_id\u003d6014196383\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026ob\u003d0\u0026src\u003drecom_widget_inbox",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJfosHposHhHaFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi4Nbpj5H_JFHMyRocyWyfJNgm77Hpojb3Vx6AyWHcHdHsBBofVB63JabSCXgaUDUMVj9RosQR-BUstpo_1XH_UdH_UNopJRosUdo_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1OJqR2ozcH7_S2uoJY11_uvzcPNZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEu_VHqjuN_7zV81Y1yRx68BBN_7zuH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sedH_j7bm-FrMBsguYiq3ei6syFHmFigfYxQVY2gmUEHaFigcuFy9-7Q3uXPVY2gIHi6BDhop1dbAJNH_yDH_jaHuOY?dv\u003dandroid-3.150\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026page\u003d1\u0026ob\u003d0",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/9/9/1102f74f-ca9d-433d-aa86-0c829e7ae9a2.png",
+            "price": "Rp22.000",
+            "priceInt": 22000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 14245305,
+              "name": "ShoeKing",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "warehouseID": 0,
+            "departmentId": 1921,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "ri_product_credibility",
+                "title": "80+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              }
+            ],
+            "badges": [],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 4,
+            "countReview": 34,
+            "ratingAverage": "4.5",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 439,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 6014196339,
+            "gridPosition": ""
+          },
+          {
+            "id": 269202828,
+            "name": "Daging Babi FRESH Samcan / Pork Belly 1 kg",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Produk Mengandung Babi/Daging Babi",
+            "url": "https://www.tokopedia.com/civo-meat-tangerang-pusa/daging-babi-fresh-samcan-pork-belly-1-kg?src\u003dtopads",
+            "appUrl": "tokopedia://product/269202828?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_rpoAy76_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthopJFoAjaos1Nbm-srcHi6sUpHAnDUMVj9RosQR-BUstposeXosJNosUFo_1a6_KhoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqj1p_32z8JOEypuo8juR_92zHJYAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jp3926qjYJu9xv1pn73jzoo1h11926Quu7_Ozqq1OAHIP6qjJO_OzgHJO1ZMO6z7u2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_M2zP1Nkz_u6qjBR_Bzu81Y1gRx617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUS-BPcVagfu79fVjraUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDpoZFOo_ndbA1OHABPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUS-BPcVagfu7q3NS9fVjraUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHRHsy7bm-FrMBsguYiq3ei6sUpHAnDUMP5y3hwq3ei6sHDUS-xQMWwyMupPVYpg3hDg9Ui6sVY?management_type\u003d1\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026t\u003dandroid\u0026src\u003drecom_widget_inbox\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcivo-meat-tangerang-pusa%2Fdaging-babi-fresh-samcan-pork-belly-1-kg%3Fsrc%3Dtopads",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_rpoAy76_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthopJFoAjaos1Nbm-srcHi6sUpHAnDUMVj9RosQR-BUstposeXosJNosUFo_1a6_KhoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqj1p_32z8JOEypuo8juR_92zHJYAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jp3926qjYJu9xv1pn73jzoo1h11926Quu7_Ozqq1OAHIP6qjJO_OzgHJO1ZMO6z7u2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_M2zP1Nkz_u6qjBR_Bzu81Y1gRx617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUS-BPcVagfu79fVjraUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDpoZFOo_ndbA1OHABPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUS-BPcVagfu7q3NS9fVjraUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHRHsy7bm-FrMBsguYiq3ei6sUpHAnDUMP5y3hwq3ei6sHDUS-xQMWwyMupPVYpg3hDg9Ui6sVY?page\u003d1\u0026src\u003drecom_widget_inbox\u0026ob\u003d0\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026uid\u003d148201295\u0026product_id\u003d269202828\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcivo-meat-tangerang-pusa%2Fdaging-babi-fresh-samcan-pork-belly-1-kg%3Fsrc%3Dtopads\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJRHpefoAjdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_rhHAeNHsyO6ZFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUabpH5HpJ5HfuxHsKFgMJWocH7Hm77g_U7b_xMos1Wy_UNgAKaHcHposxMbM2FgaUDUMVj9RosQR-BUstposeXosJNosUFo_1a6_KhoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqj1p_32z8JOEypuo8juR_92zHJYAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jp3926qjYJu9xv1pn73jzoo1h11926Quu7_Ozqq1OAHIP6qjJO_OzgHJO1ZMO6z7u2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_M2zP1Nkz_u6qjBR_Bzu81Y1gRx617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUS-BPcVagfu79fVjraUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUS-BPcVagfu7q3NS9fVjra-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpopUfomFirI-2yfuwyMBjUstaHpnFbm-SQfVD9fBjUstpbm-ay3N09f-BrRzwrfuDQcuaUsthbm-jg9CxrSzWg3N79fBjraUE3pHObA1OHAKDo_1F6uOY?t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026src\u003drecom_widget_inbox",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/3/31/3ea280fa-4c40-4e24-8f65-a29d820c368f.jpg",
+            "price": "Rp104.990",
+            "priceInt": 104990,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3150866,
+              "name": "CIVO MEAT Tangerang Pusat",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "warehouseID": 0,
+            "departmentId": 5509,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "price",
+                "title": "Cashback 3,1rb",
+                "type": "lightRed",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "assigned_value",
+                "title": "Terlaris",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2024/1/16/10dac19c-05da-48fa-b039-d6d1c3dab9b1.png",
+                "styles": []
+              },
+              {
+                "position": "ri_product_benefit",
+                "title": "Cashback 3,15rb",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#F94D63"
+                  },
+                  {
+                    "key": "background-color",
+                    "value": "#FFF5F6"
+                  },
+                  {
+                    "key": "background-opacity",
+                    "value": "1"
+                  },
+                  {
+                    "key": "outline-color",
+                    "value": "#FFB2C2"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "10rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tangerang",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 10774,
+            "ratingAverage": "4.9",
+            "recommendationType": "retarget",
+            "stock": 5638,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 1905311029,
+            "name": "Manzone Kemeja Lengan Pendek RODRICK 1 - BEST BUY-MAROON",
+            "categoryBreadcrumbs": "Fashion Pria/Atasan Pria/Kemeja Pria",
+            "url": "https://www.tokopedia.com/manzone/manzone-kemeja-lengan-pendek-rodrick-1-best-buy-maroon-xxl?src\u003dtopads",
+            "appUrl": "tokopedia://product/1905311029?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_yF6_Jd6Arpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstNo_nDUMVj9RosQR-BUstpoAjX6_H7H_KfH_nho_nR6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__Cv1peO_92z8JYJ39xozJ1h_1zsoJN2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBke3BM1_7YUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDhop1NbAJR6AeDHp1R6u7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_HF6_1DUSCaq3oB9f-2gmUE6_1Fbm-SQfVD9fBjUstpwe?sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fmanzone%2Fmanzone-kemeja-lengan-pendek-rodrick-1-best-buy-maroon-xxl%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026ob\u003d0\u0026t\u003dandroid\u0026src\u003drecom_widget_inbox",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_yF6_Jd6Arpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstNo_nDUMVj9RosQR-BUstpoAjX6_H7H_KfH_nho_nR6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__Cv1peO_92z8JYJ39xozJ1h_1zsoJN2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBke3BM1_7YUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDhop1NbAJR6AeDHp1R6u7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_HF6_1DUSCaq3oB9f-2gmUE6_1Fbm-SQfVD9fBjUstpwe?t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026dv\u003dandroid-3.150\u0026uid\u003d148201295\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fmanzone%2Fmanzone-kemeja-lengan-pendek-rodrick-1-best-buy-maroon-xxl%3Fsrc%3Dtopads\u0026product_id\u003d1905311029\u0026ob\u003d0\u0026src\u003drecom_widget_inbox\u0026page\u003d1\u0026management_type\u003d1",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJfHAjh6AKRHaFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sUDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHZ4fbpJhbfHOg3Jaypzib3gMosUWoABxHZ7doMyfb_Piy_n7oc-jg_1OgmNkrcribm-xgVYpyfYagZUEHpeNbsjpoAJdosJFH_1FopKfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMzk__-ooJN1z_uHucx0_920PJNJ__-q1pnO_MO-P7h1e_-ozcDO_M2z8JOW3_Cg17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7F_OH7o1OE19xvzVBd_1zVH1OJypz6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyR9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_HF6_1DUSCaq3oB9f-2gmUE6_1Fbm-SQfVD9fBjUstpbm-jg9CxrSzWg3N79fBjraUE3pJRo_jDH_rdomFpo_rN997?management_type\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox\u0026page\u003d1\u0026t\u003dandroid\u0026ob\u003d0",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/11/c5ea2c4b-ff62-49a1-86f6-7ba044bde55d.jpg",
+            "price": "Rp149.900",
+            "priceInt": 149900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2132603,
+              "name": "Manzone Official Store",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "warehouseID": 0,
+            "departmentId": 3579,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "price",
+                "title": "Cashback 8,9rb",
+                "type": "lightRed",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_ribbon",
+                "title": "17%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_benefit",
+                "title": "Cashback 8,99rb",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#F94D63"
+                  },
+                  {
+                    "key": "background-color",
+                    "value": "#FFF5F6"
+                  },
+                  {
+                    "key": "background-opacity",
+                    "value": "1"
+                  },
+                  {
+                    "key": "outline-color",
+                    "value": "#FFB2C2"
+                  }
+                ]
+              },
+              {
+                "position": "product_card_slash_price",
+                "title": "Rp179.900",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#AAB4C8"
+                  },
+                  {
+                    "key": "text-format",
+                    "value": "strikethrough"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "100+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/vMWOpN/2024/2/16/a2e8ca54-4345-44c9-b516-2ef287ad7a0a.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tangerang",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 86,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 130,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 1905311013,
+            "gridPosition": ""
+          },
+          {
+            "id": 7385814589,
+            "name": "2 pcs - Bimoli Klasik 1 Liter Pouch",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Bumbu \u0026 Bahan Masakan/Minyak",
+            "url": "https://www.tokopedia.com/indofoodofficialstore/2-pcs-bimoli-klasik-1-liter-pouch?src\u003dtopads",
+            "appUrl": "tokopedia://product/7385814589?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_ja6AUOosj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstRHAnDUMVj9RosQR-BUstpoArXopjpopyfo_jp6AJaoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_32V8jOku_ooqBjp_1zzHjY1qpz-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkz9u68j7a_Ozs81NEe_C68j1F_M2zP7NAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jp3926qjYJu9xv1pn73jzoo1h11926Quu7_Ozqq1OAHIP6qjJO_OzgHJO1ZMO6z7u2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_jzsP1NEqR268Bja_Bz08jYJz9B617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyR9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2QHp1DH_JO6ZFhH_yF9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaoprpoZFirI-2yfuwyMBjUstRHAnDUMP5y3hwq3ei6soY?sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026page\u003d1\u0026src\u003drecom_widget_inbox\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Findofoodofficialstore%2F2-pcs-bimoli-klasik-1-liter-pouch%3Fsrc%3Dtopads\u0026ob\u003d0\u0026management_type\u003d1\u0026t\u003dandroid",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_ja6AUOosj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstRHAnDUMVj9RosQR-BUstpoArXopjpopyfo_jp6AJaoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_32V8jOku_ooqBjp_1zzHjY1qpz-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkz9u68j7a_Ozs81NEe_C68j1F_M2zP7NAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jp3926qjYJu9xv1pn73jzoo1h11926Quu7_Ozqq1OAHIP6qjJO_OzgHJO1ZMO6z7u2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_jzsP1NEqR268Bja_Bz08jYJz9B617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyR9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2QHp1DH_JO6ZFhH_yF9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaoprpoZFirI-2yfuwyMBjUstRHAnDUMP5y3hwq3ei6soY?product_id\u003d7385814589\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Findofoodofficialstore%2F2-pcs-bimoli-klasik-1-liter-pouch%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026src\u003drecom_widget_inbox\u0026uid\u003d148201295\u0026page\u003d1",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJNHsKao_yNomFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6seDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHa4hHm4hoaYx6_HFgcVBHmOsofJpb_zBg_nWy3yfyZ7foceFHsVxgA-xyMyXqSCSUiFiy3zwrfo5rM1i6sH7oadR6_HRosyO6_HdH_UObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAVoqjuE_32uH7Ok3_oozVJa_Oz0oJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32VP1NE__-vucoN_S2CHJNEz_C6qBVR_jo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_og8jNk_7zu8JY_HAzqzJ7O_Vzz8jNWu9zvuV22_1HFP7Nke_uvuVjF_uzGQ1NIz3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z926zcoO_S208jNE3_-6ucWE_7zV81N_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBke3BM1_7YUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaoprpoZFirI-2yfuwyMBjUstRHAnDUMP5y3hwq3ei6sHDUMzBrcVaPcOBQSzwq3zpUs2QHp1DH_JO6ZFhH_yF997?management_type\u003d1\u0026ob\u003d0\u0026src\u003drecom_widget_inbox\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026page\u003d1\u0026t\u003dandroid",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/17/a930dae0-c7a3-4ee0-af6a-64d021ad2abf.jpg",
+            "price": "Rp48.800",
+            "priceInt": 48800,
+            "discountPercentage": 0,
+            "slashedPrice": "Rp48.800",
+            "slashedPriceInt": 48800,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 12833868,
+              "name": "Indofood Official Store",
+              "city": "Tangerang Selatan",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "warehouseID": 0,
+            "departmentId": 1160,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "price",
+                "title": "Cashback 4,8rb",
+                "type": "lightRed",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_ribbon",
+                "title": "32%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_benefit",
+                "title": "Cashback 4,88rb",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#F94D63"
+                  },
+                  {
+                    "key": "background-color",
+                    "value": "#FFF5F6"
+                  },
+                  {
+                    "key": "background-opacity",
+                    "value": "1"
+                  },
+                  {
+                    "key": "outline-color",
+                    "value": "#FFB2C2"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "500+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/vMWOpN/2024/2/22/ea6bcd49-115d-4a74-8a03-a4569e77203d.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tangerang Selatan",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 231,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 38,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 8264712364,
+            "name": "Tissue SEE-U Multipurpose 150s ISI 10 PACK (See-U GAJAH)",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Kebersihan/Tissue",
+            "url": "https://www.tokopedia.com/kioscepat/tissue-see-u-multipurpose-150s-isi-10-pack-see-u-gajah?src\u003dtopads",
+            "appUrl": "tokopedia://product/8264712364?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_KRHpeao_ndbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUsthHsnFbm-xgVYpyfYagZUEHpeObsJNopJOoAHNos1R6_JDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__C61pzd_Ozs8JN1192vuVjh_S208JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZF7osepbAHRopBPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUa6_rfbm-FrMBsguYiq3ei6sJaHAnDUMP5y3hwq3ei6soY?dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fkioscepat%2Ftissue-see-u-multipurpose-150s-isi-10-pack-see-u-gajah%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026page\u003d1\u0026ob\u003d0\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_KRHpeao_ndbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUsthHsnFbm-xgVYpyfYagZUEHpeObsJNopJOoAHNos1R6_JDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__C61pzd_Ozs8JN1192vuVjh_S208JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZF7osepbAHRopBPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUa6_rfbm-FrMBsguYiq3ei6sJaHAnDUMP5y3hwq3ei6soY?page\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fkioscepat%2Ftissue-see-u-multipurpose-150s-isi-10-pack-see-u-gajah%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026ob\u003d0\u0026uid\u003d148201295\u0026product_id\u003d8264712364\u0026management_type\u003d1\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJdopH7Hs1F6mFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHa4pbpU5y3JhyfUpo_HWo3Jf6Z77gAyhb3URysJWo3-MgAefyp-i6_UFbM2FgaUDUMVj9RosQR-BUstpoA1XH_jRH_17Hpjfo_rNHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32jqj7a__z6uJ1O_Vztq7OEqRz6zJ7a3BHFo1NWZ9PHuJJa_1z0o1Nk19xoQujF3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32oHJN_oIxvucod_Bzz8jY13_V68MWdZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_1oG6ZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyR9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsUNopyDUSCaq3oB9f-2gmUEH_UFHmFigfYxQVY2gmUEHaFigcuFy9-7Q3uXPVY2gIHi6BDRH_1DoAy7HaFpoprN997?dv\u003dandroid-3.150\u0026management_type\u003d1\u0026t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox\u0026page\u003d1\u0026ob\u003d0",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/2/aa1cb353-5a69-4d61-b7b1-5bfd46c2b920.jpg",
+            "price": "Rp18.000",
+            "priceInt": 18000,
+            "discountPercentage": 0,
+            "slashedPrice": "Rp30.000",
+            "slashedPriceInt": 30000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 104359,
+              "name": "KiosCepat",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "warehouseID": 0,
+            "departmentId": 3779,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "ri_ribbon",
+                "title": "40%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "product_card_slash_price",
+                "title": "Rp30.000",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#AAB4C8"
+                  },
+                  {
+                    "key": "text-format",
+                    "value": "strikethrough"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "4rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Jakarta Barat",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 616,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 102,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 12061938562,
+            "name": "PRONAS CORNED BEEF 340 g / Kornet Pronas 340gr kaleng",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Makanan Jadi/Daging Kaleng",
+            "url": "https://www.tokopedia.com/rokumart/pronas-corned-beef-340-g-kornet-pronas-340gr-kaleng-corned-chilli-b5b83?src\u003dtopads",
+            "appUrl": "tokopedia://product/12061938562?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHsndH_JFHprObm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstdHAnDUMVj9RosQR-BUstpoAHXo_KR6_JaHpKhHseObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oI2oqj1h_7zuo1OJ_9PvzJ7p_1zCH1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32uP1NJu_C6uVJh_jzuHJN11_V6zV1FZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__Co8_eh_7zso1O1Z92vzJuN_jzuq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-P7BXHA7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pHObAURHAUDHsrOoB7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpUh6_jDUSCaq3oB9f-2gmUE6AnFbm-SQfVD9fBjUstpwe?ob\u003d0\u0026management_type\u003d1\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Frokumart%2Fpronas-corned-beef-340-g-kornet-pronas-340gr-kaleng-corned-chilli-b5b83%3Fsrc%3Dtopads\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHsndH_JFHprObm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstdHAnDUMVj9RosQR-BUstpoAHXo_KR6_JaHpKhHseObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oI2oqj1h_7zuo1OJ_9PvzJ7p_1zCH1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32uP1NJu_C6uVJh_jzuHJN11_V6zV1FZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__Co8_eh_7zso1O1Z92vzJuN_jzuq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-P7BXHA7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pHObAURHAUDHsrOoB7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpUh6_jDUSCaq3oB9f-2gmUE6AnFbm-SQfVD9fBjUstpwe?management_type\u003d1\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Frokumart%2Fpronas-corned-beef-340-g-kornet-pronas-340gr-kaleng-corned-chilli-b5b83%3Fsrc%3Dtopads\u0026page\u003d1\u0026ob\u003d0\u0026dv\u003dandroid-3.150\u0026product_id\u003d12061938562\u0026src\u003drecom_widget_inbox\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026uid\u003d148201295",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sUF6AJhHAHRoZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHa4hHZ4Nbfzjy_JfHfJ7b_KOHM1WoAjR6Z7dHsBib3gsy317gMgBo_JpoiNFQMribm-xgVYpyfYagZUEHpepbs1dopjhHsHdH_U7oZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pzE_32VH1YJu_uozJOR_7zoH7OJe_V-q9P23_oZ8uKp_Mhg3J2ky1o-ojBku9u6zV1F_BzzH1NJu_C6uVJh_jzuHJB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMzk__-ooJN1z_uHucx0_920PJNJ__-q1pnO_MO-P7h1e_-ozcDO_M2z8JOW3_Cg17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7F_9j7H1YJypuouJBE_7zV81NJu3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsJN6ZFirI-2yfuwyMBjUstdHAnDUMP5y3hwq3ei6sHDUMzBrcVaPcOBQSzwq3zpUs2QHp1DHsrFHiFaop1f997?dv\u003dandroid-3.150\u0026ob\u003d0\u0026t\u003dandroid\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026page\u003d1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/9/dda163a4-852e-4979-829b-fcae4ffe5136.png",
+            "price": "Rp29.500",
+            "priceInt": 29500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 8591159,
+              "name": "Roku Mart",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "warehouseID": 0,
+            "departmentId": 2756,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "ri_product_credibility",
+                "title": "100+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Jakarta Barat",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 18,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 11,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 12061938559,
+            "gridPosition": ""
+          },
+          {
+            "id": 2042106896,
+            "name": "Adapter Lightning to Jack Audio 3.5mm MFI UGREEN Converter iPhone - US211-Braided, Black",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Kabel OTG",
+            "url": "https://www.tokopedia.com/ugreenid/adapter-lightning-to-jack-audio-3-5mm-mfi-ugreen-converter-iphone-us211-braided-black",
+            "appUrl": "tokopedia://product/2042106896",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3072\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d2042106896\u0026pos\u003d1\u0026recommendation\u003dgraph_embeddingv7_recentview\u0026rectype\u003dgraph_embeddingv7_recentview\u0026redirect\u003dhttps://www.tokopedia.com/ugreenid/adapter-lightning-to-jack-audio-3-5mm-mfi-ugreen-converter-iphone-us211-braided-black?catid3072\u003d%26ref\u003dinbox_pa1_po1%26src\u003dr3graph_embeddingv7_recentview\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/12/14/6ca09ae4-677c-4c62-afce-3e329e997ef8.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/12/14/6ca09ae4-677c-4c62-afce-3e329e997ef8.jpg",
+            "price": "Rp195.000",
+            "priceInt": 195000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 11948838,
+              "name": "Ugreen Official by Unicase",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 11902790,
+            "departmentId": 3072,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "price",
+                "title": "Cashback 13,6rb",
+                "type": "lightRed",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 17 - 20 Mar",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "5rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Diskon Kilat",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/yiQvgp/2024/1/31/217db5e5-33c3-4177-b88c-0109da3cbd20.png",
+                "styles": []
+              },
+              {
+                "position": "ri_product_benefit",
+                "title": "Cashback 13,65rb",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#F94D63"
+                  },
+                  {
+                    "key": "background-color",
+                    "value": "#FFF5F6"
+                  },
+                  {
+                    "key": "background-opacity",
+                    "value": "1"
+                  },
+                  {
+                    "key": "outline-color",
+                    "value": "#FFB2C2"
+                  }
+                ]
+              }
+            ],
+            "badges": [
+              {
+                "title": "Jakarta Barat",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 3303,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 15,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 2037910909,
+            "gridPosition": ""
+          },
+          {
+            "id": 1976384065,
+            "name": "Pop Mie Kuah Rasa Kari 3pcs 75g",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Mie \u0026 Pasta/Mie Instan",
+            "url": "https://www.tokopedia.com/popmieofficial/pop-mie-kuah-rasa-kari-3pcs-75g",
+            "appUrl": "tokopedia://product/1976384065",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2738\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d1976384065\u0026pos\u003d2\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/popmieofficial/pop-mie-kuah-rasa-kari-3pcs-75g?catid2738\u003d%26ref\u003dinbox_pa1_po2%26src\u003dr3graph_embedding\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/12/20/21a373a5-4578-427b-824f-d9eb2b801933.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/12/20/21a373a5-4578-427b-824f-d9eb2b801933.jpg",
+            "price": "Rp14.800",
+            "priceInt": 14800,
+            "discountPercentage": 0,
+            "slashedPrice": "Rp15.700",
+            "slashedPriceInt": 15700,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5603054,
+              "name": "Pop Mie Official Store",
+              "city": "Kota Bandung",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 15596748,
+            "departmentId": 2738,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "campaign",
+                "title": "Toserba",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/12/20/0b40fd89-adf8-4e78-8645-235928feb626.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "Tiba besok",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "2rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Toserba",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "product_card_slash_price",
+                "title": "Rp15.700",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_ribbon",
+                "title": "6%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Dilayani Tokopedia",
+                "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 784,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embedding",
+            "stock": 75,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 7627918916,
+            "name": "Paket Pop Mie Kuah",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Mie \u0026 Pasta/Mie Instan",
+            "url": "https://www.tokopedia.com/indofoodofficialstore/paket-pop-mie-kuah",
+            "appUrl": "tokopedia://product/7627918916",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2738\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d7627918916\u0026pos\u003d3\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/indofoodofficialstore/paket-pop-mie-kuah?catid2738\u003d%26ref\u003dinbox_pa1_po3%26src\u003dr3graph_embedding\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/17/f6fe9c7a-7ef9-4111-a85c-68109a53e706.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/17/f6fe9c7a-7ef9-4111-a85c-68109a53e706.jpg",
+            "price": "Rp29.539",
+            "priceInt": 29539,
+            "discountPercentage": 0,
+            "slashedPrice": "Rp30.000",
+            "slashedPriceInt": 30000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 12833868,
+              "name": "Indofood Official Store",
+              "city": "Kab. Bekasi",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 16725878,
+            "departmentId": 2738,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              },
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Gratis Ongkir",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "campaign",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2024/2/16/29ebd502-9598-4105-ae75-090c92903eaa.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 17 - 20 Mar",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "1rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/vMWOpN/2024/2/16/08181771-22a3-49e0-8edc-6c9aa4bcbb5d.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              },
+              {
+                "position": "product_card_slash_price",
+                "title": "Rp30.000",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_ribbon",
+                "title": "2%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Kota Tangerang Selatan",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 354,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embedding",
+            "stock": 67,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 2869950963,
+            "name": "Pop Mie Kuah Rasa Soto Pcs",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Mie \u0026 Pasta/Mie Instan",
+            "url": "https://www.tokopedia.com/kedaimartstore/pop-mie-kuah-rasa-soto-pcs",
+            "appUrl": "tokopedia://product/2869950963",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2738\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d2869950963\u0026pos\u003d4\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/kedaimartstore/pop-mie-kuah-rasa-soto-pcs?catid2738\u003d%26ref\u003dinbox_pa1_po4%26src\u003dr3graph_embedding\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/4/6/01d0ae66-b5b8-4fdb-a619-d1c662d6ea92.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/4/6/01d0ae66-b5b8-4fdb-a619-d1c662d6ea92.jpg",
+            "price": "Rp5.300",
+            "priceInt": 5300,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 7467990,
+              "name": "KedaiMart Official Store",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 7676136,
+            "departmentId": 2738,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "campaign",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2024/2/16/008ea427-4fa3-4d25-a8bd-db1e262318d7.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 17 - 20 Mar",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "1rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/vMWOpN/2024/2/16/aa6e88e7-e022-4991-bc9a-dbea3bab82f5.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Kota Tangerang",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 124,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 2625,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 5962907878,
+            "name": "Tas Wanita Pria Korea Japan Harajuku Kanvas Tas RetroBag Tas Selempang",
+            "categoryBreadcrumbs": "Fashion Wanita/Tas Wanita/Tas Selempang Wanita",
+            "url": "https://www.tokopedia.com/furniture888/tas-wanita-pria-korea-japan-harajuku-kanvas-tas-retrobag-tas-selempang-gantungan-bear?src\u003dtopads",
+            "appUrl": "tokopedia://product/5962907878?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_1aosKdHAKFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUst7HAnDUMVj9RosQR-BUstpoAUX6_KfHpHf6AnhosJdopHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_3j7H7N1Z9BvuJ7h_S2so1YJz_-6uJ17Z3BRqujp1SByH7ND3uxGqMVAZ_g-qjuO_7zVoJO1gRxvzJ17_uzS8JYJz_zo17BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-HOBE_M2vzVud_OHFoV2J__uHuVVE_MOuPJY13MBoepCR_M2Co1Y13_CouJ2W_jPVq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jNJZ9uvucra_92oHjYJe9x6qj17_S2oq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-P7BXHA7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_KDH_jhoiFh6_Uh9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaHsehoiFirI-2yfuwyMBjUst7HAnDUMP5y3hwq3ei6soY?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ffurniture888%2Ftas-wanita-pria-korea-japan-harajuku-kanvas-tas-retrobag-tas-selempang-gantungan-bear%3Fsrc%3Dtopads\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026t\u003dandroid\u0026page\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_1aosKdHAKFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUst7HAnDUMVj9RosQR-BUstpoAUX6_KfHpHf6AnhosJdopHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_3j7H7N1Z9BvuJ7h_S2so1YJz_-6uJ17Z3BRqujp1SByH7ND3uxGqMVAZ_g-qjuO_7zVoJO1gRxvzJ17_uzS8JYJz_zo17BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-HOBE_M2vzVud_OHFoV2J__uHuVVE_MOuPJY13MBoepCR_M2Co1Y13_CouJ2W_jPVq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jNJZ9uvucra_92oHjYJe9x6qj17_S2oq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-P7BXHA7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_KDH_jhoiFh6_Uh9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaHsehoiFirI-2yfuwyMBjUst7HAnDUMP5y3hwq3ei6soY?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ffurniture888%2Ftas-wanita-pria-korea-japan-harajuku-kanvas-tas-retrobag-tas-selempang-gantungan-bear%3Fsrc%3Dtopads\u0026product_id\u003d5962907878\u0026t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026uid\u003d148201295\u0026page\u003d1\u0026ob\u003d0\u0026dv\u003dandroid-3.150",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJOHsyd6AndHmFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6srDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi47bpUfbpef6cHpy_KFb_efo_HWoAxxHm7dyMVMb_UFHcHdysJRoMHOoiNFQMribm-xgVYpyfYagZUEHpeabsjdosHposKFH_yh6Arpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oAo6uJBN_OzoH1NEypuvzJ1a_BzVoJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32VP1YJz_zoucPd_7zVoJO1gRxvzJ17_uo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_og8jNk_7zu8JY_HAzqzJ7O_Vzz8jNWu9zvuV22_1HFP7Nke_uvuVjF_uzGQ1NIz3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z926zJBO_OzSHjOE__-vzJVd_M2VoJNE_3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaHsehoiFirI-2yfuwyMBjUst7HAnDUMP5y3hwq3ei6sHDUMzBrcVaPcOBQSzwq3zpUs2QH_rO6mFh6_JfbAJNHsVPwe?page\u003d1\u0026ob\u003d0\u0026t\u003dandroid\u0026src\u003drecom_widget_inbox\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026management_type\u003d1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/4/26/468c3a80-4653-48a0-8baf-200c8b176c56.png",
+            "price": "Rp6.500",
+            "priceInt": 6500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 13356671,
+              "name": "Furniture888",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "warehouseID": 0,
+            "departmentId": 1921,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "ri_product_credibility",
+                "title": "100+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              }
+            ],
+            "badges": [],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 62,
+            "ratingAverage": "4.5",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 320,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 3684888361,
+            "gridPosition": ""
+          },
+          {
+            "id": 10071325308,
+            "name": "Tas Selempang Pria Sling Messenger Bag Pria Ringan TP-XM-8085",
+            "categoryBreadcrumbs": "Fashion Pria/Tas Pria/Tas Selempang Pria",
+            "url": "https://www.tokopedia.com/elitegen/tas-selempang-pria-sling-messenger-bag-pria-ringan-tp-xm-8085-hitam-5210a?src\u003dtopads",
+            "appUrl": "tokopedia://product/10071325308?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfHAUpHs1Nbm-xgVY789CBUsthbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstfo_nDUMVj9RosQR-BUstpoAnX6AedoAepHpKOopJhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oI2oucWN_92gP7O139268juR_S2sH1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32-P1Y139BvuVBN_Ozg81Y139BvuVBE_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_og8jNk_7zu8JY_HAzqzJ7O_Vzz8jNWu9zvuV22_1HFP7Nke_uvuVjF_uzGQ1NIz3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z926zJVO_7zzoJNJ192o8Mrh_S2V8JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_jDH_KFHZFh6A1O9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaopjpbm-FrMBsguYiq3ei6syOHmFigfYxQVY2gmUEHR7?management_type\u003d1\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Felitegen%2Ftas-selempang-pria-sling-messenger-bag-pria-ringan-tp-xm-8085-hitam-5210a%3Fsrc%3Dtopads\u0026page\u003d1\u0026t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox\u0026ob\u003d0",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_jfHAUpHs1Nbm-xgVY789CBUsthbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstfo_nDUMVj9RosQR-BUstpoAnX6AedoAepHpKOopJhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oI2oucWN_92gP7O139268juR_S2sH1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32-P1Y139BvuVBN_Ozg81Y139BvuVBE_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_og8jNk_7zu8JY_HAzqzJ7O_Vzz8jNWu9zvuV22_1HFP7Nke_uvuVjF_uzGQ1NIz3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z926zJVO_7zzoJNJ192o8Mrh_S2V8JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_jDH_KFHZFh6A1O9ZFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaopjpbm-FrMBsguYiq3ei6syOHmFigfYxQVY2gmUEHR7?page\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026product_id\u003d10071325308\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Felitegen%2Ftas-selempang-pria-sling-messenger-bag-pria-ringan-tp-xm-8085-hitam-5210a%3Fsrc%3Dtopads\u0026ob\u003d0\u0026management_type\u003d1\u0026src\u003drecom_widget_inbox\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026uid\u003d148201295",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJNosnaHpUO6ZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sKDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHa4fbpJFbpHOHp-sg3gjb_j7HsrWocusoZ7dg_nfb_rF6Aoi6_oMgcyhoiNkrcribm-xgVYpyfYagZUEHpeFbsK76Ae7HpHdo_rhHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zE_uz081OE39PouVBE_S2VP7NEypV-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkZ9uvuVBN_Ozg81Y139BvuVBN_Ozg8jO2Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jp3926qjYJu9xv1pn73jzoo1h11926Quu7_Ozqq1OAHIP6qjJO_OzgHJO1ZMO6z7u2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_jzCP1YJ1_z6zVVE_92SH1NEz9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoe7tNUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaopjpbm-FrMBsguYiq3ei6syOHmFigfYxQVY2gmUEHaFigcuFy9-7Q3uXPVY2gIHi6BDhop1NbAJdHAJDH_KOouOY?src\u003drecom_widget_inbox\u0026t\u003dandroid\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026ob\u003d0\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/6/10/3532cefd-9427-4ec5-8e06-7083b93fdf16.jpg",
+            "price": "Rp135.000",
+            "priceInt": 135000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2905074,
+              "name": "EliteGen",
+              "city": "Kab. Tangerang",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "warehouseID": 0,
+            "departmentId": 1855,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "price",
+                "title": "Cashback 6,7rb",
+                "type": "lightRed",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_benefit",
+                "title": "Cashback 6,75rb",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#F94D63"
+                  },
+                  {
+                    "key": "background-color",
+                    "value": "#FFF5F6"
+                  },
+                  {
+                    "key": "background-opacity",
+                    "value": "1"
+                  },
+                  {
+                    "key": "outline-color",
+                    "value": "#FFB2C2"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "250+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Kab. Tangerang",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 240,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 126,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 10071325305,
+            "gridPosition": ""
+          },
+          {
+            "id": 2597055849,
+            "name": "[TC] Tissue SEE-U FACIAL Classic SP 250s",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Kebersihan/Tissue",
+            "url": "https://www.tokopedia.com/kioscepat/tc-tissue-see-u-facial-classic-sp-250s?src\u003dtopads",
+            "appUrl": "tokopedia://product/2597055849?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_r76AJfoAJdbm-xgVY789CBUsthbm-FQRo2PcB5QiUE6ZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUsthHA1Fbm-xgVYpyfYagZUEHpHNbsj7HAjNosefHprp6_rDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH78JY1yp-ozVJp_OzCHJO1qRx6qj17Z3BRqujp1SByH7ND3uxGqMVAZ_g-qMoO_jzCH7NJe_o6zJJp_jzCH7NJe_-6q1BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-HOBE_M2vzVud_OHFoV2J__uHuVVE_MOuPJY13MBoepCR_M2Co1Y13_CouJ2W_jPVq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jOEqRuvuVVR_Oz0HjNJ39268j7O_SB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32Cq3gzv_7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZF7osepbAHRopBPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUa6_rfbm-FrMBsguYiq3ei6sJFo_nDUMP5y3hwq3ei6sHDUS-xQMWwyMupPVYpg3hDg9Ui6se7we?sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026page\u003d1\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fkioscepat%2Ftc-tissue-see-u-facial-classic-sp-250s%3Fsrc%3Dtopads\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026ob\u003d0",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_r76AJfoAJdbm-xgVY789CBUsthbm-FQRo2PcB5QiUE6ZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUsthHA1Fbm-xgVYpyfYagZUEHpHNbsj7HAjNosefHprp6_rDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH78JY1yp-ozVJp_OzCHJO1qRx6qj17Z3BRqujp1SByH7ND3uxGqMVAZ_g-qMoO_jzCH7NJe_o6zJJp_jzCH7NJe_-6q1BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-HOBE_M2vzVud_OHFoV2J__uHuVVE_MOuPJY13MBoepCR_M2Co1Y13_CouJ2W_jPVq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jOEqRuvuVVR_Oz0HjNJ39268j7O_SB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32Cq3gzv_7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZF7osepbAHRopBPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUa6_rfbm-FrMBsguYiq3ei6sJFo_nDUMP5y3hwq3ei6sHDUS-xQMWwyMupPVYpg3hDg9Ui6se7we?management_type\u003d1\u0026dv\u003dandroid-3.150\u0026ob\u003d0\u0026src\u003drecom_widget_inbox\u0026t\u003dandroid\u0026uid\u003d148201295\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fkioscepat%2Ftc-tissue-see-u-facial-classic-sp-250s%3Fsrc%3Dtopads\u0026product_id\u003d2597055849\u0026page\u003d1",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJRoAKhoseh6mFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sjDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZYFrMYjP3o7b_J5HsnaHm4abpUFbprFosHhH_1doa4RHAypH_JO6APwgsjd6cef6_KWy_KRgm77ysVMb_jNg3yWg_Kho3zso_xBg3-B9pJposzwH_HfomNkrcribm-xgVYpyfYagZUEHpHNbsj7HAjNosefHprp6_rDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH78JY1yp-ozVJp_OzCHJO1qRx6qj17Z3BRqujp1SByH7ND3uxGqMVAZ_g-qMoO_jzCH7NJe_o6zJJp_jzCH7NJe_-6q1BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-HOBE_M2vzVud_OHFoV2J__uHuVVE_MOuPJY13MBoepCR_M2Co1Y13_CouJ2W_jPVq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jOEqRuvuVVR_Oz0HjNJ39268j7O_SB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32Cq3gzv_7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUa6_rfbm-FrMBsguYiq3ei6sJFo_nDUMP5y3hwq3ei6sHDUS-xQMWwyMupPVYpg3hDg9Ui6se7bm-jg9CxrSzWg3N79fBjraUE3prhoZF7osepbAHRopBPwe?dv\u003dandroid-3.150\u0026page\u003d1\u0026management_type\u003d1\u0026t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026src\u003drecom_widget_inbox",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/2/20/706311587/706311587_f988d698-a87d-4b1f-99ef-e815dc58eebe_1364_1364.jpg",
+            "price": "Rp7.250",
+            "priceInt": 7250,
+            "discountPercentage": 0,
+            "slashedPrice": "Rp10.000",
+            "slashedPriceInt": 10000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 104359,
+              "name": "KiosCepat",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "warehouseID": 0,
+            "departmentId": 3779,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "assigned_value",
+                "title": "Terlaris",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2024/1/16/10dac19c-05da-48fa-b039-d6d1c3dab9b1.png",
+                "styles": []
+              },
+              {
+                "position": "ri_ribbon",
+                "title": "28%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "product_card_slash_price",
+                "title": "Rp10.000",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#AAB4C8"
+                  },
+                  {
+                    "key": "text-format",
+                    "value": "strikethrough"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "10rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/vMWOpN/2024/2/19/7e358c89-6c0d-4a46-8738-f341443712cd.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Jakarta Barat",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 3385,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 8332,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 12041806784,
+            "name": "Tas Waist Bag Wanita Tas Selempang Wanita Korea Crossbody Bag",
+            "categoryBreadcrumbs": "Fashion Wanita/Tas Wanita/Waist Bag Wanita",
+            "url": "https://www.tokopedia.com/arrstoreindonesia/tas-waist-bag-wanita-tas-selempang-wanita-korea-crossbody-bag-black-65e93?src\u003dtopads",
+            "appUrl": "tokopedia://product/12041806784?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHsnNopjNosr7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_nDUSz2Q31i6sJRH_n76_Ufo_jDUMoFyaUEoAnFbm-xgVYpyfYagZUEHpUNbsj7oAypoAyN6_nFo_nfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1NAoIP6uVVR_BzzP7N119P6uVVR_Bzzq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_9j78JNE1_-ozJOd_S2zHjOJ_9x68BJFZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9Bv1peO_jzzHjOE1_-vucWR_1zuP7N2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBke3BM1_7YUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDhop1dbAJNH_yDHpnaHO7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAy76AjDUSCaq3oB9f-2gmUEoAnFbm-SQfVD9fBjUstpwe?sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026t\u003dandroid\u0026page\u003d1\u0026dv\u003dandroid-3.150\u0026ob\u003d0\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Farrstoreindonesia%2Ftas-waist-bag-wanita-tas-selempang-wanita-korea-crossbody-bag-black-65e93%3Fsrc%3Dtopads",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHsnNopjNosr7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_nDUSz2Q31i6sJRH_n76_Ufo_jDUMoFyaUEoAnFbm-xgVYpyfYagZUEHpUNbsj7oAypoAyN6_nFo_nfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1NAoIP6uVVR_BzzP7N119P6uVVR_Bzzq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_9j78JNE1_-ozJOd_S2zHjOJ_9x68BJFZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgc2oHj77_BzVo1h1qcWo8MW7_jzoHB2_HAu6Q1BR_VzCHjOJqpu6qBVd_3OgHVB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9Bv1peO_jzzHjOE1_-vucWR_1zuP7N2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBke3BM1_7YUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDhop1dbAJNH_yDHpnaHO7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAy76AjDUSCaq3oB9f-2gmUEoAnFbm-SQfVD9fBjUstpwe?t\u003dandroid\u0026dv\u003dandroid-3.150\u0026management_type\u003d1\u0026page\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Farrstoreindonesia%2Ftas-waist-bag-wanita-tas-selempang-wanita-korea-crossbody-bag-black-65e93%3Fsrc%3Dtopads\u0026product_id\u003d12041806784\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026uid\u003d148201295\u0026src\u003drecom_widget_inbox",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sUF6_rN6_yRomFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJFbm-7q3OBUsthopJFoAjaos1Nbm-Fy9ztUstiq3OxgfupbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpHFHmOpr9uxrM15uSViyfOobpUFHsH5H_J5oaYBofoiysxjHm7Fo_uMb_eRysnWy_zjya7doAUO63gBypH7oAKXrcNSUiFiy3zwrfo5rM1i6sHa6ZdNoAefHpef6_jFHA1FoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB6epzR_BzzP7N119P6uVVR_BzzP7N113BHe72kgJxGgMHauMxsQ1N5Z325q1ONoIx68BJa_1zo8JNE1_-ozJOd_S2zHJB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMzk__-ooJN1z_uHucx0_920PJNJ__-q1pnO_MO-P7h1e_-ozcDO_M2z8JOW3_Cg17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjON_OH7o1NJ1_-o8BJa_Oz0P7OJu9P6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstigVBzy1-Su1NzzSBNu3hgoj-g6JNt6A2C1JJNH3-U13WMrJoMZ9gc_Ar7qsVMu9gtesUd13g7oO2E9RCyZsB-u1B9Hf2OqRgh3SC01Sx3PsV1_S1FzczEZRCEoMWX3cO-ZOV7_sg989PCb1Hh_9o6H7V-8cz2QsBEHMVioA-69pVUQ7PfusVig7-o1R20ZSJR8VPJZBCyq3xdgRPEusxWr1hZ_ZUDUMVDgaUEUMPay9Ct9fuWyMujgcBXgRyR9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAy76AjDUSCaq3oB9f-2gmUEoAnFbm-SQfVD9fBjUstpbm-jg9CxrSzWg3N79fBjraUE3pJRo_KDH_jhoiFpHAUp997?t\u003dandroid\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026ob\u003d0\u0026page\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/7/e7cbb8d0-055f-47b0-a4dc-84259fec3448.png",
+            "price": "Rp78.800",
+            "priceInt": 78800,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 12810165,
+              "name": "ARR Store Indonesia",
+              "city": "Jakarta Selatan",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "warehouseID": 0,
+            "departmentId": 3023,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "price",
+                "title": "Cashback 3,9rb",
+                "type": "lightRed",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_ribbon",
+                "title": "66%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_benefit",
+                "title": "Cashback 3,94rb",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#F94D63"
+                  },
+                  {
+                    "key": "background-color",
+                    "value": "#FFF5F6"
+                  },
+                  {
+                    "key": "background-opacity",
+                    "value": "1"
+                  },
+                  {
+                    "key": "outline-color",
+                    "value": "#FFB2C2"
+                  }
+                ]
+              },
+              {
+                "position": "product_card_slash_price",
+                "title": "Rp233.800",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#AAB4C8"
+                  },
+                  {
+                    "key": "text-format",
+                    "value": "strikethrough"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "80+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Jakarta Selatan",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 38,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 8,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 12041806779,
+            "gridPosition": ""
+          },
+          {
+            "id": 706311587,
+            "name": "Tissue SEE-U FACIAL Classic SP 250s",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Kebersihan/Tissue",
+            "url": "https://www.tokopedia.com/kioscepat/tissue-see-u-facial-classic-sp-250s?src\u003dtopads",
+            "appUrl": "tokopedia://product/706311587?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAjOoAyRo_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUsthHA1Fbm-xgVYpyfYagZUEHpURbsjOosedH_nOosjh6A1fbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoAVozcrp_S2Vo1OkqpzoqBJh_M2Vq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_BH7HjNke9268MoE_BzSHJY1e_V6qMo2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEZ_oHqMDh_M2zoJO1e_V6qMWd_7zuHjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZF7osepbAHRopBPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUa6_rfbm-FrMBsguYiq3ei6sJFo_nDUMP5y3hwq3ei6sHDUS-xQMWwyMupPVYpg3hDg9Ui6sJRwe?src\u003drecom_widget_inbox\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fkioscepat%2Ftissue-see-u-facial-classic-sp-250s%3Fsrc%3Dtopads\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026ob\u003d0\u0026management_type\u003d1\u0026page\u003d1\u0026t\u003dandroid",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEoAjOoAyRo_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHZFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUsthHA1Fbm-xgVYpyfYagZUEHpURbsjOosedH_nOosjh6A1fbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoAVozcrp_S2Vo1OkqpzoqBJh_M2Vq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_BH7HjNke9268MoE_BzSHJY1e_V6qMo2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEZ_oHqMDh_M2zoJO1e_V6qMWd_7zuHjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZF7osepbAHRopBPbm-X9foxQMz2gcV7guYxgIHi6sUFHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUa6_rfbm-FrMBsguYiq3ei6sJFo_nDUMP5y3hwq3ei6sHDUS-xQMWwyMupPVYpg3hDg9Ui6sJRwe?t\u003dandroid\u0026src\u003drecom_widget_inbox\u0026ob\u003d0\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fkioscepat%2Ftissue-see-u-facial-classic-sp-250s%3Fsrc%3Dtopads\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026product_id\u003d706311587\u0026page\u003d1\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026uid\u003d148201295",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6seNo_efop1Fbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_JDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi4hHZ4hHZYxHpH7osnRHaOsg31hb_epysjWy_nfHi7FgMURg_VjHpyfg_jXrcNSUiFiy3zwrfo5rM1i6sHaoadNo_y76AJFo_yNH_KOoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo8_eh_1zSH7NEz_uoqMD7_32zH1Nkz3BHe72kgJxGgMHauMxsQ1N5Z325q1N_oA-6qjVE_S2s8jN1gpCvuJJh_M2sq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfB6HjOE392SH1O1qRzvzOVE_OHFHJOE3MhHucDa332CPJOJ39PvucDa_jzV8u2k1Mx-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBo8jjp_c20H1Nk1_zouJJh_M208JYJu_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoe7tNUiFiP9oBrBY2gmUEUsJ76AUFH_UNoZUDUSoBrRo2QfNwq3ei6i-j3uVxeMPu_BVc89BuQVjfeBjd_MKd6jVee_jhyjxzqfgFefg-PjgHopzkH3guPMxmHsxzgSeR3S2wrVxG61BuZurpqSu0PSVqrcWZ8VgfHuz6P_CJgI2brItfqfNyQ1Bb19z6oBPNP7JWepVor7dpe1BdgcBX69tay3U7HjNwH1x5zRg3H3-SejO_8MWGr_Pdu7zG1Vx2qIxSPR236cOh_V-oUiFiy3hSUstigR-xrcxwg3Oig3zjq3NSPsPwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaHsjRoiFirI-2yfuwyMBjUsthHA1Fbm-SQfVD9fBjUstpbm-ay3N09f-BrRzwrfuDQcuaUsthoaFigcuFy9-7Q3uXPVY2gIHi6BDRH_1DoAy7HaFpoprN997?page\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026src\u003drecom_widget_inbox\u0026ob\u003d0\u0026management_type\u003d1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/11/11/a3346073-cee1-43b9-a062-0fb7e1d366e9.png",
+            "price": "Rp7.250",
+            "priceInt": 7250,
+            "discountPercentage": 0,
+            "slashedPrice": "Rp10.000",
+            "slashedPriceInt": 10000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 104359,
+              "name": "KiosCepat",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "warehouseID": 0,
+            "departmentId": 3779,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "assigned_value",
+                "title": "Terlaris",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2024/1/16/10dac19c-05da-48fa-b039-d6d1c3dab9b1.png",
+                "styles": []
+              },
+              {
+                "position": "ri_ribbon",
+                "title": "28%",
+                "type": "red",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "product_card_slash_price",
+                "title": "Rp10.000",
+                "type": "",
+                "url": "",
+                "styles": [
+                  {
+                    "key": "text-color",
+                    "value": "#AAB4C8"
+                  },
+                  {
+                    "key": "text-format",
+                    "value": "strikethrough"
+                  }
+                ]
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "100rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_1",
+                "title": "Ramadan Ekstra",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/vMWOpN/2024/2/19/7e358c89-6c0d-4a46-8738-f341443712cd.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Jakarta Barat",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 11524,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 83915,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 735930505,
+            "name": "KORNET DAGING SAPI PRONAS 120 GRAM",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Makanan Jadi/Daging Kaleng",
+            "url": "https://www.tokopedia.com/ptcmp/kornet-daging-sapi-pronas-120-gram?src\u003dtopads",
+            "appUrl": "tokopedia://product/735930505?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUF6_naHpyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHiFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstpHAnDUMVj9RosQR-BUstpHsrXHsK7osUN6AHd6AK7HsyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uzoP1OJ1926zcH7_32gP7YJ3_u6uVjhZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEZ_oHqjj7_jzg81Y1gR2vzcr7_jz-HjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pHObAURHAUDHsrOoB7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpUh6_jDUSCaq3oB9f-2gmUEHpnFbm-SQfVD9fBjUstpbm-ay3N09f-BrRzwrfuDQcuaUstpoR7?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fptcmp%2Fkornet-daging-sapi-pronas-120-gram%3Fsrc%3Dtopads\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM\u0026page\u003d1\u0026ob\u003d0\u0026dv\u003dandroid-3.150\u0026src\u003drecom_widget_inbox\u0026management_type\u003d1\u0026t\u003dandroid",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosUF6_naHpyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHiFiPcBWgZUEH_rhHAeNHsyO6ZFiyRCsUstpHAnDUMVj9RosQR-BUstpHsrXHsK7osUN6AHd6AK7HsyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uzoP1OJ1926zcH7_32gP7YJ3_u6uVjhZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEZ_oHqjj7_jzg81Y1gR2vzcr7_jz-HjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pHObAURHAUDHsrOoB7DUMNwyfVXgcBjy9zB9fVjraUEHsnFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpUh6_jDUSCaq3oB9f-2gmUEHpnFbm-SQfVD9fBjUstpbm-ay3N09f-BrRzwrfuDQcuaUstpoR7?uid\u003d148201295\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fptcmp%2Fkornet-daging-sapi-pronas-120-gram%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_inbox\u0026ob\u003d0\u0026product_id\u003d735930505\u0026page\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaHAjFHsHfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_UDUSz2Q31i6sJRH_n76_Ufo_jDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZYFrMYjP3o7b_J5HsnaHm4pbpJabpHNHAjRoAn5HpjF6_r7HVYiH3UF63yaHZ7do_Jab_ehgceWysjhoZ7Fo_gx6AHFosPBysxwH_ndHV4hHAKFbM2FgaUDUMVj9RosQR-BUstpHsrXHsK7osUN6AHd6AK7HsyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uzoP1OJ1926zcH7_32gP7YJ3_u6uVjhZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1da_92g8Mrh_uz0PJYI192v1pnF_92qQJh1qp-gqjV7_1zgP7Y1qp-6zJuN3M2ZqJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OEZ_oHqjj7_jzg81Y1gR2vzcr7_jz-HjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OAZsjibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMzg13VmgOu611gN8uuD3_gm3_x6qAKEeuCC6_ViZVV0gSCAgjBfzjFRocthgBufqJUa6VVMPAPq8BYF3JtNZuu-upokP3Wfru2FqO-duSyhuJNOHJzj8jWF8sg0QBxWZ1WzPJdfuRBReZOAH1Op_soCZ9xjq3dN8s-xysea_B4hZcYIPByhyMPm_uoEq72hoRx9zJ2e3cBt8cPR8BydQ9VH1j7ibm-xQcri6i-SrMVFqVYBQ3-Bgcz2QMPfoOYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUstaHAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHaH_jNbm-FrMBsguYiq3ei6sHFHmFigfYxQVY2gmUEHaFirMVXqOYig9o79RoBQchBriUEHprDUMzBrcVaPcOBQSzwq3zpUs2QHp1DHsrFHiFaop1f997?src\u003drecom_widget_inbox\u0026page\u003d1\u0026ob\u003d0\u0026dv\u003dandroid-3.150\u0026management_type\u003d1\u0026t\u003dandroid\u0026sid\u003ddYQaBgUNQFyyUlY6BY8Nh8%3AAPA91bHQkfpCfIvFL74j1fUvhB28Qft7Zz_pXJ9IUIW3jukvqZpkRxVv1TNu0DdzKpz6knXmIKQtN6WywA-C1MsN3AIxdin9z2ab42N_1HoGvV1bgBMSzkJq7xWDJPXihxgwzV8mqLRM",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/3/12/3909740/3909740_b1b09f21-8512-41dd-b915-056a83067eb8_1080_1080.jpg",
+            "price": "Rp13.951",
+            "priceInt": 13951,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3909740,
+              "name": "cipta mart",
+              "city": "Jakarta Timur",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "warehouseID": 0,
+            "departmentId": 2756,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              },
+              {
+                "title": "Grosir",
+                "color": "#ffffff"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "assigned_value",
+                "title": "Terlaris",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2024/1/16/10dac19c-05da-48fa-b039-d6d1c3dab9b1.png",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "5rb+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Jakarta Timur",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [
+              {
+                "price": 13682,
+                "quantityMax": 10000,
+                "quantityMin": 24,
+                "priceString": "Rp13.682"
+              }
+            ],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 270,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embeddingv7_recentview",
+            "stock": 72,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 918494534,
+            "name": "Pop Mie Kuah (All Varian) - Kari",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Mie \u0026 Pasta/Mie Instan",
+            "url": "https://www.tokopedia.com/prelovedteenz/pop-mie-kuah-all-varian-kari",
+            "appUrl": "tokopedia://product/918494534",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2738\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d918494534\u0026pos\u003d5\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/prelovedteenz/pop-mie-kuah-all-varian-kari?catid2738\u003d%26ref\u003dinbox_pa1_po5%26src\u003dr3graph_embedding\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/13/209301/209301_33f854fb-38fe-472a-ab96-66398b258a9d_1280_1280",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/13/209301/209301_33f854fb-38fe-472a-ab96-66398b258a9d_1280_1280",
+            "price": "Rp5.500",
+            "priceInt": 5500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 236981,
+              "name": "Preloved Teenz",
+              "city": "Kota Denpasar",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "warehouseID": 301131,
+            "departmentId": 2738,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              },
+              {
+                "title": "Grosir",
+                "color": "#ffffff"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "offers",
+                "title": "Grosir",
+                "type": "lightGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "price",
+                "title": "Grosir",
+                "type": "lightRed",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 18 - 23 Mar",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "500+ terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Kota Denpasar",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [
+              {
+                "price": 5350,
+                "quantityMax": 10000,
+                "quantityMin": 12,
+                "priceString": "Rp5.350"
+              }
+            ],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 55,
+            "ratingAverage": "4.9",
+            "recommendationType": "graph_embedding",
+            "stock": 8,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 918494518,
+            "gridPosition": ""
+          },
+          {
+            "id": 12420082374,
+            "name": "pop mie kuah",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Mie \u0026 Pasta/Mie Instan",
+            "url": "https://www.tokopedia.com/3satu1/pop-mie-kuah",
+            "appUrl": "tokopedia://product/12420082374",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2738\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d12420082374\u0026pos\u003d6\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/3satu1/pop-mie-kuah?catid2738\u003d%26ref\u003dinbox_pa1_po6%26src\u003dr3graph_embedding\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/12/26/d6b9b43b-42c4-40d2-828f-65166d204b7c.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/12/26/d6b9b43b-42c4-40d2-828f-65166d204b7c.jpg",
+            "price": "Rp5.350",
+            "priceInt": 5350,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 10064196,
+              "name": "NARA@sholp",
+              "city": "Kota Sukabumi",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "warehouseID": 10140232,
+            "departmentId": 2738,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "campaign",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/12/8/1a976501-81ee-4705-bea8-28ca5c54e8d6.png",
+                "styles": []
+              },
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 17 - 19 Mar",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "5 terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "overlay_3",
+                "title": "Beli Lokal",
+                "type": "",
+                "url": "https://images-staging.tokopedia.net/img/vMWOpN/2024/2/16/25fc50d3-2122-4baa-9d68-f60a92ae8efa.png",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Kota Sukabumi",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 2,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 9995,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 2869814608,
+            "name": "Tas Selempang Pria Unisex Shoulder Bag Korea",
+            "categoryBreadcrumbs": "Fashion Pria/Tas Pria/Tas Selempang Pria",
+            "url": "https://www.tokopedia.com/aki38/tas-selempang-pria-unisex-shoulder-bag-korea",
+            "appUrl": "tokopedia://product/2869814608",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1855\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d2869814608\u0026pos\u003d7\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/aki38/tas-selempang-pria-unisex-shoulder-bag-korea?catid1855\u003d%26ref\u003dinbox_pa1_po7%26src\u003dr3graph_embedding\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/2/4/f949a817-55a3-4ebc-9932-86cd75cfe555.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/2/4/f949a817-55a3-4ebc-9932-86cd75cfe555.jpg",
+            "price": "Rp44.800",
+            "priceInt": 44800,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 6392291,
+              "name": "AKI 38",
+              "city": "Kota Makassar",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "warehouseID": 6616486,
+            "departmentId": 1855,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "overlay_2",
+                "title": "Bebas Ongkir",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 18 - 23 Mar",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "1 terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Kota Makassar",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/bebas-ongkir-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 1,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          },
+          {
+            "id": 1715508800,
+            "name": "Pop mie all varian kuah",
+            "categoryBreadcrumbs": "Makanan \u0026 Minuman/Mie \u0026 Pasta/Mie Instan",
+            "url": "https://www.tokopedia.com/tokopelitadepok/pop-mie-all-varian-kuah",
+            "appUrl": "tokopedia://product/1715508800",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2738\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dinbox\u0026pid\u003d1715508800\u0026pos\u003d8\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/tokopelitadepok/pop-mie-all-varian-kuah?catid2738\u003d%26ref\u003dinbox_pa1_po8%26src\u003dr3graph_embedding\u0026tid\u003dXRuCOUdWZCOaxpReoPgcJMyR3Ss\u003d\u0026uid\u003d148201295\u0026unique_id\u003d\u0026utime\u003d1710492659\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/2/aff09672-44d2-482f-a613-462a18921d2b.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/2/aff09672-44d2-482f-a613-462a18921d2b.jpg",
+            "price": "Rp4.800",
+            "priceInt": 4800,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 11177431,
+              "name": "Toko Pelita depok",
+              "city": "Kota Depok",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "warehouseID": 11176210,
+            "departmentId": 2738,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": "",
+                "styles": []
+              },
+              {
+                "position": "ri_product_credibility",
+                "title": "7 terjual",
+                "type": "",
+                "url": "",
+                "styles": []
+              }
+            ],
+            "badges": [
+              {
+                "title": "Kota Depok",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 2,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 43,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0,
+            "gridPosition": ""
+          }
+        ]
+      }
+    ]
+  }
+}

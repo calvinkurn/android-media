@@ -59,7 +59,6 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -1867,16 +1866,10 @@ class TokoNowHomeFragment :
         }
     }
 
-    private fun isEnableAffiliate(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform
-            .getString(RollenceKey.TOKOPEDIA_NOW_AFFILIATE, "")
-            .isNotEmpty()
-    }
-
     private fun showUniversalShareBottomSheet(
         shareHomeTokonow: ShareTokonow?,
         path: String? = null,
-        isEnableAffiliate: Boolean = isEnableAffiliate()
+        isEnableAffiliate: Boolean = true
     ) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setFeatureFlagRemoteConfigKey()

@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.databinding.ProfileItemViewBinding
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.data.ProfileInfoConstants
 import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.uimodel.ProfileInfoItemUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -26,8 +27,10 @@ class ProfileInfoItemViewHolder(
             }
         }
         binding?.fragmentProfileItemIcon?.setOnClickListener {
-            element?.action?.invoke()
             listener.onRightIconClicked(element)
+            if (element?.id != ProfileInfoConstants.USER_ID) {
+                element?.action?.invoke()
+            }
         }
         if (element?.showVerifiedTag == true) binding?.tvVerification?.visible()
         else binding?.tvVerification?.gone()
