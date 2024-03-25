@@ -33,6 +33,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.io.IOException
 
@@ -616,5 +617,160 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
                 it.chosenPayment.gatewayCode == "newGateway" && it.chosenPayment.metadata == "newMetadata" && it.chosenPayment.optionId == "" && it.chosenPayment.tenureType == 0
             })
         }
+    }
+
+    @Test
+    fun `GIVEN failed hit update cart WHEN choose installment cc THEN should set selected tenure`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                    street = "jl jakarta"
+                    provinceName = "jakarta"
+                    cityName = "jakarta"
+                    countryName = "indonesia"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", quantity = 1, price = 1000.0),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true,
+                data = PaymentWidgetListData(
+                    paymentWidgetData = listOf(
+                        PaymentWidgetData(
+                            gatewayCode = "cc",
+                            mandatoryHit = listOf("CreditCardTenorList")
+                        )
+                    )
+                )),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            getPaymentWidgetUseCase(any())
+        } returns PaymentWidgetListData(
+            paymentWidgetData = listOf(PaymentWidgetData(
+                gatewayCode = "VA",
+            ))
+        )
+
+        coEvery {
+            dynamicPaymentFeeUseCase(any())
+        } returns emptyList()
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } throws IOException()
+
+        // When
+        viewModel.chooseInstallmentCC(TenorListData(
+            type = "12"
+        ), emptyList())
+
+        // Then
+        assertNotNull(latestToaster)
+        assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
+        assertEquals(0, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
+        coVerify(inverse = true) {
+            dynamicPaymentFeeUseCase(any())
+        }
+        coVerify(inverse = true) {
+            getPaymentWidgetUseCase(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN success update cart WHEN choose installment cc THEN should not rehit get payment widget`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                    street = "jl jakarta"
+                    provinceName = "jakarta"
+                    cityName = "jakarta"
+                    countryName = "indonesia"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", quantity = 1, price = 1000.0),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true,
+                data = PaymentWidgetListData(
+                    paymentWidgetData = listOf(
+                        PaymentWidgetData(
+                            gatewayCode = "cc",
+                            mandatoryHit = listOf("CreditCardTenorList")
+                        )
+                    )
+                )),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            getPaymentWidgetUseCase(any())
+        } returns PaymentWidgetListData(
+            paymentWidgetData = listOf(PaymentWidgetData(
+                gatewayCode = "VA",
+            ))
+        )
+
+        coEvery {
+            dynamicPaymentFeeUseCase(any())
+        } returns emptyList()
+
+        coEvery {
+            creditCardTenorListUseCase(any())
+        } returns CreditCardTenorListData(
+            tenorList = listOf(
+                TenorListData(type = "FULL"),
+                TenorListData(type = "3"),
+                TenorListData(type = "6"),
+                TenorListData(type = "12"),
+            )
+        )
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
+        // When
+        viewModel.chooseInstallmentCC(TenorListData(
+            type = "12"
+        ), listOf(TenorListData()))
+
+        // Then
+        assertNull(latestToaster)
+        assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
+        coVerify {
+            dynamicPaymentFeeUseCase(any())
+        }
+        coVerify(inverse = true) {
+            getPaymentWidgetUseCase(any())
+        }
+        assertEquals(12, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
     }
 }
