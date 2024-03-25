@@ -5,6 +5,7 @@ import android.app.TaskStackBuilder
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -221,24 +222,26 @@ open class ThankYouBaseFragment :
                 getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
             }
 
-            bindThanksPageDataToUI(thanksPageData)
-            addHeader()
-            observeViewModel()
-            getFeatureRecommendationData()
-            addRecommendation(getRecommendationContainer())
-            getTopTickerData()
-            thanksPageDataViewModel.resetAddressToDefault()
-
-            if (thanksPageData.configFlagData?.shouldHideProductRecom != true) {
-                topadsHeadlineView.getHeadlineAds(
-                    ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
-                    this::showTopAdsHeadlineView,
-                    this::hideTopAdsHeadlineView
-                )
-            }
-
-            showOnBoardingShare()
             startAnimate()
+            observeViewModel()
+            addHeader()
+
+            Handler().postDelayed({
+                getFeatureRecommendationData()
+                addRecommendation(getRecommendationContainer())
+                getTopTickerData()
+                thanksPageDataViewModel.resetAddressToDefault()
+
+                if (thanksPageData.configFlagData?.shouldHideProductRecom != true) {
+                    topadsHeadlineView.getHeadlineAds(
+                        ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
+                        this::showTopAdsHeadlineView,
+                        this::hideTopAdsHeadlineView
+                    )
+                }
+
+//                showOnBoardingShare()
+            }, 5000)
         }
     }
 
@@ -484,7 +487,7 @@ open class ThankYouBaseFragment :
 
         thanksPageDataViewModel.bottomContentVisitableList.observe(viewLifecycleOwner) {
             bottomContentAdapter.setItems(it)
-            bottomContentAdapter.notifyDataSetChanged()
+            bottomContentAdapter.notifyItemChanged(it.size - 1)
         }
 
         thanksPageDataViewModel.bannerLiveData.observe(viewLifecycleOwner) {

@@ -55,6 +55,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -134,45 +135,53 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun checkForGoPayActivation(thanksPageData: ThanksPageData, location: String) {
         fetchWalletBalanceUseCase.cancelJobs()
-        fetchWalletBalanceUseCase.getGoPayBalance {
-            getFeatureEngine(thanksPageData, it, location)
-        }
+        launchCatchError(Dispatchers.IO, {
+            fetchWalletBalanceUseCase.getGoPayBalance {
+                getFeatureEngine(thanksPageData, it, location)
+            }
+        }, {
+
+        })
     }
 
     @VisibleForTesting
     fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?, location: String) {
         gyroEngineRequestUseCase.cancelJobs()
         var queryParamTokomember: TokoMemberRequestParam ? = null
-        gyroEngineRequestUseCase.getFeatureEngineData(
-            thanksPageData,
-            null
-        ) {
-            if (it.success) {
-                it.engineData?.let { featureEngineData ->
-                    _gyroResponseLiveData.value = featureEngineData
+        launchCatchError(Dispatchers.IO, {
+            gyroEngineRequestUseCase.getFeatureEngineData(
+                thanksPageData,
+                null
+            ) {
+                if (it.success) {
+                    it.engineData?.let { featureEngineData ->
+                        _gyroResponseLiveData.value = featureEngineData
 
-                    widgetOrder = getWidgetOrder(featureEngineData)
+                        widgetOrder = getWidgetOrder(featureEngineData)
 
-                    getFlashSaleData(FeatureRecommendationMapper.getChannelId(featureEngineData), location)
+                        getFlashSaleData(FeatureRecommendationMapper.getChannelId(featureEngineData), location)
 
-                    getFeatureEngineBanner(featureEngineData)?.let { bannerModel ->
-                        _bannerLiveData.value = bannerModel
+                        getFeatureEngineBanner(featureEngineData)?.let { bannerModel ->
+                            _bannerLiveData.value = bannerModel
+                        }
+
+                        val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
+                        if (topAdsRequestParams != null) {
+                            loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
+                        }
+                        if (isTokomemberWidgetShow(it.engineData)) {
+                            queryParamTokomember =
+                                getTokomemberRequestParams(thanksPageData, it.engineData)
+                            queryParamTokomember?.pageType =
+                                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
+                        }
+                        postGyroRecommendation(it.engineData, queryParamTokomember)
                     }
-
-                    val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
-                    if (topAdsRequestParams != null) {
-                        loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
-                    }
-                    if (isTokomemberWidgetShow(it.engineData)) {
-                        queryParamTokomember =
-                            getTokomemberRequestParams(thanksPageData, it.engineData)
-                        queryParamTokomember?.pageType =
-                            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
-                    }
-                    postGyroRecommendation(it.engineData, queryParamTokomember)
                 }
             }
-        }
+        }, {
+
+        })
     }
 
     @VisibleForTesting

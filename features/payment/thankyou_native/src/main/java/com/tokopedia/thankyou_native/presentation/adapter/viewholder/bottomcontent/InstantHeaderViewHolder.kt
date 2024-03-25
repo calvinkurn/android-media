@@ -61,21 +61,24 @@ class InstantHeaderViewHolder(
     private fun setupIcon(data: InstantHeaderUiModel) {
         val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.check_circle)
 
-        Handler().postDelayed({
-            binding?.headerIcon?.setImageDrawable(checkDrawable)
-            binding?.headerIcon?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(UnifyMotion.T3)?.setInterpolator(UnifyMotion.EASE_OVERSHOOT)?.start()
+        binding?.headerIcon?.setImageDrawable(checkDrawable)
+        binding?.headerIcon?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(UnifyMotion.T3)?.setInterpolator(UnifyMotion.EASE_OVERSHOOT)?.setStartDelay(1000)?.start()
 
-            Handler().postDelayed({
-                data.gatewayImage.getBitmapImageUrl(itemView.context) {
-                    binding?.headerIcon?.animate()?.rotationY(90f)?.setDuration(UnifyMotion.T2)?.withEndAction {
-                        val bitmapDrawable = BitmapDrawable(itemView.context.resources, it)
-                        binding?.headerIcon?.setImageDrawable(bitmapDrawable)
-                        binding?.headerIcon?.rotationY = 270f
-                        binding?.headerIcon?.animate()?.rotationY(360f)?.setDuration(UnifyMotion.T1)?.start()
-                    }?.start()
-                }
-            }, 1000)
-        }, 3000)
+        data.gatewayImage.getBitmapImageUrl(itemView.context) {
+            binding?.headerIcon?.animate()?.rotationY(90f)?.setDuration(UnifyMotion.T2)?.withEndAction {
+                val bitmapDrawable = BitmapDrawable(itemView.context.resources, it)
+                binding?.headerIcon?.setImageDrawable(bitmapDrawable)
+                binding?.headerIcon?.rotationY = 270f
+                binding?.headerIcon?.animate()?.rotationY(360f)?.setDuration(UnifyMotion.T1)?.start()
+            }?.setStartDelay(3000)?.start()
+        }
+//        Handler().postDelayed({
+//
+//
+//            Handler().postDelayed({
+//
+//            }, 1000)
+//        }, 1000)
     }
 
     private fun setUpTotalDeduction(data: InstantHeaderUiModel?) {
