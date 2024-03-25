@@ -78,6 +78,11 @@ class FeedHeaderView(context: Context, attrs: AttributeSet): LinearLayout(contex
         showSoftKeyboard()
     }
 
+    fun removeSearchBar() {
+        header?.textWrapperView?.removeAllViews()
+        searchbar = null
+    }
+
     private fun showSoftKeyboard() {
         handler = Handler()
         handler?.postDelayed({
