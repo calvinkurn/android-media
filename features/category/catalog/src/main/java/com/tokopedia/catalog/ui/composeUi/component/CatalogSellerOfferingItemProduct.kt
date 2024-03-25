@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class, ExperimentalComposeUiApi::class)
+
 package com.tokopedia.catalog.ui.composeUi.component
 
 import android.content.Context
@@ -17,14 +19,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.layoutId
 import androidx.core.content.ContextCompat
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
@@ -167,6 +175,9 @@ fun ItemProduct(
                     .clickable {
                         onClickAtc.invoke(catalogProduct)
                     }
+                    .testTag("btnAddToCart").semantics {
+                        this.testTagsAsResourceId = true
+                    }
             ) {
                 NestIcon(
                     IconUnify.CART,
@@ -202,6 +213,9 @@ private fun ProductVisualWithoutStock(
                         12.dp
                     )
                 )
+                .testTag("imgProduct").semantics {
+                    this.testTagsAsResourceId = true
+                }
         )
         if (freeOngkir.isNotEmpty()) {
             NestImage(
@@ -216,7 +230,9 @@ private fun ProductVisualWithoutStock(
                         RoundedCornerShape(
                             bottomStart = 12.dp
                         )
-                    )
+                    ).testTag("lblFreeOngkir").semantics {
+                        this.testTagsAsResourceId = true
+                    }
             )
         }
     }
@@ -252,6 +268,9 @@ private fun ProductVisualWithStock(
                                 topEnd = 12.dp
                             )
                         )
+                        .testTag("imgProduct").semantics {
+                            this.testTagsAsResourceId = true
+                        }
                 )
                 if (freeOngkir.isNotEmpty()) {
                     NestImage(
@@ -267,6 +286,9 @@ private fun ProductVisualWithStock(
                                 )
                             )
                             .align(Alignment.BottomStart)
+                            .testTag("lblFreeOngkir").semantics {
+                                this.testTagsAsResourceId = true
+                            }
                     )
                 }
             }
@@ -274,8 +296,9 @@ private fun ProductVisualWithStock(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                modifier = Modifier.testTag("divStockBar").semantics {
+                        this.testTagsAsResourceId = true
+                    }
             ) {
                 NestTypography(
                     text = wordingStock,
@@ -297,7 +320,7 @@ private fun ProductVisualWithStock(
                             catalogcommonR.drawable.catalog_ic_stockbar_progress_top
                         ),
                         height = ProgressBarUnify.SIZE_SMALL,
-                        trackColor = ContextCompat.getColor(context, R.color.catalog_dms_misty_blue)
+                        trackColor = ContextCompat.getColor(context, R.color.catalog_dms_misty_blue),
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -337,7 +360,10 @@ private fun ShopInfoRow(shopName: String, shopLocation: String, badge: String) {
                 ),
                 fontWeight = FontWeight.Normal,
             ),
-            maxLines = 1
+            maxLines = 1,
+            modifier = Modifier.testTag("txtShopName").semantics {
+                this.testTagsAsResourceId = true
+            }
         )
         Spacer(modifier = Modifier.width(4.dp))
 
@@ -379,7 +405,10 @@ private fun ProductPriceRow(price: String, slashPrice: String) {
                     id = R.color.catalog_dms_light_color_text_common
                 ),
                 fontWeight = FontWeight.ExtraBold
-            )
+            ),
+            modifier = Modifier.testTag("txtOriginPrice").semantics {
+                this.testTagsAsResourceId = true
+            }
         )
         if (slashPrice.isNotEmpty()) {
             Spacer(modifier = Modifier.width(4.dp))
@@ -391,7 +420,10 @@ private fun ProductPriceRow(price: String, slashPrice: String) {
                     ),
                     fontWeight = FontWeight.Normal,
                     textDecoration = TextDecoration.LineThrough
-                )
+                ),
+                modifier = Modifier.testTag("txtDiscountPrice").semantics {
+                    this.testTagsAsResourceId = true
+                }
             )
         }
     }
@@ -412,6 +444,10 @@ private fun ProductOfferAndBenefit(productBenefit: String, productOffer: String)
                         RoundedCornerShape(5.dp)
                     )
                     .background(colorResource(id = R.color.catalog_dms_whispering_white))
+                    .testTag("divCouponShop").semantics {
+                        this.testTagsAsResourceId = true
+                    }
+
             ) {
                 NestTypography(
                     text = productBenefit,
@@ -436,7 +472,10 @@ private fun ProductOfferAndBenefit(productBenefit: String, productOffer: String)
                         id = R.color.catalog_dms_golden_rod
                     ),
                     fontWeight = FontWeight.ExtraBold
-                )
+                ),
+                modifier = Modifier.testTag("divBMGM").semantics {
+                    this.testTagsAsResourceId = true
+                }
             )
         }
     }
@@ -462,7 +501,10 @@ private fun ShopCredibilityRow(rating: String, ratingCount: String, totalSold: S
                         id = R.color.catalog_dms_light_color_text_common
                     ),
                     fontWeight = FontWeight.Normal
-                )
+                ),
+                modifier = Modifier.testTag("txtRatingProduct").semantics {
+                    this.testTagsAsResourceId = true
+                }
             )
             if (ratingCount.isNotEmpty()) {
                 Spacer(modifier = Modifier.width(4.dp))
@@ -501,8 +543,11 @@ private fun ShopCredibilityRow(rating: String, ratingCount: String, totalSold: S
                     color = colorResource(
                         id = R.color.catalog_dms_light_color_text_common
                     ),
-                    fontWeight = FontWeight.Normal
-                )
+                    fontWeight = FontWeight.Normal,
+                ),
+                modifier = Modifier.testTag("txtSoldQty").semantics {
+                    this.testTagsAsResourceId = true
+                }
             )
             Spacer(modifier = Modifier.width(2.dp))
             NestTypography(
@@ -512,7 +557,10 @@ private fun ShopCredibilityRow(rating: String, ratingCount: String, totalSold: S
                         id = R.color.catalog_dms_light_color_text_description
                     ),
                     fontWeight = FontWeight.Normal
-                )
+                ),
+                modifier = Modifier.testTag("labelSoldQty").semantics {
+                    this.testTagsAsResourceId = true
+                }
             )
         }
     }
