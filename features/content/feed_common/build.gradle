@@ -78,4 +78,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    testImplementation projectOrAar(rootProject.ext.features.contentTest)
+    
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
+
 }

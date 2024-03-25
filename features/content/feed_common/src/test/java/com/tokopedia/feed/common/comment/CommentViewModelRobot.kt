@@ -1,10 +1,8 @@
-package com.tokopedia.content.common.viewmodel.comment
+package com.tokopedia.feed.common.comment
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.feed.common.comment.CommentAction
-import com.tokopedia.feed.common.comment.CommentEvent
-import com.tokopedia.feed.common.comment.ContentCommentViewModel
-import com.tokopedia.feed.common.comment.PageSource
 import com.tokopedia.feed.common.comment.repository.ContentCommentRepository
 import com.tokopedia.feed.common.comment.uimodel.CommentParam
 import com.tokopedia.feed.common.comment.uimodel.CommentWidgetUiModel
@@ -12,9 +10,13 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -23,73 +25,87 @@ import java.io.Closeable
 class CommentViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers,
     private val userSession: UserSessionInterface,
-    pageSource: com.tokopedia.feed.common.comment.PageSource,
-    repository: com.tokopedia.feed.common.comment.repository.ContentCommentRepository,
-) : Closeable {
+    pageSource: PageSource,
+    repository: ContentCommentRepository,
+) : Closeable, Parcelable {
 
     override fun close() {
         vm.viewModelScope.coroutineContext.cancelChildren()
     }
 
-    val vm = com.tokopedia.feed.common.comment.ContentCommentViewModel(
+    val vm = ContentCommentViewModel(
         source = pageSource,
         repo = repository,
         userSession = userSession
     )
 
-    suspend fun submitAction(act: com.tokopedia.feed.common.comment.CommentAction) = act {
+    constructor(parcel: Parcel) : this(
+        TODO("dispatchers"),
+        TODO("userSession"),
+        TODO("pageSource"),
+        TODO("repository")
+    ) {
+    }
+
+    suspend fun submitAction(act: CommentAction) = act {
         vm.submitAction(act)
     }
 
-    fun recordEvent(fn: suspend CommentViewModelRobot.() -> Unit): List<com.tokopedia.feed.common.comment.CommentEvent> {
+    fun recordEvent(fn: suspend CommentViewModelRobot.() -> Unit): List<CommentEvent> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        val events = mutableListOf<com.tokopedia.feed.common.comment.CommentEvent>()
+        val events = mutableListOf<CommentEvent>()
         scope.launch {
             vm.event.collect {
                 events.add(it)
             }
         }
         dispatchers.coroutineDispatcher.runBlockingTest { fn() }
-        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        dispatchers.coroutineDispatcher.scheduler.advanceUntilIdle()
         scope.cancel()
         return events
     }
 
-    fun recordComments(fn: suspend CommentViewModelRobot.() -> Unit): com.tokopedia.feed.common.comment.uimodel.CommentWidgetUiModel {
+    fun recordComments(fn: suspend CommentViewModelRobot.() -> Unit): CommentWidgetUiModel {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        lateinit var comments: com.tokopedia.feed.common.comment.uimodel.CommentWidgetUiModel
+        lateinit var comments: CommentWidgetUiModel
         scope.launch {
             vm.comments.collect {
                 comments = it
             }
         }
         dispatchers.coroutineDispatcher.runBlockingTest { fn() }
-        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        dispatchers.coroutineDispatcher.scheduler.advanceUntilIdle()
         scope.cancel()
         return comments
     }
 
-    fun recordQueries(fn: suspend CommentViewModelRobot.() -> Unit): List<com.tokopedia.feed.common.comment.uimodel.CommentParam> {
+    fun recordQueries(fn: suspend CommentViewModelRobot.() -> Unit): List<CommentParam> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        val queries = mutableListOf<com.tokopedia.feed.common.comment.uimodel.CommentParam>()
+        val queries = mutableListOf<CommentParam>()
         scope.launch {
-            val query = vm.getPrivateField<MutableStateFlow<com.tokopedia.feed.common.comment.uimodel.CommentParam>>("_query")
+            val query =
+                vm.getPrivateField<MutableStateFlow<CommentParam>>(
+                    "_query"
+                )
             query.collect {
                 queries.add(it)
             }
         }
         dispatchers.coroutineDispatcher.runBlockingTest { fn() }
-        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        dispatchers.coroutineDispatcher.scheduler.advanceUntilIdle()
         scope.cancel()
         return queries
     }
 
-    fun recordQueryAndComment(fn: suspend CommentViewModelRobot.() -> Unit): Pair<com.tokopedia.feed.common.comment.uimodel.CommentParam, com.tokopedia.feed.common.comment.uimodel.CommentWidgetUiModel> {
+    fun recordQueryAndComment(fn: suspend CommentViewModelRobot.() -> Unit): Pair<CommentParam, CommentWidgetUiModel> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
-        lateinit var query: com.tokopedia.feed.common.comment.uimodel.CommentParam
-        lateinit var comment: com.tokopedia.feed.common.comment.uimodel.CommentWidgetUiModel
+        lateinit var query: CommentParam
+        lateinit var comment: CommentWidgetUiModel
         scope.launch {
-            val q = vm.getPrivateField<MutableStateFlow<com.tokopedia.feed.common.comment.uimodel.CommentParam>>("_query")
+            val q =
+                vm.getPrivateField<MutableStateFlow<CommentParam>>(
+                    "_query"
+                )
             q.collect {
                 query = it
             }
@@ -100,7 +116,7 @@ class CommentViewModelRobot(
             }
         }
         dispatchers.coroutineDispatcher.runBlockingTest { fn() }
-        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        dispatchers.coroutineDispatcher.scheduler.advanceUntilIdle()
         scope.cancel()
         return Pair(query, comment)
     }
@@ -113,13 +129,35 @@ class CommentViewModelRobot(
         fn()
         yield()
     }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CommentViewModelRobot> {
+        override fun createFromParcel(parcel: Parcel): CommentViewModelRobot {
+            return CommentViewModelRobot(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CommentViewModelRobot?> {
+            return arrayOfNulls(size)
+        }
+    }
 }
 
 internal fun createCommentRobot(
     dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     userSession: UserSessionInterface = mockk(relaxed = true),
-    pageSource: com.tokopedia.feed.common.comment.PageSource = com.tokopedia.feed.common.comment.PageSource.Play("12665"),
-    repository: com.tokopedia.feed.common.comment.repository.ContentCommentRepository = mockk(relaxed = true),
+    pageSource: PageSource = PageSource.Play(
+        "12665"
+    ),
+    repository: ContentCommentRepository = mockk(
+        relaxed = true
+    ),
     fn: CommentViewModelRobot.() -> Unit = {},
 ): CommentViewModelRobot {
     return CommentViewModelRobot(

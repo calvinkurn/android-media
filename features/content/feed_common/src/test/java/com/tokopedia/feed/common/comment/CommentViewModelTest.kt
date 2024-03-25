@@ -1,17 +1,15 @@
-package com.tokopedia.content.common.viewmodel.comment
+package com.tokopedia.feed.common.comment
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import com.tokopedia.content.common.util.*
-import com.tokopedia.feed.common.comment.CommentAction
-import com.tokopedia.feed.common.comment.CommentEvent
-import com.tokopedia.feed.common.comment.CommentException
+import com.tokopedia.content.test.util.assertEmpty
+import com.tokopedia.content.test.util.assertEqualTo
+import com.tokopedia.content.test.util.assertFalse
+import com.tokopedia.content.test.util.assertNotEqualTo
+import com.tokopedia.content.test.util.assertTrue
+import com.tokopedia.content.test.util.assertType
 import com.tokopedia.feed.common.comment.repository.ContentCommentRepository
-import com.tokopedia.feed.common.comment.uimodel.CommentParam
-import com.tokopedia.feed.common.comment.uimodel.CommentType
-import com.tokopedia.feed.common.comment.uimodel.CommentUiModel
-import com.tokopedia.feed.common.comment.uimodel.UserType
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -30,7 +28,7 @@ class CommentViewModelTest {
     val coroutineTestRule = CoroutineTestRule()
     private val testDispatcher = coroutineTestRule.dispatchers
 
-    private val mockRepo: com.tokopedia.feed.common.comment.repository.ContentCommentRepository = mockk(relaxed = true)
+    private val mockRepo: ContentCommentRepository = mockk(relaxed = true)
 
     private val helper = CommentHelper()
 
@@ -48,9 +46,9 @@ class CommentViewModelTest {
         val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {}
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.OpenAppLinkAction(appLink))
+                submitAction(CommentAction.OpenAppLinkAction(appLink))
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.OpenAppLink(appLink))
+            event.last().assertEqualTo(CommentEvent.OpenAppLink(appLink))
         }
     }
 
@@ -61,9 +59,9 @@ class CommentViewModelTest {
         }
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.RequestReportAction)
+                submitAction(CommentAction.RequestReportAction)
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.OpenReportEvent)
+            event.last().assertEqualTo(CommentEvent.OpenReportEvent)
         }
     }
 
@@ -74,9 +72,9 @@ class CommentViewModelTest {
         }
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.RequestReportAction)
+                submitAction(CommentAction.RequestReportAction)
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.OpenAppLink(ApplinkConst.LOGIN))
+            event.last().assertEqualTo(CommentEvent.OpenAppLink(ApplinkConst.LOGIN))
         }
     }
 
@@ -90,7 +88,7 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.ReportComment(
+                    CommentAction.ReportComment(
                         FeedComplaintSubmitReportUseCase.Param(
                             "",
                             "",
@@ -100,7 +98,7 @@ class CommentViewModelTest {
                     )
                 )
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.ReportSuccess)
+            event.last().assertEqualTo(CommentEvent.ReportSuccess)
         }
     }
 
@@ -114,7 +112,7 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.ReportComment(
+                    CommentAction.ReportComment(
                         FeedComplaintSubmitReportUseCase.Param(
                             "",
                             "",
@@ -124,7 +122,8 @@ class CommentViewModelTest {
                     )
                 )
             }
-            event.last().assertType<com.tokopedia.feed.common.comment.CommentEvent.ShowErrorToaster> {}
+            event.last()
+                .assertType<CommentEvent.ShowErrorToaster> {}
         }
     }
 
@@ -139,7 +138,7 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.ReportComment(
+                    CommentAction.ReportComment(
                         FeedComplaintSubmitReportUseCase.Param(
                             "",
                             "",
@@ -149,9 +148,10 @@ class CommentViewModelTest {
                     )
                 )
             }
-            event.last().assertType<com.tokopedia.feed.common.comment.CommentEvent.ShowErrorToaster> {
-                it.message.assertEqualTo(exception)
-            }
+            event.last()
+                .assertType<CommentEvent.ShowErrorToaster> {
+                    it.message.assertEqualTo(exception)
+                }
         }
     }
 
@@ -165,10 +165,11 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.EditTextClicked(item)
+                    CommentAction.EditTextClicked(item)
                 )
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.AutoType(item))
+            event.last()
+                .assertEqualTo(CommentEvent.AutoType(item))
         }
     }
 
@@ -182,10 +183,10 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.EditTextClicked(item)
+                    CommentAction.EditTextClicked(item)
                 )
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.OpenAppLink(ApplinkConst.LOGIN))
+            event.last().assertEqualTo(CommentEvent.OpenAppLink(ApplinkConst.LOGIN))
         }
     }
 
@@ -199,7 +200,7 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.PermanentRemoveComment
+                    CommentAction.PermanentRemoveComment
                 )
             }
             coVerify { mockRepo.deleteComment(any()) }
@@ -217,13 +218,14 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.PermanentRemoveComment
+                    CommentAction.PermanentRemoveComment
                 )
             }
             coVerify { mockRepo.deleteComment(any()) }
-            event.last().assertType<com.tokopedia.feed.common.comment.CommentEvent.ShowErrorToaster> {
-                it.message.message?.assertEqualTo(com.tokopedia.feed.common.comment.CommentException.createDeleteFailed().message.orEmpty())
-            }
+            event.last()
+                .assertType<CommentEvent.ShowErrorToaster> {
+                    it.message.message?.assertEqualTo(CommentException.createDeleteFailed().message.orEmpty())
+                }
         }
     }
 
@@ -242,10 +244,10 @@ class CommentViewModelTest {
         robot.use {
             val comment = it.recordComments {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.SelectComment(item.id)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.PermanentRemoveComment
+                    CommentAction.PermanentRemoveComment
                 )
             }
             comment.list.assertType<List<com.tokopedia.feed.common.comment.uimodel.CommentUiModel>> {
@@ -253,7 +255,9 @@ class CommentViewModelTest {
             }
             coVerify { mockRepo.deleteComment(any()) }
             val selected = it.vm
-                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>("_selectedComment")
+                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>(
+                    "_selectedComment"
+                )
             selected.value.first.assertEqualTo(item)
             selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
@@ -273,10 +277,10 @@ class CommentViewModelTest {
         robot.use {
             val comment = it.recordComments {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.SelectComment(item.id)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.DeleteComment(isFromToaster = true)
+                    CommentAction.DeleteComment(isFromToaster = true)
                 )
             }
             comment.list.assertType<List<com.tokopedia.feed.common.comment.uimodel.CommentUiModel>> {
@@ -284,7 +288,9 @@ class CommentViewModelTest {
             }
             coVerify(exactly = 0) { mockRepo.deleteComment(any()) }
             val selected = it.vm
-                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>("_selectedComment")
+                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>(
+                    "_selectedComment"
+                )
             selected.value.first.assertEqualTo(item)
             selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
@@ -293,8 +299,15 @@ class CommentViewModelTest {
     @Test
     fun `delete comment, make sure it doesnt include in list - not from undo`() {
         val item = helper.buildItemComment(id = "1111")
-        val listOfComment = listOf(helper.buildItemComment(), item, helper.buildItemComment(id = "1"))
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(list = listOfComment)
+        val listOfComment =
+            listOf(helper.buildItemComment(), item, helper.buildItemComment(id = "1"))
+        coEvery {
+            mockRepo.getComments(
+                any(),
+                any(),
+                any()
+            )
+        } returns helper.buildCommentWidget(list = listOfComment)
 
         val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
             setLogin(true)
@@ -302,10 +315,10 @@ class CommentViewModelTest {
         robot.use {
             val comment = it.recordComments {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.SelectComment(item.id)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.DeleteComment(false)
+                    CommentAction.DeleteComment(false)
                 )
             }
             comment.list.assertType<List<com.tokopedia.feed.common.comment.uimodel.CommentUiModel>> {
@@ -313,7 +326,9 @@ class CommentViewModelTest {
             }
             coVerify(exactly = 0) { mockRepo.deleteComment(any()) }
             val selected = it.vm
-                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>("_selectedComment")
+                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>(
+                    "_selectedComment"
+                )
             selected.value.first.assertEqualTo(item)
             selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
@@ -321,8 +336,18 @@ class CommentViewModelTest {
 
     @Test
     fun `delete comment, show success toaster - not from undo`() {
-        val listOfComment = listOf(helper.buildItemComment(), helper.buildItemComment(id = "44"), helper.buildItemComment(id = "1"))
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(list = listOfComment)
+        val listOfComment = listOf(
+            helper.buildItemComment(),
+            helper.buildItemComment(id = "44"),
+            helper.buildItemComment(id = "1")
+        )
+        coEvery {
+            mockRepo.getComments(
+                any(),
+                any(),
+                any()
+            )
+        } returns helper.buildCommentWidget(list = listOfComment)
 
         val item = helper.buildItemComment()
         val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
@@ -331,16 +356,19 @@ class CommentViewModelTest {
         robot.use {
             val event = it.recordEvent {
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.SelectComment(item.id)
+                    CommentAction.SelectComment(item.id)
                 )
                 submitAction(
-                    com.tokopedia.feed.common.comment.CommentAction.DeleteComment(false)
+                    CommentAction.DeleteComment(false)
                 )
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.ShowSuccessToaster())
+            event.last()
+                .assertEqualTo(CommentEvent.ShowSuccessToaster())
             coVerify(exactly = 0) { mockRepo.deleteComment(any()) }
             val selected = it.vm
-                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>("_selectedComment")
+                .getPrivateField<MutableStateFlow<Pair<com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item, Int>>>(
+                    "_selectedComment"
+                )
             selected.value.first.assertEqualTo(item)
             selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
@@ -353,9 +381,14 @@ class CommentViewModelTest {
         }
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.ReplyComment("", com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(
+                    CommentAction.ReplyComment(
+                        "",
+                        com.tokopedia.feed.common.comment.uimodel.CommentType.Parent
+                    )
+                )
             }
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.OpenAppLink(ApplinkConst.LOGIN))
+            event.last().assertEqualTo(CommentEvent.OpenAppLink(ApplinkConst.LOGIN))
         }
     }
 
@@ -366,12 +399,18 @@ class CommentViewModelTest {
         }
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.ReplyComment("www.shopee.com beli disni aj", com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(
+                    CommentAction.ReplyComment(
+                        "www.shopee.com beli disni aj",
+                        com.tokopedia.feed.common.comment.uimodel.CommentType.Parent
+                    )
+                )
             }
-            event.first().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.HideKeyboard)
-            event.last().assertType<com.tokopedia.feed.common.comment.CommentEvent.ShowErrorToaster> {
-                it.message.message?.assertEqualTo(com.tokopedia.feed.common.comment.CommentException.createLinkNotAllowed().message.orEmpty())
-            }
+            event.first().assertEqualTo(CommentEvent.HideKeyboard)
+            event.last()
+                .assertType<CommentEvent.ShowErrorToaster> {
+                    it.message.message?.assertEqualTo(CommentException.createLinkNotAllowed().message.orEmpty())
+                }
         }
     }
 
@@ -392,13 +431,24 @@ class CommentViewModelTest {
         }
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.ReplyComment("www.tokopedia.com beli disni aj", com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(
+                    CommentAction.ReplyComment(
+                        "www.tokopedia.com beli disni aj",
+                        com.tokopedia.feed.common.comment.uimodel.CommentType.Parent
+                    )
+                )
             }
-            event.first().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.HideKeyboard)
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.ReplySuccess(0)) // parent
+            event.first().assertEqualTo(CommentEvent.HideKeyboard)
+            event.last()
+                .assertEqualTo(CommentEvent.ReplySuccess(0)) // parent
 
             val comments = it.recordComments {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.ReplyComment("www.tokopedia.com beli disni aj", com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(
+                    CommentAction.ReplyComment(
+                        "www.tokopedia.com beli disni aj",
+                        com.tokopedia.feed.common.comment.uimodel.CommentType.Parent
+                    )
+                )
             }
             comments.list.first().assertEqualTo(item4)
         }
@@ -409,7 +459,9 @@ class CommentViewModelTest {
         val item1 = helper.buildItemComment(id = "1")
         val item2 = helper.buildItemComment(id = "2")
         val item3 = helper.buildItemComment(id = "3")
-        val item4 = helper.buildItemComment(commentType = com.tokopedia.feed.common.comment.uimodel.CommentType.Child("2"))
+        val item4 = helper.buildItemComment(
+            commentType = com.tokopedia.feed.common.comment.uimodel.CommentType.Child("2")
+        )
 
         val comments = helper.buildCommentWidget(
             list = listOf(item1, item2, item3)
@@ -422,15 +474,26 @@ class CommentViewModelTest {
         }
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.ReplyComment("www.tokopedia.com beli disni aj", com.tokopedia.feed.common.comment.uimodel.CommentType.Child("2")))
+                submitAction(
+                    CommentAction.ReplyComment(
+                        "www.tokopedia.com beli disni aj",
+                        com.tokopedia.feed.common.comment.uimodel.CommentType.Child("2")
+                    )
+                )
             }
-            event.first().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.HideKeyboard)
+            event.first().assertEqualTo(CommentEvent.HideKeyboard)
             val index = comments.list
                 .indexOfFirst { item -> item is com.tokopedia.feed.common.comment.uimodel.CommentUiModel.Item && item.id == item4.commentType.parentId } + 1 // under parent
-            event.last().assertEqualTo(com.tokopedia.feed.common.comment.CommentEvent.ReplySuccess(index)) // child
+            event.last()
+                .assertEqualTo(CommentEvent.ReplySuccess(index)) // child
 
             val comment = it.recordComments {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.ReplyComment("www.tokopedia.com beli disni aj", com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(
+                    CommentAction.ReplyComment(
+                        "www.tokopedia.com beli disni aj",
+                        com.tokopedia.feed.common.comment.uimodel.CommentType.Parent
+                    )
+                )
             }
             comment.list[index].assertEqualTo(item4)
         }
@@ -440,23 +503,32 @@ class CommentViewModelTest {
     fun `send reply in login state, failed from gql`() {
         val exception = MessageErrorException()
 
-        coEvery { mockRepo.replyComment(any(), any(), any(), any()) } throws  exception
+        coEvery { mockRepo.replyComment(any(), any(), any(), any()) } throws exception
 
         val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
         robot.use {
             val event = it.recordEvent {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.ReplyComment("www.tokopedia.com beli disni aj", com.tokopedia.feed.common.comment.uimodel.CommentType.Child("2")))
+                submitAction(
+                    CommentAction.ReplyComment(
+                        "www.tokopedia.com beli disni aj",
+                        com.tokopedia.feed.common.comment.uimodel.CommentType.Child("2")
+                    )
+                )
             }
-            event.first().assertType<com.tokopedia.feed.common.comment.CommentEvent.HideKeyboard> {  }
-            event.last().assertType<com.tokopedia.feed.common.comment.CommentEvent.ShowErrorToaster> {  }
+            event.first()
+                .assertType<CommentEvent.HideKeyboard> { }
+            event.last()
+                .assertType<CommentEvent.ShowErrorToaster> { }
         }
     }
 
     @Test
     fun `if commenter type from gql return shop, then its creator`() {
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(commenterType = com.tokopedia.feed.common.comment.uimodel.UserType.Shop)
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(
+            commenterType = com.tokopedia.feed.common.comment.uimodel.UserType.Shop
+        )
         val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
@@ -467,7 +539,9 @@ class CommentViewModelTest {
 
     @Test
     fun `if commenter type from gql return not shop, then it is not creator`() {
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(commenterType = com.tokopedia.feed.common.comment.uimodel.UserType.People)
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(
+            commenterType = com.tokopedia.feed.common.comment.uimodel.UserType.People
+        )
         val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
             setLogin(true)
         }
@@ -528,7 +602,7 @@ class CommentViewModelTest {
 
         robot.use {
             val q = it.recordQueries {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.DismissComment)
+                submitAction(CommentAction.DismissComment)
             }
             q.last().commentType.assertEqualTo(expected.commentType)
             q.last().lastParentCursor.assertEqualTo(expected.lastParentCursor)
@@ -551,7 +625,7 @@ class CommentViewModelTest {
 
         robot.use {
             val q = it.recordQueries {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.RefreshComment)
+                submitAction(CommentAction.RefreshComment)
             }
             q.last().commentType.assertEqualTo(expected.commentType)
             q.last().lastParentCursor.assertEqualTo(expected.lastParentCursor)
@@ -561,8 +635,11 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `load next page from parent - success` () {
-        val expected = helper.buildCommentWidget(cursor = "KgBDVYB8", commentType = com.tokopedia.feed.common.comment.uimodel.CommentType.Parent)
+    fun `load next page from parent - success`() {
+        val expected = helper.buildCommentWidget(
+            cursor = "KgBDVYB8",
+            commentType = com.tokopedia.feed.common.comment.uimodel.CommentType.Parent
+        )
         coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
 
         val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
@@ -571,7 +648,7 @@ class CommentViewModelTest {
 
         robot.use {
             val result = it.recordQueryAndComment {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
             }
             result.first.lastParentCursor.assertEqualTo(expected.cursor)
             result.first.lastChildCursor.assertNotEqualTo(expected.cursor)
@@ -583,7 +660,7 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `load next page from parent - failed` () {
+    fun `load next page from parent - failed`() {
         val exception = MessageErrorException()
         coEvery { mockRepo.getComments(any(), any(), any()) } throws exception
 
@@ -593,7 +670,7 @@ class CommentViewModelTest {
 
         robot.use {
             val result = it.recordQueryAndComment {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
             }
             result.first.needToRefresh.assertFalse()
 
@@ -602,11 +679,13 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `load next page from parent - content same with prev - use current list` () {
+    fun `load next page from parent - content same with prev - use current list`() {
         val expected = helper.buildCommentWidget(
             list = helper.buildCommentList(
                 listOf(
-                    helper.buildItemComment(id = "1"), helper.buildItemComment(id = "2"), helper.buildItemComment(id = "3")
+                    helper.buildItemComment(id = "1"),
+                    helper.buildItemComment(id = "2"),
+                    helper.buildItemComment(id = "3")
                 )
             )
         )
@@ -619,7 +698,7 @@ class CommentViewModelTest {
 
         robot.use {
             val result = it.recordQueryAndComment {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
             }
             result.first.needToRefresh.assertFalse()
 
@@ -630,11 +709,13 @@ class CommentViewModelTest {
     }
 
     @Test
-    fun `load next page from parent - content not same with prev - merge two list` () {
+    fun `load next page from parent - content not same with prev - merge two list`() {
         val expected = helper.buildCommentWidget(
             list = helper.buildCommentList(
                 listOf(
-                    helper.buildItemComment(id = "1"), helper.buildItemComment(id = "2"), helper.buildItemComment(id = "3")
+                    helper.buildItemComment(id = "1"),
+                    helper.buildItemComment(id = "2"),
+                    helper.buildItemComment(id = "3")
                 )
             )
         )
@@ -642,7 +723,9 @@ class CommentViewModelTest {
         val new = helper.buildCommentWidget(
             list = helper.buildCommentList(
                 listOf(
-                    helper.buildItemComment(id = "11"), helper.buildItemComment(id = "12"), helper.buildItemComment(id = "13")
+                    helper.buildItemComment(id = "11"),
+                    helper.buildItemComment(id = "12"),
+                    helper.buildItemComment(id = "13")
                 )
             )
         )
@@ -655,9 +738,9 @@ class CommentViewModelTest {
 
         robot.use {
             val result = it.recordQueryAndComment {
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
                 coEvery { mockRepo.getComments(any(), any(), any()) } returns new
-                submitAction(com.tokopedia.feed.common.comment.CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
+                submitAction(CommentAction.LoadNextPage(com.tokopedia.feed.common.comment.uimodel.CommentType.Parent))
             }
             result.first.needToRefresh.assertFalse()
 
