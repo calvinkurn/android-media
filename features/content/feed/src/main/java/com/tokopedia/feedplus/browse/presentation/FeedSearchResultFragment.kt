@@ -23,7 +23,9 @@ import com.tokopedia.feedplus.R as feedplusR
 class FeedSearchResultFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory
 ) : BaseDaggerFragment() {
-    private var binding: FragmentFeedSearchResultBinding? = null
+
+    private var _binding: FragmentFeedSearchResultBinding? = null
+    private val binding: FragmentFeedSearchResultBinding get() = _binding!!
 
     private val viewModel: FeedSearchResultViewModel by viewModels { viewModelFactory }
     private var rvAdapter: FeedSearchResultAdapter? = null
@@ -33,14 +35,14 @@ class FeedSearchResultFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFeedSearchResultBinding.inflate(inflater)
+        _binding = FragmentFeedSearchResultBinding.inflate(inflater)
 
         setupHeader()
         setupParam()
         initObserver()
         initRecyclerView()
 
-        return binding?.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,12 +50,17 @@ class FeedSearchResultFragment @Inject constructor(
         viewModel.fetchData()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun getScreenName(): String = "Search Result Fragment"
 
     override fun initInjector() {}
 
     private fun setupHeader() {
-        binding?.srpHeader?.onBackClicked{
+        binding.srpHeader.onBackClicked {
             activity?.finish()
         }
     }
@@ -72,7 +79,7 @@ class FeedSearchResultFragment @Inject constructor(
         }
 
         viewModel.keyword.observe(viewLifecycleOwner) {
-            binding?.srpHeader?.setSearchbarText(it)
+            binding.srpHeader.setSearchbarText(it)
         }
 
         viewModel.resultData.observe(viewLifecycleOwner) {
@@ -81,7 +88,7 @@ class FeedSearchResultFragment @Inject constructor(
     }
 
     private fun initRecyclerView() {
-        binding?.resultRv?.let {
+        binding.resultRv.let {
             showResult()
             FeedSearchResultAdapter(this.viewLifecycleOwner.lifecycleScope).also { adapter ->
                 rvAdapter = adapter
@@ -112,12 +119,12 @@ class FeedSearchResultFragment @Inject constructor(
     }
 
     private fun showResult() {
-        binding?.resultRv?.show()
-        binding?.errorView?.hide()
+        binding.resultRv.show()
+        binding.errorView.hide()
     }
 
     private fun showError(uiState: FeedSearchResultUiState) {
-        binding?.resultRv?.hide()
+        binding.resultRv.hide()
 
         var title: String? = null
         var desc: String? = null
@@ -138,14 +145,14 @@ class FeedSearchResultFragment @Inject constructor(
                 customIllustration = feedplusR.drawable.feed_search_not_found_illustration
             }
             is FeedSearchResultUiState.InternalError -> {
-                binding?.errorView?.setType(GlobalError.SERVER_ERROR)
+                binding.errorView.setType(GlobalError.SERVER_ERROR)
             }
             else -> {
-                binding?.errorView?.setType(GlobalError.NO_CONNECTION)
+                binding.errorView.setType(GlobalError.NO_CONNECTION)
             }
         }
 
-        binding?.errorView?.let { globalError ->
+        binding.errorView.let { globalError ->
             title?.let { globalError.errorTitle.text = it }
             desc?.let { globalError.errorDescription.text = it }
             ctaText?.let {
