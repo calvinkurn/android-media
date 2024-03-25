@@ -449,25 +449,22 @@ class CatalogDetailPageFragment :
                     if (newAnchorPosition == -1) {
                         newAnchorPosition = 0
                     }
-//
-//                    smoothScroller.targetPosition = newAnchorPosition
-//                    layoutManager?.startSmoothScroll(smoothScroller)
+                    if (widgetAdapter.getCurrentTabNav() > tabPosition){
+                        smoothScroller.targetPosition = newAnchorPosition
+                        layoutManager?.startSmoothScroll(smoothScroller)
+                    }else{
+                        layoutManager?.scrollToPositionWithOffset(newAnchorPosition, calculateOffsetForTop(layoutManager, newAnchorPosition))
 
-//                    val viewHolderY = viewHolder?.top ?: 0
-//
-//                    val scrollAmount = viewHolderY - (binding?.rvContent?.height.orZero() / 2)
-//                    layoutManager?.scrollToPositionWithOffset(newAnchorPosition, scrollAmount)
-                    layoutManager?.scrollToPositionWithOffset(newAnchorPosition, calculateOffsetForTop(layoutManager, newAnchorPosition))
-
+                    }
                 }
                 else -> {
-//                    smoothScroller.targetPosition = anchorToPosition
-//                    layoutManager?.startSmoothScroll(smoothScroller)
-//                    val viewHolderY = viewHolder?.top ?: 0
-//
-//                    val scrollAmount = viewHolderY - (binding?.rvContent?.height.orZero() / 2)
-//                    layoutManager?.scrollToPositionWithOffset(anchorToPosition, scrollAmount)
-                    layoutManager?.scrollToPositionWithOffset(anchorToPosition, calculateOffsetForTop(layoutManager, anchorToPosition))
+                    if (widgetAdapter.getCurrentTabNav() > tabPosition){
+                        smoothScroller.targetPosition = anchorToPosition
+                        layoutManager?.startSmoothScroll(smoothScroller)
+                    }else{
+                        layoutManager?.scrollToPositionWithOffset(anchorToPosition, calculateOffsetForTop(layoutManager, anchorToPosition))
+
+                    }
                 }
             }
 

@@ -15,6 +15,7 @@ import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
@@ -177,6 +178,15 @@ class WidgetCatalogAdapter(
         return currentIndexWidgetAfterNavigation in range
             && position.first !=0 && position.second != visitables.size-1
             && position.first != visitables.size-1
+    }
+
+    fun getCurrentTabNav(): Int {
+        val indexNavigation = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
+        }
+
+        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
+        return navigation?.currentSelectTab.orZero()
     }
 
     fun findPositionWidget(widgetName: String): Int {
