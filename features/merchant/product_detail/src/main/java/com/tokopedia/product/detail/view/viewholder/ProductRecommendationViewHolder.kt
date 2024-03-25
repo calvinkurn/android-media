@@ -7,6 +7,9 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
@@ -25,6 +28,7 @@ import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -193,6 +197,10 @@ class ProductRecommendationViewHolder(
                         componentTrackDataModel
                     )
 
+                    AppLogRecommendation.sendProductClickAppLog(
+                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
+                    )
+
                     view.context?.run {
                         RouteManager.route(
                             this,
@@ -231,6 +239,10 @@ class ProductRecommendationViewHolder(
                         product.pageName,
                         product.title,
                         componentTrackDataModel
+                    )
+
+                    AppLogRecommendation.sendProductShowAppLog(
+                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
                     )
                 }
             },
@@ -310,6 +322,16 @@ class ProductRecommendationViewHolder(
                 binding.rvProductRecom.show()
                 binding.loadingRecom.gone()
             }
+        )
+        trackHorizontalScroll(element)
+    }
+
+    private fun trackHorizontalScroll(model: ProductRecommendationDataModel) {
+        binding.rvProductRecom.addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = model.recomWidgetData?.pageName.orEmpty(),
+                barName = model.recomWidgetData?.pageName.orEmpty(),
+            )
         )
     }
 

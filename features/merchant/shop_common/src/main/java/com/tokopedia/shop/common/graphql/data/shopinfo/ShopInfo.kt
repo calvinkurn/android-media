@@ -68,10 +68,6 @@ data class ShopInfo(
     @Expose
     val freeOngkir: FreeOngkir = FreeOngkir(),
 
-    @SerializedName("shopHomeType")
-    @Expose
-    val shopHomeType: String = "",
-
     @SerializedName("os")
     @Expose
     val os: Os = Os(),

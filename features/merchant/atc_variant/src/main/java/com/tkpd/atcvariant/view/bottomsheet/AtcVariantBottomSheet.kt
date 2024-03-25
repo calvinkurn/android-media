@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,10 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
@@ -82,6 +87,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -488,10 +494,28 @@ class AtcVariantBottomSheet :
         }
     }
 
+    private fun getConfirmCartAnalyticsModel(result: Result<AddToCartDataModel>): TrackConfirmCartResult {
+        val cartId = (result as? Success)?.data?.data?.cartId.orEmpty()
+        val success = result is Success
+        val reason = (result as? Fail)?.throwable?.message.orEmpty()
+
+        return viewModel.getConfirmCartResultModel().apply {
+            isSuccess = success
+            failReason = reason
+            cartItemId = cartId
+        }
+    }
+
     private fun observeCart() {
         lifecycleScope.launchWhenStarted {
             viewModel.addToCartResultState.collectLatest {
                 baseAtcBtn?.hideLoading()
+
+                val model = getConfirmCartAnalyticsModel(it)
+                if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
+                    || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+                    AppLogPdp.sendConfirmCartResult(model)
+                }
 
                 when (it) {
                     is Success -> {
@@ -721,6 +745,7 @@ class AtcVariantBottomSheet :
                     pageSource
                 )
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartDataModel.data.cartId)
+                AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_ATC_TOASTER_PDP)
             }
             atcMessage = message
         }

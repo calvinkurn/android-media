@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductPictureViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder
 import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -36,6 +37,7 @@ class VideoPictureView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
+    var lastPositionIsSku: Pair<Int, Boolean>? = null
     private var componentTrackDataModel: ComponentTrackDataModel? = null
     private var mListener: ProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
@@ -181,8 +183,11 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun onMediaPageSelected(position: Int) {
+        val selected = videoPictureAdapter?.currentList?.getOrNull(position)
+        val isSku = selected?.variantOptionId.orEmpty().isNotBlankOrZero()
+        mListener?.onMediaViewed(position, isSku)
+        lastPositionIsSku = position to isSku
         if (pagerSelectedLastPosition != position) {
-            val selected = videoPictureAdapter?.currentList?.getOrNull(position)
 
             if (selected != null) {
                 val url = if (selected.isVideoType()) {

@@ -38,6 +38,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.TrackStayProductDetail
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -273,6 +279,7 @@ import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
@@ -545,6 +552,7 @@ open class ProductDetailFragment :
     private var campaignId: String = ""
     private var variantId: String = ""
     private var prefetchCacheId: String = ""
+    private var hasApplogScrollListener: Boolean = false
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -662,6 +670,7 @@ open class ProductDetailFragment :
         }
 
         setPDPDebugMode()
+        trackVerticalScroll()
     }
 
     private fun onClickDynamicOneLinerPromo() {
@@ -693,6 +702,13 @@ open class ProductDetailFragment :
             ProductDetailPrefetch.Data::class.java.simpleName,
             ProductDetailPrefetch.Data::class.java
         )
+    }
+
+    fun getStayAnalyticsData(): TrackStayProductDetail {
+        val data = viewModel.getStayAnalyticsData()
+        return data.copy(
+            isSkuSelected = data.isSkuSelected
+                || pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.all { it.value != "0" }.orFalse())
     }
 
     private fun setPDPDebugMode() {
@@ -916,6 +932,14 @@ open class ProductDetailFragment :
         reloadUserLocationChanged()
         reloadMiniCart()
         reloadFintechWidget()
+        val positionSku = (getViewHolderByPosition(0) as? ProductMediaViewHolder)?.mediaPosition
+        positionSku?.let {
+            if (it.second) {
+                viewModel.skuPhotoViewed.add(it.first)
+            } else {
+                viewModel.mainPhotoViewed.add(it.first)
+            }
+        }
     }
 
     private fun reloadFintechWidget() {
@@ -1862,6 +1886,7 @@ open class ProductDetailFragment :
         applink: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
+        AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(recommendationWidget.pageName))
         ProductDetailTracking.Click.eventClickSeeMoreRecomWidget(
             recommendationWidget,
             pageName,
@@ -2229,6 +2254,14 @@ open class ProductDetailFragment :
             trackData = componentTrackDataModel
         )
         selectThumbVariantByMedia(variantOptionId = variantOptionId)
+    }
+
+    override fun onMediaViewed(position: Int, isVariantPhoto: Boolean) {
+        if (isVariantPhoto) {
+            viewModel.skuPhotoViewed.add(position)
+        } else {
+            viewModel.mainPhotoViewed.add(position)
+        }
     }
 
     private fun addSwipePictureTracker(
@@ -2890,6 +2923,11 @@ open class ProductDetailFragment :
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
             actionButtonView.hideLoading()
+
+            var cartId = ""
+            var success = false
+            var reason = ""
+
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
                     view?.showToasterError(
@@ -2897,6 +2935,7 @@ open class ProductDetailFragment :
                         ctaText = getString(productdetailcommonR.string.pdp_common_oke)
                     )
                 } else {
+                    success = true
                     onSuccessAtc(it.data)
                     ProductDetailServerLogger.logBreadCrumbAtc(
                         isSuccess = true,
@@ -2904,6 +2943,7 @@ open class ProductDetailFragment :
                         atcType = buttonActionType
                     )
                 }
+                cartId = it.data.data.cartId
             }, {
                 viewModel.onFinishAtc()
                 ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
@@ -2912,7 +2952,21 @@ open class ProductDetailFragment :
                     viewModel.userId
                 )
                 handleAtcError(it)
+                reason = it.message.orEmpty()
             })
+            sendConfirmResultByteIoTracker(cartId, reason, success)
+        }
+    }
+
+    private fun sendConfirmResultByteIoTracker(cartId: String, reason: String, success: Boolean) {
+        val model = viewModel.getConfirmCartResultData().apply {
+            isSuccess = success
+            failReason = reason
+            cartItemId = cartId
+        }
+        if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
+            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+            AppLogPdp.sendConfirmCartResult(model)
         }
     }
 
@@ -3092,6 +3146,7 @@ open class ProductDetailFragment :
             }
 
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
+            AppLogPdp.sendPDPEnterPage(viewModel.getProductDetailTrack())
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
@@ -4913,6 +4968,7 @@ open class ProductDetailFragment :
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
                         shopName = data.basic.shopName
+                        trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.OCS)
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -4935,6 +4991,7 @@ open class ProductDetailFragment :
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
+                        trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }
@@ -4960,7 +5017,8 @@ open class ProductDetailFragment :
                 }
             ),
             userId = viewModel.userId,
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP,
+            trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.INSTANT)
         )
         viewModel.addToCart(addToCartOccRequestParams)
     }
@@ -5491,6 +5549,12 @@ open class ProductDetailFragment :
             intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
             startActivity(intent)
         }
+    }
+
+    fun trackVerticalScroll() {
+        if (hasApplogScrollListener) return
+        getRecyclerView()?.addVerticalTrackListener()
+        hasApplogScrollListener = true
     }
 
     // Will be delete soon

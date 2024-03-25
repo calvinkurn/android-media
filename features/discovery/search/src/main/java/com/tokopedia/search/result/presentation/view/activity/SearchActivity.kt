@@ -23,14 +23,24 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.analytics.SearchEntrance
+import com.tokopedia.discovery.common.analytics.SearchSessionId
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOUS_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.PAGE_NAME
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.URLParser
@@ -60,6 +70,7 @@ import com.tokopedia.search.result.product.performancemonitoring.searchProductPe
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -86,7 +97,8 @@ class SearchActivity :
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
-    ITelemetryActivity {
+    ITelemetryActivity,
+    AppLogInterface {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -121,6 +133,10 @@ class SearchActivity :
 
     private val binding: SearchActivitySearchBinding? by viewBinding()
 
+    override fun getPageName(): String = AppLogSearch.ParamValue.SEARCH_RESULT
+
+    override fun isEnterFromWhitelisted(): Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startMonitoring(SEARCH_RESULT_TRACE)
         startPreparePagePerformanceMonitoring()
@@ -137,6 +153,9 @@ class SearchActivity :
         handleIntent()
         observeSearchState()
         searchViewModel?.getThematic()
+
+        SearchSessionId.update()
+        AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance.value())
     }
 
     private fun observeSearchState() {
@@ -242,35 +261,41 @@ class SearchActivity :
                         IconList.ID_CART,
                         disableRouteManager = false,
                         disableDefaultGtmTracker = false
-                    ) { }
+                    ) {
+                        AppLogSearch.eventCartEntranceClick()
+                    }
                     .addIcon(
                         IconList.ID_NAV_GLOBAL,
                         disableRouteManager = false,
                         disableDefaultGtmTracker = false
                     ) { }
             )
+
+            AppLogSearch.eventCartEntranceShow()
         }
     }
 
     private fun moveToAutoCompleteActivity() {
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + autoCompleteParamsString()
-
         RouteManager.route(this, applink)
     }
 
     private fun autoCompleteParamsString() =
         UrlParamUtils.generateUrlParamString(autoCompleteParams())
 
-    private fun autoCompleteParams() =
-        if (searchParameter.isMps()) {
-            searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
-        } else {
-            val query = encodedQuery()
-            val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
-            val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+    private fun autoCompleteParams(): Map<String?, String> =
+        if (searchParameter.isMps()) autoCompleteMPSParams()
+        else autoCompleteApplinkParams() + enterMethodMap(CLICK_SEARCH_BAR)
 
-            currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
-        }
+    private fun autoCompleteMPSParams() = searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
+
+    private fun autoCompleteApplinkParams(): Map<String, String> {
+        val query = encodedQuery()
+        val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
+        val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+
+        return currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
+    }
 
     private fun encodedQuery() = URLEncoder
         .encode(searchParameter.getSearchQuery())
@@ -448,7 +473,7 @@ class SearchActivity :
                 searchFragmentTitles,
                 searchParameter,
                 classLoader,
-                supportFragmentManager.fragmentFactory
+                supportFragmentManager.fragmentFactory,
             )
         }
 
@@ -480,6 +505,8 @@ class SearchActivity :
         if (firstPageFragment is BackToTopView) {
             firstPageFragment.backToTop()
         }
+
+        AppLogAnalytics.putPageData(PAGE_NAME, GOODS_SEARCH)
     }
 
     private fun secondPositionFragmentReselected() {
@@ -487,6 +514,8 @@ class SearchActivity :
         if (secondPageFragment is BackToTopView) {
             secondPageFragment.backToTop()
         }
+
+        AppLogAnalytics.putPageData(PAGE_NAME, STORE_SEARCH)
     }
 
     private fun setToolbarTitle() {
