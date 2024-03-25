@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -240,7 +242,7 @@ class CatalogDetailPageFragment :
     private var catalogUrl = ""
     private var brand = ""
     private var productListConfig: ProductListConfig? = null
-
+    private var selectNavigationFromScroll =true
     private var compareCatalogId = ""
     private var retriedCompareCatalogIds = listOf<String>()
     private val seenTracker = mutableListOf<String>()
@@ -262,7 +264,7 @@ class CatalogDetailPageFragment :
                 val firstVisibleItemPosition = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
                 val lastVisibleItemPosition = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
                 val currentScrollPosition = recyclerView.computeVerticalScrollOffset()
-                if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
+                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && selectNavigationFromScroll) {
                     if (currentScrollPosition > previousScrollPosition) {
                         viewModel.emitScrollEvent(lastVisibleItemPosition, firstVisibleItemPosition)
                     }else{
@@ -447,23 +449,39 @@ class CatalogDetailPageFragment :
                     if (newAnchorPosition == -1) {
                         newAnchorPosition = 0
                     }
+//
+//                    smoothScroller.targetPosition = newAnchorPosition
+//                    layoutManager?.startSmoothScroll(smoothScroller)
 
-                    smoothScroller.targetPosition = newAnchorPosition
-                    layoutManager?.startSmoothScroll(smoothScroller)
+//                    val viewHolderY = viewHolder?.top ?: 0
+//
+//                    val scrollAmount = viewHolderY - (binding?.rvContent?.height.orZero() / 2)
+//                    layoutManager?.scrollToPositionWithOffset(newAnchorPosition, scrollAmount)
+                    layoutManager?.scrollToPositionWithOffset(newAnchorPosition, calculateOffsetForTop(layoutManager, newAnchorPosition))
+
                 }
-
-                (widgetAdapter.findNavigationCount().dec()) -> {
-                    smoothScroller.targetPosition = anchorToPosition
-                    layoutManager?.startSmoothScroll(smoothScroller)
-                }
-
                 else -> {
-                    smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
-                    layoutManager?.startSmoothScroll(smoothScroller)
+//                    smoothScroller.targetPosition = anchorToPosition
+//                    layoutManager?.startSmoothScroll(smoothScroller)
+//                    val viewHolderY = viewHolder?.top ?: 0
+//
+//                    val scrollAmount = viewHolderY - (binding?.rvContent?.height.orZero() / 2)
+//                    layoutManager?.scrollToPositionWithOffset(anchorToPosition, scrollAmount)
+                    layoutManager?.scrollToPositionWithOffset(anchorToPosition, calculateOffsetForTop(layoutManager, anchorToPosition))
                 }
             }
 
         }
+
+        if (tabPosition == Int.ZERO){
+            widgetAdapter.autoSelectNavigation(Pair(Int.ZERO, anchorToPosition))
+        }else{
+            widgetAdapter.autoSelectNavigation(Pair(anchorToPosition, anchorToPosition-Int.ONE))
+        }
+        selectNavigationFromScroll = false
+        Handler(Looper.getMainLooper()).postDelayed({
+            selectNavigationFromScroll = true
+        }, NAVIGATION_SCROLL_DURATION)
 
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
@@ -472,6 +490,18 @@ class CatalogDetailPageFragment :
             labels = "$catalogId - item: {$tabTitle}",
             trackerId = TRACKER_ID_CLICK_NAVIGATION
         )
+    }
+
+    private fun calculateOffsetForTop(layoutManager: LinearLayoutManager, targetPosition: Int): Int {
+        val viewHeight = binding?.rvContent?.height.orZero()
+        val centerY = viewHeight / 3
+        val desiredItemTop = (layoutManager.findViewByPosition(targetPosition)?.top ?: 0)
+
+        return if (desiredItemTop < centerY) {
+            300
+        } else {
+            desiredItemTop - centerY
+        }
     }
 
     private fun setupObservers(view: View) {
