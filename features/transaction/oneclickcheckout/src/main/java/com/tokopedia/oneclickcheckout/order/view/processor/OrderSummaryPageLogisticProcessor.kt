@@ -87,11 +87,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 OrderActionMetadata.Action(
                     uniqueId = it.cartId,
                     listOf(
-                        OrderActionMetadata.Action.OrderActionMetadata(
+                        OrderActionMetadata.Action.Metadata(
                             key = "quantity",
                             value = it.orderQuantity.toString()
                         ),
-                        OrderActionMetadata.Action.OrderActionMetadata(
+                        OrderActionMetadata.Action.Metadata(
                             key = "product_id",
                             value = it.productId
                         )
