@@ -9,7 +9,7 @@ import com.tokopedia.track.TrackApp
 import com.yandex.div.core.DivActionHandler
 import com.yandex.div.core.DivViewFacade
 import com.yandex.div2.DivAction
-import com.yandex.div2.DivVisibilityAction
+import com.yandex.div2.DivSightAction
 import org.json.JSONObject
 
 
@@ -21,7 +21,6 @@ class ActionHandler(
 
     companion object{
         const val HOST_ROUTE = "route"
-        const val QUERY_SEPARATOR = "&&"
         const val IDENTIFIER_ANDROID_APPLINK = "android_applink="
         const val IDENTIFIER_APPLINK = "applink="
         const val KEY_TRACKING_DATA = "tracking_data"
@@ -44,15 +43,24 @@ class ActionHandler(
         return super.handleAction(action, view)
     }
 
-    //override method when there's action visiblity/ impressed
-    override fun handleAction(action: DivVisibilityAction, view: DivViewFacade): Boolean {
+    override fun handleAction(action: DivSightAction, view: DivViewFacade): Boolean {
         //Send impression tracker
         if (sduiTrackingInterface != null) {
             sduiTrackingInterface.onViewVisible(action.payload)
         } else {
             sendTracker(action.payload)
         }
+
         return super.handleAction(action, view)
+    }
+
+    override fun handleAction(
+        action: DivSightAction,
+        view: DivViewFacade,
+        actionUid: String
+    ): Boolean {
+        sendTracker(action.payload)
+        return super.handleAction(action, view, actionUid)
     }
 
     private fun onHandleRoute(url: Uri) {

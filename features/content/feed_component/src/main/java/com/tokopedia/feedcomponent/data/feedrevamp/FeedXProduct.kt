@@ -52,6 +52,8 @@ data class FeedXProduct(
     var priceOriginal: Int = 0,
     @SerializedName("priceOriginalFmt")
     var priceOriginalFmt: String = "",
+    @SerializedName("priceFormatPriority")
+    var priceFormatPriority: String = "",
     @SerializedName("star")
     var star: Int = 0,
     @SerializedName("totalSold")
@@ -74,6 +76,8 @@ data class FeedXProduct(
     val affiliate: FeedXProductAffiliate = FeedXProductAffiliate(),
     @SerializedName("isStockAvailable")
     val isAvailable: Boolean = false,
+    @SerializedName("isHighlighted")
+    val isHighlighted: Boolean = false,
 
     // TopadsHeadline
     var variant: Int = 1,

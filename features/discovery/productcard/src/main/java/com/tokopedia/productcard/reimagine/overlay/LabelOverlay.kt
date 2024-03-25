@@ -43,6 +43,20 @@ internal class LabelOverlay(view: View) {
         )
     }
 
+    fun hide() {
+        val componentsList = listOf(
+            Components(labelOverlay1, labelOverlay1Space, null),
+            Components(labelOverlay2, labelOverlay2Space, null),
+            Components(labelOverlay3, null, null),
+        )
+
+        renderNextLabel(
+            componentsList = componentsList.iterator(),
+            isFirstLabel = true,
+            hasStockInfo = false,
+        )
+    }
+
     private tailrec fun renderNextLabel(
         componentsList: Iterator<Components>,
         isFirstLabel: Boolean,

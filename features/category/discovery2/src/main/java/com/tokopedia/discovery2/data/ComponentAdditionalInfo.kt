@@ -1,28 +1,29 @@
 package com.tokopedia.discovery2.data
 
-
 import com.google.gson.annotations.SerializedName
 
 data class ComponentAdditionalInfo(
-        @SerializedName("enabled")
-        val enabled: Boolean,
-        @SerializedName("next_page")
-        var nextPage: String?,
-        @SerializedName("total_product")
-        val totalProductData: TotalProductData?,
-        @SerializedName("redirection")
-        val redirection: Redirection? = null,
-        @SerializedName("timer")
-        val timer: Timer? = null
+    @SerializedName("enabled")
+    val enabled: Boolean,
+    @SerializedName("next_page")
+    var nextPage: String?,
+    @SerializedName("total_product")
+    val totalProductData: TotalProductData?,
+    @SerializedName("redirection")
+    val redirection: Redirection? = null,
+    @SerializedName("timer")
+    val timer: Timer? = null,
+    @SerializedName("tracker")
+    var tracker: ComponentTracker? = null
 )
 
 data class TotalProductData(
-        @SerializedName("product_count")
-        val productCount: String? = null,
-        @SerializedName("product_count_text")
-        val productCountText: String? = null,
-        @SerializedName("product_count_wording")
-        val productCountWording: String? = null,
+    @SerializedName("product_count")
+    val productCount: String? = null,
+    @SerializedName("product_count_text")
+    val productCountText: String? = null,
+    @SerializedName("product_count_wording")
+    val productCountWording: String? = null
 )
 
 data class Redirection(
@@ -37,7 +38,7 @@ data class Redirection(
     @SerializedName("applink")
     val applink: String? = "",
     @SerializedName("cta_text")
-    val ctaText: String? = null,
+    val ctaText: String? = null
 )
 data class Timer(
     @SerializedName("enabled")

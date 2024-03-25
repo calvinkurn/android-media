@@ -6,6 +6,8 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 
 interface InspirationCarouselDynamicProductView {
 
+    fun trackDynamicCarouselImpression(dynamicProductCarousel: BroadMatchDataView)
+
     fun trackDynamicProductCarouselImpression(
         dynamicProductCarousel: BroadMatchItemDataView,
         type: String,

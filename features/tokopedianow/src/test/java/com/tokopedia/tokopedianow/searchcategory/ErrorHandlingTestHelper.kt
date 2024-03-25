@@ -1,12 +1,12 @@
 package com.tokopedia.tokopedianow.searchcategory
 
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class ErrorHandlingTestHelper(
-        private val baseViewModel: BaseSearchCategoryViewModel,
-        private val callback: Callback,
+    private val baseViewModel: TokoNowSearchViewModel,
+    private val callback: Callback
 ) {
 
     fun `Test first page error`() {

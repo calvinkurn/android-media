@@ -2,7 +2,6 @@ package com.tokopedia.play.widget.sample.analytic
 
 import android.util.Log
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
-import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -12,26 +11,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
  * Created by meyta.taliti on 01/02/22.
  */
 class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
-
-    override fun onClickChannelCard(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int,
-    ) {
-        Log.d("FeedPlayWidget","onClickChannelCard PlayWidgetJumboView ${item.channelId} $channelPositionInList")
-    }
-
-    override fun onImpressChannelCard(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int,
-    ) {
-        Log.d("FeedPlayWidget","onImpressChannelCard PlayWidgetJumboView ${item.channelId} $channelPositionInList")
-    }
 
     override fun onImpressChannelCard(
         view: PlayWidgetLargeView,

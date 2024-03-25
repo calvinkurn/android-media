@@ -2,12 +2,13 @@ package com.tokopedia.reputation.common.view
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.LinearLayout
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimReviewPendingModel
-import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.animated_rating_picker_review_pending.view.*
+import com.tokopedia.reputation.common.databinding.AnimatedRatingPickerReviewPendingBinding
 
 /**
  * This animated stars using AnimatedVectorDrawable, already support API <21
@@ -15,26 +16,32 @@ import kotlinx.android.synthetic.main.animated_rating_picker_review_pending.view
  * @property renderInitialReviewWithData If you want to animating the view without any trigger
  */
 class AnimatedRatingPickerReviewPendingView @JvmOverloads constructor(
-        context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+    context: Context,
+    val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     var listOfStarsView: List<AnimReviewPendingModel> = listOf()
     var count = 1
     var countMinus = 5
     var lastReview = 0
     var clickAt = 0
-    private var handle = Handler()
+    private var handle = Handler(Looper.getMainLooper())
     private var listener: AnimatedReputationListener? = null
 
-    init {
+    private val binding by lazy {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.animated_rating_picker_review_pending, this)
+        AnimatedRatingPickerReviewPendingBinding.bind(view)
+    }
 
-        LayoutInflater.from(context).inflate(R.layout.animated_rating_picker_review_pending, this)
+    init {
         listOfStarsView = listOf(
-                AnimReviewPendingModel(false, anim_1_review_pending),
-                AnimReviewPendingModel(false, anim_2_review_pending),
-                AnimReviewPendingModel(false, anim_3_review_pending),
-                AnimReviewPendingModel(false, anim_4_review_pending),
-                AnimReviewPendingModel(false, anim_5_review_pending)
+            AnimReviewPendingModel(false, binding.anim1ReviewPending),
+            AnimReviewPendingModel(false, binding.anim2ReviewPending),
+            AnimReviewPendingModel(false, binding.anim3ReviewPending),
+            AnimReviewPendingModel(false, binding.anim4ReviewPending),
+            AnimReviewPendingModel(false, binding.anim5ReviewPending)
         )
         listOfStarsView.forEachIndexed { index, animatedStarsView ->
             animatedStarsView.reviewView.setOnClickListener {
@@ -49,7 +56,6 @@ class AnimatedRatingPickerReviewPendingView @JvmOverloads constructor(
                 }
             }
         }
-        
     }
 
     private val normalAnimation = object : Runnable {
@@ -104,14 +110,13 @@ class AnimatedRatingPickerReviewPendingView @JvmOverloads constructor(
         handle.post(normalAnimation)
     }
 
-
     fun getReviewClickAt(): Int = clickAt
 
     fun setListener(listener: AnimatedReputationListener) {
         this.listener = listener
     }
 
-    //Reset stars
+    // Reset stars
     fun resetStars() {
         clickAt = 0
         lastReview = 0

@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.uimodel
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -73,7 +74,7 @@ sealed interface AddToCartExternalEvent {
 }
 
 sealed interface CartTrackerEvent {
-    data class ATCTrackingURLRecent(val productModel: CartRecentViewItemHolderData) :
+    data class ATCTrackingURLRecent(val recommendationItem: RecommendationItem) :
         CartTrackerEvent
 
     data class ATCTrackingURLRecommendation(val recommendationItem: RecommendationItem) :
@@ -125,7 +126,10 @@ sealed interface LoadWishlistV2State {
 
 sealed interface RemoveFromWishlistEvent {
 
-    data class RemoveWishlistFromCartSuccess(val position: Int) : RemoveFromWishlistEvent
+    data class RemoveWishlistFromCartSuccess(
+        val position: Int,
+        val message: String,
+    ) : RemoveFromWishlistEvent
 
     data class RemoveWishlistFromCartFailed(
         val throwable: Throwable
@@ -180,6 +184,7 @@ sealed interface UpdateCartPromoState {
 
 data class SubTotalState(
     val subtotalCashback: Double,
+    val subtotalBeforeSlashedPrice: Double,
     val qty: String,
     val subtotalPrice: Double,
     val noAvailableItems: Boolean

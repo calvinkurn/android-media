@@ -25,6 +25,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderE
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import java.util.*
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class SomBottomSheetOrderExtensionRequest(
     private val fragmentManager: FragmentManager,
@@ -88,7 +89,7 @@ class SomBottomSheetOrderExtensionRequest(
         if (data.completed) {
             super.dismiss()
         } else {
-            (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
+            (bottomSheetLayout?.findViewById<View>(unifycomponentsR.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
                 BOTTOM_SHEET_GAP_DEFAULT.toPx(),
                 Int.ZERO,
                 BOTTOM_SHEET_GAP_DEFAULT.toPx(),

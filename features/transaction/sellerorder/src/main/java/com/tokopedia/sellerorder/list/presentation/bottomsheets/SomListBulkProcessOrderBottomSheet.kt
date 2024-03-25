@@ -19,8 +19,18 @@ import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomList
 import com.tokopedia.sellerorder.list.presentation.models.BaseSomListBulkProcessOrderUiModel
 
 class SomListBulkProcessOrderBottomSheet(
-        context: Context
-) : SomBottomSheet<BottomsheetSomListBulkProcessOrderBinding>(LAYOUT, true, true, false, false, false, "", context, true) {
+    context: Context
+) : SomBottomSheet<BottomsheetSomListBulkProcessOrderBinding>(
+    childViewsLayoutResourceId = LAYOUT,
+    showOverlay = true,
+    showCloseButton = true,
+    showKnob = false,
+    clearPadding = false,
+    draggable = false,
+    bottomSheetTitle = "",
+    context = context,
+    dismissOnClickOverlay = true
+) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_som_list_bulk_process_order

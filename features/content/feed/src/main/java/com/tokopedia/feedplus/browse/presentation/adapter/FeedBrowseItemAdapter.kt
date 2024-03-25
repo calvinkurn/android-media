@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.HorizontalStoriesViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -17,9 +17,11 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.Chips
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.HorizontalAuthors
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.HorizontalChannels
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.HorizontalStories
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.InspirationCard
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.Title
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedLoadingViewHolder
 import kotlinx.coroutines.CoroutineScope
 
 internal abstract class FeedBrowseItemAdapter<Input : Any>(
@@ -29,7 +31,8 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
     private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener = FeedBrowseHorizontalChannelsViewHolder.Listener.Default,
     private val creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener = FeedBrowseHorizontalAuthorsViewHolder.Listener.Default,
     private val inspirationCardListener: InspirationCardViewHolder.Item.Listener = InspirationCardViewHolder.Item.Listener.Default,
-    val spanCount: Int = 2
+    private val storyWidgetListener: HorizontalStoriesViewHolder.Listener = HorizontalStoriesViewHolder.Listener.Default,
+    val spanCount: Int = 2,
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(
@@ -109,7 +112,14 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
                 InspirationCardViewHolder.Placeholder.create(parent)
             }
             TYPE_LOADING -> {
-                LoadingViewHolder.create(parent)
+                FeedLoadingViewHolder.create(parent)
+            }
+            TYPE_HORIZONTAL_STORIES -> {
+                HorizontalStoriesViewHolder.create(
+                    parent,
+                    poolManager.storyRecycledViewPool,
+                    storyWidgetListener,
+                )
             }
             else -> error("ViewType $viewType is not supported")
         }
@@ -134,6 +144,9 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
                 holder.bind(item)
             }
             holder is InspirationCardViewHolder.Item && item is InspirationCard.Item -> {
+                holder.bind(item)
+            }
+            holder is HorizontalStoriesViewHolder && item is HorizontalStories -> {
                 holder.bind(item)
             }
         }
@@ -170,6 +183,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
             LoadingModel -> TYPE_LOADING
             is InspirationCard.Item -> TYPE_INSPIRATION_CARD
             is InspirationCard.Placeholder -> TYPE_INSPIRATION_CARD_PLACEHOLDER
+            is HorizontalStories -> TYPE_HORIZONTAL_STORIES
             else -> error("Item $item is not supported")
         }
     }
@@ -208,6 +222,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
         internal const val TYPE_HORIZONTAL_AUTHORS = 5
         internal const val TYPE_INSPIRATION_CARD = 6
         internal const val TYPE_INSPIRATION_CARD_PLACEHOLDER = 7
+        internal const val TYPE_HORIZONTAL_STORIES = 8
         internal const val TYPE_LOADING = 99
     }
 }

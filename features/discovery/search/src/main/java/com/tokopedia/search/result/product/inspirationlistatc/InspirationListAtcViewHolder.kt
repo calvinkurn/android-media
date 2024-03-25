@@ -9,6 +9,7 @@ import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridM
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -38,12 +39,19 @@ class InspirationListAtcViewHolder(
         get() = reimagineSearch2Component.isReimagineCarousel()
 
     override fun bind(item: InspirationListAtcDataView) {
+        bindImpression(item)
         bindTitle(item)
         bindSubtitle(item)
         bindSeeMoreClick(item)
         bindHeader(item)
         bindProductCarousel(item)
         bindReimagineProductCarousel(item)
+    }
+
+    private fun bindImpression(item: InspirationListAtcDataView) {
+        binding?.root?.addOnImpression1pxListener(item.option.byteIOImpressHolder) {
+            inspirationListAtcListener.onListAtcImpressed(item.option)
+        }
     }
 
     private fun bindTitle(item: InspirationListAtcDataView) {

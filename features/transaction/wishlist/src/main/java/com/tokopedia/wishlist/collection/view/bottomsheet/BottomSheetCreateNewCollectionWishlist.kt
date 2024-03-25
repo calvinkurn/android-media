@@ -237,8 +237,7 @@ class BottomSheetCreateNewCollectionWishlist :
                     listCollections.forEach { item ->
                         if (checkName.lowercase() == item.name.lowercase()) {
                             binding?.run {
-                                collectionCreateNameInputTextField.isInputError = _productIds.isEmpty()
-
+                                collectionCreateNameInputTextField.isInputError = true
                                 val labelMessage =
                                     getString(wishlistR.string.collection_create_bottomsheet_name_error)
                                 collectionCreateNameInputTextField.setMessage(labelMessage)
@@ -353,7 +352,7 @@ class BottomSheetCreateNewCollectionWishlist :
                         } else if (result.data.dataItem.message.isNotEmpty()) {
                             result.data.dataItem.message
                         } else {
-                            getString(com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg)
+                            getString(wishlistR.string.wishlist_v2_common_error_msg)
                         }
                         actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
                         dismiss()

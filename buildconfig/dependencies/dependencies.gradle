@@ -67,7 +67,7 @@ ext {
     playServiceBase = '18.0.1'
     playServiceAnalytics = '17.0.0'
     playServiceLocation = '17.0.0'
-    playServiceMaps = '17.0.0'
+    playServiceMaps = '18.2.0'
     playServiceAuth = '17.0.0'
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
@@ -104,9 +104,6 @@ ext {
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
-    gotoLsdkVersion = '2.7.1'
-    gotoCvsdkVersion = '2.1.1'
-    gotoPinSdkVersion = '0.2.2'
     playIntegrityVersion = '1.0.1'
     wearRemoteInteractionVersion = '1.0.0'
     conversationsVersion = '7.10.3-970f75aa'
@@ -142,7 +139,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.35'
     unifyPrinciplesVersion = '1.4.18'
-    unifyComponentsVersion = '1.2.52'
+    unifyComponentsVersion = '1.2.55-rc01'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.9'
@@ -153,8 +150,8 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.16'
     unifyGlobalErrorVersion = '1.0.22'
-    unifyHeaderVersion = '1.2.4'
-    unifySortFilterVersion = '1.3.6'
+    unifyHeaderVersion = '1.2.6'
+    unifySortFilterVersion = '1.3.9'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.11'
     unifyListVersion = '1.0.12'
@@ -164,7 +161,7 @@ ext {
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.13'
     nestPrinciplesVersion = '1.0.7'
-    nestComponentsVersion = '1.0.13'
+    nestComponentsVersion = '1.0.17'
 
     gradlePlugin = [
             crashlytics                     : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -263,8 +260,8 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:2.4.3@aar",
-            oneKycSdk : "com.gojek.android:OneKycSdk:2.4.3@aar",
+            resource : "com.gojek.android:OneKycResources:2.4.9@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:2.4.9@aar",
             clickStream : "com.gojek.android:clickstream:4.0.3-alpha",
             protoToko : "com.gojek.clickstream:proto-toko:4.273.5",
             protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
@@ -351,9 +348,6 @@ ext {
             localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
             startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
-            gotoLoginSdk          : "com.goto.scp:login-tokopedia:$gotoLsdkVersion",
-            gotoCvSdk             : "com.goto.scp:verification-tokopedia:$gotoCvsdkVersion",
-            gotoPinSdk            : "com.goto.android:pin:$gotoPinSdkVersion",
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
             playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
             wearRemoteInteraction : "androidx.wear:wear-remote-interactions:$wearRemoteInteractionVersion",
@@ -371,7 +365,7 @@ ext {
             mp4parser             : "com.googlecode.mp4parser:isoparser:$mp4parserVersion",
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
-            ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
+            ffmpeg                : "com.arthenica:mobileffmpeg:4.4-bd-modified@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
             rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
     ]
@@ -527,5 +521,43 @@ ext {
             ktorSerializationJson       : "io.ktor:ktor-serialization-kotlinx-json:$ktorVersion",
             ktorLogging                 : "io.ktor:ktor-client-logging:$ktorVersion",
             kermitLogging               : "co.touchlab:kermit:$kermitVersion"
+    ]
+
+    commonMonitorVersion = "5.0.20.4.overseas"
+    npthVersion = "3.1.7.oversea-rc.67"
+    npthCoreVersion = "3.1.7.oversea-rc.67"
+
+    slardarDependencies = [
+            commonMonitor : "com.bytedance.frameworks.core:commonmonitor:$commonMonitorVersion",
+            npth          : "com.bytedance.frameworks.core:npth:$npthVersion",
+            npthCore      : "com.bytedance.frameworks.core:npth_core:$npthCoreVersion"
+    ]
+
+    chromiumCronetVersion = "4.2.137.43-tiktok"
+    baseLibsTtnetVersion = "4.2.137.43-tiktok"
+    boringSslVersion = "1.3.6-ttp"
+    cppSharedVersion = "21.1.4"
+
+    ttnetDependencies = [
+        chromiumCronet   : "org.chromium.net:cronet:$chromiumCronetVersion",
+        baseLibsTtnet    : "com.bytedance.frameworks.baselib:ttnet:$baseLibsTtnetVersion",
+        boringSsl        : "com.bytedance.boringssl.so:boringssl-so:$boringSslVersion",
+        cppShared        : "com.bytedance.ies.common:cpp_shared:$cppSharedVersion"
+    ]
+
+    appLogVersion = "5.6.9-bugfix.6"
+    frameworkCoreEncryptVersion = "1.2.2"
+    baseLibsUtilityVersion = "2.0.11"
+    bdNetworkTagVersion = "0.0.1-alpha.2-support"
+
+    appLogDependencies = [
+        bdTrackerGlobal   : "com.bytedance.applog:bdtracker-global:$appLogVersion",
+        sampling          : "com.bytedance.applog:sampling:$appLogVersion",
+        compress          : "com.bytedance.applog:compress:$appLogVersion",
+        monitor           : "com.bytedance.applog:monitor:$appLogVersion",
+        bdTrackerEtGlobal : "com.bytedance.applog:bdtracker-et_verify:$appLogVersion",
+        encrypt           : "com.bytedance.frameworks.core:encrypt:$frameworkCoreEncryptVersion",
+        baseLibsUtility   : "com.bytedance.frameworks.baselib:utility:$baseLibsUtilityVersion",
+        bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
     ]
 }
