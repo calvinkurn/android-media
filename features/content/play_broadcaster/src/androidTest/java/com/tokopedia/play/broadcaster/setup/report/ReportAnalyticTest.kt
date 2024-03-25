@@ -11,13 +11,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.coachmark.R as coachmarkR
 import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
@@ -51,6 +49,7 @@ import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.coachmark.R as coachmarkR
 import com.tokopedia.dialog.R as dialogR
 
 /**
@@ -115,7 +114,8 @@ class ReportAnalyticTest {
         init()
     }
 
-    fun setUp() {
+    private fun setUp() {
+        /** Mock General Config */
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockBroadcastTimer.isPastPauseDuration } returns false
         coEvery { mockHydraSharedPreferences.isFirstStatisticIconShown() } returns true
@@ -146,7 +146,7 @@ class ReportAnalyticTest {
         coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns GetSellerLeaderboardSlotResponse()
     }
 
-    fun init() {
+    private fun init() {
         PlayBroadcastInjector.set(
             DaggerPlayBroadcastTestComponent.builder()
                 .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
@@ -160,43 +160,52 @@ class ReportAnalyticTest {
     fun testReport_liveRoom() {
         composeActivityTestRule.apply {
 
+            /** Continue Livestream */
             clickDialogPrimaryCTA()
             performDelay()
+
+            /** Report CoachMark */
             verify("view - estimasi pendapatan coachmark")
             closeCoachMark()
 
+            /** Open Product Report Summary Bottom Sheet */
             click(R.id.ic_statistic)
             verify("click - estimasi pendapatan icon")
             performDelay()
             verify("view - estimasi pendapatan bottomsheet")
 
+            /** Open Estimated Income Info Bottom Sheet */
             clickEstimatedIncomeInfoIcon()
             verify("click - estimasi pendapatan info icon bottomsheet")
             performDelay()
             verify("view - estimasi pendapatan explanation bottomsheet")
 
+            /** Close Bottom Sheets */
             pressBack()
             performDelay()
             pressBack()
 
+            /** Open Live Report Summary Bottom Sheet */
             clickLiveStatsView()
             verify("click - top area")
             performDelay()
             verify("view - information bottomsheet")
 
+            /** Product Report Summary Negative Case */
             coEvery { mockRepo.getReportProductSummary(any()) } throws Exception()
             clickEstimatedIncomeCard()
             verify("click - estimasi pendapatan card bottomsheet")
             performDelay()
             verify("view - estimasi pendapatan error bottomsheet")
 
+            /** Close Bottom Sheets */
             pressBack()
             performDelay()
             pressBack()
 
+            /** End Livestream */
             click(R.id.ic_bro_end_stream)
             click(dialogR.id.dialog_btn_secondary)
-
             performDelay()
 
             clickEstimatedIncomeCard()
