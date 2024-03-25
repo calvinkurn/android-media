@@ -142,7 +142,8 @@ class SeePerformanceTopAdsViewModelTest {
         val response = SingleAdInFo()
         coEvery {
             topAdsGetGroupIdUseCase.setParams(any(), any())
-            topAdsGetGroupIdUseCase.execute(any(), any()) } answers {
+            topAdsGetGroupIdUseCase.execute(any(), any())
+        } answers {
             firstArg<(SingleAdInFo) -> Unit>().invoke(response)
         }
         viewModel.getPromoInfo()
@@ -218,7 +219,8 @@ class SeePerformanceTopAdsViewModelTest {
         }
         val _topAdsPromoInfo = viewModel.javaClass.getDeclaredField("_topAdsPromoInfo")
         _topAdsPromoInfo.isAccessible = true
-        val topAdsPromoInfoLiveData = _topAdsPromoInfo.get(viewModel) as MutableLiveData<SingleAdInFo>
+        val topAdsPromoInfoLiveData =
+            _topAdsPromoInfo.get(viewModel) as MutableLiveData<SingleAdInFo>
         topAdsPromoInfoLiveData.value = SingleAdInFo()
         viewModel.getGroupInfo()
         assertEquals(response, viewModel.topAdsGetGroupInfo.value)
@@ -245,7 +247,8 @@ class SeePerformanceTopAdsViewModelTest {
         }
         val _topAdsPromoInfo = viewModel.javaClass.getDeclaredField("_topAdsPromoInfo")
         _topAdsPromoInfo.isAccessible = true
-        val topAdsPromoInfoLiveData = _topAdsPromoInfo.get(viewModel) as MutableLiveData<SingleAdInFo>
+        val topAdsPromoInfoLiveData =
+            _topAdsPromoInfo.get(viewModel) as MutableLiveData<SingleAdInFo>
         topAdsPromoInfoLiveData.value = SingleAdInFo()
         viewModel.getTotalAdsAndKeywordsCount()
         assertEquals(data, viewModel.totalAdsAndKeywordsCount.value)
@@ -277,6 +280,46 @@ class SeePerformanceTopAdsViewModelTest {
         }
         viewModel.getAutoAdsInfo()
         assertEquals(response, viewModel.topAdsGetAutoAds.value)
+    }
+
+    @Test
+    fun getTopAdsGetDepositUseCase() {
+        assertEquals(topAdsGetDepositUseCase, viewModel.topAdsGetDepositUseCase)
+    }
+
+    @Test
+    fun getTopAdsGetProductManageUseCase() {
+        assertEquals(topAdsGetProductManageUseCase, viewModel.topAdsGetProductManageUseCase)
+    }
+
+    @Test
+    fun getTopAdsGetProductStatisticsUseCase() {
+        assertEquals(topAdsGetProductStatisticsUseCase, viewModel.topAdsGetProductStatisticsUseCase)
+    }
+
+    @Test
+    fun getTopAdsGetShopInfoV1UseCase() {
+        assertEquals(topAdsGetShopInfoV1UseCase, viewModel.topAdsGetShopInfoV1UseCase)
+    }
+
+    @Test
+    fun getTopAdsGetGroupIdUseCase() {
+        assertEquals(topAdsGetGroupIdUseCase, viewModel.topAdsGetGroupIdUseCase)
+    }
+
+    @Test
+    fun getTopAdsGetAutoAdsUseCase() {
+        assertEquals(topAdsGetAutoAdsUseCase, viewModel.topAdsGetAutoAdsUseCase)
+    }
+
+    @Test
+    fun getTopAdsGetGroupInfoUseCase() {
+        assertEquals(topAdsGetGroupInfoUseCase, viewModel.topAdsGetGroupInfoUseCase)
+    }
+
+    @Test
+    fun getTopAdsProductActionUseCase() {
+        assertEquals(topAdsProductActionUseCase, viewModel.topAdsProductActionUseCase)
     }
 
     @Test
