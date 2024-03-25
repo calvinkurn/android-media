@@ -5,12 +5,18 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.getDrawableChecker
 import com.tokopedia.product.detail.databinding.ThumbnailVariantViewBinding
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by yovi.putra on 13/01/23"
@@ -20,7 +26,7 @@ import com.tokopedia.product.detail.databinding.ThumbnailVariantViewBinding
 class ThumbnailVariantView(
     context: Context,
     attrs: AttributeSet
-) : FrameLayout(context, attrs) {
+) : LinearLayout(context, attrs) {
 
     val binding: ThumbnailVariantViewBinding
 
@@ -61,33 +67,35 @@ class ThumbnailVariantView(
     }
 
     fun setSelectedState() {
-        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        setVariantTitleColor(unifyprinciplesR.color.Unify_GN500)
+        setVariantTitleWeight(Typography.BOLD)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
         resetThumbGrayscale()
     }
 
     fun setSelectedStockEmptyState() {
         setDisableState()
-        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        setVariantTitleColor(unifyprinciplesR.color.Unify_GN500)
+        setVariantTitleWeight(Typography.BOLD)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
     }
 
     fun setUnselectedState() {
-        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        setVariantTitleColor(unifyprinciplesR.color.Unify_NN600)
+        setVariantTitleWeight(Typography.REGULAR)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_default)
         resetThumbGrayscale()
     }
 
     fun setDisableState() {
-        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
-        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        setVariantTitleColor(unifyprinciplesR.color.Unify_NN400)
+        setVariantTitleWeight(Typography.REGULAR)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_disable)
         setThumbGrayscale()
     }
 
     private fun setThumbGrayscale() {
+        binding.variantOverlayEmpty.show()
         if (binding.variantThumbnail.colorFilter == null) {
             val colorMatrix = ColorMatrix()
             colorMatrix.setSaturation(0f)
@@ -97,6 +105,7 @@ class ThumbnailVariantView(
     }
 
     private fun resetThumbGrayscale() {
+        binding.variantOverlayEmpty.hide()
         if (binding.variantThumbnail.colorFilter != null) {
             binding.variantThumbnail.colorFilter = null
         }
@@ -107,14 +116,13 @@ class ThumbnailVariantView(
         binding.variantTitle.setTextColor(color)
     }
 
+    private fun setVariantTitleWeight(weight: Int){
+        binding.variantTitle.setWeight(weight)
+    }
+
     private fun setCardBorder(resId: Int) {
         val drawable = context.getDrawableChecker(resId)
         binding.variantCard.foreground = drawable
-    }
-
-    private fun setCardBackground(colorId: Int) {
-        val color = context.getColorChecker(colorId)
-        binding.variantCard.setCardBackgroundColor(color)
     }
 
     private fun getColor(resId: Int): Int {
