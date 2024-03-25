@@ -79,7 +79,11 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.topads.sdk.domain.model.*
+import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.CpmShop
+import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -123,7 +127,7 @@ class FeedPostViewModelTest {
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase = mockk()
     private val mvcSummaryUseCase: MVCSummaryUseCase = mockk()
     private val topAdsAddressHelper: TopAdsAddressHelper = mockk()
-    private val getCountCommentsUseCase: com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase = mockk()
+    private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
@@ -682,7 +686,7 @@ class FeedPostViewModelTest {
         val dummySuccess = FeedProductActionModel(
             cartId = cartId,
             product = dummyData,
-            source = FeedProductActionModel.Source.BottomSheet,
+            source = FeedProductActionModel.Source.BottomSheet
         )
 
         coEvery { userSession.userId } returns "1"
@@ -1170,14 +1174,14 @@ class FeedPostViewModelTest {
     fun onUpdateCommentsCount_whenSuccess_shouldUpdateData() {
         // given
         provideDefaultFeedPostMockData()
-        coEvery { getCountCommentsUseCase(any()) } returns com.tokopedia.feed.common.comment.model.CountComment(
-            parent = com.tokopedia.feed.common.comment.model.CountComment.Parent(
-                child = com.tokopedia.feed.common.comment.model.CountComment.Child(
+        coEvery { getCountCommentsUseCase(any()) } returns CountComment(
+            parent = CountComment.Parent(
+                child = CountComment.Child(
                     data = listOf(
-                        com.tokopedia.feed.common.comment.model.CountComment.Data(
+                        CountComment.Data(
                             contentId = "image 1 id"
                         ),
-                        com.tokopedia.feed.common.comment.model.CountComment.Data(
+                        CountComment.Data(
                             contentId = "video 1 id"
                         )
                     )

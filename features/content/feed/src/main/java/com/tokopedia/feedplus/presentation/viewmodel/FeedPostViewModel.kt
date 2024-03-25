@@ -113,7 +113,7 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val topAdsAddressHelper: TopAdsAddressHelper,
-    private val getCountCommentsUseCase: com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase,
+    private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val affiliateCookieHelper: AffiliateCookieHelper,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
@@ -766,7 +766,7 @@ class FeedPostViewModel @Inject constructor(
             try {
                 val result = withContext(dispatchers.io) {
                     getCountCommentsUseCase(
-                        com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase.Param(
+                        GetCountCommentsUseCase.Param(
                             sourceId = listOf(
                                 contentId
                             ),
@@ -1071,7 +1071,7 @@ class FeedPostViewModel @Inject constructor(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
                         product = product,
-                        source = source,
+                        source = source
                     )
                 )
             }
@@ -1091,7 +1091,7 @@ class FeedPostViewModel @Inject constructor(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
                         product = product,
-                        source = source,
+                        source = source
                     )
                 )
             }

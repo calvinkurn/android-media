@@ -6,6 +6,7 @@ import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feed.common.comment.MentionedSpanned
+import com.tokopedia.feed.common.comment.TagMentionBuilder
 import com.tokopedia.feed.common.comment.uimodel.CommentUiModel
 import com.tokopedia.feed.common.comment.uimodel.isChild
 import com.tokopedia.feed.common.databinding.ItemCommentEmptyBinding
@@ -77,7 +78,7 @@ class CommentViewHolder {
                     listener.onProfileClicked(item.appLink)
                 }
 
-                tvCommentContent.text = com.tokopedia.feed.common.comment.TagMentionBuilder
+                tvCommentContent.text = TagMentionBuilder
                     .getMentionTag(
                         item = item,
                         mentionColor,

@@ -18,11 +18,11 @@ import dagger.Component
         FeedMainModule::class,
         FeedMainViewModelModule::class,
         FeedFragmentModule::class,
-        com.tokopedia.feed.common.comment.di.ContentCommentModule::class
+        ContentCommentModule::class
     ],
     dependencies = [
         BaseAppComponent::class,
-        CreationUploaderComponent::class,
+        CreationUploaderComponent::class
     ]
 )
 interface FeedMainComponent {
@@ -34,7 +34,7 @@ interface FeedMainComponent {
         fun build(
             appComponent: BaseAppComponent,
             creationUploaderComponent: CreationUploaderComponent,
-            @BindsInstance activityContext : Context
-        ) : FeedMainComponent
+            @BindsInstance activityContext: Context
+        ): FeedMainComponent
     }
 }
