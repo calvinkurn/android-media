@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.os.Build
-import timber.log.Timber
 import java.security.MessageDigest
 
 object SeamlessLoginHelper {
@@ -25,7 +24,6 @@ object SeamlessLoginHelper {
             ).signatures
             getSignatureString(packageInfoSeller)
         }
-        Timber.d("signatureSeller: $signatureSellerApp")
         return signatureSellerApp
     }
 
