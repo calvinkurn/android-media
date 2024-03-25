@@ -8,6 +8,7 @@ data class WidgetRequestModel(
     val sourceType: String = "",
     val sourceId: String = "",
     val cursor: String = "",
+    val searchKeyword: String = "",
 ) {
     companion object {
         val Empty = WidgetRequestModel(

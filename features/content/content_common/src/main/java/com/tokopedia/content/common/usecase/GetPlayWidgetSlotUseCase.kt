@@ -142,7 +142,10 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
             val sourceId: String,
 
             @SerializedName("is_wifi")
-            val isWifi: Boolean
+            val isWifi: Boolean,
+
+            @SerializedName("search_keyword")
+            val searchKeyword: String,
         )
     }
 }
