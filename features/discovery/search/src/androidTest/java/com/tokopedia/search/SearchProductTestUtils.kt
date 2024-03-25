@@ -16,17 +16,15 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
-import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
-import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.product.suggestion.SuggestionListener
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
@@ -35,7 +33,10 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
 
@@ -72,7 +73,7 @@ internal fun View?.perform(vararg viewActions: ViewAction) {
 }
 
 internal fun createProductItemListener(): ProductListener {
-    return object: ProductListener {
+    return object : ProductListener {
         override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
@@ -81,33 +82,26 @@ internal fun createProductItemListener(): ProductListener {
             get() = null
 
         override fun onProductImpressedByteIO(item: ProductItemDataView?) {
-
         }
     }
 }
 
 internal fun createInspirationCardListener(): InspirationCardListener {
-    return object: InspirationCardListener {
+    return object : InspirationCardListener {
         override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {}
     }
 }
 
 internal fun createBroadMatchListener(): BroadMatchListener {
-    return object: BroadMatchListener {
-        override fun onBroadMatchImpressed(
-            broadMatchDataView: BroadMatchDataView,
-            adapterPosition: Int
-        ) {}
+    return object : BroadMatchListener {
+        override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {}
 
         override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
-        override fun onBroadMatchItemImpressed(
-            broadMatchItemDataView: BroadMatchItemDataView,
-            adapterPosition: Int
-        ) {}
-        override fun onBroadMatchItemClicked(
-            broadMatchItemDataView: BroadMatchItemDataView,
-            adapterPosition: Int
-        ) {}
+
+        override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
+
+        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+
         override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
 
@@ -117,7 +111,7 @@ internal fun createBroadMatchListener(): BroadMatchListener {
 }
 
 internal fun createGlobalNavListener(): GlobalNavListener {
-    return object: GlobalNavListener {
+    return object : GlobalNavListener {
         override fun onGlobalNavWidgetImpressed(globalNavDataView: GlobalNavDataView) {}
         override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {}
         override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {}
@@ -125,30 +119,35 @@ internal fun createGlobalNavListener(): GlobalNavListener {
 }
 
 internal fun createBannerAdsListener(): BannerAdsListener {
-    return object: BannerAdsListener {
-        override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {}
+    return object : BannerAdsListener {
+        override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?, dataView: CpmDataView) {}
+
+        override fun onBannerAdsImpressionListener(position: Int, data: CpmData?, dataView: CpmDataView, adapterPosition: Int) {}
+
+        override fun onBannerAdsProductImpressionListener(position: Int, product: Product?, dataView: CpmDataView) {}
+
         override fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {}
 
-        override fun onBannerAdsImpression1PxListener(adapterPosition: Int, data: CpmDataView) {}
+        override fun onBannerAdsImpression1PxListener(data: CpmDataView) {}
 
-        override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {}
+        override fun onImpressionSeeMoreItem(data: CpmDataView, position: Int) {}
+
+        override fun isEnableFixByteIOCPM(): Boolean { return true }
     }
 }
 
 internal fun createSuggestionListener(): SuggestionListener {
     return object : SuggestionListener {
         override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
-
         }
 
         override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
-
         }
     }
 }
 
 internal fun createEmptyStateListener(): EmptyStateListener {
-    return object: EmptyStateListener {
+    return object : EmptyStateListener {
         override fun resetFilters() {}
         override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun onEmptyButtonClicked() {}
@@ -156,7 +155,7 @@ internal fun createEmptyStateListener(): EmptyStateListener {
 }
 
 internal fun createRecommendationListener(): RecommendationListener {
-    return object: RecommendationListener {
+    return object : RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
         override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
