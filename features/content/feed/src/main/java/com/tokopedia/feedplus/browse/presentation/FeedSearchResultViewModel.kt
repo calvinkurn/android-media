@@ -1,21 +1,24 @@
 package com.tokopedia.feedplus.browse.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.feedplus.browse.presentation.model.FeedSearchResultUiState
+import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
+import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
+import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
+import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
+import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultUiState
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import javax.inject.Inject
-import kotlin.random.Random
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 
-class FeedSearchResultViewModel @AssistedInject constructor(
+internal class FeedSearchResultViewModel @AssistedInject constructor(
     @Assisted private val searchKeyword: String,
-): ViewModel() {
+    private val repo: FeedBrowseRepository,
+) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
@@ -24,53 +27,45 @@ class FeedSearchResultViewModel @AssistedInject constructor(
         ): FeedSearchResultViewModel
     }
 
-    private val _resultUiState = MutableLiveData<FeedSearchResultUiState>()
-    val resultState: LiveData<FeedSearchResultUiState> get() = _resultUiState
+    private val _pageState = MutableStateFlow<FeedSearchResultPageState>(FeedSearchResultPageState.Unknown)
 
-    private val _resultData = MutableLiveData<SearchTempDataModel>()
-    val resultData: LiveData<SearchTempDataModel> get() = _resultData
-
-    private val _keyword = MutableLiveData<String>()
-    val keyword: LiveData<String> get() = _keyword
-
-    fun setKeyword(keyword: String) {
-        _keyword.value = keyword
+    val uiState = combine(
+        _pageState,
+        _pageState
+    ) { pageState, _ ->
+        FeedSearchResultUiState(
+            searchKeyword = searchKeyword,
+            pageState = pageState,
+        )
     }
 
-    // Todo: will be replace to real fetcher
-    private var fetchCounter = 0
-    fun fetchData() {
-        viewModelScope.launch {
-            delay(4000)
-
-            val stateRandom = Random.nextInt(0, 4)
-            val uiState = when (stateRandom) {
-                0 -> {FeedSearchResultUiState.InternalError}
-                1 -> {FeedSearchResultUiState.NoConnection}
-                2 -> {FeedSearchResultUiState.NotFound}
-                else -> {FeedSearchResultUiState.Restricted}
-            }
-
-            updateResultState(uiState)
+    fun submitAction(action: FeedSearchResultAction) {
+        when (action) {
+            is FeedSearchResultAction.LoadResult -> handleLoadResult()
         }
     }
 
-    fun getDataResult() {
-        val data = mutableListOf<SearchTempDataModel.CardDetail>()
-        for (i in 0..15) {
-            data.add(
-                SearchTempDataModel.CardDetail(
-                    "Title - ${keyword.value} $i",
-                    "https://picsum.photos/${768 + i}/${432 + i}"
+    private fun handleLoadResult() {
+        viewModelScope.launchCatchError(block = {
+
+            if (_pageState.value is FeedSearchResultPageState.Loading) return@launchCatchError
+
+            _pageState.update { FeedSearchResultPageState.Loading }
+            
+            val response = repo.getWidgetContentSlot(
+                extraParam = WidgetRequestModel(
+                    group = "content_browse_search",
+                    sourceType = "",
+                    sourceId = "0",
+                    searchKeyword = searchKeyword,
                 )
             )
+
+            _pageState.update { FeedSearchResultPageState.Success }
+
+        }) {
+            _pageState.update { FeedSearchResultPageState.Loading }
         }
-
-        _resultData.value = SearchTempDataModel(data, FeedSearchResultUiState.Success)
-    }
-
-    private fun updateResultState(state: FeedSearchResultUiState) {
-        _resultUiState.value = state
     }
 }
 

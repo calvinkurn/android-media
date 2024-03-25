@@ -13,7 +13,7 @@ import dagger.assisted.AssistedInject
 /**
  * Created by Jonathan Darwin on 25 March 2024
  */
-class FeedSearchResultViewModelFactory @AssistedInject constructor(
+internal class FeedSearchResultViewModelFactory @AssistedInject constructor(
     @Assisted owner: SavedStateRegistryOwner,
     @Assisted private val searchKeyword: String,
     private val feedSearchResultViewModelFactory: FeedSearchResultViewModel.Factory,
