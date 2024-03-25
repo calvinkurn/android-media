@@ -23,7 +23,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.NavConstant.ICON_COUNTER_NONE_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar

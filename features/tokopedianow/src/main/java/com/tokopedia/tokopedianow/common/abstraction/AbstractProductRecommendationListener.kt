@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.helper
+package com.tokopedia.tokopedianow.common.abstraction
 
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem

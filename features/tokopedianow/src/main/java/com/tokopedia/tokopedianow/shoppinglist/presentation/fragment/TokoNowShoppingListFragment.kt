@@ -21,7 +21,6 @@ import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -72,10 +71,10 @@ import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutTyp
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
-import com.tokopedia.tokopedianow.common.helper.AbstractEmptyStateOocListener
-import com.tokopedia.tokopedianow.common.helper.AbstractProductRecommendationListener
+import com.tokopedia.tokopedianow.common.abstraction.AbstractEmptyStateOocListener
+import com.tokopedia.tokopedianow.common.abstraction.AbstractProductRecommendationListener
 import com.tokopedia.tokopedianow.shoppinglist.helper.AbstractShoppingListHorizontalProductCardItemListener
-import com.tokopedia.tokopedianow.common.helper.AbstractThematicHeaderListener
+import com.tokopedia.tokopedianow.common.abstraction.AbstractThematicHeaderListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLocalLoadViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
@@ -366,13 +365,13 @@ class TokoNowShoppingListFragment :
 
                 if (isEnabled) {
                     setToolbarContentType(TOOLBAR_TYPE_TITLE)
-                    switchToDarkIcon()
+                    switchToDarkToolbar(force = true)
                     switchToDarkStatusBar()
                     setCustomBackButton(color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White))
                     hideShadow()
                 } else {
                     setToolbarContentType(TOOLBAR_TYPE_SEARCH)
-                    switchToLightIcon()
+                    switchToLightToolbar(force = true)
                     switchToLightStatusBar()
                     setCustomBackButton(color = ContextCompat.getColor(context, (if (context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
                     showShadow()
@@ -791,7 +790,7 @@ class TokoNowShoppingListFragment :
                             navToolbar.setToolbarTitle(String.EMPTY)
                             navToolbar.hideShadow()
                         } else {
-                            navToolbar.switchToLightIcon()
+                            navToolbar.switchToLightToolbar(force = true)
                         }
                     }
                 }

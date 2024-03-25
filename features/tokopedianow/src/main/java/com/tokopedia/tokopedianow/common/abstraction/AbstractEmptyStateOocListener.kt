@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.helper
+package com.tokopedia.tokopedianow.common.abstraction
 
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 

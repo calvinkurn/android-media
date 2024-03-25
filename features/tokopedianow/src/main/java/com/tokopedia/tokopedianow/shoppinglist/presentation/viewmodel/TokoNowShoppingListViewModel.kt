@@ -116,14 +116,15 @@ class TokoNowShoppingListViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
-    private companion object {
+   companion object {
         private const val OOC_WAREHOUSE_ID = 0L
         private const val INVALID_SHOP_ID = 0L
-        private const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
         private const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
         private const val EMPTY_STOCK_WIDGET_TITLE = "Stok habis "
         private const val PRODUCT_CART_WIDGET_TITLE = "produk ada di keranjang"
-    }
+
+       const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
+   }
 
     /**
      * -- private variable section --
