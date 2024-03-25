@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -21,9 +22,11 @@ import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bytedance.applog.util.EventsSenderUtils;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
@@ -54,6 +57,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger;
 import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface;
 import com.tokopedia.applink.AppUtil;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -109,8 +113,10 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
+import com.tokopedia.tkpd.utils.SlardarInit;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
+import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -167,6 +173,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
     private final String PUSH_DELETION_TIME_GAP = "android_push_deletion_time_gap";
     private final String ENABLE_PUSH_TOKEN_DELETION_WORKER = "android_push_token_deletion_rollence";
+    private final String ANDROID_ENABLE_SLARDAR_INIT = "android_enable_slardar_init";
+    private final String SLARDAR_AID = "573733";
+    private final String SLARDAR_CHANNEL_LOCAL_TEST = "local_test";
+    private final String SLARDAR_CHANNEL_GOOGLE_PLAY = "googleplay";
+    private final String SLARDAR_HOST = "https://log.byteoversea.net";
+
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -177,6 +189,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
+        initTranslator();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             Timber.plant(new Timber.DebugTree());
@@ -223,6 +236,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         showDevOptNotification();
         initByteIOPlatform();
+        initSlardar();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
@@ -235,6 +249,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             AppLogAnalytics.init(this);
             TTNetHelper.initTTNet(this);
             LibraAbTest.init(this);
+        }
+    }
+
+    private void initSlardar() {
+        if (remoteConfig.getBoolean(ANDROID_ENABLE_SLARDAR_INIT, true)) {
+            EventsSenderUtils.setEventsSenderEnable(SLARDAR_AID, true, this);
+            EventsSenderUtils.setEventVerifyHost(SLARDAR_AID, SLARDAR_HOST);
+            SlardarInit.INSTANCE.initApm(this);
+            SlardarInit.INSTANCE.initNpth(this, SLARDAR_AID, getSlardarChannel(),
+                    getUserSession().getUserId());
+            SlardarInit.INSTANCE.startApm(SLARDAR_AID, getSlardarChannel());
         }
     }
 
@@ -366,8 +391,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     public void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
-            public void onShakeDetected(boolean isLongShake) {
-                openShakeDetectCampaignPage(isLongShake);
+            public void onShakeDetected(boolean isLongShake, Activity activity) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    openDeveloperOptionsViaShake(activity);
+                } else {
+                    openShakeDetectCampaignPage(isLongShake);
+                }
             }
         }));
 
@@ -405,6 +434,44 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
         registerActivityLifecycleCallbacks(new AppLogActivityLifecycleCallback());
+    }
+
+    private void openDeveloperOptionsViaShake(Activity activity) {
+        // Create AlertDialog Builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        // Set Title and Message
+        builder.setTitle("Developer Options");
+        builder.setMessage("Enter developer options?");
+
+        // Set Positive Button and its Listener
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.DEVELOPER_OPTIONS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+
+                dialogInterface.dismiss(); // Dismiss the dialog
+            }
+        });
+
+        // Set Negative Button and its Listener
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss(); // Dismiss the dialog
+            }
+        });
+
+        activity.findViewById(android.R.id.content).getRootView().post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        builder.show();
+                    }
+                }
+        );
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
@@ -703,6 +770,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         });
     }
 
+    private void initTranslator() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            TranslatorManager.init(this, "");
+        }
+    }
+
     private void initEmbraceConfig() {
         String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
         if (!TextUtils.isEmpty(logEmbraceConfigString)) {
@@ -855,6 +928,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void showDevOptNotification() {
         new DevOptNotificationManager(this).start();
+    }
+
+    private String getSlardarChannel() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            return SLARDAR_CHANNEL_LOCAL_TEST;
+        } else {
+            return SLARDAR_CHANNEL_GOOGLE_PLAY;
+        }
     }
 
     @Override
