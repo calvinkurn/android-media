@@ -51,4 +51,15 @@ class TopAdsSaveSelectionUseCase @Inject constructor(graphqlRepository: GraphqlR
 
         setRequestParams(params)
     }
+
+    fun setParam(isActive: Boolean, selectedItemId: String, frequency: String) {
+        val params = mutableMapOf(
+            ParamObject.SHOP_Id to userSessionInterface.shopId,
+            ParamObject.ACTION to (if (isActive) PARAM_TOGGLE_ON else PARAM_TOGGLE_OFF),
+            PARAM_DASH_SELECTION_ITEM to selectedItemId,
+            FREQUENCY to frequency
+        )
+
+        setRequestParams(params)
+    }
 }

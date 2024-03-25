@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationCardMapper
+import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.productcard.experiments.ProductCardExperiment
@@ -10,11 +11,16 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
-    query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!, , ${'$'}productCardVersion: String!) {
-        getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location, productCardVersion: ${'$'}productCardVersion) {
+    query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!, , ${'$'}productCardVersion: String!, ${'$'}bytedanceSessionID: String!, ${'$'}refreshType: Int!) {
+        getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location, productCardVersion: ${'$'}productCardVersion, bytedanceSessionID: ${'$'}bytedanceSessionID, refreshType: ${'$'}refreshType) {
             pageName
             layoutName
             hasNextPage
+            appLog {
+                bytedanceSessionID
+                requestID
+                logID
+            }
             cards {
               id
               categoryID
@@ -79,11 +85,15 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
                  value
                 }
               }
+              recParam
+              countSold
+              parentProductID
             }
       }
     }
 """
 
+@HomeScope
 @GqlQuery("GetHomeRecommendationCardQuery", GET_HOME_RECOMMENDATION_CARD_QUERY)
 class GetHomeRecommendationCardUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<GetHomeRecommendationCardResponse>,
@@ -99,9 +109,15 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
         productPage: Int,
         tabName: String,
         paramSource: String,
-        location: String
+        location: String,
     ): HomeRecommendationDataModel {
-        graphqlUseCase.setRequestParams(createRequestParams(productPage, paramSource, location))
+        graphqlUseCase.setRequestParams(
+            createRequestParams(
+                productPage,
+                paramSource,
+                location,
+            )
+        )
         return homeRecommendationCardMapper.mapToRecommendationCardDataModel(
             graphqlUseCase.executeOnBackground().getHomeRecommendationCard,
             tabName,
@@ -112,7 +128,7 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
     private fun createRequestParams(
         productPage: Int,
         paramSource: String,
-        location: String
+        location: String,
     ): Map<String, Any> {
         return RequestParams.create().apply {
             putInt(PARAM_PRODUCT_PAGE, productPage)

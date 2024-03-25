@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardPaginationLoadState
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -91,10 +92,8 @@ class ProductCardCarouselViewModel(
         var lihatSemuaComponentData: ComponentsItem? = null
         components.lihatSemua?.let {
 //            we don't add header component in case after when query is hit but no list of products were found.
-            if (!(
-                components.noOfPagesLoaded == 1 && components.getComponentsItem()
-                    .isNullOrEmpty()
-                )
+            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem()
+                    .isNullOrEmpty())
             ) {
                 it.run {
                     val lihatSemuaDataItem = DataItem(
@@ -124,11 +123,11 @@ class ProductCardCarouselViewModel(
             setProductsList()
             setTimer()
         }, onError = {
-                components.noOfPagesLoaded = 1
-                components.verticalProductFailState = true
-                components.shouldRefreshComponent = null
-                productLoadError.value = true
-            })
+            components.noOfPagesLoaded = 1
+            components.verticalProductFailState = true
+            components.shouldRefreshComponent = null
+            productLoadError.value = true
+        })
     }
 
     fun resetComponent() {
@@ -222,24 +221,31 @@ class ProductCardCarouselViewModel(
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase?.getCarouselPaginatedData(
-                    components.id,
-                    components.pageEndPoint,
-                    PRODUCT_PER_PAGE
-                ) == true
-            ) {
-                getProductList()?.let {
-                    isLoading = false
-                    reSyncProductCardHeight(it)
-                    productCarouselList.value = addLoadMore(it)
-                    syncData.value = true
+            when (productCardsUseCase?.getCarouselPaginatedData(
+                components.id,
+                components.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )) {
+                ProductCardPaginationLoadState.LOAD_MORE -> {
+                    getProductList()?.let {
+                        isLoading = false
+                        reSyncProductCardHeight(it)
+                        productCarouselList.value = addLoadMore(it)
+                        syncData.value = true
+                    }
                 }
-            } else {
-                paginatedErrorData()
+
+                ProductCardPaginationLoadState.REACH_END_OF_PAGE -> {
+                    setProductsList()
+                }
+
+                else -> {
+                    paginatedErrorData()
+                }
             }
         }, onError = {
-                paginatedErrorData()
-            })
+            paginatedErrorData()
+        })
     }
 
     private suspend fun paginatedErrorData() {
