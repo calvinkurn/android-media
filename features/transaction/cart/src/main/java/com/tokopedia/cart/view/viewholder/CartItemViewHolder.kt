@@ -1194,6 +1194,9 @@ class CartItemViewHolder(
                     )
                 }
                 binding.iconVariant.show()
+            } else {
+                binding.iconVariant.setOnClickListener(null)
+                binding.iconVariant.gone()
             }
         } else {
             textProductVariant.setOnClickListener(null)
