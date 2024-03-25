@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopPageMockWidgetAdapter(
-    private val listenerShopPageMockWidgetViewHolder: ShopPageMockWidgetViewHolder.Listener? = null
+    private val listenerShopPageMockWidgetViewHolder: ShopPageMockWidgetViewHolder.Listener? = null,
+    private val isItemRemovable: Boolean = false
 ) : RecyclerView.Adapter<ShopPageMockWidgetAdapter.ShopPageMockWidgetViewHolder>() {
 
     private var listShopPageMockWidget: MutableList<ShopPageMockWidgetModel> = mutableListOf()
@@ -21,7 +24,7 @@ class ShopPageMockWidgetAdapter(
 
     override fun onBindViewHolder(holder: ShopPageMockWidgetViewHolder, position: Int) {
         listShopPageMockWidget.getOrNull(position)?.let {
-            holder.bind(it)
+            holder.bind(it, isItemRemovable)
         }
     }
 
@@ -65,9 +68,9 @@ class ShopPageMockWidgetAdapter(
         result.dispatchUpdatesTo(this)
     }
 
-    fun addMockWidgetModel(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
+    fun addMockWidgetModel(shopPageMockWidgetModel: List<ShopPageMockWidgetModel>) {
         submitList(listShopPageMockWidget.toMutableList().apply {
-            add(shopPageMockWidgetModel)
+            addAll(shopPageMockWidgetModel)
         })
     }
 
@@ -79,6 +82,12 @@ class ShopPageMockWidgetAdapter(
 
     fun getData(): List<ShopPageMockWidgetModel> {
         return listShopPageMockWidget.toList()
+    }
+
+    fun removeSelectedMockWidget(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
+        submitList(listShopPageMockWidget.toMutableList().apply {
+            remove(shopPageMockWidgetModel)
+        })
     }
 
     class RvDiffUtilCallback(
@@ -110,21 +119,38 @@ class ShopPageMockWidgetAdapter(
     class ShopPageMockWidgetViewHolder(itemView: View, private val listener: Listener? = null) : RecyclerView.ViewHolder(itemView) {
         interface Listener {
             fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel)
+            fun onClearMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel)
         }
 
-        fun bind(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
-            configShopWidgetName(shopPageMockWidgetModel)
+        fun bind(shopPageMockWidgetModel: ShopPageMockWidgetModel, isItemRemovable: Boolean) {
+            configShopWidgetName(shopPageMockWidgetModel, isItemRemovable)
         }
 
-        private fun configShopWidgetName(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
+        private fun configShopWidgetName(shopPageMockWidgetModel: ShopPageMockWidgetModel, isItemRemovable: Boolean) {
             itemView.findViewById<Typography>(R.id.text_shop_widget_name).apply {
                 var optionText = shopPageMockWidgetModel.getWidgetName()
                 if (shopPageMockWidgetModel.isFestivity()) {
                     optionText += " (festivity)"
                 }
+                if (shopPageMockWidgetModel.isCustomShopWidgetMockResponse()) {
+                    optionText += " (Custom)"
+                }
                 text = optionText
                 listener?.let {
                     setOnClickListener { listener.onMockWidgetItemClick(shopPageMockWidgetModel) }
+                }
+            }
+
+            itemView.findViewById<View>(R.id.ic_clear).apply {
+                if (isItemRemovable) {
+                    show()
+                    setOnClickListener {
+                        listener?.let {
+                            listener.onClearMockWidgetItemClick(shopPageMockWidgetModel)
+                        }
+                    }
+                } else {
+                    hide()
                 }
             }
         }

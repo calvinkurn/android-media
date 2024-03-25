@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 
-class ShopPageMockWidgetActivity : BaseActivity() {
+class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.ShopPageMockWidgetViewHolder.Listener {
     companion object {
         private const val SHARED_PREF_NAME = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
         private const val SHARED_PREF_MOCK_WIDGET_DATA = "SHARED_PREF_MOCK_WIDGET_DATA"
@@ -23,7 +23,7 @@ class ShopPageMockWidgetActivity : BaseActivity() {
         getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
     private val adapter by lazy {
-        ShopPageMockWidgetAdapter()
+        ShopPageMockWidgetAdapter(this, true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +38,16 @@ class ShopPageMockWidgetActivity : BaseActivity() {
 
     private fun setupView() {
         configButtonRouteToShopPage()
+        configRv()
         configButtonTemplateShopWidget()
         configButtonCustomShopWidget()
         configButtonClearShopWidgetMockData()
         renderListMockShopWidgetData()
+    }
+
+    private fun configRv() {
+        val rv = findViewById<RecyclerView>(R.id.rv_list_mock_shop_widget)
+        rv.adapter = adapter
     }
 
     private fun configButtonCustomShopWidget() {
@@ -51,6 +57,17 @@ class ShopPageMockWidgetActivity : BaseActivity() {
     }
 
     private fun showBottomSheetChooseCustomMockShopWidget() {
+        val bottomSheet = ShopPageCustomMockWidgetBottomSheet.createInstance()
+        bottomSheet.setOnAddSelectedShopWidget {
+            addShopWidgetMockData(it)
+            updateShopWidgetMockDataSharedPref()
+        }
+        bottomSheet.show(supportFragmentManager, "")
+    }
+
+    private fun addShopWidgetMockData(listShopPageMockWidgetModel: List<ShopPageMockWidgetModel>) {
+        hideEmptyState()
+        adapter.addMockWidgetModel(listShopPageMockWidgetModel)
     }
 
     private fun configButtonClearShopWidgetMockData() {
@@ -80,8 +97,8 @@ class ShopPageMockWidgetActivity : BaseActivity() {
     private fun showBottomSheetChooseTemplateMockShopWidget() {
         val bottomSheet = ShopPageTemplateMockWidgetBottomSheet.createInstance()
         bottomSheet.setOnAddSelectedShopWidget {
-            addShopWidgetMockDataToSharedPref(it)
-            renderListMockShopWidgetData()
+            addShopWidgetMockData(it)
+            updateShopWidgetMockDataSharedPref()
         }
         bottomSheet.show(supportFragmentManager, "")
     }
@@ -90,8 +107,6 @@ class ShopPageMockWidgetActivity : BaseActivity() {
         val stringShopPageMockWidgetData = sharedPref.getString(SHARED_PREF_MOCK_WIDGET_DATA, null)
         if (null != stringShopPageMockWidgetData) {
             hideEmptyState()
-            val rv = findViewById<RecyclerView>(R.id.rv_list_mock_shop_widget)
-            rv.adapter = adapter
             val listShopPageMockData = ShopPageMockWidgetModelMapper.mapToShopPageMockWidgetModel(stringShopPageMockWidgetData)
             adapter.setListShopPageMockWidget(listShopPageMockData)
         } else {
@@ -109,19 +124,21 @@ class ShopPageMockWidgetActivity : BaseActivity() {
         findViewById<View>(R.id.text_empty_state).show()
     }
 
-    private fun addShopWidgetMockDataToSharedPref(shopPageMockWidgetModel: List<ShopPageMockWidgetModel>) {
-        val mockShopWidgetData = if (sharedPref.getString(SHARED_PREF_MOCK_WIDGET_DATA, null) != null) {
-            val stringShopPageMockWidgetData = sharedPref.getString(SHARED_PREF_MOCK_WIDGET_DATA, null)
-            val listShopPageMockData = ShopPageMockWidgetModelMapper.mapToShopPageMockWidgetModel(stringShopPageMockWidgetData.orEmpty())
-            listShopPageMockData.toMutableList().apply {
-                addAll(shopPageMockWidgetModel)
-            }.toList()
-        } else {
-            shopPageMockWidgetModel
-        }
-        ShopPageMockWidgetModelMapper.updateWidgetId(mockShopWidgetData)
-        ShopPageMockWidgetModelMapper.listMockWidgetDataToJson(mockShopWidgetData.map { it.getMockShopWidgetData() })?.let {
+    private fun updateShopWidgetMockDataSharedPref() {
+        val listMockShopWidgetData = adapter.getData()
+        ShopPageMockWidgetModelMapper.updateWidgetId(listMockShopWidgetData)
+        ShopPageMockWidgetModelMapper.listMockWidgetDataToJson(listMockShopWidgetData.map { it.getMockShopWidgetData() })?.let {
             sharedPref.edit().putString(SHARED_PREF_MOCK_WIDGET_DATA, it).apply()
+        }
+    }
+
+    override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {}
+
+    override fun onClearMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
+        adapter.removeSelectedMockWidget(shopPageMockWidgetModel)
+        updateShopWidgetMockDataSharedPref()
+        if (adapter.getData().isEmpty()) {
+            showEmptyState()
         }
     }
 

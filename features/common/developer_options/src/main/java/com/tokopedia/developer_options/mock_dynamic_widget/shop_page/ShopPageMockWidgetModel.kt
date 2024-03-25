@@ -11,6 +11,18 @@ data class ShopPageMockWidgetModel(
         return jsonObjectData?.get("widgetName")?.asString.orEmpty()
     }
 
+    fun markAsCustomWidget(){
+        val first = JsonParser.parseString(mockShopWidgetData.first).asJsonObject.apply {
+            addProperty("_shop_widget_custom_widget_flag", true)
+        }.toString()
+        mockShopWidgetData = Pair(first, mockShopWidgetData.second)
+    }
+
+    fun isCustomShopWidgetMockResponse(): Boolean {
+        val jsonObjectData = JsonParser.parseString(mockShopWidgetData.first).asJsonObject
+        return jsonObjectData?.get("_shop_widget_custom_widget_flag")?.asBoolean.orFalse()
+    }
+
     fun editWidgetId(index: Int) {
         val first = JsonParser.parseString(mockShopWidgetData.first).asJsonObject.apply {
             addProperty("widgetID", index)

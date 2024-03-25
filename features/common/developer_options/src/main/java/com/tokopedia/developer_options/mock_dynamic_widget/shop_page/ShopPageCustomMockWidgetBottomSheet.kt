@@ -1,31 +1,28 @@
 package com.tokopedia.developer_options.mock_dynamic_widget.shop_page
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.developer_options.R
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextAreaUnify2
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifycomponents.toDp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-class ShopPageCustomMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidgetAdapter.ShopPageMockWidgetViewHolder.Listener, CoroutineScope {
+class ShopPageCustomMockWidgetBottomSheet : BottomSheetUnify() {
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
-
+    private var onAddSelectedWidget: (List<ShopPageMockWidgetModel>) -> Unit = {}
     private val childLayoutRes = R.layout.shop_page_custom_mock_widget_bottom_sheet_layout
-    private val adapter by lazy {
-        ShopPageMockWidgetAdapter(this)
-    }
+    private val isGenerateDynamicTabWidgetResponse: Boolean
+        get() = view?.findViewById<CheckboxUnify>(R.id.toggle_is_generate_dynamic_data_widget_response)?.isChecked.orFalse()
+    private val dynamicWidgetMockResponse: String
+        get() = view?.findViewById<TextAreaUnify2>(R.id.text_area_dynamic_tab_widget_response)?.editText?.text?.toString().orEmpty()
+    private val layoutV2WidgetMockResponse: String
+        get() = view?.findViewById<TextAreaUnify2>(R.id.text_area_layout_v2_widget_response)?.editText?.text?.toString().orEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +32,9 @@ class ShopPageCustomMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidg
 
     private fun setDefaultParams() {
         setTitle(TITLE)
-        isDragable = true
-        isHideable = true
+        isHideable = false
         showCloseIcon = true
         showHeader = true
-        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
     private fun initBottomSheet() {
@@ -52,77 +47,97 @@ class ShopPageCustomMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWidg
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configTextFieldSearchWidgetName()
-        configShopPageMockWidgetOption()
-        configToggleFestivity()
+        configTextArea()
+        configToggleGenerateDynamicTabResponse()
+        configButtonAddCustomWidget()
     }
 
-    private fun configTextFieldSearchWidgetName() {
-        view?.findViewById<TextFieldUnify>(R.id.text_field_search_widget_name)?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                s?.toString()?.let {
-                    adapter.filterWidgetByName(it)
-                    val rv = view?.findViewById<RecyclerView>(R.id.rv_mock_shop_widget_option)
-                    rv?.scrollToPosition(0)
+    private fun configToggleGenerateDynamicTabResponse() {
+        view?.findViewById<CheckboxUnify>(R.id.toggle_is_generate_dynamic_data_widget_response)?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                view?.findViewById<TextAreaUnify2>(R.id.text_area_dynamic_tab_widget_response)?.editText?.setText("")
+                view?.findViewById<TextAreaUnify2>(R.id.text_area_dynamic_tab_widget_response)?.isEnabled = false
+            } else {
+                view?.findViewById<TextAreaUnify2>(R.id.text_area_dynamic_tab_widget_response)?.isEnabled = true
+            }
+        }
+
+    }
+
+    private fun generateDynamicTabMockResponseFromV2Response(layoutV2MockResponseJsonObject: JsonObject): JsonObject {
+        return ShopPageMockWidgetModelMapper.generateMockDynamicTabData(layoutV2MockResponseJsonObject)
+    }
+
+    private fun configTextArea() {
+        view?.findViewById<TextAreaUnify2>(R.id.text_area_dynamic_tab_widget_response)?.apply {
+            minLine = 20
+            maxLine = 20
+
+        }
+        view?.findViewById<TextAreaUnify2>(R.id.text_area_layout_v2_widget_response)?.apply {
+            minLine = 20
+            maxLine = 20
+        }
+    }
+
+    private fun configButtonAddCustomWidget() {
+        view?.findViewById<UnifyButton>(R.id.btn_add_custom_shop_widget)?.setOnClickListener {
+            val layoutV2MockResponseJsonObject: JsonObject = try {
+                JsonParser.parseString(layoutV2WidgetMockResponse).asJsonObject
+            } catch (e: Exception) {
+                Toaster.build(it.rootView, "Layout V2 mock response error: ${e.message}").show()
+                return@setOnClickListener
+            }
+            if(!isValidLayoutV2MockResponse(layoutV2MockResponseJsonObject)){
+                Toaster.build(it.rootView, "Wrong layout V2 mock response").show()
+                return@setOnClickListener
+            }
+            val dynamicTabMockResponseJsonObject: JsonObject = try {
+                if (isGenerateDynamicTabWidgetResponse) {
+                    generateDynamicTabMockResponseFromV2Response(layoutV2MockResponseJsonObject)
+                } else {
+                    JsonParser.parseString(dynamicWidgetMockResponse).asJsonObject
                 }
+            } catch (e: Exception) {
+                Toaster.build(it.rootView, "Dynamic Tab mock response error: ${e.message}").show()
+                return@setOnClickListener
             }
-
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) { /* no need to implement */
+            if(!isValidDynamicTabMockResponse(dynamicTabMockResponseJsonObject)){
+                Toaster.build(it.rootView, "Wrong layout V2 mock response").show()
+                return@setOnClickListener
             }
-
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) { /* no need to implement */
-            }
-        })
-    }
-
-    private fun configToggleFestivity() {
-        view?.findViewById<CheckboxUnify>(R.id.toggle_is_festivity)?.setOnCheckedChangeListener { _, isChecked ->
-            adapter.updateIsFestivity(isChecked)
+            onAddSelectedWidget.invoke(listOf(
+                ShopPageMockWidgetModel(
+                    Pair(
+                        dynamicTabMockResponseJsonObject.toString(),
+                        layoutV2MockResponseJsonObject.toString(),
+                    )
+                ).apply {
+                    markAsCustomWidget()
+                }
+            ))
+            dismiss()
         }
     }
 
-    private fun configShopPageMockWidgetOption() {
-        launch {
-            val listShopPageMockWidgetOption = generateTemplateShopWidgetOption()
-            val rv = view?.findViewById<RecyclerView>(R.id.rv_mock_shop_widget_option)
-            rv?.adapter = adapter
-            adapter.setListShopPageMockWidget(listShopPageMockWidgetOption)
-        }
+    private fun isValidLayoutV2MockResponse(jsonObj: JsonObject): Boolean {
+        return jsonObj.has("type") && jsonObj.has("name")
     }
 
-    private fun generateTemplateShopWidgetOption(): List<ShopPageMockWidgetModel> {
-        return context?.resources?.let {
-            val shopPageMockJsonData = ShopPageMockWidgetModelMapper.getShopPageMockJsonFromRaw(it)
-            return ShopPageMockWidgetModelMapper.generateTemplateShopWidgetData(shopPageMockJsonData)
-        } ?: listOf()
+    private fun isValidDynamicTabMockResponse(jsonObj: JsonObject): Boolean {
+        return jsonObj.has("widgetType") && jsonObj.has("widgetName")
     }
 
-    fun setOnOptionSelected(onOptionSelected: (ShopPageMockWidgetModel) -> Unit) {
-        this.onOptionSelected = onOptionSelected
-    }
-
-    private var onOptionSelected: (ShopPageMockWidgetModel) -> Unit = {}
 
     companion object {
-        const val TITLE = "Choose Widget Name From Template"
+        const val TITLE = "Add Custom Shop Widget"
         fun createInstance(): ShopPageCustomMockWidgetBottomSheet {
             return ShopPageCustomMockWidgetBottomSheet()
         }
     }
 
-    override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
-        onOptionSelected.invoke(shopPageMockWidgetModel)
-        dismiss()
+    fun setOnAddSelectedShopWidget(onAddSelectedWidget: (List<ShopPageMockWidgetModel>) -> Unit) {
+        this.onAddSelectedWidget = onAddSelectedWidget
     }
 
 }
