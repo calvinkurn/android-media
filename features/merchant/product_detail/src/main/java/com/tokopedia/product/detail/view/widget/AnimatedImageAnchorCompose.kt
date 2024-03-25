@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
@@ -93,7 +92,7 @@ fun AnimatedImageAnchor(
 
     NestTheme {
         Card(
-            border = BorderStroke(BORDER_SIZE.dp, Color.White),
+            border = BorderStroke(BORDER_SIZE.dp, NestTheme.colors.NN._50),
             shape = RoundedCornerShape(radiusAnimatable.value.dp),
             modifier = Modifier
                 .size(IMAGE_SIZE.dp)
