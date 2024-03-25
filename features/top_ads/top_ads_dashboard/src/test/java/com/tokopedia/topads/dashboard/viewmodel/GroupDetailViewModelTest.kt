@@ -310,17 +310,23 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `changeBidState should set daily budget when not automatic and dailyBudgetSpent is not unlimited`() {
+        var isOnSuccessCalled = false
         viewModel.changeBidState(
             isAutomatic = false,
             groupId = 1,
             dailyBudgetSpent = "100",
             priceSpent = 10f,
-            onSuccess = { }
+            onSuccess = {
+                isOnSuccessCalled = true
+            }
         )
+        Assert.assertTrue(isOnSuccessCalled)
+        coVerify { topAdsCreateUseCase.execute(any()) }
     }
 
     @Test
     fun `changeBidState should set strategies to AUTO_BID_STATE when isAutomatic is true`() {
+        var isOnSuccessCalled = false
         viewModel.changeBidState(
             true,
             123,
@@ -328,12 +334,17 @@ class GroupDetailViewModelTest {
             4.56f,
             7.89f,
             "1000",
-            2.34f,
-            { })
+            2.34f
+        ) {
+            isOnSuccessCalled = true
+        }
+        Assert.assertTrue(isOnSuccessCalled)
+        coVerify { topAdsCreateUseCase.execute(any()) }
     }
 
     @Test
     fun `changeBidState should set strategies and bid settings when isAutomatic is false`() {
+        var isOnSuccessCalled = false
         viewModel.changeBidState(
             false,
             456,
@@ -341,8 +352,12 @@ class GroupDetailViewModelTest {
             5.67f,
             8.90f,
             "2000",
-            3.45f,
-            { })
+            3.45f
+        ) {
+            isOnSuccessCalled = true
+        }
+        Assert.assertTrue(isOnSuccessCalled)
+        coVerify { topAdsCreateUseCase.execute(any()) }
     }
 
     @Test

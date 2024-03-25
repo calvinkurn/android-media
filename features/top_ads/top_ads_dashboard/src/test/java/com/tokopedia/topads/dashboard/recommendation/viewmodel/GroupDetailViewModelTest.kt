@@ -27,6 +27,7 @@ import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsigh
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -36,6 +37,7 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -291,6 +293,7 @@ class GroupDetailViewModelTest {
             Int.ZERO, String.EMPTY
         )
         coVerify { topAdsCreateUseCase.execute(any()) }
+        assertEquals(Success(data), viewModel.editInsightLiveData.value)
     }
 
     @Test
