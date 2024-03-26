@@ -13,10 +13,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.factory.FeedSearchResultViewModelFactory
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
 import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
@@ -32,6 +35,7 @@ import com.tokopedia.feedplus.R as feedplusR
 
 internal class FeedSearchResultFragment @Inject constructor(
     private val viewModelFactoryCreator: FeedSearchResultViewModelFactory.Creator,
+    private val router: Router,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedSearchResultBinding? = null
@@ -45,7 +49,10 @@ internal class FeedSearchResultFragment @Inject constructor(
     }
 
     private val adapter: FeedSearchResultAdapter by lazyThreadSafetyNone {
-        FeedSearchResultAdapter(this.viewLifecycleOwner.lifecycleScope)
+        FeedSearchResultAdapter(
+            this.viewLifecycleOwner.lifecycleScope,
+            inspirationCardListener
+        )
     }
 
     private val loadMoreListener = object : RecyclerView.OnScrollListener() {
@@ -56,6 +63,29 @@ internal class FeedSearchResultFragment @Inject constructor(
             if (lastVisibleItemPosition >= adapter.itemCount - LOAD_PAGE_THRESHOLD) {
                 viewModel.submitAction(FeedSearchResultAction.LoadResult)
             }
+        }
+    }
+
+    private val inspirationCardListener = object : InspirationCardViewHolder.Item.Listener {
+        override fun onImpressed(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+
+        }
+
+        override fun onClicked(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+            router.route(context, model.item.appLink)
+        }
+
+        override fun onAuthorClicked(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+            router.route(context, model.item.partner.appLink)
         }
     }
 

@@ -1,14 +1,17 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
 import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import kotlinx.coroutines.CoroutineScope
 
 internal class FeedSearchResultAdapter(
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    inspirationCardListener: InspirationCardViewHolder.Item.Listener
 ): FeedBrowseItemAdapter<List<FeedSearchResultContent>>(
-    coroutineScope
+    scope = coroutineScope,
+    inspirationCardListener = inspirationCardListener,
 ) {
 
     fun setShimmer() {
