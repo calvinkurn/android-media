@@ -49,10 +49,9 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
         try {
             if (AppSignatureUtil.isSignatureMatch(
                     AppSignatureUtil.getAppSignature(
-                        this,
+                        applicationContext,
                         SeamlessSellerConstant.SELLERAPP_PACKAGE
-                    ),
-                    AppSignatureUtil.TOKO_APP_SIGNATURE
+                    ), AppSignatureUtil.TOKO_APP_SIGNATURE
                 )
             ) {
                 val intent = Intent().apply {
