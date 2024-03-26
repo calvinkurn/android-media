@@ -27,9 +27,9 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
                 put(AdsLogConst.Param.PRODUCT_ID, productId)
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                //todo need to confirm
+                // todo need to confirm
                 put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
-            },
+            }
         )
     }
 
@@ -45,7 +45,7 @@ object AppLogTopAds {
         productId: String,
         enterFrom: String,
         channel: String,
-        cardType: String,
+        cardType: String
     ) {
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW,
@@ -57,7 +57,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
                 put(AdsLogConst.Param.ENTER_FROM, enterFrom)
                 put(AdsLogConst.Param.CHANNEL, channel)
-            },
+            }
         )
     }
 
@@ -81,10 +81,10 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
                 put(AdsLogConst.Param.PRODUCT_ID, productId)
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                //todo need to confirm
-                put(AdsLogConst.Param.SESSION_INFO, sizePercent)
+                // TODO: Need to confirm, whether the sessionInfo contains the structured JSON string.
+                put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
                 put(AdsLogConst.Param.SIZE_PERCENT, sizePercent)
-            },
+            }
         )
     }
 
@@ -114,7 +114,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.ENTER_FROM, enterFrom)
                 put(AdsLogConst.Param.CHANNEL, channel)
                 put(AdsLogConst.Param.SIZE_PERCENT, sizePercent)
-            },
+            }
         )
     }
 
@@ -143,7 +143,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
                 put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
                 put(AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK, timeIntervalClick)
-            },
+            }
         )
     }
 
@@ -161,7 +161,7 @@ object AppLogTopAds {
         refer: String,
         cardType: String,
         channel: String,
-        enterFrom: String,
+        enterFrom: String
     ) {
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
@@ -174,7 +174,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
                 put(AdsLogConst.Param.CHANNEL, channel)
                 put(AdsLogConst.Param.ENTER_FROM, enterFrom)
-            },
+            }
         )
     }
 }
