@@ -40,7 +40,7 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
                     }
                 }
                 setOnClickListener {
-                    topAdsBannerClickListener?.onBannerAdsClicked(adapterPosition,
+                    topAdsBannerClickListener?.onBannerAdsClicked(absoluteAdapterPosition,
                             model.appLink, model.cpmData)
                     topAdsUrlHitter.hitClickUrl(className, model.adsClickUrl, "", "", "")
                 }

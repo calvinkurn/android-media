@@ -11,12 +11,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import org.json.JSONObject
 
 class MainActivity : BaseActivity() {
 
@@ -32,6 +34,14 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
+        AppLogAnalytics.send("testapp_event", JSONObject().also {
+            it.put("greeting","helloworld")
+            it.put("key2",2)
+            it.put("key3",2.22f)
+            it.put("key4", JSONObject().also {
+                it.put("inner_key1","value2")
+            })
+        })
         model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
 
         setContent {
