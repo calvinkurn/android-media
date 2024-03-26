@@ -97,31 +97,29 @@ class TrackingPageComposeViewModel @Inject constructor(
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
                 if (getTrackingData.response.messageError?.isEmpty() == false) {
-                    _uiState.update {
-                        it.copy(isLoading = false)
-                    }
                     getTrackingData.response.messageError.firstOrNull()?.run {
                         _error.emit(MessageErrorException(this.toString()))
                     }
-                } else {
-                    val uiModel = mapper.mapTrackingDataCompose(
-                        getTrackingData,
-                        userSession.userId,
-                        userSession.deviceId,
-                        orderId,
-                        trackingUrlFromOrder,
-                        userSession.accessToken
+                }
+                val uiModel = mapper.mapTrackingDataCompose(
+                    getTrackingData,
+                    userSession.userId,
+                    userSession.deviceId,
+                    orderId,
+                    trackingUrlFromOrder,
+                    userSession.accessToken
+                )
+                _uiState.update {
+                    it.copy(isLoading = false, trackingData = uiModel)
+                }
+                if ((!trackingUrl.isNullOrEmpty()) && caller.equals(
+                        SELLER_CALLER_KEY,
+                        ignoreCase = true
                     )
-                    _uiState.update {
-                        it.copy(isLoading = false, trackingData = uiModel)
-                    }
-                    if ((!trackingUrl.isNullOrEmpty()) && caller.equals(
-                            SELLER_CALLER_KEY,
-                            ignoreCase = true
-                        )
-                    ) {
-                        retryAvailability(orderId)
-                    }
+                ) {
+                    retryAvailability(orderId)
+                }
+                if (uiModel.page.targetedTickerParam.page.isNotEmpty()) {
                     getTickerData(uiModel.page.targetedTickerParam)
                 }
             },
