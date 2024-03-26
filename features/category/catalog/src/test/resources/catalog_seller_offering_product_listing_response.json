@@ -1,0 +1,68 @@
+{
+  "data": {
+    "catalogGetProductList": {
+      "header": {
+        "totalData": 2000
+      },
+      "products": [
+        {
+          "isVariant": true,
+          "productID": "2151573244",
+          "warehouseID": "343407",
+          "shop": {
+            "id": "6553233",
+            "name": "toko pricesuggestionstg",
+            "city": "Bekasi",
+            "badge": "https://images.tokopedia.net/img/official_store_badge.png"
+          },
+          "price": {
+            "text": "Rp4.999.000",
+            "original": ""
+          },
+          "credibility": {
+            "rating": "5.0",
+            "ratingCount": "123",
+            "sold": "10rb+ terjual"
+          },
+          "labelGroups": [
+            {
+              "position": "overlay_2",
+              "title": "Bebas Ongkir",
+              "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/overlay-boreg.png"
+            },
+            {
+              "position": "ri_product_offer",
+              "title": "+2 lain, disc 10%",
+              "url": ""
+            }
+          ],
+          "mediaUrl": {
+            "image": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2024/1/26/97b79c98-3b41-404d-a36a-d255a76f7f6f.png",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/1/26/97b79c98-3b41-404d-a36a-d255a76f7f6f.png",
+            "image500": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2024/1/26/97b79c98-3b41-404d-a36a-d255a76f7f6f.png",
+            "image700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2024/1/26/97b79c98-3b41-404d-a36a-d255a76f7f6f.png"
+          },
+          "stock": {
+            "soldPercentage": 80,
+            "isHidden": false,
+            "wording": ""
+          },
+          "additionalService": {
+            "name": "Garansi Toko"
+          },
+          "delivery": {
+            "eta": "Tiba hari ini",
+            "type": "Kurir Toko"
+          },
+          "paymentOption": {
+            "desc": "Cicil dari Rp450.000/bulan",
+            "iconUrl": ""
+          },
+          "category": {
+            "id": "65"
+          }
+        }
+      ]
+    }
+  }
+}

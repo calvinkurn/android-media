@@ -9,18 +9,18 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.ProductAdsCarouselAnalytics
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView.Shop
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 
 class ProductAdsCarouselListener(
     private val context: Context?,
-    private val viewModel: BaseSearchCategoryViewModel,
+    private val viewModel: TokoNowSearchViewModel,
     private val analytics: ProductAdsCarouselAnalytics,
     private val startActivityResult: (Intent, Int) -> Unit,
     private val showToasterWhenAddToCartBlocked: () -> Unit = {}
-): ProductAdsCarouselListener {
+) : ProductAdsCarouselListener {
 
     override fun onProductCardClicked(
         position: Int,

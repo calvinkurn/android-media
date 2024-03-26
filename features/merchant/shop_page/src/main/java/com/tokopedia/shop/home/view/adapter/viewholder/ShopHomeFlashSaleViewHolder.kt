@@ -174,7 +174,7 @@ class ShopHomeFlashSaleViewHolder(
                 it.clipToOutline = true
                 it.background = MethodChecker.getDrawable(
                     itemView.context,
-                    shop_widgetR.drawable.bg_shop_reimagined_rounded
+                    R.drawable.bg_shop_reimagined_rounded
                 )
                 (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
                     SHOP_RE_IMAGINE_MARGIN_BG_CONTAINER.toInt()
