@@ -673,6 +673,13 @@ class LottieBottomNavbar : LinearLayout {
         addView(navbarContainer)
     }
 
+    fun setInitialState(index: Int) {
+        Handler().post {
+            changeColor(index)
+            selectedItem = index
+        }
+    }
+
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
         // invoke listener
         Handler().post {

@@ -11,7 +11,7 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
-import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
+import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -20,7 +20,7 @@ import com.tokopedia.topads.common.R as topadscommonR
 /**
  * Author errysuprayogi on 11,November,2019
  */
-class ProductItemViewHolder(private val mView: View, var actionChecked: (() -> Unit)?) : ProductViewHolder<ProductItemViewModel>(mView) {
+class ProductItemViewHolder(private val mView: View, var actionChecked: (() -> Unit)?) : ProductViewHolder<ProductItemUiModel>(mView) {
 
     private val checkBox : CheckboxUnify? = mView.findViewById(R.id.checkBox)
     private val productName : Typography? = mView.findViewById(R.id.product_name)
@@ -47,7 +47,7 @@ class ProductItemViewHolder(private val mView: View, var actionChecked: (() -> U
         }
     }
 
-    override fun bind(item: ProductItemViewModel) {
+    override fun bind(item: ProductItemUiModel) {
         item.let {
             manageRating(it.data.productRating, item.isCompact)
             ratingCount?.text = String.format(mView.context.getString(R.string.topads_ads_rating_count), it.data.productReviewCount)
@@ -59,7 +59,7 @@ class ProductItemViewHolder(private val mView: View, var actionChecked: (() -> U
         }
     }
 
-    private fun setProductName(item: ProductItemViewModel) {
+    private fun setProductName(item: ProductItemUiModel) {
         if (item.isCompact){
             productName?.hide()
             productNameCompact?.show()
@@ -71,7 +71,7 @@ class ProductItemViewHolder(private val mView: View, var actionChecked: (() -> U
         }
     }
 
-    private fun setCheckBox(item: ProductItemViewModel) {
+    private fun setCheckBox(item: ProductItemUiModel) {
         if (item.isCompact){
             checkBox?.hide()
         }else{

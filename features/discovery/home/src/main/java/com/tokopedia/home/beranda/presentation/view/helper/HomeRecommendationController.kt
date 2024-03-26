@@ -19,6 +19,6 @@ object HomeRecommendationController {
     }
 
     fun isUsingRecommendationCard(): Boolean {
-        return recommendationCardValue == RollenceKey.FOR_YOU_FEATURE_FLAG
+        return true
     }
 }

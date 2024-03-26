@@ -63,13 +63,12 @@ class ContentCardView @JvmOverloads constructor(
         setOnCardClickListener(model)
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        listener = null
-    }
-
     fun setListener(listener: Listener) {
         this.listener = listener
+    }
+
+    fun removeListener() {
+        listener = null
     }
 
     private fun setOnCardClickListener(element: ContentCardModel) {
@@ -135,7 +134,7 @@ class ContentCardView @JvmOverloads constructor(
 
     private fun setMinHeightEntryPointCard() {
         with(binding.entryPointCard) {
-            val minHeightInPx = convertDpToPixel(mingHeightCard, context)
+            val minHeightInPx = convertDpToPixel(MIN_HEIGHT_CARD, context)
             if (height < minHeightInPx) {
                 val widthSpec =
                     View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
@@ -194,7 +193,7 @@ class ContentCardView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val mingHeightCard = 320f
+        private const val MIN_HEIGHT_CARD = 320f
         internal const val SQUARE_IMAGE_RATIO = "1:1"
     }
 }

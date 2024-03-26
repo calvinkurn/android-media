@@ -479,7 +479,8 @@ class ShopHomeViewModel @Inject constructor(
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                 it,
                 ShopUtil.isMyShop(shopId, userSessionShopId),
-                isEnableDirectPurchase
+                isEnableDirectPurchase,
+
             )
         }
         val totalProductListData = productListResponse.totalData
