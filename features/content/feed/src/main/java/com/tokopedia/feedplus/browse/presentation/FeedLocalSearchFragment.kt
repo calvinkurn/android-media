@@ -1,17 +1,20 @@
 package com.tokopedia.feedplus.browse.presentation
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.feedplus.databinding.FragmentFeedLocalSearchBinding
+import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedplusR
 
-class FeedLocalSearchFragment : TkpdBaseV4Fragment() {
+class FeedLocalSearchFragment @Inject constructor(
+    private val router: Router,
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedLocalSearchBinding? = null
     private val binding: FragmentFeedLocalSearchBinding get() = _binding!!
@@ -56,15 +59,17 @@ class FeedLocalSearchFragment : TkpdBaseV4Fragment() {
     }
 
     private fun submitSearchKeyword(keyword: String) {
-        val intent = Intent()
-        intent.putExtra(LOCAL_BROWSE_SEARCH_KEYWORD, keyword)
-        activity?.setResult(Activity.RESULT_OK, intent)
+        if (keyword.isBlank()) return
+
+        val intent = router.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT).apply {
+            putExtra(FeedSearchResultActivity.KEYWORD_PARAM, keyword)
+        }
+        router.route(requireActivity(), intent)
+
         activity?.finish()
     }
 
     companion object {
-        const val LOCAL_BROWSE_SEARCH_KEYWORD = "feed_local_search_keyword"
-
         fun create(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,

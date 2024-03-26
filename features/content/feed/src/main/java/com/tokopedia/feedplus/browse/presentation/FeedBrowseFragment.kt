@@ -72,20 +72,6 @@ internal class FeedBrowseFragment @Inject constructor(
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
-    private val searchPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val resultKeyword = it.data?.getStringExtra(FeedLocalSearchFragment.LOCAL_BROWSE_SEARCH_KEYWORD)
-
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT)
-            intent.putExtra(FeedSearchResultActivity.KEYWORD_PARAM, resultKeyword)
-            searchResultPageLauncher.launch(intent)
-        }
-    }
-
-    private val searchResultPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // Todo
-    }
-
     private val tracker by lazyThreadSafetyNone {
         trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_BROWSE_PAGE)
     }
@@ -432,8 +418,7 @@ internal class FeedBrowseFragment @Inject constructor(
         view.clearFocus()
 
         if (focusState) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
-            searchPageLauncher.launch(intent)
+            router.route(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
         }
     }
 
