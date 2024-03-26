@@ -31,7 +31,7 @@ import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.databinding.FragmentSellerSeamlessLoginBinding
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
-import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
+import com.tokopedia.loginregister.common.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
@@ -129,8 +129,10 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
                         }
                     }
 
-                    viewBinding?.include?.seamlessFragmentName?.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
-                    viewBinding?.include?.seamlessFragmentEmail?.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL, ""))
+                    viewBinding?.include?.seamlessFragmentName?.text = bundle.getString(
+                        SeamlessSellerConstant.KEY_NAME)
+                    viewBinding?.include?.seamlessFragmentEmail?.text = maskEmail(bundle.getString(
+                        SeamlessSellerConstant.KEY_EMAIL, ""))
                     hideProgressBar()
                     if (autoLogin) {
                         onPositiveBtnClick()
