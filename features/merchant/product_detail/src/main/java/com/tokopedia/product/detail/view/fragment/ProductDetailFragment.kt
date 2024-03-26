@@ -342,6 +342,7 @@ import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -3934,8 +3935,19 @@ open class ProductDetailFragment :
     override fun isRemoteCacheableActive(): Boolean = viewModel.getProductInfoP1
         ?.cacheState?.remoteCacheableActive.orFalse()
 
+    /**
+     * Current Usage only for SDUI
+     * This Function only Support EE Tracking.
+     * We have remote config to switch between Tracking Queue and Direct Tracking.
+     * Please REMOVE both remote config and Direct Tracking when PM says use "Grouping"
+     */
     override fun sendTracker(eventMap: HashMap<String, Any>) {
-        trackingQueue.putEETracking(eventMap)
+        val useTrackingQueue = remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_PDP_ENABLE_SDUI_TRACKING_QUEUE,
+            false
+        )
+        if (useTrackingQueue) trackingQueue.putEETracking(eventMap)
+        else TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
