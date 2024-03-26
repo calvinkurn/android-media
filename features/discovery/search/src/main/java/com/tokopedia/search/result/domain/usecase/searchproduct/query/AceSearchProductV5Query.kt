@@ -23,6 +23,7 @@ object AceSearchProductV5Query {
                 productListType
                 hasPostProcessing
                 hasButtonATC
+                dynamicFields
               }
               isQuerySafe
               additionalParams
@@ -100,6 +101,7 @@ object AceSearchProductV5Query {
                       warehouseID
                       componentID
                       isImageBlurred
+                      parentID
                     }
                   }
                 }

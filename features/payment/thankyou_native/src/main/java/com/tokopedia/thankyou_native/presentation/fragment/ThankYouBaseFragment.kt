@@ -29,6 +29,9 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.SubmitOrderResult
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -230,11 +233,14 @@ open class ThankYouBaseFragment :
             addRecommendation(getRecommendationContainer())
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
-            topadsHeadlineView.getHeadlineAds(
-                ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
-                this::showTopAdsHeadlineView,
-                this::hideTopAdsHeadlineView
-            )
+
+            if (thanksPageData.configFlagData?.shouldHideProductRecom != true) {
+                topadsHeadlineView.getHeadlineAds(
+                    ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
+                    this::showTopAdsHeadlineView,
+                    this::hideTopAdsHeadlineView
+                )
+            }
 
             showOnBoardingShare()
             startAnimate()
@@ -368,6 +374,8 @@ open class ThankYouBaseFragment :
         pageType: DigitalRecommendationPage
     ) {
         if (::thanksPageData.isInitialized) {
+            if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
+
             if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     DigitalRecommendationWidgetModel(
@@ -379,8 +387,6 @@ open class ThankYouBaseFragment :
                 )
                 return
             }
-
-            if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
 
             iDigitalRecommendationView = containerView?.let { container ->
                 val view = getRecommendationView(digitalRecommendationLayout)

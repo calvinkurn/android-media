@@ -654,7 +654,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         val cartRecentViewHolderData = CartRecentViewHolderData(
             recommendationWidgetMetadata = RecommendationWidgetMetadata(
                 pageNumber = 1,
-                pageName = CartViewModel.PAGE_NAME_RECENT_VIEW_TEST,
+                pageName = CartViewModel.PAGE_NAME_RECENT_VIEW,
                 xSource = CartViewModel.RECENT_VIEW_XSOURCE,
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
             )
@@ -1366,7 +1366,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         verifyOrder {
             cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
             spyViewModel.reCalculateSubTotal()
-            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, "0", 0.0, false))
+            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, 0.0,"0", 0.0, false))
         }
     }
 
