@@ -3369,7 +3369,8 @@ class CheckoutViewModel @Inject constructor(
             val newPaymentData = originalPaymentData.copy(
                 installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
                     selectedTenure = selectedInstallment.tenure
-                )
+                ),
+                gatewayCode = selectedInstallment.gatewayCode
             )
             paymentWidgetData[0] = newPaymentData
             checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
