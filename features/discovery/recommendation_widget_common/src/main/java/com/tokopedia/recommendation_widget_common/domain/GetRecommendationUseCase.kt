@@ -6,7 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
+import com.tokopedia.recommendation_widget_common.byteio.RecommendationByteIoUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -30,6 +32,8 @@ constructor(
     private val userSession: UserSessionInterface
 ) : UseCase<List<RecommendationWidget>>() {
 
+    private val byteIoUseCase by lazy { RecommendationByteIoUseCase() }
+
     override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationWidget>> {
         val graphqlRequest = GraphqlRequest(recomRawString, RecommendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
@@ -37,7 +41,11 @@ constructor(
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
             .map { graphqlResponse ->
                 val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
-                entity?.productRecommendationWidget?.data?.mappingToRecommendationModel()
+                entity?.productRecommendationWidget?.data?.mappingToRecommendationModel().also { data ->
+                    requestParams.parameters[PAGE_NAME]?.toString()?.let { pageName ->
+                        byteIoUseCase.updateSessionId(pageName, data?.firstOrNull()?.appLog?.sessionId.orEmpty())
+                    }
+                }
             }
     }
 
@@ -69,6 +77,8 @@ constructor(
             queryParam
         }
 
+        val byteIoParam = byteIoUseCase.getParameter(GetRecommendationRequestParam(pageNumber = pageNumber, pageName = pageName))
+
         if (userSession.isLoggedIn) {
             params.putInt(USER_ID, userSession.userId.toInt())
         } else {
@@ -85,6 +95,8 @@ constructor(
         params.putString(QUERY_PARAM, newQueryParam)
         params.putInt(PARAM_CARD_REIMAGINE, reimagineCardVersion)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
+        params.putString(REFRESH_TYPE, byteIoParam.refreshType.value.toString())
+        params.putString(CURRENT_SESSION_ID, byteIoParam.bytedanceSessionId)
         return params
     }
 
@@ -154,6 +166,8 @@ constructor(
         const val CATEGORY_IDS = "categoryIDs"
         private const val PARAM_TOKONOW = "tokoNow"
         private const val PARAM_CARD_REIMAGINE = "productCardVersion"
+        private const val REFRESH_TYPE = "refreshType"
+        private const val CURRENT_SESSION_ID = "currentSessionId"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0

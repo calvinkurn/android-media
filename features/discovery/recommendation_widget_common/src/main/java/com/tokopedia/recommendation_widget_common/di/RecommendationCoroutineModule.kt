@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.recommendation_widget_common.byteio.RecommendationByteIoUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -18,7 +19,13 @@ import dagger.Provides
 @Module
 class RecommendationCoroutineModule {
     @Provides
-    fun provideGetCoroutineRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
+    fun provideRecommendationByteIoUseCase(): RecommendationByteIoUseCase = RecommendationByteIoUseCase()
+
+    @Provides
+    fun provideGetCoroutineRecommendationUseCase(
+        @ApplicationContext context: Context,
+        coroutineGqlRepository: GraphqlRepository,
+    ): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
 
     @Provides
     fun provideGetCoroutineSingleRecommendationUseCase(
