@@ -119,6 +119,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.features.contentTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
