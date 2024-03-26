@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
 
     override fun setupMock() {
-        MacroDevOps.setupEnvironment(MacroIntent.Mock.getProductDetailMockIntent())
+//        MacroDevOps.setupEnvironment(MacroIntent.Mock.getProductDetailMockIntent())
     }
 
     override fun setupEnvironment() {

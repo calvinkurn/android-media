@@ -14,11 +14,17 @@ interface InspirationCarouselView {
 
     fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
 
-    fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+    fun trackEventClickInspirationCarouselGridItem(
+        product: InspirationCarouselDataView.Option.Product,
+    )
 
     fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
 
-    fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+    fun trackEventClickInspirationCarouselChipsItem(
+        product: InspirationCarouselDataView.Option.Product,
+    )
+
     fun trackEventCtaCouponItem(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget)
+
     fun openLink(applink: String, url: String)
 }

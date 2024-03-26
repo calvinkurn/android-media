@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.View
 import com.google.gson.Gson
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ENTER_METHOD
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MANUAL_FILTER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
@@ -41,6 +42,9 @@ internal fun originFilterMap(): Map<String, String> =
 
 internal fun componentIdMap(componentId: String): Map<String, String> =
     mapOf(SRP_COMPONENT_ID to componentId)
+
+internal fun enterMethodMap(enterMethod: String): Map<String, String> =
+    mapOf(ENTER_METHOD to enterMethod)
 
 fun List<Option>?.joinActiveOptionsToString(): String {
     if (this == null || this.isEmpty()) return ""

@@ -1,6 +1,9 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Discount
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Masked
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Original
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 
@@ -23,21 +26,26 @@ object ProductMapper {
             appLink = product.appLink,
             title = product.name,
             imageUrl = product.coverURL,
-            price = if (campaign.isUpcoming) {
-                ContentTaggedProductUiModel.CampaignPrice(
-                    originalFormattedPrice = product.priceFmt,
+            price = when (ContentTaggedProductUiModel.ProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
+                Masked -> ContentTaggedProductUiModel.CampaignPrice(
                     formattedPrice = product.priceMaskedFmt,
-                    price = product.priceMasked.toDouble()
+                    price = product.priceMasked.toDouble(),
+                    isMasked = true
                 )
-            } else if (product.isDiscount) {
-                ContentTaggedProductUiModel.DiscountedPrice(
+
+                Discount -> ContentTaggedProductUiModel.DiscountedPrice(
                     discount = product.discount,
                     originalFormattedPrice = product.priceOriginalFmt,
                     formattedPrice = product.priceDiscountFmt,
                     price = product.priceDiscount.toDouble()
                 )
-            } else {
-                ContentTaggedProductUiModel.NormalPrice(
+
+                Original -> ContentTaggedProductUiModel.NormalPrice(
+                    formattedPrice = product.priceFmt,
+                    price = product.price.toDouble()
+                )
+
+                else -> ContentTaggedProductUiModel.NormalPrice(
                     formattedPrice = product.priceFmt,
                     price = product.price.toDouble()
                 )
@@ -49,8 +57,11 @@ object ProductMapper {
             ),
             parentID = product.parentID,
             showGlobalVariant = product.hasVariant && product.isParent,
-            stock = if (product.isAvailable || sourceType == ContentTaggedProductUiModel.SourceType.NonOrganic)
-                ContentTaggedProductUiModel.Stock.Available else ContentTaggedProductUiModel.Stock.OutOfStock
+            stock = if (product.isAvailable || sourceType == ContentTaggedProductUiModel.SourceType.NonOrganic) {
+                ContentTaggedProductUiModel.Stock.Available
+            } else {
+                ContentTaggedProductUiModel.Stock.OutOfStock
+            }
         )
     }
 
@@ -62,12 +73,14 @@ object ProductMapper {
             "upcoming" -> {
                 ContentTaggedProductUiModel.CampaignStatus.Upcoming
             }
+
             "ongoing" -> {
                 ContentTaggedProductUiModel.CampaignStatus.Ongoing(
                     product.stockWording,
                     product.stockSoldPercentage
                 )
             }
+
             else -> {
                 ContentTaggedProductUiModel.CampaignStatus.Unknown
             }
@@ -76,9 +89,11 @@ object ProductMapper {
             "asgc_flash_sale_toko", "Rilisan Spesial" -> {
                 ContentTaggedProductUiModel.CampaignType.FlashSaleToko
             }
+
             "asgc_rilisan_spesial", "Flash Sale Toko" -> {
                 ContentTaggedProductUiModel.CampaignType.RilisanSpecial
             }
+
             else -> ContentTaggedProductUiModel.CampaignType.NoCampaign
         }
         return ContentTaggedProductUiModel.Campaign(

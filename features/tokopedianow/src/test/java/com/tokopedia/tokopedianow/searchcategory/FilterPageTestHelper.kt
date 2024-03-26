@@ -5,10 +5,10 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.CapturingSlot
@@ -20,10 +20,10 @@ import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class FilterPageTestHelper(
-    private val baseViewModel: BaseSearchCategoryViewModel,
+    private val viewModel: TokoNowSearchViewModel,
     private val getFilterUseCase: GetFilterUseCase,
     private val getProductCountUseCase: UseCase<String>,
-    private val callback: Callback,
+    private val callback: Callback
 ) {
     private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
     private val mockApplyFilterMapParam = mutableMapOf<String, String>()
@@ -47,7 +47,7 @@ class FilterPageTestHelper(
     }
 
     fun `test open filter page first time but getting filter failed`() {
-         callback.`Given first page API will be successful`()
+        callback.`Given first page API will be successful`()
         `Given view already created`()
         `Given get filter API will be failed`()
 
@@ -58,7 +58,7 @@ class FilterPageTestHelper(
     }
 
     private fun `Given view already created`() {
-        baseViewModel.onViewCreated()
+        viewModel.onViewCreated()
     }
 
     private fun `Given get filter API will be successful`(
@@ -76,20 +76,19 @@ class FilterPageTestHelper(
         } throws Throwable()
     }
 
-
     private fun `When view open filter page`() {
-        baseViewModel.onViewOpenFilterPage()
+        viewModel.onViewOpenFilterPage()
     }
 
     private fun `Then assert filter is open live data`(expectedIsOpen: Boolean) {
-        val isFilterPageOpen = baseViewModel.isFilterPageOpenLiveData.value
+        val isFilterPageOpen = viewModel.isFilterPageOpenLiveData.value
 
         assertThat(isFilterPageOpen, shouldBe(expectedIsOpen))
     }
 
     private fun `Then assert filter request params`(
         expectedQueryParamMap: Map<String, String>,
-        filterRequestParams: MutableMap<String, Any>,
+        filterRequestParams: MutableMap<String, Any>
     ) {
         expectedQueryParamMap.forEach { (key, value) ->
             assertThat(filterRequestParams[key], shouldBe(value))
@@ -99,17 +98,17 @@ class FilterPageTestHelper(
     private fun `Then assert dynamic filter model live data is updated`(
         dynamicFilterModel: DynamicFilterModel?
     ) {
-        assertThat(baseViewModel.dynamicFilterModelLiveData.value, shouldBe(dynamicFilterModel))
+        assertThat(viewModel.dynamicFilterModelLiveData.value, shouldBe(dynamicFilterModel))
     }
 
     private fun `Then assert query param contains pmix and pmax`() {
-        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
+        val queryParamMutable = viewModel.getPrivateField<MutableMap<String, String>>("queryParamMutable")
 
         assert(queryParamMutable.containsKey(SearchApiConst.PMAX) && queryParamMutable.containsKey(SearchApiConst.PMIN))
     }
 
     private fun `Then assert query param doesn't contain pmix and pmax`() {
-        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
+        val queryParamMutable = viewModel.getPrivateField<MutableMap<String, String>>("queryParamMutable")
 
         assert(!queryParamMutable.containsKey(SearchApiConst.PMAX) && !queryParamMutable.containsKey(SearchApiConst.PMIN))
     }
@@ -144,11 +143,11 @@ class FilterPageTestHelper(
     }
 
     private fun `Given view open filter page`() {
-        baseViewModel.onViewOpenFilterPage()
+        viewModel.onViewOpenFilterPage()
     }
 
     private fun `When view dismiss filter page`() {
-        baseViewModel.onViewDismissFilterPage()
+        viewModel.onViewDismissFilterPage()
     }
 
     fun `test open filter page second time should not call API again`() {
@@ -164,7 +163,7 @@ class FilterPageTestHelper(
     }
 
     private fun `Given view dismiss filter page`() {
-        baseViewModel.onViewDismissFilterPage()
+        viewModel.onViewDismissFilterPage()
     }
 
     fun `test apply filter from filter page`() {
@@ -211,7 +210,7 @@ class FilterPageTestHelper(
 
     private fun `Remove filter which has been selected`() {
         selectedFilterOptions.forEach {
-            baseViewModel.onViewRemoveFilter(it)
+            viewModel.onViewRemoveFilter(it)
         }
     }
 
@@ -231,15 +230,15 @@ class FilterPageTestHelper(
         selectedFilterMap[selectedFilterOption.key] = selectedFilterOption.value
 
         mockApplyFilterMapParam.clear()
-        mockApplyFilterMapParam.putAll(baseViewModel.queryParam)
+        mockApplyFilterMapParam.putAll(viewModel.queryParam)
         mockApplyFilterMapParam.putAll(selectedFilterMap)
 
         applySortFilterModel = ApplySortFilterModel(
-                mapParameter = mockApplyFilterMapParam,
-                selectedFilterMapParameter = selectedFilterMap,
-                selectedSortMapParameter = mapOf(),
-                selectedSortName = "",
-                sortAutoFilterMapParameter = mapOf()
+            mapParameter = mockApplyFilterMapParam,
+            selectedFilterMapParameter = selectedFilterMap,
+            selectedSortMapParameter = mapOf(),
+            selectedSortName = "",
+            sortAutoFilterMapParameter = mapOf()
         )
     }
 
@@ -257,7 +256,7 @@ class FilterPageTestHelper(
         }
 
         mockApplyFilterMapParam.clear()
-        mockApplyFilterMapParam.putAll(baseViewModel.queryParam)
+        mockApplyFilterMapParam.putAll(viewModel.queryParam)
         mockApplyFilterMapParam.putAll(selectedFilterMap)
 
         applySortFilterModel = ApplySortFilterModel(
@@ -273,7 +272,7 @@ class FilterPageTestHelper(
         val applySortFilterModel = applySortFilterModel
             ?: throw AssertionError("Apply Sort Filter Model is null")
 
-        baseViewModel.onViewApplySortFilter(applySortFilterModel)
+        viewModel.onViewApplySortFilter(applySortFilterModel)
     }
 
     private fun `Then verify query params is updated from filter`(requestParams: RequestParams) {
@@ -322,7 +321,7 @@ class FilterPageTestHelper(
     }
 
     private fun `When view get product count`() {
-        baseViewModel.onViewGetProductCount(mockApplyFilterMapParam)
+        viewModel.onViewGetProductCount(mockApplyFilterMapParam)
     }
 
     private fun `Then assert params for get product count`(
@@ -342,7 +341,7 @@ class FilterPageTestHelper(
     }
 
     private fun `Then assert product count live data`(successResponse: String) {
-        assertThat(baseViewModel.productCountAfterFilterLiveData.value, shouldBe(successResponse))
+        assertThat(viewModel.productCountAfterFilterLiveData.value, shouldBe(successResponse))
     }
 
     fun `test get filter count fail when choosing filter`(mandatoryParams: Map<String, Any>) {

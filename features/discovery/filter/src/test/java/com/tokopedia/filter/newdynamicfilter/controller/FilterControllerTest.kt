@@ -11,6 +11,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.testutils.jsonToObject
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
+import org.hamcrest.core.IsNull.nullValue
 import org.junit.Test
 import java.util.*
 
@@ -898,5 +899,138 @@ class FilterControllerTest {
         assertThat(savedOptionList.size, `is`(2))
         savedOptionList[0].assert(appliedOptionToMap, appliedFilterToMap)
         savedOptionList[1].assert(optionToApply, filterToApply)
+    }
+
+    @Test
+    fun `ecom_filter_choose with no filter`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+
+        filterController.initFilterController(mapOf(), dynamicFilter.data.filter,)
+
+        val ecomFilterChoose = filterController.ecomFilterChoosen()
+
+        assertThat(ecomFilterChoose, nullValue())
+    }
+
+    @Test
+    fun `ecom_filter_choose with selected filter`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+
+        filterController.initFilterController(
+            mapOf(
+                SearchApiConst.FCITY to "174,175,176,177,178,179",
+            ),
+            dynamicFilter.data.filter
+        )
+
+        val ecomFilterChoose = filterController.ecomFilterChoosen()
+
+        assertThat(ecomFilterChoose, `is`(mapOf(SearchApiConst.FCITY to "174,175,176,177,178,179")))
+    }
+
+    @Test
+    fun `ecom_filter_choose with multiple selected filter`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+
+        filterController.initFilterController(
+            mapOf(
+                SearchApiConst.FCITY to "174,175,176,177,178,179",
+                SearchApiConst.OFFICIAL to true.toString(),
+            ),
+            dynamicFilter.data.filter
+        )
+
+        val ecomFilterChoose = filterController.ecomFilterChoosen()
+
+        assertThat(
+            ecomFilterChoose,
+            `is`(mapOf(
+                SearchApiConst.FCITY to "174,175,176,177,178,179",
+                SearchApiConst.OFFICIAL to true.toString(),
+            ))
+        )
+    }
+
+    @Test
+    fun `ecom_filter_choose with multiple selected filter with same key`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+
+        filterController.initFilterController(
+            mapOf(
+                SearchApiConst.FCITY to "174,175,176,177,178,179#144,146,150,151,167,168,171,174,175,176,177,178,179,463",
+                SearchApiConst.OFFICIAL to true.toString(),
+            ),
+            dynamicFilter.data.filter
+        )
+
+        val ecomFilterChoose = filterController.ecomFilterChoosen()
+
+        assertThat(
+            ecomFilterChoose,
+            `is`(mapOf(
+                SearchApiConst.FCITY to listOf(
+                    "174,175,176,177,178,179",
+                    "144,146,150,151,167,168,171,174,175,176,177,178,179,463",
+                ),
+                SearchApiConst.OFFICIAL to true.toString(),
+            ))
+        )
+    }
+
+    @Test
+    fun `ecom_filter_choose with filter with level one child category`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+
+        filterController.initFilterController(
+            mapOf(SearchApiConst.SC to "65"),
+            dynamicFilter.data.filter,
+        )
+
+        val ecomFilterChoose = filterController.ecomFilterChoosen()
+
+        assertThat(
+            ecomFilterChoose,
+            `is`(mapOf(
+                SearchApiConst.SC to mapOf<String, Any>("65" to "65")
+            ))
+        )
+    }
+
+    @Test
+    fun `ecom_filter_choose with filter with level two child category`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+
+        filterController.initFilterController(
+            mapOf(SearchApiConst.SC to "66"),
+            dynamicFilter.data.filter,
+        )
+
+        val ecomFilterChoose = filterController.ecomFilterChoosen()
+
+        assertThat(
+            ecomFilterChoose,
+            `is`(mapOf(
+                SearchApiConst.SC to mapOf<String, Any>("65" to mapOf("66" to "66"))
+            ))
+        )
+    }
+
+    @Test
+    fun `ecom_filter_choose with filter with level three child category`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+
+        filterController.initFilterController(
+            mapOf(SearchApiConst.SC to "69"),
+            dynamicFilter.data.filter,
+        )
+
+        val ecomFilterChoose = filterController.ecomFilterChoosen()
+
+        assertThat(
+            ecomFilterChoose,
+            `is`(mapOf(
+                SearchApiConst.SC to mapOf<String, Any>("65" to mapOf("66" to "69"))
+            ))
+        )
     }
 }

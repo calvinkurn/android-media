@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.di
 
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager

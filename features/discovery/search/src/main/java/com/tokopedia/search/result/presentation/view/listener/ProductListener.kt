@@ -8,5 +8,8 @@ interface ProductListener {
     fun onThreeDotsClick(item: ProductItemDataView?, adapterPosition: Int)
     fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
     fun onAddToCartClick(item: ProductItemDataView)
+
     val productCardLifecycleObserver: ProductCardLifecycleObserver?
+
+    fun onProductImpressedByteIO(item: ProductItemDataView?)
 }
