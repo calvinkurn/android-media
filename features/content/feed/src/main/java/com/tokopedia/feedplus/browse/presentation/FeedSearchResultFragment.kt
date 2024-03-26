@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedSearchItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.FeedSearchResultUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedSearchResultBinding
 import com.tokopedia.globalerror.GlobalError
@@ -97,6 +98,10 @@ class FeedSearchResultFragment @Inject constructor(
                         layoutManager.spanCount
                     )
                 )
+                it.addItemDecoration(FeedSearchItemDecoration(
+                    layoutManager.spanCount
+                ))
+
                 it.adapter = adapter
 
                 adapter.setLoadingState()
