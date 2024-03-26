@@ -4,6 +4,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListLoadingMoreUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 
 interface ShoppingListTypeFactory {
@@ -12,4 +13,5 @@ interface ShoppingListTypeFactory {
     fun type(uiModel: ShoppingListRetryUiModel): Int
     fun type(uiModel: ShoppingListEmptyUiModel): Int
     fun type(uiModel: ShoppingListExpandCollapseUiModel): Int
+    fun type(uiModel: ShoppingListLoadingMoreUiModel): Int
 }

@@ -73,8 +73,10 @@ import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.countSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.doIf
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.resetIndices
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.sumPriceSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductRecommendationMapper.mapRecommendedProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductShoppingListMapper.mapAvailableShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductShoppingListMapper.mapUnavailableShoppingList
@@ -120,8 +122,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
        private const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
 
        const val INVALID_SHOP_ID = 0L
-       const val PRODUCT_CART_WIDGET_TITLE = "produk ada di keranjang"
-       const val EMPTY_STOCK_WIDGET_TITLE = "Stok habis "
        const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
    }
 
@@ -348,7 +348,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     predicate = filteredAvailableProducts.isNotEmpty(),
                     then = layout@ {
                         val displayedAvailableItems = filteredAvailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
-                        val areAllAvailableProductsSelected = filteredAvailableProducts.count { it.isSelected } == filteredAvailableProducts.size
+                        val areAllAvailableProductsSelected = filteredAvailableProducts.countSelectedItems() == filteredAvailableProducts.size
                         val areAvailableProductsMoreThanDefaultDisplayed = filteredAvailableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED
                         val remainingTotalProduct = filteredAvailableProducts.size - displayedAvailableItems.size
                         val newState = if (availableExpandCollapseCurrentState == EXPAND && areAvailableProductsMoreThanDefaultDisplayed) EXPAND else COLLAPSE
@@ -395,7 +395,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                         val newDisplayedItems = if (unavailableExpandCollapseCurrentState == EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) filteredUnavailableProducts else displayedUnavailableItems
 
                         this@layout
-                            .addTitle("$EMPTY_STOCK_WIDGET_TITLE(${filteredUnavailableProducts.size})")
+                            .addTitle("${resourceProvider.getString(R.string.tokopedianow_shopping_list_unavailable_widget_title)} (${filteredUnavailableProducts.size})")
                             .addProducts(newDisplayedItems.resetIndices())
                             .doIf(
                                 predicate = areUnavailableProductsMoreThanDefaultDisplayed,
@@ -430,7 +430,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                                 addDivider()
                             }
                         )
-                        .addTitle("${cartProducts.size} $PRODUCT_CART_WIDGET_TITLE")
+                        .addTitle("${cartProducts.size} ${resourceProvider.getString(R.string.tokopedianow_shopping_list_cart_widget_title)}")
                         .addProductCarts(cartProducts)
             }
         )
@@ -521,8 +521,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
     private fun calculateDataForBottomBulkAtc() {
         _bottomBulkAtcData.value = BottomBulkAtcModel(
-            counter = filteredAvailableProducts.count { it.isSelected },
-            price = filteredAvailableProducts.filter { it.isSelected }.sumOf { it.priceInt }
+            counter = filteredAvailableProducts.countSelectedItems(),
+            price = filteredAvailableProducts.sumPriceSelectedItems()
         )
     }
 

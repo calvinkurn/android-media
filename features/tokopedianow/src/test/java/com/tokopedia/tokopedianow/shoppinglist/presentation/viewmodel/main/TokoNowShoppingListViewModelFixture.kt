@@ -202,7 +202,7 @@ abstract class TokoNowShoppingListViewModelFixture {
     ) {
         coEvery {
             productRecommendationUseCase.getData(param)
-        } throws  throwable
+        } throws throwable
     }
 
     protected fun stubAddToWishlist(

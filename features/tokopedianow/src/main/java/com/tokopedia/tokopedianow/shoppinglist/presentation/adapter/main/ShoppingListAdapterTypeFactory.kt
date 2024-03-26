@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowDividerTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
@@ -34,12 +33,14 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListLoadingMoreUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListEmptyViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListCartProductViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
 
 class ShoppingListAdapterTypeFactory(
@@ -70,7 +71,6 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: TokoNowThematicHeaderUiModel): Int = TokoNowThematicHeaderViewHolder.LAYOUT
     override fun type(uiModel: TokoNowDividerUiModel): Int = TokoNowDividerViewHolder.LAYOUT
     override fun type(uiModel: TokoNowTitleUiModel): Int = TokoNowTitleViewHolder.LAYOUT
-    override fun type(viewModel: LoadingMoreModel?): Int = TokoNowLoadingMoreViewHolder.LAYOUT
     override fun type(uiModel: TokoNowErrorUiModel): Int = TokoNowErrorViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
@@ -82,6 +82,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: ShoppingListRetryUiModel): Int = ShoppingListRetryViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListEmptyUiModel): Int = ShoppingListEmptyViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListExpandCollapseUiModel): Int = ShoppingListExpandCollapseViewHolder.LAYOUT
+    override fun type(uiModel: ShoppingListLoadingMoreUiModel): Int = TokoNowLoadingMoreViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -94,9 +95,6 @@ class ShoppingListAdapterTypeFactory(
                 itemView = parent
             )
             TokoNowTitleViewHolder.LAYOUT -> TokoNowTitleViewHolder(
-                itemView = parent
-            )
-            TokoNowLoadingMoreViewHolder.LAYOUT -> TokoNowLoadingMoreViewHolder(
                 itemView = parent
             )
             TokoNowErrorViewHolder.LAYOUT -> TokoNowErrorViewHolder(
@@ -139,6 +137,9 @@ class ShoppingListAdapterTypeFactory(
             ShoppingListExpandCollapseViewHolder.LAYOUT -> ShoppingListExpandCollapseViewHolder(
                 itemView = parent,
                 listener = expandCollapseListener
+            )
+            ShoppingListLoadingMoreViewHolder.LAYOUT -> ShoppingListLoadingMoreViewHolder(
+                itemView = parent
             )
             else -> super.createViewHolder(parent, type)
         }

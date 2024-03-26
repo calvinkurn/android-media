@@ -312,4 +312,6 @@
     <string name="tokopedianow_shopping_list_second_page_coach_mark_description">Klik ini buat masukkan produk ke List Belanja kamu.</string>
     <string name="tokopedianow_shopping_list_third_page_coach_mark_description">Buka halaman Beli Lagi buat cek produk-produk yang pernah kamu beli sebelumnya.</string>
     <string name="tokopedianow_shopping_list_bottom_bulk_atc_coach_mark_description">Klik di sini buat masukkan produk yang kamu pilih ke keranjang.</string>
+    <string name="tokopedianow_shopping_list_cart_widget_title">produk ada di keranjang</string>
+    <string name="tokopedianow_shopping_list_unavailable_widget_title">Stok habis</string>
 </resources>

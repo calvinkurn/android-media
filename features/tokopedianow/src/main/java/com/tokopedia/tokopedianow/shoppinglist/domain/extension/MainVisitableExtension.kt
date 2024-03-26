@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListLoadingMoreUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant.INVALID_INDEX
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_DISPLAYED
@@ -137,7 +138,7 @@ internal object MainVisitableExtension {
     }
 
     fun MutableList<Visitable<*>>.addLoadMore(): MutableList<Visitable<*>> {
-        add(LoadingMoreModel())
+        add(ShoppingListLoadingMoreUiModel())
         return this
     }
 
@@ -161,7 +162,7 @@ internal object MainVisitableExtension {
     ): ShoppingListExpandCollapseUiModel? = firstOrNull { it is ShoppingListExpandCollapseUiModel && it.productLayoutType == productLayoutType } as? ShoppingListExpandCollapseUiModel
 
     fun MutableList<Visitable<*>>.removeLoadMore(): MutableList<Visitable<*>> {
-        removeFirst { it is LoadingMoreModel }
+        removeFirst { it is ShoppingListLoadingMoreUiModel }
         return this
     }
 

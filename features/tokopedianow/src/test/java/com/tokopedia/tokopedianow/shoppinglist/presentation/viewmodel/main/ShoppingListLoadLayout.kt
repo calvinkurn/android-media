@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.main
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -17,10 +18,13 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExt
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowLocalLoadUiModel
 import com.tokopedia.tokopedianow.data.ShoppingListDataFactory.Main
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.countSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.doIf
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.resetIndices
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.sumPriceSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addDivider
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addEmptyShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addExpandCollapse
@@ -42,8 +46,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.model.Recommendation
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel.Companion.EMPTY_STOCK_WIDGET_TITLE
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListLoadingMoreUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel.Companion.INVALID_SHOP_ID
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel.Companion.PRODUCT_RECOMMENDATION_PAGE_NAME
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant
@@ -210,7 +213,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
                         val newDisplayedItems = if (unavailableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) filteredUnavailableProducts else displayedUnavailableItems
 
                         this@layout
-                            .addTitle("${EMPTY_STOCK_WIDGET_TITLE}(${filteredUnavailableProducts.size})")
+                            .addTitle("${resourceProvider.getString(R.string.tokopedianow_shopping_list_unavailable_widget_title)} (${filteredUnavailableProducts.size})")
                             .addProducts(newDisplayedItems.resetIndices())
                             .doIf(
                                 predicate = areUnavailableProductsMoreThanDefaultDisplayed,
@@ -245,7 +248,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
                                 addDivider()
                             }
                         )
-                        .addTitle("${cartProducts.size} ${TokoNowShoppingListViewModel.PRODUCT_CART_WIDGET_TITLE}")
+                        .addTitle("${cartProducts.size} ${resourceProvider.getString(R.string.tokopedianow_shopping_list_cart_widget_title)}")
                         .addProductCarts(cartProducts)
                 }
             )
@@ -326,7 +329,8 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
         miniCartData: MiniCartSimplifiedData?,
         shoppingList: GetShoppingListDataResponse.Data,
         recommendationWidget: RecommendationWidget,
-        shopId: Long
+        shopId: Long,
+        isProductRecommendationError: Boolean = false
     ) {
         mMiniCartData = if (shopId != INVALID_SHOP_ID) miniCartData else null
 
@@ -339,6 +343,8 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             title = recommendationWidget.title
         )
         recommendedProducts.addAll(mapRecommendedProducts(recommendationWidget))
+
+        isFirstPageProductRecommendationError = isProductRecommendationError
     }
 
     @Test
@@ -417,8 +423,8 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             .bottomBulkAtcData
             .verifyValue(
                 BottomBulkAtcModel(
-                    counter = filteredAvailableProducts.count { it.isSelected },
-                    price = filteredAvailableProducts.filter { it.isSelected }.sumOf { it.priceInt }
+                    counter = filteredAvailableProducts.countSelectedItems(),
+                    price = filteredAvailableProducts.sumPriceSelectedItems()
                 )
             )
 
@@ -608,6 +614,314 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
         // verify cart product existing
         verifyIsTrue(
             expectedResult = mutableLayout.filterIsInstance<ShoppingListCartProductUiModel>().isEmpty()
+        )
+
+        // other verification
+        viewModel
+            .layoutState
+            .verifySuccess(
+                LayoutModel(
+                    layout = mutableLayout,
+                    isRequiredToScrollUp = true
+                )
+            )
+
+        viewModel
+            .bottomBulkAtcData
+            .verifyValue(
+                BottomBulkAtcModel(
+                    counter = filteredAvailableProducts.count { it.isSelected },
+                    price = filteredAvailableProducts.filter { it.isSelected }.sumOf { it.priceInt }
+                )
+            )
+
+        viewModel
+            .isProductAvailable
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .miniCartState
+            .verifyIsError()
+
+        viewModel
+            .isPageImpressionTracked
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isCoachMarkShown
+            .verifyValue(
+                true
+            )
+    }
+
+    @Test
+    fun `When processing to load layout, product recommendation widget response doesn't have next page, the result for product recommendation should not have load more`() {
+        // create fake variables for stub
+        val shopId = 222121L
+        val shoppingList = Main.createShoppingList()
+        val recommendationWidget = Main.createRecommendationWidget(
+            hasNext = false,
+            title = "Rekomendasi Untuk Anda"
+        )
+
+        // stub section
+        stubOutOfCoverage(
+            isOoc = false
+        )
+
+        stubShopId(
+            shopId = shopId
+        )
+
+        stubLoggedIn(
+            isLoggedIn = true
+        )
+
+        stubGetMiniCart(
+            throwable = MessageErrorException()
+        )
+
+        stubGetShoppingList(
+            response = shoppingList
+        )
+
+        stubGetProductRecommendation(
+            param = GetRecommendationRequestParam(
+                pageNumber = Int.ZERO,
+                userId = userSession.userId.toIntSafely(),
+                pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
+                xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                isTokonow = true
+            ),
+            response = recommendationWidget
+        )
+
+        // load layout
+        viewModel.loadLayout()
+
+        // update expected layout
+        setDataToGlobalVariables(
+            miniCartData = null,
+            shoppingList = shoppingList,
+            recommendationWidget = recommendationWidget,
+            shopId = shopId
+        )
+        updateLayout()
+
+        // verify loading more existing
+        verifyIsTrue(
+            expectedResult = mutableLayout.filterIsInstance<LoadingMoreModel>().isEmpty()
+        )
+
+        // other verification
+        viewModel
+            .layoutState
+            .verifySuccess(
+                LayoutModel(
+                    layout = mutableLayout,
+                    isRequiredToScrollUp = true
+                )
+            )
+
+        viewModel
+            .bottomBulkAtcData
+            .verifyValue(
+                BottomBulkAtcModel(
+                    counter = filteredAvailableProducts.count { it.isSelected },
+                    price = filteredAvailableProducts.filter { it.isSelected }.sumOf { it.priceInt }
+                )
+            )
+
+        viewModel
+            .isProductAvailable
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .miniCartState
+            .verifyIsError()
+
+        viewModel
+            .isPageImpressionTracked
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isCoachMarkShown
+            .verifyValue(
+                true
+            )
+    }
+
+    @Test
+    fun `When processing to load layout, product recommendation widget response has next page, the result for product recommendation should have load more`() {
+        // create fake variables for stub
+        val shopId = 222121L
+        val shoppingList = Main.createShoppingList()
+        val recommendationWidget = Main.createRecommendationWidget(
+            hasNext = true,
+            title = "Rekomendasi Untuk Anda"
+        )
+
+        // stub section
+        stubOutOfCoverage(
+            isOoc = false
+        )
+
+        stubShopId(
+            shopId = shopId
+        )
+
+        stubLoggedIn(
+            isLoggedIn = true
+        )
+
+        stubGetMiniCart(
+            throwable = MessageErrorException()
+        )
+
+        stubGetShoppingList(
+            response = shoppingList
+        )
+
+        stubGetProductRecommendation(
+            param = GetRecommendationRequestParam(
+                pageNumber = Int.ZERO,
+                userId = userSession.userId.toIntSafely(),
+                pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
+                xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                isTokonow = true
+            ),
+            response = recommendationWidget
+        )
+
+        // load layout
+        viewModel.loadLayout()
+
+        // update expected layout
+        setDataToGlobalVariables(
+            miniCartData = null,
+            shoppingList = shoppingList,
+            recommendationWidget = recommendationWidget,
+            shopId = shopId
+        )
+        updateLayout()
+
+        // verify loading more existing
+        verifyIsTrue(
+            expectedResult = mutableLayout.filterIsInstance<ShoppingListLoadingMoreUiModel>().isNotEmpty()
+        )
+
+        // other verification
+        viewModel
+            .layoutState
+            .verifySuccess(
+                LayoutModel(
+                    layout = mutableLayout,
+                    isRequiredToScrollUp = true
+                )
+            )
+
+        viewModel
+            .bottomBulkAtcData
+            .verifyValue(
+                BottomBulkAtcModel(
+                    counter = filteredAvailableProducts.count { it.isSelected },
+                    price = filteredAvailableProducts.filter { it.isSelected }.sumOf { it.priceInt }
+                )
+            )
+
+        viewModel
+            .isProductAvailable
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .miniCartState
+            .verifyIsError()
+
+        viewModel
+            .isPageImpressionTracked
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isCoachMarkShown
+            .verifyValue(
+                true
+            )
+    }
+
+    @Test
+    fun `When processing to load layout, failed to get product recommendation widget, the result should not show product recommendation instead showing local load`() {
+        // create fake variables for stub
+        val shopId = 222121L
+        val shoppingList = Main.createShoppingList()
+        val recommendationWidget = Main.createRecommendationWidget(
+            recommendationItemList = emptyList(),
+            hasNext = true,
+            title = "Rekomendasi Untuk Anda"
+        )
+
+        // stub section
+        stubOutOfCoverage(
+            isOoc = false
+        )
+
+        stubShopId(
+            shopId = shopId
+        )
+
+        stubLoggedIn(
+            isLoggedIn = true
+        )
+
+        stubGetMiniCart(
+            throwable = MessageErrorException()
+        )
+
+        stubGetShoppingList(
+            response = shoppingList
+        )
+
+        stubGetProductRecommendation(
+            param = GetRecommendationRequestParam(
+                pageNumber = Int.ZERO,
+                userId = userSession.userId.toIntSafely(),
+                pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
+                xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                isTokonow = true
+            ),
+            throwable = MessageErrorException()
+        )
+
+        // load layout
+        viewModel.loadLayout()
+
+        // update expected layout
+        setDataToGlobalVariables(
+            miniCartData = null,
+            shoppingList = shoppingList,
+            recommendationWidget = recommendationWidget,
+            shopId = shopId,
+            isProductRecommendationError = true
+        )
+        updateLayout()
+
+        // verify loading more existing
+        verifyIsTrue(
+            expectedResult = mutableLayout.filterIsInstance<TokoNowLocalLoadUiModel>().isNotEmpty()
         )
 
         // other verification
