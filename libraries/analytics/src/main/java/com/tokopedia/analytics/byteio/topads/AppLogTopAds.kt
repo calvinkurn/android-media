@@ -17,6 +17,7 @@ object AppLogTopAds {
         rit: String,
         productId: String,
         cardType: String,
+        sessionInfo: String
     ) {
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW,
@@ -26,7 +27,8 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
                 put(AdsLogConst.Param.PRODUCT_ID, productId)
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                put(AdsLogConst.Param.SESSION_INFO, "?")
+                //todo need to confirm
+                put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
             },
         )
     }
@@ -67,7 +69,9 @@ object AppLogTopAds {
     fun sendEventShowOverMallAd(
         rit: String,
         productId: String,
-        cardType: String
+        cardType: String,
+        sessionInfo: String,
+        sizePercent: String
     ) {
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
@@ -77,8 +81,9 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
                 put(AdsLogConst.Param.PRODUCT_ID, productId)
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                put(AdsLogConst.Param.SESSION_INFO, "?")
-                put(AdsLogConst.Param.SIZE_PERCENT, "?")
+                //todo need to confirm
+                put(AdsLogConst.Param.SESSION_INFO, sizePercent)
+                put(AdsLogConst.Param.SIZE_PERCENT, sizePercent)
             },
         )
     }
@@ -96,6 +101,7 @@ object AppLogTopAds {
         enterFrom: String,
         channel: String,
         cardType: String,
+        sizePercent: String
     ) {
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
@@ -107,7 +113,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
                 put(AdsLogConst.Param.ENTER_FROM, enterFrom)
                 put(AdsLogConst.Param.CHANNEL, channel)
-                put(AdsLogConst.Param.SIZE_PERCENT, "?")
+                put(AdsLogConst.Param.SIZE_PERCENT, sizePercent)
             },
         )
     }
@@ -123,6 +129,8 @@ object AppLogTopAds {
         productId: String,
         refer: String,
         cardType: String,
+        sessionInfo: String,
+        timeIntervalClick: String
     ) {
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
@@ -133,8 +141,8 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
                 put(AdsLogConst.Param.PRODUCT_ID, productId)
                 put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                put(AdsLogConst.Param.SESSION_INFO, "?")
-                put(AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK, "?")
+                put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
+                put(AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK, timeIntervalClick)
             },
         )
     }
