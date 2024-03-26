@@ -36,36 +36,61 @@ class ShareExActivity : BaseSimpleActivity() {
     }
 
     fun init() {
-        val bundle = intent.extras
-        if (shareExInitializer == null) {
-            shareExInitializer = ShareExInitializer(this)
+        var args: ShareExBottomSheetArg? = null
+        intent.extras?.let {
+            val defaultUrl = it.getString(ShareExConst.Applink.Param.DEFAULT_URL).orEmpty()
+            val pageType = it.getString(ShareExConst.Applink.Param.PAGE_TYPE).orEmpty().toZeroStringIfNullOrBlank()
+            val pageTypeEnum = ShareExPageTypeEnum.fromValueInt(pageType.toIntSafely())
+
+            val utmCampaign = it.getString(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
+            val event_category = it.getString(ShareExConst.Applink.Param.EVENT_CATEGORY).orEmpty()
+            val defaultImpressionLabel = it.getString(ShareExConst.Applink.Param.DEFAULT_IMPRESSION_LABEL).orEmpty()
+            val defaultActionLabel = it.getString(ShareExConst.Applink.Param.DEFAULT_ACTION_LABEL).orEmpty()
+
+            val trackerArg = ShareExTrackerArg(
+                utmCampaign = utmCampaign,
+                labelImpressionBottomSheet = defaultImpressionLabel,
+                labelActionClickShareIcon = defaultActionLabel,
+                labelActionCloseIcon = defaultActionLabel,
+                labelActionClickChannel = defaultActionLabel,
+                labelImpressionAffiliateRegistration = defaultImpressionLabel,
+                labelActionClickAffiliateRegistration = defaultActionLabel
+            )
+
+            val argsBuilder = ShareExBottomSheetArg.Builder(pageTypeEnum, defaultUrl, trackerArg)
+
+            it.getString(ShareExConst.Applink.Param.PRODUCT_ID)?.let {
+                argsBuilder.withProductId(it)
+            }
+            it.getString(ShareExConst.Applink.Param.CAMPAIGN_ID)?.let {
+                argsBuilder.withCampaignId(it)
+            }
+            it.getString(ShareExConst.Applink.Param.SHOP_ID)?.let {
+                argsBuilder.withShopId(it)
+            }
+            it.getString(ShareExConst.Applink.Param.REVIEW_ID)?.let {
+                argsBuilder.withReviewId(it)
+            }
+            it.getString(ShareExConst.Applink.Param.ATTACHMENT_ID)?.let {
+                argsBuilder.withAttachmentId(it)
+            }
+
+            val metadata = mutableMapOf<String, String>()
+            it.getString(ShareExConst.Applink.Param.REFERRAL_CODE)?.let {
+                metadata.put(ShareExConst.Applink.Param.REFERRAL_CODE, it)
+            }
+            argsBuilder.withMetadata(metadata)
+
+            args = argsBuilder.build()
         }
 
-        val defaultUrl = bundle?.getString(ShareExConst.Applink.Param.DEFAULT_URL).orEmpty()
-        val pageType = bundle?.getString(ShareExConst.Applink.Param.PAGE_TYPE).orEmpty().toZeroStringIfNullOrBlank()
-        val referralId = bundle?.getString(ShareExConst.Applink.Param.REFERRAL_ID).orEmpty()
-        val utmCampaign = bundle?.getString(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
-        val event_category = bundle?.getString(ShareExConst.Applink.Param.EVENT_CATEGORY).orEmpty()
-        val defaultImpressionLabel = bundle?.getString(ShareExConst.Applink.Param.DEFAULT_IMPRESSION_LABEL).orEmpty()
-        val defaultActionLabel = bundle?.getString(ShareExConst.Applink.Param.DEFAULT_ACTION_LABEL).orEmpty()
-
-        val pageTypeEnum = ShareExPageTypeEnum.fromValueInt(pageType.toIntSafely())
-        val trackerArg = ShareExTrackerArg(
-            utmCampaign = utmCampaign,
-            labelImpressionBottomSheet = defaultImpressionLabel,
-            labelActionClickShareIcon = defaultActionLabel,
-            labelActionCloseIcon = defaultActionLabel,
-            labelActionClickChannel = defaultActionLabel,
-            labelImpressionAffiliateRegistration = defaultImpressionLabel,
-            labelActionClickAffiliateRegistration = defaultActionLabel
-        )
-
-        val args = ShareExBottomSheetArg.Builder(pageTypeEnum, defaultUrl, trackerArg)
-            .withProductId("2151019476")
-//            .withReferralId(referralId)
-            .build()
-
-        shareExInitializer?.openShareBottomSheet(args)
+        if (args != null) {
+            if (shareExInitializer == null) {
+                shareExInitializer = ShareExInitializer(this)
+            }
+            shareExInitializer?.openShareBottomSheet(args!!)
+        } else {
+            finish()
+        }
     }
-
 }

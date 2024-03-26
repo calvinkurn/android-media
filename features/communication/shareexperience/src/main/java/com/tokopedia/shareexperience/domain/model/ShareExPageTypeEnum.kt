@@ -13,7 +13,7 @@ enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     REVIEW("review", 2),
     SHOP("shop", 3),
     DISCOVERY("discovery", 4),
-    GOPAYLATER_REFERRAL("gopaylater_referral", 7);
+    GOPAYLATER_REFERRAL("gopaylater referral", 7);
 
     companion object {
         fun fromValue(value: String): ShareExPageTypeEnum {

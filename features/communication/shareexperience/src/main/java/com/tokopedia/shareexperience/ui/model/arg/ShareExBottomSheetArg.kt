@@ -22,7 +22,6 @@ class ShareExBottomSheetArg private constructor(
     val attachmentId: String,
     val shopId: String,
     val campaignId: String,
-    val referralId: String,
     val generalId: String,
 
     /**
@@ -35,7 +34,12 @@ class ShareExBottomSheetArg private constructor(
      * Optional
      */
     val selectedChip: String,
-    val defaultImageUrl: String
+    val defaultImageUrl: String,
+
+    /**
+     * Metadata from BU, optional
+     */
+    val metadata: Map<String, String>
 ) : Parcelable {
     class Builder(
         val pageTypeEnum: ShareExPageTypeEnum,
@@ -47,10 +51,10 @@ class ShareExBottomSheetArg private constructor(
         private var attachmentId: String? = null
         private var shopId: String? = null
         private var campaignId: String? = null
-        private var referralId: String? = null
         private var generalId: String? = null
         private var selectedChip: String? = null
         private var defaultImageUrl: String? = null
+        private var metadata: Map<String, String>? = null
 
         fun withProductId(productId: String) = apply {
             this.productId = productId
@@ -72,10 +76,6 @@ class ShareExBottomSheetArg private constructor(
             this.campaignId = campaignId
         }
 
-        fun withReferralId(referralId: String) = apply {
-            this.referralId = referralId
-        }
-
         fun withGeneralId(generalId: String) = apply {
             this.generalId = generalId
         }
@@ -86,6 +86,10 @@ class ShareExBottomSheetArg private constructor(
 
         fun withDefaultImageUrl(defaultImageUrl: String) = apply {
             this.defaultImageUrl = defaultImageUrl
+        }
+
+        fun withMetadata(metadata: Map<String, String>) = apply {
+            this.metadata = metadata
         }
 
         fun build(): ShareExBottomSheetArg {
@@ -99,11 +103,11 @@ class ShareExBottomSheetArg private constructor(
                 attachmentId = attachmentId.orEmpty(),
                 shopId = shopId.orEmpty(),
                 campaignId = campaignId.orEmpty(),
-                referralId = referralId.orEmpty(),
                 generalId = generalId.orEmpty(),
 
                 selectedChip = selectedChip.orEmpty(),
-                defaultImageUrl = defaultImageUrl.orEmpty()
+                defaultImageUrl = defaultImageUrl.orEmpty(),
+                metadata = metadata ?: emptyMap()
             )
         }
     }
