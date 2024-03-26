@@ -37,6 +37,14 @@ def isNakamaVersion() {
     return "false"
 }
 
+def getStoreChannel() {
+    if (project.hasProperty('storeChannel')) {
+        return project.property('storeChannel')
+    } else {
+        return 'googleplay'
+    }
+}
+
 def isPreInstall() {
     if (project.hasProperty('isPreInstall') && isPreInstall == "true") {
         return "true"
@@ -183,6 +191,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
+            buildConfigField "String", "STORE_CHANNEL", getStoreChannel()
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
