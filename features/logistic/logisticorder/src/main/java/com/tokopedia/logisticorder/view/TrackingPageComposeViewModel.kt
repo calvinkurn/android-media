@@ -96,11 +96,6 @@ class TrackingPageComposeViewModel @Inject constructor(
                 }
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
-                if (getTrackingData.response.messageError?.isEmpty() == false) {
-                    getTrackingData.response.messageError.firstOrNull()?.run {
-                        _error.emit(MessageErrorException(this.toString()))
-                    }
-                }
                 val uiModel = mapper.mapTrackingDataCompose(
                     getTrackingData,
                     userSession.userId,
@@ -119,7 +114,11 @@ class TrackingPageComposeViewModel @Inject constructor(
                 ) {
                     retryAvailability(orderId)
                 }
-                if (uiModel.page.targetedTickerParam.page.isNotEmpty()) {
+                if (getTrackingData.response.messageError?.isEmpty() == false) {
+                    getTrackingData.response.messageError.firstOrNull()?.run {
+                        _error.emit(MessageErrorException(this.toString()))
+                    }
+                } else {
                     getTickerData(uiModel.page.targetedTickerParam)
                 }
             },
