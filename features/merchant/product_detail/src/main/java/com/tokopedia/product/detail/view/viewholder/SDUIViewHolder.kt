@@ -17,7 +17,7 @@ import org.json.JSONObject
 
 class SDUIViewHolder(
     view: View,
-    private val callback: DynamicOneLinerCallback
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<SDUIDataModel>(view) {
 
     companion object {
@@ -68,12 +68,12 @@ class SDUIViewHolder(
 
         view.addOnImpressionListener(
             holder = element.impressHolder,
-            holders = callback.impressionHolders,
+            holders = listener.getImpressionHolders(),
             name = element.name,
-            useHolders = callback.isRemoteCacheableActive
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             val trackerData = getComponentTrackData(element = element)
-            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
+            listener.onImpressComponent(trackerData)
         }
 
         binding.sduiViewContainer.addView(view)
