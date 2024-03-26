@@ -296,7 +296,6 @@ ext {
             chooseaccount                   : ":features:user:chooseaccount",
             loginregister                   : ":features:user:loginregister",
             loginfingerprint                : ":features:user:loginfingerprint",
-            managename                      : ":features:user:managename",
             managepassword                  : ":features:user:managepassword",
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             otp                             : ":features:user:otp",
