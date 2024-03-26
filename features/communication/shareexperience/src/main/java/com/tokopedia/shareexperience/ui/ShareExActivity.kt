@@ -38,48 +38,13 @@ class ShareExActivity : BaseSimpleActivity() {
     fun init() {
         var args: ShareExBottomSheetArg? = null
         intent.extras?.let {
-            val defaultUrl = it.getString(ShareExConst.Applink.Param.DEFAULT_URL).orEmpty()
-            val pageType = it.getString(ShareExConst.Applink.Param.PAGE_TYPE).orEmpty().toZeroStringIfNullOrBlank()
-            val pageTypeEnum = ShareExPageTypeEnum.fromValueInt(pageType.toIntSafely())
+            val argsBuilder = initializeMandatoryArgs(it)
 
-            val utmCampaign = it.getString(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
-            val event_category = it.getString(ShareExConst.Applink.Param.EVENT_CATEGORY).orEmpty()
-            val defaultImpressionLabel = it.getString(ShareExConst.Applink.Param.DEFAULT_IMPRESSION_LABEL).orEmpty()
-            val defaultActionLabel = it.getString(ShareExConst.Applink.Param.DEFAULT_ACTION_LABEL).orEmpty()
+            // set feature related id
+            setFeatureIds(argsBuilder, it)
 
-            val trackerArg = ShareExTrackerArg(
-                utmCampaign = utmCampaign,
-                labelImpressionBottomSheet = defaultImpressionLabel,
-                labelActionClickShareIcon = defaultActionLabel,
-                labelActionCloseIcon = defaultActionLabel,
-                labelActionClickChannel = defaultActionLabel,
-                labelImpressionAffiliateRegistration = defaultImpressionLabel,
-                labelActionClickAffiliateRegistration = defaultActionLabel
-            )
-
-            val argsBuilder = ShareExBottomSheetArg.Builder(pageTypeEnum, defaultUrl, trackerArg)
-
-            it.getString(ShareExConst.Applink.Param.PRODUCT_ID)?.let {
-                argsBuilder.withProductId(it)
-            }
-            it.getString(ShareExConst.Applink.Param.CAMPAIGN_ID)?.let {
-                argsBuilder.withCampaignId(it)
-            }
-            it.getString(ShareExConst.Applink.Param.SHOP_ID)?.let {
-                argsBuilder.withShopId(it)
-            }
-            it.getString(ShareExConst.Applink.Param.REVIEW_ID)?.let {
-                argsBuilder.withReviewId(it)
-            }
-            it.getString(ShareExConst.Applink.Param.ATTACHMENT_ID)?.let {
-                argsBuilder.withAttachmentId(it)
-            }
-
-            val metadata = mutableMapOf<String, String>()
-            it.getString(ShareExConst.Applink.Param.REFERRAL_CODE)?.let {
-                metadata.put(ShareExConst.Applink.Param.REFERRAL_CODE, it)
-            }
-            argsBuilder.withMetadata(metadata)
+            // set BU metadata
+            setMetadata(argsBuilder, it)
 
             args = argsBuilder.build()
         }
@@ -92,5 +57,57 @@ class ShareExActivity : BaseSimpleActivity() {
         } else {
             finish()
         }
+    }
+
+    private fun setMetadata(argsBuilder: ShareExBottomSheetArg.Builder, bundle: Bundle) {
+        val metadata = mutableMapOf<String, String>()
+        bundle.getString(ShareExConst.Applink.Param.REFERRAL_CODE)?.let {
+            metadata.put(ShareExConst.Applink.Param.REFERRAL_CODE, it)
+        }
+
+        argsBuilder.withMetadata(metadata)
+    }
+
+    private fun setFeatureIds(argsBuilder: ShareExBottomSheetArg.Builder, bundle: Bundle) {
+        with(bundle) {
+            getString(ShareExConst.Applink.Param.PRODUCT_ID)?.let {
+                argsBuilder.withProductId(it)
+            }
+            getString(ShareExConst.Applink.Param.CAMPAIGN_ID)?.let {
+                argsBuilder.withCampaignId(it)
+            }
+            getString(ShareExConst.Applink.Param.SHOP_ID)?.let {
+                argsBuilder.withShopId(it)
+            }
+            getString(ShareExConst.Applink.Param.REVIEW_ID)?.let {
+                argsBuilder.withReviewId(it)
+            }
+            getString(ShareExConst.Applink.Param.ATTACHMENT_ID)?.let {
+                argsBuilder.withAttachmentId(it)
+            }
+        }
+    }
+
+    private fun initializeMandatoryArgs(bundle: Bundle): ShareExBottomSheetArg.Builder {
+        val defaultUrl = bundle.getString(ShareExConst.Applink.Param.DEFAULT_URL).orEmpty()
+        val pageType = bundle.getString(ShareExConst.Applink.Param.PAGE_TYPE).orEmpty().toZeroStringIfNullOrBlank()
+        val pageTypeEnum = ShareExPageTypeEnum.fromValueInt(pageType.toIntSafely())
+
+        val utmCampaign = bundle.getString(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
+        val event_category = bundle.getString(ShareExConst.Applink.Param.EVENT_CATEGORY).orEmpty()
+        val defaultImpressionLabel = bundle.getString(ShareExConst.Applink.Param.DEFAULT_IMPRESSION_LABEL).orEmpty()
+        val defaultActionLabel = bundle.getString(ShareExConst.Applink.Param.DEFAULT_ACTION_LABEL).orEmpty()
+
+        val trackerArg = ShareExTrackerArg(
+            utmCampaign = utmCampaign,
+            labelImpressionBottomSheet = defaultImpressionLabel,
+            labelActionClickShareIcon = defaultActionLabel,
+            labelActionCloseIcon = defaultActionLabel,
+            labelActionClickChannel = defaultActionLabel,
+            labelImpressionAffiliateRegistration = defaultImpressionLabel,
+            labelActionClickAffiliateRegistration = defaultActionLabel
+        )
+
+        return ShareExBottomSheetArg.Builder(pageTypeEnum, defaultUrl, trackerArg)
     }
 }

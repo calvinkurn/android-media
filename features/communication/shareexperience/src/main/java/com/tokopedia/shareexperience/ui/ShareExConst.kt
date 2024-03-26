@@ -10,8 +10,7 @@ object ShareExConst {
             "&default_url=https://tkp.me/GPL-TARI123" +
             "&event_category=pdp" +
             "&default_impression_label=impression-label" +
-            "&default_action_label=action-label" +
-            "&utm_campaign=aaaaaa-paylater"
+            "&default_action_label=action-label"
 
         object Param {
             const val PAGE_TYPE = "page_type"
