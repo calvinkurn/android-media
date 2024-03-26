@@ -117,12 +117,11 @@ class TokoNowShoppingListViewModel @Inject constructor(
 ): BaseViewModel(dispatchers.io) {
 
    companion object {
-        private const val OOC_WAREHOUSE_ID = 0L
-        private const val INVALID_SHOP_ID = 0L
-        private const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
-        private const val EMPTY_STOCK_WIDGET_TITLE = "Stok habis "
-        private const val PRODUCT_CART_WIDGET_TITLE = "produk ada di keranjang"
+       private const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
 
+       const val INVALID_SHOP_ID = 0L
+       const val PRODUCT_CART_WIDGET_TITLE = "produk ada di keranjang"
+       const val EMPTY_STOCK_WIDGET_TITLE = "Stok habis "
        const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
    }
 
@@ -197,13 +196,14 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
     private suspend fun getMiniCartDeferred(): Deferred<Result<MiniCartSimplifiedData?>?> = asyncCatchError(
         block = {
-            val miniCartData = if (isGettingMiniCartAllowed()) {
+            val shopId = addressData.getShopId()
+            val miniCartData = if (shopId != INVALID_SHOP_ID) {
                 getMiniCartUseCase.setParams(
-                    shopIds = listOf(addressData.getShopId().toString()),
+                    shopIds = listOf(shopId.toString()),
                     source = MiniCartSource.TokonowShoppingList
                 )
                 val miniCartData = getMiniCartUseCase.executeOnBackground()
-                miniCartData.copy(isShowMiniCartWidget = miniCartData.isShowMiniCartWidget && !addressData.isOutOfCoverage())
+                miniCartData.copy(isShowMiniCartWidget = miniCartData.isShowMiniCartWidget)
             } else {
                 null
             }
@@ -524,13 +524,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
             counter = filteredAvailableProducts.count { it.isSelected },
             price = filteredAvailableProducts.filter { it.isSelected }.sumOf { it.priceInt }
         )
-    }
-
-    private fun isGettingMiniCartAllowed(): Boolean {
-        val isOutOfCoverage = addressData.getWarehouseId() == OOC_WAREHOUSE_ID
-        val isShopValid = addressData.getShopId() != INVALID_SHOP_ID
-        val isUserLoggedIn = userSession.isLoggedIn
-        return isShopValid && !isOutOfCoverage && isUserLoggedIn
     }
 
     private fun getUpdatedLayout(

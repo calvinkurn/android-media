@@ -21,9 +21,7 @@ data class GetShoppingListDataResponse(
         @SerializedName("listAvailableItem")
         val listAvailableItem: List<AvailableItem> = emptyList(),
         @SerializedName("listUnavailableItem")
-        val listUnavailableItem: List<UnavailableItem> = emptyList(),
-        @SerializedName("metadata")
-        val metadata: Metadata = Metadata()
+        val listUnavailableItem: List<UnavailableItem> = emptyList()
     )
 
     data class AvailableItem(
@@ -103,21 +101,6 @@ data class GetShoppingListDataResponse(
     ) {
         fun getWeight() = labelGroup.firstOrNull { it.isWeightPosition() }?.title.orEmpty()
     }
-
-    data class Metadata(
-        @SerializedName("inStockSelectedTotalData")
-        val inStockSelectedTotalData: Int = 0,
-        @SerializedName("inStockSelectedTotalPrice")
-        val inStockSelectedTotalPrice: Double = 0.0,
-        @SerializedName("inStockSelectedTotalPriceFmt")
-        val inStockSelectedTotalPriceFmt: String = "",
-        @SerializedName("inStockTotalData")
-        val inStockTotalData: Int = 0,
-        @SerializedName("oosTotalData")
-        val oosTotalData: Int = 0,
-        @SerializedName("queryParam")
-        val queryParam: String = ""
-    )
 
     data class Shop(
         @SerializedName("id")

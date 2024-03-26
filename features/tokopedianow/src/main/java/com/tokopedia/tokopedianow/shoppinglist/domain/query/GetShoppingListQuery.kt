@@ -28,14 +28,6 @@ internal object GetShoppingListQuery: GqlQueryInterface {
                   error_code
                 }
                 data {
-                  metadata {
-                    queryParam
-                    inStockTotalData
-                    inStockSelectedTotalData
-                    inStockSelectedTotalPrice
-                    inStockSelectedTotalPriceFmt
-                    oosTotalData
-                  }
                   listAvailableItem {
                     id
                     name

@@ -13,7 +13,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductRecommendati
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListAnotherOptionBottomSheetViewModel.Companion.RECOMMENDATION_PAGE_NAME
 import org.junit.Test
 
-class ShoppingListProductRecommendation: TokoNowShoppingListAnotherOptionBottomSheetFixture() {
+class ShoppingListLoadLayout: TokoNowShoppingListAnotherOptionBottomSheetViewModelFixture() {
     @Test
     fun `when getting product recommendation successfully then filtering recommended products with available products, the result should not be empty and would be the same as expected`() {
         // provide some variables

@@ -21,8 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response.Data.WishlistAddV2
 import org.junit.Test
 
-class ShoppingListAddToWishlist: TokoNowShoppingListAnotherOptionBottomSheetFixture() {
-
+class ShoppingListAddToWishlist: TokoNowShoppingListAnotherOptionBottomSheetViewModelFixture() {
     @Test
     fun `When adding product to wishlist successfully then the result should return layout with new available product and success toaster`() {
         // provide some variables

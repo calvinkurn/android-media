@@ -7,7 +7,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.tokopedianow.common.model.UiState
-import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.AnotherOptionBottomSheetVisitableExtension.addLoadingState
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.AnotherOptionBottomSheetVisitableExtension.switchToProductRecommendationAdded
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.resetIndices
@@ -29,12 +28,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-abstract class TokoNowShoppingListAnotherOptionBottomSheetFixture {
-
+abstract class TokoNowShoppingListAnotherOptionBottomSheetViewModelFixture {
     protected lateinit var viewModel: TokoNowShoppingListAnotherOptionBottomSheetViewModel
-
-    @RelaxedMockK
-    lateinit var addressData: TokoNowLocalAddress
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
