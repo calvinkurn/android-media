@@ -248,7 +248,7 @@
 
 /features/user/settingbank/                     		@tokopedia/android-minionjerry-dev
 
-/features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
+/features/user/accountprofile/                       @tokopedia/android-minionkevin-dev
 /features/user/otp/                             		@tokopedia/android-minionkevin-dev
 /features/user/changepassword/                  		@tokopedia/android-minionkevin-dev
 /features/user/logout/                          		@tokopedia/android-minionkevin-dev

@@ -303,7 +303,7 @@ ext {
             phoneVerification               : ":features:user:phoneverification",
             privacycenter                   : ":features:user:privacycenter",
 			accountlinking                   : ":features:user:accountlinking",
-            profileCompletion               : ":features:user:profilecompletion",
+			accountprofile                  : ":features:user:accountprofile",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",
             settingbank                     : ":features:user:settingbank",
