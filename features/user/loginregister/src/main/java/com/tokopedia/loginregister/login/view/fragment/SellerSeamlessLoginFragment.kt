@@ -35,9 +35,11 @@ import com.tokopedia.loginregister.common.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notification.common.data.UserKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -64,7 +66,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private var getUserTaskId = ""
     private var getKeyTaskId = ""
-    
+
     private var viewBinding by autoClearedNullable<FragmentSellerSeamlessLoginBinding>()
 
     override fun getScreenName(): String = SeamlessLoginAnalytics.SCREEN_SEAMLESS_LOGIN
@@ -113,26 +115,27 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun handleIntentReceive(taskId: String, bundle: Bundle?) {
         if (bundle != null) {
             if (!bundle.containsKey(SeamlessSellerConstant.KEY_ERROR)) {
-                if (taskId == getUserTaskId
-                        && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)?.isNotEmpty() == true
-                        && bundle.getString(SeamlessSellerConstant.KEY_EMAIL)?.isNotEmpty() == true) {
+                val shopName = decryptData(bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)?:"")
+                val shopAvatar = decryptData(bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR)?:"")
+                val email = decryptData(bundle.getString(SeamlessSellerConstant.KEY_EMAIL)?:"")
+                val name = decryptData(bundle.getString(SeamlessSellerConstant.KEY_NAME)?:"")
+
+                if (taskId == getUserTaskId && shopName.isNotEmpty() && email.isNotEmpty()) {
                     viewBinding?.include?.seamlessFragmentShopName?.run {
                         val drawableLeft = AppCompatResources.getDrawable(this.context, R.drawable.ic_shop_dark_grey)
-                        text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
+                        text = shopName
                         setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
                     }
                     context?.run {
                         if(viewBinding?.include?.seamlessFragmentAvatar != null) {
                             viewBinding?.include?.seamlessFragmentAvatar?.loadImageCircle(
-                                bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR)
+                                shopAvatar
                             )
                         }
                     }
 
-                    viewBinding?.include?.seamlessFragmentName?.text = bundle.getString(
-                        SeamlessSellerConstant.KEY_NAME)
-                    viewBinding?.include?.seamlessFragmentEmail?.text = maskEmail(bundle.getString(
-                        SeamlessSellerConstant.KEY_EMAIL, ""))
+                    viewBinding?.include?.seamlessFragmentName?.text = name
+                    viewBinding?.include?.seamlessFragmentEmail?.text = maskEmail(email)
                     hideProgressBar()
                     if (autoLogin) {
                         onPositiveBtnClick()
@@ -144,13 +147,17 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         } else moveToNormalLogin()
     }
 
+    private fun decryptData(data: String): String {
+        return EncoderDecoder.Decrypt(data, SeamlessSellerConstant.IV_KEY_SEAMLESS_SELLER)
+    }
+
     private fun moveToNormalLogin(){
         RouteManager.route(context, ApplinkConst.LOGIN)
         activity?.finish()
     }
 
     private fun maskEmail(email: String): String = email.replace(
-        "(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)".toRegex(), 
+        "(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)".toRegex(),
         "*"
     )
 
