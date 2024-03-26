@@ -465,7 +465,7 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         // Then
         assertEquals(false, invokeSuccess)
         assertEquals(
-            CheckoutPageToaster(Toaster.TYPE_NORMAL, toasterMessage = "Pastikan Anda telah melengkapi informasi tambahan."),
+            CheckoutPageToaster(Toaster.TYPE_NORMAL, toasterMessage = "Pastikan Anda telah melengkapi informasi tambahan.", source = "local"),
             latestToaster
         )
         assertEquals(

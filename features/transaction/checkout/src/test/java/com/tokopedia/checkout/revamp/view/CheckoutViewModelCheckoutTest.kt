@@ -241,7 +241,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.",
+                source = "local"
             ),
             latestToaster
         )
@@ -378,7 +379,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(false, invokeSuccess)
-        assertEquals(CheckoutPageToaster(Toaster.TYPE_ERROR, errorMessage), latestToaster)
+        assertEquals(CheckoutPageToaster(Toaster.TYPE_ERROR, errorMessage, source = "checkout"), latestToaster)
         verify {
             mTrackerShipment.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(
                 errorMessage
@@ -459,7 +460,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                "Terjadi kesalahan. Ulangi beberapa saat lagi",
+                source = "checkout"
             ),
             latestToaster
         )
@@ -587,7 +589,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_NORMAL,
-                "Pilih pengiriman dulu yuk sebelum lanjut bayar."
+                "Pilih pengiriman dulu yuk sebelum lanjut bayar.",
+                source = "local"
             ),
             latestToaster
         )
@@ -1082,7 +1085,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO,
+                source = "cancel-promo"
             ),
             latestToaster
         )
@@ -1207,7 +1211,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO,
+                source = "local"
             ),
             latestToaster
         )

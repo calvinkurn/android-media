@@ -24,5 +24,6 @@ sealed class CheckoutPageState {
 data class CheckoutPageToaster(
     val toasterType: Int,
     val toasterMessage: String = "",
-    val throwable: Throwable? = null
+    val throwable: Throwable? = null,
+    val source: String = ""
 )

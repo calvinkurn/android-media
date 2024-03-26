@@ -103,6 +103,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.globalerror.GlobalError
@@ -630,9 +631,17 @@ class CheckoutFragment :
                             getString(purchase_platformcommonR.string.checkout_flow_error_global_message)
                     }
                 }
+                message = appendDebugSource(message, it.source)
                 Toaster.build(binding.root, message, type = it.toasterType).show()
             }
         }
+    }
+
+    private fun appendDebugSource(message: String, source: String): String {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            return "$message s:$source"
+        }
+        return message
     }
 
     private fun onCacheExpired(message: String?) {

@@ -2144,7 +2144,8 @@ class CheckoutViewModel @Inject constructor(
                     commonToaster.emit(
                         CheckoutPageToaster(
                             Toaster.TYPE_NORMAL,
-                            SHIPMENT_NOT_COMPLETE_ERROR_MESSAGE
+                            SHIPMENT_NOT_COMPLETE_ERROR_MESSAGE,
+                            source = SOURCE_LOCAL
                         )
                     )
                     mTrackerShipment.eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete()
@@ -2158,7 +2159,8 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_ERROR,
-                        NO_VALID_ORDER_ERROR_MESSAGE
+                        NO_VALID_ORDER_ERROR_MESSAGE,
+                        source = SOURCE_LOCAL
                     )
                 )
                 pageState.value = CheckoutPageState.Normal
@@ -2169,7 +2171,8 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_NORMAL,
-                        INVALID_PAYMENT_ERROR_MESSAGE
+                        INVALID_PAYMENT_ERROR_MESSAGE,
+                        source = SOURCE_LOCAL
                     )
                 )
                 pageState.value = CheckoutPageState.ScrollTo(listData.value.size - PAYMENT_INDEX_FROM_BOTTOM)
@@ -2202,7 +2205,8 @@ class CheckoutViewModel @Inject constructor(
                         commonToaster.emit(
                             CheckoutPageToaster(
                                 Toaster.TYPE_NORMAL,
-                                INVALID_DROPSHIP_ERROR_MESSAGE
+                                INVALID_DROPSHIP_ERROR_MESSAGE,
+                                source = SOURCE_LOCAL
                             )
                         )
                         pageState.value = CheckoutPageState.Normal
@@ -2296,7 +2300,8 @@ class CheckoutViewModel @Inject constructor(
                         commonToaster.emit(
                             CheckoutPageToaster(
                                 Toaster.TYPE_ERROR,
-                                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO,
+                                source = "cancel-promo"
                             )
                         )
                         pageState.value = CheckoutPageState.Normal
@@ -2313,7 +2318,8 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_ERROR,
-                        CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                        CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO,
+                        source = SOURCE_LOCAL
                     )
                 )
                 pageState.value = CheckoutPageState.Normal
@@ -2331,7 +2337,14 @@ class CheckoutViewModel @Inject constructor(
         if (listData.value.payment()!!.enable) {
             val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), UPDATE_CART_SOURCE_CHECKOUT, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
             if (!updateCartResult.isSuccess) {
-                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update-cart"
+                    )
+                )
                 loadSAF(
                     isReloadData = true,
                     skipUpdateOnboardingState = true,
@@ -2372,7 +2385,8 @@ class CheckoutViewModel @Inject constructor(
             commonToaster.emit(
                 CheckoutPageToaster(
                     Toaster.TYPE_ERROR,
-                    throwable = checkoutResult.throwable
+                    throwable = checkoutResult.throwable,
+                    source = "checkout"
                 )
             )
             loadSAF(
@@ -2384,7 +2398,8 @@ class CheckoutViewModel @Inject constructor(
             commonToaster.emit(
                 CheckoutPageToaster(
                     Toaster.TYPE_ERROR,
-                    "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                    "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.",
+                    source = "checkout"
                 )
             )
             pageState.value = CheckoutPageState.Normal
@@ -2399,7 +2414,8 @@ class CheckoutViewModel @Inject constructor(
             commonToaster.emit(
                 CheckoutPageToaster(
                     Toaster.TYPE_ERROR,
-                    toasterMessage
+                    toasterMessage,
+                    source = "checkout"
                 )
             )
             if (isTradeIn) {
@@ -3292,7 +3308,14 @@ class CheckoutViewModel @Inject constructor(
             )
             pageState.value = CheckoutPageState.Normal
             if (!updateCartResult.isSuccess) {
-                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update-cart"
+                    )
+                )
                 return@launch
             }
             val checkoutItems = listData.value.toMutableList()
@@ -3329,7 +3352,14 @@ class CheckoutViewModel @Inject constructor(
             )
             if (!updateCartResult.isSuccess) {
                 pageState.value = CheckoutPageState.Normal
-                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update-cart"
+                    )
+                )
                 return@launch
             }
             val checkoutItems = listData.value.toMutableList()
@@ -3370,7 +3400,14 @@ class CheckoutViewModel @Inject constructor(
             )
             pageState.value = CheckoutPageState.Normal
             if (!updateCartResult.isSuccess) {
-                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update-cart"
+                    )
+                )
                 return@launch
             }
             val checkoutItems = listData.value.toMutableList()
@@ -3427,6 +3464,8 @@ class CheckoutViewModel @Inject constructor(
         const val NO_VALID_ORDER_ERROR_MESSAGE = "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
         const val INVALID_PAYMENT_ERROR_MESSAGE = "Atur pembayaran dulu yuk sebelum lanjut bayar."
         const val INVALID_DROPSHIP_ERROR_MESSAGE = "Pastikan Anda telah melengkapi informasi tambahan."
+
+        const val SOURCE_LOCAL = "local"
     }
 }
 
