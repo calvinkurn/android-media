@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import kotlinx.parcelize.Parcelize
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
-import com.tokopedia.topads.view.adapter.product.viewmodel.ProductViewModel
 
 /**
  * Author errysuprayogi on 01,November,2019

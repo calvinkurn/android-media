@@ -1,9 +1,11 @@
 package com.tokopedia.topads.view.adapter.product.viewmodel
 
-import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactory
 
-class KeyWordItemViewModel(var keywordDataItem: KeywordDataItem) : ProductViewModel() {
+/**
+ * Author errysuprayogi on 12,November,2019
+ */
+class ProductEmptyUiModel : ProductUiModel() {
 
     override fun type(typesFactory: ProductListAdapterTypeFactory): Int {
         return typesFactory.type(this)
