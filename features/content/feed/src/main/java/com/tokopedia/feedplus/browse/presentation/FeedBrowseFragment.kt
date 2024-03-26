@@ -74,7 +74,7 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private val searchPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            val resultKeyword = it.data?.getStringExtra(FeedLocalBrowseFragment.LOCAL_BROWSE_SEARCH_KEYWORD)
+            val resultKeyword = it.data?.getStringExtra(FeedLocalSearchFragment.LOCAL_BROWSE_SEARCH_KEYWORD)
 
             val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT)
             intent.putExtra(FeedSearchResultActivity.KEYWORD_PARAM, resultKeyword)
@@ -429,12 +429,12 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private fun searchbarFocusHandler(view: View, focusState: Boolean) {
+        view.clearFocus()
+
         if (focusState) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
             searchPageLauncher.launch(intent)
         }
-
-        view.clearFocus()
     }
 
     companion object {

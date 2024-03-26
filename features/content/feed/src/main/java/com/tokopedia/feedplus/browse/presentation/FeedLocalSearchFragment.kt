@@ -7,34 +7,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.feedplus.databinding.FragmentFeedLocalBrowseBinding
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.feedplus.databinding.FragmentFeedLocalSearchBinding
 import com.tokopedia.feedplus.R as feedplusR
 
-class FeedLocalBrowseFragment: BaseDaggerFragment() {
+class FeedLocalSearchFragment : TkpdBaseV4Fragment() {
 
-    private var binding: FragmentFeedLocalBrowseBinding? = null
+    private var _binding: FragmentFeedLocalSearchBinding? = null
+    private val binding: FragmentFeedLocalSearchBinding get() = _binding!!
+
+    override fun getScreenName(): String = "Feed Local Search"
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFeedLocalBrowseBinding.inflate(inflater)
+        _binding = FragmentFeedLocalSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupHeader()
-
-        return binding?.root
     }
 
-    override fun getScreenName(): String {
-        return "Browse Local"
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
-    override fun initInjector() {}
 
     private fun setupHeader() {
-        binding?.feedHeader?.let {
+        binding.feedHeader.let {
             it.onBackClicked {
                 onBackPressed()
             }
@@ -58,19 +63,19 @@ class FeedLocalBrowseFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        const val LOCAL_BROWSE_SEARCH_KEYWORD = "feed_local_browse_keyword"
+        const val LOCAL_BROWSE_SEARCH_KEYWORD = "feed_local_search_keyword"
 
         fun create(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle?
-        ): FeedLocalBrowseFragment {
+        ): FeedLocalSearchFragment {
             return fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FeedLocalBrowseFragment::class.java.name
+                FeedLocalSearchFragment::class.java.name
             ).apply {
                 arguments = bundle
-            } as FeedLocalBrowseFragment
+            } as FeedLocalSearchFragment
         }
     }
 }
