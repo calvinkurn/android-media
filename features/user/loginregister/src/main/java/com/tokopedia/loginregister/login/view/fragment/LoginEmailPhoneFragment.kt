@@ -1872,7 +1872,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
+    open fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
         return {
             trackSuccessValidate()
 
