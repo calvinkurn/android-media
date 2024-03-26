@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.data.mock
+package com.tokopedia.product.preview.data
 
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType

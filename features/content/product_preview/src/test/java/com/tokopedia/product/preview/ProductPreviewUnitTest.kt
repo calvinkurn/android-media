@@ -1,7 +1,6 @@
 package com.tokopedia.product.preview
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.content.product.preview.data.mock.ProductPreviewMockData
 import com.tokopedia.content.product.preview.domain.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreferences
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
@@ -16,6 +15,7 @@ import com.tokopedia.content.test.util.assertNotEqualTo
 import com.tokopedia.content.test.util.assertTrue
 import com.tokopedia.content.test.util.assertType
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.product.preview.data.ProductPreviewMockData
 import com.tokopedia.product.preview.robot.ProductPreviewViewModelRobot
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
