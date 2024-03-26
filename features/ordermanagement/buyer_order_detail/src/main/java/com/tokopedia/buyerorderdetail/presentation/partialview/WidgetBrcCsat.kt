@@ -3,13 +3,18 @@ package com.tokopedia.buyerorderdetail.presentation.partialview
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import androidx.core.animation.addListener
+import androidx.core.content.ContextCompat
 import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.buyerorderdetail.R
@@ -20,10 +25,15 @@ import com.tokopedia.buyerorderdetail.presentation.model.WidgetBrcCsatUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.UnifyMotion
 
 class WidgetBrcCsat(
     context: Context,
@@ -43,7 +53,11 @@ class WidgetBrcCsat(
 
     private val binding = WidgetBrcCsatBinding.inflate(LayoutInflater.from(context), this, true)
     private val contentBinding by lazyThreadSafetyNone {
-        WidgetBrcCsatContentBinding.inflate(LayoutInflater.from(context), null, false)
+        WidgetBrcCsatContentBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        ).apply { setupBackgroundColor() }
     }
     private val contentData by lazyThreadSafetyNone {
         AccordionDataUnify(
@@ -102,16 +116,53 @@ class WidgetBrcCsat(
         setupHelpText(helpUrl)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun WidgetBrcCsatContentBinding.setupSmileys(orderID: String) {
-        ivBomBrcCsatSmiley1.setOnClickListener { onSmileyClicked(orderID, 1) }
-        ivBomBrcCsatSmiley2.setOnClickListener { onSmileyClicked(orderID, 2) }
-        ivBomBrcCsatSmiley3.setOnClickListener { onSmileyClicked(orderID, 3) }
-        ivBomBrcCsatSmiley4.setOnClickListener { onSmileyClicked(orderID, 4) }
-        ivBomBrcCsatSmiley5.setOnClickListener { onSmileyClicked(orderID, 5) }
-    }
-
-    private fun onSmileyClicked(orderID: String, feedback: Int) {
-        _navigator?.goToBrcCsatForm(orderID, feedback)
+        cardBomBrcCsatSmiley1.setOnTouchListener(
+            SmileyTouchListener(
+                orderID = orderID,
+                smileyScore = 1,
+                cardBomBrcCsatSmiley = cardBomBrcCsatSmiley1,
+                ivBomBrcCsatSmiley = ivBomBrcCsatSmiley1,
+                navigator = _navigator
+            )
+        )
+        cardBomBrcCsatSmiley2.setOnTouchListener(
+            SmileyTouchListener(
+                orderID = orderID,
+                smileyScore = 2,
+                cardBomBrcCsatSmiley = cardBomBrcCsatSmiley2,
+                ivBomBrcCsatSmiley = ivBomBrcCsatSmiley2,
+                navigator = _navigator
+            )
+        )
+        cardBomBrcCsatSmiley3.setOnTouchListener(
+            SmileyTouchListener(
+                orderID = orderID,
+                smileyScore = 3,
+                cardBomBrcCsatSmiley = cardBomBrcCsatSmiley3,
+                ivBomBrcCsatSmiley = ivBomBrcCsatSmiley3,
+                navigator = _navigator
+            )
+        )
+        cardBomBrcCsatSmiley4.setOnTouchListener(
+            SmileyTouchListener(
+                orderID = orderID,
+                smileyScore = 4,
+                cardBomBrcCsatSmiley = cardBomBrcCsatSmiley4,
+                ivBomBrcCsatSmiley = ivBomBrcCsatSmiley4,
+                navigator = _navigator
+            )
+        )
+        cardBomBrcCsatSmiley5.setOnTouchListener(
+            SmileyTouchListener(
+                orderID = orderID,
+                smileyScore = 5,
+                cardBomBrcCsatSmiley = cardBomBrcCsatSmiley5,
+                ivBomBrcCsatSmiley = ivBomBrcCsatSmiley5,
+                navigator = _navigator
+            )
+        )
     }
 
     private fun WidgetBrcCsatContentBinding.setupHelpText(helpUrl: String) {
@@ -169,5 +220,90 @@ class WidgetBrcCsat(
 
     private fun animateHide() {
         animateHeight(HEIGHT_HIDE, ALPHA_HIDE)
+    }
+
+    private fun WidgetBrcCsatContentBinding.setupBackgroundColor() {
+        cardBomBrcCsatSmiley1.setCardUnifyBackgroundColor(Color.TRANSPARENT)
+        cardBomBrcCsatSmiley2.setCardUnifyBackgroundColor(Color.TRANSPARENT)
+        cardBomBrcCsatSmiley3.setCardUnifyBackgroundColor(Color.TRANSPARENT)
+        cardBomBrcCsatSmiley4.setCardUnifyBackgroundColor(Color.TRANSPARENT)
+        cardBomBrcCsatSmiley5.setCardUnifyBackgroundColor(Color.TRANSPARENT)
+    }
+
+    private class SmileyTouchListener(
+        private val orderID: String,
+        private val smileyScore: Int,
+        private val cardBomBrcCsatSmiley: CardUnify2,
+        private val ivBomBrcCsatSmiley: ImageUnify,
+        private val navigator: BuyerOrderDetailNavigator?
+    ): OnTouchListener {
+
+        companion object {
+            private const val CLICKED_ANIMATION_DURATION = 50L
+        }
+
+        private var colorChangeAnimation: ValueAnimator? = null
+
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    cardBomBrcCsatSmiley.foreground.setState(intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled))
+                    animateSmileyColor(R.color.buyer_order_detail_dms_brc_csat_smiley_color_click, CLICKED_ANIMATION_DURATION)
+                }
+                MotionEvent.ACTION_UP -> {
+                    cardBomBrcCsatSmiley.foreground.setState(intArrayOf())
+                    animateSmileyColor(R.color.buyer_order_detail_dms_brc_csat_smiley_color_default, UnifyMotion.T1) {
+                        if (event.intersectWith(cardBomBrcCsatSmiley, Long.ZERO)) {
+                            onSmileyClicked(orderID, smileyScore)
+                        }
+                    }
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    cardBomBrcCsatSmiley.foreground.setState(intArrayOf())
+                    animateSmileyColor(R.color.buyer_order_detail_dms_brc_csat_smiley_color_default, UnifyMotion.T1)
+                }
+            }
+            return true
+        }
+
+        private fun animateSmileyColor(@ColorRes color: Int, duration: Long, onAnimateEnd: (Animator) -> Unit = {}) {
+            with(ivBomBrcCsatSmiley) {
+                colorChangeAnimation?.cancel()
+                val defaultCurrentColor = if (color == R.color.buyer_order_detail_dms_brc_csat_smiley_color_default) {
+                    ContextCompat.getColor(context, R.color.buyer_order_detail_dms_brc_csat_smiley_color_click)
+                } else {
+                    ContextCompat.getColor(context, R.color.buyer_order_detail_dms_brc_csat_smiley_color_default)
+                }
+                val currentColor = colorChangeAnimation?.animatedValue as? Int ?: defaultCurrentColor
+                val targetColor = ContextCompat.getColor(context, color)
+                colorChangeAnimation = ValueAnimator
+                    .ofArgb(currentColor, targetColor)
+                    .apply {
+                        interpolator = UnifyMotion.EASE_IN_OUT
+                        this.duration = duration
+                        addUpdateListener { setColorFilter(it.animatedValue as Int) }
+                        addListener(onEnd = onAnimateEnd)
+                        start()
+                    }
+            }
+        }
+
+        private fun onSmileyClicked(orderID: String, feedback: Int) {
+            navigator?.goToBrcCsatForm(orderID, feedback)
+        }
+
+        private fun MotionEvent.intersectWith(view: View, extraSizePx: Long): Boolean {
+            return if (view.isVisible && view.height.isMoreThanZero() && view.width.isMoreThanZero()) {
+                val viewCoordinate = IntArray(2).also {
+                    view.getLocationOnScreen(it)
+                }
+                val viewStartX = (viewCoordinate.first() - extraSizePx).coerceAtLeast(Long.ZERO)
+                val viewEndX = viewCoordinate.first() + view.width + extraSizePx
+                val viewStartY = (viewCoordinate.last() - extraSizePx).coerceAtLeast(Long.ZERO)
+                val viewEndY = viewCoordinate.last() + view.height + extraSizePx
+                rawX >= viewStartX && rawX <= viewEndX && rawY >= viewStartY && rawY <= viewEndY
+            } else false
+        }
     }
 }
