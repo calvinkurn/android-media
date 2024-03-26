@@ -51,6 +51,7 @@ import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -458,12 +459,16 @@ class CheckoutPaymentProcessor @Inject constructor(
             val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
             val widgetData = paymentWidgetData.first()
             val selectedTenure = widgetData.installmentPaymentData.selectedTenure
-            if (tenorList?.firstOrNull { it.tenure == selectedTenure }?.disable != false) {
+            val selectedTenor = tenorList?.firstOrNull { it.tenure == selectedTenure }
+            if (selectedTenor?.disable != false) {
                 // reset selected tenure if current tenure is disabled
-                paymentWidgetData[0] = widgetData.copy(installmentPaymentData = widgetData.installmentPaymentData.copy(selectedTenure = 0))
+                val newGatewayCode = tenorList?.firstOrNull { it.tenure == 0 }?.gatewayCode.ifNullOrBlank { widgetData.gatewayCode }
+                paymentWidgetData[0] = widgetData.copy(installmentPaymentData = widgetData.installmentPaymentData.copy(selectedTenure = 0), gatewayCode = newGatewayCode)
                 return payment.copy(tenorList = tenorList, data = payment.data.copy(paymentWidgetData = paymentWidgetData))
             }
-            return payment.copy(tenorList = tenorList)
+            val newGatewayCode = selectedTenor.gatewayCode.ifBlank { widgetData.gatewayCode }
+            paymentWidgetData[0] = widgetData.copy(gatewayCode = newGatewayCode)
+            return payment.copy(tenorList = tenorList, data = payment.data.copy(paymentWidgetData))
         } catch (e: Exception) {
             Timber.d(e)
             return payment.copy(tenorList = null)
