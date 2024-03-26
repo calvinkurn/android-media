@@ -134,7 +134,7 @@ class RecommendationViewHolder(
             setupLastUpdatedInfo(element)
 
             horLineShcRecommendationBtm.isVisible = luvShcRecommendation.isVisible
-                    || tvShcRecommendationCta.isVisible
+                || tvShcRecommendationCta.isVisible
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)

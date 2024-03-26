@@ -2,8 +2,8 @@ package com.tokopedia.chatbot.chatbot2.csat.view
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.PointModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow

@@ -204,6 +204,8 @@ class FeedXProduct(
     val priceDiscount: Double = 0.0,
     @SerializedName("priceDiscountFmt")
     val priceDiscountFmt: String = "",
+    @SerializedName("priceFormatPriority")
+    val priceFormatPriority: String = "",
     @SerializedName("totalSold")
     val totalSold: Int = 0,
     @SerializedName("isBebasOngkir")
@@ -227,7 +229,9 @@ class FeedXProduct(
     @SerializedName("cashbackFmt")
     val cashbackFmt: String = "",
     @SerializedName("isStockAvailable")
-    val isAvailable: Boolean = false
+    val isAvailable: Boolean = false,
+    @SerializedName("isHighlighted")
+    val isHighlighted: Boolean = false
 )
 
 class FeedXProductAffiliate(

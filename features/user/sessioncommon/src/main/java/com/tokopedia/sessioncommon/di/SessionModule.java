@@ -22,6 +22,7 @@ import com.tokopedia.sessioncommon.network.AccountsBearerInterceptor;
 import com.tokopedia.sessioncommon.network.BasicInterceptor;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.sessioncommon.network.TokenErrorResponse;
+import com.tokopedia.sessioncommon.util.GetProfileUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

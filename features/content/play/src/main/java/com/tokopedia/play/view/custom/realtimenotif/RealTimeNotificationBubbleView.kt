@@ -4,10 +4,12 @@ import android.content.Context
 import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play.R
 import com.tokopedia.play_common.view.RoundedConstraintLayout
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.media.loader.R as medialoaderR
 
 /**
  * Created by jegul on 03/08/21
@@ -18,7 +20,7 @@ class RealTimeNotificationBubbleView : RoundedConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val imageNotif: ImageUnify
+    private val imageNotif: AppCompatImageView
     private val tvNotifCopy: Typography
 
     init {
@@ -31,7 +33,9 @@ class RealTimeNotificationBubbleView : RoundedConstraintLayout {
     }
 
     fun setIconUrl(url: String) {
-        imageNotif.setImageUrl(url)
+        imageNotif.loadImageCircle(url) {
+            setErrorDrawable(medialoaderR.drawable.media_placeholder_grey)
+        }
     }
 
     fun setText(text: Spanned) {

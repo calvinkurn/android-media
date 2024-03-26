@@ -26,10 +26,10 @@ class SearchResultStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchm
     }
 
     override fun setupEnvironment() {
-        MacroDevOps.setupLoginFlow(
-            "pbs-hidayatullah+prod7@tokopedia.com",
-            "Prod1234"
-        )
+//        MacroDevOps.setupLoginFlow(
+//            "pbs-hidayatullah+prod7@tokopedia.com",
+//            "Prod1234"
+//        )
     }
 
     override fun getIntent() = MacroIntent.SearchResult.getSearchResultIntent()

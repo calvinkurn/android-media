@@ -14,10 +14,15 @@ object AppSessionStoriesSeenStorage : StoriesSeenStorage {
 
     override suspend fun hasSeenAllAuthorStories(
         key: StoriesSeenStorage.Author,
-        laterThanMillis: Long,
+        currentHasSeenAll: Boolean,
+        laterThanMillis: Long
     ): Boolean = mutex.withLock {
         val latestTimeChanged = statusMap[key] ?: return false
-        return latestTimeChanged > laterThanMillis
+        return if (latestTimeChanged > laterThanMillis) {
+            true
+        } else {
+            currentHasSeenAll
+        }
     }
 
     override suspend fun setSeenAllAuthorStories(key: StoriesSeenStorage.Author) = mutex.withLock {
