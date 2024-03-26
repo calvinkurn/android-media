@@ -1,8 +1,14 @@
 package com.tokopedia.product.detail.view.viewholder.dynamic_oneliner
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import androidx.constraintlayout.widget.ConstraintSet
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -59,7 +65,7 @@ class DynamicOneLinerViewHolder(
 
         val iconUrl = data.icon
         dynamicOneLinerIconLeft.showIfWithBlock(iconUrl.isNotEmpty()) {
-            setImageUrl(iconUrl)
+            setImageWithMaxSize(iconUrl)
         }
 
         val url = data.applink
@@ -102,6 +108,35 @@ class DynamicOneLinerViewHolder(
                 constraintSet.applyTo(dynamicOneLinerContent)
             }
         }
+    }
+
+    private fun setImageWithMaxSize(url: String) = with(binding) {
+        Glide.with(itemView.context)
+            .asBitmap()
+            .load(url)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    val height = resource.height
+                    val width = resource.width
+                    val masSizeInDp = 48
+                    val masSizeInPx = masSizeInDp.dpToPx(itemView.context.resources.displayMetrics)
+
+                    dynamicOneLinerIconLeft.layoutParams.height =
+                        if (height > masSizeInPx) masSizeInPx else height
+                    dynamicOneLinerIconLeft.layoutParams.width =
+                        if (width > masSizeInPx) masSizeInPx else height
+
+                    dynamicOneLinerIconLeft.setImageBitmap(resource)
+                    dynamicOneLinerIconLeft.requestLayout()
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                }
+            })
     }
 
     private fun setupClick(

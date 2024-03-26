@@ -25,6 +25,7 @@
             android:layout_marginStart="16dp"
             android:maxWidth="48dp"
             android:maxHeight="48dp"
+            android:adjustViewBounds="true"
             app:layout_constraintBottom_toBottomOf="@id/dynamic_one_liner_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/dynamic_one_liner_title"
