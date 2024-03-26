@@ -13,6 +13,7 @@ import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.targetedticker.domain.GetTargetedTickerResponse
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
@@ -67,7 +68,8 @@ class TrackingPageComposeViewModelTest {
 
     @Test
     fun `Get Tracking Data Success`() {
-        coEvery { getTrackingUseCase(any()) } returns GetLogisticTrackingResponse()
+        val response = GetLogisticTrackingResponse()
+        coEvery { getTrackingUseCase(any()) } returns response
         val event = TrackingPageEvent.LoadTrackingData("12234", "1", 2, "", "")
         trackingPageViewModel.onEvent(event)
 
@@ -75,6 +77,25 @@ class TrackingPageComposeViewModelTest {
 
         assert(!result.isLoading)
         assertNotNull(result.trackingData)
+    }
+
+    @Test
+    fun `Get Tracking Data Success with Error Message`() {
+        val errorMessage =
+            "Maaf, Permohonan Anda tidak dapat diproses saat ini. Mohon dicoba kembali."
+        val response =
+            GetLogisticTrackingResponse(LogisticTrackingResponse(messageError = listOf(errorMessage)))
+        coEvery { getTrackingUseCase(any()) } returns response
+        val event = TrackingPageEvent.LoadTrackingData("12234", "1", 2, "", "")
+        trackingPageViewModel.onEvent(event)
+
+        val result = trackingPageViewModel.uiState.value
+        val error = trackingPageViewModel.error.replayCache.first()
+        print(error)
+
+        assert(!result.isLoading)
+        assertNull(result.trackingData)
+        assert(error.message == errorMessage)
     }
 
     @Test
@@ -167,12 +188,14 @@ class TrackingPageComposeViewModelTest {
 
     @Test
     fun `Targeted Ticker Success`() {
-        val targetedTickerParam = TickerUnificationParams(target = listOf(
-            TickerUnificationParams.Target(
-                type = "type",
-                values = listOf("a", "b", "c")
+        val targetedTickerParam = TickerUnificationParams(
+            target = listOf(
+                TickerUnificationParams.Target(
+                    type = "type",
+                    values = listOf("a", "b", "c")
+                )
             )
-        ))
+        )
         coEvery { getTrackingUseCase(any()) } returns GetLogisticTrackingResponse(
             LogisticTrackingResponse(data = TrackingData(page = Page(tickerUnificationParams = targetedTickerParam)))
         )
@@ -183,7 +206,8 @@ class TrackingPageComposeViewModelTest {
         trackingPageViewModel.onEvent(initialEvent)
 
         val result = trackingPageViewModel.uiState.value
-        val tickerResult = TargetedTickerMapper.convertTargetedTickerToUiModel(response.getTargetedTickerData)
+        val tickerResult =
+            TargetedTickerMapper.convertTargetedTickerToUiModel(response.getTargetedTickerData)
 
         assertNotNull(result.tickerData)
         assert(tickerResult == result.tickerData)
@@ -193,7 +217,13 @@ class TrackingPageComposeViewModelTest {
     fun `When seller open lacak page for order with gojek or grab courier THEN hit retryAvailability to check availability to request new driver`() {
         coEvery { setRetryBookingUseCase(any()) } returns RetryBookingResponse()
         coEvery { getTrackingUseCase(any()) } returns GetLogisticTrackingResponse()
-        val initialEvent = TrackingPageEvent.LoadTrackingData("12234", "1", 2, "https://track.gojek.com/?id=fd1015ee", "seller")
+        val initialEvent = TrackingPageEvent.LoadTrackingData(
+            "12234",
+            "1",
+            2,
+            "https://track.gojek.com/?id=fd1015ee",
+            "seller"
+        )
         trackingPageViewModel.onEvent(initialEvent)
 
         coVerify {

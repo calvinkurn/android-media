@@ -96,11 +96,11 @@ class TrackingPageComposeViewModel @Inject constructor(
                 }
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
-                if (getTrackingData.response.messageError?.isEmpty() != true) {
+                if (getTrackingData.response.messageError?.isEmpty() == false) {
                     _uiState.update {
                         it.copy(isLoading = false)
                     }
-                    getTrackingData.response.messageError?.firstOrNull()?.run {
+                    getTrackingData.response.messageError.firstOrNull()?.run {
                         _error.emit(MessageErrorException(this.toString()))
                     }
                 } else {
