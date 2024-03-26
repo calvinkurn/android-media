@@ -39,9 +39,13 @@ class HomeMissionWidgetUseCase @Inject constructor(
             )
 
             val mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
-                results.getHomeMissionWidget.missions,
-                false,
-                results.getHomeMissionWidget.appLog
+                missionWidgetList = results.getHomeMissionWidget.missions,
+                isCache = false,
+                appLog = results.getHomeMissionWidget.appLog,
+                channelName = currentMissionWidgetListDataModel.name,
+                channelId = currentMissionWidgetListDataModel.id,
+                header = currentMissionWidgetListDataModel.header,
+                verticalPosition = currentMissionWidgetListDataModel.verticalPosition
             )
 
             currentMissionWidgetListDataModel.copy(

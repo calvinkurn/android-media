@@ -67,11 +67,11 @@ object LazyLoadDataMapper {
     fun map4SquareMissionWidgetData(
         missionWidgetList: List<HomeMissionWidgetData.Mission>,
         isCache: Boolean,
-        channelName: String,
-        channelId: String,
-        header: ChannelHeader,
-        verticalPosition: Int,
         appLog: HomeMissionWidgetData.AppLog,
+        channelName: String = "",
+        channelId: String = "",
+        header: ChannelHeader = ChannelHeader(),
+        verticalPosition: Int = 0,
     ): List<Mission4SquareUiModel> {
         return mapMissionWidgetData(missionWidgetList, isCache, appLog)
             .take(4)

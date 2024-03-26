@@ -41,9 +41,13 @@ class MissionWidgetMapper @Inject constructor() {
                     data.appLog
                 ),
                 mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
-                    data.missions,
-                    atfData.isCache,
-                    data.appLog
+                    missionWidgetList = data.missions,
+                    isCache = atfData.isCache,
+                    appLog = data.appLog,
+                    channelId = atfData.atfMetadata.id.toString(),
+                    channelName = atfData.atfMetadata.name,
+                    header = data.header.getAsHomeComponentHeader(),
+                    verticalPosition = index
                 ),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),

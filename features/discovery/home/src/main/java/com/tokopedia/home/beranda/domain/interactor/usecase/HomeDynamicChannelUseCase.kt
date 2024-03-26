@@ -358,9 +358,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                         val mission4SquareWidgetList = LazyLoadDataMapper
                             .map4SquareMissionWidgetData(
-                                data.getHomeMissionWidget.missions,
-                                false,
-                                data.getHomeMissionWidget.appLog
+                                missionWidgetList = data.getHomeMissionWidget.missions,
+                                isCache = false,
+                                appLog = data.getHomeMissionWidget.appLog,
+                                channelName = visitableFound.name,
+                                channelId = visitableFound.id,
+                                header = visitableFound.header,
+                                verticalPosition = visitableFound.verticalPosition
                             )
 
                         visitableFound.copy(
