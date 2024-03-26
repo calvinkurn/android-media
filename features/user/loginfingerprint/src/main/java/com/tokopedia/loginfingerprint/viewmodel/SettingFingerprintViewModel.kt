@@ -16,7 +16,7 @@ import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
 import com.tokopedia.loginfingerprint.utils.crypto.KeyPairManager
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

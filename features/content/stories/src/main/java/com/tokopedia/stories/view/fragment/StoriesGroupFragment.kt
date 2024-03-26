@@ -19,9 +19,11 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.stories.R
 import com.tokopedia.stories.analytics.StoriesAnalytics
 import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
+import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
 import com.tokopedia.stories.view.custom.StoriesErrorView
@@ -40,11 +42,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.stories.R
+import kotlin.time.Duration.Companion.seconds
 
 class StoriesGroupFragment @Inject constructor(
     private val viewModelFactory: StoriesViewModelFactory.Creator,
-    private val analyticFactory: StoriesAnalytics.Factory,
+    private val analyticFactory: StoriesAnalytics.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesGroupBinding? = null
@@ -80,7 +82,7 @@ class StoriesGroupFragment @Inject constructor(
         StoriesGroupPagerAdapter(
             childFragmentManager,
             requireActivity(),
-            lifecycle,
+            lifecycle
         )
     }
 
@@ -151,11 +153,15 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun showSelectedGroupHighlight(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
-            binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
-            binding.tvHighlight.show()
-            binding.tvHighlight.animate().alpha(1f)
-            delay(1000)
-            binding.tvHighlight.animate().alpha(0f)
+            if (args.source != StoriesSource.BROWSE_WIDGET.value) {
+                binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
+                binding.tvHighlight.show()
+                binding.tvHighlight.animate().alpha(1f)
+                delay(1.seconds)
+                binding.tvHighlight.animate().alpha(0f)
+            } else {
+                delay(DELAY_PREVENT_STORIES_STUCK_RACE_CONDITION)
+            }
             viewModelAction(StoriesUiAction.PageIsSelected)
         }
     }
@@ -205,7 +211,9 @@ class StoriesGroupFragment @Inject constructor(
         if (prevState == state ||
             pagerAdapter.getCurrentData().size == state.groupItems.size ||
             state.selectedGroupPosition < 0
-        ) return
+        ) {
+            return
+        }
 
         hideError()
 
@@ -245,10 +253,10 @@ class StoriesGroupFragment @Inject constructor(
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = index.plus(1).toString(),
-                    itemId = "${viewModel.mGroup.groupId} - ${storiesGroupHeader.groupId} - ${args.authorId}",
-                    itemName = "/ - stories",
+                    itemId = "${viewModel.mGroup.groupId} - ${storiesGroupHeader.groupId} - ${viewModel.validAuthorId}",
+                    itemName = "/ - stories"
                 )
-            },
+            }
         )
     }
 
@@ -266,7 +274,7 @@ class StoriesGroupFragment @Inject constructor(
             storiesId = viewModel.mDetail.id,
             contentType = viewModel.mDetail.content.type,
             storyType = viewModel.mDetail.storyType,
-            currentCircle = viewModel.mGroup.groupName,
+            currentCircle = viewModel.mGroup.groupName
         )
     }
 
@@ -278,6 +286,9 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     companion object {
+
+        private const val DELAY_PREVENT_STORIES_STUCK_RACE_CONDITION = 800L
+
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,

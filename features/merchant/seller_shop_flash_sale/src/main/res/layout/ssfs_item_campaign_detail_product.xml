@@ -154,7 +154,7 @@
                 android:id="@+id/tpg_view_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN1000"
                 app:typographyType="paragraph_2"
                 app:typographyWeight="bold"
                 tools:text="232" />
@@ -183,7 +183,7 @@
                 android:id="@+id/tpg_campaign_stock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN1000"
                 app:typographyType="paragraph_2"
                 app:typographyWeight="bold"
                 tools:text="23" />
@@ -212,7 +212,7 @@
                 android:id="@+id/tpg_remaining"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN1000"
                 app:typographyType="paragraph_2"
                 app:typographyWeight="bold"
                 tools:text="10" />

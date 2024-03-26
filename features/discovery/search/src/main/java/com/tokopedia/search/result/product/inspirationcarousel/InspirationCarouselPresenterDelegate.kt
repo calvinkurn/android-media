@@ -15,6 +15,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
@@ -31,6 +32,10 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.UseCase
 import dagger.Lazy
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.firstOrNull
 import org.json.JSONObject
 import rx.Subscriber
 import javax.inject.Inject
@@ -53,7 +58,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private val couponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchCouponModel>,
     @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_REDEEM_USE_CASE)
     private val redeemCouponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchRedeemCouponModel>,
-    private val iris: Iris
+    private val iris: Iris,
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory
 ) : InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 
@@ -115,7 +121,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     fun processInspirationCarouselPosition(
         totalProductItem: Int,
         externalReference: String,
-        action: (Int, List<Visitable<*>>) -> Unit
+        isFirstPage: Boolean,
+        action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         if (inspirationCarouselDataViewList.isEmpty()) return
 
@@ -130,7 +137,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
             if (data.position <= totalProductItem && shouldShowInspirationCarousel(data.layout)) {
                 val inspirationCarouselVisitableList =
-                    constructInspirationCarouselVisitableList(data, externalReference)
+                    constructInspirationCarouselVisitableList(data, externalReference, isFirstPage)
 
                 inspirationCarouselVisitableList?.let { action(data.position, it) }
 
@@ -172,10 +179,11 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun constructInspirationCarouselVisitableList(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
+        isFirstPage: Boolean,
     ) = when {
         data.isDynamicProductLayout() ->
-            convertInspirationCarouselToBroadMatch(data, externalReference)
+            convertInspirationCarouselToBroadMatch(data, externalReference, isFirstPage)
 
         data.isVideoLayout() ->
             convertInspirationCarouselToInspirationCarouselVideo(data)
@@ -219,7 +227,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun convertInspirationCarouselToBroadMatch(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
+        isFirstPage: Boolean,
     ): List<Visitable<*>>? {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
@@ -230,7 +239,13 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         }
 
         val optionList =
-            BroadMatchDataView.createList(data, externalReference, !hasTitle, deduplication)
+            BroadMatchDataView.createList(
+                data,
+                externalReference,
+                !hasTitle,
+                deduplication,
+                byteIOTrackingDataFactory.create(isFirstPage),
+            )
 
         if (optionList.isEmpty()) return null
 
@@ -429,16 +444,21 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         inspirationCarouselTitle: String
     ) {
         val mapper = InspirationCarouselProductDataViewMapper()
+        val inspirationCarouselProduct =
+            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product
+
         val productList = mapper.convertToInspirationCarouselProductDataView(
-            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
-            clickedInspirationCarouselOption.optionPosition,
-            clickedInspirationCarouselOption.inspirationCarouselType,
-            clickedInspirationCarouselOption.layout,
-            this::productLabelGroupToLabelGroupDataView,
-            clickedInspirationCarouselOption.title,
-            inspirationCarouselTitle,
-            clickedInspirationCarouselOption.dimension90,
-            clickedInspirationCarouselOption.externalReference
+            inspirationCarouselProduct = inspirationCarouselProduct,
+            productPosition = clickedInspirationCarouselOption.optionPosition,
+            inspirationCarouselType = clickedInspirationCarouselOption.inspirationCarouselType,
+            layout = clickedInspirationCarouselOption.layout,
+            mapLabelGroupDataViewList = this::productLabelGroupToLabelGroupDataView,
+            optionTitle = clickedInspirationCarouselOption.title,
+            carouselTitle = inspirationCarouselTitle,
+            dimension90 = clickedInspirationCarouselOption.dimension90,
+            externalReference = clickedInspirationCarouselOption.externalReference,
+            byteIOTrackingData = clickedInspirationCarouselOption.byteIOTrackingData,
+            trackingOption = clickedInspirationCarouselOption.trackingOption,
         )
 
         clickedInspirationCarouselOption.product = productList
@@ -459,41 +479,44 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         }
     }
 
-    override suspend fun getInspirationCouponData(
+    override fun getInspirationCouponData(
         visitableList: MutableList<Visitable<*>>,
         dataView: CouponDataView,
-        isDarkMode: Boolean,
-    ) = suspendCoroutine {
+        isDarkMode: Boolean
+    ) = callbackFlow {
         val requestParams = dataView.createGetCouponDataRequestParam(isDarkMode)
         couponUseCase.execute(
             { couponDataModel ->
-                it.resumeWith(processCouponDataModel(visitableList, couponDataModel, dataView))
+                processCouponDataModel(visitableList, couponDataModel, dataView)
+                trySend(Unit)
             },
             { _ ->
-                it.resumeWith(processCouponDataModel(visitableList, null, dataView))
+                processCouponDataModel(visitableList, null, dataView)
+                trySend(Unit)
             },
             requestParams
         )
+
+        awaitClose { channel.close() }
     }
 
     private fun processCouponDataModel(
         visitableList: MutableList<Visitable<*>>,
         couponDataModel: SearchCouponModel?,
         dataView: CouponDataView
-    ): Result<List<Visitable<*>>> {
+    ): List<Visitable<*>> {
         val validCouponWidgetList =
             couponDataModel?.promoCatalogGetCouponListWidget?.couponListWidget?.filter {
                 it.widgetInfo?.ctaList?.get(0).isValidCoupon()
             }
 
-        if (couponDataModel == null || validCouponWidgetList.isNullOrEmpty()
-        ) {
+        if (couponDataModel == null || validCouponWidgetList.isNullOrEmpty()) {
             visitableList.remove(dataView)
-            return Result.success(visitableList)
+            return visitableList
         }
 
         dataView.updateCouponModel(couponDataModel)
-        return Result.success(visitableList)
+        return visitableList
     }
 
     override fun ctaCoupon(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget) {
