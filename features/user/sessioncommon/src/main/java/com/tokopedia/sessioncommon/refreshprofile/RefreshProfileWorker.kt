@@ -1,11 +1,14 @@
-package com.tokopedia.sessioncommon.worker
+package com.tokopedia.sessioncommon.refreshprofile
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.sessioncommon.di.DaggerRefreshProfileComponent
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
@@ -17,8 +20,7 @@ import javax.inject.Inject
  * The interval value is in MINUTE.
  */
 
-class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) :
-    CoroutineWorker(appContext, workerParams) {
+class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) : CoroutineWorker(appContext, workerParams) {
 
     @Inject
     lateinit var getUserInfoUseCase: GetUserInfoAndSaveSessionUseCase
@@ -30,10 +32,7 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
     lateinit var firebaseRemoteConfig: RemoteConfig
 
     init {
-        DaggerRefreshProfileComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        DaggerRefreshProfileComponent.builder().baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     override suspend fun doWork(): Result {
@@ -42,16 +41,15 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
                 try {
                     getUserInfoUseCase(Unit)
                     saveRefreshTime(System.currentTimeMillis())
-                } catch (ignored: Exception) {}
+                } catch (ignored: Exception) {
+                }
             }
         }
         return Result.success()
     }
 
     private val sharedPref: SharedPreferences by lazy {
-        appContext.getSharedPreferences(
-            REFRESH_PROFILE_PREF, Context.MODE_PRIVATE
-        )
+        appContext.getSharedPreferences(REFRESH_PROFILE_PREF, Context.MODE_PRIVATE)
     }
 
     private fun saveRefreshTime(refreshTime: Long) {
@@ -69,12 +67,15 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
                 val currentTime = System.currentTimeMillis()
                 val previousTime = getLatestRefreshTime()
                 // if the users never refresh their profile, always return true
-                if (previousTime == 0L) { return true }
+                if (previousTime == 0L) {
+                    return true
+                }
                 // Need to convert the difference to MINUTE, because we use minute as the standard
                 val diff = TimeUnit.MILLISECONDS.toMinutes(currentTime - previousTime)
                 return (diff > interval)
             }
-        }catch (ignored: Exception) { }
+        } catch (ignored: Exception) {
+        }
         return false
     }
 
@@ -90,16 +91,11 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
         @JvmStatic
         fun scheduleWorker(appContext: Context) {
             try {
-                val worker = OneTimeWorkRequest
-                    .Builder(RefreshProfileWorker::class.java)
-                    .build()
+                val worker = OneTimeWorkRequest.Builder(RefreshProfileWorker::class.java).build()
 
-                WorkManager.getInstance(appContext).enqueueUniqueWork(
-                    WORKER_NAME,
-                    ExistingWorkPolicy.REPLACE,
-                    worker
-                )
-            } catch (ignored: Exception) { }
+                WorkManager.getInstance(appContext).enqueueUniqueWork(WORKER_NAME, ExistingWorkPolicy.REPLACE, worker)
+            } catch (ignored: Exception) {
+            }
         }
     }
 }

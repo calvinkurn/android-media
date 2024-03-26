@@ -1,4 +1,4 @@
-package com.tokopedia.sessioncommon.data.fingerprint
+package com.tokopedia.sessioncommon.data.fingerprintpreference
 
 interface FingerprintPreference {
     fun saveUniqueIdIfEmpty(id: String)

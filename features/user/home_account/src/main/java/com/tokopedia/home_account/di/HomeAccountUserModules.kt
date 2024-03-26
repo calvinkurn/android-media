@@ -14,8 +14,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreferenceManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
