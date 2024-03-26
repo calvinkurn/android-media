@@ -119,8 +119,7 @@ internal class FeedSearchResultFragment @Inject constructor(
                     val (prev, curr) = it
 
                     renderSearchBar(prev?.searchKeyword, curr.searchKeyword)
-                    renderPageState(prev?.pageState, curr.pageState, curr.contents, curr.hasNextPage)
-                    renderContents(prev?.contents, curr.contents)
+                    renderContents(prev?.pageState, curr.pageState, curr.contents, curr.hasNextPage)
                 }
             }
         }
@@ -135,7 +134,7 @@ internal class FeedSearchResultFragment @Inject constructor(
         binding.srpHeader.setSearchbarText(keyword)
     }
 
-    private fun renderPageState(
+    private fun renderContents(
         prevPageState: FeedSearchResultPageState?,
         pageState: FeedSearchResultPageState,
         contents: List<FeedSearchResultContent>,
@@ -148,7 +147,6 @@ internal class FeedSearchResultFragment @Inject constructor(
                 if (contents.isEmpty()) {
                     adapter.setShimmer()
                 }
-                showResult()
             }
             is FeedSearchResultPageState.Success -> {
                 val finalContents = contents + if (hasNextPage) {
@@ -158,7 +156,6 @@ internal class FeedSearchResultFragment @Inject constructor(
                 }
 
                 adapter.setItems(finalContents)
-                showResult()
             }
             is FeedSearchResultPageState.Restricted -> {
                 binding.errorView.apply {
@@ -170,8 +167,6 @@ internal class FeedSearchResultFragment @Inject constructor(
                     errorSecondaryAction.show()
                     errorIllustration.setImageResource(feedplusR.drawable.feed_search_restricted_illustration)
                 }
-
-                showError()
             }
             is FeedSearchResultPageState.NotFound -> {
                 binding.errorView.apply {
@@ -183,27 +178,24 @@ internal class FeedSearchResultFragment @Inject constructor(
                     errorSecondaryAction.hide()
                     errorIllustration.setImageResource(feedplusR.drawable.feed_search_not_found_illustration)
                 }
-
-                showError()
             }
             is FeedSearchResultPageState.InternalError -> {
                 binding.errorView.setType(GlobalError.SERVER_ERROR)
-                showError()
             }
             else -> {
                 binding.errorView.setType(GlobalError.NO_CONNECTION)
-                showError()
             }
+        }
+
+        if (shouldShowResult(pageState)) {
+            showResult()
+        } else {
+            showError()
         }
     }
 
-    private fun renderContents(
-        prevContents: List<FeedSearchResultContent>?,
-        contents: List<FeedSearchResultContent>
-    ) {
-        if (prevContents == contents) return
-
-        adapter.setItems(contents)
+    private fun shouldShowResult(pageState: FeedSearchResultPageState): Boolean {
+        return pageState == FeedSearchResultPageState.Loading || pageState == FeedSearchResultPageState.Success
     }
 
     private fun showResult() {
