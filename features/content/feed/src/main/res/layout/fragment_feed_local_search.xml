@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.feedplus.browse.presentation.view.FeedHeaderView
+    <com.tokopedia.feedplus.browse.presentation.view.FeedSearchHeaderView
         android:id="@+id/feed_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:isCleanable="true"
+        app:isClearable="true"
         app:isShowShadow="false"
         app:layout_constraintTop_toTopOf="parent" />
 

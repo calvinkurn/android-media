@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.feedplus.browse.presentation.view.FeedHeaderView
+    <com.tokopedia.feedplus.browse.presentation.view.FeedSearchHeaderView
         android:id="@+id/feed_browse_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

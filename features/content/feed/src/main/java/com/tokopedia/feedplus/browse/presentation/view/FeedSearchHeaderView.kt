@@ -11,7 +11,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.feedplus.R as feedplusR
 
-class FeedHeaderView(context: Context, attrs: AttributeSet): LinearLayout(context, attrs){
+class FeedSearchHeaderView(context: Context, attrs: AttributeSet): LinearLayout(context, attrs){
     var searchbar: SearchBarUnify? = null
     var header: HeaderUnify? = null
 
@@ -19,12 +19,12 @@ class FeedHeaderView(context: Context, attrs: AttributeSet): LinearLayout(contex
     private var handler: Handler? = null
 
     init {
-        val styledAttribute = getContext().obtainStyledAttributes(attrs, feedplusR.styleable.FeedHeaderView)
-        val isClearable = styledAttribute.getBoolean(feedplusR.styleable.FeedHeaderView_isCleanable, false)
-        val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedHeaderView_isShowShadow, true)
+        val styledAttribute = getContext().obtainStyledAttributes(attrs, feedplusR.styleable.FeedSearchHeaderView)
+        val isClearable = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isClearable, false)
+        val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isShowShadow, true)
         styledAttribute.recycle()
 
-        LayoutInflater.from(context).inflate(feedplusR.layout.view_feed_header_layout, this, true)
+        LayoutInflater.from(context).inflate(feedplusR.layout.view_feed_search_header_layout, this, true)
         header = findViewById<HeaderUnify>(feedplusR.id.header_unify).also {
             it.isShowShadow = isShowShadow
 
