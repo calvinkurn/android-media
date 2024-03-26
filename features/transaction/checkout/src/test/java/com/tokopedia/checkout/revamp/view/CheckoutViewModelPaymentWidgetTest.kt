@@ -676,13 +676,15 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
 
         // When
         viewModel.chooseInstallmentCC(TenorListData(
-            type = "12"
+            type = "12",
+            gatewayCode = "abc"
         ), emptyList())
 
         // Then
         assertNotNull(latestToaster)
         assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
         assertEquals(0, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
+        assertEquals("cc", viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().gatewayCode)
         coVerify(inverse = true) {
             dynamicPaymentFeeUseCase(any())
         }
@@ -746,10 +748,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             creditCardTenorListUseCase(any())
         } returns CreditCardTenorListData(
             tenorList = listOf(
-                TenorListData(type = "FULL"),
-                TenorListData(type = "3"),
-                TenorListData(type = "6"),
-                TenorListData(type = "12"),
+                TenorListData(type = "FULL", gatewayCode = "abc0"),
+                TenorListData(type = "3", gatewayCode = "abc3"),
+                TenorListData(type = "6", gatewayCode = "abc6"),
+                TenorListData(type = "12", gatewayCode = "abc12"),
             )
         )
 
@@ -759,7 +761,8 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
 
         // When
         viewModel.chooseInstallmentCC(TenorListData(
-            type = "12"
+            type = "12",
+            gatewayCode = "abc"
         ), listOf(TenorListData()))
 
         // Then
@@ -772,6 +775,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             getPaymentWidgetUseCase(any())
         }
         assertEquals(12, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
+        assertEquals("abc12", viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().gatewayCode)
     }
 
     @Test
