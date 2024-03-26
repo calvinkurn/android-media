@@ -7,16 +7,25 @@ import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import com.tokopedia.feedplus.databinding.ViewFeedSearchHeaderLayoutBinding
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.feedplus.R as feedplusR
 
-class FeedSearchHeaderView(context: Context, attrs: AttributeSet): LinearLayout(context, attrs){
-    var searchbar: SearchBarUnify? = null
-    var header: HeaderUnify? = null
+class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
+
+    val header: HeaderUnify
+        get() = binding.headerUnify
+
+    private val searchBar: SearchBarUnify
 
     private var searchAction: (keyword: String) -> Unit = {}
-    private var handler: Handler? = null
+
+    private val binding = ViewFeedSearchHeaderLayoutBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     init {
         val styledAttribute = getContext().obtainStyledAttributes(attrs, feedplusR.styleable.FeedSearchHeaderView)
@@ -24,18 +33,17 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet): LinearLayout(
         val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isShowShadow, true)
         styledAttribute.recycle()
 
-        LayoutInflater.from(context).inflate(feedplusR.layout.view_feed_search_header_layout, this, true)
-        header = findViewById<HeaderUnify>(feedplusR.id.header_unify).also {
-            it.isShowShadow = isShowShadow
+        binding.headerUnify.let { headerUnify ->
+            headerUnify.isShowShadow = isShowShadow
 
-            SearchBarUnify(context).also { searchbar ->
-                searchbar.isClearable = isClearable
-                searchbar.showIcon = isClearable
+            SearchBarUnify(context).also { searchBar ->
+                this.searchBar = searchBar
+                headerUnify.customView(searchBar)
 
-                this.searchbar = searchbar
-                it.customView(searchbar)
+                searchBar.isClearable = isClearable
+                searchBar.showIcon = isClearable
 
-                searchbar.searchBarTextField.setOnEditorActionListener { textView, keyIndex, _ ->
+                searchBar.searchBarTextField.setOnEditorActionListener { textView, keyIndex, _ ->
                     if (keyIndex == EditorInfo.IME_ACTION_SEARCH) {
                         searchAction(textView.text.toString())
                     }
@@ -49,24 +57,22 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet): LinearLayout(
      * True -> Listener bind success
      */
     fun onBackClicked(onClick: () -> Unit = {}): Boolean {
-        return header?.let {
-            it.setNavigationOnClickListener {
-                onClick()
-            }
-            true
-        } ?: false
+        binding.headerUnify.setNavigationOnClickListener {
+            onClick()
+        }
+        return true
     }
 
     fun setSearchPlaceholder(placeholder: String) {
-        searchbar?.searchBarPlaceholder = placeholder
+        searchBar.searchBarPlaceholder = placeholder
     }
 
     fun setSearchbarFocusListener(listener: OnFocusChangeListener) {
-        searchbar?.searchBarTextField?.onFocusChangeListener = listener
+        searchBar.searchBarTextField.onFocusChangeListener = listener
     }
 
     fun setSearchbarText(text: String) {
-        searchbar?.searchBarTextField?.setText(text)
+        searchBar.searchBarTextField.setText(text)
     }
 
     fun setSearchDoneListener(listener: (keyword: String) -> Unit) {
@@ -74,13 +80,12 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet): LinearLayout(
     }
 
     fun setSearchFocus() {
-        searchbar?.searchBarTextField?.requestFocus()
+        searchBar.searchBarTextField.requestFocus()
         showSoftKeyboard()
     }
 
     private fun showSoftKeyboard() {
-        handler = Handler()
-        handler?.postDelayed({
+        Handler().postDelayed({
             context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
                 (it as InputMethodManager).toggleSoftInput(
                     InputMethodManager.SHOW_IMPLICIT,
