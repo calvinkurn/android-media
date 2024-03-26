@@ -10,6 +10,7 @@ import com.tokopedia.logisticorder.uimodel.TrackingPageState
 import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
@@ -95,25 +96,34 @@ class TrackingPageComposeViewModel @Inject constructor(
                 }
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
-                val uiModel = mapper.mapTrackingDataCompose(
-                    getTrackingData,
-                    userSession.userId,
-                    userSession.deviceId,
-                    orderId,
-                    trackingUrlFromOrder,
-                    userSession.accessToken
-                )
-                _uiState.update {
-                    it.copy(isLoading = false, trackingData = uiModel)
-                }
-                if ((!trackingUrl.isNullOrEmpty()) && caller.equals(
-                        SELLER_CALLER_KEY,
-                        ignoreCase = true
+                if (getTrackingData.response.messageError?.isEmpty() != true) {
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
+                    getTrackingData.response.messageError?.firstOrNull()?.run {
+                        _error.emit(MessageErrorException(this.toString()))
+                    }
+                } else {
+                    val uiModel = mapper.mapTrackingDataCompose(
+                        getTrackingData,
+                        userSession.userId,
+                        userSession.deviceId,
+                        orderId,
+                        trackingUrlFromOrder,
+                        userSession.accessToken
                     )
-                ) {
-                    retryAvailability(orderId)
+                    _uiState.update {
+                        it.copy(isLoading = false, trackingData = uiModel)
+                    }
+                    if ((!trackingUrl.isNullOrEmpty()) && caller.equals(
+                            SELLER_CALLER_KEY,
+                            ignoreCase = true
+                        )
+                    ) {
+                        retryAvailability(orderId)
+                    }
+                    getTickerData(uiModel.page.targetedTickerParam)
                 }
-                getTickerData(uiModel.page.targetedTickerParam)
             },
             onError = { e ->
                 _uiState.update {
