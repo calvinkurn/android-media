@@ -1366,7 +1366,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         verifyOrder {
             cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
             spyViewModel.reCalculateSubTotal()
-            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, "0", 0.0, false))
+            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, 0.0,"0", 0.0, false))
         }
     }
 

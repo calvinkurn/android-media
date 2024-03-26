@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetRatio
 import com.tokopedia.play.widget.ui.model.getWidthAndHeight
 
 /**
@@ -19,22 +20,47 @@ import com.tokopedia.play.widget.ui.model.getWidthAndHeight
 class PlayWidgetCardLargeBannerView : FrameLayout {
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initAttrs(attrs)
+    }
+
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        initAttrs(attrs)
+    }
 
     private val background: AppCompatImageView
     private val card: CardView
 
     private var mListener: Listener? = null
 
+    private var mRatio = PlayWidgetRatio.Unknown
+
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_large_banner, this)
         background = view.findViewById(R.id.play_widget_banner)
         card = view.findViewById(R.id.play_card_banner_large)
+    }
+
+    private fun initAttrs(attrs: AttributeSet?) {
+        if (attrs == null) return
+
+        val attributeArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.PlayWidgetCardLargeView
+        )
+        val rawDimensionRatio = attributeArray.getString(R.styleable.PlayWidgetCardLargeView_dimensionRatio).orEmpty()
+        mRatio = PlayWidgetRatio.parse(rawDimensionRatio)
+
+        attributeArray.recycle()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val (newWidthMeasureSpec, newHeightMeasureSpec) = mRatio.getMeasureSpec(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(newWidthMeasureSpec, newHeightMeasureSpec)
     }
 
     fun setData(data: PlayWidgetBannerUiModel) {
