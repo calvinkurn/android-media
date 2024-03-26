@@ -2,15 +2,6 @@ package com.tokopedia.shareexperience.ui
 
 object ShareExConst {
     object Applink {
-        const val APPLINK = "tokopedia://share"
-
-        const val DUMMY_APPLINK = "tokopedia://share?" +
-            "referral_code=TARI123" +
-            "&page_type=7" +
-            "&default_url=https://tkp.me/GPL-TARI123" +
-            "&default_impression_label=impression-label" +
-            "&default_action_label=action-label"
-
         object Param {
             const val PAGE_TYPE = "page_type"
             const val DEFAULT_URL = "default_url"

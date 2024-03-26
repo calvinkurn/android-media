@@ -83,7 +83,6 @@ import com.tokopedia.picker.common.MediaPicker;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.shareexperience.ui.ShareExConst;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -1041,8 +1040,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 Timber.w(e);
             }
-        } else if (url.contains(SHARE_APPLINK)) {
-            RouteManager.route(getContext(), ShareExConst.Applink.DUMMY_APPLINK);
+        } else if (url.contains(SHARE_APPLINK)) { // Todo : remove this handling once lite already able to redirect to share applink
+            String DUMMY_APPLINK = "tokopedia://share?" +
+                    "referral_code=TARI123" +
+                    "&page_type=7" +
+                    "&default_url=https://tkp.me/GPL-TARI123" +
+                    "&default_impression_label=impression-label" +
+                    "&default_action_label=action-label";
+
+            RouteManager.route(getContext(), DUMMY_APPLINK);
             return true;
         }
 
