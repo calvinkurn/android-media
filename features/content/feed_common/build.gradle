@@ -3,11 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
 buildscript {
     repositories {
         google()
@@ -90,3 +85,14 @@ dependencies {
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
 }
+
+project.ext {
+    artifactId = 'feed-common'
+    groupId = 'com.tokopedia.content'
+    versionName = "0.0.1"
+    artifactName ="feed_common-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
