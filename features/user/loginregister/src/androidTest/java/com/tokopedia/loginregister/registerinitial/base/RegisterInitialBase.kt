@@ -10,7 +10,8 @@ import com.tokopedia.loginregister.login.behaviour.base.LoginRegisterBase
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
+import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -29,9 +30,6 @@ open class RegisterInitialBase : LoginRegisterBase() {
         false,
         false
     )
-
-    @Inject
-    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @Inject
     lateinit var fakeRepo: FakeGraphqlRepository

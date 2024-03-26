@@ -1305,7 +1305,7 @@ class FeedPostViewModel @Inject constructor(
                     feedXGetActivityProductsUseCase(
                         feedXGetActivityProductsUseCase.getFeedDetailParam(
                             activityId,
-                            cursor
+                            ""
                         )
                     ).data
                 }

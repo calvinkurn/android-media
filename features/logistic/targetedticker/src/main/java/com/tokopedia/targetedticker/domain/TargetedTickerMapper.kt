@@ -8,7 +8,7 @@ object TargetedTickerMapper {
     const val TICKER_WARNING_TYPE = "warning"
     const val TICKER_ERROR_TYPE = "danger"
 
-    private const val HTML_HYPERLINK_FORMAT = "<a href=\"%s\">%s</a>"
+    private const val HTML_HYPERLINK_BOLD_FORMAT = "<a href=\"%s\"><b>%s</b></a>"
 
     fun convertTargetedTickerToUiModel(
         targetedTickerData: GetTargetedTickerResponse.GetTargetedTickerData? = null
@@ -60,7 +60,7 @@ object TargetedTickerMapper {
 
     private fun StringBuilder.appendHyperlinkText(label: String, url: String) {
         if (label.isNotBlank() && url.isNotBlank()) {
-            append(String.format(HTML_HYPERLINK_FORMAT, url, label))
+            append(String.format(HTML_HYPERLINK_BOLD_FORMAT, url, label))
         }
     }
 
