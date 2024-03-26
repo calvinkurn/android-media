@@ -2,9 +2,6 @@ package com.tokopedia.loginregister.seamlesslogin
 
 import android.app.Service
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.Signature
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -14,8 +11,7 @@ import com.tokopedia.loginregister.seamlesslogin.di.DaggerSeamlessLoginComponent
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginComponent
 import com.tokopedia.loginregister.seamlesslogin.ui.SeamlessLoginViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
-import java.security.MessageDigest
+import com.tokopedia.utils.appsignature.AppSignatureUtil
 import javax.inject.Inject
 
 /**
@@ -60,8 +56,8 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
 
     private fun broadCastResult(data: Bundle, taskId: String) {
         try {
-            if (SeamlessLoginHelper.isSignatureMatch(SeamlessLoginHelper.getSellerSig(this),
-                    SeamlessLoginHelper.SELLER_APP_SIG)) {
+            if (AppSignatureUtil.isSignatureMatch(AppSignatureUtil.getAppSignature(this, PACKAGE_SELLERAPP),
+                    AppSignatureUtil.TOKO_APP_SIGNATURE)) {
                 val intent = Intent().apply {
                     `package` = PACKAGE_SELLERAPP
                     action = taskId
