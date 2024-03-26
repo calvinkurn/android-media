@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.model
 
-
 /**
  * Created By : Muhammad Furqan on 28/02/23
  */
@@ -24,6 +23,7 @@ data class FeedCardProductModel(
     val priceOriginalFmt: String = "",
     val priceDiscount: Double = 0.0,
     val priceDiscountFmt: String = "",
+    val priceFormatPriority: String = "",
     val totalSold: Int = 0,
     val isBebasOngkir: Boolean = false,
     val bebasOngkirStatus: String = "",

@@ -150,7 +150,7 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.16'
     unifyGlobalErrorVersion = '1.0.22'
-    unifyHeaderVersion = '1.2.5'
+    unifyHeaderVersion = '1.2.6'
     unifySortFilterVersion = '1.3.9'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.11'
@@ -521,5 +521,43 @@ ext {
             ktorSerializationJson       : "io.ktor:ktor-serialization-kotlinx-json:$ktorVersion",
             ktorLogging                 : "io.ktor:ktor-client-logging:$ktorVersion",
             kermitLogging               : "co.touchlab:kermit:$kermitVersion"
+    ]
+
+    commonMonitorVersion = "5.0.20.4.overseas"
+    npthVersion = "3.1.7.oversea-rc.67"
+    npthCoreVersion = "3.1.7.oversea-rc.67"
+
+    slardarDependencies = [
+            commonMonitor : "com.bytedance.frameworks.core:commonmonitor:$commonMonitorVersion",
+            npth          : "com.bytedance.frameworks.core:npth:$npthVersion",
+            npthCore      : "com.bytedance.frameworks.core:npth_core:$npthCoreVersion"
+    ]
+
+    chromiumCronetVersion = "4.2.137.43-tiktok"
+    baseLibsTtnetVersion = "4.2.137.43-tiktok"
+    boringSslVersion = "1.3.6-ttp"
+    cppSharedVersion = "21.1.4"
+
+    ttnetDependencies = [
+        chromiumCronet   : "org.chromium.net:cronet:$chromiumCronetVersion",
+        baseLibsTtnet    : "com.bytedance.frameworks.baselib:ttnet:$baseLibsTtnetVersion",
+        boringSsl        : "com.bytedance.boringssl.so:boringssl-so:$boringSslVersion",
+        cppShared        : "com.bytedance.ies.common:cpp_shared:$cppSharedVersion"
+    ]
+
+    appLogVersion = "5.6.9-bugfix.6"
+    frameworkCoreEncryptVersion = "1.2.2"
+    baseLibsUtilityVersion = "2.0.11"
+    bdNetworkTagVersion = "0.0.1-alpha.2-support"
+
+    appLogDependencies = [
+        bdTrackerGlobal   : "com.bytedance.applog:bdtracker-global:$appLogVersion",
+        sampling          : "com.bytedance.applog:sampling:$appLogVersion",
+        compress          : "com.bytedance.applog:compress:$appLogVersion",
+        monitor           : "com.bytedance.applog:monitor:$appLogVersion",
+        bdTrackerEtGlobal : "com.bytedance.applog:bdtracker-et_verify:$appLogVersion",
+        encrypt           : "com.bytedance.frameworks.core:encrypt:$frameworkCoreEncryptVersion",
+        baseLibsUtility   : "com.bytedance.frameworks.baselib:utility:$baseLibsUtilityVersion",
+        bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
     ]
 }
