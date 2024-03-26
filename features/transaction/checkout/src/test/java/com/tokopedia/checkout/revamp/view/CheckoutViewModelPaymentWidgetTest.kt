@@ -924,4 +924,62 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         }
         assertEquals(12, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
     }
+
+    @Test
+    fun `GIVEN VA payment widget data WHEN force reload payment THEN should hit payment & show widget`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                    street = "jl jakarta"
+                    provinceName = "jakarta"
+                    cityName = "jakarta"
+                    countryName = "indonesia"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", quantity = 1, price = 1000.0),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData(
+                paymentWidgetData = listOf(PaymentWidgetData(gatewayCode = "VA"))
+            )),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            getPaymentWidgetUseCase(any())
+        } returns PaymentWidgetListData(
+            paymentWidgetData = listOf(PaymentWidgetData(
+                gatewayCode = "VA"
+            ))
+        )
+
+        coEvery {
+            dynamicPaymentFeeUseCase(any())
+        } returns emptyList()
+
+        // When
+        viewModel.forceReloadPayment()
+
+        // Then
+        assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
+        coVerify(exactly = 1) {
+            dynamicPaymentFeeUseCase(any())
+        }
+        coVerify(exactly = 1) {
+            getPaymentWidgetUseCase(any())
+        }
+    }
 }
