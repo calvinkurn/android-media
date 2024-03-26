@@ -44,6 +44,7 @@ import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -432,8 +433,10 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private fun searchbarFocusHandler(view: View, focusState: Boolean) {
         if (focusState) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
-            intent.putExtra(FeedLocalBrowseActivity.TAG_PLACEHOLDER_PARAM, viewModel.getHeaderData().searchBarPlaceholder)
+            val (searchbarPlaceholder, applink) = viewModel.getHeaderData()
+
+            val intent = RouteManager.getIntent(context, applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
+            intent.putExtra(FeedLocalBrowseActivity.TAG_PLACEHOLDER_PARAM, searchbarPlaceholder)
             searchPageLauncher.launch(intent)
         }
 
