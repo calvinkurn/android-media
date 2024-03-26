@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.inspirationcarousel
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.search.R
@@ -26,6 +27,10 @@ class InspirationCarouselOptionGridReimagineViewHolder(
 
             addOnImpressionListener(product) {
                 inspirationCarouselListener.onInspirationCarouselGridProductImpressed(product)
+            }
+
+            addOnImpression1pxListener(product.byteIOImpressHolder) {
+                inspirationCarouselListener.onInspirationCarouselGridProductImpressed1Px(product)
             }
         }
     }

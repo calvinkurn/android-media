@@ -10,6 +10,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnATCNonVariantClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnAddVariantClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemAddToCartListener
@@ -48,6 +50,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     private val carouselProductCardRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.carouselProductCardRecyclerView)
     }
+
+    private var hasApplogScrollListener = false
 
     constructor(context: Context): super(context) {
         init(null)
@@ -367,6 +371,12 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null
     ) {
+    }
+
+    fun addHorizontalTrackListener(model: SlideTrackObject) {
+        if(hasApplogScrollListener) return
+        carouselProductCardRecyclerView.addHorizontalTrackListener(model)
+        hasApplogScrollListener = true
     }
 
     fun recycle() {
