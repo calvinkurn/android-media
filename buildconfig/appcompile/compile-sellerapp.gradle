@@ -181,7 +181,6 @@ includeIfEnabled("features:communication:tokochat_common")
 includeIfEnabled("features:communication:shareexperience")
 
 includeIfEnabled("features:user:chatbot")
-includeIfEnabled("features:user:changephonenumber")
 includeIfEnabled("features:user:loginregister")
 includeIfEnabled("features:user:chooseaccount")
 includeIfEnabled("features:user:logout")
