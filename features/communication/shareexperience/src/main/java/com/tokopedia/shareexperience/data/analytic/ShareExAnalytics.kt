@@ -254,6 +254,7 @@ class ShareExAnalytics @Inject constructor(
         return label
             .replace(ShareExTrackerArg.SHARE_ID_KEY, shareId, ignoreCase = true)
             .replaceIfNotBlank(ShareExTrackerArg.CHANNEL_KEY, channel)
+            .replaceIfNotBlank(ShareExTrackerArg.USER_ID, userSession.userId)
             .replaceIfNotBlank(ShareExTrackerArg.IMAGE_TYPE_KEY, imageType)
     }
 

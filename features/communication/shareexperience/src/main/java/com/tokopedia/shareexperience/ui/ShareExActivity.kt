@@ -61,8 +61,10 @@ class ShareExActivity : BaseSimpleActivity() {
 
     private fun setMetadata(argsBuilder: ShareExBottomSheetArg.Builder, bundle: Bundle) {
         val metadata = mutableMapOf<String, String>()
-        bundle.getString(ShareExConst.Applink.Param.REFERRAL_CODE)?.let {
-            metadata.put(ShareExConst.Applink.Param.REFERRAL_CODE, it)
+        with(bundle) {
+            getString(ShareExConst.Applink.Param.REFERRAL_CODE)?.let {
+                metadata.put(ShareExConst.Applink.Param.REFERRAL_CODE, it)
+            }
         }
 
         argsBuilder.withMetadata(metadata)

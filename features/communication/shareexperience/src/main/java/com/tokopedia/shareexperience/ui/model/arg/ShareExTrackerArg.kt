@@ -32,5 +32,6 @@ data class ShareExTrackerArg(
         const val SHARE_ID_KEY = "{share_id}"
         const val CHANNEL_KEY = "{channel}"
         const val IMAGE_TYPE_KEY = "{image_type}"
+        const val USER_ID = "{user_id}"
     }
 }

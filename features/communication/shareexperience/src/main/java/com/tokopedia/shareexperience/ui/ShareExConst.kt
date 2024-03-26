@@ -8,7 +8,6 @@ object ShareExConst {
             "referral_code=TARI123" +
             "&page_type=7" +
             "&default_url=https://tkp.me/GPL-TARI123" +
-            "&event_category=pdp" +
             "&default_impression_label=impression-label" +
             "&default_action_label=action-label"
 
