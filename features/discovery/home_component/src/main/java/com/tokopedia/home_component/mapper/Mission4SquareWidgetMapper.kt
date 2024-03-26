@@ -3,10 +3,18 @@ package com.tokopedia.home_component.mapper
 import com.tokopedia.home_component.visitable.Mission4SquareUiModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.widget.card.SmallProductModel
+import com.tokopedia.home_component_header.model.ChannelHeader
 
 object Mission4SquareWidgetMapper {
 
-    fun map(data: MissionWidgetDataModel, cardPosition: Int): Mission4SquareUiModel {
+    fun map(
+        data: MissionWidgetDataModel,
+        channelName: String,
+        channelId: String,
+        header: ChannelHeader,
+        verticalPosition: Int,
+        cardPosition: Int
+    ): Mission4SquareUiModel {
         val content = data.labelGroup.associateBy { it.position }
 
         val titleLabelGroup = content[Const.TITLE]
@@ -23,6 +31,10 @@ object Mission4SquareWidgetMapper {
                 subtitle = Pair(subtitleLabelGroup.title, subtitleLabelGroup.extract())
             ),
             cardPosition = cardPosition,
+            channelName = channelName,
+            channelId = channelId,
+            header = header,
+            verticalPosition = verticalPosition,
             isCache = data.isCache,
             appLog = data.appLog
         )

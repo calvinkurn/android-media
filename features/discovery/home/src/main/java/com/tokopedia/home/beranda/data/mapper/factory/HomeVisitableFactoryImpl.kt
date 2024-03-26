@@ -534,9 +534,13 @@ class HomeVisitableFactoryImpl(
                 id = atfData.id.toString(),
                 name = atfData.name,
                 mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
-                    it.missions,
-                    isCache,
-                    it.appLog
+                    missionWidgetList = it.missions,
+                    isCache = isCache,
+                    appLog = it.appLog,
+                    channelId = atfData.id.toString(),
+                    channelName = atfData.name,
+                    header = data.header.getAsHomeComponentHeader(),
+                    verticalPosition = index
                 ),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),

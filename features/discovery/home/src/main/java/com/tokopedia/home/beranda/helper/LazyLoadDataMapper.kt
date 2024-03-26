@@ -6,6 +6,7 @@ import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import com.tokopedia.home_component.visitable.Mission4SquareUiModel
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetDataModel
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.unifycomponents.CardUnify2
 
@@ -66,6 +67,10 @@ object LazyLoadDataMapper {
     fun map4SquareMissionWidgetData(
         missionWidgetList: List<HomeMissionWidgetData.Mission>,
         isCache: Boolean,
+        channelName: String,
+        channelId: String,
+        header: ChannelHeader,
+        verticalPosition: Int,
         appLog: HomeMissionWidgetData.AppLog,
     ): List<Mission4SquareUiModel> {
         return mapMissionWidgetData(missionWidgetList, isCache, appLog)
@@ -73,7 +78,11 @@ object LazyLoadDataMapper {
             .mapIndexed { index, model ->
                 Mission4SquareWidgetMapper.map(
                     data = model,
-                    cardPosition = index
+                    cardPosition = index,
+                    channelName = channelName,
+                    channelId = channelId,
+                    header = header,
+                    verticalPosition = verticalPosition
                 )
             }
     }
