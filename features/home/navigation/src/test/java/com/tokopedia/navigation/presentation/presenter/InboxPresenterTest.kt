@@ -37,9 +37,6 @@ class InboxPresenterTest {
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
     @RelaxedMockK
-    lateinit var topAdsWishListedUseCase: TopAdsWishlishedUseCase
-
-    @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
@@ -48,19 +45,17 @@ class InboxPresenterTest {
     @RelaxedMockK
     lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
 
-
     @RelaxedMockK
     lateinit var inboxView: InboxView
 
     private val inboxPresenter by lazy {
         InboxPresenter(
-                getDrawerNotificationUseCase,
-                getRecommendationUseCase,
-                userSessionInterface,
-                addToWishlistV2UseCase,
-                deleteWishlistV2UseCase,
-                topAdsWishListedUseCase,
-                topAdsHeadlineViewModel
+            getDrawerNotificationUseCase,
+            getRecommendationUseCase,
+            userSessionInterface,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
+            topAdsHeadlineViewModel
         )
     }
 
@@ -143,7 +138,7 @@ class InboxPresenterTest {
 
         verify {
             inboxView.hideLoadMoreLoading()
-            inboxView.onRenderRecomInbox(any(),any())
+            inboxView.onRenderRecomInbox(any(), any())
         }
     }
 
@@ -216,7 +211,7 @@ class InboxPresenterTest {
     }
 
     @Test
-    fun `verify add to wishlistv2 returns success` () {
+    fun `verify add to wishlistv2 returns success`() {
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
@@ -233,7 +228,7 @@ class InboxPresenterTest {
     }
 
     @Test
-    fun `verify add to wishlistv2 returns fail` () {
+    fun `verify add to wishlistv2 returns fail`() {
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val mockThrowable = mockk<Throwable>("fail")
 
@@ -250,7 +245,7 @@ class InboxPresenterTest {
     }
 
     @Test
-    fun `verify remove wishlistV2 returns success`(){
+    fun `verify remove wishlistV2 returns success`() {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
@@ -267,7 +262,7 @@ class InboxPresenterTest {
     }
 
     @Test
-    fun `verify remove wishlistV2 returns fail`(){
+    fun `verify remove wishlistV2 returns fail`() {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val mockThrowable = mockk<Throwable>("fail")
 
@@ -334,5 +329,4 @@ class InboxPresenterTest {
             getDrawerNotificationUseCase.unsubscribe()
         }
     }
-
 }
