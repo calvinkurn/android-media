@@ -9,6 +9,8 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.checkoutpayment.list.view.PaymentListingActivity
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_ADDRESS_2_RESPONSE_PATH
@@ -21,8 +23,6 @@ import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RE
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
-import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
