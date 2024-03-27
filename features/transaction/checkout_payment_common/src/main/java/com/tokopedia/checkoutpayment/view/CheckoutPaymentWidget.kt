@@ -20,9 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.checkoutpayment.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.nest.components.ButtonSize
-import com.tokopedia.nest.components.ButtonVariant
-import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
@@ -162,16 +159,33 @@ fun CheckoutPaymentWidget(
                                     )
                                 }
                                 if (data.description.isNotEmpty()) {
-                                    NestTypography(
-                                        text = data.description,
-                                        modifier = Modifier.padding(top = 2.dp),
-                                        textStyle = NestTheme.typography.display3.copy(
-                                            color = if (data.isDescriptionRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._600
+                                    Row(modifier = Modifier.padding(top = 2.dp)) {
+                                        NestTypography(
+                                            text = data.description,
+                                            textStyle = NestTheme.typography.display3.copy(
+                                                color = if (data.isDescriptionRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._600
+                                            ),
+                                            modifier = Modifier.weight(1f, fill = false),
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis
                                         )
-                                    )
+                                        if (data.actionButtonText.isNotBlank()) {
+                                            NestTypography(
+                                                text = " ${data.actionButtonText}",
+                                                modifier = Modifier.setOnClickDebounceListener {
+                                                    onActionClickedListener()
+                                                },
+                                                textStyle = NestTheme.typography.display3.copy(
+                                                    color = NestTheme.colors.GN._500,
+                                                    fontWeight = FontWeight.Bold
+                                                ),
+                                                maxLines = 1
+                                            )
+                                        }
+                                    }
                                 }
                             }
-                            if (data.actionButtonText.isBlank()) {
+//                            if (data.actionButtonText.isBlank()) {
                                 NestIcon(
                                     iconId = IconUnify.CHEVRON_RIGHT,
                                     modifier = Modifier
@@ -180,17 +194,18 @@ fun CheckoutPaymentWidget(
                                     colorLightEnable = NestTheme.colors.NN._500,
                                     colorNightEnable = NestTheme.colors.NN._500
                                 )
-                            } else {
-                                NestButton(
-                                    text = data.actionButtonText,
-                                    variant = ButtonVariant.GHOST,
-                                    size = ButtonSize.SMALL,
-                                    modifier = Modifier.padding(start = 2.dp, end = 16.dp),
-                                    onClick = {
-                                        onActionClickedListener()
-                                    }
-                                )
-                            }
+//                            } else {
+                            // for further phases
+//                                NestButton(
+//                                    text = data.actionButtonText,
+//                                    variant = ButtonVariant.GHOST,
+//                                    size = ButtonSize.SMALL,
+//                                    modifier = Modifier.padding(start = 2.dp, end = 16.dp),
+//                                    onClick = {
+//                                        onActionClickedListener()
+//                                    }
+//                                )
+//                            }
                         }
                         if (data.installmentText.isNotEmpty()) {
                             Spacer(modifier = Modifier
@@ -283,12 +298,19 @@ fun CheckoutPaymentWidgetPreview() {
                 title = "Bank nama panjang sekali"
             )
         )
+    }
+}
+
+@LightAndDarkModePreview
+@Composable
+fun CheckoutPaymentWidgetErrorPreview() {
+    Column {
         CheckoutPaymentWidget(
             CheckoutPaymentWidgetData(
                 state = CheckoutPaymentWidgetState.Normal,
                 title = "Bank nama panjang sekali",
                 isTitleRed = true,
-                subtitle = "(isi saldo rekening panjang sekali)",
+                subtitle = "(isi saldo rekening)",
                 description = "cicilan sangat panjang",
                 isDescriptionRed = true
             )
@@ -300,6 +322,17 @@ fun CheckoutPaymentWidgetPreview() {
                 isTitleRed = true,
                 subtitle = "(isi saldo rekening panjang sekali)",
                 description = "cicilan sangat panjang",
+                isDescriptionRed = true,
+                actionButtonText = "top-up"
+            )
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Normal,
+                title = "Bank nama panjang sekali",
+                isTitleRed = true,
+                subtitle = "(isi saldo rekening panjang sekali)",
+                description = "cicilan sangat panjang hingga butuh 2 baris utk menuliskannya semua",
                 isDescriptionRed = true,
                 actionButtonText = "top-up"
             )

@@ -7,5 +7,9 @@
             android:label="@string/title_one_click_checkout_choose_payment_method"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".topup.view.PaymentTopUpWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 </manifest>

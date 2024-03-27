@@ -211,19 +211,20 @@ class PaymentProcessor @Inject constructor(
             }
 
             PaymentValidationReport.WalletAmountError -> {
-                if (currentData.mandatoryHit.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS)) {
+//                if (currentData.mandatoryHit.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS)) {
                     latestWidget.copy(
                         description = currentData.walletData.topUp.errorMessage,
                         isDescriptionRed = true,
                         actionButtonText = currentData.walletData.topUp.buttonTitle
                     )
-                } else {
-                    latestWidget.copy(
-                        title = currentData.walletData.topUp.errorMessage,
-                        isTitleRed = true,
-                        actionButtonText = currentData.walletData.topUp.buttonTitle
-                    )
-                }
+//                } else {
+                // for future phases (ocs)
+//                    latestWidget.copy(
+//                        title = currentData.walletData.topUp.errorMessage,
+//                        isTitleRed = true,
+//                        actionButtonText = currentData.walletData.topUp.buttonTitle
+//                    )
+//                }
             }
         }
     }
