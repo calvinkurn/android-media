@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,6 +78,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         if (BuildConfig.DEBUG_TRACE_NAME != null) {
             com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
+        Toast.makeText(this, "Store Channel" + GlobalConfig.STORE_CHANNEL, Toast.LENGTH_LONG).show();
     }
 
     public String getOriginalPackageApp() {
