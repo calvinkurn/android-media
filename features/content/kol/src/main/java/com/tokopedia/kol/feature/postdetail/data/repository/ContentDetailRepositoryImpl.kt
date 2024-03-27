@@ -144,7 +144,10 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun followUnfollowUser(isFollow: Boolean, encryptedUserId: String): MutationUiModel {
+    override suspend fun followUnfollowUser(
+        isFollow: Boolean,
+        encryptedUserId: String
+    ): MutationUiModel {
         return withContext(dispatcher.io) {
             if (isFollow) {
                 profileMutationMapper.mapUnfollow(
@@ -192,14 +195,19 @@ class ContentDetailRepositoryImpl @Inject constructor(
             mapper.mapWishlistData(rowNumber, productId)
         }
 
-    override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel = withContext(dispatcher.io) {
-        submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId))
-        val response = submitActionContentUseCase.executeOnBackground()
-        if (TextUtils.isEmpty(response.content.error).not()) {
-            throw MessageErrorException(response.content.error)
+    override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel =
+        withContext(dispatcher.io) {
+            submitActionContentUseCase.setRequestParams(
+                SubmitActionContentUseCase.paramToDeleteContent(
+                    contentId
+                )
+            )
+            val response = submitActionContentUseCase.executeOnBackground()
+            if (TextUtils.isEmpty(response.content.error).not()) {
+                throw MessageErrorException(response.content.error)
+            }
+            mapper.mapDeleteContent(rowNumber)
         }
-        mapper.mapDeleteContent(rowNumber)
-    }
 
     override suspend fun reportContent(
         contentId: String,
@@ -217,21 +225,25 @@ class ContentDetailRepositoryImpl @Inject constructor(
         mapper.mapReportContent(rowNumber)
     }
 
-    override suspend fun trackVisitChannel(channelId: String, rowNumber: Int): VisitContentModel {
+    override suspend fun trackPerformance(
+        channelId: String,
+        rowNumber: Int,
+        productIds: List<String>,
+        event: BroadcasterReportTrackViewerUseCase.Companion.Event
+    ): VisitContentModel {
         return withContext(dispatcher.io) {
             trackPerformanceUseCase.apply {
                 setRequestParams(
                     BroadcasterReportTrackViewerUseCase.createParams(
                         channelId = channelId,
-                        productIds = emptyList(),
-                        event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit,
+                        productIds = productIds,
+                        event = event,
                         type = TrackContentType.Play
                     )
                 )
             }.executeOnBackground()
             mapper.mapVisitChannel(rowNumber)
-        }
-    }
+        }    }
 
     override suspend fun trackViewer(contentId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
@@ -252,12 +264,23 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: FeedASGCUpcomingReminderStatus): Pair<Boolean, String> {
+    override suspend fun subscribeUpcomingCampaign(
+        campaignId: Long,
+        reminderType: FeedASGCUpcomingReminderStatus
+    ): Pair<Boolean, String> {
         return withContext(dispatcher.io) {
             val response = postUpcomingCampaignReminderUseCase.apply {
-                setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
+                setRequestParams(
+                    PostUpcomingCampaignReminderUseCase.createParam(
+                        campaignId,
+                        reminderType
+                    ).parameters
+                )
             }.executeOnBackground()
-            return@withContext Pair(response.response.success, if (response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
+            return@withContext Pair(
+                response.response.success,
+                if (response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message
+            )
         }
     }
 }
