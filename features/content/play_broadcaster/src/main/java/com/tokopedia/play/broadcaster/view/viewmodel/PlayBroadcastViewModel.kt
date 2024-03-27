@@ -2476,7 +2476,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun setupLiveStats(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launch {
             _liveStatsList.update {
-                mutableListOf<LiveStatsUiModel>().apply {
+                buildList {
                     add(LiveStatsUiModel.Viewer())
                     add(LiveStatsUiModel.TotalViewer())
                     if (selectedAccount.isShop) {
