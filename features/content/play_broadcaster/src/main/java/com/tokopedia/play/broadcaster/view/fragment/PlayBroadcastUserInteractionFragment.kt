@@ -1287,7 +1287,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prev == curr) return
 
-        if (!curr.hasBeenHandled && curr.isAllComponentsReady) {
+        if (!curr.hasBeenHandled && curr.areAllComponentsReady) {
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(COACHMARK_INITIAL_DELAY)
 
