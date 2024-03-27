@@ -13,7 +13,6 @@ import com.tokopedia.developer_options.mock_dynamic_widget.shop_page.ShopPageMoc
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.io.IOException
 import java.io.InputStream
-import com.tokopedia.developer_options.R
 
 object ShopPageMockWidgetModelMapper {
     private val SHOP_PAGE_MOCK_WIDGET_DATA_RESOURCE = R.raw.shop_page_template_mock_widget
@@ -28,7 +27,6 @@ object ShopPageMockWidgetModelMapper {
         return shopPageMockJsonData?.map { mockDataItem ->
             generateMockShopWidgetModel(mockDataItem)
         } ?: listOf()
-
     }
 
     fun getShopPageMockJsonFromRaw(resources: Resources): JsonArray? {
@@ -84,10 +82,12 @@ object ShopPageMockWidgetModelMapper {
     private fun generateMockShopWidgetModel(member: JsonElement): ShopPageMockWidgetModel {
         val shopLayoutV2Data = member.asJsonObject
         val dynamicTabMockResponseData = generateMockDynamicTabData(shopLayoutV2Data)
-        return ShopPageMockWidgetModel(Pair(
-            dynamicTabMockResponseData.toString(),
-            shopLayoutV2Data.toString()
-        ))
+        return ShopPageMockWidgetModel(
+            Pair(
+                dynamicTabMockResponseData.toString(),
+                shopLayoutV2Data.toString()
+            )
+        )
     }
 
     fun generateMockDynamicTabData(jsonObjectData: JsonObject?): JsonObject {
