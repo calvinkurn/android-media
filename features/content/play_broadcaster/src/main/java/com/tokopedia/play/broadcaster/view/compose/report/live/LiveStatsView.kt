@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -50,6 +51,17 @@ fun LiveStatsView(
                         onDraw = {
                             drawCircle(color = Color.White)
                         }
+                    )
+                } else {
+                    LiveStatsSpacer()
+
+                    NestIcon(
+                        modifier = Modifier.size(16.dp),
+                        iconId = IconUnify.CHEVRON_RIGHT,
+                        colorLightEnable = Color.White,
+                        colorLightDisable = Color.White,
+                        colorNightDisable = Color.White,
+                        colorNightEnable = Color.White,
                     )
                 }
             }

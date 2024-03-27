@@ -9,7 +9,7 @@ data class ComponentPreparationUiModel(
     val hasBeenHandled: Boolean,
 ) {
 
-    val isAllComponentsReady: Boolean
+    val areAllComponentsReady: Boolean
         get() = gameIcon.isReady && statisticIcon.isReady
 
     companion object {

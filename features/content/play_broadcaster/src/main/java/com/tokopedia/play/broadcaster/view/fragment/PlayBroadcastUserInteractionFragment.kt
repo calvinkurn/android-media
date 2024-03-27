@@ -441,7 +441,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onImpress(coachMarkType: LiveMenuCoachMarkType) {
                 when (coachMarkType) {
                     is LiveMenuCoachMarkType.Statistic -> {
-                        sharedPref.setFirstStatisticIconShown()
+                        sharedPref.setFirstStatisticIconShown(parentViewModel.selectedAccount.id)
                         reportAnalytic.impressStatisticIconCoachMark()
                     }
                     else -> {}
@@ -1298,7 +1298,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prev == curr) return
 
-        if (!curr.hasBeenHandled && curr.isAllComponentsReady) {
+        if (!curr.hasBeenHandled && curr.areAllComponentsReady) {
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(COACHMARK_INITIAL_DELAY)
 

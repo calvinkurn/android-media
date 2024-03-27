@@ -15,13 +15,15 @@ sealed interface LiveMenuCoachMarkType {
 
     data class Game(
         override val view: View,
-        @StringRes override val titleRes: Int = 0,
-        @StringRes override val descriptionRes: Int = R.string.play_interactive_broadcast_onboarding_subtitle,
-    ) : LiveMenuCoachMarkType
+    ) : LiveMenuCoachMarkType {
+        @StringRes override val titleRes: Int = 0
+        @StringRes override val descriptionRes: Int = R.string.play_interactive_broadcast_onboarding_subtitle
+    }
 
     data class Statistic(
         override val view: View,
-        @StringRes override val titleRes: Int = 0,
-        @StringRes override val descriptionRes: Int = R.string.play_broadcaster_statistic_icon_coachmark,
-    ) : LiveMenuCoachMarkType
+    ) : LiveMenuCoachMarkType {
+        @StringRes override val titleRes: Int = 0
+        @StringRes override val descriptionRes: Int = R.string.play_broadcaster_statistic_icon_coachmark
+    }
 }
