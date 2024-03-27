@@ -65,12 +65,183 @@ object ShoppingListDataFactory {
                     shop = GetShoppingListDataResponse.Shop(id = "3333333"),
                     warehouseID = "12312121",
                     discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.AvailableItem(
+                    id = "1111115",
+                    name = "product 5",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "2 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111112",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.AvailableItem(
+                    id = "1111116",
+                    name = "product 6",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "2 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111112",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.AvailableItem(
+                    id = "1111117",
+                    name = "product 7",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "2 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111112",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.AvailableItem(
+                    id = "1111118",
+                    name = "product 8",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "2 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111112",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
                 )
             ),
             listUnavailableItem: List<GetShoppingListDataResponse.UnavailableItem> = listOf(
                 GetShoppingListDataResponse.UnavailableItem(
                     id = "1111122",
                     name = "product 22",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "22 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111122",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.UnavailableItem(
+                    id = "1111123",
+                    name = "product 23",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "22 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111122",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.UnavailableItem(
+                    id = "1111124",
+                    name = "product 24",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "22 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111122",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.UnavailableItem(
+                    id = "1111125",
+                    name = "product 25",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "22 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111122",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.UnavailableItem(
+                    id = "1111126",
+                    name = "product 26",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "22 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111122",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.UnavailableItem(
+                    id = "1111127",
+                    name = "product 27",
                     imageUrl = "https://www.tokopedia.com/image",
                     price = "Rp.10.000",
                     priceInt = 10000.toDouble(),

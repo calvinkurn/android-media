@@ -16,7 +16,6 @@ import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.SaveShoppingListStateUseCase
-import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
@@ -93,10 +92,6 @@ abstract class TokoNowShoppingListViewModelFixture {
         Assert.assertEquals(expectedResult, (value as UiState.Success).data)
     }
 
-    protected fun StateFlow<UiState<LayoutModel>>.verifyLoading(expectedResult: Any) {
-        Assert.assertEquals(expectedResult, (value as UiState.Loading).data)
-    }
-
     protected fun StateFlow<UiState<*>>.verifyError(throwable: Throwable, expectedResult: Any) {
         Assert.assertEquals(throwable, (value as UiState.Error).throwable)
         Assert.assertEquals(expectedResult, (value as UiState.Error).data)
@@ -106,20 +101,12 @@ abstract class TokoNowShoppingListViewModelFixture {
         Assert.assertTrue(value is UiState.Error)
     }
 
-    protected fun StateFlow<Any?>.verifyValue(expectedResult: Any) {
+    protected fun StateFlow<Any?>.verifyValue(expectedResult: Any?) {
         Assert.assertEquals(expectedResult, value)
     }
 
-    protected fun Any.verifyIsTrue(expectedResult: Boolean) {
+    protected fun verifyIsTrue(expectedResult: Boolean) {
         Assert.assertTrue(expectedResult)
-    }
-
-    protected fun stubUserId(
-        userId: String
-    ) {
-        every {
-            userSession.userId
-        } returns userId
     }
 
     protected fun stubOutOfCoverage(
@@ -128,14 +115,6 @@ abstract class TokoNowShoppingListViewModelFixture {
         every {
             addressData.isOutOfCoverage()
         } returns isOoc
-    }
-
-    protected fun stubWarehouseId(
-        warehouseId: Long
-    ) {
-        every {
-            addressData.getWarehouseId()
-        } returns warehouseId
     }
 
     protected fun stubShopId(
@@ -185,6 +164,15 @@ abstract class TokoNowShoppingListViewModelFixture {
             val warehouses = mapToWarehousesData(addressData.getAddressData())
             getShoppingListUseCase.execute(warehouses)
         } returns response
+    }
+
+    protected fun stubGetShoppingList(
+        throwable: Throwable
+    ) {
+        coEvery {
+            val warehouses = mapToWarehousesData(addressData.getAddressData())
+            getShoppingListUseCase.execute(warehouses)
+        } throws throwable
     }
 
     protected fun stubGetProductRecommendation(
