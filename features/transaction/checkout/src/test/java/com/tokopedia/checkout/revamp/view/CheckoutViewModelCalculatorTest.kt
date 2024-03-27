@@ -7,6 +7,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
@@ -14,13 +15,19 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkoutpayment.domain.PaymentFeeDetail
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import io.mockk.coEvery
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -367,6 +374,69 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
         // Then
         assertEquals(1000.0, viewModel.listData.value.cost()!!.finalItemPrice, 0.0)
         assertEquals(1100.0, viewModel.listData.value.cost()!!.totalPrice, 0.0)
+        assertEquals(true, viewModel.listData.value.cost()!!.hasAddOn)
+    }
+
+    @Test
+    fun `calculate total with payment`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                    street = "jl jakarta"
+                    provinceName = "jakarta"
+                    cityName = "jakarta"
+                    countryName = "indonesia"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", isError = false, quantity = 1, price = 1000.0),
+            CheckoutOrderModel(
+                "123",
+                addOnsOrderLevelModel = AddOnGiftingDataModel(
+                    status = 1,
+                    addOnsDataItemModelList = listOf(
+                        AddOnGiftingDataItemModel(
+                            addOnPrice = 100.0,
+                            addOnQty = 1
+                        )
+                    )
+                ),
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData()
+                )
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData(
+                paymentWidgetData = listOf(PaymentWidgetData(gatewayCode = "VA")),
+                paymentFeeDetails = listOf(PaymentFeeDetail(amount = 1.0))
+            )),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            dynamicPaymentFeeUseCase(any())
+        } returns emptyList()
+
+        // When
+        viewModel.calculateTotal()
+
+        // Then
+        assertEquals(1000.0, viewModel.listData.value.cost()!!.finalItemPrice, 0.0)
+        assertEquals(1100.0, viewModel.listData.value.cost()!!.totalPrice, 0.0)
+        assertEquals(1101.0, viewModel.listData.value.cost()!!.totalPriceWithAllPaymentFees, 0.0)
+        assertEquals(1101.0, viewModel.listData.value.cost()!!.totalPriceWithInternalPaymentFees, 0.0)
         assertEquals(true, viewModel.listData.value.cost()!!.hasAddOn)
     }
 }
