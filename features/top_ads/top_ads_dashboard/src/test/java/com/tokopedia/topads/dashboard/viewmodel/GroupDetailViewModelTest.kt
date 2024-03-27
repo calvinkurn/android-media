@@ -726,7 +726,6 @@ class GroupDetailViewModelTest {
         )
     }
 
-    //success
     @Test
     fun `getGroupInsightData success`() {
         val data = TopAdsBatchGetInsightCountByAdGroupIDResponse(
