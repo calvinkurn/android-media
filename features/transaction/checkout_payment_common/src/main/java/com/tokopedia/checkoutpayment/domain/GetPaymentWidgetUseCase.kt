@@ -60,7 +60,36 @@ class GetPaymentWidgetUseCase @Inject constructor(
                         wallet_data {
                           wallet_type
                           wallet_amount
-                          phone_numbered_registered
+                          activation_details {
+                            is_required
+                            header_title
+                            button_title
+                            is_hide_digital
+                            url_link
+                            success_toaster
+                            error_toaster
+                            error_message
+                          }
+                          top_up_details {
+                            is_required
+                            header_title
+                            button_title
+                            is_hide_digital
+                            url_link
+                            success_toaster
+                            error_toaster
+                            error_message
+                          }
+                          phone_number_registration {
+                            is_required
+                            header_title
+                            button_title
+                            is_hide_digital
+                            url_link
+                            success_toaster
+                            error_toaster
+                            error_message
+                          }
                         }
                         ticker_message
                         error_details {
