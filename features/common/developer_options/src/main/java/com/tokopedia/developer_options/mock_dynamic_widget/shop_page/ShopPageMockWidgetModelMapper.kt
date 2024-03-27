@@ -13,6 +13,7 @@ import com.tokopedia.developer_options.mock_dynamic_widget.shop_page.ShopPageMoc
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.io.IOException
 import java.io.InputStream
+import com.tokopedia.developer_options.R
 
 object ShopPageMockWidgetModelMapper {
     private val SHOP_PAGE_MOCK_WIDGET_DATA_RESOURCE = R.raw.shop_page_template_mock_widget
@@ -27,6 +28,7 @@ object ShopPageMockWidgetModelMapper {
         return shopPageMockJsonData?.map { mockDataItem ->
             generateMockShopWidgetModel(mockDataItem)
         } ?: listOf()
+
     }
 
     fun getShopPageMockJsonFromRaw(resources: Resources): JsonArray? {
@@ -82,25 +84,23 @@ object ShopPageMockWidgetModelMapper {
     private fun generateMockShopWidgetModel(member: JsonElement): ShopPageMockWidgetModel {
         val shopLayoutV2Data = member.asJsonObject
         val dynamicTabMockResponseData = generateMockDynamicTabData(shopLayoutV2Data)
-        return ShopPageMockWidgetModel(
-            Pair(
-                dynamicTabMockResponseData,
-                shopLayoutV2Data.toString()
-            )
-        )
+        return ShopPageMockWidgetModel(Pair(
+            dynamicTabMockResponseData.toString(),
+            shopLayoutV2Data.toString()
+        ))
     }
 
-    private fun generateMockDynamicTabData(jsonObjectData: JsonObject?): String {
+    fun generateMockDynamicTabData(jsonObjectData: JsonObject?): JsonObject {
         val widgetId = jsonObjectData?.get("widgetID")?.asBigInteger.orZero()
         val widgetMasterId = jsonObjectData?.get("widgetMasterID")?.asBigInteger.orZero()
-        val widgetType = jsonObjectData?.get("type")?.asString.orEmpty()
-        val widgetName = jsonObjectData?.get("name")?.asString.orEmpty()
+        val widgetType = jsonObjectData?.get("type")?.asString
+        val widgetName = jsonObjectData?.get("name")?.asString
         return JsonObject().apply {
             addProperty("widgetID", widgetId)
             addProperty("widgetMasterID", widgetMasterId)
             addProperty("widgetType", widgetType)
             addProperty("widgetName", widgetName)
-        }.toString()
+        }
     }
 
     fun updateWidgetId(mockShopWidgetData: List<ShopPageMockWidgetModel>) {

@@ -22,7 +22,7 @@ class DeveloperOptionAdapter(
     companion object {
         const val KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION = "Enable Developer Options on Notification"
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
-        const val KEYWORD_SHOP_PAGE_DEV = "Shop Page Dev"
+        const val MOCK_DYNAMIC_WIDGET_DEV = "Mock Dynamic Widget"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
         const val KEYWORD_SYSTEM_APPS = "System Apps"
         const val KEYWORD_NON_SYSTEM_APPS = "Non System Apps"
@@ -113,7 +113,7 @@ class DeveloperOptionAdapter(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
-        MockDynamicWidgetUiModel(listOf(KEYWORD_SHOP_PAGE_DEV)),
+        MockDynamicWidgetUiModel(listOf(MOCK_DYNAMIC_WIDGET_DEV)),
         SystemNonSystemAppsUiModel(
             listOf(
                 KEYWORD_SYSTEM_APPS,
