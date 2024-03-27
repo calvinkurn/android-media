@@ -91,7 +91,7 @@ class MiniCartViewModel @Inject constructor(
     }
 
     private val updateGwpUseCaseJob: HashMap<Long, Job> = hashMapOf()
-    private var paramsToUpdateGwp: BmGmGetGroupProductTickerParams? = null
+    private var paramsToUpdateGwp: BmGmGetGroupProductTickerParams = BmGmGetGroupProductTickerParams()
 
     // Global Data
     private val _currentShopIds = MutableLiveData<List<String>>()
@@ -672,7 +672,7 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    fun updateCart(offerId: Long = DEFAULT_OFFER_ID) {
+    fun updateCart(offerId: Long = DEFAULT_OFFER_ID, newQty: Int? = null) {
         val source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         val miniCartProductUiModels = mutableListOf<UpdateCartRequest>()
         val visitables = getVisitables()
@@ -707,24 +707,25 @@ class MiniCartViewModel @Inject constructor(
         // No-op for booth onSuccess & onError
         updateCartUseCase.execute(
             onSuccess = {
-                updateGwpWidget(offerId)
+                updateGwpWidget(offerId, newQty)
             },
             onError = { /* do nothing */ }
         )
     }
 
-    private fun getBmGmGroupProductTicker(offerId: Long) {
+    private fun getBmGmGroupProductTicker(offerId: Long, newQty: Int? = null) {
         if (offerId > DEFAULT_OFFER_ID) {
             updateGwpUseCaseJob[offerId]?.cancel()
             updateGwpUseCaseJob[offerId] = launchCatchError(
                 block = {
-                    val params = mapParamsFilteredToUpdateGwp(
+                    paramsToUpdateGwp = mapParamsFilteredToUpdateGwp(
                         params = paramsToUpdateGwp,
-                        offerId = offerId
+                        offerId = offerId,
+                        qty = newQty
                     )
                     _miniCartListBottomSheetUiModel.value = getGwpSuccessState(
                         uiModel = _miniCartListBottomSheetUiModel.value,
-                        response = updateGwpUseCase.invoke(params)
+                        response = updateGwpUseCase.invoke(paramsToUpdateGwp)
                     )
                 },
                 onError = {
@@ -737,7 +738,9 @@ class MiniCartViewModel @Inject constructor(
         }
     }
 
-    private fun updateGwpWidget(offerId: Long) = getBmGmGroupProductTicker(offerId)
+    private fun updateGwpWidget(offerId: Long, newQty: Int?) {
+        getBmGmGroupProductTicker(offerId, newQty)
+    }
 
     fun refreshGwpWidget(offerId: Long) {
         _miniCartListBottomSheetUiModel.value = getGwpLoadingState(

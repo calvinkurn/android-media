@@ -421,7 +421,7 @@ class MiniCartListBottomSheet @Inject constructor(
         }
     }
 
-    private fun progressiveInfoCallback() = object: MiniCartProgressiveInfoListener {
+    private fun progressiveInfoCallback() = object : MiniCartProgressiveInfoListener {
         override fun onClickRefreshIcon(offerId: Long) {
             viewModel?.refreshGwpWidget(offerId)
         }
@@ -455,7 +455,7 @@ class MiniCartListBottomSheet @Inject constructor(
         }
     }
 
-    private fun gwpGiftCallback() = object: MiniCartGwpGiftViewHolder.MiniCartGwpGiftListener {
+    private fun gwpGiftCallback() = object : MiniCartGwpGiftViewHolder.MiniCartGwpGiftListener {
         override fun onImpressProductGiftWidget(
             offerId: Long,
             offerTypeId: Long,
@@ -929,11 +929,11 @@ class MiniCartListBottomSheet @Inject constructor(
         bottomSheetListener?.hideProgressLoading()
     }
 
-    private fun updateCart(offerId: Long) {
+    private fun updateCart(offerId: Long, newQty: Int? = null) {
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(LONG_DELAY)
-            viewModel?.updateCart(offerId)
+            viewModel?.updateCart(offerId, newQty)
         }
     }
 
@@ -987,7 +987,7 @@ class MiniCartListBottomSheet @Inject constructor(
     override fun onQuantityChanged(element: MiniCartProductUiModel, newQty: Int) {
         viewModel?.updateProductQty(element, newQty)
         calculateProduct()
-        updateCart(element.offerId)
+        updateCart(element.offerId, newQty)
     }
 
     override fun onNotesChanged(

@@ -152,6 +152,7 @@ class GetMiniCartListUseCase @Inject constructor(
                             offer_icon
                             offer_message
                             offer_landing_page_link
+                            offer_json_data
                             tier_product {
                               tier_id
                               benefit_wording

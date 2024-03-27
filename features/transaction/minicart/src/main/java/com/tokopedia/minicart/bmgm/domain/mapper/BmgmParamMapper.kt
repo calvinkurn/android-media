@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.bmgm.domain.mapper
 
 import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams.Companion.SOURCE_MINI_CART_BOTTOM_SHEET_NOW
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableGroup
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableSection
@@ -72,11 +73,38 @@ object BmgmParamMapper {
                         availableGroup = availableGroup
                     )
                 )
-             } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
+            } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
     )
 
     fun mapParamsFilteredToUpdateGwp(
         params: BmGmGetGroupProductTickerParams?,
-        offerId: Long
-    ) = BmGmGetGroupProductTickerParams(carts = params?.carts?.filter { cart -> cart.cartDetails.any { it.offer.offerId == offerId } } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>)
+        offerId: Long,
+        qty: Int?
+    ): BmGmGetGroupProductTickerParams {
+        val carts = (
+            params?.carts?.filter {
+                    cart ->
+                cart.cartDetails.any { it.offer.offerId == offerId }
+            } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
+            )
+
+        if (qty != null) {
+            carts.forEachIndexed { index, it ->
+                val cartDetails = mutableListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
+                it.cartDetails.forEach {
+                    val products = mutableListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
+                    it.products.forEach { product ->
+                        products.add(product.copy(qty = qty))
+                    }
+                    cartDetails.add(it.copy(products = products))
+                }
+                carts[index] = carts[index].copy(cartDetails = ArrayList(cartDetails))
+            }
+        }
+
+        return BmGmGetGroupProductTickerParams(
+            carts = carts,
+            source = SOURCE_MINI_CART_BOTTOM_SHEET_NOW
+        )
+    }
 }
