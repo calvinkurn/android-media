@@ -5,7 +5,7 @@
     android:id="@+id/homeRecomPlayWidgetVideo"
     android:layout_width="match_parent"
     android:layout_height="290dp"
-    app:cardCornerRadius="4dp"
+    app:card_corner_radius="4dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"

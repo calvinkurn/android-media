@@ -19,7 +19,6 @@ import com.tokopedia.play.widget.databinding.ViewPlayVideoWidgetBinding
 import com.tokopedia.play.widget.player.VideoPlayer
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by kenny.hadisaputra on 19/10/23
@@ -76,6 +75,7 @@ class PlayVideoWidgetView : CardUnify2 {
     private var mListener: Listener? = null
 
     init {
+        cardType = TYPE_CLEAR
         animateOnPress = ANIMATE_BOUNCE
 
         addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
