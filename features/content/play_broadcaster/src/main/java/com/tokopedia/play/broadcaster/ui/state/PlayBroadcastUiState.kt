@@ -176,7 +176,7 @@ data class OnboardingUiModel(
         fun create(pref: HydraSharedPreferences) = OnboardingUiModel(
             firstInteractive = pref.isFirstInteractive(),
             firstGameResult = pref.isFirstGameResult(),
-            firstStatisticIconShown = pref.isFirstStatisticIconShown()
+            firstStatisticIconShown = false,
         )
     }
 

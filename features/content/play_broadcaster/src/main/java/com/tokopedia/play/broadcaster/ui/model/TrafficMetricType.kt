@@ -18,7 +18,7 @@ enum class TrafficMetricType(
     NewFollowers(R.string.play_summary_new_followers, IconUnify.USER_SUCCESS),
     ProductVisit(R.string.play_summary_product_visit, IconUnify.PRODUCT_NEXT),
     ShopVisit(R.string.play_summary_shop_visit, IconUnify.SHOP),
-    ProfileVisit(R.string.play_summary_profile_visit, 0),
+    ProfileVisit(R.string.play_summary_profile_visit, IconUnify.USER),
     NumberOfAtc(R.string.play_summary_atc, IconUnify.CART),
     NumberOfPaidOrders(R.string.play_summary_purchased_product, IconUnify.SHOPPING_BAG);
 }
