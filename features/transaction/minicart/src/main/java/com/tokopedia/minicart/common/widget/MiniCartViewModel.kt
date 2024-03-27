@@ -243,7 +243,7 @@ class MiniCartViewModel @Inject constructor(
 
     fun getCartList(isFirstLoad: Boolean = false) {
         val shopIds = getShopIds()
-        getMiniCartListUseCase.setParams(shopIds, source = currentSource)
+        getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
             onSuccess = {
                 setMiniCartABTestData(
