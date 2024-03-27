@@ -3,7 +3,8 @@ package com.tokopedia.kol.feature.postdetail.data.repository
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
+import com.tokopedia.content.common.types.TrackContentType
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
@@ -47,7 +48,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val submitReportContentUseCase: SubmitReportContentUseCase,
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
+    private val trackPerformanceUseCase: BroadcasterReportTrackViewerUseCase,
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
@@ -218,13 +219,16 @@ class ContentDetailRepositoryImpl @Inject constructor(
 
     override suspend fun trackVisitChannel(channelId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
-            trackVisitChannelUseCase.setRequestParams(
-                TrackVisitChannelBroadcasterUseCase.createParams(
-                    channelId,
-                    TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
+            trackPerformanceUseCase.apply {
+                setRequestParams(
+                    BroadcasterReportTrackViewerUseCase.createParams(
+                        channelId = channelId,
+                        productIds = emptyList(),
+                        event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit,
+                        type = TrackContentType.Play
+                    )
                 )
-            )
-            trackVisitChannelUseCase.executeOnBackground()
+            }.executeOnBackground()
             mapper.mapVisitChannel(rowNumber)
         }
     }
