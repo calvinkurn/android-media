@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -24,7 +24,7 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
         val position = parent.getChildAdapterPosition(view)
         if(position<0)
             return
-        val spanIndex = (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex
+        val spanIndex = (view.layoutParams as GridLayoutManager.LayoutParams).spanIndex
         val type = parent.adapter?.getItemViewType(position)
         when (type) {
             ComponentsList.ProductCardRevampItem.ordinal -> {
@@ -116,7 +116,7 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
 
     private fun setMarginsCalendar(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
         val cardView: CardUnify? = view?.findViewById(R.id.calendar_card_unify)
-        val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        val params = cardView?.layoutParams as? GridLayoutManager.LayoutParams
 
         params?.let {
             it.rightMargin = right
@@ -129,7 +129,7 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
 
     private fun setMarginsShopBanner(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
         val cardView: CardView? = view?.findViewById(R.id.banner_image_container)
-        val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        val params = cardView?.layoutParams as? GridLayoutManager.LayoutParams
 
         params?.let {
             it.rightMargin = right
@@ -142,7 +142,7 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
 
     private fun setMarginsShopCard(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
         val cardView: CardUnify? = view?.findViewById(R.id.parentLayout)
-        val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        val params = cardView?.layoutParams as? GridLayoutManager.LayoutParams
 
         params?.let {
             it.rightMargin = right
@@ -156,7 +156,7 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
 
     private fun setMarginsContentCard(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
         val cardView: ConstraintLayout? = view?.findViewById(R.id.content_card_container)
-        val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        val params = cardView?.layoutParams as? GridLayoutManager.LayoutParams
 
         params?.let {
             it.rightMargin = right
@@ -170,7 +170,7 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
 
     private fun setMarginsContentEmptyCard(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
         val cardView: CardUnify? = view?.findViewById(R.id.content_empty_card_image_container)
-        val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        val params = cardView?.layoutParams as? GridLayoutManager.LayoutParams
 
         params?.let {
             it.rightMargin = right
