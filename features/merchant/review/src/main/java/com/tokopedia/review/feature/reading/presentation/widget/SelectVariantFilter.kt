@@ -1,11 +1,11 @@
 package com.tokopedia.review.feature.reading.presentation.widget
 
-import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowRow
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestChips
 import com.tokopedia.nest.components.NestChipsLeft
@@ -23,7 +24,6 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.review.feature.reading.data.Option
 import com.tokopedia.review.feature.reading.data.VariantData
-import kotlinx.parcelize.Parcelize
 
 @Composable
 fun SelectVariantFilter(
@@ -48,7 +48,7 @@ fun SelectVariantFilter(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 onClick = {
-                    uiEvent.onApplyClicked(uiModel.generateFilter())
+                    uiEvent.onApplyClicked(uiModel.generateFilter(), uiModel.variants)
                 }
             )
         }
@@ -74,7 +74,7 @@ fun VariantOptions(
         )
     }
 
-    Row(
+    FlowRow(
         modifier = Modifier.padding(
             top = 8.dp
         )
@@ -94,8 +94,6 @@ fun Option(
     index: Int,
     option: SelectVariantUiModel.Option
 ) {
-    var isSelected by remember { mutableStateOf(option.isSelected) }
-
     val image = option.image
     val left = if (image.isEmpty()) null
     else NestChipsLeft.NetworkImage(image)
@@ -103,10 +101,9 @@ fun Option(
         text = option.name,
         left = left,
         size = NestChipsSize.Medium,
-        state = if (isSelected) NestChipsState.Selected else NestChipsState.Default,
+        state = if (option.isSelected) NestChipsState.Selected else NestChipsState.Default,
         onClick = {
-            isSelected = !isSelected
-            option.isSelected = isSelected
+            option.isSelected = !option.isSelected
         },
         modifier = Modifier.padding(
             start = if (index == 0) 0.dp else 8.dp
@@ -159,7 +156,10 @@ fun SelectVariantFilterPreview() {
             )
         )
         SelectVariantFilter(uiModel, object : SelectVariantUiEvent {
-            override fun onApplyClicked(filter: String) {
+            override fun onApplyClicked(
+                filter: String,
+                variants: List<SelectVariantUiModel.Variant>
+            ) {
             }
 
         })
@@ -179,23 +179,22 @@ data class SelectVariantUiModel(
         }.joinToString(";")
     }
 
-    @Parcelize
     data class Variant(
         val name: String,
         val options: List<Option>,
         val level: Int
-    ) : Parcelable
+    )
 
-    @Parcelize
     data class Option(
         val name: String,
         val image: String,
-        var isSelected: Boolean = false
-    ) : Parcelable
+    ){
+        var isSelected by mutableStateOf(false)
+    }
 }
 
 interface SelectVariantUiEvent {
-    fun onApplyClicked(filter: String)
+    fun onApplyClicked(filter: String, variants: List<SelectVariantUiModel.Variant>)
 }
 
 internal fun List<VariantData>.toVariantUiModel(): List<SelectVariantUiModel.Variant> = map {

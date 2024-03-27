@@ -578,7 +578,12 @@ open class ReadReviewFragment :
         showListOnlyLoading()
     }
 
-    override fun onFilterVariant(count: Int, variantFilter: String) {
+    override fun onFilterVariant(
+        count: Int,
+        variantFilter: String,
+        variants: List<SelectVariantUiModel.Variant>
+    ) {
+        this.filterVariants = variants
         clearAllData()
         reviewHeader?.updateSelectedVariant(count)
         viewModel.setVariantFilter(variantFilter, isProductReview)
@@ -647,6 +652,7 @@ open class ReadReviewFragment :
             }
         }
         updateTopicExtraction()
+        resetFilterVariants()
     }
 
     override fun onAttachedImagesClicked(
@@ -870,6 +876,11 @@ open class ReadReviewFragment :
             )
             startActivity(intent)
         }
+    }
+
+    private fun resetFilterVariants(){
+        val options = filterVariants.flatMap { it.options }
+        options.forEach { it.isSelected = false }
     }
 
     private fun updateTopicExtraction() {

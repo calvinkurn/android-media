@@ -139,6 +139,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.nestComponents
 
+    implementation rootProject.ext.composeDependencies.accompanistFlowLayout
+
     kapt rootProject.ext.miscDependencies.daggerCompiler
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
