@@ -182,17 +182,17 @@ class HydraSharedPreferences @Inject constructor(
             true,
         )
     }
-    fun isFirstStatisticIconShown(): Boolean {
+    fun isFirstStatisticIconShown(authorId: String): Boolean {
         return mSharedPrefs.getBoolean(
-            String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, userSession.shopId),
+            String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, authorId),
             true
         )
     }
 
-    fun setFirstStatisticIconShown() {
+    fun setFirstStatisticIconShown(authorId: String) {
         mSharedPrefs.edit()
             .putBoolean(
-                String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, userSession.shopId),
+                String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, authorId),
                 false
             ).apply()
     }

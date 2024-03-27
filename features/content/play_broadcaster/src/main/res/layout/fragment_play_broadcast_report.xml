@@ -88,8 +88,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:unifyButtonSize="medium"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/toaster_layout"

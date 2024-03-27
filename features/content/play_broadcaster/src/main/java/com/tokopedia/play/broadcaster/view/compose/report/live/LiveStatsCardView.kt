@@ -1,7 +1,5 @@
 package com.tokopedia.play.broadcaster.view.compose.report.live
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,12 +7,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,10 +32,8 @@ fun LiveStatsCardView(
     modifier: Modifier = Modifier,
 ) {
     NestCard(
-        type = NestCardType.NoBorder,
+        type = NestCardType.Border,
         modifier = modifier
-            .shadow(4.dp, RoundedCornerShape(12.dp), clip = false)
-            .border(BorderStroke(1.dp, MaterialTheme.colors.surface), RoundedCornerShape(12.dp))
     ) {
         Column(
             modifier = Modifier
@@ -98,6 +91,7 @@ fun LiveStatsCardView(
                 text = liveStatsCardModel.liveStats.text,
                 textStyle = NestTheme.typography.body1.copy(
                     fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._950,
                 ),
                 maxLines = 1,
             )
