@@ -3,12 +3,15 @@ package com.tokopedia.topads.dashboard.recommendation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.EmptyStateData
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -16,6 +19,7 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -35,6 +39,14 @@ class TopAdsListAllInsightViewModelTest {
     private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase =
         mockk(relaxed = true)
     private lateinit var viewModel: TopAdsListAllInsightViewModel
+    private val chips = mutableListOf(
+        SaranTopAdsChipsUiModel(RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL_NAME, true),
+        SaranTopAdsChipsUiModel(RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD_NAME),
+        SaranTopAdsChipsUiModel(RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID_NAME),
+        SaranTopAdsChipsUiModel(RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID_NAME),
+        SaranTopAdsChipsUiModel(RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME),
+        SaranTopAdsChipsUiModel(RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME)
+    )
 
     @Before
     fun setUp() {
@@ -115,35 +127,55 @@ class TopAdsListAllInsightViewModelTest {
     }
 
     @Test
+    fun `getNextPageData failure`() {
+        coEvery {
+            topAdsListAllInsightCountsUseCase(any(), any(), any(),any(),any())
+        } answers {
+            throw Throwable()
+        }
+        viewModel.getNextPageData(String.EMPTY, Int.ZERO, String.EMPTY, InsightDataMapper())
+        assertTrue(viewModel.productInsights.value is TopAdsListAllInsightState.Fail)
+    }
+
+    @Test
     fun `getChipsData success`() {
-        assertTrue(viewModel.getChipsData() is MutableList<SaranTopAdsChipsUiModel>)
+        val data = chips
+        val actual = viewModel.getChipsData()
+        assertEquals(data, actual)
     }
 
     @Test
     fun `getEmptyStateData INSIGHT_TYPE_POSITIVE_KEYWORD`() {
-        assertTrue(
-            viewModel.getEmptyStateData(
-                RecommendationConstants
-                    .InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD
-            ) is InsightListUiModel
+        val data = EmptyStateUiListModel(
+            chips[RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD].name,
+            listOf(EmptyStateData.getData()[TopAdsCommonConstant.CONST_1])
         )
+        val actual = viewModel.getEmptyStateData(
+            RecommendationConstants
+                .InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD)
+        assertEquals(data, actual)
     }
 
     @Test
     fun `getEmptyStateData INSIGHT_TYPE_GROUP_BID`() {
-        assertTrue(
-            viewModel.getEmptyStateData(
-                RecommendationConstants
-                    .InsightTypeConstants.INSIGHT_TYPE_GROUP_BID
-            ) is InsightListUiModel
+        val data = EmptyStateUiListModel(
+            chips[RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID].name,
+            listOf(EmptyStateData.getData()[TopAdsDashboardConstant.CONST_2], EmptyStateData.getData()[TopAdsCommonConstant.CONST_3])
         )
-
-
+        val actual = viewModel.getEmptyStateData(
+            RecommendationConstants
+                .InsightTypeConstants.INSIGHT_TYPE_GROUP_BID)
+        assertEquals(data, actual)
     }
 
     @Test
     fun `getEmptyStateData when else `() {
-        assertTrue(viewModel.getEmptyStateData(Int.ZERO) is InsightListUiModel)
+        val data = EmptyStateUiListModel(
+            chips[0].name,
+            listOf(EmptyStateData.getData()[TopAdsDashboardConstant.CONST_4])
+        )
+        val actual = viewModel.getEmptyStateData(0)
+        assertEquals(data, actual)
     }
 
 }

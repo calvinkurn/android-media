@@ -3,23 +3,38 @@ package com.tokopedia.topads.dashboard.recommendation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_SHOP
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGroupDetailUseCase
@@ -31,10 +46,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -63,7 +76,7 @@ class GroupDetailViewModelTest {
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase =
         mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
-    private val groupDetailMapper: GroupDetailMapper = mockk(relaxed = true)
+    private val groupDetailMapper: GroupDetailMapper = GroupDetailMapper()
     private val createHeadlineAdsUseCase: CreateHeadlineAdsUseCase = mockk(relaxed = true)
     private val utils: Utils = mockk(relaxed = true)
     private val userSession: UserSession = mockk(relaxed = true)
@@ -120,33 +133,36 @@ class GroupDetailViewModelTest {
     @Test
     fun `reSyncDetailPageData success`() {
         viewModel.reSyncDetailPageData(0)
-        verify {
-            groupDetailMapper.reSyncDetailPageData(
-                0, RecommendationConstants.INVALID_INSIGHT_TYPE,
-                RecommendationConstants.INVALID_INSIGHT_TYPE
-            )
-        }
         assertTrue(viewModel.detailPageLiveData.value is TopAdsListAllInsightState.Success)
     }
 
     @Test
-    fun `loadInsightTypeChips success`() {
-        viewModel.loadInsightTypeChips(String.EMPTY, arrayListOf(), String.EMPTY)
-        verify { groupDetailMapper.detailPageDataMap }
+    fun `loadInsightTypeChips updates detailPageDataMap`() {
+        val adType = "Product"
+        val insightList = arrayListOf<AdGroupUiModel>()
+        val adGroupName = "Test Group"
+        val expectedInsightTypeChipsUiModel = InsightTypeChipsUiModel(
+            mutableListOf(
+                TAB_NAME_SHOP,
+                adGroupName
+            ),
+            insightList.toMutableList()
+        )
+        viewModel.loadInsightTypeChips(adType, insightList, adGroupName)
+        val actualInsightTypeChipsUiModel = groupDetailMapper.detailPageDataMap[TYPE_INSIGHT]
+        assertEquals(expectedInsightTypeChipsUiModel, actualInsightTypeChipsUiModel)
     }
 
     @Test
     fun `loadDetailPageOnAction failure when isSwitchAdType false`() {
-
         coEvery {
-            topAdsListAllInsightCountsUseCase(any(), any(), any())
+            topAdsGroupDetailUseCase.executeOnBackground(any(), any(), any())
         } answers {
             throw Throwable()
         }
         viewModel.loadDetailPageOnAction(Int.ZERO, String.EMPTY, Int.ZERO, false, String.EMPTY)
         assertTrue(viewModel.detailPageLiveData.value is TopAdsListAllInsightState.Fail)
     }
-
 
     @Test
     fun `loadDetailPageOnAction failure when isSwitchAdType true`() {
@@ -170,7 +186,7 @@ class GroupDetailViewModelTest {
             data
         }
         viewModel.loadDetailPageOnAction(Int.ZERO, String.EMPTY, Int.ZERO, false, String.EMPTY)
-        verify { groupDetailMapper.detailPageDataMap }
+        assertTrue(viewModel.detailPageLiveData.value is TopAdsListAllInsightState.Success)
     }
 
     @Test
@@ -183,7 +199,7 @@ class GroupDetailViewModelTest {
             data
         }
         viewModel.loadDetailPageOnAction(Int.ZERO, String.EMPTY, Int.ZERO, true, String.EMPTY)
-        verify { groupDetailMapper.detailPageDataMap }
+        assertTrue(viewModel.detailPageLiveData.value is TopAdsListAllInsightState.Success)
     }
 
     @Test
@@ -196,7 +212,7 @@ class GroupDetailViewModelTest {
             data
         }
         viewModel.loadDetailPageOnAction(Int.ZERO, "123", Int.ZERO, true, String.EMPTY)
-        verify { groupDetailMapper.detailPageDataMap }
+        assertTrue(viewModel.detailPageLiveData.value is TopAdsListAllInsightState.Success)
     }
 
     @Test
@@ -209,29 +225,22 @@ class GroupDetailViewModelTest {
             data
         }
         viewModel.loadDetailPageOnAction(Int.ZERO, String.EMPTY, Int.ZERO)
-        verify { groupDetailMapper.detailPageDataMap }
+        assertTrue(viewModel.detailPageLiveData.value is TopAdsListAllInsightState.Success)
     }
 
     @Test
-    fun `checkIfGroupChipsAvailable return false`() {
-        every {
-            groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_CHIPS]
-        } returns null
-        assertTrue(!viewModel.checkIfGroupChipsAvailable())
-    }
-
-    @Test
-    fun `checkIfGroupChipsAvailable return true`() {
-        every {
-            groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_CHIPS]
-        } returns InsightTypeChipsUiModel()
-        assertTrue(viewModel.checkIfGroupChipsAvailable())
+    fun `checkIfGroupChipsAvailable test`() {
+        val data = groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_CHIPS]?.isAvailable()
+        val actual = viewModel.checkIfGroupChipsAvailable()
+        assertEquals(data, actual)
     }
 
     @Test
     fun `selectDefaultChips success`() {
+        val data = GroupDetailChipsUiModel()
         viewModel.selectDefaultChips(Int.ZERO)
-        verify { groupDetailMapper.detailPageDataMap }
+        val actual = groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_CHIPS]
+        assertEquals(data, actual)
     }
 
     @Test
@@ -241,7 +250,6 @@ class GroupDetailViewModelTest {
             String.EMPTY, RecommendationConstants.HEADLINE_KEY,
             TYPE_POSITIVE_KEYWORD, String.EMPTY
         )
-
         assertTrue(viewModel.editHeadlineInsightLiveData.value is Fail)
     }
 
@@ -328,65 +336,93 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `loadInsightCountForOtherAdType success`() {
+        val response = TopAdsTotalAdGroupsWithInsightResponse()
         val data: TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> =
-            TopAdsListAllInsightState.Success(TopAdsTotalAdGroupsWithInsightResponse())
+            TopAdsListAllInsightState.Success(response)
         coEvery {
             topAdsGetTotalAdGroupsWithInsightUseCase.invoke(any(), any())
         } answers {
             data
         }
-        viewModel.loadInsightCountForOtherAdType(Int.ZERO)
-        coVerify {
-            groupDetailMapper.putInsightCount(any(), any())
-        }
+        viewModel.loadInsightCountForOtherAdType(TYPE_PRODUCT_VALUE)
+        val actual = groupDetailMapper.insightCountMap.size
+        assertEquals(3, actual)
     }
 
     @Test
-    fun `getItemListUiModel success`() {
-        viewModel.getItemListUiModel(listOf(), String.EMPTY)
-        verify {
-            groupDetailMapper.insightCountMap
+    fun `getItemListUiModel emptylist`() {
+        val data = viewModel.getItemListUiModel(listOf(), String.EMPTY)
+        assertEquals(0, data.size)
+    }
+
+    @Test
+    fun `getItemListUiModel adds product value item when adType = TYPE_PRODUCT_VALUE`() {
+        val titleList = listOf("Product", "Shop")
+        val adGroupType = PRODUCT_KEY
+        val expectedItem = ListBottomSheetItemUiModel(
+            adType = TYPE_PRODUCT_VALUE,
+            title = titleList.first(),
+            isSelected = true
+        )
+       groupDetailMapper.insightCountMap[TYPE_PRODUCT_VALUE] = 1
+        val result = viewModel.getItemListUiModel(titleList, adGroupType)
+        assertTrue(result.contains(expectedItem))
+    }
+
+    @Test
+    fun `getItemListUiModel adds product value item when adType = TYPE_SHOP_VALUE`() {
+        val titleList = listOf("Product", "Shop")
+        val adGroupType = PRODUCT_KEY
+        val expectedItem = titleList.getOrNull(TopAdsCommonConstant.CONST_1)?.let {
+            ListBottomSheetItemUiModel(
+                adType = RecommendationConstants.TYPE_SHOP_VALUE,
+                title = it,
+                isSelected = false
+            )
         }
+        groupDetailMapper.insightCountMap[RecommendationConstants.TYPE_SHOP_VALUE] = 3
+        val result = viewModel.getItemListUiModel(titleList, adGroupType)
+        assertTrue(result.contains(expectedItem))
     }
 
     @Test
     fun `getInputDataFromMapper TYPE_POSITIVE_KEYWORD`() {
-        viewModel.getInputDataFromMapper(TYPE_POSITIVE_KEYWORD)
-        verify {
-            groupDetailMapper.detailPageDataMap
-        }
+        val data =
+            ((groupDetailMapper.detailPageDataMap[TYPE_POSITIVE_KEYWORD] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
+        val actual = viewModel.getInputDataFromMapper(TYPE_POSITIVE_KEYWORD)
+        assertEquals(data, actual)
     }
 
     @Test
     fun `getInputDataFromMapper TYPE_KEYWORD_BID`() {
-        viewModel.getInputDataFromMapper(TYPE_KEYWORD_BID)
-        verify {
-            groupDetailMapper.detailPageDataMap
-        }
+        val data =
+            ((groupDetailMapper.detailPageDataMap[TYPE_KEYWORD_BID] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
+        val actual = viewModel.getInputDataFromMapper(TYPE_KEYWORD_BID)
+        assertEquals(data, actual)
     }
 
     @Test
     fun `getInputDataFromMapper TYPE_GROUP_BID`() {
-        viewModel.getInputDataFromMapper(TYPE_GROUP_BID)
-        verify {
-            groupDetailMapper.detailPageDataMap
-        }
+        val data =
+            ((groupDetailMapper.detailPageDataMap[TYPE_GROUP_BID] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
+        val actual = viewModel.getInputDataFromMapper(TYPE_GROUP_BID)
+        assertEquals(data, actual)
     }
 
     @Test
     fun `getInputDataFromMapper TYPE_DAILY_BUDGET`() {
-        viewModel.getInputDataFromMapper(TYPE_DAILY_BUDGET)
-        verify {
-            groupDetailMapper.detailPageDataMap
-        }
+        val data =
+            ((groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianDailyBudgetUiModel)?.input
+        val actual = viewModel.getInputDataFromMapper(TYPE_DAILY_BUDGET)
+        assertEquals(data, actual)
     }
 
     @Test
-    fun `getInputDataFromMapper TYPE_NEGATIVE_KEYWORD_BID`() {
-        viewModel.getInputDataFromMapper(TYPE_NEGATIVE_KEYWORD_BID)
-        verify {
-            groupDetailMapper.detailPageDataMap
-        }
+    fun `getInputDataFromMapper TYPE_NEGATIVE_KEYWORD_BID `() {
+        val data =
+            ((groupDetailMapper.detailPageDataMap[TYPE_NEGATIVE_KEYWORD_BID] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianNegativeKeywordUiModel)?.input
+        val actual = viewModel.getInputDataFromMapper(TYPE_NEGATIVE_KEYWORD_BID)
+        assertEquals(data, actual)
     }
 
     @Test
