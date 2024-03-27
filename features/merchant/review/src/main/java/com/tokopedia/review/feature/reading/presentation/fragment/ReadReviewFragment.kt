@@ -55,6 +55,7 @@ import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTo
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopReviewList
+import com.tokopedia.review.feature.reading.data.VariantFilter
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapter
@@ -89,6 +90,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
@@ -167,6 +169,7 @@ open class ReadReviewFragment :
     private var errorType = GlobalError.NO_CONNECTION
     private var isProductReview: Boolean = false
     private var imageClickedPosition = 0
+    private var tickerInfo: Ticker? = null
 
     private var selectedTopic: String? = null
 
@@ -907,6 +910,7 @@ open class ReadReviewFragment :
         emptyFilteredStateImage = view.findViewById(R.id.read_review_empty_list_image)
         goToTopFab = view.findViewById(R.id.read_review_go_to_top_fab)
         emptyRatingOnly = view.findViewById(R.id.read_review_rating_only)
+        tickerInfo = view.findViewById(R.id.read_review_ticker_info)
     }
 
     private fun setupFab() {
@@ -1001,7 +1005,6 @@ open class ReadReviewFragment :
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReadReviewFragment)
-            setTopicExtraction(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             setAvailableFilters(
                 ratingAndTopics.topics,
                 ratingAndTopics.availableFilters,
@@ -1010,6 +1013,7 @@ open class ReadReviewFragment :
             getRecyclerView(view)?.show()
             setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
             setSeeAll(false)
+            setTopicExtraction(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             show()
         }
 
@@ -1073,6 +1077,14 @@ open class ReadReviewFragment :
             )
             if (isListEmpty || currentPage == 0) hideFab() else showFab()
         }
+        setTickerInfo(productrevGetProductReviewList.variantFilter)
+    }
+
+    private fun setTickerInfo(data: VariantFilter) {
+        if (data.isUnavailable) {
+            tickerInfo?.setTextDescription(data.ticker)
+            tickerInfo?.show()
+        } else tickerInfo?.hide()
     }
 
     private fun onSuccessGetShopReviews(productrevGetShopReviewList: ProductrevGetShopReviewList) {

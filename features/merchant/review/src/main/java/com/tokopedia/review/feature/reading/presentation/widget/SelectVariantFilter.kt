@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -77,7 +75,9 @@ fun VariantOptions(
     FlowRow(
         modifier = Modifier.padding(
             top = 8.dp
-        )
+        ),
+        crossAxisSpacing = 8.dp,
+        mainAxisSpacing = 8.dp
     ) {
         variant.options.forEachIndexed { index, option ->
             Option(
@@ -86,7 +86,6 @@ fun VariantOptions(
             )
         }
     }
-
 }
 
 @Composable
@@ -105,9 +104,6 @@ fun Option(
         onClick = {
             option.isSelected = !option.isSelected
         },
-        modifier = Modifier.padding(
-            start = if (index == 0) 0.dp else 8.dp
-        )
     )
 }
 
@@ -188,7 +184,7 @@ data class SelectVariantUiModel(
     data class Option(
         val name: String,
         val image: String,
-    ){
+    ) {
         var isSelected by mutableStateOf(false)
     }
 }
