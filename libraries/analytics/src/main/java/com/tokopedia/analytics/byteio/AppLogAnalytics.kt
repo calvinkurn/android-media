@@ -318,6 +318,13 @@ object AppLogAnalytics {
         putPageData(ENTER_METHOD, enterMethod.str)
     }
 
+    fun putEnterMethodAtcToaster() {
+        val secondToLastData = _pageDataList.getOrNull(_pageDataList.lastIndex - 1)
+        secondToLastData?.put(
+            ENTER_METHOD, EnterMethod.CLICK_ATC_TOASTER_PDP.str
+        )
+    }
+
     fun getCurrentData(key: String): Any? {
         return _pageDataList.lastOrNull()?.get(key)
     }

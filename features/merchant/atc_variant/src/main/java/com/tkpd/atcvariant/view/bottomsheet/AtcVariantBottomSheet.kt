@@ -731,7 +731,7 @@ class AtcVariantBottomSheet :
                     pageSource
                 )
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartDataModel.data.cartId)
-                AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_ATC_TOASTER_PDP)
+                AppLogAnalytics.putEnterMethodAtcToaster()
             }
             atcMessage = message
         }
