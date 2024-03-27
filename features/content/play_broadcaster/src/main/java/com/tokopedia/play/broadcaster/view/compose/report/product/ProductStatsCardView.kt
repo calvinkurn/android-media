@@ -64,7 +64,9 @@ fun ProductStatsCardView(
             NestTypography(
                 text = productStats.name,
                 maxLines = 2,
-                textStyle = NestTheme.typography.body3,
+                textStyle = NestTheme.typography.body3.copy(
+                    color = NestTheme.colors.NN._1000,
+                ),
                 modifier = Modifier.constrainAs(txtProduct) {
                     start.linkTo(imgProduct.end, 16.dp)
                     end.linkTo(parent.end)

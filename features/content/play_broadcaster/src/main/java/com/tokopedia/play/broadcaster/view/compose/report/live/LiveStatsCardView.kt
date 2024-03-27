@@ -91,6 +91,7 @@ fun LiveStatsCardView(
                 text = liveStatsCardModel.liveStats.text,
                 textStyle = NestTheme.typography.body1.copy(
                     fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._950,
                 ),
                 maxLines = 1,
             )
