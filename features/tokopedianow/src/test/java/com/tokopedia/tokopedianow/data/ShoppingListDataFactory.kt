@@ -141,6 +141,25 @@ object ShoppingListDataFactory {
                     shop = GetShoppingListDataResponse.Shop(id = "3333333"),
                     warehouseID = "12312121",
                     discountPercentage = 50
+                ),
+                GetShoppingListDataResponse.AvailableItem(
+                    id = "1111119",
+                    name = "product 9",
+                    imageUrl = "https://www.tokopedia.com/image",
+                    price = "Rp.10.000",
+                    priceInt = 10000.toDouble(),
+                    labelGroup = listOf(
+                        GetShoppingListDataResponse.LabelGroup(
+                            title = "2 gr",
+                            position = "weight"
+                        )
+                    ),
+                    originalPrice = "Rp.20.000",
+                    applink = "tokopedia://product/1111112",
+                    minOrder = 2,
+                    shop = GetShoppingListDataResponse.Shop(id = "3333333"),
+                    warehouseID = "12312121",
+                    discountPercentage = 50
                 )
             ),
             listUnavailableItem: List<GetShoppingListDataResponse.UnavailableItem> = listOf(
