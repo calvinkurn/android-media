@@ -1,4 +1,4 @@
-package com.tokopedia.sessioncommon.data.fingerprint
+package com.tokopedia.sessioncommon.data.fingerprintpreference
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

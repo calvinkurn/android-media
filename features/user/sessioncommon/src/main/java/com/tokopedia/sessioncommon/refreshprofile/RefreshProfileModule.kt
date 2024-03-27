@@ -1,4 +1,4 @@
-package com.tokopedia.sessioncommon.di
+package com.tokopedia.sessioncommon.refreshprofile
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
