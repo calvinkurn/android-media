@@ -581,7 +581,9 @@ class CheckoutCalculator @Inject constructor(
                 false
             ).removeDecimalSuffix()
         shipmentCost = shipmentCost.copy(
-            totalPriceString = priceTotalFormatted
+            totalPriceString = priceTotalFormatted,
+            totalPriceWithAllPaymentFees = finalPrice,
+            totalPriceWithInternalPaymentFees = priceTotal + shipmentCost.finalPaymentFee
         )
         buttonPaymentModel = buttonPaymentModel.copy(
             totalPriceNum = finalPrice

@@ -10,6 +10,8 @@ data class CheckoutCostModel(
     override val cartStringGroup: String = "",
     val totalPrice: Double = 0.0,
     val totalPriceString: String = "-",
+    val totalPriceWithAllPaymentFees: Double = 0.0,
+    val totalPriceWithInternalPaymentFees: Double = 0.0,
     val totalItem: Int = 0,
     val originalItemPrice: Double = 0.0,
     val finalItemPrice: Double = 0.0,

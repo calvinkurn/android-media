@@ -585,7 +585,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                 latestPaymentData,
                 latestPayment.tenorList,
                 latestPayment.installmentData,
-                latestCost.totalPrice
+                latestCost.totalPriceWithInternalPaymentFees
             )
             val newPaymentWidgetData = processor.generateCheckoutPaymentWidgetData(
                 latestPaymentData,
