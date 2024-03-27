@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:layout_width="match_parent"
-    tools:layout_height="wrap_content"
-    tools:parentTag="com.tokopedia.unifycomponents.CardUnify2"
     app:card_type="shadow"
-    >
+    tools:layout_height="wrap_content"
+    tools:layout_width="match_parent"
+    tools:parentTag="com.tokopedia.unifycomponents.CardUnify2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        >
+        android:layout_marginBottom="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product_image"
@@ -25,16 +22,15 @@
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars"
-            />
+            tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:lineSpacingExtra="4sp"
             android:maxLines="2"
@@ -44,8 +40,8 @@
             app:layout_constraintStart_toEndOf="@id/iv_product_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:layout_goneMarginTop="0dp"
             app:layout_goneMarginStart="@dimen/spacing_lvl3"
+            app:layout_goneMarginTop="0dp"
             app:typographyType="body_2"
             tools:text="Alyssa Suede Flats Alyssa Suede Flats  Alyssa Suede Flats " />
 
@@ -53,9 +49,9 @@
             android:id="@+id/tv_current_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:paddingStart="0dp"
-            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingEnd="4dp"
             android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="@+id/tv_product_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_product_title"
@@ -79,14 +75,14 @@
             android:id="@+id/tv_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginStart="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN600"
             app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toBottomOf="@+id/tv_current_price"
             app:layout_constraintEnd_toEndOf="@id/tv_product_title"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_product_discount"
             app:layout_constraintTop_toTopOf="@+id/tv_current_price"
             app:typographyType="small"
@@ -116,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 app:typographyType="body_3"
-                tools:text="Tersedia"/>
+                tools:text="Tersedia" />
 
         </LinearLayout>
 
@@ -124,7 +120,7 @@
             android:id="@+id/btn_product_long_atc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:text="@string/feed_product_add_to_cart"
             android:visibility="gone"
@@ -141,44 +137,41 @@
             android:id="@+id/ll_product_action_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
-            android:layout_marginStart="@dimen/spacing_lvl3"
             android:orientation="horizontal"
             android:weightSum="10"
             app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_product_image"
             app:layout_constraintTop_toBottomOf="@+id/ll_stock_container"
-            tools:visibility="visible"
-            >
+            tools:visibility="visible">
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_product_buy"
-                android:layout_width="@dimen/layout_lvl8"
-                android:layout_height="@dimen/layout_lvl3"
+                android:layout_width="96dp"
+                android:layout_height="24dp"
                 android:layout_weight="5"
                 android:text="@string/feed_product_buy"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_image"
                 app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
                 app:unifyButtonSize="micro"
-                tools:unifyButtonVariant="main"
                 app:unifyButtonVariant="ghost"
                 tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck"
-                />
+                tools:unifyButtonVariant="main" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_product_atc"
-                android:layout_width="@dimen/layout_lvl8"
-                android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_width="96dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
                 android:layout_weight="5"
                 android:text="@string/feed_product_add_to_cart"
                 app:layout_constraintStart_toEndOf="@+id/btn_product_buy"
                 app:layout_constraintTop_toTopOf="@+id/btn_product_buy"
                 app:unifyButtonSize="micro"
-                tools:unifyButtonType="main"
                 tools:ignore="TextContrastCheck"
-                />
+                tools:unifyButtonType="main" />
 
         </LinearLayout>
 
@@ -193,22 +186,33 @@
             app:layout_constraintEnd_toEndOf="@id/iv_product_image"
             app:layout_constraintStart_toStartOf="@id/iv_product_image"
             app:layout_constraintTop_toTopOf="@id/iv_product_image"
-            tools:visibility="visible"
-            />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_out_of_stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
             android:visibility="gone"
+            app:labelTitle="@string/content_out_of_stock_label_text"
             app:labelType="general_dark_grey"
-            app:labelTitle="Stok Habis"
             app:layout_constraintBottom_toBottomOf="@+id/iv_product_image"
             app:layout_constraintStart_toStartOf="@+id/iv_product_image"
-            tools:visibility="visible"
-            />
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_soon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone"
+            app:labelTitle="@string/content_soon_label_text"
+            app:labelType="general_dark_grey"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_product_image"
+            app:layout_constraintStart_toStartOf="@+id/iv_product_image"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

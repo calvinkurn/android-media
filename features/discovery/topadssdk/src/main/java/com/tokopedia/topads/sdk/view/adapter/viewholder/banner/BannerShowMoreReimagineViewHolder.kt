@@ -2,16 +2,19 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
 import com.tokopedia.viewallcard.ViewAllCard
 
 class BannerShowMoreReimagineViewHolder(
     container: View,
+    private val topAdsItemImpressionListener: TopAdsItemImpressionListener,
     private val topAdsBannerClickListener: TopAdsBannerClickListener?
 ) : AbstractViewHolder<BannerShopViewMoreUiModel>(container) {
 
@@ -26,6 +29,10 @@ class BannerShowMoreReimagineViewHolder(
             invokeClickListener(
                 element
             )
+        }
+        viewAll.addOnImpression1pxListener(element.impressHolder) {
+            topAdsItemImpressionListener
+                .onImpressionSeeMoreItem(bindingAdapterPosition, element.cpmData)
         }
     }
 

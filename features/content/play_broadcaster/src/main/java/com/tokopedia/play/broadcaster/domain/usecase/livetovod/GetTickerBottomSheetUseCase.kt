@@ -34,6 +34,7 @@ class GetTickerBottomSheetUseCase @Inject constructor(
                 page
                 type
                 imageURL
+                cacheKey
                 mainText {
                   title
                   description

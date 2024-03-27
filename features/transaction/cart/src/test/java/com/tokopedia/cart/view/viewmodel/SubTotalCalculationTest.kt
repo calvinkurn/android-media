@@ -112,7 +112,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(0.0, "0", 0.0, false),
+            SubTotalState(0.0, 0.0, "0", 0.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -130,7 +130,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
         cartViewModel.reCalculateSubTotal()
 
         assertEquals(
-            SubTotalState(100.0, "5", 1004.0, false),
+            SubTotalState(100.0, 1004.0, "5", 1004.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -152,7 +152,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(100.0, "10", 1684.0, false),
+            SubTotalState(100.0, 1684.0, "10", 1684.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -178,7 +178,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(100.0, "19", 1684.0, false),
+            SubTotalState(100.0, 1684.0, "19", 1684.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -203,7 +203,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(100.0, "10", 1684.0, false),
+            SubTotalState(100.0, 1684.0, "10", 1684.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -229,7 +229,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(160.0, "10", 1684.0, false),
+            SubTotalState(160.0, 1684.0, "10", 1684.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -266,7 +266,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(400.0, "6", 4300.0, false),
+            SubTotalState(400.0, 4300.0, "6", 4300.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -303,7 +303,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(600.0, "8", 6300.0, false),
+            SubTotalState(600.0, 6300.0, "8", 6300.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -330,7 +330,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(
-            SubTotalState(100.0, "12", 101684.0, false),
+            SubTotalState(100.0, 1684.0, "12", 101684.0, false),
             cartViewModel.subTotalState.value
         )
     }
@@ -349,7 +349,7 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
         cartViewModel.reCalculateSubTotal()
 
         assertEquals(
-            SubTotalState(100.0, "5", 1004.0, false),
+            SubTotalState(100.0, 2004.0, "5", 1004.0, false),
             cartViewModel.subTotalState.value
         )
     }

@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardPaginationLoadState
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -69,11 +70,11 @@ class CalendarWidgetCarouselViewModel(
             components.shouldRefreshComponent = null
             setCalendarList()
         }, onError = {
-                components.noOfPagesLoaded = 1
-                components.verticalProductFailState = true
-                components.shouldRefreshComponent = null
-                calendarLoadError.value = true
-            })
+            components.noOfPagesLoaded = 1
+            components.verticalProductFailState = true
+            components.shouldRefreshComponent = null
+            calendarLoadError.value = true
+        })
     }
 
     fun resetComponent() {
@@ -104,7 +105,11 @@ class CalendarWidgetCarouselViewModel(
                 calendarCardModelArray.add(dataItem)
             }
         }
-        return calendarCardModelArray.getMaxHeightForCarouselView(application.applicationContext, Dispatchers.Default, list.firstOrNull()?.properties?.calendarLayout)
+        return calendarCardModelArray.getMaxHeightForCarouselView(
+            application.applicationContext,
+            Dispatchers.Default,
+            list.firstOrNull()?.properties?.calendarLayout
+        )
     }
 
     fun getCalendarList(): ArrayList<ComponentsItem>? {
@@ -121,27 +126,34 @@ class CalendarWidgetCarouselViewModel(
     fun fetchCarouselPaginatedCalendars() {
         isLoading = true
         launchCatchError(block = {
-            if (calenderWidgetUseCase?.getCarouselPaginatedData(
-                    components.id,
-                    components.pageEndPoint,
-                    PRODUCT_PER_PAGE
-                ) == true
-            ) {
-                getCalendarList()?.let {
-                    maxHeight = maxOf(reSyncProductCardHeight(it), maxHeight)
-                    it.forEach { item ->
-                        item.data?.firstOrNull()?.maxHeight = maxHeight
+            when (calenderWidgetUseCase?.getCarouselPaginatedData(
+                components.id,
+                components.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )) {
+                ProductCardPaginationLoadState.LOAD_MORE -> {
+                    getCalendarList()?.let {
+                        maxHeight = maxOf(reSyncProductCardHeight(it), maxHeight)
+                        it.forEach { item ->
+                            item.data?.firstOrNull()?.maxHeight = maxHeight
+                        }
+                        isLoading = false
+                        calendarCarouselList.value = addLoadMore(it)
+                        syncData.value = true
                     }
-                    isLoading = false
-                    calendarCarouselList.value = addLoadMore(it)
-                    syncData.value = true
                 }
-            } else {
-                paginatedErrorData()
+
+                ProductCardPaginationLoadState.REACH_END_OF_PAGE -> {
+                    setCalendarList()
+                }
+
+                else -> {
+                    paginatedErrorData()
+                }
             }
         }, onError = {
-                paginatedErrorData()
-            })
+            paginatedErrorData()
+        })
     }
 
     private fun paginatedErrorData() {

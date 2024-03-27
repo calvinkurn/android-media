@@ -17,7 +17,11 @@ class TrackAffiliateClickCloudSource @Inject constructor(
         private val gson: Gson) {
 
     fun doTrackingWithUrl(requestParams: RequestParams): Observable<Boolean> {
-        return topAdsApi.trackWithUrl(requestParams.getString(PARAM_URL, ""), requestParams.parameters).map {
+        val url = requestParams.getString(PARAM_URL, "")
+        if (url.isNullOrBlank()) {
+            throw RuntimeException(BASE_URL_ERROR)
+        }
+        return topAdsApi.trackWithUrl(url, requestParams.parameters).map {
             if (it.isSuccessful) {
                 if (it.body() != null && it.body() != null) {
                     try {
@@ -39,6 +43,7 @@ class TrackAffiliateClickCloudSource @Inject constructor(
     companion object {
         const val EMPTY_BODY = "Response has empty body"
         const val NETWORK_ERROR = "Network error"
+        const val BASE_URL_ERROR = "Base URL is empty"
         const val PARAM_URL = "url"
         const val RESULT_SUCCESS = "success"
     }

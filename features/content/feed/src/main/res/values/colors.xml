@@ -46,4 +46,5 @@
 
     <color name="feed_dms_browse_banner_start_overlay">#47000000</color>
     <color name="feed_dms_browse_banner_end_overlay">#00000000</color>
+    <color name="feed_dms_highlight_slash">#AEB2BF</color>
 </resources>

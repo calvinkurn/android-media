@@ -207,9 +207,13 @@ class InitialStateFragment:
         initialStateAdapter.renderRecentSearch(recentSearchDataView, presenter.recentSearchPosition)
     }
 
-    override fun route(applink: String, searchParameter: Map<String, String>) {
+    override fun route(
+        applink: String,
+        searchParameter: Map<String, String>,
+        byteIOEnterMethod: String,
+    ) {
         activity?.let {
-            val modifiedApplink = getModifiedApplink(applink, searchParameter)
+            val modifiedApplink = getModifiedApplink(applink, searchParameter, byteIOEnterMethod)
             RouteManager.route(it, modifiedApplink)
         }
     }
