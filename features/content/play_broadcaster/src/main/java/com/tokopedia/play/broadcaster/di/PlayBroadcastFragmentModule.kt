@@ -143,5 +143,5 @@ abstract class PlayBroadcastFragmentModule {
     @Binds
     @IntoMap
     @FragmentKey(ProductReportSummaryBottomSheet::class)
-    abstract fun getEstimatedIncomeDetailBottomSheet(fragment: ProductReportSummaryBottomSheet) : Fragment
+    abstract fun getProductReportSummaryBottomSheet(fragment: ProductReportSummaryBottomSheet) : Fragment
 }
