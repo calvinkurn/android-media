@@ -226,6 +226,7 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
+            buildConfigField "String", "STORE_CHANNEL", getStoreChannel()
             buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             multiDexKeepProguard file('multidex-config.pro')
