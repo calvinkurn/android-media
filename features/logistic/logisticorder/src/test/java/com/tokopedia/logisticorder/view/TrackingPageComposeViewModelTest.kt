@@ -13,7 +13,6 @@ import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.targetedticker.domain.GetTargetedTickerResponse
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
@@ -94,8 +93,22 @@ class TrackingPageComposeViewModelTest {
         print(error)
 
         assert(!result.isLoading)
-        assertNull(result.trackingData)
+        assertNotNull(result.trackingData)
         assert(error.message == errorMessage)
+    }
+
+    @Test
+    fun `When Get Tracking Data Success with Error Message THEN don't hit targeted ticker`() {
+        val errorMessage =
+            "Maaf, Permohonan Anda tidak dapat diproses saat ini. Mohon dicoba kembali."
+        val response =
+            GetLogisticTrackingResponse(LogisticTrackingResponse(messageError = listOf(errorMessage)))
+        coEvery { getTrackingUseCase(any()) } returns response
+        val event = TrackingPageEvent.LoadTrackingData("12234", "1", 2, "", "")
+
+        trackingPageViewModel.onEvent(event)
+
+        coVerify(exactly = 0) { targetedTickerUseCase(any()) }
     }
 
     @Test
