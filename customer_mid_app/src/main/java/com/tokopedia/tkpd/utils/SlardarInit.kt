@@ -145,7 +145,7 @@ object SlardarInit {
                 }
             })
         builder.batteryDetect(true)
-        builder.useDefaultTTNetImpl(false)
+        builder.useDefaultTTNetImpl(true)
         builder.dynamicParams(object : IDynamicParams {
             override fun getCommonParams(): Map<String, String> {
                 return mapOf()
