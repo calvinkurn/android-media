@@ -58,7 +58,6 @@ data class PaymentCreditCardData(
 data class PaymentWalletData(
     val walletType: Int = 0,
     val walletAmount: Long = 0,
-    val phoneNumberRegistered: String = "",
     val activation: PaymentWalletAction = PaymentWalletAction(),
     val topUp: PaymentWalletAction = PaymentWalletAction(),
     val phoneNumberRegistration: PaymentWalletAction = PaymentWalletAction(),

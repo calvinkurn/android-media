@@ -104,11 +104,9 @@ data class PaymentWalletDataResponse(
     val walletType: Int = 0,
     @SerializedName("wallet_amount")
     val walletAmount: Long = 0,
-    @SerializedName("phone_number_registered")
-    val phoneNumberRegistered: String = "",
-    @SerializedName("activation")
+    @SerializedName("activation_details")
     val activation: PaymentWalletActionResponse = PaymentWalletActionResponse(),
-    @SerializedName("top_up")
+    @SerializedName("top_up_details")
     val topUp: PaymentWalletActionResponse = PaymentWalletActionResponse(),
     @SerializedName("phone_number_registration")
     val phoneNumberRegistration: PaymentWalletActionResponse = PaymentWalletActionResponse(),

@@ -180,7 +180,6 @@ class GetPaymentWidgetUseCase @Inject constructor(
             walletData = PaymentWalletData(
                 walletType = response.walletData.walletType,
                 walletAmount = response.walletData.walletAmount,
-                phoneNumberRegistered = response.walletData.phoneNumberRegistered,
                 activation = PaymentWalletAction(
                     isRequired = response.walletData.activation.isRequired,
                     headerTitle = response.walletData.activation.headerTitle,
