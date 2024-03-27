@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.Keep
 import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import okhttp3.Interceptor
@@ -20,6 +22,7 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
     companion object {
         private const val SHARED_PREF_SHOP_PAGE_MOCK_WIDGET = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
         private const val SHARED_PREF_MOCK_WIDGET_DATA = "SHARED_PREF_MOCK_WIDGET_DATA"
+        private const val SHARED_PREF_MOCK_BMSM_WIDGET_DATA = "SHARED_PREF_MOCK_BMSM_WIDGET_DATA"
     }
 
     private val sharedPref: SharedPreferences = applicationContext.getSharedPreferences(
@@ -33,9 +36,11 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
 
     override fun intercept(chain: Interceptor.Chain): Response {
         try {
-            //first pair is dynamicTab widget mock response
-            //second pair is shopPageGetLayout widget mock response
+            // first pair is dynamicTab widget mock response
+            // second pair is shopPageGetLayout widget mock response
             val stringListOfPairMockWidgetData = sharedPref.getString(SHARED_PREF_MOCK_WIDGET_DATA, null)
+            val stringPairOfBmsmMockWidgetData = sharedPref.getString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, null)
+
             val requestBody = chain.request()
             val buffer = Buffer()
             requestBody.body?.writeTo(buffer)
@@ -49,11 +54,23 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
                     val mockResponseShopLayoutV2Widget = listOfPairMockWidgetData.map {
                         it.second
                     }.toString()
+
                     val networkRequest = requestBody.newBuilder().build()
                     if (requestString.contains("shopPageGetDynamicTab")) {
                         mockResponseDynamicTabWidget(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseDynamicTabWidget)
                     } else if (requestString.contains("get_shop_page_home_layout_v2")) {
                         mockResponseShopLayoutV2(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseShopLayoutV2Widget)
+                    } else if (null != stringPairOfBmsmMockWidgetData) {
+                        val mockResponseBmsmWidgetData = getBmsmPairOfMockWidgetData(stringPairOfBmsmMockWidgetData)
+                        val mockResponseOfferingInfo = mockResponseBmsmWidgetData.first
+                        val mockResponseOfferingProduct = mockResponseBmsmWidgetData.second
+                        return if (requestString.contains("getOfferingInfoForBuyer")) {
+                            mockResponseBmsmOfferingInfo(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseOfferingInfo)
+                        } else if (requestString.contains("getOfferingProductList")) {
+                            mockResponseBmsmOfferingProduct(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseOfferingProduct)
+                        } else {
+                            chain.proceed(chain.request())
+                        }
                     } else {
                         chain.proceed(chain.request())
                     }
@@ -70,6 +87,11 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
     private fun getListOfPairMockWidgetData(stringListOfPairMockWidgetData: String): List<Pair<String, String>> {
         val type = object : TypeToken<List<Pair<String, String>>>() {}.type
         return (gson.fromJson(stringListOfPairMockWidgetData, type) as List<Pair<String, String>>)
+    }
+
+    private fun getBmsmPairOfMockWidgetData(stringPairOfMockData: String): Pair<String, String> {
+        val type = object : TypeToken<Pair<String, String>>() {}.type
+        return (gson.fromJson(stringPairOfMockData, type)) as Pair<String, String>
     }
 
     private fun mockResponseDynamicTabWidget(request: Request, responseString: String, mockWidget: String): Response {
@@ -109,6 +131,48 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
             .message(mockShopLayoutV2Response)
             .body(
                 mockShopLayoutV2Response.toByteArray()
+                    .toResponseBody("application/json".toMediaTypeOrNull())
+            )
+            .addHeader("content-type", "application/json")
+            .build()
+    }
+
+    private fun mockResponseBmsmOfferingInfo(copy: Request, responseString: String, mockData: String): Response {
+        val mockOfferingInfoJsonObject = JsonParser.parseString(mockData).asJsonObject
+
+        val mockOfferingInfoResponse = JsonArray()
+        val data = JsonObject()
+        data.add("data", mockOfferingInfoJsonObject)
+        mockOfferingInfoResponse.add(data)
+
+        return Response.Builder()
+            .request(copy)
+            .code(200)
+            .protocol(Protocol.HTTP_2)
+            .message(mockOfferingInfoResponse.toString())
+            .body(
+                mockOfferingInfoResponse.toString().toByteArray()
+                    .toResponseBody("application/json".toMediaTypeOrNull())
+            )
+            .addHeader("content-type", "application/json")
+            .build()
+    }
+
+    private fun mockResponseBmsmOfferingProduct(copy: Request, responseString: String, mockData: String): Response {
+        val mockOfferingProductJsonObject = JsonParser.parseString(mockData).asJsonObject
+
+        val mockOfferingProductResponse = JsonArray()
+        val data = JsonObject()
+        data.add("data", mockOfferingProductJsonObject)
+        mockOfferingProductResponse.add(data)
+
+        return Response.Builder()
+            .request(copy)
+            .code(200)
+            .protocol(Protocol.HTTP_2)
+            .message(mockOfferingProductResponse.toString())
+            .body(
+                mockOfferingProductResponse.toString().toByteArray()
                     .toResponseBody("application/json".toMediaTypeOrNull())
             )
             .addHeader("content-type", "application/json")
