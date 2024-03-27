@@ -23,8 +23,8 @@ data class LiveStats(
     val visitPdp: String = "",
     @SerializedName("visit_channel_fmt")
     val visitChannel: String = "",
-    @SerializedName("live_concurrent_users_fmt")
-    val liveConcurrentUsers: String = "",
+    @SerializedName("live_concurrent_user_fmt")
+    val liveConcurrentUser: String = "",
     @SerializedName("estimated_income_fmt")
     val estimatedIncome: String = "",
     @SerializedName("timestamp")
