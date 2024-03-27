@@ -431,7 +431,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onImpress(coachMarkType: LiveMenuCoachMarkType) {
                 when (coachMarkType) {
                     is LiveMenuCoachMarkType.Statistic -> {
-                        sharedPref.setFirstStatisticIconShown()
+                        sharedPref.setFirstStatisticIconShown(parentViewModel.selectedAccount.id)
                         /** JOE TODO: handle analytic */
                     }
                     else -> {}

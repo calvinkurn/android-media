@@ -2310,6 +2310,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         setupLiveStats(_selectedAccount.value)
 
+        _onboarding.update {
+            it.copy(
+                firstStatisticIconShown = sharedPref.isFirstStatisticIconShown(selectedAccount.id)
+            )
+        }
+
         updateComponentPreparation {
             it.copy(
                 statisticIcon = ComponentPreparationUiModel.State.Ready
