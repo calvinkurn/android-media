@@ -45,8 +45,13 @@ object Mission4SquareWidgetMapper {
         val style = styles.associate { it.key to it.value }
 
         return SmallProductModel.TextStyle(
-            isBold = style[Const.TEXT_WEIGHT] == Const.TEXT_WEIGHT_BOLD,
-            textColor = style[Const.TEXT_COLOR].orEmpty()
+            isBold = style[Const.TEXT_FORMAT] == Const.TEXT_WEIGHT_BOLD,
+
+            textColor = style[Const.TEXT_COLOR].orEmpty(),
+
+            // We're able to indicate to render as a HTML-string if BE returned empty [text-format],
+            // due to achieve rendering format of HTML such as: `Discount <b>45%</b>`
+            shouldRenderHtmlFormat = style[Const.TEXT_FORMAT] == null
         )
     }
 
@@ -57,7 +62,7 @@ object Mission4SquareWidgetMapper {
 
         // styles
         const val TEXT_COLOR = "text-color"
-        const val TEXT_WEIGHT = "text-format" // normal or bold
+        const val TEXT_FORMAT = "text-format" // normal or bold
 
         // default
         const val TEXT_WEIGHT_BOLD = "bold"

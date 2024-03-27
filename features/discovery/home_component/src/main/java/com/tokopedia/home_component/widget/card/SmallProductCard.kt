@@ -9,6 +9,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.WidgetSmallProductCardBinding
 import com.tokopedia.home_component.util.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 class SmallProductCard @JvmOverloads constructor(
     context: Context,
@@ -38,16 +39,14 @@ class SmallProductCard @JvmOverloads constructor(
     }
 
     private fun Typography?.shouldTypographyStyleApplied(
-        content: Pair<String, SmallProductModel.TextStyle?>
+        content: Pair<String, SmallProductModel.TextStyle>
     ) {
-        val (title, textStyle) = content
+        val (title, style) = content
 
-        // text
-        this?.text = title
+        this?.text = if (style.shouldRenderHtmlFormat) HtmlUtil.fromHtml(title) else title
+        this?.setWeight(if (style.isBold) Typography.BOLD else Typography.REGULAR)
 
-        // style
-        textStyle?.let { style ->
-            this?.setWeight(if (style.isBold) Typography.BOLD else Typography.REGULAR)
+        if (style.textColor.isNotEmpty()) {
             this?.setTextColor(Color.parseColor(style.textColor))
         }
     }

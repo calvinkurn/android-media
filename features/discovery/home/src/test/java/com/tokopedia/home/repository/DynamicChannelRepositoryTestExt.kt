@@ -127,6 +127,34 @@ fun mockMissionWidget(
     isCache = isCache
 )
 
+fun mockMission4SquareWidget(
+    status: Int = AtfKey.STATUS_SUCCESS,
+    isCache: Boolean = false,
+    position: Int = 4
+) = AtfData(
+    atfMetadata = AtfMetadata(
+        id = 9,
+        name = "mission_widget_v3",
+        position = position,
+        component = AtfKey.TYPE_MISSION_V3,
+        param = "",
+        isOptional = false,
+        isShimmer = false
+    ),
+    atfContent = if (status == AtfKey.STATUS_SUCCESS) {
+        HomeMissionWidgetData.GetHomeMissionWidget(
+            missions = listOf(
+                HomeMissionWidgetData.Mission(),
+                HomeMissionWidgetData.Mission()
+            )
+        )
+    } else {
+        null
+    },
+    atfStatus = status,
+    isCache = isCache
+)
+
 fun mockTodoWidget(
     status: Int = AtfKey.STATUS_SUCCESS,
     isCache: Boolean = false,
