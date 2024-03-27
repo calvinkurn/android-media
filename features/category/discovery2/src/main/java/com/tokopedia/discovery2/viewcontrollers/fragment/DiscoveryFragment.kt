@@ -2677,7 +2677,10 @@ open class DiscoveryFragment :
         }
         pinnedAlreadyScrolled = false
         if (activeTab != null) {
-            this.arguments?.putString(FORCED_NAVIGATION, "true")
+            this.arguments?.apply {
+                putString(FORCED_NAVIGATION, "true")
+                putString(QUERY_PARENT, queryParams)
+            }
 
             componentId?.let {
                 this.arguments?.putString(COMPONENT_ID, componentId.toString())
