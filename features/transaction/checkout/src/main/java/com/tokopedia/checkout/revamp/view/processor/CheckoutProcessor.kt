@@ -12,6 +12,7 @@ import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_OCC_MULTI
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_OCC_MULTI_TOKONOW
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_REGULAR_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
+import com.tokopedia.checkout.data.model.request.checkout.Payment
 import com.tokopedia.checkout.data.model.request.checkout.Promo
 import com.tokopedia.checkout.data.model.request.checkout.TokopediaCorner
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
@@ -21,6 +22,7 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
 import com.tokopedia.checkout.revamp.view.crossSellGroup
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
+import com.tokopedia.checkout.revamp.view.payment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
@@ -30,6 +32,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.upsell
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -82,6 +85,8 @@ class CheckoutProcessor @Inject constructor(
                     diagnosticId = cartItemModel.diagnosticId
                 }
             }
+            val currentPayment = listData.payment()?.data?.paymentWidgetData?.firstOrNull()
+            val paymentParam = generatePayment(currentPayment)
             val params = generateCheckoutParams(
                 isOneClickShipment,
                 isTradeIn,
@@ -89,7 +94,8 @@ class CheckoutProcessor @Inject constructor(
                 deviceId,
                 checkoutRequest,
                 "",
-                fingerprintPublicKey
+                fingerprintPublicKey,
+                paymentParam
             )
             try {
                 val checkoutData = withContext(dispatchers.io) {
@@ -354,7 +360,8 @@ class CheckoutProcessor @Inject constructor(
         deviceId: String,
         carts: Carts,
         dynamicData: String,
-        fingerprintPublicKey: String?
+        fingerprintPublicKey: String?,
+        payment: Payment
     ): CheckoutRequest {
         return CheckoutRequest(
             carts,
@@ -369,8 +376,16 @@ class CheckoutProcessor @Inject constructor(
             isExpress = false,
             fingerprintSupport = (fingerprintPublicKey != null).toString(),
             fingerprintPublickey = fingerprintPublicKey ?: "",
+            payment = payment,
             tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC)
         )
+    }
+
+    private fun generatePayment(paymentWidgetData: PaymentWidgetData?): Payment {
+        if (paymentWidgetData == null) {
+            return Payment()
+        }
+        return Payment(gatewayCode = paymentWidgetData.gatewayCode)
     }
 
     private fun removeErrorShopProduct(

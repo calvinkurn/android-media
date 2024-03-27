@@ -35,8 +35,17 @@ data class CheckoutRequest(
     val fingerprintSupport: String,
     @SerializedName("fingerprint_publickey")
     val fingerprintPublickey: String,
+    @SerializedName("payment")
+    val payment: Payment = Payment(),
     @SerializedName("tracker")
     val tracker: String
+)
+
+data class Payment(
+    @SerializedName("mode")
+    val mode: Int = 0, // 0 = instant payment, 1 = scrooge payment page
+    @SerializedName("gateway_code")
+    val gatewayCode: String = ""
 )
 
 data class Carts(
