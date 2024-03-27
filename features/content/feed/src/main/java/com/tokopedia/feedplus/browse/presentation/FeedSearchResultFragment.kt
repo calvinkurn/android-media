@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
@@ -119,6 +120,14 @@ internal class FeedSearchResultFragment @Inject constructor(
     private fun setupView() {
         binding.srpHeader.onBackClicked {
             activity?.finish()
+        }
+
+        binding.srpHeader.setSearchbarFocusListener { view, focusState ->
+            view.clearFocus()
+
+            if (focusState) {
+                router.route(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
+            }
         }
 
         binding.resultRv.let {
