@@ -137,6 +137,9 @@ class ShareExBottomSheet :
             arg = arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY)
             resultArg = arguments?.getParcelable(BOTTOM_SHEET_RESULT_KEY)
         }
+        resultArg?.let {
+            viewModel.bottomSheetResultArg = resultArg
+        }
         arg?.let {
             viewModel.bottomSheetArg = arg
             analytics.trackImpressionBottomSheet(
@@ -154,9 +157,6 @@ class ShareExBottomSheet :
                 )
                 dismiss()
             }
-        }
-        resultArg?.let {
-            viewModel.bottomSheetResultArg = resultArg
         }
     }
 
