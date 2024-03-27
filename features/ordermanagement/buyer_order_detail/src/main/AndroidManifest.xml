@@ -57,7 +57,6 @@
             android:name=".presentation.activity.OrderCancellationCsatActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustNothing" />
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>
