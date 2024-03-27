@@ -1,18 +1,13 @@
 package com.tokopedia.play.broadcaster.view.compose.report.product
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,10 +34,8 @@ fun ProductStatsCardView(
     productStats: ProductStatsUiModel
 ) {
     NestCard(
-        type = NestCardType.NoBorder,
-        modifier = Modifier
-            .shadow(4.dp, RoundedCornerShape(12.dp), clip = false)
-            .border(BorderStroke(1.dp, MaterialTheme.colors.surface), RoundedCornerShape(12.dp))
+        type = NestCardType.Border,
+        modifier = Modifier,
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -71,7 +64,9 @@ fun ProductStatsCardView(
             NestTypography(
                 text = productStats.name,
                 maxLines = 2,
-                textStyle = NestTheme.typography.body3,
+                textStyle = NestTheme.typography.body3.copy(
+                    color = NestTheme.colors.NN._1000,
+                ),
                 modifier = Modifier.constrainAs(txtProduct) {
                     start.linkTo(imgProduct.end, 16.dp)
                     end.linkTo(parent.end)

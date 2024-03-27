@@ -2330,6 +2330,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         setupLiveStats(_selectedAccount.value)
 
+        _onboarding.update {
+            it.copy(
+                firstStatisticIconShown = sharedPref.isFirstStatisticIconShown(selectedAccount.id)
+            )
+        }
+
         updateComponentPreparation {
             it.copy(
                 statisticIcon = ComponentPreparationUiModel.State.Ready
@@ -2497,7 +2503,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _liveReportSummary.update {
                 LiveReportSummaryUiModel(
-                    liveStats = mutableListOf<LiveStatsUiModel>().apply {
+                    liveStats = buildList {
                         add(LiveStatsUiModel.Viewer())
                         add(LiveStatsUiModel.TotalViewer())
                         if (selectedAccount.isShop) {
