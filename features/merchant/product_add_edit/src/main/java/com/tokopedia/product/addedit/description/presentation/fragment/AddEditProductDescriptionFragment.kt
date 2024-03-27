@@ -45,7 +45,6 @@ import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionMod
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.domain.model.GetYoutubeVideoSnippetResponse
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_DESCRIPTION_CHAR
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_VIDEOS
 import com.tokopedia.product.addedit.description.presentation.dialog.GiftingDescriptionBottomSheet
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -85,6 +84,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
+import com.tokopedia.seller_migration_common.R as seller_migration_commonR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -381,7 +381,7 @@ class AddEditProductDescriptionFragment :
         with(GlobalConfig.isSellerApp()) {
             containerAddEditDescriptionFragmentNoInputVariant?.showWithCondition(!this)
             containerAddEditDescriptionFragmentInputVariant?.showWithCondition(this)
-            tvNoVariantDescription?.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
+            tvNoVariantDescription?.text = getString(seller_migration_commonR.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
         }
     }
 
@@ -445,12 +445,13 @@ class AddEditProductDescriptionFragment :
             showDescriptionTips()
         }
 
-        textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
+        val maxChar = context?.resources?.getInteger(R.integer.max_product_desc_length).orZero()
+        textFieldDescription?.setCounter(maxChar)
         textFieldDescription?.textFieldInput?.apply {
             isSingleLine = false
             imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             afterTextChanged {
-                if (it.length >= MAX_DESCRIPTION_CHAR) {
+                if (it.length >= maxChar) {
                     textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
                     textFieldDescription?.setError(true)
                 } else {
