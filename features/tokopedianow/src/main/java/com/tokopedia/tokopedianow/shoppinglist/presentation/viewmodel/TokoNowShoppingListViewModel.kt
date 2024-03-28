@@ -118,7 +118,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
-
    companion object {
        const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
        const val INVALID_SHOP_ID = 0L

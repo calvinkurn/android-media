@@ -15,6 +15,7 @@ import javax.inject.Inject
  * Get Shopping List Query Docs:
  * https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/2488795997/WIP+GQL+TokonowGetShoppingList
  */
+
 class GetShoppingListUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
 ) {

@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.shoppinglist.domain.query
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 internal object GetShoppingListQuery: GqlQueryInterface {
-
     private const val OPERATION_NAME = "TokonowGetShoppingList"
 
     const val PARAM_SOURCE = "source"

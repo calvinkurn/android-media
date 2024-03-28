@@ -492,17 +492,9 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    /**
-     * Create a new coroutine in the [lifecycleScope]. [repeatOnLifecycle] launches the block in a new coroutine
-     * every time the lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
-     */
     private fun FragmentTokopedianowShoppingListBinding.collectStateFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             withStarted {
-                /**
-                 * Because [collect] is a suspend function, need different coroutines to collect multiple flows in parallel.
-                 * The suspending function suspends until the Flow terminates.
-                 */
                 launch { collectLayoutState(this@collectStateFlow) }
                 launch { collectMiniCartState(this@collectStateFlow) }
                 launch { collectScrollBehavior(this@collectStateFlow) }

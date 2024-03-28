@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
 
 @Module
 abstract class ShoppingListViewModelModule {
-
     @ShoppingListScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
