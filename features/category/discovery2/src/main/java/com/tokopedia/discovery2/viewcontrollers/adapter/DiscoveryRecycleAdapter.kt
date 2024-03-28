@@ -31,7 +31,7 @@ class DiscoveryRecycleAdapter(
         private var noOfObject = 0
     }
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
-    var _componentList: ArrayList<ComponentsItem> = ArrayList()
+    private var _componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get(
         (
             DiscoveryListViewModel::class.java.canonicalName
