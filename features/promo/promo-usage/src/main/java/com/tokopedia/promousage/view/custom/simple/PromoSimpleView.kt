@@ -21,13 +21,11 @@ class PromoSimpleView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var _binding: PromoUsageItemPromoSimpleBinding? = null
-    private val binding get() = _binding ?: setupBinding()
+    private var binding: PromoUsageItemPromoSimpleBinding
 
-    private fun setupBinding(): PromoUsageItemPromoSimpleBinding {
-        _binding = PromoUsageItemPromoSimpleBinding.inflate(
+    init {
+        binding = PromoUsageItemPromoSimpleBinding.inflate(
             LayoutInflater.from(context), this, true)
-        return _binding!!
     }
 
     fun bind(promo: PromoSimpleItem, isFullWidth: Boolean) {
@@ -87,9 +85,5 @@ class PromoSimpleView @JvmOverloads constructor(
     private fun bindDescText(promo: PromoSimpleItem) {
         binding.promoTvDescMiniCard.text = promo.desc
         binding.promoTvDescMiniCard.showWithCondition(promo.desc.isNotBlank())
-    }
-
-    fun cleanUp() {
-        _binding = null
     }
 }
