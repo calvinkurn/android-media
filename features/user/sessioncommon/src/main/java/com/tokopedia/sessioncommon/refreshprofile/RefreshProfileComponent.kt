@@ -1,8 +1,7 @@
-package com.tokopedia.sessioncommon.di
+package com.tokopedia.sessioncommon.refreshprofile
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.sessioncommon.worker.RefreshProfileWorker
 import dagger.Component
 
 @ActivityScope
