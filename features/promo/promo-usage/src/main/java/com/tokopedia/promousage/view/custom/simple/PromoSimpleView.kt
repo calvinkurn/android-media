@@ -22,11 +22,12 @@ class PromoSimpleView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var _binding: PromoUsageItemPromoSimpleBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: setupBinding()
 
-    init {
-        _binding = PromoUsageItemPromoSimpleBinding
-            .inflate(LayoutInflater.from(context), this, true)
+    private fun setupBinding(): PromoUsageItemPromoSimpleBinding {
+        _binding = PromoUsageItemPromoSimpleBinding.inflate(
+            LayoutInflater.from(context), this, true)
+        return _binding!!
     }
 
     fun bind(promo: PromoSimpleItem, isFullWidth: Boolean) {
@@ -88,9 +89,7 @@ class PromoSimpleView @JvmOverloads constructor(
         binding.promoTvDescMiniCard.showWithCondition(promo.desc.isNotBlank())
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        // Clean up the binding when the view is detached from the window
+    fun cleanUp() {
         _binding = null
     }
 }
