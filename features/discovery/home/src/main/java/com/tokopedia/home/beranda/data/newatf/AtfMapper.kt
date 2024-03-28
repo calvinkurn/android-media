@@ -7,10 +7,12 @@ import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelMapper
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper
 import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
-import com.tokopedia.home.beranda.data.newatf.ticker.TickerMapper
+import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TargetedTickerMapper
+import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TickerMapper
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
+import com.tokopedia.home.beranda.domain.model.TargetedTickerUiModel
 import com.tokopedia.home.beranda.domain.model.Ticker
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.constant.AtfKey
@@ -111,6 +113,7 @@ class AtfMapper @Inject constructor(
                     is BannerDataModel -> visitables.add(homepageBannerMapper.asVisitable(this, index, value))
                     is DynamicHomeIcon -> visitables.add(dynamicIconMapper.asVisitable(this, value))
                     is Ticker -> tickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
+                    is TargetedTickerUiModel -> TargetedTickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
                     is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(missionWidgetMapper.asVisitable(this, index, value))
                     is HomeTodoWidgetData.GetHomeTodoWidget -> todoWidgetMapper.asVisitable(this, index, value)?.let { visitables.add(it) }
                     is DynamicHomeChannel -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
