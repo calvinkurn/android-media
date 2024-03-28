@@ -1093,8 +1093,8 @@ object ProductDetailMapper {
                 labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionClickChannel = "${ShareExTrackerArg.CHANNEL_KEY} - ${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId - ${ShareExTrackerArg.IMAGE_TYPE_KEY}",
-                labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
-                labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
+                labelImpressionAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId",
+                labelActionClickAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId"
             )
         )
     }
