@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
@@ -77,7 +76,15 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             model.header.colorSchema
         )
 
-        viewBinding?.viewPager?.currentItem = model.lastTabIndexSelected
+        autoScrollTabByLastSelectedTabPosition(model)
+    }
+
+    private fun autoScrollTabByLastSelectedTabPosition(model: ShowcaseNavigationUiModel) {
+        viewBinding?.viewPager?.setCurrentItem(model.lastTabIndexSelected, false)
+
+        val selectedTab = viewBinding?.tabsUnify?.getUnifyTabLayout()?.getTabAt(model.lastTabIndexSelected)
+        selectedTab?.select()
+        selectedTab?.selectedTextColor(model)
     }
 
     private fun setupChevronViewAll(
@@ -150,8 +157,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(tabs[currentPosition].text)
-
-                if (currentPosition == uiModel.lastTabIndexSelected) tab.select(uiModel) else tab.unselect(uiModel)
+                tab.normalTextColor(uiModel)
 
                 val tabTitle = tabs[currentPosition].text
                 changeTabTitleAppearance(tab, tabTitle)
@@ -180,7 +186,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
         tabTitleTextView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         tabTitleTextView?.layoutParams?.width = tabTitleTextView?.measuredWidth.orZero() + EXTRA_WIDTH_TAB_TITLE_DP.toPx()
-        val marginBottom = tabTitleTextView?.marginBottom.orZero()
     }
 
     private fun handleTabChange(
@@ -195,7 +200,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 listener.onNavigationBannerTabClick(tabTitle)
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    tab?.select(model)
+                    tab?.selectedTextColor(model)
 
                     if (tabPosition.isMoreThanZero()) {
                         model.lastTabIndexSelected = tabPosition
@@ -205,7 +210,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    tab?.unselect(model)
+                    tab?.normalTextColor(model)
                 }
             }
 
@@ -213,7 +218,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         })
     }
 
-    private fun TabLayout.Tab?.select(model: ShowcaseNavigationUiModel) {
+    private fun TabLayout.Tab?.selectedTextColor(model: ShowcaseNavigationUiModel) {
         val tabTitle = this?.tabTitleTextView()
 
         val highEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
@@ -233,7 +238,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         return this?.customView?.findViewById<TextView?>(unifycomponentsR.id.tab_item_text_id)
     }
 
-    private fun TabLayout.Tab?.unselect(model: ShowcaseNavigationUiModel) {
+    private fun TabLayout.Tab?.normalTextColor(model: ShowcaseNavigationUiModel) {
         val tabTitle = this?.tabTitleTextView()
 
         val disabledTextColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
