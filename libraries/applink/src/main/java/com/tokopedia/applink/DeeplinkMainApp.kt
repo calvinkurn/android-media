@@ -1024,14 +1024,14 @@ object DeeplinkMainApp {
                 ApplinkConstInternalUserPlatform.HAS_PASSWORD
             }
         ),
-        "share_address" to mutableListOf(
-            DLP.matchPattern("") { deeplink: String ->
-                DeeplinkMapperLogistic.getRegisteredNavigationShareAddress(deeplink)
-            }
-        ),
         "share" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
+            }
+        ),
+        "share_address" to mutableListOf(
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperLogistic.getRegisteredNavigationShareAddress(deeplink)
             }
         ),
         "sharing" to mutableListOf(
