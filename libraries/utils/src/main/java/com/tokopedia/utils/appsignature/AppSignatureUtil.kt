@@ -8,7 +8,7 @@ import java.security.MessageDigest
 
 object AppSignatureUtil {
 
-    const val TOKO_APP_SIGNATURE = "F9264673C92B7897DC4097CA570E4F37104FA672CA3E8F33D78B6FFD277D4166"
+    const val TOKO_APP_SIGNATURE = "7456F3BE6944332817E43ECE6A053F9744466C95F536C4503F25330237DD81BE"
 
     fun getAppSignature(context: Context, packageName: String): String {
         val packageManager = context.packageManager
