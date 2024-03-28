@@ -77,6 +77,7 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
                 is ContentSlotModel.ChannelBlock -> {
                     if (response.channels.isEmpty() && _contents.value.isEmpty()) {
                         _pageState.update { FeedSearchResultPageState.NotFound }
+                        _hasNextPage.update { false }
                         return@launchCatchError
                     }
 
