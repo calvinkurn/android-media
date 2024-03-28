@@ -241,19 +241,19 @@ class PaymentProcessor @Inject constructor(
         if (!tenorList.isNullOrEmpty()) {
             if (selectedTenure > 0) {
                 tenorList.firstOrNull { it.tenure == selectedTenure }?.let {
-                    installmentText = "Cicil ${it.tenure}x${CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false).removeDecimalSuffix()}"
+                    installmentText = "Cicil ${it.tenure}x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false).removeDecimalSuffix()}"
                 }
             } else {
-                installmentText = "Bayar Penuh"
+                installmentText = FULL_PAYMENT_INSTALLMENT_TEXT
             }
         }
         if (installmentData != null) {
             if (selectedTenure > 0) {
                 installmentData.installmentOptions.firstOrNull { it.installmentTerm == selectedTenure }?.let {
-                    installmentText = "Cicil ${it.installmentTerm}x${CurrencyFormatUtil.convertPriceValueToIdrFormat(it.installmentAmountPerPeriod, false).removeDecimalSuffix()}"
+                    installmentText = "Cicil ${it.installmentTerm}x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(it.installmentAmountPerPeriod, false).removeDecimalSuffix()}"
                 }
             } else {
-                installmentText = "Bayar Penuh"
+                installmentText = FULL_PAYMENT_INSTALLMENT_TEXT
             }
         }
         var subtitle = ""
@@ -270,6 +270,10 @@ class PaymentProcessor @Inject constructor(
             description = currentData.description,
             installmentText = installmentText
         )
+    }
+
+    companion object {
+        private const val FULL_PAYMENT_INSTALLMENT_TEXT = "Bayar Penuh"
     }
 }
 
