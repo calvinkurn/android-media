@@ -410,7 +410,9 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                                 uniqueId = "12",
                                 message = LastApplyMessageUiModel(state = "green"),
                                 cartStringGroup = "123",
-                                type = "logistic"
+                                type = "logistic",
+                                spId = 1,
+                                shippingId = 1
                             )
                         )
                     )
