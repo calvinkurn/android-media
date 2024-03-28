@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationlistatc
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.SearchParameterProvider
@@ -36,7 +37,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
                 product,
                 getSearchParameter()
             )
-        inspirationListAtcView.trackItemClick(trackingData)
+        inspirationListAtcView.trackItemClick(trackingData, product)
         if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
         openApplink(context, product.applink)
     }
@@ -53,5 +54,9 @@ class InspirationListAtcListenerDelegate @Inject constructor(
         SearchIdlingResource.increment()
 
         inspirationListAtcPresenter.onListAtcItemAddToCart(product, type)
+    }
+
+    override fun onListAtcImpressed(data: InspirationCarouselDataView.Option) {
+        inspirationListAtcView.trackImpression(data)
     }
 }

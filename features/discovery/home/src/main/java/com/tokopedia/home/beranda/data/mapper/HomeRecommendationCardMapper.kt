@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
@@ -40,13 +41,14 @@ class HomeRecommendationCardMapper @Inject constructor(
                 TYPE_PRODUCT -> {
                     homeRecommendationTypeFactoryImplList.add(
                         mapToHomeProductFeedModel(
+                            getHomeRecommendationCard.appLog,
                             card,
                             getHomeRecommendationCard.pageName,
                             getHomeRecommendationCard.layoutName,
                             pageNumber,
                             index,
                             getHomeRecommendationCard.recommendationCards.size,
-                            tabName
+                            tabName,
                         )
                     )
                 }
@@ -54,7 +56,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                 TYPE_RECOM_CARD -> {
                     if (getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
                         homeRecommendationTypeFactoryImplList.add(
-                            mapToEntityCardRecommendationCard(card)
+                            mapToEntityCardRecommendationCard(card, index, getHomeRecommendationCard.pageName)
                         )
                     }
                 }
@@ -74,7 +76,8 @@ class HomeRecommendationCardMapper @Inject constructor(
                                     cardId = card.id,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
-                                    )
+                                    ),
+                                    pageName = getHomeRecommendationCard.pageName
                                 )
                             )
                         }
@@ -90,10 +93,10 @@ class HomeRecommendationCardMapper @Inject constructor(
                         recommendationPlayWidgetResponse?.let {
                             homeRecommendationTypeFactoryImplList.add(
                                 mapToHomeRecommendationPlayWidget(
-                                    cardId = card.id,
-                                    layoutCard = card.layout,
-                                    layoutTracker = card.layoutTracker,
-                                    playVideoWidgetResponse = it
+                                    card = card,
+                                    playVideoWidgetResponse = it,
+                                    pageName = getHomeRecommendationCard.pageName,
+                                    position = index
                                 )
                             )
                         }
@@ -104,18 +107,18 @@ class HomeRecommendationCardMapper @Inject constructor(
 
         return HomeRecommendationDataModel(
             homeRecommendationTypeFactoryImplList.toList(),
-            getHomeRecommendationCard.hasNextPage
+            getHomeRecommendationCard.hasNextPage,
         )
     }
 
     private fun mapToHomeRecommendationPlayWidget(
-        cardId: String,
-        layoutCard: String,
-        layoutTracker: String,
-        playVideoWidgetResponse: PlayVideoWidgetResponse
+        card: RecommendationCard,
+        playVideoWidgetResponse: PlayVideoWidgetResponse,
+        pageName: String,
+        position: Int,
     ): HomeRecommendationPlayWidgetUiModel {
         return HomeRecommendationPlayWidgetUiModel(
-            cardId = cardId,
+            cardId = card.id,
             appLink = playVideoWidgetResponse.link.applink,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
                 id = playVideoWidgetResponse.id,
@@ -135,18 +138,24 @@ class HomeRecommendationCardMapper @Inject constructor(
                 partnerId = playVideoWidgetResponse.author.id,
                 playChannelId = playVideoWidgetResponse.contentOriginID,
                 recommendationType = playVideoWidgetResponse.recommendationType,
-                layoutCard = layoutCard,
-                layoutItem = layoutTracker,
+                layoutCard = card.layout,
+                layoutItem = card.layoutTracker,
                 categoryId = (
                     playVideoWidgetResponse.category.dominantL3.firstOrNull()
                         ?: ""
                     ).toString()
-            )
+            ),
+            isAds = card.isTopads,
+            shopId = card.shop.id,
+            pageName = pageName,
+            position = position,
         )
     }
 
     private fun mapToEntityCardRecommendationCard(
-        recommendationCard: RecommendationCard
+        recommendationCard: RecommendationCard,
+        index: Int,
+        pageName: String
     ): RecomEntityCardUiModel {
         return RecomEntityCardUiModel(
             id = recommendationCard.id,
@@ -162,7 +171,11 @@ class HomeRecommendationCardMapper @Inject constructor(
                 iconUrl = recommendationCard.label.imageUrl,
                 title = recommendationCard.label.title,
                 textColor = recommendationCard.label.textColor
-            )
+            ),
+            position = index,
+            isAds = recommendationCard.isTopads,
+            shopId = recommendationCard.shop.id,
+            pageName = pageName
         )
     }
 
@@ -212,6 +225,7 @@ class HomeRecommendationCardMapper @Inject constructor(
     }
 
     private fun mapToHomeProductFeedModel(
+        appLog: GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog,
         recommendationCard: RecommendationCard,
         pageName: String,
         layoutName: String,
@@ -228,7 +242,19 @@ class HomeRecommendationCardMapper @Inject constructor(
             pageName,
             layoutName,
             (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
-            tabName
+            tabName,
+            appLog.toAppLogModel(recommendationCard.recParam),
+        )
+    }
+
+    private fun GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog.toAppLogModel(
+        recParam: String = ""
+    ): RecommendationAppLog {
+        return RecommendationAppLog(
+            sessionId = sessionId,
+            requestId = requestId,
+            logId = logId,
+            recParam = recParam
         )
     }
 
