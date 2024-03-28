@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.util.*
 
@@ -88,6 +89,8 @@ sealed interface PlayBroadcastAction {
     data class SelectPresetOption(val preset: PresetFilterUiModel) : PlayBroadcastAction
     data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
     object RemoveBeautificationMenu : PlayBroadcastAction
+
+    object ComponentHasBeenHandled : PlayBroadcastAction
 
     data class SendErrorLog(
         val throwable: Throwable,

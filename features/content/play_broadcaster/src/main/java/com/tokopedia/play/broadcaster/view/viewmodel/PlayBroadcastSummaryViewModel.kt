@@ -2,11 +2,9 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
@@ -16,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -73,6 +72,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
     private val _channelSummary = MutableStateFlow(ChannelSummaryUiModel.empty())
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
+    private val _trafficMetricHighlight = MutableStateFlow<NetworkResult<List<LiveStatsUiModel>>>(NetworkResult.Loading)
     private val _tags = MutableStateFlow<NetworkResult<Set<String>>>(NetworkResult.Loading)
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
 
@@ -285,16 +285,17 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         hydraConfigStore.getAuthor(),
                                     )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
+            /** JOE TODO: handle this */
             val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {
-                if (leaderboard.data.slots.isNotEmpty()) {
-                    add(
-                        TrafficMetricUiModel(
-                            type = TrafficMetricType.GameParticipants,
-                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString()
-                        )
-                    )
-                }
+//                if (leaderboard.data.slots.isNotEmpty()) {
+//                    add(
+//                        TrafficMetricUiModel(
+//                            type = TrafficMetricType.GameParticipants,
+//                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString()
+//                        )
+//                    )
+//                }
                 addAll(
                     playBroadcastMapper.mapToLiveTrafficUiMetrics(
                         authorType = hydraConfigStore.getAuthorType(),

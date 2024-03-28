@@ -74,7 +74,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         metrics: GetLiveStatisticsResponse.ReportChannelSummary
     ): List<TrafficMetricUiModel> {
         return listOf(
-            TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
             TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
             TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
             TrafficMetricUiModel(TrafficMetricType.ShopVisit, "1200"),

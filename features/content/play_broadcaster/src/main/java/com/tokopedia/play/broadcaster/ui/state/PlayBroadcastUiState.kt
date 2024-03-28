@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerMod
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -18,6 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
@@ -47,6 +49,8 @@ data class PlayBroadcastUiState(
     val cover: PlayCoverUiModel,
     val beautificationConfig: BeautificationConfigUiModel,
     val tickerBottomSheetConfig: TickerBottomSheetUiModel,
+    val liveStatsList: List<LiveStatsUiModel>,
+    val componentPreparation: ComponentPreparationUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -80,6 +84,8 @@ data class PlayBroadcastUiState(
                 cover = PlayCoverUiModel.empty(),
                 beautificationConfig = BeautificationConfigUiModel.Empty,
                 tickerBottomSheetConfig = TickerBottomSheetUiModel.Empty,
+                liveStatsList = emptyList(),
+                componentPreparation = ComponentPreparationUiModel.Empty,
             )
     }
 }
@@ -151,7 +157,8 @@ data class QuizFormUiState(
 
 data class OnboardingUiModel(
     val firstInteractive: Boolean,
-    val firstGameResult:Boolean,
+    val firstGameResult: Boolean,
+    val firstStatisticIconShown: Boolean,
 ) {
 
     companion object {
@@ -159,11 +166,13 @@ data class OnboardingUiModel(
             get() = OnboardingUiModel(
                 firstInteractive = false,
                 firstGameResult = false,
+                firstStatisticIconShown = false,
             )
 
         fun create(pref: HydraSharedPreferences) = OnboardingUiModel(
             firstInteractive = pref.isFirstInteractive(),
             firstGameResult = pref.isFirstGameResult(),
+            firstStatisticIconShown = false,
         )
     }
 

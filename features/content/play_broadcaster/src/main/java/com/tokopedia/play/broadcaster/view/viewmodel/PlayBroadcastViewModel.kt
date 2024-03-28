@@ -1,7 +1,12 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Bundle
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
@@ -15,6 +20,8 @@ import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -22,11 +29,19 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
-import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.Banned
+import com.tokopedia.play.broadcaster.domain.model.Chat
+import com.tokopedia.play.broadcaster.domain.model.Freeze
+import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.domain.model.LiveStats
+import com.tokopedia.play.broadcaster.domain.model.NewMetricList
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.livetovod.GetTickerBottomSheetRequest
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
@@ -36,11 +51,32 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.EventUiModel
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
-import com.tokopedia.play.broadcaster.ui.model.beautification.*
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
+import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
+import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadCustomFaceAssetException
+import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadLicenseAssetException
+import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadModelAssetException
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -52,13 +88,20 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
+import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.play.broadcaster.ui.state.*
+import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
+import com.tokopedia.play.broadcaster.ui.state.QuizBottomSheetUiState
+import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
+import com.tokopedia.play.broadcaster.ui.state.ScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupEditable
@@ -113,6 +156,29 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.Set
+import kotlin.collections.addAll
+import kotlin.collections.emptyList
+import kotlin.collections.filter
+import kotlin.collections.filterNot
+import kotlin.collections.first
+import kotlin.collections.firstOrNull
+import kotlin.collections.isNotEmpty
+import kotlin.collections.lastOrNull
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.minus
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.orEmpty
+import kotlin.collections.plus
+import kotlin.collections.set
+import kotlin.collections.toList
+import kotlin.collections.toMutableList
+import kotlin.collections.toMutableSet
+import kotlin.collections.toSet
 
 /**
  * Created by mzennis on 24/05/20.
@@ -229,6 +295,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
+
+    private val _liveStatsList = MutableStateFlow(emptyList<LiveStatsUiModel>())
 
     /** Preparation */
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
@@ -393,6 +461,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private val _componentPreparation = MutableStateFlow(ComponentPreparationUiModel.Empty)
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
@@ -413,7 +483,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _title,
         _cover,
         _beautificationConfig,
-        _tickerBottomSheetConfig
+        _tickerBottomSheetConfig,
+        _liveStatsList,
+        _componentPreparation,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -433,7 +505,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         title,
         cover,
         beautificationConfig,
-        tickerBottomSheetConfig, ->
+        tickerBottomSheetConfig,
+        liveStatsList,
+        componentPreparation ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -455,6 +529,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             cover = cover,
             beautificationConfig = beautificationConfig,
             tickerBottomSheetConfig = tickerBottomSheetConfig,
+            liveStatsList = liveStatsList,
+            componentPreparation = componentPreparation,
         )
     }.stateIn(
         viewModelScope,
@@ -467,7 +543,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _uiEvent
 
     val broadcastTimerStateChanged: Flow<PlayBroadcastTimerState>
-        get() = broadcastTimer.stateChanged
+        get() = broadcastTimer.stateChanged.map {
+            if (it is PlayBroadcastTimerState.Active) {
+                updateLiveStats(listOf(LiveStatsUiModel.Duration(it.duration)))
+            }
+
+            it
+        }
 
     val isBroadcastStopped
         get() = mIsBroadcastStopped
@@ -581,6 +663,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
+
+            /** CoachMark */
+            is PlayBroadcastAction.ComponentHasBeenHandled -> handleComponentHasBeenHandled()
 
             /** Log */
             is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
@@ -809,6 +894,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 initQuizFormData()
                 handleActiveInteractive()
             }
+
+            updateComponentPreparation {
+                it.copy(
+                    gameIcon = ComponentPreparationUiModel.State.Ready
+                )
+            }
         }) { }
     }
 
@@ -962,8 +1053,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
         when (result) {
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
-            is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
-            is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
             is LiveDuration -> {
                 restartLiveDuration(result)
                 if (result.duration >= result.maxDuration) logSocket(result)
@@ -1006,6 +1095,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
                 _pinnedMessage.value = mappedResult.copy(
                     editStatus = _pinnedMessage.value.editStatus
+                )
+            }
+            is LiveStats -> {
+                updateLiveStats(
+                    listOf(
+                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
+                        LiveStatsUiModel.TotalViewer(result.visitChannel),
+                        LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
+                        LiveStatsUiModel.Like(result.likeChannel),
+                    )
                 )
             }
         }
@@ -1943,6 +2042,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         saveBeautificationConfig()
     }
 
+    private fun handleComponentHasBeenHandled() {
+        _componentPreparation.update {
+            it.copy(
+                hasBeenHandled = true
+            )
+        }
+    }
+
     private fun handleSendErrorLog(throwable: Throwable) {
         errorLogger.sendLog(throwable, buildErrorModel())
     }
@@ -2200,6 +2307,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
+
+        setupLiveStats(_selectedAccount.value)
+
+        _onboarding.update {
+            it.copy(
+                firstStatisticIconShown = sharedPref.isFirstStatisticIconShown(selectedAccount.id)
+            )
+        }
+
+        updateComponentPreparation {
+            it.copy(
+                statisticIcon = ComponentPreparationUiModel.State.Ready
+            )
+        }
     }
 
     private fun handleSuccessOnBoardingUGC() {
@@ -2324,6 +2445,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         logger.sendBroadcasterLog(mappedMetric)
     }
 
+    /** Generated Cover */
     private fun handleSetCoverUploadedSource(source: Int) {
         sharedPref.setUploadedCoverSource(source, authorId, SOURCE_PREP_PAGE)
     }
@@ -2357,6 +2479,32 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
+    private fun setupLiveStats(selectedAccount: ContentAccountUiModel) {
+        viewModelScope.launch {
+            _liveStatsList.update {
+                buildList {
+                    add(LiveStatsUiModel.Viewer())
+                    add(LiveStatsUiModel.TotalViewer())
+                    if (selectedAccount.isShop) {
+                        add(LiveStatsUiModel.EstimatedIncome())
+                    }
+                    add(LiveStatsUiModel.Like())
+                    add(LiveStatsUiModel.Duration())
+                }
+            }
+        }
+    }
+
+    private fun updateLiveStats(newLiveStats: List<LiveStatsUiModel>) {
+        _liveStatsList.update {
+            it.map { liveStats ->
+                newLiveStats.firstOrNull { item ->
+                    item::class == liveStats::class
+                } ?: return@map liveStats
+            }
+        }
+    }
+
     private fun addPreparationMenu(vararg newMenuList: DynamicPreparationMenu) {
         _menuList.update {
             _menuList.value.toMutableSet().apply {
@@ -2368,6 +2516,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun removePreparationMenu(menu: DynamicPreparationMenu.Menu) {
         _menuList.update {
             _menuList.value.filter { it.menu.id != menu.id }
+        }
+    }
+
+    /** Component Preparation */
+    private fun updateComponentPreparation(onUpdate: (ComponentPreparationUiModel) -> ComponentPreparationUiModel) {
+        _componentPreparation.update {
+            onUpdate(it)
         }
     }
 
