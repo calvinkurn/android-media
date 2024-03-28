@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -13,16 +14,19 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRec
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantValue
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.util.AddressMapper.mapToWarehousesData
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.data.ShoppingListDataFactory
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.countSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.doIf
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.resetIndices
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.sumPriceSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addDivider
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addEmptyShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addExpandCollapse
@@ -38,9 +42,12 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExt
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ProductShoppingListMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
+import com.tokopedia.tokopedianow.shoppinglist.domain.model.SaveShoppingListStateActionParam
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.SaveShoppingListStateUseCase
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.BottomBulkAtcModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.RecommendationModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductItemUiModel
@@ -49,9 +56,7 @@ import com.tokopedia.tokopedianow.shoppinglist.util.Constant
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
@@ -76,8 +81,9 @@ abstract class TokoNowShoppingListViewModelFixture {
     protected val filteredUnavailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
     protected val filteredRecommendedProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
 
-    private val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
-    private val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
+    protected val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
+    protected val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
+
     private val recommendedProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     private val cartProducts = mutableListOf<ShoppingListCartProductItemUiModel>()
 
@@ -259,29 +265,21 @@ abstract class TokoNowShoppingListViewModelFixture {
         } throws throwable
     }
 
-    protected fun stubAddToWishlist(
-        response: Result<AddToWishlistV2Response.Data.WishlistAddV2>
+    protected fun stubSaveShoppingListState(
+        actionList: List<SaveShoppingListStateActionParam>
     ) {
         coEvery {
-            addToWishlistUseCase.executeOnBackground()
-        } returns response
+            saveShoppingListStateUseCase.execute(actionList)
+        } returns Unit
     }
 
-    protected fun stubAddToWishlist(
+    protected fun stubSaveShoppingListState(
+        actionList: List<SaveShoppingListStateActionParam>,
         throwable: Throwable
     ) {
         coEvery {
-            addToWishlistUseCase.executeOnBackground()
+            saveShoppingListStateUseCase.execute(actionList)
         } throws throwable
-    }
-
-    protected fun stubShoppingList(
-        warehouses: List<WarehouseData>,
-        response: GetShoppingListDataResponse.Data
-    ) {
-        coEvery {
-            getShoppingListUseCase.execute(warehouses)
-        } returns response
     }
 
     protected fun verifyProductRecommendationUseCase(
@@ -567,5 +565,119 @@ abstract class TokoNowShoppingListViewModelFixture {
         )
 
         isFirstPageProductRecommendationError = isProductRecommendationError
+    }
+
+    protected fun loadLayoutWithExpandCollapseWidget() {
+        // create fake variables for stub
+        val shopId = 222121L
+        val miniCartData = ShoppingListDataFactory.Main.createMiniCart()
+        val shoppingList = ShoppingListDataFactory.Main.createShoppingList()
+        val newShoppingList = shoppingList.copy(
+            listAvailableItem = shoppingList.listAvailableItem + shoppingList.listAvailableItem,
+            listUnavailableItem = shoppingList.listUnavailableItem + shoppingList.listUnavailableItem
+        )
+        val recommendationWidget = ShoppingListDataFactory.Main.createRecommendationWidget(
+            hasNext = false,
+            title = "Rekomendasi Untuk Anda"
+        )
+
+        // stub section
+        stubOutOfCoverage(
+            isOoc = false
+        )
+
+        stubShopId(
+            shopId = shopId
+        )
+
+        stubLoggedIn(
+            isLoggedIn = true
+        )
+
+        stubGetMiniCart(
+            response = miniCartData
+        )
+
+        stubGetShoppingList(
+            response = newShoppingList
+        )
+
+        stubGetProductRecommendation(
+            param = GetRecommendationRequestParam(
+                pageNumber = Int.ZERO,
+                userId = userSession.userId.toIntSafely(),
+                pageName = TokoNowShoppingListViewModel.PRODUCT_RECOMMENDATION_PAGE_NAME,
+                xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM,
+                xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
+                isTokonow = true
+            ),
+            response = recommendationWidget
+        )
+
+        // load layout
+        viewModel.loadLayout()
+
+        // update expected layout
+        setDataToGlobalVariables(
+            miniCartData = miniCartData,
+            shoppingList = newShoppingList,
+            recommendationWidget = recommendationWidget,
+            shopId = shopId,
+            isProductRecommendationError = true
+        )
+        updateLayout()
+
+        // other verification
+        viewModel
+            .layoutState
+            .verifySuccess(
+                LayoutModel(
+                    layout = mutableLayout,
+                    isRequiredToScrollUp = true
+                )
+            )
+
+        viewModel
+            .bottomBulkAtcData
+            .verifyValue(
+                BottomBulkAtcModel(
+                    counter = filteredAvailableProducts.countSelectedItems(),
+                    price = filteredAvailableProducts.sumPriceSelectedItems()
+                )
+            )
+
+        viewModel
+            .isProductAvailable
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .miniCartState
+            .verifyIsError()
+
+        viewModel
+            .isPageImpressionTracked
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isCoachMarkShown
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isOnScrollNotNeeded
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isNavToolbarScrollingBehaviourEnabled
+            .verifyValue(
+                true
+            )
     }
 }

@@ -8,7 +8,7 @@
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="16dp"
     android:layout_marginTop="8dp"
-    android:text="Coba Lagi"
+    android:text="@string/tokopedianow_shopping_list_retry_try_again_text"
     app:unifyButtonSize="small"
     app:unifyButtonVariant="ghost"
     app:layout_constraintBottom_toBottomOf="parent"

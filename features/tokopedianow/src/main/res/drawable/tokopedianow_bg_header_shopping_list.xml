@@ -24,8 +24,8 @@
                 android:endX="379.94"
                 android:endY="52.89"
                 android:type="linear">
-              <item android:offset="0" android:color="#00C9FDE0"/>
-              <item android:offset="1" android:color="#FF83ECB2"/>
+              <item android:offset="0" android:color="@color/tokopedianow_shopping_list_bg_header_first_gradient_dms_color"/>
+              <item android:offset="1" android:color="@color/tokopedianow_shopping_list_bg_header_second_gradient_dms_color"/>
             </gradient>
           </aapt:attr>
         </path>
@@ -44,8 +44,8 @@
                 android:endX="248.81"
                 android:endY="123"
                 android:type="linear">
-              <item android:offset="0" android:color="#00C9FDE0"/>
-              <item android:offset="1" android:color="#FF83ECB2"/>
+              <item android:offset="0" android:color="@color/tokopedianow_shopping_list_bg_header_first_gradient_dms_color"/>
+              <item android:offset="1" android:color="@color/tokopedianow_shopping_list_bg_header_second_gradient_dms_color"/>
             </gradient>
           </aapt:attr>
         </path>

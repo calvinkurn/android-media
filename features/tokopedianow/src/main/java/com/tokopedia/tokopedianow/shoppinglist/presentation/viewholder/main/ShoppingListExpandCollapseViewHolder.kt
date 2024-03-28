@@ -27,41 +27,54 @@ class ShoppingListExpandCollapseViewHolder(
     }
 
     private val binding: ItemTokopedianowShoppingListExpandCollapseBinding? by viewBinding()
-    override fun bind(data: ShoppingListExpandCollapseUiModel) {
+
+    override fun bind(
+        data: ShoppingListExpandCollapseUiModel
+    ) {
         binding?.apply {
-            val color = ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500)
-            when(data.productState) {
-                COLLAPSE -> {
-                    tpTitle.text = root.context.getString(R.string.tokopedianow_shopping_list_expand_text, data.remainingTotalProduct)
-                    tpTitle.setRightImageDrawable(
-                        drawable = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_down),
-                        width = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
-                        height = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
-                        color = color
-                    )
-                    root.setOnClickListener {
-                        listener?.onClickWidget(
-                            productState = EXPAND,
-                            productLayoutType = data.productLayoutType
-                        )
-                    }
-                }
-                EXPAND -> {
-                    tpTitle.text = root.context.getString(R.string.tokopedianow_shopping_list_collapse_text)
-                    tpTitle.setRightImageDrawable(
-                        drawable = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_up),
-                        width = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
-                        height = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
-                        color = color
-                    )
-                    root.setOnClickListener {
-                        listener?.onClickWidget(
-                            productState = COLLAPSE,
-                            productLayoutType = data.productLayoutType
-                        )
-                    }
-                }
-            }
+            setupTitle(
+                productState = data.productState,
+                remainingTotalProduct = data.remainingTotalProduct
+            )
+            setupRightImage(
+                productState = data.productState,
+                color = ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500)
+            )
+            setupListener(
+                productState = data.productState,
+                productLayoutType = data.productLayoutType
+            )
+        }
+    }
+
+    private fun ItemTokopedianowShoppingListExpandCollapseBinding.setupTitle(
+        productState: ShoppingListProductState,
+        remainingTotalProduct: Int
+    ) {
+        tpTitle.text = if (productState == COLLAPSE) root.context.getString(R.string.tokopedianow_shopping_list_expand_text, remainingTotalProduct) else root.context.getString(R.string.tokopedianow_shopping_list_collapse_text)
+    }
+
+    private fun ItemTokopedianowShoppingListExpandCollapseBinding.setupRightImage(
+        productState: ShoppingListProductState,
+        color: Int
+    ) {
+        tpTitle.setRightImageDrawable(
+            drawable = if (productState == COLLAPSE) ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_down) else ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_up),
+            width = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
+            height = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
+            color = color
+        )
+    }
+
+    private fun ItemTokopedianowShoppingListExpandCollapseBinding.setupListener(
+        productState: ShoppingListProductState,
+        productLayoutType: ShoppingListProductLayoutType
+    ) {
+        root.setOnClickListener {
+            listener?.onClickWidget(
+                productState = if (productState == COLLAPSE) EXPAND else COLLAPSE,
+                productLayoutType = productLayoutType
+            )
         }
     }
 

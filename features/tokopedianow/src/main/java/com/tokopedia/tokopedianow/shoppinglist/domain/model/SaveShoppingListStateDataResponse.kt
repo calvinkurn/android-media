@@ -15,7 +15,7 @@ data class SaveShoppingListStateDataResponse(
         @SerializedName("error_code")
         val errorCode: String = "",
         @SerializedName("messages")
-        val messages: List<Any> =  emptyList(),
+        val messages: List<String> =  emptyList(),
         @SerializedName("process_time")
         val processTime: Double = 0.0,
         @SerializedName("reason")
