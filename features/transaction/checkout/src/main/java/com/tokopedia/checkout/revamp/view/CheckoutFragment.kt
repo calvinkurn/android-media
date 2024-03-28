@@ -637,7 +637,7 @@ class CheckoutFragment :
                         val actionText = ctx.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok)
                         Toaster.buildWithAction(binding.root, message, type = it.toasterType, actionText = actionText) {
                             /* no-op */
-                        }
+                        }.show()
                     }
                 } else {
                     Toaster.buildWithAction(binding.root, message, type = it.toasterType).show()
