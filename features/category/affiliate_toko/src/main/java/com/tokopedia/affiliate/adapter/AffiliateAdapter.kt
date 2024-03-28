@@ -203,10 +203,10 @@ class AffiliateAdapter(
         when (holder) {
             is AffiliateEducationBannerItemVH -> {
                 val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateEducationBannerUiModel
-                if (item != null && itemImpressionSet.add(item.hashCode())) {
+                if (item != null && !item.bannerList.isNullOrEmpty() && itemImpressionSet.add(item.hashCode())) {
                     sendEducationImpressions(
-                        item.bannerList?.get(0)?.title,
-                        item.bannerList?.get(0)?.bannerId.toString(),
+                        item.bannerList.firstOrNull()?.title,
+                        item.bannerList.firstOrNull()?.bannerId.toString(),
                         AffiliateAnalytics.ActionKeys.IMPRESSION_MAIN_BANNER
                     )
                 }

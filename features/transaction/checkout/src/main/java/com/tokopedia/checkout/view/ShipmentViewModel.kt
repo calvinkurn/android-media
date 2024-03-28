@@ -1365,7 +1365,8 @@ class ShipmentViewModel @Inject constructor(
             false,
             fingerprintSupport.toString(),
             publicKey,
-            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC)
+            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC,
+            carts.cartIds)
         )
     }
 

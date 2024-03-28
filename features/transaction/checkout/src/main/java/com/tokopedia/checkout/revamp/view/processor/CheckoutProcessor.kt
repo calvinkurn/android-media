@@ -377,7 +377,7 @@ class CheckoutProcessor @Inject constructor(
             fingerprintSupport = (fingerprintPublicKey != null).toString(),
             fingerprintPublickey = fingerprintPublicKey ?: "",
             payment = payment,
-            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC)
+            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC, carts.cartIds)
         )
     }
 

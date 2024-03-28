@@ -19,7 +19,8 @@ data class ProductSingleVariantDataModel(
     var isVariantError: Boolean = false,
     var isRefreshing: Boolean = false,
     var thumbnailType: String = "", // single variant for thumbnail variant in pdp
-    var title: String = ""
+    var title: String = "",
+    var isCampaign: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         isFinishedLoading = { false },

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.age_restriction.R
@@ -231,6 +232,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private fun showDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String?, layoutResId: Int = 0) {
         val fragmentManager = supportFragmentManager
         val accessDialog = AccessRequestDialogFragment.newInstance()
+        accessDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AgeRestrictionDialogStyle)
         accessDialog.setLayoutResId(layoutResId)
         accessDialog.setBodyText(bodyText)
         accessDialog.setTitle(titleText)
