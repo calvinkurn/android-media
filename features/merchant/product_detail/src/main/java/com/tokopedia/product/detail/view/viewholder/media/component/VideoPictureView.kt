@@ -55,6 +55,8 @@ class VideoPictureView @JvmOverloads constructor(
 
     // region uiModel
     private var liveIndicatorUiModel: LiveIndicatorUiModel = LiveIndicatorUiModel()
+    private var hasShownThumbnail: Boolean = false
+
     private var overlayRecommUiModel: ProductMediaRecomData = ProductMediaRecomData()
     // endregion
 
@@ -185,7 +187,6 @@ class VideoPictureView @JvmOverloads constructor(
         mListener?.onMediaViewed(position, isSku)
         lastPositionIsSku = position to isSku
         if (pagerSelectedLastPosition != position) {
-
             if (selected != null) {
                 val url = if (selected.isVideoType()) {
                     selected.videoUrl
@@ -295,13 +296,28 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupLiveIndicatorEvent() = with(liveIndicatorStub.binding) {
-        val onClick = OnClickListener { mListener?.goToApplink(url = liveIndicatorUiModel.appLink) }
+        val listener = mListener ?: return@with
+        val onClick = OnClickListener { listener.goToApplink(url = liveIndicatorUiModel.appLink) }
         liveBadgeView.setOnClickListener(onClick)
-        liveThumbnailView.setOnClickListener(onClick)
-        liveThumbnailView.playUrl(
-            url = liveIndicatorUiModel.mediaUrl,
-            playFor = CLIP_VIDEO_DURATION
-        )
+
+        // live thumbnail expectations only appear once though pull refresh
+        // to avoid live thumbnail calling the playUrl function every time it re-binds the viewholder,
+        // so then it needs this flag
+        if (hasShownThumbnail) return@with
+
+        liveThumbnailView.apply {
+            setOnClickListener(onClick)
+            playUrl(
+                url = liveIndicatorUiModel.mediaUrl,
+                playFor = CLIP_VIDEO_DURATION
+            )
+            addOnPdpImpressionListener(
+                holders = listener.getImpressionHolders(),
+                name = liveIndicatorUiModel.mediaUrl
+            ) {
+                hasShownThumbnail = true
+            }
+        }
     }
 
     private fun shouldShowLiveIndicatorXOverlayRecomm() {
