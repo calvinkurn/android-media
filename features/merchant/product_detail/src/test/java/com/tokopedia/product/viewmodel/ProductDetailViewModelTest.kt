@@ -2403,7 +2403,10 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
     // endregion
     @Test
     fun `verify add to wishlistv2 returns success`() {
-        val productId = "123"
+        `on success get product info login`()
+
+        val productId = "518076286"
+
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2412,8 +2415,9 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addWishListV2(productId, mockListener)
 
-        verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        verify { addToWishlistV2UseCase.setParams(any(), any()) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), true)
     }
 
     @Test
@@ -2448,8 +2452,10 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `verify add to wishlistv2 returns fail`() {
-        val productId = "123"
-        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        `on success get product info login`()
+
+        val productId = "518076286"
+
         val mockThrowable = mockk<Throwable>("fail")
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2460,16 +2466,19 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify {
             addToWishlistV2UseCase.setParams(
-                recommendationItem.productId.toString(),
-                userSessionInterface.userId
+                any(),
+                any()
             )
         }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), false)
     }
 
     @Test
     fun `verify remove wishlistV2 returns success`() {
-        val productId = "123"
+        `on success get product info login`()
+
+        val productId = "518076293"
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2480,13 +2489,18 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeWishListV2(productId, mockListener)
 
-        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        verify { deleteWishlistV2UseCase.setParams(any(), any()) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), false)
     }
 
     @Test
     fun `verify remove wishlistV2 returns fail`() {
-        val productId = "123"
+        `on success get product info login`()
+
+        val productId = "518076293"
+
         val mockThrowable = mockk<Throwable>("fail")
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2495,8 +2509,10 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeWishListV2(productId, mockListener)
 
-        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        verify { deleteWishlistV2UseCase.setParams(any(), any()) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), true)
     }
 
     //region product ar

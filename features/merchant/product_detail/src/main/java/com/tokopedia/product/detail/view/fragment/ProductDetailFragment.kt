@@ -16,7 +16,6 @@ import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -279,7 +278,6 @@ import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigator.goToMvc
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -1214,8 +1212,8 @@ open class ProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getProductInfoP1 == null ||
             context == null ||
@@ -2729,8 +2727,11 @@ open class ProductDetailFragment :
 
     private fun updateProductInfoOnVariantChanged(selectedChild: VariantChild?) {
         val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(
-            viewModel.getProductInfoP1,
-            selectedChild
+            oldData = viewModel.getProductInfoP1,
+            newData = selectedChild,
+            isWishlist = viewModel.getP2()?.getWishlistStatusByProductId(
+                selectedChild?.productId.orEmpty()
+            ).orFalse()
         )
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
@@ -2835,7 +2836,7 @@ open class ProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -3384,7 +3385,7 @@ open class ProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getProductInfoP1?.parentProductId.orEmpty()
                         }"
                         ProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -4448,40 +4449,6 @@ open class ProductDetailFragment :
         RouteManager.route(context, webViewUrl)
     }
 
-    private fun onSuccessRemoveWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaListener = { }
-        )
-        if (productId != null) {
-            updateFabIcon(productId, false)
-        }
-    }
-
-    private fun onErrorRemoveWishList(errorMsg: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMsg),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
-    }
-
-    private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaListener = { goToWishlist() }
-        )
-        productId?.let { updateFabIcon(it, true) }
-    }
-
-    private fun onErrorAddWishList(errorMessage: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMessage),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
-    }
-
     private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {
         val resultIntent = Intent()
             .putExtra(
@@ -4998,7 +4965,6 @@ open class ProductDetailFragment :
                 ApplinkConst.SHOP,
                 shopId
             )
-
 
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 
@@ -5641,7 +5607,7 @@ open class ProductDetailFragment :
                                 throwable
                             )
                         val extras =
-                            mapOf(ProductDetailConstant.WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                            mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
                         ProductDetailLogger.logMessage(
                             errorMsg,
                             WISHLIST_ERROR_TYPE,
