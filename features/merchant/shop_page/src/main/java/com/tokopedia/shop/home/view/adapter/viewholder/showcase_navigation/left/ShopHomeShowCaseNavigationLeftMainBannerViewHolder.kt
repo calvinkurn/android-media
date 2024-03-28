@@ -1,10 +1,12 @@
 package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
@@ -30,6 +32,7 @@ import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -50,7 +53,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         private const val MARGIN_16_DP = 16f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
         private const val THREE_TAB = 3
-        private const val TAB_TRANSITION_DURATION_MILLIS = 350L
+        private const val EXTRA_WIDTH_TAB_TITLE_DP = 8
     }
 
     private var tabTotalWidth = 0
@@ -150,6 +153,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
                 if (currentPosition == uiModel.lastTabIndexSelected) tab.select(uiModel) else tab.unselect(uiModel)
 
+                val tabTitle = tabs[currentPosition].text
+                changeTabTitleAppearance(tab, tabTitle)
+
+                //Measure tab width
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                 val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
@@ -158,6 +165,22 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             handleTabChange(tabsUnify, uiModel, tabs)
             applyTabRuleWidth(tabs, tabsUnify)
         }
+    }
+
+    private fun changeTabTitleAppearance(
+        tab: TabLayout.Tab,
+        tabTitle: String
+    ) {
+        val tabTitleTextView = tab.tabTitleTextView()
+        tabTitleTextView?.setTextSize(
+            TypedValue.COMPLEX_UNIT_PX,
+            tabTitleTextView.context.resources.getDimension(R.dimen.tab_name_font_size)
+        )
+        tabTitleTextView?.text = tabTitle
+
+        tabTitleTextView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        tabTitleTextView?.layoutParams?.width = tabTitleTextView?.measuredWidth.orZero() + EXTRA_WIDTH_TAB_TITLE_DP.toPx()
+        val marginBottom = tabTitleTextView?.marginBottom.orZero()
     }
 
     private fun handleTabChange(
