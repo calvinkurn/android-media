@@ -149,7 +149,7 @@ object SlardarInit {
         builder.useDefaultTTNetImpl(true)
         builder.dynamicParams(object : IDynamicParams {
             override fun getCommonParams(): Map<String, String> {
-                return mapOf()
+                return mutableMapOf()
             }
 
             override fun getSessionId(): String {
