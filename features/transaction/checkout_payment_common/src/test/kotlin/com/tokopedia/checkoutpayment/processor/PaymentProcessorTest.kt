@@ -3,11 +3,14 @@ package com.tokopedia.checkoutpayment.processor
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.PaymentAmountValidation
+import com.tokopedia.checkoutpayment.domain.PaymentInstallmentData
 import com.tokopedia.checkoutpayment.domain.PaymentWalletAction
 import com.tokopedia.checkoutpayment.domain.PaymentWalletData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.domain.TenorListData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -172,5 +175,193 @@ class PaymentProcessorTest {
 
         // THEN
         assertEquals(PaymentValidationReport.UnavailableTenureError, result)
+    }
+
+    @Test
+    fun `GIVEN no valid tenure options WHEN generate payment widget THEN should return error state`() {
+        val paymentWidgetListData = PaymentWidgetListData(
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    imageUrl = "imageUrl",
+                    gatewayName = "name",
+                    amountValidation = PaymentAmountValidation(
+                        maximumAmount = 100000
+                    ),
+                    mandatoryHit = listOf("CreditCardTenorList"),
+                    installmentPaymentData = PaymentInstallmentData(
+                        errorMessageUnavailableTenure = "error"
+                    )
+                )
+            )
+        )
+
+        val currentWidget = CheckoutPaymentWidgetData()
+
+        val result = processor.generateCheckoutPaymentWidgetData(
+            paymentWidgetListData,
+            listOf(TenorListData(disable = true)),
+            null,
+            currentWidget,
+            PaymentValidationReport.UnavailableTenureError,
+            "")
+
+        assertEquals(CheckoutPaymentWidgetData(
+            state = CheckoutPaymentWidgetState.Error,
+            logoUrl = "imageUrl",
+            title = "name",
+            errorMessage = "error",
+            installmentText = "Bayar Penuh"
+        ), result)
+    }
+
+    @Test
+    fun `GIVEN total above wallet amount WHEN generate payment widget THEN should return error state`() {
+        val paymentWidgetListData = PaymentWidgetListData(
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    imageUrl = "imageUrl",
+                    gatewayName = "name",
+                    description = "desc",
+                    amountValidation = PaymentAmountValidation(
+                        maximumAmount = 100000
+                    ),
+                    walletData = PaymentWalletData(
+                        walletType = 1,
+                        walletAmount = 10,
+                        topUp = PaymentWalletAction(
+                            errorMessage = "error"
+                        )
+                    )
+                )
+            )
+        )
+
+        val currentWidget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal)
+
+        val result = processor.generateCheckoutPaymentWidgetData(
+            paymentWidgetListData,
+            null,
+            null,
+            currentWidget,
+            PaymentValidationReport.WalletAmountError,
+            "")
+
+        assertEquals(CheckoutPaymentWidgetData(
+            state = CheckoutPaymentWidgetState.Normal,
+            logoUrl = "imageUrl",
+            title = "name",
+            description = "error",
+            isDescriptionRed = true,
+            subtitle = "(Rp10)"
+        ), result)
+    }
+
+    @Test
+    fun `GIVEN total above maximum WHEN generate payment widget THEN should return error state`() {
+        val paymentWidgetListData = PaymentWidgetListData(
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    imageUrl = "imageUrl",
+                    gatewayName = "name",
+                    description = "desc",
+                    amountValidation = PaymentAmountValidation(
+                        maximumAmount = 10,
+                        maximumAmountErrorMessage = "error"
+                    )
+                )
+            )
+        )
+
+        val currentWidget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal)
+
+        val result = processor.generateCheckoutPaymentWidgetData(
+            paymentWidgetListData,
+            null,
+            null,
+            currentWidget,
+            PaymentValidationReport.MaximumAmountError,
+            "")
+
+        assertEquals(CheckoutPaymentWidgetData(
+            state = CheckoutPaymentWidgetState.Normal,
+            logoUrl = "imageUrl",
+            title = "name",
+            description = "error",
+            isDescriptionRed = true
+        ), result)
+    }
+
+    @Test
+    fun `GIVEN total below minimum WHEN generate payment widget THEN should return error state`() {
+        val paymentWidgetListData = PaymentWidgetListData(
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    imageUrl = "imageUrl",
+                    gatewayName = "name",
+                    description = "desc",
+                    amountValidation = PaymentAmountValidation(
+                        minimumAmount = 50000,
+                        minimumAmountErrorMessage = "error"
+                    )
+                )
+            )
+        )
+
+        val currentWidget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal)
+
+        val result = processor.generateCheckoutPaymentWidgetData(
+            paymentWidgetListData,
+            null,
+            null,
+            currentWidget,
+            PaymentValidationReport.MinimumAmountError,
+            "")
+
+        assertEquals(CheckoutPaymentWidgetData(
+            state = CheckoutPaymentWidgetState.Normal,
+            logoUrl = "imageUrl",
+            title = "name",
+            description = "error",
+            isDescriptionRed = true
+        ), result)
+    }
+
+    @Test
+    fun `GIVEN required wallet activation WHEN generate payment widget THEN should return error state`() {
+        val paymentWidgetListData = PaymentWidgetListData(
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    imageUrl = "imageUrl",
+                    gatewayName = "name",
+                    description = "desc",
+                    walletData = PaymentWalletData(
+                        activation = PaymentWalletAction(
+                            isRequired = true,
+                            errorMessage = "error",
+                            buttonTitle = "button"
+                        )
+                    )
+                )
+            )
+        )
+
+        val currentWidget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal)
+
+        val result = processor.generateCheckoutPaymentWidgetData(
+            paymentWidgetListData,
+            null,
+            null,
+            currentWidget,
+            PaymentValidationReport.WalletActivationError,
+            "")
+
+        assertEquals(CheckoutPaymentWidgetData(
+            state = CheckoutPaymentWidgetState.Normal,
+            logoUrl = "imageUrl",
+            title = "error",
+            isTitleRed = true,
+            description = "desc",
+            actionButtonText = "button"
+        ), result)
     }
 }
