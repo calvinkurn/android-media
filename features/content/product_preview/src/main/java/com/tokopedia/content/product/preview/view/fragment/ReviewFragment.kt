@@ -57,6 +57,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.DefaultValue.SOURCE
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.CHANNEL_KEY
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.SHARE_ID_KEY
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.unifycomponents.Toaster
@@ -376,7 +377,7 @@ class ReviewFragment @Inject constructor(
         val productId = viewModel.productPreviewSource.productId
         val mediaType = item.medias.find { it.mediaId == selectedMediaId }?.type?.value.orEmpty()
         val partialLabel = "$SHARE_ID_KEY-$productId-$reviewId"
-        val label = "$partialLabel-$mediaType"
+        val label = "$SHARE_ID_KEY - $productId - $reviewId - $partialLabel - $mediaType"
         shareExInitializer?.openShareBottomSheet(
             bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.REVIEW,
@@ -390,12 +391,13 @@ class ReviewFragment @Inject constructor(
                     utmCampaign = "ViewReview-$partialLabel-$selectedMediaId",
                     labelActionClickShareIcon = label,
                     labelActionCloseIcon = label,
-                    labelActionClickChannel = label,
+                    labelActionClickChannel = "$CHANNEL_KEY - $label",
                     labelImpressionBottomSheet = label
                 )
             )
                 .withReviewId(item.reviewId)
                 .withAttachmentId(selectedMediaId)
+                .withProductId(productId)
                 .build()
         )
     }
