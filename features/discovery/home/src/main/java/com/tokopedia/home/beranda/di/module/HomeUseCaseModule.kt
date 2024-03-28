@@ -333,13 +333,11 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun provideGetHomeAtfUseCase(
-        graphqlRepository: GraphqlRepository,
-        homeRoomDataSource: HomeRoomDataSource,
-        deviceScreenHelper: DeviceScreenHelper
+        graphqlRepository: GraphqlRepository
     ): HomeAtfRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
         useCase.setGraphqlQuery(AtfQuery())
-        return HomeAtfRepository(useCase, homeRoomDataSource, deviceScreenHelper)
+        return HomeAtfRepository(useCase)
     }
 
     @Provides
