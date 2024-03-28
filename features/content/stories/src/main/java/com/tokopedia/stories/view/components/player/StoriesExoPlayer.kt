@@ -42,10 +42,11 @@ class StoriesExoPlayer(val context: Context) {
     val exoPlayer: SimpleExoPlayer
         get() = _exoPlayer
 
+    var groupId: String = ""
+
     init {
         exoPlayer.volume = UNMUTE_VOLUME
         exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-
     }
 
     fun setEventListener(listener: Player.EventListener) {
@@ -58,8 +59,10 @@ class StoriesExoPlayer(val context: Context) {
         exoPlayer.addVideoListener(listener)
     }
 
-    fun start(videoUrl: String) {
+    fun start(videoUrl: String, groupId: String) {
         if (videoUrl.isEmpty()) return
+
+        this.groupId = groupId
 
         val mediaSource = getMediaSourceByUri(context, Uri.parse(videoUrl))
         exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
@@ -67,7 +70,11 @@ class StoriesExoPlayer(val context: Context) {
         exoPlayer.prepare(mediaSource, true, false)
     }
 
-    fun resume(shouldReset: Boolean = false) {
+    fun resume(shouldReset: Boolean = false, activeGroupId: String) {
+        if (groupId != activeGroupId) {
+            return
+        }
+
         exoPlayer.playWhenReady = true
         if (shouldReset) {
             exoPlayer.seekTo(0)
