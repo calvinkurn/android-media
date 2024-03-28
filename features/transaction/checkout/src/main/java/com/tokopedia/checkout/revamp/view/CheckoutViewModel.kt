@@ -2170,9 +2170,10 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.Normal
                 commonToaster.emit(
                     CheckoutPageToaster(
-                        Toaster.TYPE_NORMAL,
-                        INVALID_PAYMENT_ERROR_MESSAGE,
-                        source = SOURCE_LOCAL
+                        if (hasNoPayment) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR,
+                        if (hasNoPayment) NO_PAYMENT_ERROR_MESSAGE else INVALID_PAYMENT_ERROR_MESSAGE,
+                        source = SOURCE_LOCAL,
+                        showCta = hasInvalidPayment
                     )
                 )
                 pageState.value = CheckoutPageState.ScrollTo(listData.value.size - PAYMENT_INDEX_FROM_BOTTOM)
@@ -3463,7 +3464,8 @@ class CheckoutViewModel @Inject constructor(
 
         const val SHIPMENT_NOT_COMPLETE_ERROR_MESSAGE = "Pilih pengiriman dulu yuk sebelum lanjut bayar."
         const val NO_VALID_ORDER_ERROR_MESSAGE = "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
-        const val INVALID_PAYMENT_ERROR_MESSAGE = "Atur pembayaran dulu yuk sebelum lanjut bayar."
+        const val NO_PAYMENT_ERROR_MESSAGE = "Atur pembayaran dulu yuk sebelum lanjut bayar."
+        const val INVALID_PAYMENT_ERROR_MESSAGE = "Oops, metode pembayaran pilihanmu tidak bisa dipakai di transaksi ini."
         const val INVALID_DROPSHIP_ERROR_MESSAGE = "Pastikan Anda telah melengkapi informasi tambahan."
 
         const val SOURCE_LOCAL = "local"
