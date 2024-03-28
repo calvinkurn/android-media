@@ -13,7 +13,7 @@ class HeaderDataModel(
 
     companion object {
         fun create(data: FeedXHeaderBrowse): HeaderDataModel {
-            return HeaderDataModel(data.title, data.searchBar.isActive, data.searchBar.placeholder, data.applink)
+            return HeaderDataModel(data.title, data.searchBar.isActive, data.searchBar.placeholder, data.searchBar.applink)
         }
 
         val DEFAULT = HeaderDataModel("", false, "", "")
