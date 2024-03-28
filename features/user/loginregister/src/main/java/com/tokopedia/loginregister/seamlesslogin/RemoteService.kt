@@ -26,6 +26,7 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
 
     companion object {
         const val MSG_NOT_LOGIN = "not logged in"
+        const val MSG_NOT_VALID_APP = "not valid request"
     }
 
     override fun onCreate() {
@@ -47,20 +48,23 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
 
     private fun broadCastResult(data: Bundle, taskId: String) {
         try {
-            if (AppSignatureUtil.isSignatureMatch(
-                    AppSignatureUtil.getAppSignature(
-                        applicationContext,
-                        SeamlessSellerConstant.SELLERAPP_PACKAGE
-                    ), AppSignatureUtil.TOKO_APP_SIGNATURE
-                )
-            ) {
-                val intent = Intent().apply {
-                    `package` = SeamlessSellerConstant.SELLERAPP_PACKAGE
+            val intent = Intent().apply {
+                `package` = SeamlessSellerConstant.SELLERAPP_PACKAGE
+            }
+            if (isMatchedSignatureAppWithTokopedia()) {
+                intent.apply {
                     action = taskId
                     putExtras(data)
                 }
-                sendBroadcast(intent)
+            } else {
+                val bundle = Bundle().apply {
+                    putString(SeamlessSellerConstant.KEY_ERROR, MSG_NOT_VALID_APP)
+                }
+                intent.apply {
+                    putExtras(bundle)
+                }
             }
+            sendBroadcast(intent)
         } catch (ignored: Exception) {
         }
     }
@@ -80,6 +84,15 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
                 broadCastResult(data, taskId = this)
             })
         }
+    }
+
+    private fun isMatchedSignatureAppWithTokopedia(): Boolean {
+        return AppSignatureUtil.isSignatureMatch(
+            AppSignatureUtil.getAppSignature(
+                applicationContext,
+                SeamlessSellerConstant.SELLERAPP_PACKAGE
+            ), AppSignatureUtil.TOKO_APP_SIGNATURE
+        )
     }
 
     fun getUserData(taskId: String?) {
