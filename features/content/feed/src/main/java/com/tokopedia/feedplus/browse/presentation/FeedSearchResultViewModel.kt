@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 
 internal class FeedSearchResultViewModel @AssistedInject constructor(
-    @Assisted private val searchKeyword: String,
+    @Assisted val searchKeyword: String,
     private val repo: FeedBrowseRepository,
 ) : ViewModel() {
 

@@ -127,7 +127,11 @@ internal class FeedSearchResultFragment @Inject constructor(
             view.clearFocus()
 
             if (focusState) {
-                router.route(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
+                val intent = router.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE).apply {
+                    putExtra(FeedLocalSearchActivity.TAG_KEYWORD, viewModel.searchKeyword)
+                }
+
+                startActivity(intent)
             }
         }
 
