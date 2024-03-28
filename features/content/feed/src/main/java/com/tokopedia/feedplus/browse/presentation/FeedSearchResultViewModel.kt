@@ -14,7 +14,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 internal class FeedSearchResultViewModel @AssistedInject constructor(
@@ -46,7 +48,11 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
             contents = contents,
             hasNextPage = hasNextPage,
         )
-    }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = FeedSearchResultUiState.empty(searchKeyword),
+    )
 
     fun submitAction(action: FeedSearchResultAction) {
         when (action) {

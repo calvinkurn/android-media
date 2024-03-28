@@ -7,5 +7,15 @@ data class FeedSearchResultUiState(
     val pageState: FeedSearchResultPageState,
     val contents: List<FeedSearchResultContent>,
     val hasNextPage: Boolean,
-)
+) {
+    companion object {
+
+        fun empty(searchKeyword: String) = FeedSearchResultUiState(
+            searchKeyword = searchKeyword,
+            pageState = FeedSearchResultPageState.Unknown,
+            contents = emptyList(),
+            hasNextPage = true,
+        )
+    }
+}
 

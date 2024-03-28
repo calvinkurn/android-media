@@ -70,6 +70,7 @@ class CategoryInspirationViewModelTest {
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
         val menuResponse = ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = ""
@@ -112,11 +113,13 @@ class CategoryInspirationViewModelTest {
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
         val menuResponsePage1 = ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = "page_2"
         )
         val menuResponsePage2 = ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel2),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = "page_3"

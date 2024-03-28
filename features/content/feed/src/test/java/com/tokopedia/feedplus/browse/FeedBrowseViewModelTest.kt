@@ -66,6 +66,7 @@ class FeedBrowseViewModelTest {
         coEvery { mockRepo.getHeaderData() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns slots
         coEvery { mockRepo.getWidgetContentSlot(WidgetRequestModel(slotChannel.group)) } returns ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = ""
@@ -264,6 +265,7 @@ class FeedBrowseViewModelTest {
         val menusModel = modelGen.widgetMenuModel.take(2).toList()
         val channelWithMenuSlotModel = modelGen.channelWithMenusSlot.first()
         val menuResponse = ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = ""
