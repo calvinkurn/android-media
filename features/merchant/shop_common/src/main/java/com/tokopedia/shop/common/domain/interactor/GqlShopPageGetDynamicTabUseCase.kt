@@ -55,6 +55,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_TAB_NAME = "tabName"
         private const val KEY_CONNECTION_TYPE = "network"
+        private const val KEY_SOURCE = "source"
+        private const val VALUE_SOURCE = "android-shoppage"
 
         @JvmStatic
         fun createParams(
@@ -76,10 +78,11 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                 putObject(KEY_LONGITUDE, longitude)
                 putObject(KEY_TAB_NAME, tabName)
                 putObject(KEY_CONNECTION_TYPE, connectionType)
+                putObject(KEY_SOURCE, VALUE_SOURCE)
             }
 
         const val QUERY = """
-            query shopPageGetDynamicTab(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String,${'$'}tabName: String){
+            query shopPageGetDynamicTab(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String,${'$'}tabName: String,${'$'}source: String,${'$'}network: String){
               shopPageGetDynamicTab(
                 shopID: ${'$'}shopID,
                 extParam: ${'$'}extParam,
@@ -87,7 +90,9 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                 cityID: ${'$'}cityId,
                 latitude: ${'$'}latitude,
                 longitude: ${'$'}longitude,
-                tabName: ${'$'}tabName
+                tabName: ${'$'}tabName,
+                source: ${'$'}source,
+                network: ${'$'}network
               ){
                 tabData {
                   name

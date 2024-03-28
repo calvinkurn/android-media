@@ -13,8 +13,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 class DevOptsAuthorizationViewHolder(
     itemView: View,
     private val listener: DevOptsAuthorizationListener
-): AbstractViewHolder<DevOptsAuthorizationUiModel>(itemView)
-{
+) : AbstractViewHolder<DevOptsAuthorizationUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_dev_opts_authorization
@@ -36,6 +35,6 @@ class DevOptsAuthorizationViewHolder(
     }
 
     interface DevOptsAuthorizationListener {
-        fun onSubmitDevOptsPassword(sha256: String, isAuto:Boolean = false)
+        fun onSubmitDevOptsPassword(sha256: String, isAuto: Boolean = false, retry: Boolean = true)
     }
 }

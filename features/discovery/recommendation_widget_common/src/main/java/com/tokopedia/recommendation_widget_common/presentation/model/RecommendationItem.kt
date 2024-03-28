@@ -52,8 +52,11 @@ data class RecommendationItem(
     val specs: List<RecommendationSpecificationLabels> = listOf(),
     val addToCartType: AddToCartType = AddToCartType.None,
     val gridPosition: GridPosition = GridPosition.None,
+    val appLog: RecommendationAppLog = RecommendationAppLog(),
+    val countSold: Int = 0,
     // for tracker field
     val dimension61: String = "",
+    val appLogImpressHolder: ImpressHolder = ImpressHolder(),
     // for tokonow
     val parentID: Long = 0L,
     var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity

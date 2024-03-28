@@ -143,7 +143,11 @@ class ProductPreviewTimeBar : View, TimeBar {
         return if (timeBarWidthDp == 0 && (mDuration == 0L || mDuration == C.TIME_UNSET)) {
             Long.MAX_VALUE
         } else {
-            mDuration / timeBarWidthDp
+            if (timeBarWidthDp == 0) {
+                Long.MAX_VALUE
+            } else {
+                mDuration / timeBarWidthDp
+            }
         }
     }
 

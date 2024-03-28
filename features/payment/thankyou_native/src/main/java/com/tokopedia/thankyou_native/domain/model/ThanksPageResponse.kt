@@ -309,6 +309,10 @@ data class ShopOrder(
     val shippingAmount: Float,
     @SerializedName("shipping_amount_str")
     val shippingAmountStr: String,
+    @SerializedName("total_discount_shipping")
+    var discountShippingAmount: Float = 0f,
+    @SerializedName("total_discount_product")
+    var discountAmount: Float = 0f,
     @SerializedName("shipping_desc")
     val shippingDesc: String,
     @SerializedName("insurance_amount")
@@ -382,6 +386,10 @@ data class PromoData(
 
 @Parcelize
 data class PurchaseItem(
+    @SerializedName("unique_id")
+    var cartId: String = "",
+    @SerializedName("parent_product_id")
+    var parentProductId: String? = null,
     @SerializedName("product_id")
     val productId: String,
     @SerializedName("product_name")
@@ -609,5 +617,7 @@ data class CustomDataOtherV2(
     @SerializedName("tickers")
     val tickers: String?,
     @SerializedName("signature_purchase_info")
-    val signaturePurchaseInfo: String?
+    val signaturePurchaseInfo: String?,
+    @SerializedName("summary_info")
+    var summaryInfo: String = ""
 ) : Parcelable

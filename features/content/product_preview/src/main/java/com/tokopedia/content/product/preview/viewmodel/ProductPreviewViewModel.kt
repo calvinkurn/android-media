@@ -31,6 +31,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Navigate
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductImageInteraction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaVideoEnded
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentScrolling
@@ -145,6 +146,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ToggleReviewWatchMode -> handleReviewWatchMode()
             HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
             ProductMediaVideoEnded -> handleProductMediaVideoEnded()
+            is ProductImageInteraction -> handleProductImageInteraction(action.isScalingMode)
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
@@ -330,6 +332,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun handleProductImageInteraction(isScalingMode: Boolean) {
+        if (isScalingMode) {
+            autoScrollProductMedia?.cancel()
+        } else {
+            scheduleAutoScrollProductMedia()
         }
     }
 

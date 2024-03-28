@@ -21,6 +21,9 @@ class ProductMediaViewHolder(
     }
     private val binding = ItemDynamicProductMediaBinding.bind(view)
 
+    val mediaPosition
+        get() = binding.viewMediaPager.lastPositionIsSku
+
     override fun bind(element: ProductMediaDataModel) {
         setupViewpager(element)
 

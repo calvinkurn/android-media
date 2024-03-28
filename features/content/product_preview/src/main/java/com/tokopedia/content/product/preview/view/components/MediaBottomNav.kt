@@ -45,7 +45,7 @@ internal fun MediaBottomNav(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
-    NestTheme(darkTheme = true) {
+    NestTheme(darkTheme = true, isOverrideStatusBarColor = false) {
         if (product == BottomNavUiModel.Empty) {
             RenderLoading()
         } else {
@@ -111,7 +111,6 @@ private fun RenderContent(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
-
     val ctx = LocalContext.current
 
     ConstraintLayout(
@@ -217,7 +216,8 @@ private fun RenderContent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .background(
-                        NestTheme.colors.RN._50, RoundedCornerShape(5.dp)
+                        NestTheme.colors.RN._50,
+                        RoundedCornerShape(5.dp)
                     )
                     .border(1.dp, NestTheme.colors.RN._200, RoundedCornerShape(5.dp))
                     .padding(horizontal = 4.dp, vertical = 2.dp)

@@ -226,6 +226,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         position shouldBe expectedPosition
         alternativeKeyword shouldBe expectedAlternativeKeyword
         isWishlisted shouldBe otherRelatedProduct.isWishlisted
+        shopId shouldBe otherRelatedProduct.shop.id
         shopLocation shouldBe otherRelatedProduct.shop.city
         ratingAverage shouldBe otherRelatedProduct.ratingAverage
 
@@ -347,6 +348,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         position shouldBe expectedPosition
         alternativeKeyword shouldBe expectedAlternativeKeyword
         isWishlisted shouldBe otherRelatedProduct.isWishlisted
+        shopId shouldBe otherRelatedProduct.shop.id
         shopLocation shouldBe otherRelatedProduct.shop.city
         ratingAverage shouldBe otherRelatedProduct.rating
 
