@@ -10,12 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.GetAdminTypeUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenUseCaseStub
-// import com.tokopedia.loginregister.stub.usecase.LoginTokenV2UseCaseStub
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -28,18 +23,6 @@ import dagger.Provides
 
 @Module
 class FakeLoginUseCaseModule {
-
-    @Provides
-    @ActivityScope
-    fun provideGetAdminTypeUseCase(
-        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
-    ): GetAdminTypeUseCase = GetAdminTypeUseCaseStub(graphqlUseCase)
-
-    @ActivityScope
-    @Provides
-    fun provideGetAdminTypeUseCaseStub(graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): GetAdminTypeUseCaseStub {
-        return GetAdminTypeUseCaseStub(graphqlUseCase)
-    }
 
     @Provides
     @ActivityScope
@@ -61,21 +44,6 @@ class FakeLoginUseCaseModule {
     fun provideActivateUserUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): ActivateUserUseCase {
         val useCase = GraphqlUseCase<ActivateUserPojo>(graphqlRepository)
         return ActivateUserUseCase(useCase)
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideGetProfileUseCase(
-        stub: GetProfileUseCaseStub
-    ): GetProfileUseCase = stub
-
-    @ActivityScope
-    @Provides
-    fun provideGetProfileUseCaseStub(
-        resources: Resources,
-        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
-    ): GetProfileUseCaseStub {
-        return GetProfileUseCaseStub(resources, graphqlUseCase)
     }
 
     @Provides

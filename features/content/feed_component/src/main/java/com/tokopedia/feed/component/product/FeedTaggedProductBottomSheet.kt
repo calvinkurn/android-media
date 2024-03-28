@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
@@ -29,6 +30,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class FeedTaggedProductBottomSheet : BottomSheetUnify() {
@@ -86,6 +89,24 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 }
 
                 mAdapter.setItemsAndAnimateChanges(it.data)
+
+                binding.root.let { view ->
+                    view.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            view.layoutParams = view.layoutParams.apply {
+                                if (view.measuredHeight > maxHeight) {
+                                    height = maxHeight
+                                } else if (view.measuredHeight < minHeight) {
+                                    height = minHeight
+                                } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
+                                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                }
+                            }
+                        }
+                    })
+                }
             }
             is Fail -> {
                 hideLoading()
@@ -118,7 +139,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
         showLoading()
 
         binding.root.layoutParams = binding.root.layoutParams.apply {
@@ -131,14 +151,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             adapter = mAdapter
         }
 
-        listener?.productListLiveData?.observe(viewLifecycleOwner, productListObserver)
-        listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
-    }
-
-    private fun setupView() {
-        binding.root.apply {
-            minHeight = this@FeedTaggedProductBottomSheet.minHeight
-            maxHeight = this@FeedTaggedProductBottomSheet.maxHeight
+        setShowListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(BOTTOM_SHEET_SHOW_DELAY)
+                listener?.productListLiveData?.observe(viewLifecycleOwner, productListObserver)
+                listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
+            }
         }
     }
 
@@ -239,5 +257,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     companion object {
         private const val HEIGHT_PERCENT = 0.8
         private const val MIN_HEIGHT_PERCENT = 0.2
+        private const val BOTTOM_SHEET_SHOW_DELAY = 500L
     }
 }

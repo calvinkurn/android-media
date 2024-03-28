@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetVerticalLayoutBinding

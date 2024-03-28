@@ -7,7 +7,9 @@ data class CheckoutOccRequest(
     @SerializedName("profile")
     val profile: Profile = Profile(),
     @SerializedName("carts")
-    val carts: ParamCart = ParamCart()
+    val carts: ParamCart = ParamCart(),
+    @SerializedName("tracker")
+    val tracker: String
 )
 
 data class Profile(
