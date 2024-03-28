@@ -10,12 +10,19 @@ class MockUserFollowRepository : UserFollowRepository {
     private val followersMap = mutableMapOf<GetDataArgs, FollowListUiModel.Follower>()
     private val followingMap = mutableMapOf<GetDataArgs, FollowListUiModel.Following>()
 
+    private var mErrorFollowShop: String? = null
+    private var mErrorFollowUser: String? = null
+
     override suspend fun followShop(shopId: String, action: ShopFollowAction): MutationUiModel {
-        TODO()
+        return mErrorFollowShop?.let {
+            MutationUiModel.Error(it)
+        } ?: MutationUiModel.Success()
     }
 
     override suspend fun followUser(encryptedUserId: String, follow: Boolean): MutationUiModel {
-        TODO()
+        return mErrorFollowUser?.let {
+            MutationUiModel.Error(it)
+        } ?: MutationUiModel.Success()
     }
 
     override suspend fun getFollowers(
@@ -34,6 +41,18 @@ class MockUserFollowRepository : UserFollowRepository {
     ): FollowListUiModel.Following {
         val args = GetDataArgs(username, cursor)
         return followingMap[args] ?: error("Following Data for $username not found")
+    }
+
+    fun setErrorFollowShop(
+        errorMessage: String? = null
+    ) {
+        mErrorFollowShop = errorMessage
+    }
+
+    fun setErrorFollowUser(
+        errorMessage: String? = null
+    ) {
+        mErrorFollowUser = errorMessage
     }
 
     fun setFollowersData(
@@ -57,6 +76,9 @@ class MockUserFollowRepository : UserFollowRepository {
     fun clear() {
         followersMap.clear()
         followingMap.clear()
+
+        mErrorFollowShop = null
+        mErrorFollowUser = null
     }
 
     private data class GetDataArgs(

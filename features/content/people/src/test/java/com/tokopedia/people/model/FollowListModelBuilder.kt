@@ -7,20 +7,40 @@ import kotlin.random.Random
 
 internal class FollowListModelBuilder {
 
+    fun createFollowingData(
+        followings: List<PeopleUiModel> = emptyList(),
+        nextCursor: String = ""
+    ) = FollowListUiModel.Following(
+        total = FollowListUiModel.FollowCount("0", followings.size.toString()),
+        followingList = followings,
+        nextCursor = nextCursor
+    )
+
+    fun createFollowersData(
+        followers: List<PeopleUiModel> = emptyList(),
+        nextCursor: String = ""
+    ) = FollowListUiModel.Follower(
+        total = FollowListUiModel.FollowCount(followers.size.toString(), "0"),
+        followers = followers,
+        nextCursor = nextCursor
+    )
+
     fun getFollowingData(
-        count: Int = 5
+        count: Int = 5,
+        nextCursor: String = ""
     ) = FollowListUiModel.Following(
         total = FollowListUiModel.FollowCount("0", count.toString()),
         followingList = createRandomPeopleList(count),
-        nextCursor = ""
+        nextCursor = nextCursor
     )
 
     fun getFollowersData(
-        count: Int = 5
+        count: Int = 5,
+        nextCursor: String = ""
     ) = FollowListUiModel.Follower(
         total = FollowListUiModel.FollowCount(count.toString(), "0"),
         followers = createRandomPeopleList(count),
-        nextCursor = ""
+        nextCursor = nextCursor
     )
 
     fun createRandomPeopleList(
@@ -68,4 +88,31 @@ internal class FollowListModelBuilder {
             badgeUrl = ""
         )
     }
+
+    fun createUser(
+        id: String = Random.nextInt().toString(),
+        isFollowed: Boolean = false,
+        isMySelf: Boolean = false
+    ) = PeopleUiModel.UserUiModel(
+        id = id,
+        encryptedId = id,
+        photoUrl = "",
+        name = "User $id",
+        username = "user_$id",
+        isFollowed = isFollowed,
+        isMySelf = isMySelf,
+        appLink = ""
+    )
+
+    fun createShop(
+        id: String = Random.nextInt().toString(),
+        isFollowed: Boolean = false
+    ) = PeopleUiModel.ShopUiModel(
+        id = id,
+        name = "Shop $id",
+        isFollowed = isFollowed,
+        appLink = "",
+        logoUrl = "",
+        badgeUrl = ""
+    )
 }
