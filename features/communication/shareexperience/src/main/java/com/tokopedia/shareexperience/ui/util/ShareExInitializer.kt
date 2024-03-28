@@ -46,6 +46,7 @@ class ShareExInitializer(
     private var dialog: ShareExLoadingDialog? = null
     private var bottomSheet: ShareExBottomSheet? = null
     private var bottomSheetArg: ShareExBottomSheetArg? = null
+    private lateinit var onDismiss: () -> Unit
 
     init {
         addObserver(context)
@@ -155,6 +156,10 @@ class ShareExInitializer(
         showLoadingDialog()
     }
 
+    fun setOnDismissListener(onDismiss: () -> Unit) {
+        this.onDismiss = onDismiss
+    }
+
     private fun showLoadingDialog() {
         weakContext.get()?.let { context ->
             bottomSheetArg?.let { arg ->
@@ -202,6 +207,9 @@ class ShareExInitializer(
             bottomSheet = ShareExBottomSheet.newInstance(it, result)
             bottomSheet?.setListener(this)
             bottomSheet?.show(fragmentManager, TAG)
+            if (this::onDismiss.isInitialized) {
+                bottomSheet?.setOnDismissListener(onDismiss)
+            }
             trackClickIconShare(result)
         }
     }

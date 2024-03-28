@@ -54,6 +54,9 @@ class ShareExActivity : BaseSimpleActivity() {
                 shareExInitializer = ShareExInitializer(this)
             }
             shareExInitializer?.openShareBottomSheet(args!!)
+            shareExInitializer?.setOnDismissListener {
+                finish()
+            }
         } else {
             finish()
         }
