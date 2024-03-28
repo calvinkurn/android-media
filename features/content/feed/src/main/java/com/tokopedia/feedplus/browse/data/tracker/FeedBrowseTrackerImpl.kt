@@ -352,10 +352,10 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
         )
     }
 
-    override fun clickBackExitCategoryInspirationPage() {
+    override fun clickBackExit() {
         Tracker.Builder()
             .setEvent(Event.clickHomepage)
-            .setEventAction("click - back exit category inspiration")
+            .setEventAction("click - back exit page")
             .setEventCategory("feed browse page")
             .setEventLabel(prefix)
             .setCustomProperty(Key.trackerId, "45755")
