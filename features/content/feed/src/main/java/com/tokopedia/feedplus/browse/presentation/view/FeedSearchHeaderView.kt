@@ -31,26 +31,12 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : LinearLayout
         val styledAttribute = getContext().obtainStyledAttributes(attrs, feedplusR.styleable.FeedSearchHeaderView)
         val isClearable = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isClearable, false)
         val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isShowShadow, true)
+        val withSearchbar = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_withSearchbar, false)
         styledAttribute.recycle()
 
-        binding.headerUnify.let { headerUnify ->
-            headerUnify.isShowShadow = isShowShadow
+        binding.headerUnify.isShowShadow = isShowShadow
 
-            SearchBarUnify(context).also { searchBar ->
-                this.searchBar = searchBar
-                headerUnify.customView(searchBar)
-
-                searchBar.isClearable = isClearable
-                searchBar.showIcon = isClearable
-
-                searchBar.searchBarTextField.setOnEditorActionListener { textView, keyIndex, _ ->
-                    if (keyIndex == EditorInfo.IME_ACTION_SEARCH) {
-                        searchAction(textView.text.toString())
-                    }
-                    true
-                }
-            }
-        }
+        if (withSearchbar) initSearchBar(isClearable)
     }
 
     /**
@@ -82,6 +68,24 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : LinearLayout
     fun setSearchFocus() {
         searchBar.searchBarTextField.requestFocus()
         showSoftKeyboard()
+    }
+
+    fun initSearchBar(isClearable: Boolean, searchPlaceholder: String = "") {
+        SearchBarUnify(context).also { searchbar ->
+            searchbar.isClearable = isClearable
+            searchbar.showIcon = isClearable
+            searchbar.searchBarPlaceholder = searchPlaceholder
+
+            this.searchbar = searchbar
+            binding.headerUnify.customView(searchbar)
+
+            searchbar.searchBarTextField.setOnEditorActionListener { textView, keyIndex, _ ->
+                if (keyIndex == EditorInfo.IME_ACTION_SEARCH) {
+                    searchAction(textView.text.toString())
+                }
+                true
+            }
+        }
     }
 
     private fun showSoftKeyboard() {

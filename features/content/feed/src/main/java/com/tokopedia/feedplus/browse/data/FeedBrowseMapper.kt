@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDataModel
 import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
 import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
@@ -39,8 +40,8 @@ import javax.inject.Inject
  */
 class FeedBrowseMapper @Inject constructor() {
 
-    fun mapTitle(response: FeedXHeaderResponse): String {
-        return response.feedXHeaderData.data.browse.title
+    fun mapHeaderData(response: FeedXHeaderResponse): HeaderDataModel {
+        return HeaderDataModel.create(response.feedXHeaderData.data.browse)
     }
 
     internal fun mapSlotsResponse(response: FeedXHomeEntity): List<FeedBrowseSlotUiModel> {

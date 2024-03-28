@@ -24,6 +24,8 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
 import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedSearchItemDecoration
+import com.tokopedia.feedplus.browse.presentation.model.FeedSearchResultUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedSearchResultBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -143,6 +145,9 @@ internal class FeedSearchResultFragment @Inject constructor(
                     layoutManager.spanCount
                 )
             )
+            it.addItemDecoration(FeedSearchItemDecoration(
+                layoutManager.spanCount
+            ))
             it.adapter = adapter
         }
 
