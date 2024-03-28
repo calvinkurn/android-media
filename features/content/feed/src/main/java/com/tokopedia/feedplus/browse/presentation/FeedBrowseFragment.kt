@@ -421,7 +421,7 @@ internal class FeedBrowseFragment @Inject constructor(
         if (focusState) {
             val (searchbarPlaceholder, applink) = viewModel.getHeaderData()
 
-            val intent = RouteManager.getIntent(context, applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
+            val intent = router.getIntent(context, applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
             intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, searchbarPlaceholder)
             startActivity(intent)
         }
