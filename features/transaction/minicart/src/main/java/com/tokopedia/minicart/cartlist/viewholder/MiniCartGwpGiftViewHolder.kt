@@ -63,9 +63,9 @@ class MiniCartGwpGiftViewHolder(
                         bottomSheet = bottomSheet
                     )
                 }
-                show()
+                itemView.show()
             } else {
-                hide()
+                itemView.hide()
             }
         }
     }
