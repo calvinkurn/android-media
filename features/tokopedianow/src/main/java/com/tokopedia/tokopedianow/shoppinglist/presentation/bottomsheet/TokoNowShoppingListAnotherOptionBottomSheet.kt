@@ -19,7 +19,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
-import com.tokopedia.tokopedianow.shoppinglist.helper.AbstractShoppingListHorizontalProductCardItemListener
+import com.tokopedia.tokopedianow.shoppinglist.abstraction.AbstractShoppingListHorizontalProductCardItemListener
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.ShoppingListAnotherOptionBottomSheetAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListAnotherOptionBottomSheetDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel

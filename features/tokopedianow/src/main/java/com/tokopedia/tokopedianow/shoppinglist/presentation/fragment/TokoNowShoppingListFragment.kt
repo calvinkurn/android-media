@@ -1,22 +1,17 @@
 package com.tokopedia.tokopedianow.shoppinglist.presentation.fragment
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,8 +31,6 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -72,9 +65,10 @@ import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListCo
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
 import com.tokopedia.tokopedianow.common.abstraction.AbstractEmptyStateOocListener
 import com.tokopedia.tokopedianow.common.abstraction.AbstractProductRecommendationListener
-import com.tokopedia.tokopedianow.shoppinglist.helper.AbstractShoppingListHorizontalProductCardItemListener
 import com.tokopedia.tokopedianow.common.abstraction.AbstractThematicHeaderListener
+import com.tokopedia.tokopedianow.common.helper.LinearLayoutManagerWithAccurateOffset
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLocalLoadViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.abstraction.AbstractShoppingListHorizontalProductCardItemListener
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
@@ -94,10 +88,10 @@ import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.DELETE_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListLoadingMoreUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListCartProductViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListLoadingMoreViewHolder
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -111,11 +105,12 @@ class TokoNowShoppingListFragment :
     MiniCartWidgetListener
 {
     companion object {
-        private const val TOP_CHECK_ALL_THRESHOLD_ALPHA = 10f
         private const val TOP_CHECK_ALL_MAX_ALPHA = 255f
         private const val COACH_MARK_NOW_SHOPPING_LIST_PAGE = "coach_mark_shopping_list_page"
         private const val COACH_MARK_NOW_SHOPPING_LIST_BOTTOM_BULK_ATC = "coach_mark_shopping_list_page_bottom_bulk_atc"
         private const val FIRST_INSTALL_CACHE_VALUE = 1800000L
+        private const val MAX_VIEW_POOL = 20
+        private const val ITEM_VIEW_CACHE_SIZE = 20
 
         fun newInstance(): TokoNowShoppingListFragment = TokoNowShoppingListFragment()
     }
@@ -143,15 +138,17 @@ class TokoNowShoppingListFragment :
         )
     }
 
-    private val loginActivityResult: ActivityResultLauncher<Intent> = registerActivityResult {
-        refreshLayoutPage()
-    }
-
     private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
     private var isStickyTopCheckAllScrollingBehaviorEnabled: Boolean = false
-    private var isShowFirstInstallSearch = false
+    private var isLightToolbarSwitched: Boolean = true
+    private var isShowFirstInstallSearch: Boolean = false
+
     private var loader: LoaderDialog? = null
     private var pageCoachMark: CoachMarkModel? = null
+    private var collectJob: Job? = null
+
+    private val mRecycledViewPool: RecyclerView.RecycledViewPool
+        get() = RecyclerView.RecycledViewPool()
 
     /**
      * -- lateinit variable section --
@@ -220,6 +217,14 @@ class TokoNowShoppingListFragment :
     override fun onResume() {
         super.onResume()
         resumeLayout()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mRecycledViewPool.clear()
+        viewModel.clear()
+        collectJob?.cancel()
+        collectJob = null
     }
 
     override fun getFragmentPage(): Fragment = this@TokoNowShoppingListFragment
@@ -484,16 +489,8 @@ class TokoNowShoppingListFragment :
 
     private fun getBottomSpace(): Int = if (binding?.miniCartWidget?.isVisible.orFalse() || binding?.bottomBulkAtcView?.isVisible.orFalse()) context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_bottom_view_height).orZero() else Int.ZERO
 
-    private fun registerActivityResult(
-        onActivityResult: () -> Unit
-    ) = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            onActivityResult.invoke()
-        }
-    }
-
     private fun FragmentTokopedianowShoppingListBinding.collectStateFlow() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        collectJob = viewLifecycleOwner.lifecycleScope.launch {
             withStarted {
                 launch { collectLayoutState(this@collectStateFlow) }
                 launch { collectMiniCartState(this@collectStateFlow) }
@@ -592,12 +589,16 @@ class TokoNowShoppingListFragment :
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupRecyclerView() {
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = LinearLayoutManagerWithAccurateOffset(context)
+        layoutManager?.recycleChildrenOnDetach = true
         rvShoppingList.apply {
             adapter = this@TokoNowShoppingListFragment.adapter
             layoutManager = this@TokoNowShoppingListFragment.layoutManager
             addItemDecoration(ShoppingListDecoration())
             addOnScrollListener(loadMoreListener)
+            setRecycledViewPool(mRecycledViewPool)
+            setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
+            recycledViewPool.setMaxRecycledViews(ShoppingListHorizontalProductCardItemViewHolder.LAYOUT, MAX_VIEW_POOL)
             itemAnimator = null
         }
     }
@@ -747,12 +748,11 @@ class TokoNowShoppingListFragment :
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                 override fun onAlphaChanged(offsetAlpha: Float) {
                     binding.apply {
-                        if (isStickyTopCheckAllScrollingBehaviorEnabled) {
-                            stickyTopCheckAllLayout.showIfWithBlock(offsetAlpha > TOP_CHECK_ALL_THRESHOLD_ALPHA) {
-                                stickyTopCheckAllLayout.background.alpha = offsetAlpha.toInt()
-                                stickyTopCheckAll.tpTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
-                                stickyTopCheckAll.cbTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
-                            }
+                        if (isStickyTopCheckAllScrollingBehaviorEnabled && offsetAlpha > Int.ZERO && offsetAlpha <= TOP_CHECK_ALL_MAX_ALPHA) {
+                            stickyTopCheckAllLayout.show()
+                            stickyTopCheckAllLayout.background.alpha = offsetAlpha.toInt()
+                            stickyTopCheckAll.tpTopCheckAll.alpha = offsetAlpha
+                            stickyTopCheckAll.cbTopCheckAll.alpha = offsetAlpha
                         } else {
                             stickyTopCheckAllLayout.hide()
                         }
@@ -761,14 +761,15 @@ class TokoNowShoppingListFragment :
 
                 override fun onSwitchToLightToolbar() {
                     binding.apply {
-                        fbuBackToTop.show()
-                        if (isNavToolbarScrollingBehaviourEnabled) {
+                        if (isNavToolbarScrollingBehaviourEnabled && isLightToolbarSwitched) {
+                            fbuBackToTop.show()
                             navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, (if (binding.navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
                             navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
                             switchToLightStatusBar()
                             pageCoachMark?.hide()
                             pageCoachMark = null
-                        } else {
+                            isLightToolbarSwitched = false
+                        } else if (!isNavToolbarScrollingBehaviourEnabled) {
                             navToolbar.switchToDarkToolbar()
                         }
                     }
@@ -776,12 +777,13 @@ class TokoNowShoppingListFragment :
 
                 override fun onSwitchToDarkToolbar() {
                     binding.apply {
-                        fbuBackToTop.hide()
                         if (isNavToolbarScrollingBehaviourEnabled) {
+                            fbuBackToTop.hide()
                             if (root.context.isDarkMode()) switchToLightStatusBar() else switchToDarkStatusBar()
                             navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, unifyprinciplesR.color.Unify_Static_White))
                             navToolbar.setToolbarTitle(String.EMPTY)
                             navToolbar.hideShadow()
+                            isLightToolbarSwitched = true
                         } else {
                             navToolbar.switchToLightToolbar(force = true)
                         }

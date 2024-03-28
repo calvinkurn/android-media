@@ -136,7 +136,8 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_add_wishlist"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -151,6 +152,7 @@
         layout="@layout/layout_tokopedianow_shopping_list_horizontal_product_card_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

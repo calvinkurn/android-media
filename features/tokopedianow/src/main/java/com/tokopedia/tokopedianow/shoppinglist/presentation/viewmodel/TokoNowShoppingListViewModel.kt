@@ -1185,4 +1185,20 @@ class TokoNowShoppingListViewModel @Inject constructor(
     fun isLoggedIn() = userSession.isLoggedIn
 
     fun getShopId(): Long = addressData.getShopId()
+
+    fun clear() {
+        mutableLayout.clear()
+
+        availableProducts.clear()
+        unavailableProducts.clear()
+        recommendedProducts.clear()
+
+        cartProducts.clear()
+
+        filteredAvailableProducts.clear()
+        filteredUnavailableProducts.clear()
+        filteredRecommendedProducts.clear()
+
+        checkUncheckStateParams.clear()
+    }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.helper
+package com.tokopedia.tokopedianow.shoppinglist.abstraction
 
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
