@@ -1271,7 +1271,6 @@ class CatalogDetailPageFragment :
             labels = label,
             trackerId = TRACKER_ID_CLICK_ATC_TOP_SELLER
         )
-    override fun onSellerOfferingAtcButtonClicked() {
         addToCart(viewModel.atcModel)
     }
 
@@ -1324,4 +1323,5 @@ class CatalogDetailPageFragment :
             )
         }
     }
+
 }
