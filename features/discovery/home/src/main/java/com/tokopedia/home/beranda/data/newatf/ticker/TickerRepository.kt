@@ -39,7 +39,6 @@ class TickerRepository @Inject constructor(
      */
     private fun shouldUseNewTicker() = true
 
-    @SuppressLint("PII Data Exposure")
     private suspend fun getTargetedTickerData(atfMetadata: AtfMetadata) {
         val (data, status) = try {
             val result = targetedTicketRepository.getRemoteData(
