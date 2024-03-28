@@ -15,7 +15,6 @@ object ShareExConst {
             const val REFERRAL_CODE = "referral_code"
 
             const val UTM_CAMPAIGN = "utm_campaign"
-            const val EVENT_CATEGORY = "event_category"
             const val DEFAULT_IMPRESSION_LABEL = "default_impression_label"
             const val DEFAULT_ACTION_LABEL = "default_action_label"
             const val LABEL_IMPRESSION_BOTTOMSHEET = "label_impression_bottomsheet"

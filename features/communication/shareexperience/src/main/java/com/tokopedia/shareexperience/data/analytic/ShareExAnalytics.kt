@@ -45,6 +45,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
             }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50464
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -80,6 +84,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50125
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50465
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
             else -> Unit
         }
@@ -121,6 +129,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
             }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50466
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -156,6 +168,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50127
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50467
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
             else -> Unit
         }

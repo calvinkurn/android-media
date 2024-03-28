@@ -99,7 +99,6 @@ class ShareExActivity : BaseSimpleActivity() {
         val pageTypeEnum = ShareExPageTypeEnum.fromValueInt(pageType.toIntSafely())
 
         val utmCampaign = bundle.getString(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
-        val event_category = bundle.getString(ShareExConst.Applink.Param.EVENT_CATEGORY).orEmpty()
         val defaultImpressionLabel = bundle.getString(ShareExConst.Applink.Param.DEFAULT_IMPRESSION_LABEL).orEmpty()
         val defaultActionLabel = bundle.getString(ShareExConst.Applink.Param.DEFAULT_ACTION_LABEL).orEmpty()
 
