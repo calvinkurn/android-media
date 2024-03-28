@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse
 
+import com.tokopedia.content.test.util.assertEmpty
 import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.content.test.util.assertFalse
 import com.tokopedia.content.test.util.assertTrue
@@ -49,14 +50,12 @@ class FeedSearchResultViewModelTest {
         nextCursor = mockNextCursor,
     )
 
-    private val mockSearchResultWithoutCursor = ContentSlotModel.ChannelBlock(
+    private val mockSearchResultWithoutData = ContentSlotModel.ChannelBlock(
         title = mockTitle,
-        channels = mockChannelList,
+        channels = emptyList(),
         config = mockChannelConfig,
         nextCursor = "",
     )
-
-    private val mockSearchResultWithoutData = ContentSlotModel.NoData(nextCursor = "")
 
     @Before
     fun setUp() {
@@ -90,6 +89,25 @@ class FeedSearchResultViewModelTest {
     }
 
     @Test
+    fun feedLocalSearchSRP_loadResult_noData() = runTestUnconfined {
+        /** Prepare */
+        coEvery { mockRepo.getWidgetContentSlot(any()) } returns mockSearchResultWithoutData
+
+        val viewModel = getViewModel()
+
+        /** Test */
+        viewModel.submitAction(FeedSearchResultAction.LoadResult)
+
+        /** Verify */
+        viewModel.uiState.value.apply {
+            searchKeyword.assertEqualTo(mockSearchKeyword)
+            pageState.assertEqualTo(FeedSearchResultPageState.NotFound)
+            hasNextPage.assertFalse()
+            contents.assertEmpty()
+        }
+    }
+
+    @Test
     fun feedLocalSearchSRP_loadResult_loadMore_success() = runTestUnconfined {
         /** Prepare */
         coEvery { mockRepo.getWidgetContentSlot(any()) } returns mockSearchResultWithCursor
@@ -118,18 +136,48 @@ class FeedSearchResultViewModelTest {
     }
 
     @Test
-    fun feedLocalSearchSRP_loadResult_loadMore_noMorePage() {
+    fun feedLocalSearchSRP_loadResult_loadMore_noMorePage() = runTestUnconfined {
+        /** Prepare */
+        val viewModel = getViewModel()
 
+        /** Test */
+        coEvery { mockRepo.getWidgetContentSlot(any()) } returns mockSearchResultWithCursor
+        viewModel.submitAction(FeedSearchResultAction.LoadResult)
+        coEvery { mockRepo.getWidgetContentSlot(any()) } returns mockSearchResultWithoutData
+        viewModel.submitAction(FeedSearchResultAction.LoadResult)
+
+        /** Verify */
+        viewModel.uiState.value.apply {
+            searchKeyword.assertEqualTo(mockSearchKeyword)
+            pageState.assertEqualTo(FeedSearchResultPageState.Success)
+            hasNextPage.assertFalse()
+            contents.size.assertEqualTo(mockChannelList.size + 1) /** + 1 for title */
+            contents.forEachIndexed { index, item ->
+                if (index == 0) {
+                    item.assertEqualTo(FeedSearchResultContent.Title(mockTitle))
+                } else {
+                    item.assertEqualTo(FeedSearchResultContent.Channel(mockChannelList[index - 1], mockChannelConfig))
+                }
+            }
+        }
     }
 
     @Test
-    fun feedLocalSearchSRP_loadResult_error() {
+    fun feedLocalSearchSRP_loadResult_error() = runTestUnconfined {
+        /** Prepare */
+        coEvery { mockRepo.getWidgetContentSlot(any()) } throws Exception()
 
-    }
+        val viewModel = getViewModel()
 
-    @Test
-    fun feedLocalSearchSRP_loadResult_noData() {
+        /** Test */
+        viewModel.submitAction(FeedSearchResultAction.LoadResult)
 
+        /** Verify */
+        viewModel.uiState.value.apply {
+            searchKeyword.assertEqualTo(mockSearchKeyword)
+            pageState.assertEqualTo(FeedSearchResultPageState.InternalError)
+            hasNextPage.assertTrue()
+        }
     }
 
     @Test
