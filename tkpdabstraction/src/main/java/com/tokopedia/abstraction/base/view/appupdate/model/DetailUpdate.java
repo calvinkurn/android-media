@@ -6,6 +6,7 @@ package com.tokopedia.abstraction.base.view.appupdate.model;
 
 public class DetailUpdate {
     private boolean isNeedUpdate;
+    private boolean isNeedSpecificUpdate;
     private long latestVersionCode;
     private boolean isForceUpdate;
     private String updateTitle;
@@ -17,12 +18,20 @@ public class DetailUpdate {
         return isNeedUpdate;
     }
 
+    public boolean isNeedSpecificUpdate() {
+        return isNeedSpecificUpdate;
+    }
+
     public boolean isInAppUpdateEnabled() {
         return inAppUpdateEnabled;
     }
 
     public void setNeedUpdate(boolean needUpdate) {
         isNeedUpdate = needUpdate;
+    }
+
+    public void setNeedSpecificUpdate(boolean needSpecificUpdate) {
+        isNeedSpecificUpdate = needSpecificUpdate;
     }
 
     public long getLatestVersionCode() {

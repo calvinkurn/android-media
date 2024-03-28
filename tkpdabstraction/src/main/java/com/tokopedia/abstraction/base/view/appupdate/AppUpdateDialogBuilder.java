@@ -41,7 +41,9 @@ public class AppUpdateDialogBuilder {
             if (detail.isForceUpdate()) {
                 AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, () -> {
                     /* on Error */
-                    alertDialog.show();
+                    if (!detail.isNeedSpecificUpdate()) {
+                        alertDialog.show();
+                    }
                     return null;
                 }, /* onFinished */ () -> null);
             } else {
@@ -51,7 +53,9 @@ public class AppUpdateDialogBuilder {
                     return null;
                 }, () -> {
                     // if flexible update fail or cannot be operated
-                    alertDialog.show();
+                    if (!detail.isNeedSpecificUpdate()) {
+                        alertDialog.show();
+                    }
                     return null;
                 }, () -> {
                     // action after do the checking, close the dialog

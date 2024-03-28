@@ -2,10 +2,12 @@ package com.tokopedia.inappupdate
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
@@ -15,6 +17,9 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.gson.Gson
+import com.tokopedia.inappupdate.model.DataUpdateApp
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -117,12 +122,44 @@ object AppUpdateManagerWrapper {
             REQUEST_CODE_IMMEDIATE -> {
                 when (resultCode) {
                     Activity.RESULT_CANCELED -> {
-                        activity.finishAffinity()
+                        showDialogReasonForceUpdate(activity)
                     }
                 }
             }
         }
         //request code immediate always forcing
+    }
+
+    private fun showDialogReasonForceUpdate(activity: Activity) {
+        val gson = Gson()
+        val remoteConfig = FirebaseRemoteConfigImpl(activity)
+        val dataAppUpdate: String = remoteConfig.getString("android_customer_app_update")
+        val dataUpdateApp: DataUpdateApp = gson.fromJson(
+            dataAppUpdate,
+            DataUpdateApp::class.java
+        )
+        val alertDialog = AlertDialog.Builder(activity)
+            .setTitle(dataUpdateApp.title)
+            .setMessage(dataUpdateApp.message)
+            .setPositiveButton(activity.getString(R.string.appupdate_update), null)
+            .setNegativeButton(activity.getString(R.string.appupdate_close), null)
+            .setCancelable(false)
+            .create()
+        alertDialog.show()
+
+        alertDialog.setOnShowListener { dialog: DialogInterface ->
+            val positiveButton =
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+            val negativeButton =
+                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+            positiveButton.setOnClickListener { v: View? ->
+                checkAndDoImmediateUpdate(activity, {}, {})
+                dialog.dismiss()
+            }
+            negativeButton.setOnClickListener { v: View? ->
+                activity.finishAffinity()
+            }
+        }
     }
 
     @JvmStatic

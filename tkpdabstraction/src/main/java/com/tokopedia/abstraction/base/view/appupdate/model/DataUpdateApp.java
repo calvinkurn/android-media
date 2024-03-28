@@ -4,6 +4,8 @@ package com.tokopedia.abstraction.base.view.appupdate.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class DataUpdateApp {
 
     @SerializedName("latest_version_force_update")
@@ -12,6 +14,12 @@ public class DataUpdateApp {
     @SerializedName("latest_version_optional_update")
     @Expose
     private int latestVersionOptionalUpdate;
+    @SerializedName("list_version_specific_force_update")
+    @Expose
+    private List<Integer> listVersionSpecificForceUpdate;
+    @SerializedName("list_version_specific_optional_update")
+    @Expose
+    private List<Integer> listVersionSpecificOptionalUpdate;
     @SerializedName("link")
     @Expose
     private String link;
@@ -27,6 +35,14 @@ public class DataUpdateApp {
     @SerializedName("is_optional_enabled")
     @Expose
     private boolean isOptionalEnabled;
+
+    @SerializedName("is_specific_force_update_enabled")
+    @Expose
+    private boolean isSpecificForceUpdateEnabled;
+
+    @SerializedName("is_specific_optional_update_enabled")
+    @Expose
+    private boolean isSpecificOptionalUpdateEnabled;
 
     @SerializedName("inapp_update_enabled")
     @Expose
@@ -82,6 +98,18 @@ public class DataUpdateApp {
 
     public boolean isIsOptionalEnabled() {
         return isOptionalEnabled;
+    }
+
+    public boolean isSpecificForceUpdateEnabled() {
+        return isSpecificForceUpdateEnabled;
+    }
+
+    public List<Integer> getListVersionSpecificForceUpdate() {
+        return listVersionSpecificForceUpdate;
+    }
+
+    public List<Integer> getListVersionSpecificOptionalUpdate() {
+        return listVersionSpecificOptionalUpdate;
     }
 
     public void setIsOptionalEnabled(boolean isOptionalEnabled) {
