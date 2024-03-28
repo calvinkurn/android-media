@@ -468,5 +468,6 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
     companion object {
         const val PREFIX_BROWSE_PAGE = "BROWSE_PAGE_FEED"
         const val PREFIX_CATEGORY_INSPIRATION_PAGE = "CAT_INSPIRATION_PAGE"
+        const val PREFIX_LOCAL_SEARCH_PAGE = "" /** JOE TODO: adjust this */
     }
 }

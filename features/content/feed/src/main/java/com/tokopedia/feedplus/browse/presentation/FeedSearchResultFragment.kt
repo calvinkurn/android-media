@@ -1,9 +1,11 @@
 package com.tokopedia.feedplus.browse.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -16,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
@@ -38,6 +41,7 @@ import com.tokopedia.feedplus.R as feedplusR
 internal class FeedSearchResultFragment @Inject constructor(
     private val viewModelFactoryCreator: FeedSearchResultViewModelFactory.Creator,
     private val router: Router,
+    trackerFactory: FeedBrowseTrackerImpl.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedSearchResultBinding? = null
@@ -50,10 +54,14 @@ internal class FeedSearchResultFragment @Inject constructor(
         )
     }
 
+    private val tracker by lazyThreadSafetyNone {
+        trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_LOCAL_SEARCH_PAGE)
+    }
+
     private val adapter: FeedSearchResultAdapter by lazyThreadSafetyNone {
         FeedSearchResultAdapter(
             this.viewLifecycleOwner.lifecycleScope,
-            inspirationCardListener
+            cardListener
         )
     }
 
@@ -68,18 +76,29 @@ internal class FeedSearchResultFragment @Inject constructor(
         }
     }
 
-    private val inspirationCardListener = object : InspirationCardViewHolder.Item.Listener {
+    private val cardListener = object : InspirationCardViewHolder.Item.Listener {
         override fun onImpressed(
             viewHolder: InspirationCardViewHolder.Item,
             model: FeedBrowseItemListModel.InspirationCard.Item
         ) {
-
+            tracker.viewChannelCard(
+                model.item,
+                model.config,
+                model.slotInfo,
+                model.index
+            )
         }
 
         override fun onClicked(
             viewHolder: InspirationCardViewHolder.Item,
             model: FeedBrowseItemListModel.InspirationCard.Item
         ) {
+            tracker.clickChannelCard(
+                model.item,
+                model.config,
+                model.slotInfo,
+                model.index
+            )
             router.route(context, model.item.appLink)
         }
 
@@ -91,7 +110,22 @@ internal class FeedSearchResultFragment @Inject constructor(
         }
     }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            tracker.clickBackExitCategoryInspirationPage()
+            requireActivity().finish()
+        }
+    }
+
     override fun getScreenName(): String = "Search Result Fragment"
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            onBackPressedCallback
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,7 +154,7 @@ internal class FeedSearchResultFragment @Inject constructor(
 
     private fun setupView() {
         binding.srpHeader.onBackClicked {
-            activity?.finish()
+            onBackPressedCallback.handleOnBackPressed()
         }
 
         binding.srpHeader.setSearchbarFocusListener { view, focusState ->
