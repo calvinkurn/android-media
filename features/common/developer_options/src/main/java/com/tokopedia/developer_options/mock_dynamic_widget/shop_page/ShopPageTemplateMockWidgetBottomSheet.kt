@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.mock_dynamic_widget.shop_page.ShopPageMockWidgetModel.*
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster

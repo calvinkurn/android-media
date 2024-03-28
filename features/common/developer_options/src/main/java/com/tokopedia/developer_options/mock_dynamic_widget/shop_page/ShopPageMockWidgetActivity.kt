@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.mock_dynamic_widget.shop_page.ShopPageMockWidgetModel.BmsmMockWidgetModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -17,6 +18,7 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
     companion object {
         private const val SHARED_PREF_NAME = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
         private const val SHARED_PREF_MOCK_WIDGET_DATA = "SHARED_PREF_MOCK_WIDGET_DATA"
+        private const val SHARED_PREF_MOCK_BMSM_WIDGET_DATA = "SHARED_PREF_MOCK_BMSM_WIDGET_DATA"
     }
 
     private val sharedPref by lazy {
@@ -132,7 +134,19 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
         }
     }
 
-    override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {}
+    override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
+        if (shopPageMockWidgetModel.getWidgetType().equals("group_offering_product", true)) {
+            if (shopPageMockWidgetModel.getWidgetName().equals("bmgm_banner_group", true)) {
+                ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmPdWidgetMockResponse().mockBmsmWidgetData)?.let {
+                    sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+                }
+            } else {
+                ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmGwpWidgetMockResponse().mockBmsmWidgetData)?.let {
+                    sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+                }
+            }
+        }
+    }
 
     override fun onClearMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
         adapter.removeSelectedMockWidget(shopPageMockWidgetModel)
@@ -142,4 +156,19 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
         }
     }
 
+    private fun generateBmsmPdWidgetMockResponse(): BmsmMockWidgetModel {
+        return resources?.let {
+            val offeringInfoMockJsonData = ShopPageMockWidgetModelMapper.getBmsmPdWidgetOfferingInfoMockJsonFromRaw(it)
+            val offeringProductMockJsonData = ShopPageMockWidgetModelMapper.getBmsmWidgetOfferingProductMockJsonFromRaw(it)
+            ShopPageMockWidgetModelMapper.generateMockBmsmWidgetData(offeringInfoMockJsonData, offeringProductMockJsonData)
+        } ?: BmsmMockWidgetModel()
+    }
+
+    private fun generateBmsmGwpWidgetMockResponse(): BmsmMockWidgetModel {
+        return resources?.let {
+            val offeringInfoMockJsonData = ShopPageMockWidgetModelMapper.getBmsmGwpWidgetOfferingInfoMockJsonFromRaw(it)
+            val offeringProductMockJsonData = ShopPageMockWidgetModelMapper.getBmsmWidgetOfferingProductMockJsonFromRaw(it)
+            ShopPageMockWidgetModelMapper.generateMockBmsmWidgetData(offeringInfoMockJsonData, offeringProductMockJsonData)
+        } ?: BmsmMockWidgetModel()
+    }
 }
