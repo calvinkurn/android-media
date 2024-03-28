@@ -141,25 +141,16 @@ object AppUpdateManagerWrapper {
         val alertDialog = AlertDialog.Builder(activity)
             .setTitle(dataUpdateApp.title)
             .setMessage(dataUpdateApp.message)
-            .setPositiveButton(activity.getString(R.string.appupdate_update), null)
-            .setNegativeButton(activity.getString(R.string.appupdate_close), null)
-            .setCancelable(false)
-            .create()
-        alertDialog.show()
-
-        alertDialog.setOnShowListener { dialog: DialogInterface ->
-            val positiveButton =
-                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
-            val negativeButton =
-                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-            positiveButton.setOnClickListener { v: View? ->
+            .setPositiveButton(activity.getString(R.string.appupdate_update)) { dialog, _ ->
                 checkAndDoImmediateUpdate(activity, {}, {})
                 dialog.dismiss()
             }
-            negativeButton.setOnClickListener { v: View? ->
+            .setNegativeButton(activity.getString(R.string.appupdate_close)) { _, _ ->
                 activity.finishAffinity()
             }
-        }
+            .setCancelable(false)
+            .create()
+        alertDialog.show()
     }
 
     @JvmStatic
