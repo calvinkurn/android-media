@@ -699,7 +699,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         getMiniCart {
             _toasterData.value = ToasterModel(
                 text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_add_product_to_cart, productListSize),
-                actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+                actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta_okay),
                 type = Toaster.TYPE_NORMAL,
                 event = ADD_MULTI_PRODUCTS_TO_CART,
                 any = mMiniCartData
@@ -723,23 +723,40 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private fun onSuccessAddingToWishlist(
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        availableProducts
-            .addProduct(
-                product.copy(
-                    productLayoutType = AVAILABLE_SHOPPING_LIST,
-                    isSelected = true,
-                    state = SHOW
-                )
-            )
+        when(product.productLayoutType) {
+            UNAVAILABLE_SHOPPING_LIST -> {
+                unavailableProducts
+                    .addProduct(product)
+            }
+            AVAILABLE_SHOPPING_LIST -> {
+                availableProducts
+                    .addProduct(
+                        product.copy(
+                            isSelected = true,
+                            state = SHOW
+                        )
+                    )
+            }
+            else -> {
+                availableProducts
+                    .addProduct(
+                        product.copy(
+                            productLayoutType = AVAILABLE_SHOPPING_LIST,
+                            isSelected = true,
+                            state = SHOW
+                        )
+                    )
 
-        recommendedProducts
-            .removeProduct(product.id)
+                recommendedProducts
+                    .removeProduct(product.id)
+            }
+        }
 
         updateLayout()
 
         _toasterData.value = ToasterModel(
             text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_add_product_to_shopping_list),
-            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta_okay),
             type = Toaster.TYPE_NORMAL,
             event = ADD_WISHLIST
         )
@@ -774,9 +791,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
         _toasterData.value = ToasterModel(
             text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_delete_product_from_shopping_list),
-            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta_cancel),
             type = Toaster.TYPE_NORMAL,
-            event = DELETE_WISHLIST
+            event = DELETE_WISHLIST,
+            any = product
         )
     }
 

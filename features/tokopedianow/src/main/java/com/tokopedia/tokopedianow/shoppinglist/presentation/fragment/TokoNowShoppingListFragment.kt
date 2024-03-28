@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -146,6 +147,7 @@ class TokoNowShoppingListFragment :
     private var loader: LoaderDialog? = null
     private var pageCoachMark: CoachMarkModel? = null
     private var collectJob: Job? = null
+    private var toaster: Snackbar? = null
 
     private val mRecycledViewPool: RecyclerView.RecycledViewPool
         get() = RecyclerView.RecycledViewPool()
@@ -419,8 +421,13 @@ class TokoNowShoppingListFragment :
                     DELETE_WISHLIST -> {
                         showToaster(data) {
                             if (data.any is ShoppingListHorizontalProductCardItemUiModel) {
-                                analytic.getShoppingListHorizontalProductCardAnalytic().trackClickDeleteButtonOnProduct(data.any)
-                                viewModel.deleteFromWishlist(data.any)
+                                if (data.type == Toaster.TYPE_NORMAL) {
+                                    analytic.getShoppingListHorizontalProductCardAnalytic().trackClickAddToShoppingListOnProduct(data.any)
+                                    viewModel.addToWishlist(data.any)
+                                } else {
+                                    analytic.getShoppingListHorizontalProductCardAnalytic().trackClickDeleteButtonOnProduct(data.any)
+                                    viewModel.deleteFromWishlist(data.any)
+                                }
                             }
                         }
                     }
@@ -475,14 +482,17 @@ class TokoNowShoppingListFragment :
         view?.let { view ->
             if (model.text.isNotBlank()) {
                 Toaster.toasterCustomBottomHeight = getBottomSpace()
-                Toaster.build(
+                toaster?.dismiss()
+                toaster = Toaster.buildWithAction(
                     view = view,
                     text = model.text,
                     duration = model.duration,
                     type = model.type,
                     actionText = model.actionText,
                     clickListener = clickListener
-                ).show()
+                ).apply {
+                    show()
+                }
             }
         }
     }

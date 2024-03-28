@@ -106,7 +106,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
 
         _toasterData.value = ToasterModel(
             text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_add_product_to_shopping_list),
-            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta_okay),
             type = Toaster.TYPE_NORMAL,
             event = ToasterModel.Event.ADD_WISHLIST,
             any = product
