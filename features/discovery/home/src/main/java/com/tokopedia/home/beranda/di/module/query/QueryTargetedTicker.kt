@@ -6,8 +6,11 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 object QueryTargetedTicker {
     const val NAME = "TargetedTickerQuery"
     const val QUERY = """
-        query GetTargetedTicker(${"$"}input: GetTargetedTickerRequest!) {
-          GetTargetedTicker(input: ${"$"}input){
+        query GetTargetedTicker(${"$"}page: String!) {
+          GetTargetedTicker(input:{
+            Page: ${'$'}page,
+            Target: []
+          }){
             List{
               ID
               Title

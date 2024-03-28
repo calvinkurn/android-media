@@ -17,7 +17,7 @@ class TargetedTicketRepository @Inject constructor(
         val page = bundle.getString(PARAM_PAGE, DEFAULT_PARAM_PAGE)
         return gqlRepository.request(
             TargetedTickerQuery(),
-            TargetedTickerParam.onlyNeedPageSource(page)
+            mapOf(PARAM_PAGE to page)
         )
     }
 

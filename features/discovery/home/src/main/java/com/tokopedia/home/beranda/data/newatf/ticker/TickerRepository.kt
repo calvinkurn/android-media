@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
 import com.tokopedia.home.beranda.data.newatf.BaseAtfRepository
-import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TargetedTickerMapper
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
@@ -45,9 +44,7 @@ class TickerRepository @Inject constructor(
                 TargetedTicketRepository.createParam()
             )
 
-            val uiModel = TargetedTickerMapper.map(result)
-
-            uiModel.firstOrNull() to AtfKey.STATUS_SUCCESS
+            result.targetedTicker to AtfKey.STATUS_SUCCESS
         } catch (_: Exception) {
             Ticker() to AtfKey.STATUS_ERROR
         }

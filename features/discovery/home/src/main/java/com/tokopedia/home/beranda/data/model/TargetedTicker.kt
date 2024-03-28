@@ -4,6 +4,7 @@ package com.tokopedia.home.beranda.data.model
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component.model.AtfContent
 
 data class TargetedTicker(
     @SerializedName("GetTargetedTicker")
@@ -13,7 +14,7 @@ data class TargetedTicker(
 data class GetTargetedTicker(
     @SerializedName("List")
     val tickers: List<GetTargetedTickerItem> = emptyList()
-)
+) : AtfContent
 
 data class GetTargetedTickerItem(
     @SerializedName("ID")
@@ -36,7 +37,27 @@ data class GetTargetedTickerItem(
 
     @SerializedName("Metadata")
     val metadata: List<GetTargetedTickerMetadata> = emptyList(),
-)
+) {
+
+    fun getTickerType() =
+        when(type) {
+            TYPE_INFO -> Type.Info
+            TYPE_WARNING -> Type.Warning
+            else -> Type.Danger
+        }
+
+
+    sealed class Type {
+        object Info : Type()
+        object Warning : Type()
+        object Danger : Type()
+    }
+
+    companion object {
+        private const val TYPE_INFO = "info"
+        private const val TYPE_WARNING = "warning"
+    }
+}
 
 data class GetTargetedTickerAction(
     @SerializedName("Label")

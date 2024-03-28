@@ -5,6 +5,7 @@ import com.tokopedia.home.beranda.domain.model.TargetedTickerUiModel
 import com.tokopedia.home.beranda.domain.model.Tickers
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 /**
  * @author by Lukas on 18/05/2020.
@@ -13,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 data class TickerDataModel(
     val tickers: List<Tickers> = listOf(),
     val targetedTickers: List<TargetedTickerUiModel> = listOf(),
+    val unifyTickers: List<TickerData> = listOf(),
     private var isCache: Boolean = false,
     private var trackingData: Map<String, Any>? = null,
     private var trackingDataForCombination: List<Any>? = null,
