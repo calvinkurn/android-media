@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
-import android.graphics.pdf.PdfDocument.Page
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -310,19 +309,19 @@ object AppLogAnalytics {
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
+    fun putPreviousPageData(key: String, value: Any) {
+        val secondToLastData = _pageDataList.getOrNull(_pageDataList.lastIndex - 1)
+        secondToLastData?.put(
+            key, value
+        )
+    }
+
     fun removePageData(key: String) {
         _pageDataList.lastOrNull()?.remove(key)
     }
 
     fun putEnterMethod(enterMethod: EnterMethod) {
         putPageData(ENTER_METHOD, enterMethod.str)
-    }
-
-    fun putEnterMethodAtcToaster() {
-        val secondToLastData = _pageDataList.getOrNull(_pageDataList.lastIndex - 1)
-        secondToLastData?.put(
-            ENTER_METHOD, EnterMethod.CLICK_ATC_TOASTER_PDP.str
-        )
     }
 
     fun getCurrentData(key: String): Any? {

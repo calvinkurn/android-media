@@ -37,6 +37,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
@@ -731,7 +733,10 @@ class AtcVariantBottomSheet :
                     pageSource
                 )
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartDataModel.data.cartId)
-                AppLogAnalytics.putEnterMethodAtcToaster()
+                AppLogAnalytics.putPreviousPageData(
+                    ENTER_METHOD,
+                    EnterMethod.CLICK_ATC_TOASTER_PDP.str
+                )
             }
             atcMessage = message
         }

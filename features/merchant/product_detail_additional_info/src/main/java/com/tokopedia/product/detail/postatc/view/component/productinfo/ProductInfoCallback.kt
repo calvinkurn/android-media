@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.postatc.view.component.productinfo
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.postatc.base.ComponentTrackData
@@ -25,7 +27,10 @@ class ProductInfoCallbackImpl(
             viewModel.postAtcInfo,
             componentTrackData
         )
-        AppLogAnalytics.putEnterMethodAtcToaster()
+        AppLogAnalytics.putPreviousPageData(
+            AppLogParam.ENTER_METHOD,
+            EnterMethod.CLICK_ATC_TOASTER_PDP.str
+        )
 
         goToCart(cartId)
     }
@@ -34,6 +39,10 @@ class ProductInfoCallbackImpl(
         val context = getContext() ?: return
         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         intent.putExtra("cart_id", cartId)
+        AppLogAnalytics.putPreviousPageData(
+            AppLogParam.ENTER_METHOD,
+            EnterMethod.CLICK_ATC_TOASTER_PDP.str
+        )
         startActivity(intent)
         dismissAllowingStateLoss()
     }
