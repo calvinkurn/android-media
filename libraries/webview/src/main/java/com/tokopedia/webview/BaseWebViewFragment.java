@@ -1047,7 +1047,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     "&default_url=https://tkp.me/GPL-TARI123" +
                     "&label_action_click_share_icon={share_id}" +
                     "&label_action_click_close_icon={share_id}" +
-                    "&label_action_click_channel={channel} - {share_id}" +
+                    "&label_action_click_channel={channel}%20-%20{share_id}" +
                     "&label_impression_bottomsheet={share_id}";
 
             RouteManager.route(getContext(), DUMMY_APPLINK);

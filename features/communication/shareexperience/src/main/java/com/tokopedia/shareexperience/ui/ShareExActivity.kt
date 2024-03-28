@@ -99,17 +99,21 @@ class ShareExActivity : BaseSimpleActivity() {
         val pageTypeEnum = ShareExPageTypeEnum.fromValueInt(pageType.toIntSafely())
 
         val utmCampaign = bundle.getString(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
-        val defaultImpressionLabel = bundle.getString(ShareExConst.Applink.Param.DEFAULT_IMPRESSION_LABEL).orEmpty()
-        val defaultActionLabel = bundle.getString(ShareExConst.Applink.Param.DEFAULT_ACTION_LABEL).orEmpty()
+        val labelImpressionBottomSheet = bundle.getString(ShareExConst.Applink.Param.LABEL_IMPRESSION_BOTTOMSHEET).orEmpty()
+        val labelActionClickShareIcon = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_SHARE_ICON).orEmpty()
+        val labelActionCloseIcon = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_CLOSE_ICON).orEmpty()
+        val labelActionClickChannel = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_CHANNEL).orEmpty()
+        val labelImpressionAffiliateRegistration = bundle.getString(ShareExConst.Applink.Param.LABEL_IMPRESSION_AFFILIATE_REGISTRATION).orEmpty()
+        val labelActionClickAffiliateRegistration = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_AFFILIATE_REGISTRATION).orEmpty()
 
         val trackerArg = ShareExTrackerArg(
             utmCampaign = utmCampaign,
-            labelImpressionBottomSheet = defaultImpressionLabel,
-            labelActionClickShareIcon = defaultActionLabel,
-            labelActionCloseIcon = defaultActionLabel,
-            labelActionClickChannel = defaultActionLabel,
-            labelImpressionAffiliateRegistration = defaultImpressionLabel,
-            labelActionClickAffiliateRegistration = defaultActionLabel
+            labelImpressionBottomSheet = labelImpressionBottomSheet,
+            labelActionClickShareIcon = labelActionClickShareIcon,
+            labelActionCloseIcon = labelActionCloseIcon,
+            labelActionClickChannel = labelActionClickChannel,
+            labelImpressionAffiliateRegistration = labelImpressionAffiliateRegistration,
+            labelActionClickAffiliateRegistration = labelActionClickAffiliateRegistration
         )
 
         return ShareExBottomSheetArg.Builder(pageTypeEnum, defaultUrl, trackerArg)
