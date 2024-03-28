@@ -82,8 +82,7 @@ object BmgmParamMapper {
         qty: Int?
     ): BmGmGetGroupProductTickerParams {
         val carts = (
-            params?.carts?.filter {
-                    cart ->
+            params?.carts?.filter { cart ->
                 cart.cartDetails.any { it.offer.offerId == offerId }
             } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
             )

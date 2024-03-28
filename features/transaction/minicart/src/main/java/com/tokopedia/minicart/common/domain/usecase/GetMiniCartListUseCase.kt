@@ -26,15 +26,23 @@ class GetMiniCartListUseCase @Inject constructor(
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false) {
+    fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false, source: MiniCartSource? = null) {
+        val usecase = source?.usecase
+
+        val additionalParams = mutableMapOf(
+            PARAM_KEY_SHOP_IDS to shopIds,
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+            PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
+            PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
+        )
+
+        if (usecase != null) {
+            additionalParams[PARAM_KEY_USE_CASE] = usecase
+        }
+
         params = mapOf(
             PARAM_KEY_LANG to PARAM_VALUE_ID,
-            PARAM_KEY_ADDITIONAL to mapOf(
-                PARAM_KEY_SHOP_IDS to shopIds,
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
-                PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
-            )
+            PARAM_KEY_ADDITIONAL to additionalParams
         )
     }
 

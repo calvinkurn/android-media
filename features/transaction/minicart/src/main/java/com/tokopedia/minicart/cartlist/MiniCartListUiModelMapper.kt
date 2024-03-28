@@ -404,7 +404,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         name = productBenefit.productName,
                         imageUrl = productBenefit.productImage,
                         qty = productBenefit.quantity,
-                        isUnlocked = true
+                        isUnlocked = bmgmData.isTierAchieved
                     )
                 },
                 progressiveInfoText = bmgmData.offerMessage.firstOrNull().orEmpty(),
@@ -431,7 +431,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         lastGroupItem: Boolean = false,
         cartStringId: String = "",
         isBmgm: Boolean = false,
-        offerId: Long = 0,
+        offerId: Long = 0
     ): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             val products = cartDetail.products

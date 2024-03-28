@@ -37,9 +37,9 @@ object MiniCartListGwpUiModelMapper {
     private fun updateMiniCartGwpGiftUiModel(
         response: BmGmGetGroupProductTickerResponse,
         uiModel: MiniCartGwpGiftUiModel
-    ): MiniCartGwpGiftUiModel? {
+    ): MiniCartGwpGiftUiModel {
         response.getGroupProductTicker.data.multipleData.find { data ->
-            return data.bmgmData.tierProductList.find { it.tierId == uiModel.tierId }?.run {
+            return data.bmgmData.tierProductList.first().run {
                 uiModel.copy(
                     tierId = tierId,
                     ribbonText = benefitWording,
@@ -50,13 +50,13 @@ object MiniCartListGwpUiModelMapper {
                             name = productBenefit.productName,
                             imageUrl = productBenefit.productImage,
                             qty = productBenefit.quantity,
-                            isUnlocked = true
+                            isUnlocked = data.bmgmData.isTierAchieved
                         )
                     }
                 )
             }
         }
-        return null
+        return uiModel.copy(giftList = emptyList())
     }
 
     fun getGwpSuccessState(

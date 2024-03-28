@@ -5,12 +5,14 @@ import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartGwpGiftBinding
 
-class MiniCartGwpGiftViewHolder (
+class MiniCartGwpGiftViewHolder(
     private val viewBinding: ItemMiniCartGwpGiftBinding,
     private val listener: MiniCartGwpGiftListener? = null
 ) : AbstractViewHolder<MiniCartGwpGiftUiModel>(viewBinding.root) {
@@ -20,45 +22,50 @@ class MiniCartGwpGiftViewHolder (
 
     override fun bind(element: MiniCartGwpGiftUiModel) {
         viewBinding.root.apply {
-            updateData(element.giftList)
-            setRibbonText(element.ribbonText)
+            if (element.giftList.isNotEmpty()) {
+                updateData(element.giftList)
+                setRibbonText(element.ribbonText)
 
-            addOnImpressionListener(element) {
-                listener?.onImpressProductGiftWidget(
-                    offerId = element.offerId,
-                    offerTypeId = element.offerTypeId,
-                    productIds = element.giftList.map { it.id },
-                    progressiveInfoText = element.progressiveInfoText,
-                    position = element.position
-                )
-            }
-
-            val bottomSheet = GiftListBottomSheet.newInstance(
-                offerId = element.offerId,
-                warehouseId = element.warehouseId,
-                tierGifts = listOf(
-                    TierGifts(
-                        tierId = element.tierId,
-                        gifts = element.giftList.map {
-                            TierGifts.GiftProduct(
-                                productId = it.id.toLongOrZero(),
-                                quantity = it.qty
-                            )
-                        }
+                addOnImpressionListener(element) {
+                    listener?.onImpressProductGiftWidget(
+                        offerId = element.offerId,
+                        offerTypeId = element.offerTypeId,
+                        productIds = element.giftList.map { it.id },
+                        progressiveInfoText = element.progressiveInfoText,
+                        position = element.position
                     )
-                ),
-                pageSource = PageSource.MINICART_NOW,
-                shopId = element.shopId
-            )
+                }
 
-            setupCtaClickListener(element.ctaText) {
-                listener?.onClickCta(
+                val bottomSheet = GiftListBottomSheet.newInstance(
                     offerId = element.offerId,
-                    offerTypeId = element.offerTypeId,
-                    progressiveInfoText = element.progressiveInfoText,
-                    position = element.position,
-                    bottomSheet = bottomSheet
+                    warehouseId = element.warehouseId,
+                    tierGifts = listOf(
+                        TierGifts(
+                            tierId = element.tierId,
+                            gifts = element.giftList.map {
+                                TierGifts.GiftProduct(
+                                    productId = it.id.toLongOrZero(),
+                                    quantity = it.qty
+                                )
+                            }
+                        )
+                    ),
+                    pageSource = PageSource.MINICART_NOW,
+                    shopId = element.shopId
                 )
+
+                setupCtaClickListener(element.ctaText) {
+                    listener?.onClickCta(
+                        offerId = element.offerId,
+                        offerTypeId = element.offerTypeId,
+                        progressiveInfoText = element.progressiveInfoText,
+                        position = element.position,
+                        bottomSheet = bottomSheet
+                    )
+                }
+                show()
+            } else {
+                hide()
             }
         }
     }
@@ -80,4 +87,3 @@ class MiniCartGwpGiftViewHolder (
         )
     }
 }
-
