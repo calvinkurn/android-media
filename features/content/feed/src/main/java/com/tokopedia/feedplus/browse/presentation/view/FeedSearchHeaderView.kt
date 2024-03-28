@@ -17,7 +17,7 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : LinearLayout
     val header: HeaderUnify
         get() = binding.headerUnify
 
-    private val searchBar: SearchBarUnify
+    private var searchBar: SearchBarUnify? = null
 
     private var searchAction: (keyword: String) -> Unit = {}
 
@@ -50,15 +50,15 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : LinearLayout
     }
 
     fun setSearchPlaceholder(placeholder: String) {
-        searchBar.searchBarPlaceholder = placeholder
+        searchBar?.searchBarPlaceholder = placeholder
     }
 
     fun setSearchbarFocusListener(listener: OnFocusChangeListener) {
-        searchBar.searchBarTextField.onFocusChangeListener = listener
+        searchBar?.searchBarTextField?.onFocusChangeListener = listener
     }
 
     fun setSearchbarText(text: String) {
-        searchBar.searchBarTextField.setText(text)
+        searchBar?.searchBarTextField?.setText(text)
     }
 
     fun setSearchDoneListener(listener: (keyword: String) -> Unit) {
@@ -66,7 +66,7 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : LinearLayout
     }
 
     fun setSearchFocus() {
-        searchBar.searchBarTextField.requestFocus()
+        searchBar?.searchBarTextField?.requestFocus()
         showSoftKeyboard()
     }
 
@@ -76,7 +76,7 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : LinearLayout
             searchbar.showIcon = isClearable
             searchbar.searchBarPlaceholder = searchPlaceholder
 
-            this.searchbar = searchbar
+            this.searchBar = searchbar
             binding.headerUnify.customView(searchbar)
 
             searchbar.searchBarTextField.setOnEditorActionListener { textView, keyIndex, _ ->

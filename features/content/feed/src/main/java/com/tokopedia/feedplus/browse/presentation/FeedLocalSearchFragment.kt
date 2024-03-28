@@ -46,7 +46,10 @@ class FeedLocalSearchFragment @Inject constructor(
             it.onBackClicked {
                 onBackPressed()
             }
-            it.setSearchPlaceholder(getString(feedplusR.string.feed_local_search_page_text_placeholder))
+            val placeholder =
+                activity?.intent?.getStringExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM)
+                    ?: getString(feedplusR.string.feed_local_search_page_text_placeholder_fallback)
+            it.setSearchPlaceholder(placeholder)
             it.setSearchDoneListener { keyword ->
                 submitSearchKeyword(keyword)
             }
