@@ -96,6 +96,7 @@ data class BmGmGetGroupProductTickerParams(
 
     companion object {
         const val SOURCE_CART = "cart"
+        const val SOURCE_OFFER_PAGE = "offer_page"
         const val SOURCE_MINI_CART_BOTTOM_SHEET_NOW = "mini_cart_bottom_sheet_now"
     }
 }
