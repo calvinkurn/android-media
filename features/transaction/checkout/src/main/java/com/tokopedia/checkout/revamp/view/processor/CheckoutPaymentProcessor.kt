@@ -167,8 +167,6 @@ class CheckoutPaymentProcessor @Inject constructor(
                 ) {
                     platformFee.title = fee.title
                     platformFee.fee = fee.fee
-//                    platformFee.minRange = fee.minRange
-//                    platformFee.maxRange = fee.maxRange
                     platformFee.isShowTooltip = fee.showTooltip
                     platformFee.tooltip = fee.tooltipInfo
                     platformFee.isShowSlashed = fee.showSlashed
@@ -236,9 +234,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                                         shippingInfo = CartShippingInfoData(
                                             spId = selectedShipper?.shipperProductId.toZeroIfNull().toString(),
                                             originalShippingPrice = selectedShipper?.shipperPrice.toZeroIfNull().toDouble(),
-//                                            serviceName = courierData?.serviceData?.serviceName.orEmpty(),
                                             serviceName = if (selectedShipper?.logPromoCode.isNullOrEmpty()) courierData?.serviceData?.serviceName.orEmpty() else selectedShipper?.promoTitle.orEmpty(),
-//                                            shipperName = courierData?.productData?.shipperName.orEmpty(),
                                             shipperName = selectedShipper?.shipperName.orEmpty(),
                                             eta = selectedShipper?.etaText.orEmpty(),
                                             insurancePrice = selectedShipper?.insurancePrice.toZeroIfNull().toDouble()
