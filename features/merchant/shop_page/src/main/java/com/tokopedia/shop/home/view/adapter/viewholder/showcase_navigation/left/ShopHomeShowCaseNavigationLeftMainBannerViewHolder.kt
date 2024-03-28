@@ -1,9 +1,8 @@
 package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left
 
 import android.graphics.Color
-import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -30,9 +29,12 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMai
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
@@ -44,11 +46,11 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
-        private const val EXTRA_WIDTH_TAB_TITLE_DP = 8
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
         private const val THREE_TAB = 3
+        private const val TAB_TRANSITION_DURATION_MILLIS = 350L
     }
 
     private var tabTotalWidth = 0
@@ -71,6 +73,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             model.header.isOverrideTheme,
             model.header.colorSchema
         )
+
+        viewBinding?.viewPager?.currentItem = model.lastTabIndexSelected
     }
 
     private fun setupChevronViewAll(
@@ -142,17 +146,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
-                val tabView = LayoutInflater.from(tabsUnify.context).inflate(R.layout.item_viewpager_showcase_navigation_tab, tabsUnify, false)
-                tab.customView = tabView
+                tab.setCustomText(tabs[currentPosition].text)
 
-                val tabTitle: Typography? = tabView.findViewById(R.id.tpgTabTitle)
-                tabTitle?.setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    tabTitle.context.resources.getDimension(R.dimen.tab_name_font_size)
-                )
-                tabTitle?.text = tabs[currentPosition].text
-                tabTitle?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                tabTitle?.layoutParams?.width = tabTitle?.measuredWidth.orZero() + EXTRA_WIDTH_TAB_TITLE_DP.toPx()
                 if (currentPosition == uiModel.lastTabIndexSelected) tab.select(uiModel) else tab.unselect(uiModel)
 
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -175,15 +170,20 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 val tabPosition = tab?.position.orZero()
                 val tabTitle = tabs.getOrNull(tabPosition)?.text.orEmpty()
                 listener.onNavigationBannerTabClick(tabTitle)
-                tab?.select(model)
 
-                if (tabPosition.isMoreThanZero()) {
-                    model.lastTabIndexSelected = tabPosition
+                CoroutineScope(Dispatchers.Main).launch {
+                    tab?.select(model)
+
+                    if (tabPosition.isMoreThanZero()) {
+                        model.lastTabIndexSelected = tabPosition
+                    }
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                tab.unselect(model)
+                CoroutineScope(Dispatchers.Main).launch {
+                    tab?.unselect(model)
+                }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -191,7 +191,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     }
 
     private fun TabLayout.Tab?.select(model: ShowcaseNavigationUiModel) {
-        val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
+        val tabTitle = this?.tabTitleTextView()
 
         val highEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
             model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
@@ -206,8 +206,12 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         }
     }
 
+    private fun TabLayout.Tab?.tabTitleTextView(): TextView? {
+        return this?.customView?.findViewById<TextView?>(unifycomponentsR.id.tab_item_text_id)
+    }
+
     private fun TabLayout.Tab?.unselect(model: ShowcaseNavigationUiModel) {
-        val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
+        val tabTitle = this?.tabTitleTextView()
 
         val disabledTextColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
             model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
