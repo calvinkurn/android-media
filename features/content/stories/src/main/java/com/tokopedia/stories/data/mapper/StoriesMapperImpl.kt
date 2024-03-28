@@ -157,6 +157,14 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         type = ContentMenuIdentifier.Delete
                     )
                 )
+                //TODO(): make sure performance link is not empty.
+                isOwner(author) -> add(
+                    ContentMenuItem(
+                        iconUnify = IconUnify.GRAPH,
+                        name = contentcommonR.string.performance_see,
+                        type = ContentMenuIdentifier.SeePerformance
+                    )
+                )
             }
         }
 
