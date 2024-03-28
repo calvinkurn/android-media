@@ -95,7 +95,9 @@ object SlardarInit {
             .build())
         initBuilder.maxValidPageLoadTimeMs(20 * 1000.toLong())
         initBuilder.enableDeviceInfoOnPerfData(true)
-        initBuilder.debugMode(true)
+        if (GlobalConfig.DEBUG) {
+            initBuilder.debugMode(true)
+        }
         Apm.getInstance().init(context.applicationContext, initBuilder.build())
     }
 
