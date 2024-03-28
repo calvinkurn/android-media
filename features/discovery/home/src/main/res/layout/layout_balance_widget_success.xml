@@ -7,12 +7,12 @@
     android:layout_height="wrap_content"
     android:paddingVertical="@dimen/balance_vertical_padding"
     android:paddingLeft="@dimen/balance_inner_left_padding"
-    android:paddingRight="@dimen/balance_atf2_inner_right_padding">
+    android:paddingRight="@dimen/balance_atf3_inner_right_padding">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/home_iv_logo_balance"
-        android:layout_width="@dimen/balance_atf2_image_size"
-        android:layout_height="@dimen/balance_atf2_image_size"
+        android:layout_width="@dimen/balance_atf3_image_size"
+        android:layout_height="@dimen/balance_atf3_image_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

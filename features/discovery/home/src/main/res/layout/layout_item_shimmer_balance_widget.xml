@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingVertical="@dimen/balance_vertical_padding"
     android:paddingLeft="@dimen/balance_inner_left_padding"
-    android:paddingRight="@dimen/balance_atf2_inner_right_padding"
+    android:paddingRight="@dimen/balance_atf3_inner_right_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.LoaderUnify
