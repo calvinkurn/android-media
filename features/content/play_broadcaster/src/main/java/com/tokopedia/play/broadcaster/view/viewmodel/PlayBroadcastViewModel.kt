@@ -1082,7 +1082,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is LiveStats -> {
                 updateLiveReportSummary(
                     listOf(
-                        LiveStatsUiModel.Viewer(result.liveConcurrentUsers),
+                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
                         LiveStatsUiModel.TotalViewer(result.visitChannel),
                         LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
                         LiveStatsUiModel.Like(result.likeChannel),
