@@ -5,8 +5,6 @@ import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
@@ -63,9 +61,9 @@ class MiniCartGwpGiftViewHolder(
                         bottomSheet = bottomSheet
                     )
                 }
-                itemView.show()
+                viewBinding.root.show()
             } else {
-                itemView.hide()
+                viewBinding.root.hide()
             }
         }
     }
