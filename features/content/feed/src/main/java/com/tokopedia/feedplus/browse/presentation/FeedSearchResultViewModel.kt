@@ -75,9 +75,15 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
 
             when (response) {
                 is ContentSlotModel.ChannelBlock -> {
+                    if (response.channels.isEmpty() && _contents.value.isEmpty()) {
+                        _pageState.update { FeedSearchResultPageState.NotFound }
+                        return@launchCatchError
+                    }
+
                     val newContents = response.channels.map {
                         FeedSearchResultContent.Channel(it, response.config)
                     }
+
                     _contents.update {
                         val prevContents = it.ifEmpty {
                             listOf(FeedSearchResultContent.Title(response.title))
@@ -85,6 +91,7 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
                         prevContents + newContents
                     }
                     _cursor.update { response.nextCursor }
+                    _hasNextPage.update { response.channels.isNotEmpty() }
                     _pageState.update { FeedSearchResultPageState.Success }
                 }
                 is ContentSlotModel.NoData -> {
