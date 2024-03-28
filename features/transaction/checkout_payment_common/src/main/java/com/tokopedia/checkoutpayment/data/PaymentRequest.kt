@@ -229,7 +229,7 @@ data class SummariesItemData(
 
 data class DetailsItemData(
     @SerializedName("amount")
-    val amount: Double = 0.0,
+    val amount: Long = 0,
     @SerializedName("type")
     val type: String = ""
 )
@@ -245,5 +245,5 @@ data class UsageSummariesData(
     @SerializedName("amount_str")
     val amountString: String = "",
     @SerializedName("amount")
-    val amount: Double = 0.0
+    val amount: Long = 0
 )

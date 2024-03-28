@@ -236,8 +236,10 @@ class CheckoutPaymentProcessor @Inject constructor(
                                         shippingInfo = CartShippingInfoData(
                                             spId = selectedShipper?.shipperProductId.toZeroIfNull().toString(),
                                             originalShippingPrice = selectedShipper?.shipperPrice.toZeroIfNull().toDouble(),
-                                            serviceName = courierData?.serviceData?.serviceName.orEmpty(),
-                                            shipperName = courierData?.productData?.shipperName.orEmpty(),
+//                                            serviceName = courierData?.serviceData?.serviceName.orEmpty(),
+                                            serviceName = if (selectedShipper?.logPromoCode.isNullOrEmpty()) courierData?.serviceData?.serviceName.orEmpty() else selectedShipper?.promoTitle.orEmpty(),
+//                                            shipperName = courierData?.productData?.shipperName.orEmpty(),
+                                            shipperName = selectedShipper?.shipperName.orEmpty(),
                                             eta = selectedShipper?.etaText.orEmpty(),
                                             insurancePrice = selectedShipper?.insurancePrice.toZeroIfNull().toDouble()
                                         ),
@@ -315,7 +317,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                             type = summary.type,
                             details = summary.details.map { detail ->
                                 DetailsItemData(
-                                    amount = detail.amount.toDouble(),
+                                    amount = detail.amount.toLong(),
                                     type = detail.type
                                 )
                             }
@@ -346,7 +348,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                         UsageSummariesData(
                             type = usage.type,
                             amountString = usage.amountStr,
-                            amount = usage.amount.toDouble()
+                            amount = usage.amount.toLong()
                         )
                     }
                 )

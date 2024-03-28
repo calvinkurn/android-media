@@ -144,7 +144,6 @@ fun CheckoutPaymentWidget(
                                         textStyle = NestTheme.typography.display3.copy(
                                             color = if (data.isTitleRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._950
                                         ),
-                                        modifier = Modifier.weight(1f, fill = false),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
@@ -154,8 +153,10 @@ fun CheckoutPaymentWidget(
                                             color = NestTheme.colors.NN._600
                                         ),
                                         modifier = Modifier
-                                            .padding(start = 4.dp),
-                                        maxLines = 1
+                                            .padding(start = 4.dp)
+                                            .weight(1f, fill = false),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
                                 if (data.description.isNotEmpty()) {
@@ -171,10 +172,12 @@ fun CheckoutPaymentWidget(
                                         )
                                         if (data.actionButtonText.isNotBlank()) {
                                             NestTypography(
-                                                text = " ${data.actionButtonText}",
-                                                modifier = Modifier.setOnClickDebounceListener {
-                                                    onActionClickedListener()
-                                                },
+                                                text = data.actionButtonText,
+                                                modifier = Modifier
+                                                    .padding(start = 4.dp)
+                                                    .setOnClickDebounceListener {
+                                                        onActionClickedListener()
+                                                    },
                                                 textStyle = NestTheme.typography.display3.copy(
                                                     color = NestTheme.colors.GN._500,
                                                     fontWeight = FontWeight.Bold

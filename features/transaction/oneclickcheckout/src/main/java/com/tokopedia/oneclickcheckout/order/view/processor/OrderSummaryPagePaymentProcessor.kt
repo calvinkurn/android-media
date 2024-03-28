@@ -358,7 +358,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                             type = summary.type,
                             details = summary.details.map { detail ->
                                 DetailsItemData(
-                                    amount = detail.amount.toDouble(),
+                                    amount = detail.amount.toLong(),
                                     type = detail.type
                                 )
                             }
@@ -389,7 +389,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         UsageSummariesData(
                             type = usage.type,
                             amountString = usage.amountStr,
-                            amount = usage.amount.toDouble()
+                            amount = usage.amount.toLong()
                         )
                     }
                 )
