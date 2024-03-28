@@ -156,12 +156,26 @@ class MerchantVoucherGridViewHolder(
             setOnClickListener {
                 if (!redirection.applink.isNullOrBlank()) {
                     RouteManager.route(itemView.context, redirection.applink)
+                    trackClickSeeAll()
                 }
             }
         }
 
         seeMoreBtnSpace.show()
     }
+
+    private fun trackClickSeeAll() {
+        viewModel?.run {
+            getAnalytics()?.trackMerchantVoucherViewClickAll(
+                component,
+                UserSession(fragment.context).userId,
+                position,
+                seeMoreBtn.text.toString()
+            )
+        }
+    }
+
+    private fun getAnalytics() = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
 
     private fun setupRecyclerView() {
         merchantVoucherRv.adapter = mAdapter

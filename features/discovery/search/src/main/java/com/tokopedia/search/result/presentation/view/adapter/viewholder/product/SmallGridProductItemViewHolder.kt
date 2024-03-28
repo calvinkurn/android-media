@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
@@ -70,6 +71,10 @@ class SmallGridProductItemViewHolder(
 
         productCardView.setAddToCartOnClickListener {
             productListener.onAddToCartClick(productItemData)
+        }
+
+        productCardView.addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
+            productListener.onProductImpressedByteIO(productItemData)
         }
     }
 

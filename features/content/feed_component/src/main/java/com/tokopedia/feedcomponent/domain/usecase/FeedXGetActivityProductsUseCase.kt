@@ -50,6 +50,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                     priceDiscountFmt
                     priceMasked
                     priceMaskedFmt
+                    priceFormatPriority
                     stockWording
                     stockSoldPercentage
                     cartable
@@ -63,6 +64,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                         channel
                     }
                     isStockAvailable
+                    isHighlighted
                 }
                 isFollowed
                 contentType

@@ -99,6 +99,7 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_SEND_RESULT_KEY
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -4100,11 +4101,12 @@ class ShipmentFragment :
             )
             startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION)
         } else {
-            val uploadPrescriptionIntent = RouteManager.getIntent(
+            val attachPrescriptionIntent = RouteManager.getIntent(
                 activity,
                 UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink
             )
-            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION)
+            attachPrescriptionIntent.putExtra(EPHARMACY_SEND_RESULT_KEY, true)
+            startActivityForResult(attachPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION)
             ePharmacyAnalytics.clickLampirkanResepDokter(
                 uploadPrescriptionUiModel.getWidgetState(),
                 buttonText,

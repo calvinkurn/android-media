@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.data.tracker
 
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -62,7 +63,7 @@ internal interface FeedBrowseTracker {
         widgetPositionInList: Int
     )
 
-    fun clickChannelCard(
+    fun clickAuthorChannelCard(
         item: AuthorWidgetModel,
         slotInfo: SlotInfo,
         widgetPositionInList: Int
@@ -77,4 +78,16 @@ internal interface FeedBrowseTracker {
     fun clickBackExitCategoryInspirationPage()
 
     fun openScreenBrowseFeedPage()
+
+    fun viewStoryWidget(
+        item: StoryNodeModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    )
+
+    fun clickStoryWidget(
+        item: StoryNodeModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    )
 }

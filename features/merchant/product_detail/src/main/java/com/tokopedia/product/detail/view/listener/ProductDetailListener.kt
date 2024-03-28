@@ -82,6 +82,8 @@ interface ProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
+    fun onMediaViewed(position: Int, isVariantPhoto: Boolean)
+
     fun shouldShowWishlist(): Boolean
 
     /**
