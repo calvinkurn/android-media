@@ -32,6 +32,7 @@ object ShoppingListDataFactory {
                     id = "1111111",
                     name = "product 1",
                     imageUrl = "https://www.tokopedia.com/image",
+                    isSelected = false,
                     price = "Rp.25.000",
                     priceInt = 25000.toDouble(),
                     labelGroup = listOf(
@@ -51,6 +52,7 @@ object ShoppingListDataFactory {
                     id = "1111112",
                     name = "product 2",
                     imageUrl = "https://www.tokopedia.com/image",
+                    isSelected = false,
                     price = "Rp.10.000",
                     priceInt = 10000.toDouble(),
                     labelGroup = listOf(
@@ -70,6 +72,7 @@ object ShoppingListDataFactory {
                     id = "1111115",
                     name = "product 5",
                     imageUrl = "https://www.tokopedia.com/image",
+                    isSelected = false,
                     price = "Rp.10.000",
                     priceInt = 10000.toDouble(),
                     labelGroup = listOf(
@@ -89,6 +92,7 @@ object ShoppingListDataFactory {
                     id = "1111116",
                     name = "product 6",
                     imageUrl = "https://www.tokopedia.com/image",
+                    isSelected = false,
                     price = "Rp.10.000",
                     priceInt = 10000.toDouble(),
                     labelGroup = listOf(
@@ -108,6 +112,7 @@ object ShoppingListDataFactory {
                     id = "1111117",
                     name = "product 7",
                     imageUrl = "https://www.tokopedia.com/image",
+                    isSelected = false,
                     price = "Rp.10.000",
                     priceInt = 10000.toDouble(),
                     labelGroup = listOf(
@@ -127,6 +132,7 @@ object ShoppingListDataFactory {
                     id = "1111118",
                     name = "product 8",
                     imageUrl = "https://www.tokopedia.com/image",
+                    isSelected = false,
                     price = "Rp.10.000",
                     priceInt = 10000.toDouble(),
                     labelGroup = listOf(
@@ -146,6 +152,7 @@ object ShoppingListDataFactory {
                     id = "1111119",
                     name = "product 9",
                     imageUrl = "https://www.tokopedia.com/image",
+                    isSelected = false,
                     price = "Rp.10.000",
                     priceInt = 10000.toDouble(),
                     labelGroup = listOf(

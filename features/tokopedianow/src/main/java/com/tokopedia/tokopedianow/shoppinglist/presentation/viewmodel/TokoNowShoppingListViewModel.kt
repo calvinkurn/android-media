@@ -10,6 +10,7 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -72,8 +73,11 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CheckUncheckParamExtension.selectAll
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CheckUncheckParamExtension.update
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.areSelected
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.countSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.doIf
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.resetIndices
@@ -281,30 +285,24 @@ class TokoNowShoppingListViewModel @Inject constructor(
             }
     }
 
-    private suspend fun saveShoppingListState() {
+    private suspend fun saveCheckUncheckState(
+        productId: String = String.EMPTY,
+        isSelected: Boolean = false
+    ) {
+        if (productId.isNotBlank()) {
+            checkUncheckStateParams.update(
+                productId = productId,
+                isSelected = isSelected
+            )
+        } else {
+            checkUncheckStateParams.selectAll(
+                products = availableProducts
+            )
+        }
+
         delay(DEBOUNCE_TIMES_SHOPPING_LIST)
         saveShoppingListStateUseCase.execute(checkUncheckStateParams)
         checkUncheckStateParams.clear()
-    }
-
-    private suspend fun saveAllAvailableProductsState() {
-        checkUncheckStateParams.clear()
-        checkUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(productId = it.id, isSelected = it.isSelected) })
-        saveShoppingListState()
-    }
-
-    private suspend fun saveAvailableProductState(
-        productId: String,
-        isSelected: Boolean
-    ) {
-        val index = checkUncheckStateParams.indexOfFirst { it.productId == productId }
-        if (index != INVALID_INDEX) {
-            checkUncheckStateParams[index] = SaveShoppingListStateActionParam(productId, isSelected)
-        } else {
-            checkUncheckStateParams.add(SaveShoppingListStateActionParam(productId, isSelected))
-        }
-
-        saveShoppingListState()
     }
 
     /**
@@ -929,7 +927,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 _isTopCheckAllSelected.value = isSelected
                 _layoutState.value = Success(getUpdatedLayout())
 
-                saveAllAvailableProductsState()
+                saveCheckUncheckState()
             }, onError = { /* do nothing */ }
         )
     }
@@ -968,21 +966,19 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 calculateDataForBottomBulkAtc()
 
-                val areAllAvailableProductsSelected = filteredAvailableProducts.all { it.isSelected }
-
                 mutableLayout
                     .modifyTopCheckAll(
-                        isSelected = areAllAvailableProductsSelected
+                        isSelected = filteredAvailableProducts.areSelected()
                     )
                     .modifyProduct(
                         productId = productId,
                         isSelected = isSelected
                     )
 
-                _isTopCheckAllSelected.value = areAllAvailableProductsSelected
+                _isTopCheckAllSelected.value = filteredAvailableProducts.areSelected()
                 _layoutState.value = Success(getUpdatedLayout())
 
-                saveAvailableProductState(
+                saveCheckUncheckState(
                     productId = productId,
                     isSelected = isSelected
                 )

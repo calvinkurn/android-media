@@ -43,7 +43,8 @@ class ShoppingListOutOfCoverage: TokoNowShoppingListViewModelFixture() {
             .addProductRecommendationOoc()
 
         // verify section
-        viewModel.layoutState
+        viewModel
+            .layoutState
             .verifySuccess(
                 LayoutModel(
                     layout = expectedResult

@@ -55,12 +55,6 @@ internal object CommonVisitableExtension {
         product: ShoppingListHorizontalProductCardItemUiModel
     ) = add(product)
 
-    fun List<ShoppingListHorizontalProductCardItemUiModel>.resetIndices() = mapIndexed { index, uiModel -> uiModel.copy(index = index) }
-
-    fun List<ShoppingListHorizontalProductCardItemUiModel>.countSelectedItems() = count { it.isSelected }
-
-    fun List<ShoppingListHorizontalProductCardItemUiModel>.sumPriceSelectedItems() = filter { it.isSelected }.sumOf { it.priceInt }
-
     fun MutableList<Visitable<*>>.addProducts(
         products: List<ShoppingListHorizontalProductCardItemUiModel>
     ): MutableList<Visitable<*>> {
@@ -89,4 +83,12 @@ internal object CommonVisitableExtension {
         )
         return this
     }
+
+    fun List<ShoppingListHorizontalProductCardItemUiModel>.resetIndices() = mapIndexed { index, uiModel -> uiModel.copy(index = index) }
+
+    fun List<ShoppingListHorizontalProductCardItemUiModel>.countSelectedItems() = count { it.isSelected }
+
+    fun List<ShoppingListHorizontalProductCardItemUiModel>.sumPriceSelectedItems() = filter { it.isSelected }.sumOf { it.priceInt }
+
+    fun List<ShoppingListHorizontalProductCardItemUiModel>.areSelected() = all { it.isSelected }
 }

@@ -55,7 +55,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowSho
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -64,6 +64,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.After
 import org.junit.Assert
@@ -124,6 +125,10 @@ abstract class TokoNowShoppingListViewModelFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -138,7 +143,7 @@ abstract class TokoNowShoppingListViewModelFixture {
             deleteFromWishlistUseCase,
             addToCartMultiUseCase,
             resourceProvider,
-            CoroutineTestDispatchersProvider
+            coroutineTestRule.dispatchers
         )
     }
 
@@ -162,6 +167,10 @@ abstract class TokoNowShoppingListViewModelFixture {
 
     protected fun StateFlow<UiState<*>>.verifySuccess(expectedResult: Any) {
         Assert.assertEquals(expectedResult, (value as UiState.Success).data)
+    }
+
+    protected fun StateFlow<UiState<*>>.verifyLoading(expectedResult: Any) {
+        Assert.assertEquals(expectedResult, (value as UiState.Loading).data)
     }
 
     protected fun StateFlow<UiState<*>>.verifyError(throwable: Throwable, expectedResult: Any) {
@@ -546,11 +555,7 @@ abstract class TokoNowShoppingListViewModelFixture {
 
         if (shoppingList != null) {
             availableProducts.addAll(ProductShoppingListMapper.mapAvailableShoppingList(shoppingList.listAvailableItem))
-            unavailableProducts.addAll(
-                ProductShoppingListMapper.mapUnavailableShoppingList(
-                    shoppingList.listUnavailableItem
-                )
-            )
+            unavailableProducts.addAll(ProductShoppingListMapper.mapUnavailableShoppingList(shoppingList.listUnavailableItem))
         }
 
         recommendationModel = RecommendationModel(
