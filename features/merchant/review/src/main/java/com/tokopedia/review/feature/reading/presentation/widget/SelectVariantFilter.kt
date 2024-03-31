@@ -46,7 +46,7 @@ fun SelectVariantFilter(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 onClick = {
-                    uiEvent.onApplyClicked(uiModel.generateFilter(), uiModel.variants)
+                    uiEvent.onApplyClicked(uiModel)
                 }
             )
         }
@@ -117,14 +117,17 @@ fun SelectVariantFilterPreview() {
                     name = "Warna:",
                     options = listOf(
                         SelectVariantUiModel.Option(
+                            id = "",
                             name = "Putih",
                             image = ""
                         ),
                         SelectVariantUiModel.Option(
+                            id = "",
                             name = "Hitam",
                             image = ""
                         ),
                         SelectVariantUiModel.Option(
+                            id = "",
                             name = "Merah",
                             image = ""
                         )
@@ -135,27 +138,28 @@ fun SelectVariantFilterPreview() {
                     name = "Ukuran:",
                     options = listOf(
                         SelectVariantUiModel.Option(
+                            id = "",
                             name = "S",
                             image = ""
                         ),
                         SelectVariantUiModel.Option(
+                            id = "",
                             name = "M",
                             image = ""
                         ),
                         SelectVariantUiModel.Option(
+                            id = "",
                             name = "L",
                             image = ""
                         )
                     ),
                     level = 2
                 )
-            )
+            ),
+            pairedOptions = emptyList()
         )
         SelectVariantFilter(uiModel, object : SelectVariantUiEvent {
-            override fun onApplyClicked(
-                filter: String,
-                variants: List<SelectVariantUiModel.Variant>
-            ) {
+            override fun onApplyClicked(uiModel: SelectVariantUiModel) {
             }
 
         })
@@ -163,16 +167,48 @@ fun SelectVariantFilterPreview() {
 }
 
 data class SelectVariantUiModel(
-    val variants: List<Variant>
+    val variants: List<Variant>,
+    val pairedOptions: List<List<String>>
 ) {
-    fun generateFilter(): String {
-        return variants.mapNotNull { variant ->
-            val selectedOptions = variant.options
-                .filter { it.isSelected }.joinToString(",") { it.name }
-            if (selectedOptions.isNotEmpty())
-                "variant_l${variant.level}=${selectedOptions}"
-            else null
-        }.joinToString(";")
+
+    var count: Int = 0
+    var filter: String = ""
+    var opt: String = ""
+
+    fun calculate() {
+        reset()
+
+        val filter = mutableListOf<String>()
+        val pairedOption = mutableListOf<String>()
+        var isEachLevelOption = true
+
+        variants.forEach { variant ->
+            val selectedOptions = variant.options.filter { it.isSelected }
+
+            if (selectedOptions.isNotEmpty()) {
+                val optionNames = selectedOptions.joinToString(",") { it.name }
+                filter.add("variant_l${variant.level}=${optionNames}")
+                count += selectedOptions.size
+            }
+            if (selectedOptions.size == 1) {
+                val option = selectedOptions.first()
+                pairedOption.add(option.id)
+            }
+            isEachLevelOption = isEachLevelOption && selectedOptions.size == 1
+        }
+
+        if (isEachLevelOption) {
+            val isAvailable = pairedOptions.any { it.containsAll(pairedOption) }
+            if (!isAvailable) this.opt = "variant_unavailable=true"
+        }
+
+        this.filter = filter.joinToString(";")
+    }
+
+    private fun reset(){
+        count = 0
+        filter = ""
+        opt = ""
     }
 
     data class Variant(
@@ -182,6 +218,7 @@ data class SelectVariantUiModel(
     )
 
     data class Option(
+        val id: String,
         val name: String,
         val image: String,
     ) {
@@ -190,7 +227,7 @@ data class SelectVariantUiModel(
 }
 
 interface SelectVariantUiEvent {
-    fun onApplyClicked(filter: String, variants: List<SelectVariantUiModel.Variant>)
+    fun onApplyClicked(uiModel: SelectVariantUiModel)
 }
 
 internal fun List<VariantData>.toVariantUiModel(): List<SelectVariantUiModel.Variant> = map {
@@ -203,6 +240,7 @@ internal fun List<VariantData>.toVariantUiModel(): List<SelectVariantUiModel.Var
 
 internal fun List<Option>.toOptionUiModel(): List<SelectVariantUiModel.Option> = map {
     SelectVariantUiModel.Option(
+        id = it.id,
         name = it.name,
         image = it.image
     )

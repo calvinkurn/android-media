@@ -93,6 +93,7 @@ class ReadReviewViewModel @Inject constructor(
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
     private var filter: SelectedFilters = SelectedFilters()
     private var isTopicExtraction: Boolean = false
+    private var opt: String = ""
 
     init {
         _ratingAndTopics.addSource(productId) {
@@ -313,10 +314,12 @@ class ReadReviewViewModel @Inject constructor(
 
     fun setVariantFilter(
         variantFilter: String,
+        opt: String,
         isProductReview: Boolean
     ){
         this.filter.variant = if(variantFilter.isEmpty()) null
         else FilterType.FilterVariant(variantFilter)
+        this.opt = opt
         resetPage(isProductReview)
     }
 
@@ -379,7 +382,8 @@ class ReadReviewViewModel @Inject constructor(
                 productId.value ?: "",
                 page,
                 sort,
-                filter.mapFilterToRequestParams()
+                filter.mapFilterToRequestParams(),
+                opt
             )
             val data = getProductReviewListUseCase.executeOnBackground()
             _productReviews.postValue(Success(data.productrevGetProductReviewList))

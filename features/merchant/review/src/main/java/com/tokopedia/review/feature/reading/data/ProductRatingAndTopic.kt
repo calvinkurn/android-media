@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reading.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -27,7 +28,10 @@ data class ProductrevGetProductRatingAndTopic(
     val keywords: List<Keyword> = emptyList(),
     @SerializedName("variantsData")
     @Expose
-    val variantsData: List<VariantData> = emptyList()
+    val variantsData: List<VariantData> = emptyList(),
+    @SerializedName("pairedVariantsData")
+    @Expose
+    val pairedVariantsData: List<PairedVariant> = emptyList()
 ) {
     fun getTopicsMap(): Map<String, String> {
         val topicsMap = mutableMapOf<String, String>()
@@ -135,10 +139,20 @@ data class VariantData(
 )
 
 data class Option(
+    @SerializedName("id")
+    @Expose
+    val id: String = "",
     @SerializedName("name")
     @Expose
     val name: String = "",
     @SerializedName("image")
     @Expose
     val image: String = ""
+)
+
+data class PairedVariant(
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("optionIDs")
+    @Expose
+    val optionIds: List<String> = emptyList()
 )

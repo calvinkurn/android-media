@@ -54,7 +54,6 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
                 }
                 variantsData {
                   name
-                  identifier
                   level
                   option {
                     id

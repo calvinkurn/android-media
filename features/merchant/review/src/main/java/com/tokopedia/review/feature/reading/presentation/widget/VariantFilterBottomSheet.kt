@@ -15,7 +15,8 @@ class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
 
         fun instance(
             listener: ReadReviewFilterBottomSheetListener,
-            variants: List<SelectVariantUiModel.Variant>
+            variants: List<SelectVariantUiModel.Variant>,
+            pairedOptions: List<List<String>>
         ) = VariantFilterBottomSheet().apply {
             val copyVariants = variants.map { variant ->
                 variant.copy(
@@ -27,16 +28,18 @@ class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
                 )
             }
             this.variants = copyVariants
+            this.pairedOptions = pairedOptions
             this.listener = listener
         }
     }
 
     private var listener: ReadReviewFilterBottomSheetListener? = null
-    private var variants: List<SelectVariantUiModel.Variant>? = null
+    private var variants: List<SelectVariantUiModel.Variant> = emptyList()
+    private var pairedOptions: List<List<String>> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (variants == null) dismiss()
+        if (variants.isEmpty()) dismiss()
     }
 
     override fun onCreateView(
@@ -44,9 +47,6 @@ class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val variants = variants ?: return null
-
         setTitle("Filter Varian")
         setAction("Reset") {
             val options = variants.flatMap { it.options }
@@ -57,7 +57,7 @@ class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
             setContent {
                 NestTheme {
                     SelectVariantFilter(
-                        uiModel = SelectVariantUiModel(variants),
+                        uiModel = SelectVariantUiModel(variants, pairedOptions),
                         uiEvent = this@VariantFilterBottomSheet
                     )
                 }
@@ -69,14 +69,9 @@ class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onApplyClicked(filter: String, variants: List<SelectVariantUiModel.Variant>) {
-        val options = variants.flatMap { it.options }
-        val selected = options.filter { it.isSelected }
-        listener?.onFilterVariant(
-            count = selected.size,
-            variantFilter = filter,
-            variants
-        )
+    override fun onApplyClicked(uiModel: SelectVariantUiModel) {
+        uiModel.calculate()
+        listener?.onFilterVariant(uiModel)
         dismiss()
     }
 

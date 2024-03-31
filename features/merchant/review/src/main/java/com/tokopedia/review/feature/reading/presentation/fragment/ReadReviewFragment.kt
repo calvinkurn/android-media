@@ -174,6 +174,7 @@ open class ReadReviewFragment :
     private var selectedTopic: String? = null
 
     private var filterVariants:List<SelectVariantUiModel.Variant> = emptyList()
+    private var pairedOptions: List<List<String>> = emptyList()
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -526,7 +527,8 @@ open class ReadReviewFragment :
     override fun onFilterWithVariantClicked() {
         VariantFilterBottomSheet.instance(
             this,
-            filterVariants
+            filterVariants,
+            pairedOptions
         ).show(parentFragmentManager, "Test")
     }
 
@@ -581,15 +583,11 @@ open class ReadReviewFragment :
         showListOnlyLoading()
     }
 
-    override fun onFilterVariant(
-        count: Int,
-        variantFilter: String,
-        variants: List<SelectVariantUiModel.Variant>
-    ) {
-        this.filterVariants = variants
+    override fun onFilterVariant(selectVariantUiModel: SelectVariantUiModel) = with(selectVariantUiModel) {
+        this@ReadReviewFragment.filterVariants = variants
         clearAllData()
         reviewHeader?.updateSelectedVariant(count)
-        viewModel.setVariantFilter(variantFilter, isProductReview)
+        viewModel.setVariantFilter(filter, opt, isProductReview)
         showListOnlyLoading()
         updateTopicExtraction()
     }
@@ -1018,6 +1016,7 @@ open class ReadReviewFragment :
         }
 
         filterVariants = ratingAndTopics.variantsData.toVariantUiModel()
+        pairedOptions = ratingAndTopics.pairedVariantsData.map { it.optionIds }
     }
 
     open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
