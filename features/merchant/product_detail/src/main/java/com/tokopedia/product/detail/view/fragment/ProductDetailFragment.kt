@@ -3497,8 +3497,13 @@ open class ProductDetailFragment :
     }
 
     private fun goToCheckout() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
-        startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+        val p1 = viewModel.getProductInfoP1 ?: return
+        val selectedPromoCodes = p1.data.promoPrice.promoCodes.mapIntoPromoExternalAutoApply()
+
+        ProductCartHelper.goToCheckoutWithAutoApplyPromo(
+            (context as ProductDetailActivity),
+            ArrayList(selectedPromoCodes)
+        )
     }
 
     private fun goToCartCheckout(cartId: String) {
