@@ -7,7 +7,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
-import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
+import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 const val LOW = "low"
@@ -16,7 +16,7 @@ const val MID = "mid"
 const val MEDIUM = "medium"
 const val KALI = " kali"
 
-class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int, budget: String) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
+class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int, budget: String) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemUiModel>(view) {
 
     var btnDelete = view.findViewById<IconUnify>(R.id.btnDelete)
     var btnEditBudget = view.findViewById<IconUnify>(R.id.editBudget)
@@ -31,7 +31,7 @@ class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int)
         var LAYOUT = R.layout.topads_create_layout_budget_list_item
     }
 
-    override fun bind(item: BidInfoItemViewModel, minBid: String) {
+    override fun bind(item: BidInfoItemUiModel, minBid: String) {
         item.let {
 
             btnDelete.setOnClickListener {

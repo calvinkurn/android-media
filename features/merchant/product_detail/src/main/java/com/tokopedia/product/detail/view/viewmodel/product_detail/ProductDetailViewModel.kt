@@ -921,6 +921,7 @@ class ProductDetailViewModel @Inject constructor(
             val result =
                 withContext(dispatcher.io) { deleteWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
+                getP2()?.updateWishlistStatus(productId, false)
                 listener.onSuccessRemoveWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorRemoveWishlist(result.throwable, productId)
@@ -937,6 +938,7 @@ class ProductDetailViewModel @Inject constructor(
                 getProductInfoP1?.let {
                     getProductInfoP1 = it.copy(data = it.data.copy(isWishlist = true))
                 }
+                getP2()?.updateWishlistStatus(productId, true)
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorAddWishList(result.throwable, productId)
