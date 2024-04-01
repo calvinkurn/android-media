@@ -707,7 +707,9 @@ open class DiscoveryFragment :
             addDecorator(MasterProductCardItemDecorator())
             gridLayoutManager = GridLayoutManager(requireContext(), 2)
             renderSpanSize()
-            setLayoutManager(gridLayoutManager!!)
+            gridLayoutManager?.let {
+                setLayoutManager(it)
+            }
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }

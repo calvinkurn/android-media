@@ -85,8 +85,8 @@ class DiscoveryRecycleAdapter(
             val map = mutableMapOf<String, String>()
             map["type"] = "log"
             map["err"] = "uiWidgetComponent not initialized"
-            map["page"] = _componentList[position].pageEndPoint ?: ""
-            map["compName"] = _componentList[position].name ?: ""
+            map["page"] = _componentList[position].pageEndPoint
+            map["compName"] = _componentList[position].name.orEmpty()
             ServerLogger.log(Priority.P2, "DISCO_DAGGER_VALIDATION", map)
             Utils.logException(e)
         }

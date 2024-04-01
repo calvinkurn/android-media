@@ -24,7 +24,7 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
         val position = parent.getChildAdapterPosition(view)
         if(position<0)
             return
-        val spanIndex = (view.layoutParams as GridLayoutManager.LayoutParams).spanIndex
+        val spanIndex = (view.layoutParams as? GridLayoutManager.LayoutParams)?.spanIndex
         val type = parent.adapter?.getItemViewType(position)
         when (type) {
             ComponentsList.ProductCardRevampItem.ordinal -> {
