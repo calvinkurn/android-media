@@ -39,7 +39,7 @@ public class AppUpdateDialogBuilder {
 
         if (detail.isInAppUpdateEnabled()) {
             if (detail.isForceUpdate()) {
-                AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, () -> {
+                AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, detail.isNeedSpecificUpdate(), () -> {
                     /* on Error */
                     if (!detail.isNeedSpecificUpdate()) {
                         alertDialog.show();
@@ -47,7 +47,7 @@ public class AppUpdateDialogBuilder {
                     return null;
                 }, /* onFinished */ () -> null);
             } else {
-                AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, onProgressMessage -> {
+                AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, detail.isNeedSpecificUpdate(), onProgressMessage -> {
                     // if in progress
                     Toast.makeText(activity, onProgressMessage, Toast.LENGTH_LONG).show();
                     return null;

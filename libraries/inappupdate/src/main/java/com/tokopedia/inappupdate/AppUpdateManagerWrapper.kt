@@ -2,7 +2,6 @@ package com.tokopedia.inappupdate
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.util.Log
 import android.view.View
@@ -54,6 +53,7 @@ object AppUpdateManagerWrapper {
 
     @JvmStatic
     fun checkAndDoFlexibleUpdate(activity: Activity,
+                                 isSpecificUpdate: Boolean,
                                  onProgress: ((onProgressMessage: String) -> (Unit)),
                                  onError: (() -> (Unit)),
                                  onFinished: (() -> (Unit))) {
@@ -66,6 +66,9 @@ object AppUpdateManagerWrapper {
         val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
 
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            if (isSpecificUpdate && it.clientVersionStalenessDays() == null) {
+                return@addOnSuccessListener
+            }
 
             Log.i("in app update", "Check update staleness flexible: ${it.clientVersionStalenessDays()}")
 
@@ -142,7 +145,7 @@ object AppUpdateManagerWrapper {
             .setTitle(dataUpdateApp.title)
             .setMessage(dataUpdateApp.message)
             .setPositiveButton(activity.getString(R.string.appupdate_update)) { dialog, _ ->
-                checkAndDoImmediateUpdate(activity, {}, {})
+                checkAndDoImmediateUpdate(activity, true, {}, {})
                 dialog.dismiss()
             }
             .setNegativeButton(activity.getString(R.string.appupdate_close)) { _, _ ->
@@ -154,7 +157,7 @@ object AppUpdateManagerWrapper {
     }
 
     @JvmStatic
-    fun checkAndDoImmediateUpdate(activity: Activity, onError: (() -> (Unit)), onFinished: () -> Unit) {
+    fun checkAndDoImmediateUpdate(activity: Activity, isSpecificUpdate: Boolean, onError: (() -> (Unit)), onFinished: () -> Unit) {
         val appContext = activity.applicationContext
         val appUpdateManager = getInstance(appContext)
         if (appUpdateManager == null) {
@@ -163,6 +166,9 @@ object AppUpdateManagerWrapper {
         }
         val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            if (isSpecificUpdate && it.clientVersionStalenessDays() == null) {
+                return@addOnSuccessListener
+            }
 
             Log.i("in app update", "Check update staleness immediate: ${it.clientVersionStalenessDays()}")
 
