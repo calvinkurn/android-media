@@ -4,7 +4,6 @@ interface PageLoadTimePerformanceInterface {
     fun addAttribution(attribution: String, value: String);
 
     fun startMonitoring(traceName: String = "")
-    fun stopMonitoring()
 
     fun startPreparePagePerformanceMonitoring()
     fun stopPreparePagePerformanceMonitoring()
@@ -23,4 +22,5 @@ interface PageLoadTimePerformanceInterface {
     fun getPltPerformanceData(): PltPerformanceData
 
     fun getAttribution(): HashMap<String, String>
+    fun stopMonitoring(onStop: ((overallDuration: Long) -> Unit)? = null)
 }

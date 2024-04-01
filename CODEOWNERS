@@ -310,7 +310,6 @@
 /features/fintech/insurance           				    @tokopedia/android-minionotto-dev
 
 /features/communication/push-notification-common/       @tokopedia/android-core-dev
-/features/kyc                           				@tokopedia/android-core-dev
 
 /features/promo/scp_rewards                             @tokopedia/android-minionsolo-dev
 /features/promo/scp_rewards_common                      @tokopedia/android-minionsolo-dev
