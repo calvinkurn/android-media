@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio.topads
 import android.content.Context
 import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.FragmentName
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
@@ -32,7 +33,7 @@ object AppLogTopAds {
                         AdsLogConst.Param.AD_EXTRA_DATA,
                         JSONObject().apply {
                             putChannelName(currentPageName)
-                            putEnterFrom(currentPageName)
+                            putEnterFrom()
                             put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                             put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
                             // todo need to confirm
@@ -78,7 +79,7 @@ object AppLogTopAds {
                         AdsLogConst.Param.AD_EXTRA_DATA,
                         JSONObject().apply {
                             putChannelName(currentPageName)
-                            putEnterFrom(currentPageName)
+                            putEnterFrom()
                             put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                             put(AdsLogConst.Param.PRODUCT_ID, adsLogShowModel.adExtraData.productId)
                         }
@@ -117,7 +118,7 @@ object AppLogTopAds {
                         AdsLogConst.Param.AD_EXTRA_DATA,
                         JSONObject().apply {
                             putChannelName(currentPageName)
-                            putEnterFrom(currentPageName)
+                            putEnterFrom()
                             put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                             put(AdsLogConst.Param.PRODUCT_ID, adsLogRealtimeClickModel.adExtraData.productId)
                         }
@@ -139,17 +140,21 @@ object AppLogTopAds {
         )
     }
 
-    private fun JSONObject.putEnterFrom(twoLastPageName: String): String {
-        return if (twoLastPageName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+    private fun JSONObject.putEnterFrom() {
+        val twoLastFragmentName = AppLogAnalytics.getTwoLastPage()
+        val enterFrom = if (twoLastFragmentName == FragmentName.HOME_FRAGMENT) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+        put(AdsLogConst.Param.ENTER_FROM, enterFrom)
     }
 
     // todo need to confirm for this value
-    private fun JSONObject.putChannelName(pageName: String): String {
-        return "$pageName search"
+    private fun JSONObject.putChannelName(pageName: String) {
+        val pageNameSearch = "$pageName search"
+        put(AdsLogConst.Param.CHANNEL, pageNameSearch)
     }
 
-    private fun JSONObject.putTag(currentPageName: String): String {
-        return if (currentPageName == PageName.SEARCH_RESULT) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
+    private fun JSONObject.putTag(currentPageName: String) {
+        val tagName = if (currentPageName == PageName.SEARCH_RESULT) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
+        put(AdsLogConst.TAG, tagName)
     }
 
     private fun JSONObject.putNetworkType(context: Context) {
