@@ -1,12 +1,12 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
-import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -27,7 +27,9 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AdditionalParam
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper.Companion.PARAM_START_SUBID
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -298,7 +300,7 @@ class ProductDetailViewModel @Inject constructor(
     val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
     private val isSingleSku: Boolean
         get() = if (getProductInfoP1?.isProductVariant() == false) true
-                    else variantData?.children?.size == 1
+        else variantData?.children?.size == 1
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -1230,20 +1232,38 @@ class ProductDetailViewModel @Inject constructor(
         productInfo: ProductInfoP1,
         affiliateUuid: String,
         uuid: String,
-        affiliateChannel: String
+        affiliateChannel: String,
+        affiliateSubIds: Map<String, String>?,
+        affiliateSource: String?
     ) {
         launchCatchError(block = {
             val affiliatePageDetail =
                 ProductDetailMapper.getAffiliatePageDetail(productInfo)
 
+            val subIds = affiliateSubIds?.mapNotNull {
+                val key = it.key.toIntOrNull()
+                    ?: if (it.key.length > PARAM_START_SUBID.length) it.key.substring(
+                        PARAM_START_SUBID.length
+                    ).toIntOrNull() else
+                        return@mapNotNull null
+
+                AdditionalParam(
+                    key = key.toString(),
+                    value = it.value.replace(" ", "+")
+                )
+            } ?: emptyList()
+
             affiliateCookieHelper.get().initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
-                uuid = uuid
+                uuid = uuid,
+                subIds = subIds,
+                source = affiliateSource ?: ""
             )
         }, onError = {
             // no op, expect to be handled by Affiliate SDK
+
         })
     }
 
