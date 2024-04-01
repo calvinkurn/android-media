@@ -10,11 +10,11 @@ class ShoppingListAdapter(
     typeFactory: ShoppingListAdapterTypeFactory
 ): BaseTokopediaNowListAdapter<Visitable<*>, ShoppingListAdapterTypeFactory>(typeFactory, ShoppingListDiffer()) {
     fun getHeader(): TokoNowThematicHeaderUiModel? {
-        return data.firstOrNull { it is TokoNowThematicHeaderUiModel } as TokoNowThematicHeaderUiModel?
+        return data.firstOrNull { it is TokoNowThematicHeaderUiModel } as? TokoNowThematicHeaderUiModel
     }
 
     fun getFirstProductRecommendation(): ShoppingListHorizontalProductCardItemUiModel? {
-        return data.firstOrNull { it is ShoppingListHorizontalProductCardItemUiModel && it.productLayoutType == ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION } as ShoppingListHorizontalProductCardItemUiModel?
+        return data.firstOrNull { it is ShoppingListHorizontalProductCardItemUiModel && it.productLayoutType == ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION } as? ShoppingListHorizontalProductCardItemUiModel
     }
 
     fun findPosition(visitable: Visitable<*>): Int {
