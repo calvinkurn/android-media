@@ -3,6 +3,9 @@ package com.tokopedia.recommendation_widget_common.widget.vertical
 import android.view.View
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalSeeMoreBinding
@@ -46,6 +49,7 @@ class RecommendationVerticalSeeMoreViewHolder(
     }
 
     private fun onSeeMoreClicked(element: RecommendationVerticalSeeMoreModel) {
+        AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(element.recomWidget.pageName))
         element.widgetTracking?.sendEventSeeMoreClick()
         RouteManager.route(binding.root.context, element.recomWidget.seeMoreAppLink)
     }

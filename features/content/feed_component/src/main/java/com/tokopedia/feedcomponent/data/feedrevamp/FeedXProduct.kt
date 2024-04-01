@@ -52,6 +52,8 @@ data class FeedXProduct(
     var priceOriginal: Int = 0,
     @SerializedName("priceOriginalFmt")
     var priceOriginalFmt: String = "",
+    @SerializedName("priceFormatPriority")
+    var priceFormatPriority: String = "",
     @SerializedName("star")
     var star: Int = 0,
     @SerializedName("totalSold")

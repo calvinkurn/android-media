@@ -50,6 +50,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
                     priceDiscountFmt
                     priceMasked
                     priceMaskedFmt
+                    priceFormatPriority
                     stockWording
                     stockSoldPercentage
                     cartable
