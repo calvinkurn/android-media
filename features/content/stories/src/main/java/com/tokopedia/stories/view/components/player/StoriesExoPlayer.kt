@@ -42,7 +42,7 @@ class StoriesExoPlayer(val context: Context) {
     val exoPlayer: SimpleExoPlayer
         get() = _exoPlayer
 
-    var groupId: String = ""
+    private var groupId: String = ""
 
     init {
         exoPlayer.volume = UNMUTE_VOLUME
