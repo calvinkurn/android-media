@@ -333,6 +333,14 @@ abstract class TokoNowShoppingListViewModelFixture {
         } returns response
     }
 
+    protected fun stubDeleteFromWishlist(
+        throwable: Throwable
+    ) {
+        coEvery {
+            deleteFromWishlistUseCase.executeOnBackground()
+        } throws throwable
+    }
+
     private fun getExpandCollapseState(
         productLayoutType: ShoppingListProductLayoutType
     ): ShoppingListProductState = mutableLayout.getExpandCollapse(productLayoutType)?.productState ?: ShoppingListProductState.COLLAPSE
