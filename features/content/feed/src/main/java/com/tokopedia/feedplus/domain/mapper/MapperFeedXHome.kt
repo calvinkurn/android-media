@@ -1,9 +1,9 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
@@ -140,7 +140,11 @@ class MapperFeedXHome @Inject constructor(
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
             topAdsId = if (isTopAdsPost(card)) card.id else "",
-            contentType = FeedContentType.getType(card.typename, card.type, medias.firstOrNull()?.type.orEmpty())
+            contentType = FeedContentType.getType(
+                card.typename,
+                card.type,
+                medias.firstOrNull()?.type.orEmpty()
+            )
         )
     }
 
@@ -198,7 +202,11 @@ class MapperFeedXHome @Inject constructor(
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             playChannelId = card.playChannelId,
-            contentType = FeedContentType.getType(card.typename, card.type, medias.firstOrNull()?.type.orEmpty())
+            contentType = FeedContentType.getType(
+                card.typename,
+                card.type,
+                medias.firstOrNull()?.type.orEmpty()
+            )
         )
     }
 
@@ -268,6 +276,7 @@ class MapperFeedXHome @Inject constructor(
             priceOriginalFmt = product.priceOriginalFmt,
             priceDiscount = product.priceDiscount,
             priceDiscountFmt = product.priceDiscountFmt,
+            priceFormatPriority = product.priceFormatPriority,
             totalSold = product.totalSold,
             isBebasOngkir = product.isBebasOngkir,
             bebasOngkirStatus = product.bebasOngkirStatus,

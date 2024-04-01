@@ -6,6 +6,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
+import com.tokopedia.home_component.analytics.TrackRecommendationMapper.MISSION_MODULE_NAME
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
 import com.tokopedia.home_component.decoration.MissionWidgetCardItemDecoration
@@ -43,6 +46,8 @@ class MissionWidgetViewHolder(
             CommonCarouselDiffUtilCallback()
         )
     }
+
+    private var hasApplogScrollListener = false
 
     init {
         setupRecyclerView()
@@ -88,6 +93,17 @@ class MissionWidgetViewHolder(
         }
     }
 
+    private fun addHorizontalTrackListener() {
+        if(hasApplogScrollListener) return
+        binding?.homeComponentMissionWidgetRcv?.addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = MISSION_MODULE_NAME,
+                barName = MISSION_MODULE_NAME,
+            )
+        )
+        hasApplogScrollListener = true
+    }
+
     private fun MissionWidgetListDataModel.convertToVisitables(): List<Visitable<MissionWidgetTypeFactory>> {
         val width = missionWidgetUtil.getWidth(itemView.context)
         val titleHeight = missionWidgetUtil.findMaxTitleHeight(this, width, itemView.context)
@@ -106,7 +122,8 @@ class MissionWidgetViewHolder(
                 cardPosition = index,
                 animateOnPress = item.animateOnPress,
                 isCache = item.isCache,
-                type = type
+                type = type,
+                appLog = item.appLog,
             )
         }
     }
@@ -142,6 +159,7 @@ class MissionWidgetViewHolder(
                     binding?.shimmeringMissionWidget?.gone()
                     binding?.homeComponentHeaderView?.show()
                     binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
+                    addHorizontalTrackListener()
                     mappingItem(element.convertToVisitables())
                 }
             }

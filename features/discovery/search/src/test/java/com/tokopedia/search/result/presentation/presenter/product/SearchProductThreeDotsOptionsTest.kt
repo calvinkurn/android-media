@@ -70,6 +70,7 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
     private fun `Then verify click three dots option`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.trackEventLongPress(productItemDataView.productID)
+            productListView.trackEventThreeDotsClickByteIO(productItemDataView)
             productListView.showProductCardOptions(capture(productCardOptionsModelSlot))
         }
     }

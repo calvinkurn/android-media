@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.bottomsheets.*
@@ -1062,7 +1063,7 @@ class ContentDetailFragment :
                 )
             }
             sheet.onEdit = {
-                openEditPostPage(feedXCard.text, postId, feedXCard.author.id)
+                openEditPostPage(feedXCard)
             }
 
             sheet.onClosedClicked = {
@@ -1522,11 +1523,13 @@ class ContentDetailFragment :
         dialog.show()
     }
 
-    private fun openEditPostPage(caption: String, postId: String, authorId: String) {
+    private fun openEditPostPage(feedXCard: FeedXCard) {
         var createPostViewModel = CreatePostViewModel()
-        createPostViewModel.caption = caption
-        createPostViewModel.postId = postId
-        createPostViewModel.editAuthorId = authorId
+        createPostViewModel.caption = feedXCard.text
+        createPostViewModel.postId = feedXCard.id
+        createPostViewModel.editAuthorId = feedXCard.author.id
+        createPostViewModel.shopName = feedXCard.author.name
+        createPostViewModel.authorType = ContentCommonUserType.getUserType(feedXCard.author.type)
 
         val intent = RouteManager.getIntent(
             context,
