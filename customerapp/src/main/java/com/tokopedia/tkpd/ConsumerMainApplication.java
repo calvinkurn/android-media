@@ -55,12 +55,12 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         setVersionName();
         initFileDirConfig();
 
-        GlobalConfig.DEBUG = BuildConfig.DEBUG;
-        GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        GlobalConfig.DEBUG = false;
+        GlobalConfig.ENABLE_DISTRIBUTION = false;
         GlobalConfig.ENABLE_MACROBENCHMARK_UTIL = BuildConfig.ENABLE_MACROBENCHMARK_UTIL;
         GlobalConfig.IS_NAKAMA_VERSION = BuildConfig.IS_NAKAMA_VERSION;
-        com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
-        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.DEBUG = false;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = false;
         com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
         com.tokopedia.config.GlobalConfig.PREINSTALL_NAME = BuildConfig.PREINSTALL_NAME;
         com.tokopedia.config.GlobalConfig.PREINSTALL_DESC = BuildConfig.PREINSTALL_DESC;
