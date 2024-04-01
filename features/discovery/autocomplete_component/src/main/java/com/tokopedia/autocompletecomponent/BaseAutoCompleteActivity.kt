@@ -159,6 +159,9 @@ open class BaseAutoCompleteActivity :
         initSearchParameter(savedInstanceState)
         initInjector()
 
+        fragmentFactory?.let {
+            supportFragmentManager.fragmentFactory = it
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auto_complete)
 
