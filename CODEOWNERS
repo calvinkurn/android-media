@@ -164,6 +164,7 @@
 /features/content/play_common/                          @tokopedia/android-minionlance-dev
 /features/content/play_widget/                          @tokopedia/android-minionlance-dev
 /features/content/product_picker/                       @tokopedia/android-minionlance-dev
+/features/content/product_preview/                      @tokopedia/android-minionlance-dev
 /features/content/stories/                              @tokopedia/android-minionlance-dev
 /features/content/stories_creation/                     @tokopedia/android-minionlance-dev
 /features/content/stories_internal/                     @tokopedia/android-minionlance-dev
