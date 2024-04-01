@@ -648,7 +648,10 @@ object ProductDetailMapper {
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
             promoPrice = promoPriceData.promoPrice,
-            liveIndicator = mediaData.liveIndicator
+            liveIndicator = mediaData.liveIndicator,
+            socialProof = data.components.find {
+                it.type == ProductDetailConstant.MINI_SOCIAL_PROOF
+            }?.componentData?.firstOrNull()?.socialProof ?: emptyList()
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
