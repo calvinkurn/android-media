@@ -40,8 +40,10 @@ class SDUIManager : SDUIinterface {
         sduiTrackingInterface: SDUITrackingInterface? = null,
         customActionInterface: CustomActionInterface? = null
     ) {
-        divContext = Div2Context(baseContext = context as ContextThemeWrapper,
-            configuration = createDivConfiguration(context, sduiTrackingInterface, customActionInterface))
+        divContext = Div2Context(
+            baseContext = context as ContextThemeWrapper,
+            configuration = createDivConfiguration(context, sduiTrackingInterface, customActionInterface)
+        )
     }
 
     private fun createDivConfiguration(
