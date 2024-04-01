@@ -12,23 +12,23 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopParamApiConstant
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
-import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import javax.inject.Inject
-import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.ComponentName
-import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
-import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
+import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
+import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("PII Data Exposure")
@@ -57,11 +57,11 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private val _verticalProductCarousel = MutableLiveData<List<ShopHomeBannerProductGroupItemType>>()
     val verticalProductCarousel: LiveData<List<ShopHomeBannerProductGroupItemType>>
         get() = _verticalProductCarousel
-    
+
     sealed class UiState {
-        object Loading: UiState()
-        data class Success(val data: List<ShopHomeBannerProductGroupItemType>): UiState()
-        data class Error(val error: Throwable): UiState()
+        object Loading : UiState()
+        data class Success(val data: List<ShopHomeBannerProductGroupItemType>) : UiState()
+        data class Error(val error: Throwable) : UiState()
     }
 
     fun getCarouselWidgets(
@@ -81,7 +81,6 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
             launchCatchError(
                 context = dispatcherProvider.io,
                 block = {
-
                     val products = getProductsByProductMetadata(shopId, userAddress, productMetadata, overrideTheme, colorSchema)
 
                     val hasVerticalBanner = widgetStyle == BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
@@ -93,7 +92,6 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                     }
 
                     _carouselWidgets.postValue(UiState.Success(carouselWidgets))
-
                 },
                 onError = { throwable ->
                     _carouselWidgets.postValue(UiState.Error(throwable))
@@ -120,10 +118,10 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
             listOf(VerticalBannerItemType(componentId, componentName, bannerImageUrl, ctaLink, Int.ZERO))
         }
     }
-    
+
     fun refreshVerticalBannerHeight(productCardHeight: Int) {
         val currentCarouselWidgets = _carouselWidgets.value
-        
+
         val widgets = if (currentCarouselWidgets is UiState.Success) {
             currentCarouselWidgets.data
         } else {
@@ -137,7 +135,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                 itemType
             }
         }
-        
+
         _verticalProductCarousel.postValue(updatedProductCarousels)
     }
 
@@ -161,7 +159,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     ): List<ProductItemType> {
         val showProductInfo = productWidget.isShowProductInfo
 
-        return when(productWidget.linkType) {
+        return when (productWidget.linkType) {
             LinkType.FEATURED_PRODUCT -> {
                 val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, showProductInfo, overrideTheme, colorSchema)
                 featuredProducts
@@ -259,7 +257,6 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                 slashedPrice = product.originalPrice,
                 slashedPricePercent = product.percentageAmount,
                 rating = product.ratingAverage,
-                soldCount = product.labelGroupList.soldCount(),
                 appLink = "tokopedia://product/${product.productId}",
                 showProductInfo = showProductInfo,
                 labelGroups = product.labelGroupList.map { labelGroup ->
@@ -292,13 +289,12 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema,
         params: Map<String, Any>
-    ) : List<ProductItemType> {
+    ): List<ProductItemType> {
         getShopProductUseCase.params = params
 
         val response = getShopProductUseCase.executeOnBackground()
 
         val products = response.data.map { product ->
-            val soldLabel = product.labelGroupList.soldCount()
 
             ProductItemType(
                 productId = product.productId,
@@ -308,7 +304,6 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                 slashedPrice = product.campaign.originalPriceFmt,
                 slashedPricePercent = product.campaign.discountedPercentage.toIntOrZero(),
                 rating = product.stats.averageRating,
-                soldCount = soldLabel,
                 appLink = product.appLink,
                 showProductInfo = showProductInfo,
                 labelGroups = product.labelGroupList.map { labelGroup ->
@@ -338,7 +333,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         return products
     }
 
-    private fun List<LabelGroup>.soldCount() : String {
+    private fun List<LabelGroup>.soldCount(): String {
         val soldLabels = filter { labelGroup ->
             labelGroup.title.contains(LABEL_TITLE_PRODUCT_SOLD_COUNT, true)
         }

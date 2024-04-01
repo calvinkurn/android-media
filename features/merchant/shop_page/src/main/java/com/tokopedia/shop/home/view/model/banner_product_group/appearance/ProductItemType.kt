@@ -13,13 +13,12 @@ data class ProductItemType(
     val slashedPrice: String,
     val slashedPricePercent: Int,
     val rating: String,
-    val soldCount: String,
     val appLink: String,
     val showProductInfo: Boolean,
     val labelGroups: List<LabelGroup>,
     val badges: List<ShopBadgeUiModel>,
     val freeOngkir: FreeOngkir,
-    override val id : String = productId,
+    override val id: String = productId,
     override val overrideTheme: Boolean,
     override val colorSchema: ShopPageColorSchema
 ) : ShopHomeBannerProductGroupItemType
