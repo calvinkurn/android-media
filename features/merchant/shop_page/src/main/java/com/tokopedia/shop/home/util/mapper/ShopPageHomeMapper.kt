@@ -46,6 +46,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingDetail
@@ -53,6 +54,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdU
 import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
 import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
+import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
@@ -1554,5 +1556,51 @@ object ShopPageHomeMapper {
                 totalProduct = it.bmsmTotalProduct
             )
         }
+    }
+
+    fun ProductItemType.toProductCardModel(
+        isOverrideTheme: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isFestivity: Boolean
+    ): ProductCardModel {
+        return ProductCardModel(
+            productImageUrl = imageUrl,
+            productName = name,
+            discountPercentage = slashedPricePercent.toString(),
+            slashedPrice = slashedPrice,
+            formattedPrice = price,
+            labelGroupList = labelGroups.map { labelGroup ->
+                ProductCardModel.LabelGroup(
+                    position = labelGroup.position,
+                    title = labelGroup.title,
+                    imageUrl = labelGroup.url,
+                    styleList = labelGroup.styles.map { style ->
+                        ProductCardModel.LabelGroup.Style(key = style.key, value = style.value)
+                    },
+                    type = labelGroup.type
+                )
+            },
+            freeOngkir = ProductCardModel.FreeOngkir(
+                isActive = freeOngkir.isActive,
+                imageUrl = freeOngkir.imgUrl
+            ),
+            hasThreeDots = false,
+            hasAddToCartButton = false,
+            isWishlisted = false,
+            forceLightModeColor = false,
+            shopBadgeList = badges.map { badge ->
+                ProductCardModel.ShopBadge(
+                    imageUrl = badge.imageUrl,
+                    title = badge.title
+                )
+            },
+            colorMode = productCardColorHelper.determineProductCardColorMode(
+                isFestivity = isFestivity,
+                shouldOverrideTheme = isOverrideTheme,
+                patternColorType = patternColorType,
+                backgroundColor = backgroundColor
+            )
+        )
     }
 }

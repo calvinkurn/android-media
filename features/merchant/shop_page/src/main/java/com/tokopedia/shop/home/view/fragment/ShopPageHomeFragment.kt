@@ -5410,7 +5410,8 @@ open class ShopPageHomeFragment :
 
     override fun onBannerProductGroupProductClick(selectedProduct: ProductItemType) {
         try {
-            RouteManager.route(activity ?: return, selectedProduct.appLink)
+            val appLink = "tokopedia://product/${selectedProduct.productId}"
+            RouteManager.route(activity ?: return, appLink)
         } catch (_: Exception) {
         }
     }

@@ -294,7 +294,8 @@ object ShopPageWidgetMapper {
             name = response.name,
             type = response.type,
             viewAllChevronAppLink = viewAllChevronAppLink,
-            widgetStyle = response.header.widgetStyle
+            widgetStyle = response.header.widgetStyle,
+            isFestivity = widgetLayout?.isFestivity.orFalse()
         )
     }
 

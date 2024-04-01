@@ -13,7 +13,7 @@ class ShopProductCardColorHelper {
 
     private val defaultProductCardColor = null
 
-    private val transparentProductCard = object : ProductCardColor {
+    val transparentProductCard = object : ProductCardColor {
         override val cardBackgroundColor: Int? = android.R.color.transparent
         override val productNameTextColor: Int? = defaultProductCardColor
         override val priceTextColor: Int? = defaultProductCardColor

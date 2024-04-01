@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
@@ -95,6 +96,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     true,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     false,
                     ShopPageColorSchema()
@@ -164,6 +168,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     true,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     false,
                     ShopPageColorSchema()
@@ -215,6 +222,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     true,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     false,
                     ShopPageColorSchema()
@@ -261,6 +271,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     true,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     false,
                     ShopPageColorSchema()
@@ -375,6 +388,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "Terjual 2rb",
                     "tokopedia://product/$productId",
                     true,
+                    listOf(LabelGroup(title = "Terjual 2rb"), LabelGroup(title = "Dilayani Tokopedia")),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     productId,
                     false,
                     ShopPageColorSchema()
@@ -441,6 +457,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "Terjual 2rb",
                     "tokopedia://product/$productId",
                     showProductInfo,
+                    listOf(LabelGroup(title = "Terjual 2rb"), LabelGroup(title = "Dilayani Tokopedia")),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     productId,
                     overrideTheme,
                     ShopPageColorSchema()
@@ -505,6 +524,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     showProductInfo,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     overrideTheme,
                     ShopPageColorSchema()
@@ -564,6 +586,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     showProductInfo,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     overrideTheme,
                     ShopPageColorSchema()
@@ -625,6 +650,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     showProductInfo,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     overrideTheme,
                     ShopPageColorSchema()
@@ -686,6 +714,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     false,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     true,
                     ShopPageColorSchema()
@@ -818,6 +849,9 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     "",
                     "",
                     true,
+                    listOf(),
+                    listOf(),
+                    FreeOngkir(isActive = false, imgUrl = ""),
                     "",
                     false,
                     ShopPageColorSchema()
