@@ -1948,6 +1948,7 @@ class CheckoutFragment :
         if (!viewModel.isLoading()) {
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
             if (viewModel.useNewPromoPage()) {
+                // todo: change to vm with callback
                 val validateUseRequestParam =
                     viewModel.generateValidateUsePromoRequestForPromoUsage()
                 val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum

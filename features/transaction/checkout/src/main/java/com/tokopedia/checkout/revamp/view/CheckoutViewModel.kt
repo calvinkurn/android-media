@@ -3184,6 +3184,7 @@ class CheckoutViewModel @Inject constructor(
                 ),
                 payment
             )
+            // todo: hit update cart harus success
 
             if (payment.widget.state == CheckoutPaymentWidgetState.Error) {
                 // show error
@@ -3390,6 +3391,7 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
+            // todo: remove update cart
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
                 UPDATE_CART_SOURCE_PAYMENT,
