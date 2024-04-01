@@ -435,7 +435,7 @@
           "deeplink_variable": "ApplinkConstInternalGlobal.ADD_BANK"
      },
      {
-          "destination_activity": "com.tokopedia.verification.verification.view.activity.VerificationActivity",
+          "destination_activity": "com.tokopedia.verification.otp.view.activity.VerificationActivity",
           "deeplink": "tokopedia-android-internal://user/cotp",
           "deeplink_variable": "ApplinkConstInternalUserPlatform.COTP"
      },

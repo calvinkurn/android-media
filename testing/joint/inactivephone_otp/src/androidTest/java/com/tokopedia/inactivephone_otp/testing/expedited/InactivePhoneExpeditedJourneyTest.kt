@@ -18,7 +18,7 @@ import com.tokopedia.inactivephone_otp.testing.inactivephone.submitnewphone.inac
 import com.tokopedia.inactivephone_otp.testing.otp.OtpInterceptor
 import com.tokopedia.inactivephone_otp.testing.otp.modelist.otpModeList
 import com.tokopedia.inactivephone_otp.testing.otp.verification.otpVerification
-import com.tokopedia.verification.verification.view.activity.VerificationActivity
+import com.tokopedia.verification.otp.view.activity.VerificationActivity
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
 import org.hamcrest.MatcherAssert
