@@ -942,7 +942,6 @@ class ShopPageProductListFragment :
         showLoading()
         viewModel?.getShopFilterData(shopId)
         isOnViewCreated = false
-        onSeeAllClicked()
     }
 
     private fun promoClicked(url: String?) {
