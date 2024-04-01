@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
-import android.graphics.pdf.PdfDocument.Page
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -494,13 +493,48 @@ object AppLogAnalytics {
                         if (buyType == AtcBuyType.ATC) {
                             j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
                         } else {
-                            j.put(ENTRANCE_INFO, generateEntranceInfoJson())
+                            j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutOcc())
                         }
 
                     })
                 }
             })
         }.toString()
+    }
+
+    private fun getEntranceInfoJsonForCheckoutOcc(): JSONObject {
+        return JSONObject().also {
+            it.addEnterFromInfo()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addTrackId()
+            it.put(IS_AD, getLastData(IS_AD))
+            it.addRequestId()
+            it.put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE))
+//            it.addEnterMethod()
+            it.put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD))
+            it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
+            it.put(SEARCH_ID, getLastData(SEARCH_ID))
+            it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
+            it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+        }
+    }
+
+    private fun getPreviousDataFrom(name: String, key: String): Any? {
+        if (_pageDataList.isEmpty()) return null
+        var idx = _pageDataList.lastIndex
+        var start = false
+        while (idx >= 0) {
+            val map = _pageDataList[idx]
+            if (map.containsKey(key) && start) {
+                return map[key]
+            }
+            if (map[PAGE_NAME] == name) {
+                start = true
+            }
+            idx--
+        }
+        return null
     }
 
     fun getSourcePreviousPage(): String? {
