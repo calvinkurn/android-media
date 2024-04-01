@@ -49,6 +49,21 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         productCardStrategy.setImageProductViewHintListener(impressHolder, viewHintListener)
     }
 
+    /**
+     *
+     */
+    fun setImageProductClickListener(imageProductClickListener: (View) -> Unit) {
+        productCardStrategy.setProductImageOnClickListener(imageProductClickListener)
+    }
+
+    fun setProductInfoOnClickListener(productInfoClickListener: (View) -> Unit) {
+        productCardStrategy.setProductInfoOnClickListener(productInfoClickListener)
+    }
+
+    fun setShopTypeLocationOnClickListener(shopTypeLocationOnClickListener: (View) -> Unit) {
+        productCardStrategy.setShopTypeLocationOnClickListener(shopTypeLocationOnClickListener)
+    }
+
     fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) {
         productCardStrategy.setThreeDotsOnClickListener(threeDotsClickListener)
     }

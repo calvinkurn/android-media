@@ -1,7 +1,6 @@
 package com.tokopedia.analytics.byteio.topads.models
 
 data class AdsLogShowOverModel(
-    val category: String,
     val isAdEvent: String,
     val nt: String,
     val refer: String,

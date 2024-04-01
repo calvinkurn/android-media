@@ -52,8 +52,8 @@ import kotlin.LazyThreadSafetyMode.NONE
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class GridViewStrategy(
-    private val productCardView: ViewGroup,
-): ProductCardStrategy {
+    private val productCardView: ViewGroup
+) : ProductCardStrategy {
 
     private val context: Context?
         get() = productCardView.context
@@ -142,7 +142,7 @@ internal class GridViewStrategy(
     private val imageFreeOngkirPromo: ImageView? by lazy(NONE) {
         findViewById(R.id.imageFreeOngkirPromo)
     }
-    private val remoteConfig : RemoteConfig by lazy(NONE) {
+    private val remoteConfig: RemoteConfig by lazy(NONE) {
         FirebaseRemoteConfigImpl(context)
     }
     private val productCardFooterLayoutContainer: FrameLayout? by lazy(NONE) {
@@ -207,6 +207,15 @@ internal class GridViewStrategy(
     private val buttonAddToCart: UnifyButton? by lazy(NONE) {
         findViewById(R.id.buttonAddToCart)
     }
+
+    private val labelPriceReposition: Label? by lazy(NONE) {
+        findViewById(R.id.labelPriceReposition)
+    }
+
+    private val textViewShopLocation: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewShopLocation)
+    }
+
     private var forceWidthPx: Int = 0
 
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
@@ -242,14 +251,15 @@ internal class GridViewStrategy(
     }
 
     private fun inflateFooterView() =
-        if (isUsingViewStub)
+        if (isUsingViewStub) {
             inflate(
                 context,
                 R.layout.product_card_footer_with_viewstub_layout,
                 null
             )
-        else
+        } else {
             inflate(context, R.layout.product_card_footer_layout, null)
+        }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         productCardModel.layoutStrategy.renderProductCardShadow(
@@ -268,32 +278,32 @@ internal class GridViewStrategy(
             imageProduct,
             mediaAnchorProduct,
             videoProduct,
-            productCardModel,
+            productCardModel
         )
 
         productCardModel.layoutStrategy.renderOverlayLabel(
             labelOverlayBackground,
             labelOverlay,
             labelOverlayStatus,
-            productCardModel,
+            productCardModel
         )
 
         productCardModel.layoutStrategy.renderCampaignLabel(
             labelCampaignBackground,
             textViewLabelCampaign,
-            productCardModel,
+            productCardModel
         )
 
         productCardModel.layoutStrategy.renderLabelBestSeller(labelBestSeller, productCardModel)
 
         productCardModel.layoutStrategy.renderLabelBestSellerCategorySide(
             textCategorySide,
-            productCardModel,
+            productCardModel
         )
 
         productCardModel.layoutStrategy.renderLabelBestSellerCategoryBottom(
             textCategoryBottom,
-            productCardModel,
+            productCardModel
         )
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
@@ -306,7 +316,7 @@ internal class GridViewStrategy(
 
         productCardView.renderProductCardContent(
             productCardModel = productCardModel,
-            isWideContent = productCardModel.isWideContent,
+            isWideContent = productCardModel.isWideContent
         )
 
         productCardModel
@@ -335,24 +345,26 @@ internal class GridViewStrategy(
         productCardModel.layoutStrategy.renderLabelReposition(
             labelRepositionBackground,
             labelReposition,
-            productCardModel,
+            productCardModel
         )
 
         productCardModel.layoutStrategy.renderCardHeight(productCardView, cardViewProductCard)
 
-        if (productCardModel.forceLightModeColor)
+        if (productCardModel.forceLightModeColor) {
             forceLightModeColor()
+        }
     }
 
     private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
-        return if(productCardModel.cardInteraction != null) {
+        return if (productCardModel.cardInteraction != null) {
             val isOverlayBounce =
-                remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
-                    && productCardModel.cardInteraction
+                remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true) &&
+                    productCardModel.cardInteraction
             if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
-        } else productCardModel.animateOnPress
+        } else {
+            productCardModel.animateOnPress
+        }
     }
-
 
     private fun forceLightModeColor() {
         val context = context ?: return
@@ -452,6 +464,24 @@ internal class GridViewStrategy(
     override fun getShopBadgeView(): View? = imageShopBadge
 
     override fun getProductImageView(): ImageView? = imageProduct
+    override fun setProductImageOnClickListener(l: (View) -> Unit) {
+        imageProduct?.setOnClickListener(l)
+    }
+
+    override fun setProductInfoOnClickListener(l: (View) -> Unit) {
+        productName?.setOnClickListener(l)
+        productPrice?.setOnClickListener(l)
+        productSlashPrice?.setOnClickListener(l)
+        rating?.setOnClickListener(l)
+        soldCount?.setOnClickListener(l)
+        salesRatingFloatLine?.setOnClickListener(l)
+        labelPriceReposition?.setOnClickListener(l)
+    }
+
+    override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
+        imageShopBadge?.setOnClickListener(l)
+        textViewShopLocation?.setOnClickListener(l)
+    }
 
     override fun getVideoPlayerController(): VideoPlayerController = video
 

@@ -32,9 +32,16 @@ internal interface IGridViewStrategy {
     fun getNotifyMeButton(): UnifyButton? = null
     fun getShopBadgeView(): View? = null
     fun getProductImageView(): ImageView? = null
+
+    // Ads tracker (byteio)
+    fun setProductImageOnClickListener(l: (View) -> Unit)
+
+    fun setProductInfoOnClickListener(l: (View) -> Unit)
+
+    fun setShopTypeLocationOnClickListener(l: (View) -> Unit)
 }
 
-internal interface ProductCardStrategy:
+internal interface ProductCardStrategy :
     IGridViewStrategy,
     IReimagineGridViewStrategy {
 

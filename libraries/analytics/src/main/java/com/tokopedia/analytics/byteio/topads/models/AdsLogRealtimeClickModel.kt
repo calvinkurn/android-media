@@ -1,8 +1,6 @@
 package com.tokopedia.analytics.byteio.topads.models
 
 data class AdsLogRealtimeClickModel(
-    val category: String,
-    val isAdEvent: String,
     val refer: String,
     val adsValue: String,
     val logExtra: String,
