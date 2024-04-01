@@ -19,6 +19,7 @@ import dagger.Component
         FeedBrowseModule::class,
         FeedBrowseViewModelModule::class,
         FeedBrowseBindModule::class,
+        FeedBrowseDataModule::class,
         ContentFragmentFactoryModule::class,
         StoriesSeenStorageModule::class
     ],
