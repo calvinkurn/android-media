@@ -115,6 +115,7 @@
 /features/category/tradein       				        @tokopedia/android-minionpaul-dev
 /features/category/common_tradein       				@tokopedia/android-minionpaul-dev
 /features/category/common_category      				@tokopedia/android-minionpaul-dev
+/features/category/age_restriction      				@tokopedia/android-minionpaul-dev
 /features/category/discovery2       				    @tokopedia/android-miniondarth-dev
 /features/category/discovery_component      			@tokopedia/android-miniondarth-dev
 
@@ -304,7 +305,6 @@
 /features/fintech/insurance           				    @tokopedia/android-minionotto-dev
 
 /features/communication/push-notification-common/       @tokopedia/android-core-dev
-/features/kyc                           				@tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-core-dev
 
 /features/promo/scp_rewards                             @tokopedia/android-minionsolo-dev
