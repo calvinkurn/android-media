@@ -68,7 +68,7 @@ class ShoppingListAddToWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When adding an available product to wishlist successfully then the result should return layout with new that available product and success toaster`() {
+    fun `When adding an available product to wishlist successfully then the result should return layout with new available product and return success toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -134,7 +134,7 @@ class ShoppingListAddToWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When adding a product recommendation to wishlist successfully then the result should return layout with new available product and success toaster`() {
+    fun `When adding a product recommendation to wishlist successfully then the result should return layout with new available product and return success toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -200,7 +200,7 @@ class ShoppingListAddToWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When adding an unavailable product to wishlist successfully then the result should return layout with new that unavailable product and success toaster`() {
+    fun `When adding an unavailable product to wishlist successfully then the result should return layout with new unavailable product and return success toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -266,7 +266,7 @@ class ShoppingListAddToWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When adding a product recommendation to wishlist successfully but getting false for success then the result should return the same layout as before and failed toaster`() {
+    fun `When adding a product recommendation to wishlist successfully but getting false for success then the result should return the same layout as before and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -314,7 +314,7 @@ class ShoppingListAddToWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When adding a product recommendation to wishlist failed from usecase then the result should return the same layout as before and failed toaster`() {
+    fun `When adding a product recommendation to wishlist failed from usecase then the result should return the same layout as before and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -362,7 +362,7 @@ class ShoppingListAddToWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When adding a product recommendation to wishlist failed then the result should return the same layout as before and failed toaster`() {
+    fun `When adding a product recommendation to wishlist failed then the result should return the same layout as before return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )

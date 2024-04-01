@@ -39,7 +39,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an available product from wishlist successfully then the result should return layout without that available product and success toaster`() {
+    fun `When removing an available product from wishlist successfully then the result should return layout without that available product and return success toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -106,7 +106,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an available product from wishlist successfully but getting false for success then the result should return layout with that available product and failed toaster`() {
+    fun `When removing an available product from wishlist successfully but getting false for success then the result should return layout with that available product and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -173,7 +173,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an available product from wishlist failed from usecase then the result should return layout with that available product and failed toaster`() {
+    fun `When removing an available product from wishlist failed from usecase then the result should return layout with that available product and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -240,7 +240,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an available product from wishlist failed then the result should return layout with that available product and failed toaster`() {
+    fun `When removing an available product from wishlist failed then the result should return layout with that available product and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -307,7 +307,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an unavailable product from wishlist successfully then the result should return layout without that available product and success toaster`() {
+    fun `When removing an unavailable product from wishlist successfully then the result should return layout without that available product and return success toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -374,7 +374,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an unavailable product from wishlist successfully but getting false for success then the result should return layout with that available product and failed toaster`() {
+    fun `When removing an unavailable product from wishlist successfully but getting false for success then the result should return layout with that available product and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -441,7 +441,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an unavailable product from wishlist failed from usecase then the result should return layout with that available product and failed toaster`() {
+    fun `When removing an unavailable product from wishlist failed from usecase then the result should return layout with that available product and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
@@ -508,7 +508,7 @@ class ShoppingListDeleteFromWishlist: TokoNowShoppingListViewModelFixture() {
     }
 
     @Test
-    fun `When removing an unavailable product from wishlist failed then the result should return layout with that available product and failed toaster`() {
+    fun `When removing an unavailable product from wishlist failed then the result should return layout with that available product and return failed toaster`() {
         loadLayout(
             needExpandCollapse = false
         )
