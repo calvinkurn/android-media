@@ -100,8 +100,28 @@ public class DataUpdateApp {
         return isOptionalEnabled;
     }
 
-    public boolean isSpecificForceUpdateEnabled() {
+    public void setIsSpecificForceUpdateEnabled(boolean isSpecificForceUpdateEnabled){
+        this.isSpecificForceUpdateEnabled = isSpecificForceUpdateEnabled;
+    }
+
+    public boolean isIsSpecificForceUpdateEnabled(){
         return isSpecificForceUpdateEnabled;
+    }
+
+    public boolean isIsSpecificOptionalUpdateEnabled(){
+        return isSpecificOptionalUpdateEnabled;
+    }
+
+    public void setIsSpecificOptionalUpdateEnabled(boolean isSpecificOptionalUpdateEnabled){
+        this.isSpecificOptionalUpdateEnabled = isSpecificOptionalUpdateEnabled;
+    }
+
+    public void setListVersionSpecificForceUpdate(List<Integer> listVersionSpecificForceUpdate){
+        this.listVersionSpecificForceUpdate = listVersionSpecificForceUpdate;
+    }
+
+    public void setListVersionSpecificOptionalUpdate(List<Integer> listVersionSpecificOptionalUpdate){
+        this.listVersionSpecificOptionalUpdate = listVersionSpecificOptionalUpdate;
     }
 
     public List<Integer> getListVersionSpecificForceUpdate() {
