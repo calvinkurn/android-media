@@ -17,7 +17,9 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -35,6 +37,17 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 fun onIdView(id: Int): ViewInteraction = onView(allOf(withId(id)))
+
+/**
+ * Get a view that matched the id but only the visible one on the screen
+ */
+fun onIdVisibleView(id: Int): ViewInteraction =
+    onView(
+        allOf(
+            withId(id),
+            withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
+        )
+    )
 
 fun onIndexedChild(id: Int, index: Int): ViewInteraction {
     val parentMatcher = withId(id)

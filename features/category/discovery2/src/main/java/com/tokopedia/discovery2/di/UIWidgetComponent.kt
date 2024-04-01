@@ -2,6 +2,9 @@ package com.tokopedia.discovery2.di
 
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetCarouselViewModel
@@ -18,6 +21,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flas
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridItemViewModel
@@ -98,4 +102,8 @@ interface UIWidgetComponent {
     fun inject(shopOfferHeroBrandViewModel: ShopOfferHeroBrandViewModel)
     fun inject(shopOfferSupportingBrandViewModel: ShopOfferSupportingBrandViewModel)
     fun inject(shopOfferSupportingBrandItemViewModel: ShopOfferSupportingBrandItemViewModel)
+    fun inject(singleAutomateCouponViewModel: SingleAutomateCouponViewModel)
+    fun inject(listAutomateCouponViewModel: ListAutomateCouponViewModel)
+    fun inject(listAutomateCouponItemViewModel: ListAutomateCouponItemViewModel)
+    fun inject(merchantVoucherCarouselItemViewModel: MerchantVoucherCarouselItemViewModel)
 }

@@ -14,6 +14,7 @@ import okhttp3.Response;
  * @author by nisie on 10/16/18.
  * Puts Bearer Authorization in `Authorization` instead of `Accounts-Authorization`. Please do
  * not use this. This is only used for old class
+ * Used by DataSource.java (InstrumentationAuthHelper)
  */
 public class AccountsBearerInterceptor implements Interceptor {
 

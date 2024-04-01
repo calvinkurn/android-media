@@ -28,7 +28,6 @@
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_edit_profile_info">/edit-profile-info</string>
-    <string name="path_profile_management">/profile-management</string>
 
     <!--Manage Name-->
     <string name="path_manage_name">/manage-name</string>
@@ -54,9 +53,6 @@
     <string name="applink_choose_account_ocl">/choose-account-ocl</string>
 
     <string name="applink_choose_account">/choose-account</string>
-
-    <string name="applink_scp_login">/scp-login</string>
-    <string name="applink_scp_otp">/scp-otp</string>
 
     <string name="applink_account_setting_fingerprint">/biometric-setting</string>
     <string name="applink_account_verify_fingerprint">/verify-fingerprint</string>

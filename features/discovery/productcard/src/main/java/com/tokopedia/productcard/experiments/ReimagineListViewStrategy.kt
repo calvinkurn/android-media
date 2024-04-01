@@ -21,8 +21,10 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
+import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.cart.ProductCardCartExtension
+import com.tokopedia.productcard.reimagine.cta.ProductCardGenericCtaExtension
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -39,14 +41,17 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ReimagineListViewStrategy(
     private val productCardView: ViewGroup,
-): ProductCardStrategy {
+) : ProductCardStrategy {
     private val context: Context?
         get() = productCardView.context
 
-    private fun <T: View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
+    private fun <T : View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
 
     private val renderer = ProductCardRenderer(productCardView, ProductCardType.List)
     private val cartExtension = ProductCardCartExtension(productCardView, ProductCardType.List)
+    private val stockInfo = ProductCardStockInfo(productCardView)
+    private val genericCtaExtension =
+        ProductCardGenericCtaExtension(productCardView, ProductCardType.List)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
@@ -90,8 +95,9 @@ internal class ReimagineListViewStrategy(
             ?: return
 
         return try {
-            useCompatPadding = typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
-        } catch(_: Throwable) {
+            useCompatPadding =
+                typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
+        } catch (_: Throwable) {
 
         } finally {
             typedArray.recycle()
@@ -104,7 +110,9 @@ internal class ReimagineListViewStrategy(
 
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
         renderer.setProductModel(productCardModel)
+        stockInfo.render(productCardModel)
 
+        genericCtaExtension.render(productCardModel)
         cartExtension.render(productCardModel)
 
         renderVideo(productCardModel)
@@ -167,6 +175,19 @@ internal class ReimagineListViewStrategy(
 
     override fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+
+    override fun setGenericCtaButtonOnClickListener(l: View.OnClickListener?) {
+        genericCtaExtension.ctaClickListener = { l?.onClick(it) }
+    }
+
+    override fun setGenericCtaSecondaryButtonOnClickListener(l: View.OnClickListener?) {
+        genericCtaExtension.ctaSecondaryClickListener = { l?.onClick(it) }
+    }
+
+    override fun reRenderGenericCtaButton(productCardModel: ProductCardModelReimagine) {
+        genericCtaExtension.render(productCardModel)
     }
 
     override fun recycle() {

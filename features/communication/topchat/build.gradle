@@ -48,6 +48,7 @@ android {
                         'src/main/res/layouts/chatroom/sticker',
                         'src/main/res/layouts/chatroom/messagebubble',
                         'src/main/res/layouts/chatroom/messagebubble/autoreply',
+                        'src/main/res/layouts/chatroom/messagebubble/ordercancellation',
                         'src/main/res/layouts/chatroom/smartreplywidget',
                         'src/main/res/layouts/chatroom/attachment/product',
                         'src/main/res/layouts/chatroom/attachment/productbundling',

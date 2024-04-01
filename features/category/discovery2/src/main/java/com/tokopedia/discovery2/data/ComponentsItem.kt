@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.datamapper.discoveryPageData
@@ -52,9 +53,14 @@ data class ComponentsItem(
     @SerializedName("creative_name")
     var creativeName: String? = "",
 
+    @SerializedName("source")
+    private var sourceData: String? = "",
+
     var isApplicable: Boolean = true,
 
     var topAdsTrackingStatus: Boolean = false,
+
+    var byteIoTrackingStatus: Boolean = false,
 
     var shimmerHeight: Int = 0,
 
@@ -117,7 +123,8 @@ data class ComponentsItem(
     var isFirstShown: Boolean = true,
     var itemPosition: Int = 0,
     var isBackgroundPresent: Boolean = false,
-    var isTargetedTabComponent: Boolean = false
+    var isTargetedTabComponent: Boolean = false,
+    var automateCoupons: List<AutomateCouponUiModel>? = null
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null
@@ -155,4 +162,10 @@ data class ComponentsItem(
     fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()
 
     fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
+
+    fun getSource(): ComponentSourceData {
+        return sourceData?.let {
+            ComponentSourceData.getByValue(it)
+        } ?: ComponentSourceData.Unknown
+    }
 }

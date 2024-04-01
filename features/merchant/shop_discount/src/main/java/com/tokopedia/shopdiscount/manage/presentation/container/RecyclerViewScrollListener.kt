@@ -4,7 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerViewScrollListener(
     private val onScrollDown: () -> Unit = {},
-    private val onScrollUp: () -> Unit = {}
+    private val onScrollUp: () -> Unit = {},
+    private val onScroll: () -> Unit = {}
 ) : RecyclerView.OnScrollListener() {
 
     private var scrollYDistance = 0
@@ -19,6 +20,7 @@ class RecyclerViewScrollListener(
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         scrollYDistance = dy
+        onScroll()
     }
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

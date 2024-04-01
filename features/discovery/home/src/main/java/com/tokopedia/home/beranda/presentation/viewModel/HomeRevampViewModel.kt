@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeClaimCouponUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
@@ -48,6 +49,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -56,6 +58,8 @@ import com.tokopedia.home_component.usecase.thematic.ThematicModel
 import com.tokopedia.home_component.usecase.thematic.ThematicUseCase
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
+import com.tokopedia.home_component.visitable.CouponCtaState
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -76,6 +80,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
@@ -109,6 +114,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
     private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
     private val homeThematicUseCase: Lazy<ThematicUseCase>,
+    private val claimCouponUseCase: Lazy<HomeClaimCouponUseCase>,
     private val remoteConfig: Lazy<RemoteConfig>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
@@ -176,6 +182,7 @@ open class HomeRevampViewModel @Inject constructor(
     var homeDataModel = HomeDynamicChannelModel()
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
+    var refreshType: HomeRefreshType = HomeRefreshType.FIRST_OPEN
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
         return if (homeRemoteConfigController.get().isUsingNewAtf()) {
@@ -387,8 +394,9 @@ open class HomeRevampViewModel @Inject constructor(
         homeNewDataModel?.isAtfError == true && homeNewDataModel.list.size <= 1 && !homeNewDataModel.isCache
 
     @FlowPreview
-    fun refreshHomeData() {
+    fun refreshHomeData(_refreshType: HomeRefreshType) {
         val isFirstLoad = this.isFirstLoad
+        refreshType = if(isFirstLoad) HomeRefreshType.FIRST_OPEN else _refreshType
         if (getHomeDataJob?.isActive == true) {
             _hideShowLoadingLiveData.postValue(Event(true))
             return
@@ -409,7 +417,7 @@ open class HomeRevampViewModel @Inject constructor(
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             homeUseCase.get().updateHomeData(
                 homeRemoteConfigController.get().isUsingNewAtf(),
-                isFirstLoad
+                isFirstLoad,
             ).collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
@@ -432,9 +440,10 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRemoteConfig() = remoteConfig.get()
 
-    fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false) {
+    fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false, refreshType: HomeRefreshType) {
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
-            refreshHomeData()
+            this.refreshType = refreshType
+            refreshHomeData(refreshType)
             _isNeedRefresh.value = Event(true)
         } else {
             getBalanceWidgetData()
@@ -945,6 +954,50 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    fun onCouponClaim(data: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
+        launch {
+            val result = claimCouponUseCase.get().invoke(catalogId)
+
+            withContext(homeDispatcher.get().main) {
+                if (result.errorException != null) {
+                    _errorEventLiveData.value = Event(result.errorException)
+                    return@withContext
+                }
+
+                findWidget<CouponWidgetDataModel>(
+                    predicate = { it.visitableId() == data.visitableId() },
+                    actionOnFound = { model, position ->
+                        val updatedCoupons = model.coupons.toMutableList().apply {
+                            val coupon = this[couponPosition]
+
+                            this[couponPosition] = coupon.copy(
+                                button = if (result.isRedeemSucceed) {
+                                    val ctaData = coupon.button.model ?: return@findWidget
+
+                                    val newCtaData = CouponCtaState.Data(
+                                        catalogId = catalogId,
+                                        url = result.redirectUrl.ifEmpty { ctaData.url },
+                                        appLink = result.redirectAppLink.ifEmpty { ctaData.appLink }
+                                    )
+
+                                    CouponCtaState.Redirect(newCtaData)
+                                } else {
+                                    coupon.button
+                                }
+                            )
+                        }
+
+                        updateWidget(
+                            visitable = model.copy(coupons = updatedCoupons),
+                            visitableToChange = model,
+                            position = position
+                        )
+                    }
+                )
+            }
+        }
     }
 
     private fun getThematicBackground() {

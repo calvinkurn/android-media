@@ -30,7 +30,6 @@ class VideoTabAdapter(
 
     init {
         delegatesManager
-            .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator))
             .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab(listener, activity))
@@ -98,13 +97,6 @@ class VideoTabAdapter(
                         return index
                 }
             }
-            if (playFeedUiModel is PlayWidgetJumboUiModel && playFeedUiModel.model.items.size > positionOfItem) {
-                val item = playFeedUiModel.model.items[positionOfItem]
-                if (item is PlayWidgetChannelUiModel) {
-                    if (channelId == item.channelId)
-                        return index
-                }
-            }
             if (playFeedUiModel is PlayWidgetLargeUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
                 if (item is PlayWidgetChannelUiModel) {
@@ -129,8 +121,6 @@ class VideoTabAdapter(
             itemList.mapIndexed { index, playFeedUiModel ->
                 if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
                     playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
-                } else if (playFeedUiModel is PlayWidgetJumboUiModel && index == position){
-                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet) )
                 } else if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
                     playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
                 } else {

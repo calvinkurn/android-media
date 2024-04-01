@@ -113,7 +113,7 @@ open class ShareExChannelMapper @Inject constructor(
         }
     }
 
-    open fun generateSocialMediaChannel(): ShareExChannelModel {
+    open fun generateSocialMediaChannel(isDefault: Boolean = false): ShareExChannelModel {
         var socialMediaChannelList = generateSocialMediaChannelList()
         val orderingArray = getSocialMediaOrderingArray()
         socialMediaChannelList = socialMediaChannelList.sortedWith(
@@ -134,6 +134,11 @@ open class ShareExChannelMapper @Inject constructor(
                     actionIntent = it.actionIntent
                 )
             )
+        }
+        if (isDefault) {
+            socialMediaChannelList = socialMediaChannelList.filter {
+                it.mimeType != ShareExMimeTypeEnum.IMAGE
+            }
         }
         return ShareExChannelModel(
             description = "",

@@ -33,9 +33,7 @@ class BuyerOrderDetailNavigator(
 
     companion object {
         private const val KEY_URL = "url"
-        private const val TELEPHONY_URI = "tel:"
         private const val PREFIX_HTTP = "http"
-        private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
         private const val BUYER_MODE = 1

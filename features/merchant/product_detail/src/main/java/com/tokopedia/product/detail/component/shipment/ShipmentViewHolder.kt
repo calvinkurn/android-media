@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
@@ -113,7 +114,7 @@ class ShipmentViewHolder(
     ) {
         val logo = data.logo
         pdpShipmentHeaderLogo.showIfWithBlock(logo.isNotEmpty()) {
-            setImageUrl(logo)
+            loadImageWithoutPlaceholder(logo)
 
             val logoHeight = data.logoHeight
             if (logoHeight > 0) {

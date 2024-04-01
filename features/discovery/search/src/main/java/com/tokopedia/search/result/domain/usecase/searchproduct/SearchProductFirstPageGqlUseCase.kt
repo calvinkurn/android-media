@@ -65,7 +65,7 @@ class SearchProductFirstPageGqlUseCase(
             requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
             HEADLINE_ITEM_VALUE_FIRST_PAGE,
             HEADLINE_IMPRESSION_COUNT_FIRST_PAGE
-        )
+        ) + sreParams()
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(reimagineRollence, params)

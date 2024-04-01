@@ -5,10 +5,14 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common_epharmacy.EPHARMACY_SEND_RESULT_KEY
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
+import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,7 +46,17 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
 
     override fun getNewFragment(): Fragment {
-        return EPharmacyPrescriptionAttachmentPageFragment.newInstance()
+        return EPharmacyPrescriptionAttachmentPageFragment.newInstance(extractBundleForFragment())
+    }
+
+    private fun extractBundleForFragment(): Bundle {
+        return Bundle().apply {
+            putBoolean(EPHARMACY_SEND_RESULT_KEY, intent.getBooleanExtra(EPHARMACY_SEND_RESULT_KEY, false))
+            intent?.data?.let { uri ->
+                putLong(EPHARMACY_TOKO_CONSULTATION_ID, uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).toLongOrZero())
+                putString(EPHARMACY_SOURCE, uri.getQueryParameter(EPHARMACY_SOURCE).orEmpty())
+            }
+        }
     }
 
     override fun getComponent() = ePharmacyComponent

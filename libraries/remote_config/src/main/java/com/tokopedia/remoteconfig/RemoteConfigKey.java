@@ -200,6 +200,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
+    public static final String ENABLE_BYTEIO_PLATFORM = "android_enable_byteio_platform";
+
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
     public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
@@ -226,7 +228,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE = "android_enable_webview_partner_kyc_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
-    public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
@@ -302,6 +303,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
 
+    public static final String ENABLE_SHOP_PAGE_PREFETCH = "android_shop_page_enable_prefetch";
+
     public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
 
     public static final String ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST = "android_set_catalog_product_list_improvement";
@@ -338,6 +341,19 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
 
+    public static final String ANDROID_CONTENT_PRODUCT_PREVIEW = "android_enable_content_product_preview";
+
     public static final String ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER = "android_enable_auto_apply_promo_tracker";
+
+    public static final String ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE = "android_disable_recipe_bookmark_compose";
+
+    public static final String ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW = "android_enable_pdp_recommendation_flow";
+    public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
+    public static final String ANDROID_ENABLE_PURCHASE_INFO = "android_enable_purchase_info";
+    public static final String ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO = "android_enable_fix_search_product_impression_byteio";
+
+    public static final String ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM = "android_search_enable_fix_byteio_cpm";
+  
+    public static final String ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD = "android_main_app_enable_copy_crash_stack_trace_to_clipboard";
 
 }

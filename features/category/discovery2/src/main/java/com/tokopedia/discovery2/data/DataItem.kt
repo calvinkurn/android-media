@@ -1,10 +1,12 @@
 package com.tokopedia.discovery2.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.Properties.Header.OfferTier
+import com.tokopedia.discovery2.data.automatecoupon.TimeLimitData
 import com.tokopedia.discovery2.data.contentCard.LandingPage
 import com.tokopedia.discovery2.data.contentCard.Product
 import com.tokopedia.discovery2.data.contentCard.TotalItem
@@ -15,9 +17,11 @@ import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
+@SuppressLint("Invalid Data Type")
 data class DataItem(
 
     @SerializedName("chipSelectionType")
@@ -446,6 +450,13 @@ data class DataItem(
     @SerializedName("badges")
     var badges: List<Badges?>? = null,
 
+    // https://tokopedia.atlassian.net/wiki/spaces/HP/pages/1724552759/Merchant+Voucher+Single+Shop
+    @SerializedName("badge")
+    var badge: String = "",
+
+    @SerializedName("time_limit")
+    var timeLimit: TimeLimitData? = null,
+
     @SerializedName("text_date")
     var textDate: String? = null,
 
@@ -520,7 +531,7 @@ data class DataItem(
     @SerializedName("backgroud_image_url", alternate = ["background_image_url"])
     var backgroundImageUrl: String? = "",
 
-    @SerializedName("catalog_slugs")
+    @SerializedName("catalog_slugs", alternate = ["catalog_slug"])
     var catalogSlug: List<String?>? = null,
 
     @SerializedName("pinned_slugs")
@@ -595,6 +606,21 @@ data class DataItem(
     @SerializedName("active_image_url")
     val tabActiveImageUrl: String? = null,
 
+    @SerializedName("rec_param")
+    private val recommendationParam: String? = null,
+
+    @SerializedName("layout")
+    val couponLayout: String? = null,
+
+    @SerializedName("catalog_id")
+    var catalogIds: List<String>? = null,
+
+    @SerializedName("catalog_category_id")
+    var catalogCategoryIds: List<String>? = null,
+
+    @SerializedName("catalog_subcategory_id")
+    var catalogSubCategoryIds: List<String>? = null,
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
@@ -634,7 +660,11 @@ data class DataItem(
     var typeProductHighlightComponentCard: String? = "",
 
     @SerializedName("warehouse_id")
-    var warehouseId: Long? = null
+    var warehouseId: Long? = null,
+
+    var itemPosition: Int = 0,
+
+    var topLevelTab: TopLevelTab = UnknownTab
 ) {
     val leftMargin: Int
         get() {
@@ -646,12 +676,32 @@ data class DataItem(
             return rightMarginMobile?.toIntOrNull() ?: 0
         }
 
+    val appLogImpressHolder: ImpressHolder = ImpressHolder()
+    private var appLog: RecommendationAppLog? = null
+    var source: ComponentSourceData = ComponentSourceData.Unknown
+
     fun getLabelPrice(): LabelsGroup? {
         return findLabelGroup(LABEL_PRICE)
     }
 
     fun getLabelProductStatus(): LabelsGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
+    }
+
+    fun setAppLog(tracker: ComponentTracker) {
+        appLog = with(tracker) {
+            RecommendationAppLog(
+                logId.orEmpty(),
+                requestId.orEmpty(),
+                sessionId.orEmpty(),
+                recommendationParam.orEmpty(),
+                recommendationPageName.orEmpty()
+            )
+        }
+    }
+
+    fun getAppLog(): RecommendationAppLog? {
+        return appLog
     }
 
     private fun findLabelGroup(position: String): LabelsGroup? {

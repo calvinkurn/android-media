@@ -60,7 +60,9 @@ internal class ProductCardRenderer(
     private val offerLabel by view.lazyView<Typography?>(R.id.productCardLabelOffer)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
+    private val shopNameBadgeText by view.lazyView<Typography?>(R.id.productCardShopNameLocation)
     private val buttonAddToCart by view.lazyView<UnifyButton?>(R.id.productCardAddToCart)
+    private val buttonGenericCta by view.lazyView<UnifyButton?>(R.id.productCardGenericCta)
     private val labelBenefitView by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
@@ -140,6 +142,11 @@ internal class ProductCardRenderer(
     }
 
     private fun renderOverlay(productCardModel: ProductCardModel) {
+        val isSafeProduct = productCardModel.isSafeProduct
+        if(isSafeProduct) {
+            labelOverlay.hide()
+            return
+        }
         labelOverlay.render(productCardModel)
     }
 
@@ -149,6 +156,12 @@ internal class ProductCardRenderer(
     }
 
     private fun renderLabelPreventiveOverlay(productCardModel: ProductCardModel) {
+        val isSafeProduct = productCardModel.isSafeProduct
+        if(isSafeProduct) {
+            labelPreventiveOverlay?.hide()
+            return
+        }
+
         val preventiveOverlayLabel = productCardModel.labelPreventiveOverlay()
 
         labelPreventiveOverlay?.let {
@@ -195,6 +208,11 @@ internal class ProductCardRenderer(
     }
 
     private fun renderLabelAssignedValue(productCardModel: ProductCardModel) {
+        val isSafeProduct = productCardModel.isSafeProduct
+        if(isSafeProduct) {
+            labelAssignedValue?.hide()
+            return
+        }
         val productName = productCardModel.name
         val imageURL = productCardModel.labelAssignedValue()?.imageUrl ?: ""
         val hasLabelAssignedValue = productName.isNotBlank() && imageURL.isNotBlank()
@@ -330,6 +348,11 @@ internal class ProductCardRenderer(
     }
 
     private fun renderRibbon(productCardModel: ProductCardModel) {
+        val isSafeProduct = productCardModel.isSafeProduct
+        if(isSafeProduct) {
+            ribbon?.hide()
+            return
+        }
         ribbon?.render(productCardModel.ribbon())
 
         val ribbonMargin = type.ribbonMargin(productCardModel)
@@ -359,7 +382,8 @@ internal class ProductCardRenderer(
         val credibilityTextColor = ContextCompat.getColor(context, colorMode.soldCountTextColor)
         val discountTextColor = ContextCompat.getColor(context, colorMode.discountTextColor)
         val ratingTextColor = ContextCompat.getColor(context, colorMode.ratingTextColor)
-
+        val shopBadgeTextColor = ContextCompat.getColor(context, colorMode.shopBadgeTextColor)
+        
         cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(context, colorMode.cardBackgroundColor))
 
         nameText?.setTextColor(productNameColor)
@@ -368,8 +392,10 @@ internal class ProductCardRenderer(
         discountText?.setTextColor(discountTextColor)
         credibilityText?.setTextColor(credibilityTextColor)
         ratingText?.setTextColor(ratingTextColor)
+        shopNameBadgeText?.setTextColor(shopBadgeTextColor)
         
         buttonAddToCart?.applyColorMode(colorMode.buttonColorMode)
+        buttonGenericCta?.applyColorMode(colorMode.buttonColorMode)
         
         val hasCustomCutoutFillColor = colorMode.labelBenefitViewColor.cutoutFillColor.isNotEmpty()
         if (hasCustomCutoutFillColor) {

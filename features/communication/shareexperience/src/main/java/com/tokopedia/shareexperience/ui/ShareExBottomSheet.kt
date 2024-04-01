@@ -208,6 +208,7 @@ class ShareExBottomSheet :
              ** error branch, skip and do nothing until success
              ** error default should not be possible
              ** error image downloader or using default URL, count as success
+             *** If image downloader error and the intent is image, open native chooser
              * If success
              ** success channel copy link, copy text & show toaster
              ** success channel SMS, check if package is empty, then use manual intent
@@ -221,45 +222,41 @@ class ShareExBottomSheet :
                 ShareExLogger.logExceptionToServerLogger(
                     it.error,
                     userSession.deviceId,
-                    it.errorEnum.toString()
+                    it.errorHistory.joinToString { enum-> enum.name }
                 )
             }
 
-            if (it.error != null && it.errorEnum == ShareExIntentErrorEnum.AFFILIATE_ERROR) {
+            if (it.errorHistory.contains(ShareExIntentErrorEnum.AFFILIATE_ERROR) &&
+                it.shortLink.isNotBlank()
+            ) {
                 dismiss()
                 listener?.onFailGenerateAffiliateLink(it.shortLink)
+                return@collect
             }
 
             if (it.error == null ||
-                it.errorEnum == ShareExIntentErrorEnum.IMAGE_DOWNLOADER ||
-                it.errorEnum == ShareExIntentErrorEnum.DEFAULT_URL_ERROR
+                it.errorHistory.contains(ShareExIntentErrorEnum.IMAGE_DOWNLOADER) ||
+                it.errorHistory.contains(ShareExIntentErrorEnum.DEFAULT_URL_ERROR)
             ) {
                 trackActionClickChannel(
                     it.channelEnum,
                     it.imageType
                 )
                 when (it.channelEnum) {
-                    ShareExChannelEnum.COPY_LINK -> {
-                        val isSuccessCopy = context?.copyTextToClipboard(it.shortLink)
-                        if (isSuccessCopy == true) {
-                            dismiss()
-                            listener?.onSuccessCopyLink()
-                        }
-                    }
-                    ShareExChannelEnum.SMS -> {
-                        openIntentSms(it)
-                        dismiss()
-                    }
-                    ShareExChannelEnum.OTHERS -> {
-                        openIntentChooser(it)
-                        dismiss()
-                    }
+                    ShareExChannelEnum.COPY_LINK -> handleCopyLinkIntent(it)
+                    ShareExChannelEnum.SMS -> openIntentSms(it)
+                    ShareExChannelEnum.OTHERS -> it.intent?.let { intent -> openIntentChooser(intent) }
                     else -> {
                         it.intent?.let { intent ->
-                            if (intent.type == ShareExMimeTypeEnum.IMAGE.textType) {
-                                context?.copyTextToClipboard(it.message)
+                            when(intent.type) {
+                                // Mime Type intent need additional steps
+                                ShareExMimeTypeEnum.IMAGE.textType -> {
+                                    handleImageIntent(it)
+                                }
+                                else -> {
+                                    navigateWithIntent(intent)
+                                }
                             }
-                            navigateWithIntent(intent)
                             dismiss()
                         }
                     }
@@ -345,6 +342,14 @@ class ShareExBottomSheet :
         }
     }
 
+    private fun handleCopyLinkIntent(intentUiState: ShareExChannelIntentUiState) {
+        val isSuccessCopy = context?.copyTextToClipboard(intentUiState.shortLink)
+        if (isSuccessCopy == true) {
+            dismiss()
+            listener?.onSuccessCopyLink()
+        }
+    }
+
     private fun openIntentSms(intentUiState: ShareExChannelIntentUiState) {
         val intentPackage = intentUiState.intent?.`package` ?: ""
         if (intentPackage.isBlank()) {
@@ -358,11 +363,31 @@ class ShareExBottomSheet :
                 navigateWithIntent(it)
             }
         }
+        dismiss()
     }
 
-    private fun openIntentChooser(intentUiState: ShareExChannelIntentUiState) {
-        val intentChooser = Intent.createChooser(intentUiState.intent, DEFAULT_TITLE)
-        navigateWithIntent(intentChooser)
+    private fun openIntentChooser(intent: Intent) {
+        val intentChooser = Intent.createChooser(intent, DEFAULT_TITLE)
+         navigateWithIntent(intentChooser)
+        dismiss()
+    }
+
+    private fun handleImageIntent(intentUiState: ShareExChannelIntentUiState) {
+        context?.copyTextToClipboard(intentUiState.message)
+        // If image fail to download, then this intent is not complete and will absolutely give error
+        // Open intent chooser for better experience to user
+        if (intentUiState.errorHistory.contains(ShareExIntentErrorEnum.IMAGE_DOWNLOADER)) {
+            val intentChooser = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = ShareExMimeTypeEnum.TEXT.textType
+                putExtra(Intent.EXTRA_TEXT, intentUiState.message)
+            }
+            openIntentChooser(intentChooser)
+        } else {
+            intentUiState.intent?.let {
+                navigateWithIntent(it)
+            }
+        }
     }
 
     private fun getShareId(): String {

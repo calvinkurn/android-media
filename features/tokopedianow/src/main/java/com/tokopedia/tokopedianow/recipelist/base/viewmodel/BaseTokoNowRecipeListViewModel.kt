@@ -11,8 +11,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToDuration
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToIngredientIds
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToPortion
@@ -24,7 +24,6 @@ import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Compan
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_PORTION
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TITLE
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetRecipeListUseCase
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addEmptyStateItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addHeaderItem
@@ -96,7 +95,7 @@ open class BaseTokoNowRecipeListViewModel(
         launchCatchError(block = {
             showProgressBar()
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
+            getRecipeListParam.warehouses = addressData.getWarehousesData()
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)
             hasNext = response.metadata.hasNext
@@ -179,8 +178,9 @@ open class BaseTokoNowRecipeListViewModel(
                         title = title,
                         recipeId = recipeId,
                         isSuccess = true
+                    )
                 )
-            ))
+            )
 
             visitableItems.updateRecipeBookmark(
                 recipeId = recipeId,
@@ -195,8 +195,9 @@ open class BaseTokoNowRecipeListViewModel(
                     model = ToasterModel(
                         recipeId = recipeId,
                         isSuccess = false
+                    )
                 )
-            ))
+            )
         }
     }
 
@@ -248,7 +249,7 @@ open class BaseTokoNowRecipeListViewModel(
 
         launchCatchError(block = {
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
+            getRecipeListParam.warehouses = addressData.getWarehousesData()
             getRecipeListParam.page = getRecipeListParam.page + 1
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)

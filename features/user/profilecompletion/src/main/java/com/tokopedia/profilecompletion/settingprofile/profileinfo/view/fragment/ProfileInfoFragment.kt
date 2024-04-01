@@ -11,11 +11,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bytedance.applog.AppLog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -33,12 +32,10 @@ import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.settingprofile.addphone.data.analitycs.AddPhoneNumberTracker
@@ -64,13 +61,11 @@ import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.uimodel.P
 import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.viewholder.ProfileInfoTitleViewHolder
 import com.tokopedia.profilecompletion.settingprofile.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -110,12 +105,10 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
+    private var profileClickedTime = 0
+
     val adapter by lazy {
         ProfileInfoAdapter(ProfileInfoListTypeFactory(this, this))
-    }
-
-    private val startProfileManagementForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
-        getProfileInfo()
     }
 
     private val editPhotoListener = object : View.OnClickListener {
@@ -169,26 +162,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
         setProfilePicture()
         initListener()
-
-        binding?.itemProfileManagement?.imgTitle?.loadImageWithoutPlaceholder(
-            if (isUsingNightModeResources()) {
-                getString(R.string.img_profile_management_entry_point_night)
-            } else {
-                getString(R.string.img_profile_management_entry_point_light)
-            }
-        )
-
-        val isProfileManagementM1Activated = isProfileManagementM1Activated()
-
-        val label = if (isProfileManagementM1Activated) {
-            ProfileInfoTracker.LABEL_M1
-        } else {
-            ""
-        }
-        tracker.sendViewOnInfoProfilePageEvent(label)
-
-        binding?.itemProfileManagement?.root?.showWithCondition(isProfileManagementM1Activated)
-        binding?.fragmentInfoDivider2?.showWithCondition(isProfileManagementM1Activated)
+        tracker.sendViewOnInfoProfilePageEvent()
     }
 
     private fun initListener() {
@@ -196,23 +170,6 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
             checkFinancialAssets()
         }
-
-        binding?.itemProfileManagement?.root?.setOnClickListener {
-            tracker.sendClickOnGotoProfileEntryPointEvent()
-            goToProfileManagement()
-        }
-    }
-
-    private fun goToProfileManagement() {
-        val intent = RouteManager.getIntent(requireActivity(), ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT)
-        startProfileManagementForResult.launch(intent)
-    }
-
-    private fun isProfileManagementM1Activated(): Boolean {
-        return RemoteConfigInstance.getInstance()
-            .abTestPlatform
-            .getString(KEY_ROLLENCE_PROFILE_MANAGEMENT_M1)
-            .isNotEmpty()
     }
 
     private fun setProfilePicture() {
@@ -417,7 +374,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
                 title = getString(R.string.profile_info_title_user_id),
                 itemValue = userSession.userId,
                 rightIcon = IconUnify.COPY
-            ),
+            ) {
+              onUserIdClicked()
+            },
             ProfileInfoItemUiModel(
                 ProfileInfoConstants.EMAIL,
                 title = getString(R.string.title_email),
@@ -459,6 +418,27 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         )
         adapter.setProfileInfoItem(listItem)
         renderWarningTickerName(data.profileInfoData)
+    }
+
+    private fun onUserIdClicked() {
+        if (isAppLogDeviceIdIsAlreadyAdded()) {
+            return
+        }
+
+        profileClickedTime++
+        if (profileClickedTime >= MIN_PROFILE_CLICK_FOR_DEVICE_ID) {
+            adapter.addElement(ProfileInfoItemUiModel(
+                ProfileInfoConstants.APPLOG_DEVICE_ID,
+                title = getString(R.string.profile_info_title_applog_device_id),
+                itemValue = getApplogDeviceId(),
+                rightIcon = IconUnify.COPY
+            ))
+        }
+    }
+
+    private fun isAppLogDeviceIdIsAlreadyAdded() = adapter.data.any {
+        it is ProfileInfoItemUiModel
+            && it.id == ProfileInfoConstants.APPLOG_DEVICE_ID
     }
 
     private fun onNameClicked(data: ProfileInfoUiModel) {
@@ -635,9 +615,16 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     private fun copyUserId() {
         tracker.trackOnEntryPointListClick(LABEL_ENTRY_POINT_USER_ID)
         val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val myClip: ClipData = ClipData.newPlainText("user_id", userSession.userId)
+        val myClip: ClipData = ClipData.newPlainText(CLIP_DATA_USER_ID, userSession.userId)
         myClipboard.setPrimaryClip(myClip)
         showNormalToaster(getString(R.string.profile_info_success_copy_userid))
+    }
+
+    private fun copyApplogDeviceId() {
+        val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val myClip: ClipData = ClipData.newPlainText(CLIP_DATA_APPLOG_DEVICE_ID, getApplogDeviceId())
+        myClipboard.setPrimaryClip(myClip)
+        showNormalToaster(getString(R.string.profile_info_success_copy_applog_device_id))
     }
 
     override fun onSectionIconClicked(id: String?) {
@@ -657,6 +644,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         when (item?.id) {
             ProfileInfoConstants.USER_ID -> {
                 copyUserId()
+            }
+            ProfileInfoConstants.APPLOG_DEVICE_ID -> {
+                copyApplogDeviceId()
             }
         }
     }
@@ -831,6 +821,10 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         )
     }
 
+    private fun getApplogDeviceId(): String {
+        return runCatching { AppLog.getDid().orEmpty() }.getOrDefault("")
+    }
+
     companion object {
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
@@ -858,10 +852,11 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val LIMIT_STACKTRACE = 1000
+        private const val MIN_PROFILE_CLICK_FOR_DEVICE_ID = 5
         private val DIFFERENT_EXCEPTION =
             Throwable(message = "Value is different from User Session")
-
-        private const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M1= "M1_Profile_Mgmt"
+        private const val CLIP_DATA_APPLOG_DEVICE_ID = "applog_device_id"
+        private const val CLIP_DATA_USER_ID = "user_id"
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

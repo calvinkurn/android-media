@@ -92,6 +92,12 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
 import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
 import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_BACKGROUND
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_LIMIT
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_MAX_PRICE
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_MIN_PRICE
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_PRODUCT_TITLE
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_PRODUCT_VARIANT
 import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATALOG_ID
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATEGORY_ID
@@ -101,6 +107,7 @@ import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
+import com.tokopedia.catalog.ui.model.ProductListConfig
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
@@ -110,15 +117,11 @@ import com.tokopedia.catalogcommon.bottomsheet.ColumnedInfoBottomSheet
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.listener.BannerListener
-import com.tokopedia.catalogcommon.listener.CharacteristicListener
 import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
-import com.tokopedia.catalogcommon.listener.PanelImageListener
 import com.tokopedia.catalogcommon.listener.PriceCtaSellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SellerOfferingListener
-import com.tokopedia.catalogcommon.listener.SliderImageTextListener
-import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
 import com.tokopedia.catalogcommon.listener.TopFeatureListener
 import com.tokopedia.catalogcommon.listener.TrustMakerListener
@@ -180,10 +183,6 @@ class CatalogDetailPageFragment :
     BuyerReviewViewHolder.BuyerReviewListener,
     ColumnedInfoListener,
     VideoListener,
-    SupportFeatureListener,
-    SliderImageTextListener,
-    CharacteristicListener,
-    PanelImageListener,
     SellerOfferingListener,
     PriceCtaSellerOfferingListener {
 
@@ -229,15 +228,12 @@ class CatalogDetailPageFragment :
                 columnedInfoListener = this,
                 videoListener = this,
                 buyerReviewListener = this,
-                supportFeatureListener = this,
-                imageTextListener = this,
-                characteristicListener = this,
-                panelImageListener = this,
                 sellerOfferingListener = this,
                 priceCtaSellerOfferingListener = this
             )
         )
     }
+
 
     private var title = ""
     private var productSortingStatus = 0
@@ -245,9 +241,9 @@ class CatalogDetailPageFragment :
     private var categoryId = ""
     private var catalogUrl = ""
     private var brand = ""
-
+    private var productListConfig: ProductListConfig? = null
+    private var selectNavigationFromScroll =true
     private var compareCatalogId = ""
-    private var selectNavigationFromScroll = true
     private var retriedCompareCatalogIds = listOf<String>()
     private val seenTracker = mutableListOf<String>()
 
@@ -257,6 +253,30 @@ class CatalogDetailPageFragment :
 
     private val insetsController: WindowInsetsControllerCompat? by lazy {
         activity?.window?.decorView?.let(ViewCompat::getWindowInsetsController)
+    }
+
+    private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            private var previousScrollPosition = 0
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                val firstVisibleItemPosition = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+                val lastVisibleItemPosition = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
+                val currentScrollPosition = recyclerView.computeVerticalScrollOffset()
+                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && selectNavigationFromScroll) {
+                    if (currentScrollPosition > previousScrollPosition) {
+                        viewModel.emitScrollEvent(lastVisibleItemPosition, firstVisibleItemPosition)
+                    }else{
+                        if (currentScrollPosition != previousScrollPosition) {
+                            viewModel.emitScrollEvent(firstVisibleItemPosition, lastVisibleItemPosition)
+                        }
+                    }
+
+                }
+                previousScrollPosition = currentScrollPosition
+            }
+        }
     }
 
     private fun sendOnTimeImpression(uniqueId: String, trackerFunction: () -> Unit) {
@@ -403,7 +423,6 @@ class CatalogDetailPageFragment :
     }
 
     override fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel) {
-        viewModel.emitScrollEvent(buyerReviewUiModel.widgetName)
         sendOnTimeImpression(TRACKER_ID_IMPRESSION_REVIEW_WIDGET) {
             CatalogReimagineDetailAnalytics.sendEventPG(
                 event = EVENT_VIEW_PG_IRIS,
@@ -416,7 +435,6 @@ class CatalogDetailPageFragment :
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
-        selectNavigationFromScroll = false
         val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
                 return SNAP_TO_START
@@ -429,27 +447,41 @@ class CatalogDetailPageFragment :
                 Int.ZERO -> {
                     var newAnchorPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
                     if (newAnchorPosition == -1) {
-                        newAnchorPosition = anchorToPosition
+                        newAnchorPosition = 0
                     }
-                    smoothScroller.targetPosition = newAnchorPosition
-                    layoutManager?.startSmoothScroll(smoothScroller)
-                }
+                    if (widgetAdapter.getCurrentTabNav() > tabPosition){
+                        smoothScroller.targetPosition = newAnchorPosition
+                        layoutManager?.startSmoothScroll(smoothScroller)
+                    }else{
+                        layoutManager?.scrollToPositionWithOffset(newAnchorPosition, calculateOffsetForTop(layoutManager, newAnchorPosition))
 
-                (widgetAdapter.findNavigationCount().dec()) -> {
+                    }
+                }
+                Int.ONE -> {
+                    if (widgetAdapter.getCurrentTabNav() > tabPosition){
+                        smoothScroller.targetPosition = anchorToPosition-1
+                        layoutManager?.startSmoothScroll(smoothScroller)
+                    }else{
+                        layoutManager?.scrollToPositionWithOffset(anchorToPosition, calculateOffsetForTop(layoutManager, anchorToPosition))
+                    }
+                }
+                else -> {
                     smoothScroller.targetPosition = anchorToPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
-
-                else -> {
-                    smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
-                    layoutManager?.startSmoothScroll(smoothScroller)
-                }
             }
-            widgetAdapter.changeNavigationTabActive(tabPosition)
-            Handler(Looper.getMainLooper()).postDelayed({
-                selectNavigationFromScroll = true
-            }, NAVIGATION_SCROLL_DURATION)
+
         }
+
+        if (tabPosition == Int.ZERO){
+            widgetAdapter.autoSelectNavigation(Pair(Int.ZERO, anchorToPosition))
+        }else{
+            widgetAdapter.autoSelectNavigation(Pair(anchorToPosition, anchorToPosition-Int.ONE))
+        }
+        selectNavigationFromScroll = false
+        Handler(Looper.getMainLooper()).postDelayed({
+            selectNavigationFromScroll = true
+        }, NAVIGATION_SCROLL_DURATION)
 
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
@@ -460,15 +492,28 @@ class CatalogDetailPageFragment :
         )
     }
 
+    private fun calculateOffsetForTop(layoutManager: LinearLayoutManager, targetPosition: Int): Int {
+        val viewHeight = binding?.rvContent?.height.orZero()
+        val centerY = viewHeight / 3
+        val desiredItemTop = (layoutManager.findViewByPosition(targetPosition)?.top ?: 0)
+
+        return if (desiredItemTop < centerY) {
+            300
+        } else {
+            desiredItemTop - centerY
+        }
+    }
+
     private fun setupObservers(view: View) {
         observeAddToCartDataModel(view)
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 productSortingStatus = it.data.productSortingStatus
                 catalogUrl = it.data.catalogUrl
-                categoryId = it.data.priceCtaProperties.departmentId
-                brand = it.data.priceCtaProperties.brand
+                categoryId = it.data.departmentId
+                brand = it.data.brand
                 title = it.data.navigationProperties.title
+                productListConfig = it.data.productListConfig
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
@@ -561,10 +606,8 @@ class CatalogDetailPageFragment :
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            viewModel.scrollEvents.debounce(300).collect {
-                if (selectNavigationFromScroll) {
-                    widgetAdapter.autoSelectNavigation(it)
-                }
+            viewModel.scrollEvents.collect {
+                widgetAdapter.autoSelectNavigation(it)
             }
         }
     }
@@ -592,6 +635,7 @@ class CatalogDetailPageFragment :
         val layoutManager = LinearLayoutManager(context)
         rvContent.layoutManager = layoutManager
         rvContent.adapter = widgetAdapter
+        rvContent.addOnScrollListener(recyclerViewScrollListener)
         rvContent.setBackgroundColor(navigationProperties.bgColor)
         rvContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -715,7 +759,8 @@ class CatalogDetailPageFragment :
                 addToCart(viewModel.atcModel)
             }
             btnProductList.setOnClickListener {
-                goToProductListPage()
+                //Change Value VariantName if Bottom Sheet Option Variant Ready
+                goToSellerOfferingProductListPage(String.EMPTY, productListConfig)
             }
 
             if (properties.isDarkTheme) {
@@ -766,6 +811,26 @@ class CatalogDetailPageFragment :
                     productSortingStatus.toString()
                 )
                 .appendPath(title).toString()
+
+        RouteManager.getIntent(context, catalogProductList).apply {
+            putExtra(EXTRA_CATALOG_URL, catalogUrl)
+            startActivity(this)
+        }
+    }
+
+    private fun goToSellerOfferingProductListPage(variant:String, productListConfig: ProductListConfig?) {
+
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                .buildUpon()
+                .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                .appendQueryParameter(QUERY_PRODUCT_TITLE, title)
+                .appendQueryParameter(QUERY_PRODUCT_VARIANT, variant)
+                .appendQueryParameter(QUERY_BACKGROUND, "${productListConfig?.headerConfig.orEmpty()}")
+                .appendQueryParameter(QUERY_LIMIT, productListConfig?.limit.orEmpty())
+                .appendQueryParameter(QUERY_MIN_PRICE, productListConfig?.minPrice.toString())
+                .appendQueryParameter(QUERY_MAX_PRICE, productListConfig?.maxPrice.toString())
+                .appendPath("so").toString()
 
         RouteManager.getIntent(context, catalogProductList).apply {
             putExtra(EXTRA_CATALOG_URL, catalogUrl)
@@ -865,7 +930,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onBannerImpression(element: BannerCatalogUiModel) {
-        viewModel.emitScrollEvent(element.widgetName)
+
     }
 
     override fun onTextDescriptionImpression(widgetName: String) {
@@ -879,7 +944,7 @@ class CatalogDetailPageFragment :
             )
         }
 
-        viewModel.emitScrollEvent(widgetName)
+
     }
 
     override fun onVideoImpression(
@@ -943,7 +1008,6 @@ class CatalogDetailPageFragment :
                 promotion = list
             )
         }
-        viewModel.emitScrollEvent(model.widgetName)
     }
 
     override fun onImpressionAccordionInformation(widgetName: String) {
@@ -956,7 +1020,6 @@ class CatalogDetailPageFragment :
                 trackerId = TRACKER_ID_IMPRESSION_FAQ
             )
         }
-        viewModel.emitScrollEvent(widgetName)
     }
 
     override fun onClickItemAccordionInformation(
@@ -1026,7 +1089,6 @@ class CatalogDetailPageFragment :
                 promotion = list
             )
         }
-        viewModel.emitScrollEvent(widgetName)
     }
 
     override fun onDoubleBannerImpression(widgetName: String) {
@@ -1119,7 +1181,6 @@ class CatalogDetailPageFragment :
                 trackerId = TRACKER_ID_IMPRESSION_COMPARISON
             )
         }
-        viewModel.emitScrollEvent(widgetName)
     }
 
     override fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int) {
@@ -1146,7 +1207,6 @@ class CatalogDetailPageFragment :
     }
 
     override fun onColumnedInfoImpression(columnedInfoUiModel: ColumnedInfoUiModel) {
-        viewModel.emitScrollEvent(columnedInfoUiModel.widgetName)
         val catalogDetail = viewModel.catalogDetailDataModel.value as? Success<CatalogDetailUiModel>
         val catalogTitle = catalogDetail?.data?.navigationProperties?.title.orEmpty()
         val list = arrayListOf<HashMap<String, String>>()
@@ -1187,22 +1247,6 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onSupportFeatureImpression(widgetName: String) {
-        viewModel.emitScrollEvent(widgetName)
-    }
-
-    override fun onSliderImageTextImpression(widgetName: String) {
-        viewModel.emitScrollEvent(widgetName)
-    }
-
-    override fun onCharacteristicImpression(widgetName: String) {
-        viewModel.emitScrollEvent(widgetName)
-    }
-
-    override fun onPanelImageImpression(widgetName: String) {
-        viewModel.emitScrollEvent(widgetName)
-    }
-
     override fun onSellerOfferingAtcButtonClicked() {
         addToCart(viewModel.atcModel)
     }
@@ -1224,6 +1268,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onSellerOfferingButtonRightClicked() {
-        goToProductListPage()
+        //Change Value VariantName if Bottom Sheet Option Variant Ready
+        goToSellerOfferingProductListPage(String.EMPTY, productListConfig)
     }
 }
