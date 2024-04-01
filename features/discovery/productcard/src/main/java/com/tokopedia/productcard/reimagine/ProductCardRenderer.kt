@@ -62,6 +62,7 @@ internal class ProductCardRenderer(
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val shopNameBadgeText by view.lazyView<Typography?>(R.id.productCardShopNameLocation)
     private val buttonAddToCart by view.lazyView<UnifyButton?>(R.id.productCardAddToCart)
+    private val buttonGenericCta by view.lazyView<UnifyButton?>(R.id.productCardGenericCta)
     private val labelBenefitView by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
@@ -394,6 +395,7 @@ internal class ProductCardRenderer(
         shopNameBadgeText?.setTextColor(shopBadgeTextColor)
         
         buttonAddToCart?.applyColorMode(colorMode.buttonColorMode)
+        buttonGenericCta?.applyColorMode(colorMode.buttonColorMode)
         
         val hasCustomCutoutFillColor = colorMode.labelBenefitViewColor.cutoutFillColor.isNotEmpty()
         if (hasCustomCutoutFillColor) {

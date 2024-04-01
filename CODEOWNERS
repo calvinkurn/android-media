@@ -163,6 +163,7 @@
 /features/content/play_common/                          @tokopedia/android-minionlance-dev
 /features/content/play_widget/                          @tokopedia/android-minionlance-dev
 /features/content/product_picker/                       @tokopedia/android-minionlance-dev
+/features/content/product_preview/                      @tokopedia/android-minionlance-dev
 /features/content/stories/                              @tokopedia/android-minionlance-dev
 /features/content/stories_creation/                     @tokopedia/android-minionlance-dev
 /features/content/stories_internal/                     @tokopedia/android-minionlance-dev
@@ -302,9 +303,9 @@
 /features/fintech/home_credit           				@tokopedia/android-minionotto-dev
 /features/fintech/insurance           				    @tokopedia/android-minionotto-dev
 
-/features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
-/features/kyc                           				@tokopedia/android-minionyoda-dev
-/features/im/referral                   				@tokopedia/android-minionyoda-dev
+/features/communication/push-notification-common/       @tokopedia/android-core-dev
+/features/kyc                           				@tokopedia/android-core-dev
+/features/im/referral                   				@tokopedia/android-core-dev
 
 /features/promo/scp_rewards                             @tokopedia/android-minionsolo-dev
 /features/promo/scp_rewards_common                      @tokopedia/android-minionsolo-dev

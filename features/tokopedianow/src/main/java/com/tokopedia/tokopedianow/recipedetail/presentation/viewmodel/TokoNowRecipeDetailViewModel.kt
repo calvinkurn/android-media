@@ -204,8 +204,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun getRecipe() {
         launchCatchError(block = {
-            val warehouseId = addressData.getWarehouseId().toString()
-            val response = getRecipeUseCase.execute(recipeId, slug, warehouseId)
+            val warehouses = addressData.getWarehousesData()
+            val response = getRecipeUseCase.execute(recipeId, slug, warehouses)
             val bookmarked = response.isBookmarked
             recipeId = response.id
 
