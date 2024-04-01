@@ -4027,7 +4027,8 @@ open class ProductDetailFragment :
                     productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
                         ?: "",
                     categoryId = it.basic.category.id,
-                    isScheduled = isScheduled
+                    isScheduled = isScheduled,
+                    weightWording = it.basic.weightWording
                 )
             )
             shouldRefreshShippingBottomSheet = false

@@ -114,6 +114,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     countTalk
                     rating
                   }
+                  weightWording
                 }
                 components {
                   name
