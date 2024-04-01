@@ -22,11 +22,9 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private data class PerPageResult(
     val result: Result<List<PeopleUiModel>>,
@@ -62,16 +60,14 @@ internal class FollowListViewModel @AssistedInject constructor(
         _isRefreshing,
         _countFmt
     ) { followMap, nextCursor, result, isLoading, isRefreshing, countFmt ->
-        withContext(dispatchers.io) {
-            FollowListState(
-                followList = followMap.values.toList(),
-                hasNextPage = nextCursor == null || nextCursor.isNotBlank(),
-                result = result,
-                isLoading = isLoading,
-                isRefreshing = isRefreshing,
-                countFmt = countFmt
-            )
-        }
+        FollowListState(
+            followList = followMap.values.toList(),
+            hasNextPage = nextCursor == null || nextCursor.isNotBlank(),
+            result = result,
+            isLoading = isLoading,
+            isRefreshing = isRefreshing,
+            countFmt = countFmt
+        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),

@@ -2,10 +2,15 @@ package com.tokopedia.people.viewmodel.followerfollowing
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.content.test.util.assertEmpty
 import com.tokopedia.content.test.util.assertEqualTo
+import com.tokopedia.content.test.util.assertFalse
 import com.tokopedia.content.test.util.assertNotEqualTo
+import com.tokopedia.content.test.util.assertTrue
 import com.tokopedia.people.model.FollowListModelBuilder
 import com.tokopedia.people.repo.MockUserFollowRepository
+import com.tokopedia.people.util.StandardDispatcherProvider
+import com.tokopedia.people.util.UnconfinedDispatcherProvider
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.action.FollowListAction
@@ -17,12 +22,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -34,16 +40,6 @@ class FollowListViewModelTest {
     @get:Rule
     val coroutineRule = UnconfinedTestRule()
 
-    private val dispatcherProvider = object : CoroutineDispatchers {
-
-        private val dispatcher = UnconfinedTestDispatcher()
-
-        override val main: CoroutineDispatcher = dispatcher
-        override val io: CoroutineDispatcher = dispatcher
-        override val default: CoroutineDispatcher = dispatcher
-        override val immediate: CoroutineDispatcher = dispatcher
-        override val computation: CoroutineDispatcher = dispatcher
-    }
     private val repo = MockUserFollowRepository()
     private val modelBuilder = FollowListModelBuilder()
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -75,6 +71,7 @@ class FollowListViewModelTest {
         val value = viewModel.uiState.value
         value.followList.assertEqualTo(result.followers)
         value.followList.assertNotEqualTo(wrongResult.followers)
+        value.result!!.isSuccess.assertTrue()
     }
 
     @Test
@@ -399,20 +396,172 @@ class FollowListViewModelTest {
         eventList.last().assertEqualTo(null)
     }
 
+    @Test
+    fun `test no next page if next cursor is blank`() = runTestUnconfined {
+        val id = "test account"
+        val shops = List(4) { modelBuilder.createShop(it.toString()) }
+        val resultWithNoCursor = modelBuilder.createFollowingData(followings = shops, nextCursor = "")
+        repo.setFollowingData(id, "", resultWithNoCursor)
+
+        val viewModel = createViewModel(FollowListType.Following, id)
+
+        backgroundScope.launch { viewModel.uiState.collect() }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.hasNextPage.assertEqualTo(false)
+    }
+
+    @Test
+    fun `test still has next page if next cursor is not blank`() = runTestUnconfined {
+        val id = "test account"
+        val shops = List(4) { modelBuilder.createShop(it.toString()) }
+        val resultWithCursor = modelBuilder.createFollowingData(followings = shops, nextCursor = "test")
+        repo.setFollowingData(id, "", resultWithCursor)
+
+        val viewModel = createViewModel(FollowListType.Following, id)
+
+        backgroundScope.launch { viewModel.uiState.collect() }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.hasNextPage.assertEqualTo(true)
+    }
+
+    @Test
+    fun `test failed to get following list data`() = runTestUnconfined {
+        val id = "test account"
+
+        val viewModel = createViewModel(FollowListType.Following, id)
+
+        backgroundScope.launch { viewModel.uiState.collect() }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.followList.assertEmpty()
+        viewModel.uiState.value.result!!.isFailure.assertTrue()
+    }
+
+    @Test
+    fun `test failed to get follower list data`() = runTestUnconfined {
+        val id = "test account"
+
+        val viewModel = createViewModel(FollowListType.Follower, id)
+
+        backgroundScope.launch { viewModel.uiState.collect() }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.followList.assertEmpty()
+        viewModel.uiState.value.result!!.isFailure.assertTrue()
+    }
+
+    @Test
+    fun `test loading state should be true when still loading data`() = runTestStandard {
+        val id = "test account"
+        val shops = List(4) { modelBuilder.createShop(it.toString()) }
+        val firstResult = modelBuilder.createFollowingData(followings = shops, nextCursor = "123")
+        val secondResult = modelBuilder.createFollowingData(followings = shops, nextCursor = "")
+        repo.setFollowingData(id, "", firstResult)
+        repo.setFollowingData(id, "123", secondResult)
+
+        val viewModel = createViewModel(FollowListType.Following, id, StandardDispatcherProvider())
+
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.isLoading.assertTrue()
+        runCurrent()
+        viewModel.uiState.value.isLoading.assertFalse()
+
+        viewModel.onAction(FollowListAction.LoadMore)
+        viewModel.uiState.value.isLoading.assertTrue()
+        runCurrent()
+        viewModel.uiState.value.isLoading.assertFalse()
+    }
+
+    @Test
+    fun `test refreshing state should be true when data is refreshed`() = runTestStandard {
+        val id = "test account"
+        val shops = List(4) { modelBuilder.createShop(it.toString()) }
+        val result = modelBuilder.createFollowingData(followings = shops, nextCursor = "")
+        repo.setFollowingData(id, "", result)
+
+        val viewModel = createViewModel(FollowListType.Following, id, StandardDispatcherProvider())
+
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.isRefreshing.assertFalse()
+        runCurrent()
+        viewModel.uiState.value.isRefreshing.assertFalse()
+
+        viewModel.onAction(FollowListAction.Refresh)
+        viewModel.uiState.value.isRefreshing.assertTrue()
+        runCurrent()
+        viewModel.uiState.value.isRefreshing.assertFalse()
+    }
+
+    @Test
+    fun `test failed to follow shop`() = runTestUnconfined {
+        val id = "test account"
+        val shops = List(4) { modelBuilder.createShop(it.toString(), isFollowed = false) }
+        val result = modelBuilder.createFollowingData(followings = shops)
+        repo.setFollowingData(id, "", result)
+        repo.setErrorFollowShop("Failed to follow")
+        coEvery { userSession.isLoggedIn } returns true
+
+        val viewModel = createViewModel(FollowListType.Following, id)
+
+        val eventList = mutableListOf<FollowListEvent?>()
+        backgroundScope.launch { viewModel.uiState.collect() }
+        backgroundScope.launch { viewModel.uiEvent.toList(eventList) }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.followList[0].isFollowed.assertEqualTo(false)
+
+        viewModel.onAction(FollowListAction.Follow(viewModel.uiState.value.followList[0]))
+        eventList.last().assertEqualTo(FollowListEvent.FailedFollow(true))
+    }
+
+    @Test
+    fun `test failed to follow user`() = runTestUnconfined {
+        val id = "test account"
+        val users = List(4) { modelBuilder.createUser(it.toString(), isFollowed = false) }
+        val result = modelBuilder.createFollowersData(followers = users)
+        repo.setFollowersData(id, "", result)
+        repo.setErrorFollowUser("Failed to follow")
+        coEvery { userSession.isLoggedIn } returns true
+
+        val viewModel = createViewModel(FollowListType.Follower, id)
+
+        val eventList = mutableListOf<FollowListEvent?>()
+        backgroundScope.launch { viewModel.uiState.collect() }
+        backgroundScope.launch { viewModel.uiEvent.toList(eventList) }
+
+        viewModel.onAction(FollowListAction.Init)
+        viewModel.uiState.value.followList[0].isFollowed.assertEqualTo(false)
+
+        viewModel.onAction(FollowListAction.Follow(viewModel.uiState.value.followList[0]))
+        eventList.last().assertEqualTo(FollowListEvent.FailedFollow(true))
+    }
+
     private fun runTestUnconfined(testBody: suspend TestScope.() -> Unit) = runTest(
         UnconfinedTestDispatcher(),
         testBody = testBody
     )
 
+    private fun runTestStandard(testBody: suspend TestScope.() -> Unit) = runTest(
+        StandardTestDispatcher(),
+        testBody = testBody
+    )
+
     private fun createViewModel(
         type: FollowListType,
-        profileIdentifier: String
+        profileIdentifier: String,
+        dispatchers: CoroutineDispatchers = UnconfinedDispatcherProvider()
     ): FollowListViewModel {
         return FollowListViewModel(
             type = type,
             profileIdentifier = profileIdentifier,
             userFollowRepo = repo,
-            dispatchers = dispatcherProvider,
+            dispatchers = dispatchers,
             uiEventManager = UiEventManager(),
             userSession = userSession
         )
