@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.postatc.view.component.productinfo
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.postatc.base.ComponentTrackData
@@ -24,6 +26,7 @@ class ProductInfoCallbackImpl(
             viewModel.postAtcInfo,
             componentTrackData
         )
+        AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_ATC_TOASTER_PDP)
 
         goToCart(cartId)
     }

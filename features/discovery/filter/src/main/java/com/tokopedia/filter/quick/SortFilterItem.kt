@@ -7,5 +7,6 @@ data class SortFilterItem(
     val hasChevron: Boolean = false,
     val shouldShowImage: Boolean = false,
     val imageUrlActive: String = "",
-    val imageUrlInactive: String = ""
+    val imageUrlInactive: String = "",
+    val position: Int = 0
 )

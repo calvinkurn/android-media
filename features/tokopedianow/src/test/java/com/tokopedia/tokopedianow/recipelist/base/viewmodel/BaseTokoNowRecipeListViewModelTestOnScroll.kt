@@ -20,6 +20,7 @@ class BaseTokoNowRecipeListViewModelTestOnScroll : BaseTokoNowRecipeListViewMode
             .jsonToObject<TokoNowGetRecipes>()
         val recipeListParamSlot = slot<RecipeListParam>()
 
+        onGetWarehouses_thenReturn(warehouses)
         onGetWarehouseId_thenReturn(warehouseId = 1)
         onGetRecipes_thenReturn(getRecipesResponse, recipeListParamSlot)
 
@@ -31,13 +32,13 @@ class BaseTokoNowRecipeListViewModelTestOnScroll : BaseTokoNowRecipeListViewMode
 
         verifyGetRecipeListParams(
             expectedPage = 2,
-            expectedWarehouseId = "1",
+            expectedWarehouses = warehouses,
             expectedSortByParams = null,
             expectedTagIdsParam = null,
             expectedIngredientIdsParam = null,
             expectedDurationParam = null,
             expectedPortionParam = null,
-            actualRecipeListParam = actualRecipeListParam,
+            actualRecipeListParam = actualRecipeListParam
         )
         verifyGetRecipeListUseCaseCalled(times = 2)
     }

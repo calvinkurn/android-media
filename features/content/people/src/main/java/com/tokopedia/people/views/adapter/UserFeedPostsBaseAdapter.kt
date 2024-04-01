@@ -3,7 +3,7 @@ package com.tokopedia.people.views.adapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.people.views.uimodel.content.PostUiModel
-import com.tokopedia.people.views.viewholder.FeedPostLoadingViewHolder
+import com.tokopedia.people.views.viewholder.FeedPostsViewHolder
 
 /**
  * created by fachrizalmrsln on 13/07/22
@@ -15,6 +15,7 @@ class UserFeedPostsBaseAdapter(
 
     init {
         delegatesManager
+            .addDelegate(UserFeedPostsAdapterDelegate.Shimmer())
             .addDelegate(UserFeedPostsAdapterDelegate.Loading())
             .addDelegate(UserFeedPostsAdapterDelegate.FeedPosts(listener))
     }
@@ -25,12 +26,13 @@ class UserFeedPostsBaseAdapter(
         payloads: List<Any>
     ) {
         super.onBindViewHolder(holder, position, payloads)
-        if (position == (itemCount - 1) && holder is FeedPostLoadingViewHolder) onLoadMore()
+        if (position == (itemCount - 1) && holder is FeedPostsViewHolder.Loading) onLoadMore()
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return when {
             oldItem is Model.Loading && newItem is Model.Loading -> false
+            oldItem is Model.Shimmer && newItem is Model.Shimmer -> false
             oldItem is Model.FeedPosts && newItem is Model.FeedPosts -> oldItem.item.id == newItem.item.id
             else -> oldItem == newItem
         }
@@ -54,6 +56,7 @@ class UserFeedPostsBaseAdapter(
 
     sealed interface Model {
         object Loading : Model
+        object Shimmer : Model
         data class FeedPosts(val item: PostUiModel) : Model
     }
 

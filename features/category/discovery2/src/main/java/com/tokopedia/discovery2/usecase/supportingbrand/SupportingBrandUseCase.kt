@@ -58,7 +58,11 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
 
             it.noOfPagesLoaded = it.pageLoadedCounter
             it.nextPageKey = nextPage
-            if (shopCardListData.isEmpty()) return SupportingBrandLoadState.REACH_END_OF_PAGE else it.pageLoadedCounter += 1
+            if (shopCardListData.isEmpty() || nextPage.isNullOrEmpty()) {
+                return SupportingBrandLoadState.REACH_END_OF_PAGE
+            } else {
+                it.pageLoadedCounter += 1
+            }
             return SupportingBrandLoadState.LOAD_MORE
         }
         return SupportingBrandLoadState.FAILED

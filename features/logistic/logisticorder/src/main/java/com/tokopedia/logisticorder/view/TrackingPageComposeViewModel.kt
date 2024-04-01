@@ -10,6 +10,7 @@ import com.tokopedia.logisticorder.uimodel.TrackingPageState
 import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
@@ -113,7 +114,13 @@ class TrackingPageComposeViewModel @Inject constructor(
                 ) {
                     retryAvailability(orderId)
                 }
-                getTickerData(uiModel.page.targetedTickerParam)
+                if (getTrackingData.response.messageError?.isEmpty() == false) {
+                    getTrackingData.response.messageError.firstOrNull()?.run {
+                        _error.emit(MessageErrorException(this.toString()))
+                    }
+                } else {
+                    getTickerData(uiModel.page.targetedTickerParam)
+                }
             },
             onError = { e ->
                 _uiState.update {
@@ -145,7 +152,8 @@ class TrackingPageComposeViewModel @Inject constructor(
             _uiState.update {
                 it.copy(tickerData = model)
             }
-        }, onError = { _error.emit(it) })
+        }, onError = { // no op
+        })
     }
 
     private fun retryBooking(orderId: String) {

@@ -3,11 +3,11 @@ package com.tokopedia.tokopedianow.search.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class SearchProductRecomTest: SearchTestFixtures() {
+class SearchProductRecomTest : SearchTestFixtures() {
 
     @Test
     fun `when calling removeProductRecommendationWidget function should remove TokoNowProductRecommendationUiModel from visitable list`() {
@@ -24,7 +24,7 @@ class SearchProductRecomTest: SearchTestFixtures() {
         /**
          * mock private field from viewModel
          */
-        tokoNowSearchViewModel.mockSuperClassField(
+        tokoNowSearchViewModel.mockPrivateField(
             name = fieldName,
             value = fieldValue
         )

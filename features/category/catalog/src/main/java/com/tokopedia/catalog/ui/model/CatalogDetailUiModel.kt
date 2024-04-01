@@ -9,6 +9,8 @@ data class CatalogDetailUiModel(
     val priceCtaProperties: PriceCtaProperties,
     val productSortingStatus: Int,
     val catalogUrl: String,
+    val departmentId: String,
+    val brand: String,
     val shareProperties: ShareProperties = ShareProperties(),
     val priceCtaSellerOfferingProperties: PriceCtaSellerOfferingProperties = PriceCtaSellerOfferingProperties(),
     val productListConfig: ProductListConfig = ProductListConfig()

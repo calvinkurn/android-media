@@ -108,7 +108,7 @@ class GetAutomateCouponUseCase @Inject constructor(
                     AutomateCouponUiModel(
                         data = automateCouponModel,
                         ctaState = it.info.ctaList.mapToCtaState(),
-                        redirectAppLink = it.info.parseRedirectionAppLink()
+                        redirectAppLink = it.info.parseRedirectionAppLink(),
                     )
                 )
             }
