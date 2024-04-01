@@ -313,17 +313,6 @@ class AddEditProductPreviewViewModelTest : AddEditProductPreviewViewModelTestFix
     }
 
     @Test
-    fun `when getMaxProductPhotos, expect correct max product picture`() {
-        every { userSession.isShopOfficialStore } returns true
-        var maxPicture = viewModel.getMaxProductPhotos()
-        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
-
-        every { userSession.isShopOfficialStore } returns false
-        maxPicture = viewModel.getMaxProductPhotos()
-        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
-    }
-
-    @Test
     fun `When update product photos Expect updated product photos`() {
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
