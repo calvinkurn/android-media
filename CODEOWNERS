@@ -303,9 +303,8 @@
 /features/fintech/home_credit           				@tokopedia/android-minionotto-dev
 /features/fintech/insurance           				    @tokopedia/android-minionotto-dev
 
-/features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
-/features/kyc                           				@tokopedia/android-minionyoda-dev
-/features/im/referral                   				@tokopedia/android-minionyoda-dev
+/features/communication/push-notification-common/       @tokopedia/android-core-dev
+/features/im/referral                   				@tokopedia/android-core-dev
 
 /features/promo/scp_rewards                             @tokopedia/android-minionsolo-dev
 /features/promo/scp_rewards_common                      @tokopedia/android-minionsolo-dev
