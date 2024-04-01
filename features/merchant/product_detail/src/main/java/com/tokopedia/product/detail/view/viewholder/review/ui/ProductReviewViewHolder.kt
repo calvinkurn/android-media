@@ -310,6 +310,7 @@ class ProductReviewViewHolder(
                     } else {
                         listener.onMediaReviewClick(
                             item.getReviewID(),
+                            item.getAttachmentID(),
                             position,
                             getComponentTrackData(it),
                             ProductDetailMapper.generateDetailedMediaResult(
@@ -323,6 +324,7 @@ class ProductReviewViewHolder(
                     } else {
                         listener.onMediaReviewClick(
                             item.getReviewID(),
+                            item.getAttachmentID(),
                             position,
                             getComponentTrackData(it),
                             ProductDetailMapper.generateDetailedMediaResult(
