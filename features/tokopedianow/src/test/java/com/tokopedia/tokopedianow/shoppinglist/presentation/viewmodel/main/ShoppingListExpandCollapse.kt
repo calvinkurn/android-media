@@ -41,7 +41,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
 
     @Test
     fun `When expanding available shopping list should keep expand state on expand collapse widget`() {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
         viewModel.expandCollapseShoppingList(
             productState = EXPAND,
             productLayoutType = AVAILABLE_SHOPPING_LIST
@@ -56,7 +56,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.any { it is ShoppingListExpandCollapseUiModel && it.productLayoutType == AVAILABLE_SHOPPING_LIST && it.productState == EXPAND }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -68,7 +68,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
 
     @Test
     fun `When collapsing available shopping list should keep collapse state on expand collapse widget`() {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
         viewModel.expandCollapseShoppingList(
             productState = COLLAPSE,
             productLayoutType = AVAILABLE_SHOPPING_LIST
@@ -83,7 +83,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.any { it is ShoppingListExpandCollapseUiModel && it.productLayoutType == AVAILABLE_SHOPPING_LIST && it.productState == COLLAPSE }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -95,7 +95,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
 
     @Test
     fun `When expanding unavailable shopping list should keep expand state on expand collapse widget`() {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
         viewModel.expandCollapseShoppingList(
             productState = EXPAND,
             productLayoutType = UNAVAILABLE_SHOPPING_LIST
@@ -110,7 +110,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.any { it is ShoppingListExpandCollapseUiModel && it.productLayoutType == UNAVAILABLE_SHOPPING_LIST && it.productState == EXPAND }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -122,7 +122,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
 
     @Test
     fun `When collapsing unavailable shopping list should keep collapse state on expand collapse widget`() {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
         viewModel.expandCollapseShoppingList(
             productState = COLLAPSE,
             productLayoutType = UNAVAILABLE_SHOPPING_LIST
@@ -137,7 +137,7 @@ class ShoppingListExpandCollapse: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.any { it is ShoppingListExpandCollapseUiModel && it.productLayoutType == UNAVAILABLE_SHOPPING_LIST && it.productState == COLLAPSE }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(

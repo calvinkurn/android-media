@@ -91,7 +91,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<ShoppingListCartProductUiModel>().isNotEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -207,7 +207,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<ShoppingListCartProductUiModel>().isEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -322,7 +322,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<ShoppingListCartProductUiModel>().isEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -436,7 +436,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<LoadingMoreModel>().isEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -550,7 +550,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<ShoppingListLoadingMoreUiModel>().isNotEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -666,7 +666,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<TokoNowLocalLoadUiModel>().isNotEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -785,7 +785,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<ShoppingListEmptyUiModel>().isNotEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -900,7 +900,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = !mutableLayout.any { it is ShoppingListHorizontalProductCardItemUiModel && it.productLayoutType == ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -1016,7 +1016,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = !mutableLayout.any { it is ShoppingListHorizontalProductCardItemUiModel && it.productLayoutType == ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -1131,7 +1131,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = !mutableLayout.any { it is ShoppingListHorizontalProductCardItemUiModel && it.productLayoutType == ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -1246,7 +1246,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.filterIsInstance<TokoNowErrorUiModel>().isNotEmpty()
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifyError(
@@ -1361,7 +1361,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.any { it is ShoppingListTopCheckAllUiModel && it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -1482,7 +1482,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.any { it is ShoppingListExpandCollapseUiModel && it.productState == ShoppingListProductState.COLLAPSE }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -1603,7 +1603,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             expectedResult = mutableLayout.any { it is ShoppingListExpandCollapseUiModel && it.productState == ShoppingListProductState.COLLAPSE }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -1712,7 +1712,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
         )
         updateLayout()
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(

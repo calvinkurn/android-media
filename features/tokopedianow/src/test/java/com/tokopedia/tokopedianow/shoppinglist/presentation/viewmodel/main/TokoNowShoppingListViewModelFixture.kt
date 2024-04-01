@@ -56,7 +56,10 @@ import com.tokopedia.tokopedianow.shoppinglist.util.Constant
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
@@ -84,8 +87,8 @@ abstract class TokoNowShoppingListViewModelFixture {
 
     protected val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     protected val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
+    protected val recommendedProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
 
-    private val recommendedProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     private val cartProducts = mutableListOf<ShoppingListCartProductItemUiModel>()
 
     private var mMiniCartData: MiniCartSimplifiedData? = null
@@ -190,6 +193,21 @@ abstract class TokoNowShoppingListViewModelFixture {
         Assert.assertTrue(expectedResult)
     }
 
+    protected fun verifyProductRecommendationUseCase(
+        param: GetRecommendationRequestParam
+    ) {
+        coVerify {
+            productRecommendationUseCase.getData(param)
+        }
+    }
+
+    protected fun verifyGetShoppingListUseCase() {
+        coVerify {
+            val warehouses = mapToWarehousesData(addressData.getAddressData())
+            getShoppingListUseCase.execute(warehouses)
+        }
+    }
+
     protected fun stubOutOfCoverage(
         isOoc: Boolean
     ) {
@@ -291,22 +309,28 @@ abstract class TokoNowShoppingListViewModelFixture {
         } throws throwable
     }
 
-    protected fun verifyProductRecommendationUseCase(
-        param: GetRecommendationRequestParam
+    protected fun stubAddToWishlist(
+        response: Result<AddToWishlistV2Response.Data.WishlistAddV2>
     ) {
-        coVerify {
-            productRecommendationUseCase.getData(param)
-        }
+        coEvery {
+            addToWishlistUseCase.executeOnBackground()
+        } returns response
     }
 
-    protected fun verifyAddToWishlistUseCase(
-        productId: String,
-        userId: String
+    protected fun stubAddToWishlist(
+        throwable: Throwable
     ) {
-        coVerify {
-            addToWishlistUseCase.setParams(productId, userId)
+        coEvery {
             addToWishlistUseCase.executeOnBackground()
-        }
+        } throws throwable
+    }
+
+    protected fun stubDeleteFromWishlist(
+        response: Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>
+    ) {
+        coEvery {
+            deleteFromWishlistUseCase.executeOnBackground()
+        } returns response
     }
 
     private fun getExpandCollapseState(
@@ -379,76 +403,79 @@ abstract class TokoNowShoppingListViewModelFixture {
         mutableLayout.doIf(
             predicate = isShoppingListAvailable,
             then = {
-                /**
-                 * Add Available Products
-                 */
-
-                doIf(
-                    predicate = filteredAvailableProducts.isNotEmpty(),
-                    then = layout@ {
-                        val displayedAvailableItems = filteredAvailableProducts.take(Constant.MAX_TOTAL_PRODUCT_DISPLAYED)
-                        val areAllAvailableProductsSelected = filteredAvailableProducts.count { it.isSelected } == filteredAvailableProducts.size
-                        val areAvailableProductsMoreThanDefaultDisplayed = filteredAvailableProducts.size > Constant.MAX_TOTAL_PRODUCT_DISPLAYED
-                        val remainingTotalProduct = filteredAvailableProducts.size - displayedAvailableItems.size
-                        val newState = if (availableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areAvailableProductsMoreThanDefaultDisplayed) ShoppingListProductState.EXPAND else ShoppingListProductState.COLLAPSE
-                        val newDisplayedItems = if (availableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areAvailableProductsMoreThanDefaultDisplayed) filteredAvailableProducts else displayedAvailableItems
-
-                        this@layout
-                            .addTopCheckAllShoppingList(
-                                productState = newState,
-                                isSelected = areAllAvailableProductsSelected
-                            )
-                            .addProducts(newDisplayedItems.resetIndices())
-                            .doIf(
-                                predicate = areAvailableProductsMoreThanDefaultDisplayed,
-                                then = {
-                                    addExpandCollapse(
-                                        productState = newState,
-                                        remainingTotalProduct = remainingTotalProduct,
-                                        productLayoutType = ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
-                                    )
-                                }
-                            )
-                        doIf(
-                            predicate = filteredUnavailableProducts.isNotEmpty(),
-                            then = {
-                                addDivider()
-                            }
-                        )
-                    }
-                )
-
-                /**
-                 * Add Unavailable Products
-                 */
-
-                doIf(
-                    predicate = filteredUnavailableProducts.isNotEmpty(),
-                    then = layout@ {
-                        val displayedUnavailableItems = filteredUnavailableProducts.take(Constant.MAX_TOTAL_PRODUCT_DISPLAYED)
-                        val areUnavailableProductsMoreThanDefaultDisplayed = filteredUnavailableProducts.size > Constant.MAX_TOTAL_PRODUCT_DISPLAYED
-                        val remainingTotalProduct = filteredUnavailableProducts.size - displayedUnavailableItems.size
-                        val newState = if (unavailableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) ShoppingListProductState.EXPAND else ShoppingListProductState.COLLAPSE
-                        val newDisplayedItems = if (unavailableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) filteredUnavailableProducts else displayedUnavailableItems
-
-                        this@layout
-                            .addTitle("${resourceProvider.getString(R.string.tokopedianow_shopping_list_unavailable_widget_title)} (${filteredUnavailableProducts.size})")
-                            .addProducts(newDisplayedItems.resetIndices())
-                            .doIf(
-                                predicate = areUnavailableProductsMoreThanDefaultDisplayed,
-                                then = {
-                                    addExpandCollapse(
-                                        productState = newState,
-                                        remainingTotalProduct = remainingTotalProduct,
-                                        productLayoutType = ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
-                                    )
-                                }
-                            )
-                    }
-                )
+                addAvailableProducts(availableExpandCollapseCurrentState)
+                addUnavailableProducts(unavailableExpandCollapseCurrentState)
             },
             ifNot = {
                 addEmptyShoppingList()
+            }
+        )
+    }
+
+    private fun addAvailableProducts(
+        availableExpandCollapseCurrentState: ShoppingListProductState
+    ) {
+        mutableLayout.doIf(
+            predicate = filteredAvailableProducts.isNotEmpty(),
+            then = layout@ {
+                val displayedAvailableItems = filteredAvailableProducts.take(Constant.MAX_TOTAL_PRODUCT_DISPLAYED)
+                val areAllAvailableProductsSelected = filteredAvailableProducts.count { it.isSelected } == filteredAvailableProducts.size
+                val areAvailableProductsMoreThanDefaultDisplayed = filteredAvailableProducts.size > Constant.MAX_TOTAL_PRODUCT_DISPLAYED
+                val remainingTotalProduct = filteredAvailableProducts.size - displayedAvailableItems.size
+                val newState = if (availableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areAvailableProductsMoreThanDefaultDisplayed) ShoppingListProductState.EXPAND else ShoppingListProductState.COLLAPSE
+                val newDisplayedItems = if (availableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areAvailableProductsMoreThanDefaultDisplayed) filteredAvailableProducts else displayedAvailableItems
+
+                this@layout
+                    .addTopCheckAllShoppingList(
+                        productState = newState,
+                        isSelected = areAllAvailableProductsSelected
+                    )
+                    .addProducts(newDisplayedItems.resetIndices())
+                    .doIf(
+                        predicate = areAvailableProductsMoreThanDefaultDisplayed,
+                        then = {
+                            addExpandCollapse(
+                                productState = newState,
+                                remainingTotalProduct = remainingTotalProduct,
+                                productLayoutType = ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
+                            )
+                        }
+                    )
+                doIf(
+                    predicate = filteredUnavailableProducts.isNotEmpty(),
+                    then = {
+                        addDivider()
+                    }
+                )
+            }
+        )
+    }
+
+    private fun addUnavailableProducts(
+        unavailableExpandCollapseCurrentState: ShoppingListProductState
+    ) {
+        mutableLayout.doIf(
+            predicate = filteredUnavailableProducts.isNotEmpty(),
+            then = layout@ {
+                val displayedUnavailableItems = filteredUnavailableProducts.take(Constant.MAX_TOTAL_PRODUCT_DISPLAYED)
+                val areUnavailableProductsMoreThanDefaultDisplayed = filteredUnavailableProducts.size > Constant.MAX_TOTAL_PRODUCT_DISPLAYED
+                val remainingTotalProduct = filteredUnavailableProducts.size - displayedUnavailableItems.size
+                val newState = if (unavailableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) ShoppingListProductState.EXPAND else ShoppingListProductState.COLLAPSE
+                val newDisplayedItems = if (unavailableExpandCollapseCurrentState == ShoppingListProductState.EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) filteredUnavailableProducts else displayedUnavailableItems
+
+                this@layout
+                    .addTitle("${resourceProvider.getString(R.string.tokopedianow_shopping_list_unavailable_widget_title)} (${filteredUnavailableProducts.size})")
+                    .addProducts(newDisplayedItems.resetIndices())
+                    .doIf(
+                        predicate = areUnavailableProductsMoreThanDefaultDisplayed,
+                        then = {
+                            addExpandCollapse(
+                                productState = newState,
+                                remainingTotalProduct = remainingTotalProduct,
+                                productLayoutType = ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
+                            )
+                        }
+                    )
             }
         )
     }
@@ -572,14 +599,16 @@ abstract class TokoNowShoppingListViewModelFixture {
         isFirstPageProductRecommendationError = isProductRecommendationError
     }
 
-    protected fun loadLayoutWithExpandCollapseWidget() {
+    protected fun loadLayout(
+        needExpandCollapse: Boolean = true
+    ) {
         // create fake variables for stub
         val shopId = 222121L
         val miniCartData = ShoppingListDataFactory.Main.createMiniCart()
         val shoppingList = ShoppingListDataFactory.Main.createShoppingList()
         val newShoppingList = shoppingList.copy(
-            listAvailableItem = shoppingList.listAvailableItem + shoppingList.listAvailableItem,
-            listUnavailableItem = shoppingList.listUnavailableItem + shoppingList.listUnavailableItem
+            listAvailableItem = if (needExpandCollapse) shoppingList.listAvailableItem + shoppingList.listAvailableItem else shoppingList.listAvailableItem,
+            listUnavailableItem = if (needExpandCollapse) shoppingList.listUnavailableItem + shoppingList.listUnavailableItem else shoppingList.listUnavailableItem
         )
         val recommendationWidget = ShoppingListDataFactory.Main.createRecommendationWidget(
             hasNext = false,

@@ -56,6 +56,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListAnotherOptionBottomSheetViewMod
             availableProducts = availableProducts
         )
 
+        // verify section
         verifyProductRecommendationUseCase(
             param = param
         )
@@ -107,6 +108,7 @@ class ShoppingListLoadLayout: TokoNowShoppingListAnotherOptionBottomSheetViewMod
         expectedResult
             .addEmptyState()
 
+        // verify section
         verifyProductRecommendationUseCase(
             param = param
         )

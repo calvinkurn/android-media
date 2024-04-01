@@ -20,14 +20,11 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-/*
- still need to improve don't review this
- */
 @ExperimentalCoroutinesApi
 class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() {
     @Test
     fun `When selecting all available products and successfully saving shopping list state then the result should change isSelected of all available products to be true`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = true
 
@@ -67,7 +64,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = !availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -94,7 +91,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting all available products and successfully saving shopping list state then the result should change isSelected of all available products to be false`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = false
 
@@ -134,7 +131,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -161,7 +158,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting all available products and failed saving shopping list state (no impact on current flow) then the result should change isSelected all available products to be true`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = true
 
@@ -202,7 +199,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = !availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -229,7 +226,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting all available products and failed saving shopping list state (no impact on current flow) then the result should change isSelected of all available products to be false`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = false
 
@@ -270,7 +267,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -297,7 +294,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting all available products 2 times and successfully saving shopping list state, should cancel the job first then change isSelected all available products to be true`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = true
 
@@ -342,7 +339,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = !availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -369,7 +366,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting all available products 2 times and successfully saving shopping list state, should cancel the job first then change isSelected all available products to be false`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = false
 
@@ -414,7 +411,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -441,7 +438,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting all available products with only isSelected param then the result should change isSelected of all available products to be true`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = true
 
@@ -480,7 +477,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = !availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -507,7 +504,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting all available products with only isSelected param then the result should change isSelected of all available products to be false`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = false
 
@@ -546,7 +543,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = availableProducts.any { !it.isSelected }
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -591,7 +588,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting an available product should change isSelected from false to be true`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         val isSelected = true
         val productId = mutableLayout.filterIsInstance<ShoppingListHorizontalProductCardItemUiModel>().first().id
@@ -629,7 +626,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = (mutableLayout.first { it is ShoppingListHorizontalProductCardItemUiModel && it.id == productId } as ShoppingListHorizontalProductCardItemUiModel).isSelected
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -656,7 +653,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
 
     @Test
     fun `When selecting an available product 2 times should change isSelected from false to be true to be false again`() = runTest {
-        loadLayoutWithExpandCollapseWidget()
+        loadLayout()
 
         var isSelected = true
         val productId = mutableLayout.filterIsInstance<ShoppingListHorizontalProductCardItemUiModel>().first().id
@@ -700,7 +697,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = !(mutableLayout.first { it is ShoppingListHorizontalProductCardItemUiModel && it.id == productId } as ShoppingListHorizontalProductCardItemUiModel).isSelected
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
@@ -765,7 +762,7 @@ class ShoppingListSelectAvailableProduct: TokoNowShoppingListViewModelFixture() 
             expectedResult = !(mutableLayout.first { it is ShoppingListHorizontalProductCardItemUiModel && it.id == productId } as ShoppingListHorizontalProductCardItemUiModel).isSelected
         )
 
-        // other verification
+        // other verifications
         viewModel
             .layoutState
             .verifySuccess(
