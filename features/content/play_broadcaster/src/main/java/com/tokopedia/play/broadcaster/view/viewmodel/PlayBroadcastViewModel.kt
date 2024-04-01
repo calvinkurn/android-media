@@ -2520,7 +2520,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateLiveReportSummary(newLiveStats: List<LiveStatsUiModel>, timestamp: String) {
         _liveReportSummary.update {
-            if (timestamp.length >= it.timestamp.length && timestamp > it.timestamp) {
+            if (timestamp.toLong() >= it.timestamp.toLong()) {
                 it.copy(
                     liveStats = it.liveStats.map { liveStats ->
                         newLiveStats.firstOrNull { item ->
