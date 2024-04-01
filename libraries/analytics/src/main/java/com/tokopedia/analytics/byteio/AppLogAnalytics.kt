@@ -318,9 +318,7 @@ object AppLogAnalytics {
      */
     fun putPreviousPageData(key: String, value: Any) {
         val secondToLastData = _pageDataList.getOrNull(_pageDataList.lastIndex - 1)
-        secondToLastData?.put(
-            key, value
-        )
+        secondToLastData?.put(key, value)
     }
 
     fun removePageData(key: String) {
