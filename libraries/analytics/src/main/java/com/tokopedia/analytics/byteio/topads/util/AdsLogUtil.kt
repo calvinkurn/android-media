@@ -4,10 +4,9 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.analytics.byteio.topads.provider.AdsLogShowOverModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.analytics.byteio.topads.provider.IAdsLogShowOverProvider
 import com.tokopedia.kotlin.extensions.view.orZero
-
 
 fun RecyclerView.addShowOverListener(
     showOverModelList: (List<AdsLogShowOverModel>) -> Unit
@@ -17,7 +16,6 @@ fun RecyclerView.addShowOverListener(
         val adsLogShowOverList = mutableListOf<AdsLogShowOverModel>()
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 adsLogShowOverList.clear()
 
@@ -31,7 +29,6 @@ fun RecyclerView.addShowOverListener(
                 recyclerView.getGlobalVisibleRect(rect)
 
                 for (i in firstVisiblePos..lastVisiblePos) {
-
                     val viewHolder = recyclerView.findViewHolderForAdapterPosition(i) ?: continue
 
                     if (viewHolder is IAdsLogShowOverProvider && viewHolder.isAds) {
