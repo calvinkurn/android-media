@@ -51,7 +51,7 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
             val intent = Intent().apply {
                 `package` = SeamlessSellerConstant.SELLERAPP_PACKAGE
             }
-            if (isMatchedSignatureAppWithTokopedia()) {
+            if (isMatchedSignatureAppWithTokopedia() && isMatchedMinVersionSellerApp()) {
                 intent.apply {
                     action = taskId
                     putExtras(data)
@@ -61,6 +61,7 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
                     putString(SeamlessSellerConstant.KEY_ERROR, MSG_NOT_VALID_APP)
                 }
                 intent.apply {
+                    action = taskId
                     putExtras(bundle)
                 }
             }
@@ -84,6 +85,13 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
                 broadCastResult(data, taskId = this)
             })
         }
+    }
+
+    private fun isMatchedMinVersionSellerApp(): Boolean {
+        return AppSignatureUtil.getVersionCodeOtherApp(
+            applicationContext,
+            SeamlessSellerConstant.SELLERAPP_PACKAGE
+        ) >= AppSignatureUtil.MIN_VERSION_SELLER_APP
     }
 
     private fun isMatchedSignatureAppWithTokopedia(): Boolean {

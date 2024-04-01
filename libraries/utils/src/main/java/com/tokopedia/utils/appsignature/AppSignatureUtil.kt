@@ -9,6 +9,17 @@ import java.security.MessageDigest
 object AppSignatureUtil {
 
     const val TOKO_APP_SIGNATURE = "7456F3BE6944332817E43ECE6A053F9744466C95F536C4503F25330237DD81BE"
+    const val MIN_VERSION_SELLER_APP: Long = 206219100
+    fun getVersionCodeOtherApp(context: Context, packageName: String): Long {
+        val packageManager = context.packageManager
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            packageInfo.versionCode.toLong()
+        }
+        return versionCode
+    }
 
     fun getAppSignature(context: Context, packageName: String): String {
         val packageManager = context.packageManager
