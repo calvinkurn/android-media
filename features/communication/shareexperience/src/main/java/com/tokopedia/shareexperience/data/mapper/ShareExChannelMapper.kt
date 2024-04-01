@@ -106,6 +106,7 @@ open class ShareExChannelMapper @Inject constructor(
         return channelList.map { channelItem ->
             responseItemMap[channelItem.channelEnum.id]?.let { responseItem ->
                 channelItem.copy(
+                    title = responseItem.title,
                     platform = responseItem.platform,
                     imageResolution = responseItem.imageResolution
                 )

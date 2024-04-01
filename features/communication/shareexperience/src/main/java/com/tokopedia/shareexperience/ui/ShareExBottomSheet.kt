@@ -287,7 +287,7 @@ class ShareExBottomSheet :
                     productId = it.productId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
-                    channel = channelEnum.trackerName,
+                    channel = channelEnum.label,
                     imageType = imageTypeEnum.value,
                     label = it.trackerArg.labelActionClickChannel
                 )
