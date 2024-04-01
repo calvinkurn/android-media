@@ -96,7 +96,7 @@ constructor(
         const val PRODUCT_IDS = "productIDs"
         private const val PARAM_CARD_REIMAGINE = "productCardVersion"
         private const val REFRESH_TYPE = "refreshType"
-        private const val CURRENT_SESSION_ID = "currentSessionId"
+        private const val CURRENT_SESSION_ID = "currentSessionID"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0
