@@ -16,7 +16,6 @@ import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -78,6 +77,9 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.utils.enableRollenceContentProductPreview
+import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
@@ -279,7 +281,6 @@ import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigator.goToMvc
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -626,6 +627,9 @@ open class ProductDetailFragment :
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
+
+    private val enableContentProductPreview: Boolean
+        get() = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CONTENT_PRODUCT_PREVIEW, false)
 
     override val rootView: Fragment
         get() = this
@@ -1214,8 +1218,8 @@ open class ProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getProductInfoP1 == null ||
             context == null ||
@@ -1982,27 +1986,27 @@ open class ProductDetailFragment :
 
     override fun onMediaReviewClick(
         reviewID: String,
+        attachmentID: String,
         position: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
         detailedMediaResult: ProductrevGetReviewMedia
     ) {
-        context?.let {
-            ProductDetailTracking.Click.eventClickReviewOnBuyersImage(
-                viewModel.getProductInfoP1,
-                componentTrackDataModel ?: ComponentTrackDataModel(),
-                reviewID
+        ProductDetailTracking.Click.eventClickReviewOnBuyersImage(
+            viewModel.getProductInfoP1,
+            componentTrackDataModel ?: ComponentTrackDataModel(),
+            reviewID
+        )
+
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
+            goToProductPreviewActivityReviewSource(
+                reviewId = reviewID,
+                attachmentId = attachmentID
             )
-            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                context = it,
-                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
-                productID = viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
-                shopID = viewModel.getProductInfoP1?.basic?.shopID.orEmpty(),
-                isProductReview = true,
-                isFromGallery = false,
-                mediaPosition = position.inc(),
-                showSeeMore = detailedMediaResult.hasNext,
-                preloadedDetailedReviewMediaResult = detailedMediaResult
-            ).let { startActivity(it) }
+        } else {
+            goToReviewMediaGallery(
+                position = position,
+                detailedMediaResult = detailedMediaResult
+            )
         }
     }
 
@@ -2154,32 +2158,23 @@ open class ProductDetailFragment :
     }
 
     override fun onVideoFullScreenClicked() {
-        activity?.let { activity ->
-            productVideoCoordinator?.let {
-                val trackerData = viewModel.getProductInfoP1
-                it.pauseVideoAndSaveLastPosition()
-                sharedViewModel?.updateVideoDetailData(
-                    ProductVideoDetailDataModel(
-                        it.getVideoDataModel(),
-                        // Tracker Data
-                        trackerData?.shopTypeString
-                            ?: "",
-                        trackerData?.basic?.shopID.orEmpty(),
-                        viewModel.userId,
-                        trackerData?.basic?.productID.orEmpty()
-                    )
-                )
+        val dynamicProductInfoData = viewModel.getProductInfoP1 ?: ProductInfoP1()
 
-                getProductDetailActivity()?.addNewFragment(ProductVideoDetailFragment())
-                ProductDetailTracking.Click.eventClickFullScreenVideo(
-                    viewModel.getProductInfoP1,
-                    viewModel.userId,
-                    ProductDetailTracking.generateComponentTrackModel(
-                        pdpUiUpdater?.mediaMap,
-                        0
-                    )
-                )
-            }
+        ProductDetailTracking.Click.eventClickFullScreenVideo(
+            viewModel.getProductInfoP1,
+            viewModel.userId,
+            ProductDetailTracking.generateComponentTrackModel(
+                pdpUiUpdater?.mediaMap,
+                0
+            )
+        )
+
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
+            goToProductPreviewActivityProductSource()
+        } else {
+            goToProductVideoDetailFragment(
+                dynamicProductInfoData = dynamicProductInfoData
+            )
         }
     }
 
@@ -2295,23 +2290,101 @@ open class ProductDetailFragment :
     }
 
     override fun onImageClicked(position: Int) {
-        val dynamicProductInfoData = viewModel.getProductInfoP1 ?: ProductInfoP1()
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
+            goToProductPreviewActivityProductSource(position = position)
+        } else {
+            goToProductDetailGallery(position)
+        }
+    }
 
-        activity?.let {
-            val items = dynamicProductInfoData.data.getGalleryItems()
-            if (items.isEmpty()) return
-            val intent = ProductDetailGalleryActivity.createIntent(
-                context = it,
-                productDetailGallery = ProductDetailGallery(
-                    productId = dynamicProductInfoData.basic.productID,
-                    userId = viewModel.userId,
-                    page = ProductDetailGallery.Page.ProductDetail,
-                    items = items,
-                    selectedId = position.toString()
+    private fun goToProductVideoDetailFragment(
+        dynamicProductInfoData: ProductInfoP1
+    ) {
+        productVideoCoordinator?.let {
+            it.pauseVideoAndSaveLastPosition()
+            sharedViewModel?.updateVideoDetailData(
+                ProductVideoDetailDataModel(
+                    it.getVideoDataModel(),
+                    dynamicProductInfoData.shopTypeString,
+                    dynamicProductInfoData.basic.shopID,
+                    viewModel.userId,
+                    dynamicProductInfoData.basic.productID
                 )
             )
-            startActivity(intent)
         }
+        getProductDetailActivity()?.addNewFragment(ProductVideoDetailFragment())
+    }
+
+    private fun goToProductPreviewActivityProductSource(
+        productData: ProductInfoP1 = viewModel.getProductInfoP1 ?: ProductInfoP1(),
+        position: Int = 0,
+        videoLastDuration: Long = productVideoCoordinator?.getCurrentPosition().orZero(),
+        videoTotalDuration: Long = productVideoCoordinator?.getDuration().orZero()
+    ) {
+        val productId = viewModel.parentProductId ?: return
+        val intent = ProductPreviewActivity.createIntent(
+            context = requireContext(),
+            productPreviewSourceModel = ProductPreviewSourceMapper(
+                productId = productId
+            ).mapProductSourceModel(
+                productData = productData,
+                mediaSelectedPosition = position,
+                videoLastDuration = videoLastDuration,
+                videoTotalDuration = videoTotalDuration
+            )
+        )
+        startActivity(intent)
+    }
+
+    private fun goToProductDetailGallery(position: Int) {
+        val dynamicProductInfoData = viewModel.getProductInfoP1 ?: ProductInfoP1()
+        val items = dynamicProductInfoData.data.getGalleryItems()
+        if (items.isEmpty()) return
+        val intent = ProductDetailGalleryActivity.createIntent(
+            context = requireContext(),
+            productDetailGallery = ProductDetailGallery(
+                productId = dynamicProductInfoData.basic.productID,
+                userId = viewModel.userId,
+                page = ProductDetailGallery.Page.ProductDetail,
+                items = items,
+                selectedId = position.toString()
+            )
+        )
+        startActivity(intent)
+    }
+
+    private fun goToProductPreviewActivityReviewSource(
+        reviewId: String,
+        attachmentId: String
+    ) {
+        val productId = viewModel.parentProductId ?: return
+        val intent = ProductPreviewActivity.createIntent(
+            context = requireContext(),
+            productPreviewSourceModel = ProductPreviewSourceMapper(
+                productId = productId
+            ).mapReviewSourceModel(
+                reviewId = reviewId,
+                attachmentId = attachmentId
+            )
+        )
+        startActivity(intent)
+    }
+
+    private fun goToReviewMediaGallery(
+        position: Int,
+        detailedMediaResult: ProductrevGetReviewMedia
+    ) {
+        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+            context = requireContext(),
+            pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
+            productID = viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
+            shopID = viewModel.getProductInfoP1?.basic?.shopID.orEmpty(),
+            isProductReview = true,
+            isFromGallery = false,
+            mediaPosition = position.inc(),
+            showSeeMore = detailedMediaResult.hasNext,
+            preloadedDetailedReviewMediaResult = detailedMediaResult
+        ).let { startActivity(it) }
     }
 
     override fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {
@@ -2729,8 +2802,11 @@ open class ProductDetailFragment :
 
     private fun updateProductInfoOnVariantChanged(selectedChild: VariantChild?) {
         val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(
-            viewModel.getProductInfoP1,
-            selectedChild
+            oldData = viewModel.getProductInfoP1,
+            newData = selectedChild,
+            isWishlist = viewModel.getP2()?.getWishlistStatusByProductId(
+                selectedChild?.productId.orEmpty()
+            ).orFalse()
         )
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
@@ -2835,7 +2911,7 @@ open class ProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -3384,7 +3460,7 @@ open class ProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getProductInfoP1?.parentProductId.orEmpty()
                         }"
                         ProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -4448,40 +4524,6 @@ open class ProductDetailFragment :
         RouteManager.route(context, webViewUrl)
     }
 
-    private fun onSuccessRemoveWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaListener = { }
-        )
-        if (productId != null) {
-            updateFabIcon(productId, false)
-        }
-    }
-
-    private fun onErrorRemoveWishList(errorMsg: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMsg),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
-    }
-
-    private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaListener = { goToWishlist() }
-        )
-        productId?.let { updateFabIcon(it, true) }
-    }
-
-    private fun onErrorAddWishList(errorMessage: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMessage),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
-    }
-
     private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {
         val resultIntent = Intent()
             .putExtra(
@@ -4998,7 +5040,6 @@ open class ProductDetailFragment :
                 ApplinkConst.SHOP,
                 shopId
             )
-
 
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 
@@ -5641,7 +5682,7 @@ open class ProductDetailFragment :
                                 throwable
                             )
                         val extras =
-                            mapOf(ProductDetailConstant.WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                            mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
                         ProductDetailLogger.logMessage(
                             errorMsg,
                             WISHLIST_ERROR_TYPE,

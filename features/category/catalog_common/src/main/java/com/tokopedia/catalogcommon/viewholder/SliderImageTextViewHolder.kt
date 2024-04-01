@@ -7,11 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.ImageSliderAdapter
 import com.tokopedia.catalogcommon.databinding.WidgetItemSliderImageTextBinding
-import com.tokopedia.catalogcommon.listener.SliderImageTextListener
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class SliderImageTextViewHolder(itemView: View, val listener: SliderImageTextListener? = null) :
+class SliderImageTextViewHolder(itemView: View) :
     AbstractViewHolder<SliderImageTextUiModel>(itemView) {
 
     companion object {
@@ -26,6 +25,5 @@ class SliderImageTextViewHolder(itemView: View, val listener: SliderImageTextLis
         binding?.rvSlider?.adapter = imageSlideAdapter
         binding?.rvSlider?.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        listener?.onSliderImageTextImpression(element.widgetName)
     }
 }

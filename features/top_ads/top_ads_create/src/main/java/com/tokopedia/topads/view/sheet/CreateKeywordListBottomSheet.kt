@@ -12,7 +12,7 @@ import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactoryIm
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.TopadsCreateProductListKeywordListSheetBinding
-import com.tokopedia.topads.view.adapter.product.viewmodel.KeyWordItemViewModel
+import com.tokopedia.topads.view.adapter.product.viewmodel.KeyWordItemUiModel
 
 class CreateKeywordListBottomSheet : BottomSheetUnify() {
 
@@ -43,7 +43,7 @@ class CreateKeywordListBottomSheet : BottomSheetUnify() {
             adapter = productListAdapter
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
-        productListAdapter.items = keyWordList.map { KeyWordItemViewModel(it) }.toMutableList()
+        productListAdapter.items = keyWordList.map { KeyWordItemUiModel(it) }.toMutableList()
 
     }
 
