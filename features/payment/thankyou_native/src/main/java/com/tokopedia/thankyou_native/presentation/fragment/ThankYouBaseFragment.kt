@@ -227,21 +227,23 @@ open class ThankYouBaseFragment :
             addHeader()
 
             Handler().postDelayed({
-                getFeatureRecommendationData()
-                addRecommendation(getRecommendationContainer())
-                getTopTickerData()
-                thanksPageDataViewModel.resetAddressToDefault()
 
-                if (thanksPageData.configFlagData?.shouldHideProductRecom != true) {
-                    topadsHeadlineView.getHeadlineAds(
-                        ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
-                        this::showTopAdsHeadlineView,
-                        this::hideTopAdsHeadlineView
-                    )
-                }
 
 //                showOnBoardingShare()
             }, 5000)
+
+            getFeatureRecommendationData()
+            addRecommendation(getRecommendationContainer())
+            getTopTickerData()
+            thanksPageDataViewModel.resetAddressToDefault()
+
+            if (thanksPageData.configFlagData?.shouldHideProductRecom != true) {
+                topadsHeadlineView.getHeadlineAds(
+                    ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
+                    this::showTopAdsHeadlineView,
+                    this::hideTopAdsHeadlineView
+                )
+            }
         }
     }
 
