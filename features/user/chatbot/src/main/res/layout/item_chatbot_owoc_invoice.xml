@@ -28,7 +28,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/background_countdown" />
+            tools:src="@drawable/imagestate_placeholder" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_badge"

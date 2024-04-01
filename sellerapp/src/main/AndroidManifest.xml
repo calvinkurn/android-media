@@ -982,6 +982,7 @@
         android:requestLegacyExternalStorage="true"
         android:taskAffinity="@string/ompyqgcgdk"
         tools:replace="android:icon,android:label,android:hasCode,android:roundIcon,android:allowBackup,android:resizeableActivity">
+        <profileable android:shell="true"/>
         <activity
             android:name=".SplashScreenActivity"
             android:label="@string/app_name"
@@ -1058,13 +1059,13 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:scheme="http" />
-                <data android:host="tokopedia.com" />
-                <data android:host="*.tokopedia.com" />
-                <data android:pathPattern="/topads" />
-                <data android:pathPattern="/topads/*" />
+                <data
+                    android:host="www.tokopedia.com"
+                    android:pathPattern=".*"
+                    android:scheme="https" />
+                <data
+                    android:host="ta.tokopedia.com"
+                    android:pathPattern="/v2/manage/*" />
             </intent-filter>
         </activity>
 

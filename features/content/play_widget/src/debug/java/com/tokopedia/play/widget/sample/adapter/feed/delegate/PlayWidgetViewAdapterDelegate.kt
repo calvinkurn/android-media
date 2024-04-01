@@ -7,37 +7,13 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.sample.adapter.feed.viewholder.PlayWidgetViewHolder
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetLargeUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallUiModel
 
 /**
  * Created by meyta.taliti on 29/01/22.
  */
 class PlayWidgetViewAdapterDelegate private constructor() {
-
-    internal class Jumbo(
-        private val coordinator: PlayWidgetCoordinator
-    ) :
-        TypedAdapterDelegate<PlayWidgetJumboUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Jumbo>(
-            R.layout.item_play_widget_jumbo_sample
-        ) {
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): PlayWidgetViewHolder.Jumbo {
-            return PlayWidgetViewHolder.Jumbo.create(basicView, coordinator)
-        }
-
-        override fun onBindViewHolder(
-            item: PlayWidgetJumboUiModel,
-            holder: PlayWidgetViewHolder.Jumbo
-        ) {
-            holder.bind(item.model)
-        }
-    }
 
     internal class Large(
         private val coordinator: PlayWidgetCoordinator
@@ -78,28 +54,6 @@ class PlayWidgetViewAdapterDelegate private constructor() {
             basicView: View
         ): PlayWidgetViewHolder.Medium {
             return PlayWidgetViewHolder.Medium.create(basicView, coordinator)
-        }
-    }
-
-    internal class Small(
-        private val coordinator: PlayWidgetCoordinator
-    ) :
-        TypedAdapterDelegate<PlayWidgetSmallUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Small>(
-            R.layout.item_play_widget_small
-        ) {
-
-        override fun onBindViewHolder(
-            item: PlayWidgetSmallUiModel,
-            holder: PlayWidgetViewHolder.Small
-        ) {
-            holder.bind(item.model)
-        }
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): PlayWidgetViewHolder.Small {
-            return PlayWidgetViewHolder.Small.create(basicView, coordinator)
         }
     }
 }

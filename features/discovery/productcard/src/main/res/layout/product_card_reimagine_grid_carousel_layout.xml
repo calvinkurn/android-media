@@ -166,8 +166,9 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardStockInfoLabel"
-                android:layout_width="0dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:layout_marginStart="8dp"
                 android:textColor="@color/Unify_NN600"
                 android:visibility="gone"
@@ -181,9 +182,11 @@
 
             <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/productCardStockInfoBar"
-                android:layout_width="40dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toEndOf="@id/productCardStockInfoLabel"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/productCardStockInfoBackground"
                 app:layout_constraintEnd_toEndOf="parent"

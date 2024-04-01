@@ -4,6 +4,7 @@ import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.generalResult
 import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
+import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
 import com.tokopedia.inbox.universalinbox.test.robot.recommendationResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.test.application.annotations.UiTest
@@ -56,6 +57,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         generalRobot {
             scrollToPosition(8)
         }
+        Thread.sleep(30000)
 
         // Then
         recommendationResult {
@@ -117,6 +119,44 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         recommendationResult {
             assertWidgetRecommendation(9)
             assertWidgetRecommendationGone(9)
+        }
+    }
+
+    @Test
+    fun should_update_product_when_swipe_refresh() {
+        // Given
+        GqlResponseStub.postPurchaseProductRecommendationResponse.isError = true
+        GqlResponseStub.prePurchaseProductRecommendationResponse.isError = true
+
+        // When
+        launchActivity()
+        generalRobot {
+            scrollToPosition(11)
+        }
+
+        // Then
+        recommendationResult {
+            assertProductRecommendationName(11, "Tumbler Japan Hook Termos Travel 500 ml")
+        }
+
+        // Given
+        GqlResponseStub.productRecommendationResponse.filePath = "recommendation/success_get_recommendation_refresh.json"
+        GqlResponseStub.productRecommendationResponse.updateResponseObject()
+
+        // When
+        generalRobot {
+            scrollToPosition(0)
+        }
+        menuRobot {
+            swipeDown()
+        }
+        generalRobot {
+            scrollToPosition(11)
+        }
+
+        // Then
+        recommendationResult {
+            assertProductRecommendationName(11, "Tas Messenger Kanvas Premium Tebal Jepang Wanita Pria Korea Import")
         }
     }
 }

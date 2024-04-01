@@ -69,6 +69,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
               superGraphicURL
               separatorColor
             }
+            productVariantWishlist {
+                productID
+                isWishlist
+            }
             ppGetItemDetailPage{
               program{
                 protectionAvailable
@@ -573,6 +577,22 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 loadMoreText
                 productIDs
                 offerID
+              }
+            }
+            onelinerVariant {
+              productIDs
+              data {
+                name
+                text
+                applink
+                separator
+                icon
+                status
+                chevronPos
+                padding {
+                  t
+                  b
+                }
               }
             }
             gwp {

@@ -88,8 +88,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
+    implementation projectOrAar(rootProject.ext.libraries.translator)
     implementation projectOrAar(rootProject.ext.features.attachcommon)
     implementation projectOrAar(rootProject.ext.features.common_promo)
+    implementation projectOrAar(rootProject.ext.features.productPreview)
     implementation projectOrAar(rootProject.ext.libraries.bannerDynamic)
     implementation projectOrAar(rootProject.ext.libraries.inappupdate)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
@@ -189,7 +191,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
@@ -392,4 +393,26 @@ dependencies {
     debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+
+    // applog
+    implementation rootProject.appLogDependencies.bdTrackerGlobal
+    implementation rootProject.appLogDependencies.sampling
+    implementation rootProject.appLogDependencies.compress
+    implementation rootProject.appLogDependencies.monitor
+    implementation rootProject.appLogDependencies.encrypt
+    implementation rootProject.appLogDependencies.baseLibsUtility
+    implementation rootProject.appLogDependencies.bdNetworkTag
+    implementation rootProject.appLogDependencies.bdTrackerEtGlobal // debugOnly
+
+    // Tik tok Slardar
+    implementation rootProject.ext.slardarDependencies.commonMonitor
+    implementation rootProject.ext.slardarDependencies.npth
+    implementation rootProject.ext.slardarDependencies.npthCore
+
+    // ttnet
+    implementation rootProject.ext.ttnetDependencies.chromiumCronet
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.ttnetDependencies.boringSsl
+    implementation rootProject.ext.ttnetDependencies.cppShared
+
 }

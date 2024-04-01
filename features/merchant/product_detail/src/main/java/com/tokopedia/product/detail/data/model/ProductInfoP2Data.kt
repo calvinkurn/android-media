@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
+import com.tokopedia.product.detail.data.model.dynamic_oneliner_variant.DynamicOneLinerVariantResponse
 import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.gwp.GWPData
@@ -32,6 +33,8 @@ import com.tokopedia.product.detail.data.model.shop_review.asUiModel
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
+import com.tokopedia.product.detail.data.model.variant_wishlist.ProductVariantWishlistResponse
+import com.tokopedia.product.detail.data.model.variant_wishlist.asUiModel
 import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -181,7 +184,15 @@ data class ProductInfoP2Data(
 
     @SerializedName("promoPriceStyle")
     @Expose
-    val promoPriceStyle: List<PromoPriceStyle> = listOf()
+    val promoPriceStyle: List<PromoPriceStyle> = listOf(),
+
+    @SerializedName("onelinerVariant")
+    @Expose
+    val dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse> = listOf(),
+
+    @SerializedName("productVariantWishlist")
+    @Expose
+    val productVariantWishlist: List<ProductVariantWishlistResponse> = listOf()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -225,5 +236,7 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     dynamicOneLiner = dynamicOneLiner,
     bmgm = bmgm,
     gwp = gwp,
-    promoPriceStyle = promoPriceStyle
+    promoPriceStyle = promoPriceStyle,
+    dynamicOneLinerVariant = dynamicOneLinerVariant,
+    wishlistVariant = productVariantWishlist.asUiModel()
 )

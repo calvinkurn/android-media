@@ -12,23 +12,34 @@
         android:layout_height="wrap_content"
         app:elevation="0dp">
 
-        <com.tokopedia.design.label.LabelView
-            android:id="@+id/label_view_album"
+        <LinearLayout
+            android:id="@+id/image_picker_view_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_Background"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="20dp"
-            android:paddingStart="20dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
-            tools:lv_content="@string/default_all_album"
-            app:lv_title_color="@color/Unify_NN950"
-            app:lv_sub_title_color="@color/Unify_NN950"
-            app:lv_content_color="@color/Unify_GN500"
-            app:lv_title="@string/album"
-            app:layout_scrollFlags="enterAlways|scroll" />
+            android:background="@color/Unify_Static_White"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp"
+            app:layout_scrollFlags="enterAlways|scroll">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:text="@string/album"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="paragraph_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_album_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:textColor="@color/Unify_GN500"
+                app:typographyType="paragraph_2" />
+        </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView

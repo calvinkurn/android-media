@@ -24,6 +24,8 @@ sealed interface ProductSetupAction {
 
     data class DeleteSelectedProduct(val product: ProductUiModel) : ProductSetupAction
 
+    object SyncSelectedProduct : ProductSetupAction
+
     /** Pin Product*/
     data class ClickPinProduct(val product: ProductUiModel) : ProductSetupAction
 }

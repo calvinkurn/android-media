@@ -30,10 +30,9 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,7 +65,7 @@ class RegisterInitialViewModelTest {
     val activateUserUseCase = mockk<ActivateUserUseCase>(relaxed = true)
     val discoverUseCase = mockk<DiscoverUseCase>(relaxed = true)
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
-    val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
+    val getProfileUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
 
@@ -453,32 +452,43 @@ class RegisterInitialViewModelTest {
     fun `on Success get user info`() {
         /* When */
         val profileInfo = ProfileInfo(firstName = "yoris")
-        val response = ProfilePojo(profileInfo = profileInfo)
+        val response = Success(ProfilePojo(profileInfo = profileInfo))
 
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
-        }
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewModel.getUserInfo()
 
         /* Then */
         verify {
-            getUserInfoObserver.onChanged(Success(ProfileInfoData(response.profileInfo)))
+            getUserInfoObserver.onChanged(Success(ProfileInfoData(response.data.profileInfo)))
         }
     }
 
     @Test
     fun `on Failed get user info`() {
         /* When */
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile(throwable)
-        }
+        val response = Fail(throwable)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewModel.getUserInfo()
 
         /* Then */
         verify {
-            getUserInfoObserver.onChanged(Fail(throwable))
+            getUserInfoObserver.onChanged(response)
+        }
+    }
+
+    @Test
+    fun `throws exception when get user info`() {
+        /* When */
+        val exception = Exception()
+        coEvery { getProfileUseCase(Unit) } throws exception
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            getUserInfoObserver.onChanged(Fail(exception))
         }
     }
 
@@ -486,32 +496,29 @@ class RegisterInitialViewModelTest {
     fun `on Success get user info after add pin`() {
         /* When */
         val profileInfo = ProfileInfo(firstName = "yoris")
-        val response = ProfilePojo(profileInfo = profileInfo)
+        val response = Success(ProfilePojo(profileInfo = profileInfo))
 
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
-        }
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewModel.getUserInfoAfterAddPin()
 
         /* Then */
         verify {
-            getUserInfoAddPinObserver.onChanged(Success(ProfileInfoData(response.profileInfo)))
+            getUserInfoAddPinObserver.onChanged(Success(ProfileInfoData(response.data.profileInfo)))
         }
     }
 
     @Test
     fun `on Failed get user info after add pin`() {
         /* When */
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile(throwable)
-        }
+        val response = Fail(throwable)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewModel.getUserInfoAfterAddPin()
 
         /* Then */
-        verify {
-            getUserInfoAddPinObserver.onChanged(Fail(throwable))
+        coVerify {
+            getUserInfoAddPinObserver.onChanged(response)
         }
     }
 
@@ -668,7 +675,6 @@ class RegisterInitialViewModelTest {
         viewModel.clearBackgroundTask()
         verify {
             loginTokenUseCase.unsubscribe()
-            getProfileUseCase.unsubscribe()
         }
     }
 }

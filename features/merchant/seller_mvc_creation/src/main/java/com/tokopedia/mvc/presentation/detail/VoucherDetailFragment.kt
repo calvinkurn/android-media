@@ -447,7 +447,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.ONGOING -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ongoing_label)
-                        setTextColorCompat(color.Green_G500)
+                        setTextColorCompat(color.Unify_GN500)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
                 }

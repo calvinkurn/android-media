@@ -930,14 +930,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 socmedBottomSheet?.setProviders(it)
             }
         } else {
-            onErrorDiscoverLogin(
-                MessageErrorException(
-                    ErrorHandlerSession.getDefaultErrorCodeMessage(
-                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                        context
+            context?.let {
+                onErrorDiscoverLogin(
+                    MessageErrorException(
+                        ErrorHandlerSession.getDefaultErrorCodeMessage(
+                            ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                            it
+                        )
                     )
                 )
-            )
+            }
         }
     }
 
@@ -1425,7 +1427,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGoToSecurityQuestionAfterRelogin(): () -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)), LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
+            context?.let {
+                onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, it)),
+                    LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
+            }
         }
     }
 
@@ -1688,10 +1694,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     showLoadingLogin()
                     viewModel.loginGoogle(accessToken, email)
                 } else {
-                    onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context)), LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL)
+                    context?.let {
+                        onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                            ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, it)),
+                            LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL)
+                    }
                 }
             } else {
-                onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context)), LoginErrorCode.ERROR_ON_GMAIL_CATCH)
+                context?.let {
+                    onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                        ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, it)),
+                        LoginErrorCode.ERROR_ON_GMAIL_CATCH)
+                }
             }
         } catch (e: ApiException) {
             onErrorLogin(

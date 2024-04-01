@@ -312,7 +312,6 @@ internal class ProductCardOptionsViewModel(
     private fun onSeeSimilarProductsOptionClicked() {
         trackingSeeSimilarProductEventLiveData.postValue(Event(true))
         routeToSimilarProductsEventLiveData.postValue(Event(true))
-        closeProductCardOptionsEventLiveData.postValue(Event(true))
     }
 
     fun getOptionsListLiveData(): LiveData<List<Visitable<*>>> = productCardOptionsItemListLiveData
