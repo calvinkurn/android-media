@@ -24,12 +24,12 @@ internal val productCardReimagineGridTestData =
         stockInfoTersedia(),
         stockInfoSegeraHabis(),
         overlayWithStockInfo(),
-        genericCta(),
-        genericCtaWithSecondary(),
         blurWithRibbonLabels(),
         blurWithStockInfo(),
         blurWithLabelAssignedValue(),
         blurWithPreventiveOverlay(),
+        genericCta(),
+        genericCtaWithSecondary(),
     )
 
 private fun video(): ProductCardReimagineMatcher {
