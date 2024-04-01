@@ -19,7 +19,7 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_page_dynamic_tab_view_icon"
-            android:layout_width="24dp"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
             android:adjustViewBounds="true"
             android:visibility="gone"
