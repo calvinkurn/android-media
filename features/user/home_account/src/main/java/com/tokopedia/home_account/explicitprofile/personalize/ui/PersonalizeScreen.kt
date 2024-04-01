@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.LiveData
+import com.tokopedia.home_account.explicitprofile.ExplicitProfileConstant
 import com.tokopedia.home_account.explicitprofile.personalize.ExplicitPersonalizeResult
 import com.tokopedia.home_account.explicitprofile.personalize.PersonalizeSaveAnswerResult
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -22,7 +23,7 @@ fun PersonalizeScreen(
     onSuccessSaveAnswer: () -> Unit
 ) {
     val uiStateObserver by uiState.observeAsState(initial = ExplicitPersonalizeResult.Loading)
-    val counterStateObserver by counterState.observeAsState(initial = 10)
+    val counterStateObserver by counterState.observeAsState(initial = ExplicitProfileConstant.MAX_ANSWER_DEFAULT)
     val saveAnswerStateObserver by saveAnswerState.observeAsState()
     NestTheme {
         Surface(
