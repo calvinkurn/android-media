@@ -1755,6 +1755,29 @@ open class DiscoveryAnalytics(
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1984
+    // Tracker ID: 19679
+    override fun trackMerchantVoucherViewClickAll(
+        components: ComponentsItem,
+        userID: String?,
+        position: Int,
+        ctaText: String?
+    ) {
+        val map: MutableMap<String, Any> = mutableMapOf(
+            KEY_EVENT to CLICK_HOMEPAGE_EVENT,
+            KEY_EVENT_ACTION to CLICK_MV_VIEW_ALL,
+            KEY_EVENT_CATEGORY to VALUE_DISCOVERY_PAGE,
+            KEY_EVENT_LABEL to "${components.name} - $ctaText",
+            TRACKER_ID to "19679",
+            BUSINESS_UNIT to HOME_BROWSE,
+            CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+            PAGE_PATH to removedDashPageIdentifier,
+            PAGE_TYPE to pageType,
+            PAGE_DESTINATION to sourceIdentifier
+        )
+        getTracker().sendGeneralEvent(map)
+    }
+
 //    datatracker/requestdetail/view/1984
     override fun trackSingleMerchantVoucherClick(components: ComponentsItem, shopId: String, userID: String?, positionInPage: Int, couponName: String?) {
         val list = ArrayList<Map<String, Any>>()

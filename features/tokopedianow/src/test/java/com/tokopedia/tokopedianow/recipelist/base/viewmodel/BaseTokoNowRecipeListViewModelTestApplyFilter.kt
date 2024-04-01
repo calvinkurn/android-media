@@ -94,6 +94,7 @@ class BaseTokoNowRecipeListViewModelTestApplyFilter : BaseTokoNowRecipeListViewM
 
         onGetRecipes_thenReturn(getRecipesResponse, recipeListParamSlot)
         onGetWarehouseId_thenReturn(warehouseId)
+        onGetWarehouses_thenReturn(warehouses)
 
         viewModel.applyFilter(selectedFilters)
 
@@ -102,13 +103,13 @@ class BaseTokoNowRecipeListViewModelTestApplyFilter : BaseTokoNowRecipeListViewM
 
         verifyGetRecipeListParams(
             expectedPage = 1,
-            expectedWarehouseId = "5",
+            expectedWarehouses = warehouses,
             expectedSortByParams = "Newest",
             expectedTagIdsParam = "3,4",
             expectedIngredientIdsParam = "1,2",
             expectedDurationParam = "30To60",
             expectedPortionParam = "LessThan5",
-            actualRecipeListParam = actualRecipeListParam,
+            actualRecipeListParam = actualRecipeListParam
         )
         assertEquals(selectedFilters, actualSelectedFilter)
     }
