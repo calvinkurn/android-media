@@ -80,7 +80,8 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
                 SpecificationInputModel("1", "Indomie"),
                 SpecificationInputModel("", "Indomie"),
                 SpecificationInputModel("2", ""),
-                SpecificationInputModel("", "")
+                SpecificationInputModel("", ""),
+                SpecificationInputModel("", "", isTextInput = true)
         )
 
         // test without setting productInputValue
