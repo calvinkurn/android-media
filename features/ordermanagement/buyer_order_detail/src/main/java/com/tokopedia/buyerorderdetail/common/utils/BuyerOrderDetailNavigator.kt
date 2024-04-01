@@ -23,6 +23,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.resources.common.R as resourcescommonR
 
@@ -40,7 +41,7 @@ class BuyerOrderDetailNavigator(
 
         private const val BRC_CSAT_ORDER_ID_PARAM = "${'$'}orderID"
         private const val BRC_CSAT_FEEDBACK_PARAM = "${'$'}feedback"
-        private const val BRC_CSAT_FORM_URL = "https://232-staging-feature.tokopedia.com/order-details/marketplace/$BRC_CSAT_ORDER_ID_PARAM/csat?feedback=$BRC_CSAT_FEEDBACK_PARAM"
+        private val BRC_CSAT_FORM_URL = "${TokopediaUrl.getInstance().WEB}/order-details/marketplace/$BRC_CSAT_ORDER_ID_PARAM/csat?feedback=$BRC_CSAT_FEEDBACK_PARAM"
     }
 
     private fun applyTransition() {
