@@ -163,6 +163,79 @@ object ShipmentAddOnProductServiceMapper {
         }
     }
 
+    fun generateSaveAddOnProductRequestParamsNewBackup(product: com.tokopedia.checkout.backup.view.uimodel.CheckoutProductModel, isOneClickCheckout: Boolean): SaveAddOnStateRequest {
+        val listAddOnRequest = arrayListOf<AddOnDataRequest>()
+        product.addOnProduct.listAddOnProductData.forEach { addOn ->
+            val addOnRequest = AddOnDataRequest()
+            addOnRequest.addOnId = addOn.id
+            addOnRequest.addOnQty = if (addOn.fixedQty) 1 else product.quantity
+            addOnRequest.addOnUniqueId = addOn.uniqueId
+            addOnRequest.addOnType = addOn.type
+            addOnRequest.addOnStatus = addOn.status
+            listAddOnRequest.add(addOnRequest)
+        }
+        return SaveAddOnStateRequest().apply {
+            source = if (isOneClickCheckout) AddOnConstant.SOURCE_ONE_CLICK_SHIPMENT else AddOnConstant.SOURCE_NORMAL_CHECKOUT
+            featureType = 1
+            addOns = listOf(
+                AddOnRequest().apply {
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
+                    addOnKey = product.cartId.toString()
+                    cartProducts = listOf(
+                        CartProduct(
+                            cartId = product.cartId,
+                            productId = product.productId,
+                            productName = product.name,
+                            productParentId = product.variantParentId
+                        )
+                    )
+                    addOnData = listAddOnRequest
+                }
+            )
+        }
+    }
+
+    fun generateSaveAddOnProductRequestParamsNewBackup(listCartItemModel: List<com.tokopedia.checkout.backup.view.uimodel.CheckoutProductModel>, isOneClickCheckout: Boolean): SaveAddOnStateRequest {
+        val listAddOnRequest = arrayListOf<AddOnRequest>()
+        listCartItemModel.forEach { cartItem ->
+            val listAddOnProduct: ArrayList<AddOnDataRequest> = arrayListOf()
+            if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                cartItem.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
+                    val addOnDataRequest = AddOnDataRequest(
+                        addOnId = addOnProduct.id,
+                        addOnQty = if (addOnProduct.fixedQty) 1 else cartItem.quantity,
+                        addOnUniqueId = addOnProduct.uniqueId,
+                        addOnType = addOnProduct.type,
+                        addOnStatus = addOnProduct.status
+                    )
+                    listAddOnProduct.add(addOnDataRequest)
+                }
+            }
+
+            val addOnRequest = AddOnRequest(
+                addOnKey = cartItem.cartId.toString(),
+                addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                cartProducts = listOf(
+                    CartProduct(
+                        cartId = cartItem.cartId,
+                        productId = cartItem.productId,
+                        warehouseId = cartItem.warehouseId.toLongOrZero(),
+                        productName = cartItem.name,
+                        productImageUrl = cartItem.imageUrl,
+                        productParentId = cartItem.variantParentId
+                    )
+                ),
+                addOnData = listAddOnProduct
+            )
+            listAddOnRequest.add(addOnRequest)
+        }
+        return SaveAddOnStateRequest().apply {
+            source = if (isOneClickCheckout) AddOnConstant.SOURCE_ONE_CLICK_SHIPMENT else AddOnConstant.SOURCE_NORMAL_CHECKOUT
+            featureType = 1
+            addOns = listAddOnRequest
+        }
+    }
+
     fun mapSummaryAddOns(cartShipmentAddressFormData: CartShipmentAddressFormData): List<ShipmentAddOnSummaryModel> {
         val countMapSummaries = hashMapOf<Int, Pair<Long, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
