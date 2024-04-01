@@ -264,8 +264,8 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `MA df_tokopedianow`() {
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.HOME, DF_TOKOPEDIA_NOW)
-        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.CATEGORY, DF_TOKOPEDIA_NOW)
-        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.OLD_CATEGORY, DF_TOKOPEDIA_NOW)
+        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.CATEGORY_L1, DF_TOKOPEDIA_NOW)
+        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.CATEGORY_L2, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.SEE_ALL_CATEGORY, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.REPURCHASE, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_DETAIL, DF_TOKOPEDIA_NOW)

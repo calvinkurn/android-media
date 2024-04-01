@@ -809,6 +809,7 @@ internal class SearchProductInspirationCarouselTest : ProductListPresenterTestFi
         applink shouldBe inspirationCarouselProduct.applink
         priceString shouldBe inspirationCarouselProduct.priceStr
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
+        shopId shouldBe inspirationCarouselProduct.shop.id
         shopLocation shouldBe inspirationCarouselProduct.shop.city
         shopName shouldBe inspirationCarouselProduct.shop.name
         position shouldBe index + 1
@@ -840,6 +841,8 @@ internal class SearchProductInspirationCarouselTest : ProductListPresenterTestFi
         stockBarDataView.originalStock shouldBe inspirationCarouselProduct.stockBar.originalStock
         stockBarDataView.percentageValue shouldBe inspirationCarouselProduct.stockBar.percentageValue
         stockBarDataView.color shouldBe inspirationCarouselProduct.stockBar.color
+
+        parentId shouldBe inspirationCarouselProduct.parentId
     }
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {

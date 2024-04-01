@@ -379,4 +379,7 @@ produk eksklusif ini.</string>
     <string name="content_video_duration_separator">/</string>
     <string name="content_video_time_less_than_hour">%d:%02d</string>
     <string name="content_video_time_hours">%d:%02d:%02d</string>
+
+    <string name="content_out_of_stock_label_text">Stok Habis</string>
+    <string name="content_soon_label_text">Segera Hadir</string>
 </resources>

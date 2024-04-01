@@ -308,12 +308,14 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         val selectedSortMap = sortFilterBottomSheetViewModel?.getSelectedSortMap() ?: mapOf()
         val sortAutoFilterMap = sortFilterBottomSheetViewModel?.getSortAutoFilterMap() ?: mapOf()
         val selectedSortName = sortFilterBottomSheetViewModel?.selectedSortName ?: ""
+        val selectedOptionWithIndex = sortFilterBottomSheetViewModel?.getActiveFilterOptionIndexed() ?: listOf()
         val applySortFilterModel = ApplySortFilterModel(
             mapParameter,
             selectedFilterMap,
             selectedSortMap,
             selectedSortName,
             sortAutoFilterMap,
+            selectedOptionWithIndex,
         )
 
         sortFilterCallback?.onApplySortFilter(applySortFilterModel)
@@ -456,6 +458,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         val selectedSortMapParameter: Map<String, String>,
         val selectedSortName: String,
         val sortAutoFilterMapParameter: Map<String, String>,
+        val selectedOptionWithIndex: List<Pair<Int, Option>> = listOf(),
     )
 
     interface Callback {

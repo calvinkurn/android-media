@@ -126,17 +126,10 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 trySend(Unit)
             }
 
-            val addOnPreDrawListener = ViewTreeObserver.OnPreDrawListener {
-                trySend(Unit)
-                true
-            }
-
             addOnScrollChangedListener(onScrollChangedListener)
-            addOnPreDrawListener(addOnPreDrawListener)
 
             awaitClose {
                 removeOnScrollChangedListener(onScrollChangedListener)
-                removeOnPreDrawListener(addOnPreDrawListener)
             }
         }.debounce(DELAYING_SCROLL_TO_IDLE)
     }
