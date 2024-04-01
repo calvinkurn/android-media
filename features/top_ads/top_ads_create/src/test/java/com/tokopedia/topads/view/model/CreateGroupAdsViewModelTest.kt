@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.topads.view.model
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -46,10 +48,10 @@ class CreateGroupAdsViewModelTest {
         every { topAdsGroupValidateNameUseCase.execute(any(), any()) } throws expected
 
         viewModel.validateGroup(
-                groupName = "",
-                onSuccess = {
-                },
-                onError = onError
+            groupName = "",
+            onSuccess = {
+            },
+            onError = onError
         )
         Assert.assertEquals(actual?.message, expected.message)
     }
@@ -58,24 +60,25 @@ class CreateGroupAdsViewModelTest {
     fun `check invocation of onError validateGroup`() {
         val expected = "error"
         var actual = ""
-        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateNameV2(errors = listOf(Error().apply {
-            detail = expected
-        })))
+        val data = ResponseGroupValidateName(
+            ResponseGroupValidateName.TopAdsGroupValidateNameV2(
+                errors = listOf(Error().apply {
+                    detail = expected
+                })
+            )
+        )
         val onError: (String) -> Unit = {
             actual = expected
         }
         every {
             topAdsGroupValidateNameUseCase.execute(captureLambda(), any())
         } answers {
-            if (data.topAdsGroupValidateName.errors.isNotEmpty()) {
-                actual = data.topAdsGroupValidateName.errors.first().detail
-            }
-            onError.invoke(actual)
+            firstArg<(ResponseGroupValidateName) -> Unit>().invoke(data)
         }
         viewModel.validateGroup(
-                groupName = "",
-                onSuccess = {},
-                onError = onError
+            groupName = "",
+            onSuccess = {},
+            onError = onError
         )
         verify {
             topAdsGroupValidateNameUseCase.execute(any(), any())
@@ -87,21 +90,25 @@ class CreateGroupAdsViewModelTest {
     fun `check invocation of onSuccess validateGroup`() {
         val expected = "test"
         var actual = ""
-        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateNameV2(ResponseGroupValidateName.TopAdsGroupValidateNameV2.Data(groupName = expected)))
+        val data = ResponseGroupValidateName(
+            ResponseGroupValidateName.TopAdsGroupValidateNameV2(
+                ResponseGroupValidateName.TopAdsGroupValidateNameV2.Data(
+                    groupName = expected
+                )
+            )
+        )
         val onSuccess: () -> Unit = {
             actual = expected
         }
         every {
             topAdsGroupValidateNameUseCase.execute(captureLambda(), any())
         } answers {
-            if (data.topAdsGroupValidateName.errors.isEmpty()) {
-                onSuccess.invoke()
-            }
+            firstArg<(ResponseGroupValidateName) -> Unit>().invoke(data)
         }
         viewModel.validateGroup(
-                groupName = "",
-                onSuccess = onSuccess,
-                onError = {}
+            groupName = "",
+            onSuccess = onSuccess,
+            onError = {}
         )
         verify {
             topAdsGroupValidateNameUseCase.execute(any(), any())
@@ -113,9 +120,9 @@ class CreateGroupAdsViewModelTest {
     fun `validateGroup test exception`() {
         var errorCalled = false
         every { topAdsGroupValidateNameUseCase.execute(any(), captureLambda()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockk())
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
-        viewModel.validateGroup("",{},{errorCalled = true})
+        viewModel.validateGroup("", {}, { errorCalled = true })
         Assert.assertTrue(errorCalled)
     }
 }

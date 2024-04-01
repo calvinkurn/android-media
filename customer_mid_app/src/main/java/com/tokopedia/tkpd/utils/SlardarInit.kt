@@ -63,11 +63,11 @@ object SlardarInit {
         if (GlobalConfig.isAllowDebuggingTools()) {
             Npth.getConfigManager().isDebugMode = true
         }
-        Npth.getConfigManager().javaCrashUploadUrl = "https://slardar-bd-sg.feishu.cn/monitor/collect/c/crash"
-        Npth.getConfigManager().setNativeCrashUrl("https://slardar-bd-sg.feishu.cn/monitor/collect/c/native_bin_crash")
-        Npth.getConfigManager().setLaunchCrashUrl("https://slardar-bd-sg.feishu.cn/monitor/collect/c/exception/dump_collection")
-        Npth.getConfigManager().setConfigGetUrl("https://slardar-bd-sg.feishu.cn/monitor/appmonitor/v3/settings")
-        Npth.getConfigManager().alogUploadUrl = "https://slardar-bd-sg.feishu.cn/monitor/collect/c/logcollect"
+        Npth.getConfigManager().javaCrashUploadUrl = "https://i.sgsnssdk.com/monitor/collect/c/crash"
+        Npth.getConfigManager().setNativeCrashUrl("https://i.sgsnssdk.com/monitor/collect/c/native_bin_crash")
+        Npth.getConfigManager().setLaunchCrashUrl("https://i.sgsnssdk.com/monitor/collect/c/exception/dump_collection")
+        Npth.getConfigManager().setConfigGetUrl("https://i.sgsnssdk.com/monitor/appmonitor/v3/settings")
+        Npth.getConfigManager().alogUploadUrl = "https://i.sgsnssdk.com/monitor/collect/c/logcollect"
     }
 
     /**
@@ -112,19 +112,22 @@ object SlardarInit {
             .seriousBlockDetect(true)
             .delayReport(60)
             .configFetchUrl(arrayListOf(
-                "https://slardar-bd-sg.feishu.cn/monitor/appmonitor/v2/settings",
+                "https://i.sgsnssdk.com/monitor/appmonitor/v2/settings",
+                "https://i-n.sgsnssdk.com/monitor/appmonitor/v2/settings",
                 "https://i.isnssdk.com/monitor/appmonitor/v2/settings",
                 "https://mon.isnssdk.com/monitor/appmonitor/v2/settings",
                 "https://mon.tiktokv.com/monitor/appmonitor/v2/settings",
                 "https://mon-va.tiktokv.com/monitor/appmonitor/v2/settings",
                 "https://mon-sg.tiktokv.com/monitor/appmonitor/v2/settings"))
             .exceptionLogDefaultReportUrls(arrayListOf(
-                "https://slardar-bd-sg.feishu.cn/monitor/collect/c/exception",
+                "https://i.sgsnssdk.com/monitor/collect/c/exception",
+                "https://i-n.sgsnssdk.com/monitor/collect/c/exception",
                 "https://i.isnssdk.com/monitor/collect/c/exception",
                 "https://mon.isnssdk.com/monitor/collect/c/exception",
                 "https://mon-va.tiktokv.com/monitor/collect/c/exception"))
             .defaultReportUrls(arrayListOf(
-                "https://slardar-bd-sg.feishu.cn/monitor/collect/",
+                "https://i.sgsnssdk.com/monitor/collect/",
+                "https://i-n.sgsnssdk.com/monitor/collect/",
                 "https://i.isnssdk.com/monitor/collect/",
                 "https://mon.isnssdk.com/monitor/collect/",
                 "https://mon.tiktokv.com/monitor/collect/",

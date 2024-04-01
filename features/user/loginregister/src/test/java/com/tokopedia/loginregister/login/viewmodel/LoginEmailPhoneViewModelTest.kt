@@ -37,7 +37,7 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.admin.AdminResult
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreferenceManager
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper

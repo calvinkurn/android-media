@@ -31,12 +31,16 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 
-class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null) :
+class DiscoveryRecycleAdapter(
+    private val fragment: Fragment,
+    private val parentComponent: AbstractViewHolder? = null
+) :
     ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
 
     companion object {
         private var noOfObject = 0
     }
+
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
     private var componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get(
@@ -107,6 +111,11 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     override fun getItemId(position: Int): Long {
+        if (componentList[position].name == ComponentNames.ShopOfferSupportingBrandItem.componentName) {
+            return componentList[position].data?.firstOrNull()?.shopId?.toLongOrNull()
+                ?: super.getItemId(position)
+        }
+
         if (componentList.isEmpty() || position >= componentList.size ||
             componentList[position].data.isNullOrEmpty() ||
             componentList[position].data?.firstOrNull()?.productId.isNullOrEmpty()

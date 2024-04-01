@@ -232,5 +232,6 @@ enum class VariantPageSource(val source: String) {
     FEED_PAGESOURCE("feed"),
     BUY_MORE_GET_MORE("offerpage"),
     CATALOG_PAGESOURCE("catalog"),
+    PRODUCT_PREVIEW_PAGESOURCE("fullscreen_media_pdp"),
     STORIES_PAGESOURCE("stories")
 }

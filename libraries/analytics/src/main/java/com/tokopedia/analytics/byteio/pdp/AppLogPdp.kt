@@ -22,6 +22,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
@@ -221,10 +222,13 @@ object AppLogPdp {
                 it.addTrackId()
                 it.put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
                 it.addEntranceForm()
+                it.addEntranceInfo()
+                it.addSourcePageType()
+            } else {
+                it.addEntranceInfoCart()
+                it.put(SOURCE_PAGE_TYPE, PageName.CART)
             }
             it.addPage()
-            it.addSourcePageType()
-            it.addEntranceInfo()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
             it.put("shipping_price", model.shippingPrice)
