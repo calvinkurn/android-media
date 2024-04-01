@@ -53,14 +53,6 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
             detailUpdate.setLatestVersionCode(dataUpdateApp.getLatestVersionOptionalUpdate());
             detailUpdate.setNeedUpdate(true);
             detailUpdate.setForceUpdate(false);
-        } else if (dataUpdateApp.isIsSpecificForceUpdateEnabled() && dataUpdateApp.getListVersionSpecificForceUpdate().contains(GlobalConfig.VERSION_CODE)){
-            detailUpdate.setNeedUpdate(true);
-            detailUpdate.setForceUpdate(true);
-            detailUpdate.setNeedSpecificUpdate(true);
-        } else if (dataUpdateApp.isIsSpecificOptionalUpdateEnabled() && dataUpdateApp.getListVersionSpecificOptionalUpdate().contains(GlobalConfig.VERSION_CODE)){
-            detailUpdate.setNeedUpdate(true);
-            detailUpdate.setForceUpdate(false);
-            detailUpdate.setNeedSpecificUpdate(true);
         } else {
             detailUpdate.setNeedUpdate(false);
         }

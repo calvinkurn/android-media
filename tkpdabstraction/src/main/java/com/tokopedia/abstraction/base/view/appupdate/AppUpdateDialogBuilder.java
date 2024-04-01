@@ -39,23 +39,19 @@ public class AppUpdateDialogBuilder {
 
         if (detail.isInAppUpdateEnabled()) {
             if (detail.isForceUpdate()) {
-                AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, detail.isNeedSpecificUpdate(), () -> {
+                AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, () -> {
                     /* on Error */
-                    if (!detail.isNeedSpecificUpdate()) {
-                        alertDialog.show();
-                    }
+                    alertDialog.show();
                     return null;
                 }, /* onFinished */ () -> null);
             } else {
-                AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, detail.isNeedSpecificUpdate(), onProgressMessage -> {
+                AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, onProgressMessage -> {
                     // if in progress
                     Toast.makeText(activity, onProgressMessage, Toast.LENGTH_LONG).show();
                     return null;
                 }, () -> {
                     // if flexible update fail or cannot be operated
-                    if (!detail.isNeedSpecificUpdate()) {
-                        alertDialog.show();
-                    }
+                    alertDialog.show();
                     return null;
                 }, () -> {
                     // action after do the checking, close the dialog
