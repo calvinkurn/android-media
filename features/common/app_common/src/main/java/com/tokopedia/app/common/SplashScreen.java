@@ -239,4 +239,9 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
     public boolean isShadow() {
         return true;
     }
+
+    @Override
+    public boolean shouldTrackEnterPage() {
+        return false;
+    }
 }

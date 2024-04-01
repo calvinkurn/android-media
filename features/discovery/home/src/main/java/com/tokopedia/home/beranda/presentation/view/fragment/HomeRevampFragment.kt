@@ -449,7 +449,6 @@ open class HomeRevampFragment :
     @Inject
     lateinit var homeThematicUtil: HomeThematicUtil
 
-    private var hasTrackEnterPage = false
     private var hasApplogScrollListener = false
 
     override fun onAttach(context: Context) {
@@ -553,6 +552,8 @@ open class HomeRevampFragment :
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }
+
+    override fun shouldTrackEnterPage(): Boolean = true
 
     override fun initInjector() {
     }
@@ -1495,21 +1496,10 @@ open class HomeRevampFragment :
             }
 
             performanceTrace?.setBlock(data.take(takeLimit))
-
-            if(data.any { it is HomeRecommendationFeedDataModel }) {
-                trackEnterPage()
-            }
-
             adapter?.submitList(data)
         }
     }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
-    }
-
+    
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
         return instance.isNotEmpty()

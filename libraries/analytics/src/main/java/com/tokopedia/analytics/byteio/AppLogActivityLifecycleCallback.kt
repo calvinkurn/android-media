@@ -9,6 +9,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +30,9 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         }
         if (activity is AppLogInterface) {
             pushPageData(activity)
+            if(activity.shouldTrackEnterPage()) {
+                AppLogRecommendation.sendEnterPageAppLog()
+            }
         }
         setCurrent(activity)
     }

@@ -275,4 +275,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     public boolean isShadow() {
         return true;
     }
+
+    @Override
+    public boolean shouldTrackEnterPage() {
+        return false;
+    }
 }
