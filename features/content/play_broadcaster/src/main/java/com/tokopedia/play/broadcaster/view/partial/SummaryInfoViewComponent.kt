@@ -66,16 +66,7 @@ class SummaryInfoViewComponent(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                         listData = metricHighlight.map {
                             when (it) {
-                                is LiveStatsUiModel.EstimatedIncome -> {
-                                    LiveStatsCardModel.Clickable(
-                                        liveStats = it,
-                                        clickableIcon = IconUnify.CHEVRON_RIGHT,
-                                        clickArea = LiveStatsCardModel.Clickable.ClickArea.Full,
-                                        onClick = {
-                                            listener.onMetricClicked(this@SummaryInfoViewComponent, it)
-                                        }
-                                    )
-                                }
+                                is LiveStatsUiModel.EstimatedIncome,
                                 is LiveStatsUiModel.GameParticipant -> {
                                     LiveStatsCardModel.Clickable(
                                         liveStats = it,
