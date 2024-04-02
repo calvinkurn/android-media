@@ -41,6 +41,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 object AppLogPdp {
 
     val addToCart = AtomicBoolean(false)
+    /**
+     * Later should be removed, use thanksPageData event label instead
+     * */
     private val confirmSku = AtomicBoolean(false)
 
     fun sendPDPEnterPage(product: TrackProductDetail?) {
@@ -216,17 +219,17 @@ object AppLogPdp {
         })
     }
 
-    fun sendSubmitOrderResult(model: SubmitOrderResult) {
+    fun sendSubmitOrderResult(buyType: String, model: SubmitOrderResult) {
         AppLogAnalytics.send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
-            if (confirmSku.getAndSet(false)) {
+            if (buyType == ThanksDataEventLabel.REGULAR) {
+                it.addEntranceInfoCart()
+                it.put(SOURCE_PAGE_TYPE, PageName.CART)
+            } else {
                 it.addTrackId()
                 it.put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
                 it.addEntranceForm()
                 it.addEntranceInfo()
                 it.addSourcePageType()
-            } else {
-                it.addEntranceInfoCart()
-                it.put(SOURCE_PAGE_TYPE, PageName.CART)
             }
             it.addPage()
             it.put("is_success", if (model.isSuccess) 1 else 0)
