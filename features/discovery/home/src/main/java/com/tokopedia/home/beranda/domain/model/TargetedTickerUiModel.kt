@@ -9,10 +9,19 @@ class TargetedTickerUiModel(
     val action: Action
 ) {
 
+    fun linkUrl(): String {
+        return if (action.type == LINK_TYPE) return action.url
+        else action.appLink
+    }
+
     data class Action(
         val label: String,
         val type: String,
         val appLink: String,
         val url: String,
     )
+
+    companion object {
+        private const val LINK_TYPE = "link"
+    }
 }

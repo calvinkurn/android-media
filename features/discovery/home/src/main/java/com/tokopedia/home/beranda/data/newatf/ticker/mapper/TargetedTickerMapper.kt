@@ -12,24 +12,6 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 
 object TargetedTickerMapper {
 
-    fun map(data: GetTargetedTicker): List<TargetedTickerUiModel> {
-        return data.tickers.map {
-            TargetedTickerUiModel(
-                id = it.id,
-                title = it.title,
-                content = it.content,
-                type = mapTickerType(it),
-                priority = it.priority,
-                action = TargetedTickerUiModel.Action(
-                    label = it.action.label,
-                    type = it.action.type,
-                    appLink = it.action.appLink,
-                    url = it.action.url,
-                ),
-            )
-        }
-    }
-
     fun asVisitable(
         data: GetTargetedTicker,
         atfData: AtfData
@@ -49,6 +31,24 @@ object TargetedTickerMapper {
                 )
             }
         )
+    }
+
+    private fun map(data: GetTargetedTicker): List<TargetedTickerUiModel> {
+        return data.tickers.map {
+            TargetedTickerUiModel(
+                id = it.id,
+                title = it.title,
+                content = it.content,
+                type = mapTickerType(it),
+                priority = it.priority,
+                action = TargetedTickerUiModel.Action(
+                    label = it.action.label,
+                    type = it.action.type,
+                    appLink = it.action.appLink,
+                    url = it.action.url,
+                ),
+            )
+        }
     }
 
     private fun mapTickerType(ticker: GetTargetedTickerItem): Int = when (ticker.getTickerType()) {
