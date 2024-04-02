@@ -15,7 +15,6 @@ data class Mission4SquareUiModel(
     val isCache: Boolean,
     val card: SmallProductModel,
     val appLog: RecommendationAppLog,
-    val appLogImpressHolder: ImpressHolder = ImpressHolder(),
 ) : ImpressHolder() {
 
     fun isProduct(): Boolean {

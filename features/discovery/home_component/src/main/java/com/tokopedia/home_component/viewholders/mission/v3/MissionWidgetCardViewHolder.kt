@@ -25,7 +25,7 @@ class MissionWidgetCardViewHolder(
             listener?.onMissionClicked(item, bindingAdapterPosition)
         }
 
-        binding?.root?.addOnImpression1pxListener(item.appLogImpressHolder) {
+        binding?.root?.addOnImpression1pxListener(item.data.appLogImpressHolder) {
             listener?.onMissionImpressed(item, bindingAdapterPosition)
         }
     }

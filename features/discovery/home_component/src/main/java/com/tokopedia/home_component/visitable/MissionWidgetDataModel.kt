@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.visitable
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.unifycomponents.CardUnify2
 
@@ -28,6 +29,8 @@ data class MissionWidgetDataModel(
     val appLog: RecommendationAppLog = RecommendationAppLog(),
     val labelGroup: List<LabelGroup> = emptyList(),
 ) {
+
+    val appLogImpressHolder: ImpressHolder = ImpressHolder()
 
     data class LabelGroup(
         val title: String = "",
