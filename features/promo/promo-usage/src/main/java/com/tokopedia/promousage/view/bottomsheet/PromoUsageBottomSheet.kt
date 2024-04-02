@@ -88,7 +88,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -130,7 +129,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             entryPoint: PromoPageEntryPoint,
             promoRequest: PromoRequest,
             validateUsePromoRequest: ValidateUsePromoRequest,
-            totalAmount: Double,
+            totalAmount: Double = 0.0,
             listener: Listener? = null,
             boPromoCodes: List<String> = emptyList(),
             chosenAddress: ChosenAddress? = null,

@@ -3478,9 +3478,8 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.Normal
                 val promoRequestParam = generateCouponListRecommendationRequest()
                 val validateUseRequestParam = generateValidateUsePromoRequestForPromoUsage()
-                val totalAmount = listData.value.buttonPayment()!!.totalPriceNum
                 val boPromoCodes = getBboPromoCodes()
-                onSuccess(CheckoutPromoBottomSheetData(promoRequestParam, validateUseRequestParam, totalAmount, boPromoCodes))
+                onSuccess(CheckoutPromoBottomSheetData(promoRequestParam, validateUseRequestParam, boPromoCodes))
             }
         }
     }
@@ -3567,6 +3566,5 @@ internal fun List<CheckoutItem>.buttonPayment(): CheckoutButtonPaymentModel? {
 data class CheckoutPromoBottomSheetData(
     val promoRequest: PromoRequest,
     val validateUsePromoRequest: ValidateUsePromoRequest,
-    val totalAmount: Double,
     val boPromoCodes: List<String>
 )
