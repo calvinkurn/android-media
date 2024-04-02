@@ -1954,44 +1954,22 @@ class CheckoutFragment :
                         promoRequest = it.promoRequest,
                         validateUsePromoRequest = it.validateUsePromoRequest,
                         boPromoCodes = it.boPromoCodes,
-                        totalAmount = it.totalAmount,
                         listener = this@CheckoutFragment
                     )
                     bottomSheetPromo.show(childFragmentManager)
                 }
             } else {
                 val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
-                if (viewModel.useNewPromoPage()) {
-                    val validateUseRequestParam =
-                        viewModel.generateValidateUsePromoRequestForPromoUsage()
-                    val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
-                    val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
-                        entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
-                        promoRequest = promoRequestParam,
-                        validateUsePromoRequest = validateUseRequestParam,
-                        boPromoCodes = viewModel.getBboPromoCodes(),
-                        totalAmount = totalAmount,
-                        listener = this@CheckoutFragment
-                    )
-                    bottomSheetPromo.show(childFragmentManager)
-                } else {
-                    val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
-                    val intent =
-                        RouteManager.getIntent(
-                            activity,
-                            ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
-                        )
-                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
-                    intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
-                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
-                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
-                    setChosenAddressForTradeInDropOff(intent)
-                    setPromoExtraMvcLockCourierFlow(intent)
-                    startActivityForResult(intent, REQUEST_CODE_PROMO)
-                    if (isTradeIn) {
-                        checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
-                    }
-                }
+                val validateUseRequestParam =
+                    viewModel.generateValidateUsePromoRequestForPromoUsage()
+                val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
+                    entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
+                    promoRequest = promoRequestParam,
+                    validateUsePromoRequest = validateUseRequestParam,
+                    boPromoCodes = viewModel.getBboPromoCodes(),
+                    listener = this@CheckoutFragment
+                )
+                bottomSheetPromo.show(childFragmentManager)
             }
         }
     }
