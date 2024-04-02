@@ -81,7 +81,7 @@ class ChatbotImageUploadViewHolder(
             val replyTime = element.replyTime.toEmptyStringIfNull()
             if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
                 listener.onImageUploadClicked(
-                    imageUrl
+                    imageUrl,
                     replyTime,
                     false
                 )
