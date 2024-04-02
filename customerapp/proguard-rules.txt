@@ -409,5 +409,3 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keep class com.bytedance.crash.entity.EventBody { *; }
 -keep class com.bytedance.crash.entity.Header { *; }
 -keep class android.os.Looper { *; }
-
--dontwarn android.os.Looper$Observer
