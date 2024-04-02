@@ -648,7 +648,10 @@ object ProductDetailMapper {
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
             promoPrice = promoPriceData.promoPrice,
-            liveIndicator = mediaData.liveIndicator
+            liveIndicator = mediaData.liveIndicator,
+            socialProof = data.components.find {
+                it.type == ProductDetailConstant.MINI_SOCIAL_PROOF
+            }?.componentData?.firstOrNull()?.socialProof ?: emptyList()
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
@@ -1093,8 +1096,8 @@ object ProductDetailMapper {
                 labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionClickChannel = "${ShareExTrackerArg.CHANNEL_KEY} - ${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId - ${ShareExTrackerArg.IMAGE_TYPE_KEY}",
-                labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
-                labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
+                labelImpressionAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId",
+                labelActionClickAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId"
             )
         )
     }
