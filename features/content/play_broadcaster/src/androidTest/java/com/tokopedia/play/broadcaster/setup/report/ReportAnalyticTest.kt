@@ -118,7 +118,7 @@ class ReportAnalyticTest {
         /** Mock General Config */
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockBroadcastTimer.isPastPauseDuration } returns false
-        coEvery { mockHydraSharedPreferences.isFirstStatisticIconShown() } returns true
+        coEvery { mockHydraSharedPreferences.isFirstStatisticIconShown(any()) } returns true
 
         /** Mock Broadcaster Configuration */
         coEvery { mockRepo.getAccountList() } returns accountListResponse()
