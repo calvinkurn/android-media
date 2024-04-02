@@ -64,19 +64,15 @@ class UniversalInboxRecommendationProductViewHolder(
             }
 
             if (recommendationItem?.isTopAds == true) {
-                setProductInfoClickListener()
-                setImageProductClickListener()
-                setShopTypeLocationOnClickListener()
+                setProductInfoClickListener(uiModel.recommendationItem)
+                setImageProductClickListener(uiModel.recommendationItem)
+                setShopTypeLocationOnClickListener(uiModel.recommendationItem)
             }
 
-
             setOnClickListener {
-
-                if (recommendationItem?.isTopAds == false) {
-                    AppLogRecommendation.sendProductClickAppLog(
-                        uiModel.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
-                    )
-                }
+                AppLogRecommendation.sendProductClickAppLog(
+                    uiModel.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
+                )
 
                 recommendationListener.onProductClick(
                     uiModel.recommendationItem,
@@ -110,65 +106,77 @@ class UniversalInboxRecommendationProductViewHolder(
         )
     }
 
-    private fun ProductCardGridView.setProductInfoClickListener() {
-
+    private fun ProductCardGridView.setProductInfoClickListener(uiModel: RecommendationItem) {
         setProductInfoOnClickListener {
             AppLogTopAds.sendEventRealtimeClick(
                 itemView.context,
                 PageName.INBOX,
                 AdsLogRealtimeClickModel(
                     AdsLogConst.Refer.AREA,
-                    //todo this value from BE
-                    "",
-                    //todo this value from BE
-                    "",
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
                         productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
             )
+            recommendationListener.onProductClick(
+                uiModel,
+                null,
+                bindingAdapterPosition
+            )
         }
     }
 
-    private fun ProductCardGridView.setImageProductClickListener() {
-
+    private fun ProductCardGridView.setImageProductClickListener(uiModel: RecommendationItem) {
         setImageProductClickListener {
             AppLogTopAds.sendEventRealtimeClick(
                 itemView.context,
                 PageName.INBOX,
                 AdsLogRealtimeClickModel(
                     AdsLogConst.Refer.COVER,
-                    //todo this value from BE
-                    "",
-                    //todo this value from BE
-                    "",
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
                         productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
             )
+            recommendationListener.onProductClick(
+                uiModel,
+                null,
+                bindingAdapterPosition
+            )
         }
     }
 
-    private fun ProductCardGridView.setShopTypeLocationOnClickListener() {
-
+    private fun ProductCardGridView.setShopTypeLocationOnClickListener(uiModel: RecommendationItem) {
         setShopTypeLocationOnClickListener {
             AppLogTopAds.sendEventRealtimeClick(
                 itemView.context,
                 PageName.INBOX,
                 AdsLogRealtimeClickModel(
                     AdsLogConst.Refer.SELLER_NAME,
-                    //todo this value from BE
-                    "",
-                    //todo this value from BE
-                    "",
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString()
+                        productId = uiModel.productId.toString()
                     )
                 )
+            )
+            recommendationListener.onProductClick(
+                uiModel,
+                null,
+                bindingAdapterPosition
             )
         }
     }
@@ -183,13 +191,13 @@ class UniversalInboxRecommendationProductViewHolder(
                 itemView.context,
                 PageName.INBOX,
                 AdsLogShowModel(
-                    //todo this value from BE
-                    "",
-                    //todo this value from BE
-                    "",
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
                     System.currentTimeMillis().toString(),
                     AdsLogShowModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString(),
+                        productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
             )
@@ -198,26 +206,26 @@ class UniversalInboxRecommendationProductViewHolder(
 
     override fun onViewDetachedToWindow(recyclerView: RecyclerView?) {
         if (recommendationItem?.isTopAds == true) {
-
             val visiblePercentage = getVisibleHeightPercentage(recyclerView, binding?.inboxProductRecommendation)
 
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
                 PageName.INBOX,
                 AdsLogShowOverModel(
-                    //todo this value from BE
-                    "",
-                    //todo this value from BE
-                    "",
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
                     System.currentTimeMillis().toString(),
                     AdsLogShowOverModel.AdExtraData(
                         productId = recommendationItem?.productId.orZero().toString(),
-                        sizePercent = visiblePercentage,
+                        sizePercent = visiblePercentage
                     )
                 )
             )
         }
     }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.universal_inbox_recommendation_product_item

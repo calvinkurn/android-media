@@ -4,8 +4,8 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 
 data class AdsLogRealtimeClickModel(
     val refer: String,
-    val adsValue: String,
-    val rit: String,
+    val adsValue: Long,
+    val rit: Long,
     val systemTimeStartClick: String,
     val adExtraData: AdExtraData
 ) {
