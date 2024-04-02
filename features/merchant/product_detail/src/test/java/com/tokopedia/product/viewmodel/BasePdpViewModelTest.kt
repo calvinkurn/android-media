@@ -36,6 +36,7 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.TestUtils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -151,7 +152,7 @@ abstract class BasePdpViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = MainCoroutineRule()
+    val testRule = CoroutineTestRule()
 
     @Before
     fun setup() {
