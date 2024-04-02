@@ -63,7 +63,9 @@ interface ProductDetailListener {
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     )
-    fun onShowProductMediaRecommendationClicked()
+
+    fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?)
+    fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?)
 
     /**
      * ProductSnapshotViewHolder

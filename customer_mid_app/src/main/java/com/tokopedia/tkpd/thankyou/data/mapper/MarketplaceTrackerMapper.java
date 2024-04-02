@@ -429,7 +429,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
             product.put(LinkerConstants.NAME, getProductName(orderDetail));
             product.put(LinkerConstants.PRICE, String.valueOf((long) orderDetail.getProductPrice()));
-            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE, String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
+            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE, String.valueOf(convertRupiahToLong(
                     String.valueOf((long) orderDetail.getProductPrice()))));
             product.put(LinkerConstants.QTY, String.valueOf(orderDetail.getQuantity()));
             if (orderDetail.getCategoryName() != null) {
@@ -444,5 +444,12 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         linkerCommerceData.setPaymentData(branchIOPayment);
 
         return linkerCommerceData;
+    }
+
+    public static long convertRupiahToLong(String rupiah) {
+        rupiah = rupiah.replace("Rp", "");
+        rupiah = rupiah.replace(".", "");
+        rupiah = rupiah.replace(" ", "");
+        return Long.parseLong(rupiah);
     }
 }

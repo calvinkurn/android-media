@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.common_sdk_affiliate_toko.model.AdditionalParam
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.config.GlobalConfig
@@ -413,70 +414,78 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `hide floating button is false when get pid in cartRedirection is error`() = with(spykViewModel) {
-        getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = "123"))
-        every { isShopOwner() } returns false
-        every { p2Data.value } returns ProductInfoP2UiData()
+    fun `hide floating button is false when get pid in cartRedirection is error`() =
+        with(spykViewModel) {
+            getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = "123"))
+            every { isShopOwner() } returns false
+            every { p2Data.value } returns ProductInfoP2UiData()
 
-        assertFalse(shouldHideFloatingButton())
-    }
+            assertFalse(shouldHideFloatingButton())
+        }
 
     @Test
-    fun `hide floating button is false when shouldHideFloatingButtonInPdp return false`() = with(spykViewModel) {
-        val pid = "123"
-        val oneOverrideButton = listOf(AvailableButton())
-        getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = pid))
+    fun `hide floating button is false when shouldHideFloatingButtonInPdp return false`() =
+        with(spykViewModel) {
+            val pid = "123"
+            val oneOverrideButton = listOf(AvailableButton())
+            getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = pid))
 
-        every { isShopOwner() } returns false
-        // owner false, hide false, override empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData())
-        )
-        assertFalse(shouldHideFloatingButton())
-
-        // owner false, hide false, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(
-                pid to CartTypeData(overrideButtons = oneOverrideButton)
+            every { isShopOwner() } returns false
+            // owner false, hide false, override empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData())
             )
-        )
-        assertFalse(shouldHideFloatingButton())
+            assertFalse(shouldHideFloatingButton())
 
-        // owner false, hide true, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(
-                pid to CartTypeData(hideFloatingButton = true, overrideButtons = oneOverrideButton)
+            // owner false, hide false, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(
+                    pid to CartTypeData(overrideButtons = oneOverrideButton)
+                )
             )
-        )
-        assertFalse(shouldHideFloatingButton())
+            assertFalse(shouldHideFloatingButton())
 
-        every { isShopOwner() } returns true
-        // owner true, hide true, override empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData(hideFloatingButton = true))
-        )
-        assertFalse(shouldHideFloatingButton())
-
-        // owner true, hide true, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(
-                pid to CartTypeData(hideFloatingButton = true, overrideButtons = oneOverrideButton)
+            // owner false, hide true, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(
+                    pid to CartTypeData(
+                        hideFloatingButton = true,
+                        overrideButtons = oneOverrideButton
+                    )
+                )
             )
-        )
-        assertFalse(shouldHideFloatingButton())
+            assertFalse(shouldHideFloatingButton())
 
-        // owner true, hide false, override empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData())
-        )
-        assertFalse(shouldHideFloatingButton())
+            every { isShopOwner() } returns true
+            // owner true, hide true, override empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData(hideFloatingButton = true))
+            )
+            assertFalse(shouldHideFloatingButton())
 
-        // owner true, hide false, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData(overrideButtons = oneOverrideButton))
-        )
-        assertFalse(shouldHideFloatingButton())
-    }
+            // owner true, hide true, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(
+                    pid to CartTypeData(
+                        hideFloatingButton = true,
+                        overrideButtons = oneOverrideButton
+                    )
+                )
+            )
+            assertFalse(shouldHideFloatingButton())
+
+            // owner true, hide false, override empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData())
+            )
+            assertFalse(shouldHideFloatingButton())
+
+            // owner true, hide false, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData(overrideButtons = oneOverrideButton))
+            )
+            assertFalse(shouldHideFloatingButton())
+        }
 
     @Test
     fun `hide floating button is true`() = with(spykViewModel) {
@@ -1374,7 +1383,8 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             onError.invoke(Throwable(""))
         }
 
-        val miniCart = generateMiniCartMock(productId = dataP1.layoutData.basic.productID).toMutableMap()
+        val miniCart =
+            generateMiniCartMock(productId = dataP1.layoutData.basic.productID).toMutableMap()
         `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
@@ -1508,7 +1518,17 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         mockkObject(GetPdpLayoutUseCase)
         every {
-            GetPdpLayoutUseCase.createParams(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            GetPdpLayoutUseCase.createParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } throws Throwable()
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
@@ -1929,28 +1949,46 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val affiliateUUID = "123"
         val affiliateChannel = "affiliate channel"
         val uuid = "1111"
+        val affiliateSubIds = mapOf("1" to "subId1", "subid2" to "subId2", "asal" to "asal")
+        val affiliateSource = "PDP"
 
         val slot = slot<AffiliatePageDetail>()
+        val subIdsSlot = slot<List<AdditionalParam>>()
 
         viewModel.hitAffiliateCookie(
             productInfo = mockProductInfoP1,
             affiliateUuid = affiliateUUID,
             uuid = uuid,
-            affiliateChannel = affiliateChannel
+            affiliateChannel = affiliateChannel,
+            affiliateSubIds = affiliateSubIds,
+            affiliateSource = affiliateSource
         )
 
         coVerify {
             affiliateCookieHelper.initCookie(
-                affiliateUUID,
-                affiliateChannel,
-                capture(slot),
-                uuid
+                affiliateUUID = affiliateUUID,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = capture(slot),
+                uuid = uuid,
+                additionalParam = emptyList(),
+                subIds = capture(subIdsSlot),
+                source = affiliateSource
             )
         }
 
         with(slot.captured) {
             assertEquals(productId, this.pageId)
             assertTrue(source is AffiliateSdkPageSource.PDP)
+        }
+
+        with (subIdsSlot.captured) {
+            assertEquals(size, 2)
+
+            assertEquals(get(0).key, "1")
+            assertEquals(get(0).value, "subId1")
+
+            assertEquals(get(1).key, "2")
+            assertEquals(get(1).value, "subId2")
         }
     }
 
@@ -2004,15 +2042,19 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             productInfo = mockProductInfoP1,
             affiliateUuid = affiliateUUID,
             uuid = uuid,
-            affiliateChannel = affiliateChannel
+            affiliateChannel = affiliateChannel,
+            affiliateSubIds = null,
+            affiliateSource = null
         )
 
         coVerify {
             affiliateCookieHelper.initCookie(
-                affiliateUUID,
-                affiliateChannel,
-                any(),
-                uuid
+                affiliateUUID = affiliateUUID,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = any(),
+                uuid = uuid,
+                subIds = emptyList(),
+                source = ""
             )
         }
         // no op, expect to be handled by Affiliate SDK
@@ -2281,7 +2323,12 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+        viewModel.updateRecomCartNonVariant(
+            recomItem,
+            quantity,
+            miniCart,
+            RecommendationNowAffiliateData()
+        )
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2305,7 +2352,12 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+        viewModel.updateRecomCartNonVariant(
+            recomItem,
+            quantity,
+            miniCart,
+            RecommendationNowAffiliateData()
+        )
 
         coVerify {
             updateCartUseCase.executeOnBackground()
@@ -2326,7 +2378,12 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+        viewModel.updateRecomCartNonVariant(
+            recomItem,
+            quantity,
+            miniCart,
+            RecommendationNowAffiliateData()
+        )
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2999,7 +3056,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns flowOf(Result.success(layoutExpected))
 
         coEvery {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+            getP2DataAndMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                captureLambda()
+            )
         } returns p2Expected
 
         viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
@@ -3032,7 +3096,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns flowOf(Result.success(layoutExpected))
 
         coEvery {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+            getP2DataAndMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                captureLambda()
+            )
         } returns p2Expected
         coEvery { remoteConfigInstance.getLong(any(), any()) } returns 5000
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
@@ -3062,7 +3133,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns flowOf(Result.success(layoutExpected))
 
         coEvery {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+            getP2DataAndMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                captureLambda()
+            )
         } throws Throwable()
 
         viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())

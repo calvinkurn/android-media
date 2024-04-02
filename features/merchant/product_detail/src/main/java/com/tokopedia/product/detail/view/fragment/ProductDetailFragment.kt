@@ -10,6 +10,7 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -205,6 +206,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailAlreadyHit
 import com.tokopedia.product.detail.data.util.ProductDetailAlreadySwipe
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ARG_AFFILIATE_SOURCE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ARG_AFFILIATE_SUB_IDS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
@@ -283,6 +286,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
+import com.tokopedia.product.detail.view.viewholder.media.tracker.MediaTracking
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
@@ -410,7 +414,9 @@ open class ProductDetailFragment :
             affiliateChannel: String? = null,
             campaignId: String? = null,
             variantId: String? = null,
-            prefetchCacheId: String? = null
+            prefetchCacheId: String? = null,
+            affiliateSubIds: Bundle? = null,
+            affiliateSource: String? = null
         ) = ProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
@@ -490,6 +496,11 @@ open class ProductDetailFragment :
                 }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
                 query?.let { qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry) }
+
+                affiliateSubIds?.let{ subIds ->
+                    putParcelable(ARG_AFFILIATE_SUB_IDS, subIds)
+                }
+                affiliateSource?.let { source -> putString(ARG_AFFILIATE_SOURCE, source) }
             }
         }
     }
@@ -532,6 +543,8 @@ open class ProductDetailFragment :
     private var shopDomain: String? = null
     private var affiliateString: String? = null
     private var affiliateUniqueId: String = ""
+    private var affiliateSubIds: MutableMap<String, String>? = null
+    private var affiliateSource: String? = null
     private var deeplinkUrl: String = ""
     private var isFromDeeplink: Boolean = false
     private var layoutId: String = ""
@@ -886,6 +899,7 @@ open class ProductDetailFragment :
             trackerListNamePdp = it.getString(ProductDetailConstant.ARG_TRACKER_LIST_NAME)
             affiliateString = it.getString(ProductDetailConstant.ARG_AFFILIATE_STRING)
             affiliateUniqueId = it.getString(ProductDetailConstant.ARG_AFFILIATE_UNIQUE_ID, "")
+            affiliateSource = it.getString(ARG_AFFILIATE_SOURCE)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
@@ -895,6 +909,13 @@ open class ProductDetailFragment :
             campaignId = it.getString(ProductDetailConstant.ARG_CAMPAIGN_ID, "")
             variantId = it.getString(ProductDetailConstant.ARG_VARIANT_ID, "")
             prefetchCacheId = it.getString(ProductDetailConstant.ARG_PREFETCH_CACHE_ID, "")
+
+            processAffiliateSubIds(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) it.getParcelable(
+                    ARG_AFFILIATE_SUB_IDS,
+                    Bundle::class.java
+                ) else it.getParcelable(ARG_AFFILIATE_SUB_IDS)
+            )
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
@@ -950,9 +971,9 @@ open class ProductDetailFragment :
 
     private fun reloadFintechWidget() {
         if (pdpUiUpdater == null || (
-            pdpUiUpdater?.fintechWidgetMap == null &&
-                pdpUiUpdater?.fintechWidgetV2Map == null
-            )
+                pdpUiUpdater?.fintechWidgetMap == null &&
+                    pdpUiUpdater?.fintechWidgetV2Map == null
+                )
         ) {
             return
         }
@@ -2453,15 +2474,35 @@ open class ProductDetailFragment :
         }
     }
 
-    override fun onShowProductMediaRecommendationClicked() {
-        val productMediaRecomBasicInfo =
-            viewModel.getProductInfoP1?.data?.productMediaRecomBasicInfo
-        val basicData = viewModel.getProductInfoP1?.basic
+    override fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val productMediaRecomBasicInfo = productInfo.data.productMediaRecomBasicInfo
+        val basicData = productInfo.basic
+        val title = productMediaRecomBasicInfo.bottomsheetTitle
+        val iconText = productMediaRecomBasicInfo.iconText
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+
         viewModel.showProductMediaRecomBottomSheet(
-            title = productMediaRecomBasicInfo?.bottomsheetTitle.orEmpty(),
-            pageName = productMediaRecomBasicInfo?.recommendation.orEmpty(),
-            productId = basicData?.productID.orEmpty(),
-            isTokoNow = basicData?.isTokoNow.orFalse()
+            title = title,
+            pageName = productMediaRecomBasicInfo.recommendation,
+            productId = basicData.productID,
+            isTokoNow = basicData.isTokoNow.orFalse()
+        )
+        MediaTracking.onOverlayRecommClicked(
+            title = iconText,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
+        )
+    }
+
+    override fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val title = productInfo.data.productMediaRecomBasicInfo.iconText
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+        MediaTracking.onOverlayRecommImpressed(
+            title = title,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
         )
     }
 
@@ -2969,7 +3010,7 @@ open class ProductDetailFragment :
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtonsPriority?.firstOrNull()
-                ?.isCartTypeDisabledOrRemindMe() == false &&
+                    ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -3249,7 +3290,9 @@ open class ProductDetailFragment :
                 productInfo = p1,
                 affiliateUuid = affiliateUniqueId,
                 uuid = uuid,
-                affiliateChannel = affiliateChannel
+                affiliateChannel = affiliateChannel,
+                affiliateSubIds = affiliateSubIds,
+                affiliateSource = affiliateSource
             )
 
             mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
@@ -5281,7 +5324,7 @@ open class ProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-            ?.restrictionShopFollowersType() == false
+                ?.restrictionShopFollowersType() == false
         ) {
             return
         }
@@ -6374,5 +6417,14 @@ open class ProductDetailFragment :
             ROLLENCE_SHARE_EX,
             ""
         ) == ROLLENCE_SHARE_EX
+    }
+
+    private fun processAffiliateSubIds(bundle: Bundle?) {
+        if (bundle == null || bundle.isEmpty) return
+
+        affiliateSubIds = mutableMapOf()
+        bundle.keySet().forEach {
+            affiliateSubIds!![it] = bundle.getString(it, "")
+        }
     }
 }
