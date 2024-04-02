@@ -30,7 +30,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         }
         if (activity is AppLogInterface) {
             pushPageData(activity)
-            if(activity.shouldTrackEnterPage()) {
+            if (activity.shouldTrackEnterPage()) {
                 AppLogRecommendation.sendEnterPageAppLog()
             }
         }
@@ -72,7 +72,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             return
         }
         delay(300)
-        val quitType = if ( AppLogAnalytics.lastTwoIsHavingHash(hash)
+        val quitType = if (AppLogAnalytics.lastTwoIsHavingHash(hash)
             && currentActivityName != "AtcVariantActivity") {
             QuitType.NEXT
         } else {

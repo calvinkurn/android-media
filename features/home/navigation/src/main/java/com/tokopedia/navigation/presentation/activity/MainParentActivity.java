@@ -56,8 +56,6 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.EnterMethod;
-import com.tokopedia.analytics.byteio.IAppLogActivity;
-import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
@@ -1387,7 +1385,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void sendEnterPage(int position) {
         Fragment fragment = fragmentList.get(position);
-        if(fragment instanceof AppLogInterface appLogInterface &&
+        if (fragment instanceof AppLogInterface appLogInterface &&
                 appLogInterface.shouldTrackEnterPage()) {
             AppLogRecommendation.INSTANCE.sendEnterPageAppLog();
         }

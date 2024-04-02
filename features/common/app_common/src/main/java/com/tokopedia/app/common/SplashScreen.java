@@ -188,7 +188,8 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
                     && uri.getPathSegments().size() == 1) {
                 AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     private void logLinker(String deeplink, String reason) {
