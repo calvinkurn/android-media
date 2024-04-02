@@ -11,6 +11,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
         app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/text"

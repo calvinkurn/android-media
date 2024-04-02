@@ -1,18 +1,26 @@
 package com.tokopedia.similarsearch.utils
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.design.utils.CurrencyFormatHelper
-import com.tokopedia.similarsearch.tracking.ECommerce.Companion.NONE_OTHER
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.getsimilarproducts.model.Shop
+import com.tokopedia.similarsearch.tracking.ECommerce.Companion.NONE_OTHER
 
 internal fun safeCastRupiahToInt(price: String?): Int {
     return try {
-        CurrencyFormatHelper.convertRupiahToInt(price)
+        convertRupiahToInt(price.orEmpty())
     }
     catch(throwable: Throwable) {
         0
     }
+}
+
+fun convertRupiahToInt(input: String): Int {
+    var rupiah = input
+    rupiah = rupiah.replace("Rp", "")
+    rupiah = rupiah.replace(".", "")
+    rupiah = rupiah.replace(" ", "")
+    return rupiah.toIntOrZero()
 }
 
 internal fun Product.asObjectDataLayerImpressionAndClick(): Any {

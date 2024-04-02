@@ -13,6 +13,9 @@ import com.tokopedia.loginregister.common.domain.pojo.TickersInfoPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
@@ -24,9 +27,11 @@ class FakeGraphqlRepository : GraphqlRepository {
     var discoverConfig: Config = Config.Default
     var registerRequestConfig: Config = Config.Default
     var loginConfig: Config = Config.Default
+    var profileConfig: Config = Config.Default
 
     override suspend fun response(
-        requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy
+        requests: List<GraphqlRequest>,
+        cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
         Timber.d("Passed through FakeGraphql $this: ${requests.first().query.slice(0..20)}")
         return when (GqlQueryParser.parse(requests).first()) {
@@ -85,7 +90,6 @@ class FakeGraphqlRepository : GraphqlRepository {
 
                     else -> GqlMockUtil.createSuccessResponse(RegisterRequestV2())
                 }
-
             }
 
             "login_token_v2" -> {
@@ -99,6 +103,34 @@ class FakeGraphqlRepository : GraphqlRepository {
                         GqlMockUtil.createSuccessResponse(LoginTokenPojoV2())
                     }
                 }
+            }
+
+            "getAdminType" -> {
+                GqlMockUtil.createSuccessResponse(AdminTypeResponse())
+            }
+
+            "profile" -> {
+                val profilePojo = ProfilePojo(
+                    profileInfo = ProfileInfo(
+                        userId = "123456",
+                        fullName = "Testing User",
+                        firstName = "Testing",
+                        email = "testinguser@email.com",
+                        birthday = "2020-11-11",
+                        gender = "male",
+                        isPhoneVerified = true,
+                        profilePicture = "",
+                        isCreatedPassword = true,
+                        isLoggedIn = true
+                    )
+                )
+                val mockResponse = when (profileConfig) {
+                    is Config.Default -> GqlMockUtil.createSuccessResponse(profilePojo)
+
+                    is Config.WithResponse -> GqlMockUtil.createSuccessResponse(((profileConfig as Config.WithResponse).response as ProfilePojo))
+                    else -> GqlMockUtil.createSuccessResponse(profilePojo)
+                }
+                mockResponse
             }
 
             else -> {

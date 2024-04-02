@@ -83,11 +83,16 @@ object MacroIntent {
     }
 
     object Session {
-        fun getSessionMacroSetupIntent(): Intent {
+        fun getSessionMacroSetupIntent(packageName: String = TKPD_PACKAGE_NAME): Intent {
+            val isSellerApp = packageName == TKPD_PACKAGE_SELLER_APP
             val intent = Intent("android.intent.action.VIEW")
-            intent.setPackage(TKPD_PACKAGE_NAME)
+            intent.setPackage(packageName)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.data = Uri.parse("tokopedia://login")
+            if (isSellerApp) {
+                intent.data = Uri.parse("sellerapp://login")
+            } else {
+                intent.data = Uri.parse("tokopedia://login")
+            }
             return intent
         }
     }
@@ -198,7 +203,7 @@ object MacroIntent {
 
         fun getSearchResultIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=Sarung+Tangan")
+            intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=Samsung")
             return intent
         }
     }
@@ -233,11 +238,16 @@ object MacroIntent {
 
         const val RECYCLER_VIEW_ID = "rv_pdp"
         const val TRACE = "perf_trace_pdp"
+        private const val internalDeeplink = "tokopedia-android-internal://marketplace/product-detail"
 
-        fun getIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/1742093676/?layoutID=4")
-            return intent
+        fun getIntent() = Intent("com.tokopedia.internal.VIEW").apply {
+            val parameter = MacroArgs.getParameter(InstrumentationRegistry.getArguments())
+
+            data = if (parameter.startsWith(internalDeeplink)) {
+                Uri.parse(parameter)
+            } else {
+                Uri.parse("$internalDeeplink/6225772444/?layoutID=4")
+            }
         }
     }
 
@@ -311,6 +321,21 @@ object MacroIntent {
         fun getRechargeHomepageIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://recharge/home/dynamic_macrobenchmark")
+            return intent
+        }
+    }
+
+    object SellerHome {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_RESOURCE_ID = "recycler_view"
+
+        fun getIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://sellerapp/sellerhome")
+            intent.`package` = TKPD_PACKAGE_SELLER_APP
             return intent
         }
     }

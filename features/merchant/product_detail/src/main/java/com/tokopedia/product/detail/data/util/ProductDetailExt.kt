@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
+import com.tokopedia.product.detail.common.data.model.media.YoutubeVideo
 
 const val KG = "kilogram"
 

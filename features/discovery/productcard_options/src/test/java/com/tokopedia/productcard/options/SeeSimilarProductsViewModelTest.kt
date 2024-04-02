@@ -15,7 +15,6 @@ internal class SeeSimilarProductsViewModelTest: ProductCardOptionsViewModelTestF
 
         `Then assert tracking click see similar product event is true`()
         `Then Route to Similar Search Event Live Data is true`()
-        `Then Close Product Card Options Event Live Data is true`()
     }
 
     private fun `Given Product Card Options View Model`() {
@@ -36,11 +35,5 @@ internal class SeeSimilarProductsViewModelTest: ProductCardOptionsViewModelTestF
         val routeToSimilarSearchEvent = productCardOptionsViewModel.getRouteToSimilarSearchEventLiveData().value
 
         routeToSimilarSearchEvent?.getContentIfNotHandled() shouldBe true
-    }
-
-    private fun `Then Close Product Card Options Event Live Data is true`() {
-        val closeProductCardOptionsEvent = productCardOptionsViewModel.getCloseProductCardOptionsEventLiveData().value
-
-        closeProductCardOptionsEvent?.getContentIfNotHandled() shouldBe true
     }
 }

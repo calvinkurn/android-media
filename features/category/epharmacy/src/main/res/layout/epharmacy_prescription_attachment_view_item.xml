@@ -4,17 +4,32 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pesanan_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        tools:text="Pesanan 1"
+        tools:visibility="visible"
+        android:visibility="gone"
+        />
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lbl_PAP_shopName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pesanan_title"
         android:layout_marginStart="32dp"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         tools:text="Apotek Century Meruya Raden Saleh"
         tools:visibility="visible"
         android:visibility="gone"
@@ -69,11 +84,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ticker"
+        app:layout_constraintBottom_toTopOf="@id/lblChangingProductWarning"
         />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker"
+        android:id="@+id/lblChangingProductWarning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -93,7 +108,7 @@
         android:id="@+id/product_image_card"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        app:layout_constraintTop_toBottomOf="@id/ticker"
+        app:layout_constraintTop_toBottomOf="@id/lblChangingProductWarning"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -110,7 +125,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/product_image_card"
-        app:layout_constraintTop_toBottomOf="@id/ticker"
+        app:layout_constraintTop_toBottomOf="@id/lblChangingProductWarning"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
@@ -136,11 +151,62 @@
         android:textColor="@color/Unify_NN600"
         />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/lbl_PAP_productAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/product_image_card"
+        app:layout_constraintTop_toBottomOf="@id/lbl_PAP_productWeight"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Rp75.00"
+        android:textColor="@color/Unify_NN950"
+        tools:visibility="visible"
+        />
+
     <View
         android:id="@+id/division_single_card"
         android:layout_width="match_parent"
         android:layout_height="16dp"
         app:layout_constraintTop_toBottomOf="@id/product_image_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"
+        android:visibility="gone"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="division_single_card,lbl_PAP_productAmount,lbl_PAP_productName"
+        app:barrierDirection="bottom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <include
+        android:id="@+id/quantity_editor_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/epharmacy_quantity_change_layout"
+        app:layout_constraintTop_toBottomOf="@id/barrier_quantity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_more_products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="division_single_card,quantity_editor_layout"
+        app:barrierDirection="bottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible"
@@ -154,9 +220,17 @@
         layout="@layout/epharmacy_accordion_products_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/division_single_card"
+        app:layout_constraintTop_toBottomOf="@id/barrier_more_products"
         tools:visibility="visible"
         android:visibility="gone"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_chat_dokter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="btn_PAP_minimize,quantity_editor_layout"
+        app:barrierDirection="bottom"
         />
 
     <LinearLayout
@@ -165,7 +239,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_PAP_minimize"
+        app:layout_constraintTop_toBottomOf="@id/barrier_chat_dokter"
         app:layout_constraintBottom_toTopOf="@id/divider"
         tools:visibility="visible"
         android:visibility="gone"
@@ -203,7 +277,7 @@
         tools:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ticker"
+        app:layout_constraintTop_toBottomOf="@id/lblChangingProductWarning"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 

@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recipelist.domain.param
 
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -7,6 +8,13 @@ import org.junit.Test
 class RecipeListParamTest {
 
     private lateinit var recipeListParam: RecipeListParam
+
+    private val warehouseList = listOf(
+        WarehouseData(
+            warehouseId = "152612",
+            serviceType = "2h"
+        )
+    )
 
     @Before
     fun setUp() {
@@ -21,7 +29,7 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 1
             perPage = 5
-            warehouseID = "2"
+            warehouses = warehouseList
             sourcePage = "TokoNow Home"
             mapToQueryParamsMap(queryParams)
         }
@@ -30,13 +38,18 @@ class RecipeListParamTest {
 
         val expectedPage = 1
         val expectedPerPage = 5
-        val expectedWarehouseId = "2"
+        val expectedWarehouses = listOf(
+            WarehouseData(
+                warehouseId = "152612",
+                serviceType = "2h"
+            )
+        )
         val expectedSourcePage = "TokoNow Home"
         val expectedQueryParams = "title=hello+world&ingredient_ids=4,5,6&sort_by=Newest"
 
         assertEquals(expectedPage, actualParams["page"])
         assertEquals(expectedPerPage, actualParams["perPage"])
-        assertEquals(expectedWarehouseId, actualParams["warehouseID"])
+        assertEquals(expectedWarehouses, actualParams["warehouses"])
         assertEquals(expectedSourcePage, actualParams["sourcePage"])
         assertEquals(expectedQueryParams, actualParams["queryParam"])
     }
@@ -48,7 +61,7 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 1
             perPage = 5
-            warehouseID = "2"
+            warehouses = warehouseList
             sourcePage = "TokoNow Home"
             mapToQueryParamsMap(queryParams)
         }
@@ -57,7 +70,12 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 2
             perPage = 7
-            warehouseID = "5"
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "152613",
+                    serviceType = "fc"
+                )
+            )
             sourcePage = "TokoNow Search"
             queryParamsMap["title"] = "Hello now"
             queryParamsMap["ingredient_ids"] = "5,6,7"
@@ -68,13 +86,18 @@ class RecipeListParamTest {
 
         val expectedPage = 2
         val expectedPerPage = 7
-        val expectedWarehouseId = "5"
+        val expectedWarehouses = listOf(
+            WarehouseData(
+                warehouseId = "152613",
+                serviceType = "fc"
+            )
+        )
         val expectedSourcePage = "TokoNow Search"
         val expectedQueryParams = "title=Hello+now&ingredient_ids=5,6,7&sort_by=Oldest"
 
         assertEquals(expectedPage, actualParams["page"])
         assertEquals(expectedPerPage, actualParams["perPage"])
-        assertEquals(expectedWarehouseId, actualParams["warehouseID"])
+        assertEquals(expectedWarehouses, actualParams["warehouses"])
         assertEquals(expectedSourcePage, actualParams["sourcePage"])
         assertEquals(expectedQueryParams, actualParams["queryParam"])
     }
@@ -84,7 +107,7 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 2
             perPage = 7
-            warehouseID = "5"
+            warehouses = warehouseList
             sourcePage = "TokoNow Search"
             queryParamsMap["title"] = "Hello now"
             queryParamsMap["ingredient_ids"] = ""
@@ -95,13 +118,18 @@ class RecipeListParamTest {
 
         val expectedPage = 2
         val expectedPerPage = 7
-        val expectedWarehouseId = "5"
+        val expectedWarehouses = listOf(
+            WarehouseData(
+                warehouseId = "152612",
+                serviceType = "2h"
+            )
+        )
         val expectedSourcePage = "TokoNow Search"
         val expectedQueryParams = "title=Hello+now"
 
         assertEquals(expectedPage, actualParams["page"])
         assertEquals(expectedPerPage, actualParams["perPage"])
-        assertEquals(expectedWarehouseId, actualParams["warehouseID"])
+        assertEquals(expectedWarehouses, actualParams["warehouses"])
         assertEquals(expectedSourcePage, actualParams["sourcePage"])
         assertEquals(expectedQueryParams, actualParams["queryParam"])
     }

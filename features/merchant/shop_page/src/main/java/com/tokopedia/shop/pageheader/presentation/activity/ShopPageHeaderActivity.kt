@@ -12,6 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -54,7 +56,9 @@ class ShopPageHeaderActivity :
     HasComponent<ShopComponent>,
     HasSharedViewModel,
     ShopPageHeaderPerformanceMonitoringListener,
-    ShopPageSharedListener {
+    ShopPageSharedListener,
+    AppLogInterface
+{
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -281,5 +285,9 @@ class ShopPageHeaderActivity :
                 stockQty
             )
         }
+    }
+
+    override fun getPageName(): String {
+        return PageName.SHOP
     }
 }

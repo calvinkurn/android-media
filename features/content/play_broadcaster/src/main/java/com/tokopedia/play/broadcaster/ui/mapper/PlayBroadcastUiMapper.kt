@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.Freeze
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
+import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.NewMetricList
 import com.tokopedia.play.broadcaster.domain.model.TotalLike
 import com.tokopedia.play.broadcaster.domain.model.TotalView
@@ -659,6 +660,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 else -> TickerBottomSheetType.UNKNOWN
             },
             imageURL = imageURL,
+            cacheKey = cacheKey,
             bottomText = TickerBottomSheetUiModel.BottomText(
                 action = bottomText.action.map { action ->
                     TickerBottomSheetUiModel.Action(

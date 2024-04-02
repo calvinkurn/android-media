@@ -75,7 +75,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         errorNetworkModel.onRetryListener = onRetryListener
         this.shopProductUiModelList.clear()
         clearAllNonDataElement()
-        visitables.add(errorNetworkModel)
         val newList = getNewVisitableItems()
         newList.add(errorNetworkModel)
         submitList(newList)
