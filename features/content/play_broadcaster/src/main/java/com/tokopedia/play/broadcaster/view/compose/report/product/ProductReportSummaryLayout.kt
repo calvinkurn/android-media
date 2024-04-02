@@ -121,7 +121,7 @@ private fun ProductReportSummaryLayoutPreview() {
                 productReportSummary = NetworkResult.Success(
                     ProductReportSummaryUiModel(
                         totalStatsList = listOf(
-                            LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
+                            LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000"),
                             LiveStatsUiModel.Visit("1"),
                             LiveStatsUiModel.AddToCart("2"),
                             LiveStatsUiModel.TotalSold("3"),
@@ -131,21 +131,19 @@ private fun ProductReportSummaryLayoutPreview() {
                                 id = "123",
                                 name = "Product Name 1",
                                 imageUrl = "",
-                                addToCartFmt = "1",
-                                paymentVerifiedFmt = "2",
-                                visitPdpFmt = "3",
-                                productSoldQtyFmt = "4",
-                                estimatedIncomeFmt = "Rp5.000.000",
+                                addToCart = "1",
+                                visitPdp = "3",
+                                productSoldQty = "4",
+                                estimatedIncome = "Rp5.000.000",
                             ),
                             ProductStatsUiModel(
-                                id = "456",
+                                id = "123",
                                 name = "Product Name 2",
                                 imageUrl = "",
-                                addToCartFmt = "1",
-                                paymentVerifiedFmt = "2",
-                                visitPdpFmt = "3",
-                                productSoldQtyFmt = "4",
-                                estimatedIncomeFmt = "Rp5.000.000",
+                                addToCart = "1",
+                                visitPdp = "3",
+                                productSoldQty = "4",
+                                estimatedIncome = "Rp5.000.000",
                             )
                         )
                     )

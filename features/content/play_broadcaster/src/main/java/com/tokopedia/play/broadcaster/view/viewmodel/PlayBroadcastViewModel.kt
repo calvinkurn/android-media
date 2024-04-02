@@ -24,6 +24,7 @@ import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSect
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -92,7 +93,9 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiMode
 import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
@@ -157,29 +160,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.Set
-import kotlin.collections.addAll
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.filterNot
-import kotlin.collections.first
-import kotlin.collections.firstOrNull
-import kotlin.collections.isNotEmpty
-import kotlin.collections.lastOrNull
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.minus
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.orEmpty
-import kotlin.collections.plus
 import kotlin.collections.set
-import kotlin.collections.toList
-import kotlin.collections.toMutableList
-import kotlin.collections.toMutableSet
-import kotlin.collections.toSet
 
 /**
  * Created by mzennis on 24/05/20.
@@ -297,8 +278,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
 
-    private val _liveStatsList = MutableStateFlow(emptyList<LiveStatsUiModel>())
-
     /** Preparation */
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _title = getCurrentSetupDataStore().getObservableTitle()
@@ -306,8 +285,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
     private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
-
     private val _tickerBottomSheetConfig = MutableStateFlow(TickerBottomSheetUiModel.Empty)
+
+    /** Stats */
+    private val _liveReportSummary = MutableStateFlow(LiveReportSummaryUiModel.Empty)
+    private val _productReportSummary = MutableStateFlow<NetworkResult<ProductReportSummaryUiModel>>(NetworkResult.Unknown)
+
     val tickerBottomSheetConfig: TickerBottomSheetUiModel
         get() = _tickerBottomSheetConfig.value
 
@@ -485,7 +468,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _cover,
         _beautificationConfig,
         _tickerBottomSheetConfig,
-        _liveStatsList,
+        _liveReportSummary,
+        _productReportSummary,
         _componentPreparation,
     ) { channelState,
         pinnedMessage,
@@ -507,7 +491,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         cover,
         beautificationConfig,
         tickerBottomSheetConfig,
-        liveStatsList,
+        liveReportSummary,
+        productReportSummary,
         componentPreparation ->
         PlayBroadcastUiState(
             channel = channelState,
@@ -530,7 +515,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             cover = cover,
             beautificationConfig = beautificationConfig,
             tickerBottomSheetConfig = tickerBottomSheetConfig,
-            liveStatsList = liveStatsList,
+            liveReportSummary = liveReportSummary,
+            productReportSummary = productReportSummary,
             componentPreparation = componentPreparation,
         )
     }.stateIn(
@@ -546,7 +532,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val broadcastTimerStateChanged: Flow<PlayBroadcastTimerState>
         get() = broadcastTimer.stateChanged.map {
             if (it is PlayBroadcastTimerState.Active) {
-                updateLiveStats(listOf(LiveStatsUiModel.Duration(it.duration)))
+                updateDuration(it.duration)
             }
 
             it
@@ -662,6 +648,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
+
+            /** Report */
+            is PlayBroadcastAction.GetLiveReportSummary -> handleGetLiveReportSummary()
+            is PlayBroadcastAction.GetProductReportSummary -> handleGetProductReportSummary()
 
             /** CoachMark */
             is PlayBroadcastAction.ComponentHasBeenHandled -> handleComponentHasBeenHandled()
@@ -1051,6 +1041,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val socketMapper = PlayBroadcastWebSocketMapper(message, gson)
             socketMapper.map()
         }
+
         when (result) {
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
             is LiveDuration -> {
@@ -1098,13 +1089,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
             is LiveStats -> {
-                updateLiveStats(
+                updateLiveReportSummary(
                     listOf(
-                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
+                        LiveStatsUiModel.Viewer(result.liveConcurrentUsers),
                         LiveStatsUiModel.TotalViewer(result.visitChannel),
                         LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
                         LiveStatsUiModel.Like(result.likeChannel),
-                    )
+                    ),
+                    result.timestamp.toString(),
                 )
             }
         }
@@ -1843,6 +1835,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             startWebSocket()
             getPinnedMessage()
             getInteractiveConfig()
+            submitAction(PlayBroadcastAction.GetLiveReportSummary)
         }) {
             logger.logBroadcastError(it)
             _uiEvent.emit(
@@ -2047,6 +2040,34 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             it.copy(
                 hasBeenHandled = true
             )
+        }
+    }
+
+    private fun handleGetLiveReportSummary() {
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getLiveReportSummary(channelId, selectedAccount.isShop)
+            updateLiveReportSummary(response.liveStats, response.timestamp)
+        }) {
+        }
+    }
+
+    private fun handleGetProductReportSummary() {
+        viewModelScope.launchCatchError(block = {
+            if (_productReportSummary.value is NetworkResult.Loading) return@launchCatchError
+
+            _productReportSummary.update { NetworkResult.Loading }
+
+            val response = repo.getReportProductSummary(channelId = channelId)
+
+            _productReportSummary.update {
+                NetworkResult.Success(response)
+            }
+        }) { throwable ->
+            _productReportSummary.update {
+                NetworkResult.Fail(throwable) {
+                    submitAction(PlayBroadcastAction.GetProductReportSummary)
+                }
+            }
         }
     }
 
@@ -2481,27 +2502,53 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupLiveStats(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launch {
-            _liveStatsList.update {
-                buildList {
-                    add(LiveStatsUiModel.Viewer())
-                    add(LiveStatsUiModel.TotalViewer())
-                    if (selectedAccount.isShop) {
-                        add(LiveStatsUiModel.EstimatedIncome())
-                    }
-                    add(LiveStatsUiModel.Like())
-                    add(LiveStatsUiModel.Duration())
+            _liveReportSummary.update {
+                LiveReportSummaryUiModel(
+                    liveStats = buildList {
+                        add(LiveStatsUiModel.Viewer())
+                        add(LiveStatsUiModel.TotalViewer())
+                        if (selectedAccount.isShop) {
+                            add(LiveStatsUiModel.EstimatedIncome())
+                        }
+                        add(LiveStatsUiModel.Like())
+                        add(LiveStatsUiModel.Duration())
+                    },
+                    timestamp = "",
+                )
+            }
+        }
+    }
+
+    private fun updateLiveReportSummary(newLiveStats: List<LiveStatsUiModel>, timestamp: String) {
+        runCatching {
+            _liveReportSummary.update {
+                if (timestamp.toLongOrZero() >= it.timestamp.toLongOrZero()) {
+                    it.copy(
+                        liveStats = it.liveStats.map { liveStats ->
+                            newLiveStats.firstOrNull { item ->
+                                item::class == liveStats::class
+                            } ?: return@map liveStats
+                        },
+                        timestamp = timestamp
+                    )
+                } else {
+                    it
                 }
             }
         }
     }
 
-    private fun updateLiveStats(newLiveStats: List<LiveStatsUiModel>) {
-        _liveStatsList.update {
-            it.map { liveStats ->
-                newLiveStats.firstOrNull { item ->
-                    item::class == liveStats::class
-                } ?: return@map liveStats
-            }
+    private fun updateDuration(duration: Long) {
+        _liveReportSummary.update {
+            it.copy(
+                liveStats = it.liveStats.map { liveStats ->
+                    if (liveStats is LiveStatsUiModel.Duration) {
+                        liveStats.copy(timeInMillis = duration)
+                    } else {
+                        liveStats
+                    }
+                }
+            )
         }
     }
 

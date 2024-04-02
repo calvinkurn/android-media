@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet.report.live
 
 import android.os.Bundle
+import android.view.View
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.getValue
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsCardModel
 import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.report.live.LiveReportSummaryLayout
@@ -39,6 +41,12 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
         setupBottomSheet()
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        parentViewModel.submitAction(PlayBroadcastAction.GetLiveReportSummary)
+    }
+
     private fun setupBottomSheet() {
         clearContentPadding = true
 
@@ -55,7 +63,7 @@ class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
                         LiveReportSummaryLayout(
                             modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
                             gridCount = 2,
-                            listData = uiState.liveStatsList.map {
+                            listData = uiState.liveReportSummary.liveStats.map {
                                 when (it) {
                                     is LiveStatsUiModel.EstimatedIncome -> {
                                         LiveStatsCardModel.Clickable(

@@ -89,7 +89,13 @@ sealed interface PlayBroadcastAction {
     data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
     object RemoveBeautificationMenu : PlayBroadcastAction
 
+    /** CoachMark */
     object ComponentHasBeenHandled : PlayBroadcastAction
+
+    /** Report */
+    object GetLiveReportSummary : PlayBroadcastAction
+
+    object GetProductReportSummary : PlayBroadcastAction
 
     data class SendErrorLog(
         val throwable: Throwable,

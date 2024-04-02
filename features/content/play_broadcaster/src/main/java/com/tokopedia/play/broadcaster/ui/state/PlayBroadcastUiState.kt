@@ -3,12 +3,12 @@ package com.tokopedia.play.broadcaster.ui.state
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
@@ -18,11 +18,13 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import java.util.*
 
 /**
@@ -49,7 +51,8 @@ data class PlayBroadcastUiState(
     val cover: PlayCoverUiModel,
     val beautificationConfig: BeautificationConfigUiModel,
     val tickerBottomSheetConfig: TickerBottomSheetUiModel,
-    val liveStatsList: List<LiveStatsUiModel>,
+    val liveReportSummary: LiveReportSummaryUiModel,
+    val productReportSummary: NetworkResult<ProductReportSummaryUiModel>,
     val componentPreparation: ComponentPreparationUiModel,
 ) {
     companion object {
@@ -84,7 +87,8 @@ data class PlayBroadcastUiState(
                 cover = PlayCoverUiModel.empty(),
                 beautificationConfig = BeautificationConfigUiModel.Empty,
                 tickerBottomSheetConfig = TickerBottomSheetUiModel.Empty,
-                liveStatsList = emptyList(),
+                liveReportSummary = LiveReportSummaryUiModel.Empty,
+                productReportSummary = NetworkResult.Unknown,
                 componentPreparation = ComponentPreparationUiModel.Empty,
             )
     }

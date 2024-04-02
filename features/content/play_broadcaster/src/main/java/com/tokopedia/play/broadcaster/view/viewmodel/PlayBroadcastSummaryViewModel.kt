@@ -86,8 +86,11 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         )
     }
 
-    private val _liveReportUiState = _trafficMetric.map {
-        LiveReportUiState(it)
+    private val _liveReportUiState = combine(
+        _trafficMetric,
+        _trafficMetricHighlight
+    ) { trafficMetric, trafficMetricHighlight ->
+        LiveReportUiState(trafficMetric, trafficMetricHighlight)
     }
 
     private val _tagUiState = combine(
@@ -285,29 +288,33 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         hydraConfigStore.getAuthor(),
                                     )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
-            /** JOE TODO: handle this */
+
             val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()
-            val metrics = mutableListOf<TrafficMetricUiModel>().apply {
-//                if (leaderboard.data.slots.isNotEmpty()) {
-//                    add(
-//                        TrafficMetricUiModel(
-//                            type = TrafficMetricType.GameParticipants,
-//                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString()
-//                        )
-//                    )
-//                }
-                addAll(
-                    playBroadcastMapper.mapToLiveTrafficUiMetrics(
-                        authorType = hydraConfigStore.getAuthorType(),
-                        metrics = reportChannelSummary
+            val metrics = playBroadcastMapper.mapToLiveTrafficUiMetrics(
+                authorType = hydraConfigStore.getAuthorType(),
+                metrics = reportChannelSummary
+            )
+
+            val metricHighlight = mutableListOf<LiveStatsUiModel>().apply {
+                if (account.isShop) {
+                    add(
+                        LiveStatsUiModel.EstimatedIncome(reportChannelSummary.channel.metrics.estimatedIncome)
                     )
-                )
-            }.toList()
+                }
+
+                if (leaderboard.data.slots.isNotEmpty()) {
+                    add(
+                        LiveStatsUiModel.GameParticipant(participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString())
+                    )
+                }
+            }
 
             _trafficMetric.value = NetworkResult.Success(metrics)
-        }) {
+            _trafficMetricHighlight.update { NetworkResult.Success(metricHighlight) }
+        }) { throwable ->
             _channelSummary.value = ChannelSummaryUiModel.empty()
-            _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+            _trafficMetric.value = NetworkResult.Fail(throwable) { fetchLiveTraffic() }
+            _trafficMetricHighlight.update { NetworkResult.Fail(throwable) { fetchLiveTraffic() } }
         }
     }
 

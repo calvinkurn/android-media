@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -335,7 +336,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             is PlayBroadcastLiveReportSummaryBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastLiveReportSummaryBottomSheet.Listener {
                     override fun onEstimatedIncomeClicked() {
-                        openEstimatedIncomeDetailSheet()
+                        openProductReportSummarySheet()
                     }
                 })
             }
@@ -397,7 +398,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icStatistic.setOnClickListener {
-            openEstimatedIncomeDetailSheet()
+            openProductReportSummarySheet()
         }
 
         childFragmentManager.commit {
@@ -449,7 +450,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 NestTheme(isOverrideStatusBarColor = false) {
                     LiveStatsView(
-                        liveStatsList = uiState.liveStatsList,
+                        liveStatsList = uiState.liveReportSummary.liveStats,
                         onClick = {
                             openLiveStatsSheet()
                         }
@@ -1401,7 +1402,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ).show(childFragmentManager)
     }
 
-    private fun openEstimatedIncomeDetailSheet() {
+    private fun openProductReportSummarySheet() {
         ProductReportSummaryBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader

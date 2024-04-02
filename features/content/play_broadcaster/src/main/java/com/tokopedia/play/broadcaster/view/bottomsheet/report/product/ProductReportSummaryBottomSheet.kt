@@ -3,29 +3,32 @@ package com.tokopedia.play.broadcaster.view.bottomsheet.report.product
 import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.iconunify.IconUnify
+import androidx.fragment.app.activityViewModels
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
-import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
-import com.tokopedia.play.broadcaster.ui.model.report.product.ProductStatsUiModel
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.view.compose.report.product.ProductReportSummaryLayout
-import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import javax.inject.Inject
 
 /**
  * Created by Jonathan Darwin on 04 March 2024
  */
 class ProductReportSummaryBottomSheet @Inject constructor(
-
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ): BottomSheetUnify() {
+
+    private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
+        parentViewModelFactoryCreator.create(requireActivity())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
@@ -34,9 +37,9 @@ class ProductReportSummaryBottomSheet @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.layoutParams = view.layoutParams.apply {
-            height = (getScreenHeight() * HEIGHT_PERCENTAGE).toInt()
-        }
+        setupBottomSheetHeight(view)
+
+        parentViewModel.submitAction(PlayBroadcastAction.GetProductReportSummary)
     }
 
     private fun setupBottomSheet() {
@@ -51,36 +54,10 @@ class ProductReportSummaryBottomSheet @Inject constructor(
                 NestTheme(
                     isOverrideStatusBarColor = false,
                 ) {
-                    /** JOE TODO: remove mock data */
-                    val state by remember {
-//                        mutableStateOf(NetworkResult.Fail(UnknownHostException()))
-//                        mutableStateOf(NetworkResult.Loading)
-                        mutableStateOf(NetworkResult.Success(
-                            ProductReportSummaryUiModel(
-                                totalStatsList = listOf(
-                                    LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
-                                    LiveStatsUiModel.Visit("1"),
-                                    LiveStatsUiModel.AddToCart("2"),
-                                    LiveStatsUiModel.TotalSold("3"),
-                                ),
-                                productStatsList = List(5) {
-                                    ProductStatsUiModel(
-                                        id = it.toString(),
-                                        name = "Product Name $it",
-                                        imageUrl = "",
-                                        addToCartFmt = "1",
-                                        paymentVerifiedFmt = "2",
-                                        visitPdpFmt = "3",
-                                        productSoldQtyFmt = "4",
-                                        estimatedIncomeFmt = "Rp5.000.000",
-                                    )
-                                }
-                            )
-                        ))
-                    }
+                    val uiState by parentViewModel.uiState.collectAsStateWithLifecycle()
 
                     ProductReportSummaryLayout(
-                        productReportSummary = state,
+                        productReportSummary = uiState.productReportSummary,
                         onEstimatedIncomeClicked = {
                             showEstimatedIncomeInfoSheet()
                         }
@@ -90,6 +67,12 @@ class ProductReportSummaryBottomSheet @Inject constructor(
         }
 
         setChild(composeView)
+    }
+
+    private fun setupBottomSheetHeight(view: View) {
+        view.layoutParams = view.layoutParams.apply {
+            height = (getScreenHeight() * HEIGHT_PERCENTAGE).toInt()
+        }
     }
 
     private fun showEstimatedIncomeInfoSheet() {

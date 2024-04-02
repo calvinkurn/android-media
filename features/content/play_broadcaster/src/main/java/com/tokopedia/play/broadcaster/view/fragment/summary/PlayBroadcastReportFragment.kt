@@ -17,14 +17,15 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastReportBin
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
-import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.generateHtmlSpanText
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.report.product.ProductReportSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -132,6 +133,10 @@ class PlayBroadcastReportFragment @Inject constructor(
                     it.prevValue?.liveReport?.trafficMetricsResult,
                     it.value.liveReport.trafficMetricsResult
                 )
+                renderMetricHighlight(
+                    it.prevValue?.liveReport?.trafficMetricHighlight,
+                    it.value.liveReport.trafficMetricHighlight,
+                )
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -207,6 +212,22 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
+    private fun renderMetricHighlight(
+        prev: NetworkResult<List<LiveStatsUiModel>>?,
+        curr: NetworkResult<List<LiveStatsUiModel>>,
+    ) {
+        if (prev == curr) return
+
+        when (curr) {
+            is NetworkResult.Success -> {
+                summaryInfoView.setTrafficMetricsHighlight(curr.data)
+            }
+            else -> {
+                summaryInfoView.setTrafficMetricsHighlight(emptyList())
+            }
+        }
+    }
+
     private fun renderTickerDisableLiveToVod(
         prev: TickerBottomSheetUiModel?,
         state: TickerBottomSheetUiModel,
@@ -249,15 +270,20 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-        /** JOE TODO: handle this */
-//        if (metricType.isGameParticipants) {
-//            analytic.clickInteractiveParticipantDetail(
-//                channelID = viewModel.channelId,
-//                channelTitle = viewModel.channelTitle,
-//            )
-//            viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
-//        }
+    override fun onMetricClicked(view: SummaryInfoViewComponent, liveStats: LiveStatsUiModel) {
+        when (liveStats) {
+            is LiveStatsUiModel.EstimatedIncome -> {
+                openProductReportSummarySheet()
+            }
+            is LiveStatsUiModel.GameParticipant -> {
+                analytic.clickInteractiveParticipantDetail(
+                    channelID = viewModel.channelId,
+                    channelTitle = viewModel.channelTitle,
+                )
+                viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+            }
+            else -> {}
+        }
     }
 
     private fun openInteractiveLeaderboardSheet() {
@@ -266,6 +292,13 @@ class PlayBroadcastReportFragment @Inject constructor(
             requireContext().classLoader
         )
         leaderboardReportBottomSheet.show(childFragmentManager)
+    }
+
+    private fun openProductReportSummarySheet() {
+        ProductReportSummaryBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader
+        ).show(childFragmentManager)
     }
 
     fun setListener(listener: Listener) {
