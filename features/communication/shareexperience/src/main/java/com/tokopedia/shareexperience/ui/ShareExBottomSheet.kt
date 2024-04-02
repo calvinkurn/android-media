@@ -357,8 +357,8 @@ class ShareExBottomSheet :
     private fun handleCopyLinkIntent(intentUiState: ShareExChannelIntentUiState) {
         val isSuccessCopy = context?.copyTextToClipboard(intentUiState.shortLink)
         if (isSuccessCopy == true) {
-            dismiss()
             listener?.onSuccessCopyLink()
+            dismiss()
         }
     }
 

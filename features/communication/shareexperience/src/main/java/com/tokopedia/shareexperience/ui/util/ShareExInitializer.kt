@@ -19,6 +19,7 @@ import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffil
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.ui.DismissListener
 import com.tokopedia.shareexperience.ui.ShareExBottomSheet
 import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
@@ -46,7 +47,7 @@ class ShareExInitializer(
     private var dialog: ShareExLoadingDialog? = null
     private var bottomSheet: ShareExBottomSheet? = null
     private var bottomSheetArg: ShareExBottomSheetArg? = null
-    private lateinit var onDismiss: () -> Unit
+    var dismissListener: DismissListener? = null
 
     init {
         addObserver(context)
@@ -156,10 +157,6 @@ class ShareExInitializer(
         showLoadingDialog()
     }
 
-    fun setOnDismissListener(onDismiss: () -> Unit) {
-        this.onDismiss = onDismiss
-    }
-
     private fun showLoadingDialog() {
         weakContext.get()?.let { context ->
             bottomSheetArg?.let { arg ->
@@ -207,8 +204,8 @@ class ShareExInitializer(
             bottomSheet = ShareExBottomSheet.newInstance(it, result)
             bottomSheet?.setListener(this)
             bottomSheet?.show(fragmentManager, TAG)
-            if (this::onDismiss.isInitialized) {
-                bottomSheet?.setOnDismissListener(onDismiss)
+            bottomSheet?.setOnDismissListener {
+                dismissListener?.onDismiss()
             }
             trackClickIconShare(result)
         }
@@ -253,6 +250,7 @@ class ShareExInitializer(
     }
 
     override fun onSuccessCopyLink() {
+        dismissListener?.onDismissAfterCopyLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->

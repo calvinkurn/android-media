@@ -15,7 +15,7 @@ import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 
-class ShareExActivity : BaseSimpleActivity() {
+class ShareExActivity : BaseSimpleActivity(), DismissListener {
 
     private var shareExInitializer: ShareExInitializer? = null
 
@@ -56,12 +56,7 @@ class ShareExActivity : BaseSimpleActivity() {
                 shareExInitializer = ShareExInitializer(this)
             }
             shareExInitializer?.openShareBottomSheet(args!!)
-            shareExInitializer?.setOnDismissListener {
-                val intentResult = Intent()
-                intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE, getString(R.string.shareex_success_copy_link))
-                setResult(ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK, intentResult)
-                finish()
-            }
+            shareExInitializer?.dismissListener = this
         } else {
             finish()
         }
@@ -123,4 +118,20 @@ class ShareExActivity : BaseSimpleActivity() {
 
         return ShareExBottomSheetArg.Builder(pageTypeEnum, defaultUrl, trackerArg)
     }
+
+    override fun onDismiss() {
+        finish()
+    }
+
+    override fun onDismissAfterCopyLink() {
+        val intentResult = Intent()
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE, getString(R.string.shareex_success_copy_link))
+        setResult(ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK, intentResult)
+        finish()
+    }
+}
+
+interface DismissListener {
+    fun onDismiss()
+    fun onDismissAfterCopyLink()
 }
