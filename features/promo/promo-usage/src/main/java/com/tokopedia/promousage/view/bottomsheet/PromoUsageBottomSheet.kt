@@ -311,9 +311,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     entryPoint = entryPoint,
                     validateUsePromoRequest = validateUsePromoRequest,
                     boPromoCodes = boPromoCodes,
-                    isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-                        RemoteConfigInstance.getInstance().abTestPlatform
-                    ).isRevamp()
+                    isCartCheckoutRevamp = CartCheckoutRevampRollenceManager().isRevamp()
                 )
             }
         binding?.clTickerInfo?.gone()
@@ -342,9 +340,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                             entryPoint = entryPoint,
                             validateUsePromoRequest = validateUsePromoRequest,
                             boPromoCodes = boPromoCodes,
-                            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-                                RemoteConfigInstance.getInstance().abTestPlatform
-                            ).isRevamp()
+                            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager().isRevamp()
                         )
                     }
                 }
@@ -363,9 +359,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                             entryPoint = entryPoint,
                             validateUsePromoRequest = validateUsePromoRequest,
                             boPromoCodes = boPromoCodes,
-                            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-                                RemoteConfigInstance.getInstance().abTestPlatform
-                            ).isRevamp()
+                            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager().isRevamp()
                         )
                     }
                 }
@@ -1138,9 +1132,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             entryPoint = entryPoint,
             validateUsePromoRequest = validateUsePromoRequest,
             boPromoCodes = boPromoCodes,
-            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-                RemoteConfigInstance.getInstance().abTestPlatform
-            ).isRevamp()
+            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager().isRevamp()
         )
     }
 

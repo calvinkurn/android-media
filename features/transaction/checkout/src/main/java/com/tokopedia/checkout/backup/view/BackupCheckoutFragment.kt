@@ -411,9 +411,7 @@ class BackupCheckoutFragment :
     }
 
     private fun initViewModel() {
-        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-            RemoteConfigInstance.getInstance().abTestPlatform
-        ).isRevamp()
+        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager().isRevamp()
         viewModel.usePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
             RemoteConfigInstance.getInstance().abTestPlatform
         ).enableNewInterface()

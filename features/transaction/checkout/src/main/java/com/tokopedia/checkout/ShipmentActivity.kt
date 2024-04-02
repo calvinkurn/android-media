@@ -2,6 +2,7 @@ package com.tokopedia.checkout
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.checkout.backup.view.BackupCheckoutFragment
 import com.tokopedia.checkout.revamp.view.CheckoutFragment
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
@@ -11,7 +12,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.telemetry.ITelemetryActivity
 
 open class ShipmentActivity :
@@ -19,6 +19,7 @@ open class ShipmentActivity :
     ITelemetryActivity {
     internal var shipmentFragment: ShipmentFragment? = null
     internal var checkoutFragment: CheckoutFragment? = null
+    internal var backupCheckoutFragment: BackupCheckoutFragment? = null
 
     override fun setupBundlePass(extras: Bundle?) {
         // No-op
@@ -33,7 +34,8 @@ open class ShipmentActivity :
     }
 
     override fun getNewFragment(): Fragment? {
-        val isRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
+        val cartCheckoutRevampRollenceManager = CartCheckoutRevampRollenceManager()
+        val isRevamp = cartCheckoutRevampRollenceManager.isRevamp()
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isPlusSelected = intent.data?.getBooleanQueryParameter(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false) ?: false
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
@@ -43,18 +45,30 @@ open class ShipmentActivity :
         val bundle = intent.extras
         val isTradeIn = bundle?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "")?.isNotEmpty() ?: false
         if (shouldRedirectToRevamp(isRevamp, isPlusSelected, isOneClickShipment, isTradeIn)) {
-            checkoutFragment = CheckoutFragment.newInstance(
-                isOneClickShipment,
-                leasingId,
-                pageSource,
-                isPlusSelected,
-                ArrayList(promos),
-                intent?.data?.getQueryParameter(CheckoutFragment.QUERY_GATEWAY_CODE),
-                intent?.data?.getQueryParameter(CheckoutFragment.QUERY_TENURE_TYPE),
-                intent?.data?.getQueryParameter(CheckoutFragment.QUERY_SOURCE),
-                bundle
-            )
-            return checkoutFragment
+            val shouldRedirectBasedOnRc = cartCheckoutRevampRollenceManager.shouldRedirectToNewCheckoutPayment(this)
+            if (shouldRedirectToNewCheckoutPayment(shouldRedirectBasedOnRc, isRevamp, isPlusSelected, isOneClickShipment, isTradeIn)) {
+                checkoutFragment = CheckoutFragment.newInstance(
+                    isOneClickShipment,
+                    leasingId,
+                    pageSource,
+                    isPlusSelected,
+                    ArrayList(promos),
+                    intent?.data?.getQueryParameter(CheckoutFragment.QUERY_GATEWAY_CODE),
+                    intent?.data?.getQueryParameter(CheckoutFragment.QUERY_TENURE_TYPE),
+                    intent?.data?.getQueryParameter(CheckoutFragment.QUERY_SOURCE),
+                    bundle
+                )
+                return checkoutFragment
+            } else {
+                backupCheckoutFragment = BackupCheckoutFragment.newInstance(
+                    isOneClickShipment,
+                    leasingId,
+                    pageSource,
+                    isPlusSelected,
+                    bundle
+                )
+                return checkoutFragment
+            }
         } else {
             shipmentFragment = ShipmentFragment.newInstance(
                 isOneClickShipment,
@@ -71,11 +85,17 @@ open class ShipmentActivity :
         return isRevamp && !isTradeIn
     }
 
+    private fun shouldRedirectToNewCheckoutPayment(shouldRedirectBasedOnRc: Boolean, isRevamp: Boolean, isPlusSelected: Boolean, isOneClickShipment: Boolean, isTradeIn: Boolean): Boolean {
+        return shouldRedirectBasedOnRc
+    }
+
     override fun onBackPressed() {
         if (shipmentFragment != null) {
             shipmentFragment?.onBackPressed()
         } else if (checkoutFragment != null) {
             checkoutFragment?.onBackPressed()
+        } else if (backupCheckoutFragment != null) {
+            backupCheckoutFragment?.onBackPressed()
         } else {
             super.onBackPressed()
         }
