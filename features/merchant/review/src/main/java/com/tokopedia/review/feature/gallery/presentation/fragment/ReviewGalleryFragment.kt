@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.utils.enableRollenceContentProductPreview
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -501,7 +502,7 @@ class ReviewGalleryFragment :
     }
 
     private fun goToMediaPreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
-        if (enableContentProductPreview) {
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
             val reviewId = reviewGalleryMediaThumbnailUiModel.feedbackId
             val attachmentId = reviewGalleryMediaThumbnailUiModel.attachmentId
             goToProductPreviewActivityReviewSource(

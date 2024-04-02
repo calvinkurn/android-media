@@ -14,7 +14,7 @@ data class ContentTaggedProductUiModel(
     val appLink: String,
     val campaign: Campaign,
     val affiliate: Affiliate,
-    val stock: Stock,
+    val stock: Stock
 ) {
     data class Affiliate(
         val id: String,
@@ -38,9 +38,9 @@ data class ContentTaggedProductUiModel(
     ) : Price
 
     data class CampaignPrice(
-        val originalFormattedPrice: String,
         val formattedPrice: String,
-        override val price: Double
+        override val price: Double,
+        val isMasked: Boolean
     ) : Price
 
     data class NormalPrice(
@@ -49,7 +49,7 @@ data class ContentTaggedProductUiModel(
     ) : Price
 
     sealed interface Price {
-        val price : Double
+        val price: Double
     }
 
     val finalPrice: Double
@@ -86,11 +86,24 @@ data class ContentTaggedProductUiModel(
     }
 
     sealed class Stock {
-        object OutOfStock: Stock()
-        object Available: Stock() //add raw stock if needed
+        object OutOfStock : Stock()
+        object Available : Stock() // add raw stock if needed
     }
 
     enum class SourceType {
         Organic, NonOrganic
+    }
+
+    enum class ProductFormatPriority {
+        Masked, Discount, Original;
+
+        companion object {
+            fun getFormatPriority(formatPriority: String): ProductFormatPriority =
+                when (formatPriority.lowercase()) {
+                    "masked" -> Masked
+                    "discount" -> Discount
+                    else -> Original
+                }
+        }
     }
 }

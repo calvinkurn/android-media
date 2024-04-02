@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
-import android.graphics.Color
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
@@ -9,18 +8,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -35,7 +40,7 @@ import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener {
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener, AppLogRecTriggerInterface {
 
     private var masterProductCardItemViewModel: MasterProductCardItemViewModel? = null
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -49,8 +54,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var lastClickTime = 0L
     private var interval: Int = 500
     private var isFullFilment: Boolean = false
+    private var isRecommendation = false
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
+        isRecommendation = masterProductCardItemViewModel?.components?.recomQueryProdId != null
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
         masterProductCardItemViewModel?.let {
             getSubComponent().inject(it)
@@ -255,8 +262,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.applyCarousel()
                 productCardView?.layoutParams?.width =
                     Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                        R.dimen.dp_70
-                    )
+                    R.dimen.dp_70
+                )
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
@@ -369,6 +376,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun handleUIClick(view: View) {
+        dataItem?.let {
+            if (it.isEligibleToTrack()) {
+                AppLogRecommendation.sendProductClickAppLog(
+                    it.asProductTrackModel(productCardName)
+                )
+            }
+        }
+
         masterProductCardItemViewModel?.sendTopAdsClick()
         var applink = dataItem?.applinks ?: ""
         if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
@@ -393,6 +408,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        masterProductCardItemViewModel?.trackShowProductCard()
         masterProductCardItemViewModel?.sendTopAdsView()
         masterProductCardItemViewModel?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
@@ -475,5 +491,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     companion object {
         const val IS_FULFILLMENT = "fulfillment"
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return RecommendationTriggerObject(
+            sessionId = dataItem?.getAppLog()?.sessionId.orEmpty(),
+            requestId = dataItem?.getAppLog()?.requestId.orEmpty(),
+            moduleName = dataItem?.getAppLog()?.pageName.orEmpty(),
+            listName = dataItem?.topLevelTab?.name.orEmpty(),
+            listNum = dataItem?.topLevelTab?.index ?: -1
+        )
+    }
+
+    override fun isEligibleToTrack(): Boolean {
+        return dataItem?.isEligibleToTrackRecTrigger(masterProductCardItemViewModel?.getComponentName().orEmpty()).orFalse()
     }
 }

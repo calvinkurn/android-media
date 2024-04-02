@@ -2,12 +2,15 @@ package com.tokopedia.play.broadcaster.shorts.di
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
-import com.tokopedia.content.common.producttag.data.ProductTagRepositoryImpl
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
-import com.tokopedia.content.common.producttag.view.fragment.*
-import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.product.picker.ugc.view.bottomsheet.ProductTagSourceBottomSheet
+import com.tokopedia.content.product.picker.ugc.view.fragment.GlobalSearchFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.GlobalSearchProductTabFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.GlobalSearchShopTabFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.LastPurchasedProductFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.LastTaggedProductFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.MyShopProductFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.ShopProductFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
