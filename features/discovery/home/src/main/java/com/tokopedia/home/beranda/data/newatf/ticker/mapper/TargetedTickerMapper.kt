@@ -3,7 +3,9 @@ package com.tokopedia.home.beranda.data.newatf.ticker.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.model.GetTargetedTicker
 import com.tokopedia.home.beranda.data.model.GetTargetedTickerItem
-import com.tokopedia.home.beranda.data.model.TargetedTicker
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.domain.model.TargetedTickerUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
@@ -26,7 +28,11 @@ object TargetedTickerMapper {
             unifyTickers = uiModel.map {
                 TickerData(
                     title = it.title,
-                    description = it.content,
+                    description = buildContentAsHyperLink(
+                        it.content,
+                        it.action.label,
+                        it.linkUrl()
+                    ),
                     type = it.type
                 )
             }
@@ -51,9 +57,15 @@ object TargetedTickerMapper {
         }
     }
 
-    private fun mapTickerType(ticker: GetTargetedTickerItem): Int = when (ticker.getTickerType()) {
-        is GetTargetedTickerItem.Type.Info -> com.tokopedia.unifycomponents.ticker.Ticker.TYPE_INFORMATION
-        is GetTargetedTickerItem.Type.Warning -> com.tokopedia.unifycomponents.ticker.Ticker.TYPE_WARNING
-        is GetTargetedTickerItem.Type.Danger -> com.tokopedia.unifycomponents.ticker.Ticker.TYPE_ERROR
+    private fun mapTickerType(ticker: GetTargetedTickerItem) = when (ticker.getTickerType()) {
+        is GetTargetedTickerItem.Type.Info -> TYPE_INFORMATION
+        is GetTargetedTickerItem.Type.Warning -> TYPE_WARNING
+        is GetTargetedTickerItem.Type.Danger -> TYPE_ERROR
     }
+
+    private fun buildContentAsHyperLink(
+        desc: String,
+        action: String,
+        link: String
+    ) = "$desc <a href=\"${link}\">$action</a>"
 }

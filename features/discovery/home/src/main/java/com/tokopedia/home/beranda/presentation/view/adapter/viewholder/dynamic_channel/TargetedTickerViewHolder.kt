@@ -10,7 +10,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.databinding.LayoutTargetedTickerBinding
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.view.binding.viewBinding
@@ -40,14 +39,8 @@ class TargetedTickerViewHolder(
         // set pager description
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                val index = findTickerPosition(element.unifyTickers, itemData)
-
-                if (index != -1) {
-                    val targetedItemModel = element.targetedTickers[index]
-
-                    HomePageTracking.eventClickTickerHomePage(tickerId)
-                    listener.onSectionItemClicked(targetedItemModel.linkUrl())
-                }
+                HomePageTracking.eventClickTickerHomePage(tickerId)
+                listener.onSectionItemClicked(linkUrl.toString())
             }
         })
 
@@ -60,11 +53,6 @@ class TargetedTickerViewHolder(
                 listener.onCloseTicker()
             }
         })
-    }
-
-    private fun findTickerPosition(tickers: List<TickerData>, itemData: Any?): Int {
-        val ticker = itemData as? TickerData ?: return -1
-        return tickers.indexOf(ticker)
     }
 
     private fun requestFocusOnTicker() {
