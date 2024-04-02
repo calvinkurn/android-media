@@ -224,14 +224,16 @@ class ReviewFragment @Inject constructor(
                         is ProductPreviewUiEvent.ShowErrorToaster -> {
                             val view = ReviewReportBottomSheet.get(childFragmentManager)?.view?.rootView ?: requireView().rootView
                             Toaster.toasterCustomBottomHeight = 60
-                            Toaster.buildWithAction(view ?: return@collect,
+                            Toaster.buildWithAction(
+                                view ?: return@collect,
                                 text = event.message.message.ifNull { getString(event.type.textRes) },
                                 duration = Toaster.LENGTH_LONG,
                                 type = Toaster.TYPE_ERROR,
                                 actionText = getString(R.string.bottom_atc_failed_click_toaster),
                                 clickListener = {
                                     event.onClick()
-                                }).show()
+                                }
+                            ).show()
                         }
                         else -> {}
                     }
@@ -377,7 +379,7 @@ class ReviewFragment @Inject constructor(
         val productId = viewModel.productPreviewSource.productId
         val mediaType = item.medias.find { it.mediaId == selectedMediaId }?.type?.value.orEmpty()
         val partialLabel = "$SHARE_ID_KEY-$productId-$reviewId"
-        val label = "$SHARE_ID_KEY - $productId - $reviewId - $partialLabel - $mediaType"
+        val label = "$SHARE_ID_KEY - $productId - $reviewId - $mediaType"
         shareExInitializer?.openShareBottomSheet(
             bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.REVIEW,
