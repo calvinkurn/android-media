@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.revamp.view
+package com.tokopedia.checkout.backup.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
@@ -30,18 +28,32 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstBmsm
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutPaymentAddOnsAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.backup.di.BackupCheckoutModule
+import com.tokopedia.checkout.backup.di.DaggerBackupCheckoutComponent
+import com.tokopedia.checkout.backup.view.adapter.CheckoutAdapter
+import com.tokopedia.checkout.backup.view.adapter.CheckoutAdapterListener
+import com.tokopedia.checkout.backup.view.adapter.CheckoutDiffUtilCallback
+import com.tokopedia.checkout.backup.view.processor.CheckoutResult
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutEgoldModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutEpharmacyModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutItem
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutProductBenefitModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.backup.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.databinding.BottomSheetDropshipBinding
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
@@ -52,23 +64,6 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
-import com.tokopedia.checkout.revamp.di.CheckoutModule
-import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
-import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
-import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
-import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
-import com.tokopedia.checkout.revamp.view.processor.CheckoutResult
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
-import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener
@@ -77,38 +72,19 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
-import com.tokopedia.checkoutpayment.activation.PaymentActivationWebViewBottomSheet
-import com.tokopedia.checkoutpayment.data.PaymentRequest
-import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
-import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
-import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
-import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
-import com.tokopedia.checkoutpayment.domain.TenorListData
-import com.tokopedia.checkoutpayment.installment.CreditCardInstallmentDetailBottomSheet
-import com.tokopedia.checkoutpayment.installment.GoCicilInstallmentDetailBottomSheet
-import com.tokopedia.checkoutpayment.list.view.PaymentListingActivity
-import com.tokopedia.checkoutpayment.processor.PaymentValidationReport
-import com.tokopedia.checkoutpayment.topup.view.PaymentTopUpWebViewActivity
-import com.tokopedia.checkoutpayment.view.OrderPaymentFee
-import com.tokopedia.checkoutpayment.view.bottomsheet.PaymentFeeInfoBottomSheet
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
-import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
-import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.showToast
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -135,7 +111,6 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
@@ -176,7 +151,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUp
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -194,15 +168,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
-import dagger.Lazy
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
-import com.tokopedia.checkoutpayment.R as checkoutpaymentR
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 
-class CheckoutFragment :
+class BackupCheckoutFragment :
     BaseDaggerFragment(),
     CheckoutAdapterListener,
     ShippingDurationBottomsheetListener,
@@ -242,9 +214,6 @@ class CheckoutFragment :
 
     @Inject
     lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
-
-    @Inject
-    lateinit var gson: Lazy<Gson>
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -303,11 +272,6 @@ class CheckoutFragment :
             return pageSource
         }
 
-    private val promos: List<PromoExternalAutoApply>
-        get() {
-            return arguments?.getParcelableArrayList(ARG_PROMOS) ?: emptyList()
-        }
-
     override fun getScreenName(): String {
         return if (isOneClickShipment) {
             ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT
@@ -319,9 +283,9 @@ class CheckoutFragment :
     override fun initInjector() {
         if (activity != null) {
             val baseMainApplication = requireActivity().application as BaseMainApplication
-            DaggerCheckoutComponent.builder()
+            DaggerBackupCheckoutComponent.builder()
                 .baseAppComponent(baseMainApplication.baseAppComponent)
-                .checkoutModule(CheckoutModule())
+                .backupCheckoutModule(BackupCheckoutModule())
                 .build()
                 .inject(this)
         }
@@ -457,27 +421,13 @@ class CheckoutFragment :
         viewModel.checkoutLeasingId = checkoutLeasingId
         viewModel.isPlusSelected = isPlusSelected
         viewModel.checkoutPageSource = checkoutPageSource
-        viewModel.listPromoExternalAutoApplyCode = promos
         observeData()
 
-        if (viewModel.listData.value.isEmpty()) {
-            // first load
-            showAtcOccMessageIfAny()
-            viewModel.loadSAF(
-                skipUpdateOnboardingState = true,
-                isReloadData = false,
-                isReloadAfterPriceChangeHigher = false,
-                gatewayCode = arguments?.getString(QUERY_GATEWAY_CODE, "") ?: "",
-                tenor = arguments?.getString(QUERY_TENURE_TYPE, "").toIntOrZero()
-            )
-        }
-    }
-
-    private fun showAtcOccMessageIfAny() {
-        val atcOccMessage = arguments?.getString(CheckoutConstant.EXTRA_ATC_OCC_MESSAGE)
-        if (!atcOccMessage.isNullOrBlank()) {
-            showToastNormal(atcOccMessage)
-        }
+        viewModel.loadSAF(
+            skipUpdateOnboardingState = true,
+            isReloadData = false,
+            isReloadAfterPriceChangeHigher = false
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -578,9 +528,6 @@ class CheckoutFragment :
                     stopTrace()
                     sendErrorAnalytics()
                     setCampaignTimer()
-                    if (it.cartShipmentAddressFormData.paymentWidget.enable) {
-                        header.tvCheckoutHeaderText.text = getString(R.string.checkout_module_title_activity_checkout_payment)
-                    }
                     viewModel.prepareFullCheckoutPage()
                 }
 
@@ -621,7 +568,7 @@ class CheckoutFragment :
                 var message = it.toasterMessage
                 if (message.isEmpty()) {
                     message = it.throwable?.message ?: ""
-                    if (!(it.throwable is CartResponseErrorException || it.throwable is AkamaiErrorException || it.throwable is ResponseErrorException)) {
+                    if (!(it.throwable is CartResponseErrorException || it.throwable is AkamaiErrorException)) {
                         message = ErrorHandler.getErrorMessage(context, it.throwable)
                     }
                     if (message.isEmpty()) {
@@ -629,26 +576,9 @@ class CheckoutFragment :
                             getString(purchase_platformcommonR.string.checkout_flow_error_global_message)
                     }
                 }
-                message = appendDebugSource(message, it.source)
-                if (it.showCta) {
-                    view?.context?.let { ctx ->
-                        val actionText = ctx.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok)
-                        Toaster.buildWithAction(binding.root, message, type = it.toasterType, actionText = actionText) {
-                            /* no-op */
-                        }.show()
-                    }
-                } else {
-                    Toaster.buildWithAction(binding.root, message, type = it.toasterType).show()
-                }
+                Toaster.build(binding.root, message, type = it.toasterType).show()
             }
         }
-    }
-
-    private fun appendDebugSource(message: String, source: String): String {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            return "$message s:$source"
-        }
-        return message
     }
 
     private fun onCacheExpired(message: String?) {
@@ -802,22 +732,6 @@ class CheckoutFragment :
 
             REQUEST_CODE_PROMO -> {
                 onActivityResultFromPromo(resultCode, data)
-            }
-
-            REQUEST_CODE_EDIT_PAYMENT -> {
-                onActivityResultFromPaymentListing(resultCode, data)
-            }
-
-            REQUEST_CODE_PAYMENT_TOP_UP -> {
-                onActivityResultFromTopUp()
-            }
-
-            REQUEST_CODE_LINK_ACCOUNT -> {
-                onResultFromLinkAccount(resultCode, data)
-            }
-
-            REQUEST_CODE_WALLET_ACTIVATION -> {
-                onActivityResultFromActivation()
             }
 
             PaymentConstant.REQUEST_CODE -> {
@@ -1099,6 +1013,44 @@ class CheckoutFragment :
 
     private fun onDestroyViewBinding() {
         binding.countDown.timer?.cancel()
+    }
+
+    companion object {
+
+        private const val REQUEST_CODE_COURIER_PINPOINT = 13
+
+        private const val REQUEST_CODE_UPSELL = 777
+
+        const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
+        const val REQUEST_CODE_MINI_CONSULTATION = 10022
+
+        private const val REQUEST_CODE_PROMO = 954
+
+        private const val SHIPMENT_TRACE = "mp_shipment"
+
+        private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
+        private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
+
+        fun newInstance(
+            isOneClickShipment: Boolean,
+            leasingId: String,
+            pageSource: String,
+            isPlusSelected: Boolean,
+            bundle: Bundle?
+        ): BackupCheckoutFragment {
+            val b = bundle ?: Bundle()
+            b.putString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID, leasingId)
+            if (leasingId.isNotEmpty()) {
+                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, true)
+            } else {
+                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment)
+            }
+            b.putString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE, pageSource)
+            b.putBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, isPlusSelected)
+            val checkoutFragment = BackupCheckoutFragment()
+            checkoutFragment.arguments = b
+            return checkoutFragment
+        }
     }
 
     // region adapter listener
@@ -1392,10 +1344,6 @@ class CheckoutFragment :
 
     override fun onImpressionAddOnGiftingProductLevel(productId: String) {
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId)
-    }
-
-    override fun onEditProductNote(note: String, position: Int) {
-        viewModel.setProductNote(note, position)
     }
 
     private fun onUpdateResultAddOnProductLevelBottomSheet(data: Intent?) {
@@ -1944,30 +1892,37 @@ class CheckoutFragment :
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
         if (!viewModel.isLoading()) {
-            if (viewModel.isPaymentEnable() || false) {
-                // temp
-                viewModel.updateCartForPromo {
-                    val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
-                        entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
-                        promoRequest = it.promoRequest,
-                        validateUsePromoRequest = it.validateUsePromoRequest,
-                        boPromoCodes = it.boPromoCodes,
-                        listener = this@CheckoutFragment
-                    )
-                    bottomSheetPromo.show(childFragmentManager)
-                }
-            } else {
-                val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
+            val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
+            if (viewModel.useNewPromoPage()) {
                 val validateUseRequestParam =
                     viewModel.generateValidateUsePromoRequestForPromoUsage()
+                val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
                     promoRequest = promoRequestParam,
                     validateUsePromoRequest = validateUseRequestParam,
                     boPromoCodes = viewModel.getBboPromoCodes(),
-                    listener = this@CheckoutFragment
+                    totalAmount = totalAmount,
+                    listener = this@BackupCheckoutFragment
                 )
                 bottomSheetPromo.show(childFragmentManager)
+            } else {
+                val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
+                val intent =
+                    RouteManager.getIntent(
+                        activity,
+                        ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+                    )
+                intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+                intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+                intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
+                setChosenAddressForTradeInDropOff(intent)
+                setPromoExtraMvcLockCourierFlow(intent)
+                startActivityForResult(intent, REQUEST_CODE_PROMO)
+                if (isTradeIn) {
+                    checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+                }
             }
         }
     }
@@ -2300,7 +2255,6 @@ class CheckoutFragment :
             paymentPassData.callbackSuccessUrl = checkoutResult.checkoutData.callbackSuccessUrl
             paymentPassData.callbackFailedUrl = checkoutResult.checkoutData.callbackFailedUrl
             paymentPassData.queryString = checkoutResult.checkoutData.queryString
-            paymentPassData.method = checkoutResult.checkoutData.method
             val intent =
                 RouteManager.getIntent(
                     activity,
@@ -2590,7 +2544,7 @@ class CheckoutFragment :
                         ExpiredTimeDialog.newInstance(
                             timer,
                             checkoutAnalyticsCourierSelection,
-                            this@CheckoutFragment
+                            this@BackupCheckoutFragment
                         )
                     dialog.show(parentFragmentManager, "expired dialog")
                 }
@@ -2809,251 +2763,6 @@ class CheckoutFragment :
                 benefit.shopId,
                 userSessionInterface.userId
             )
-        }
-    }
-
-    override fun onRetryGetPayment() {
-        viewModel.calculateTotal()
-    }
-
-    override fun onChangePayment(payment: CheckoutPaymentModel) {
-        val intent = Intent(context, PaymentListingActivity::class.java).apply {
-            val paymentWidgetData = payment.data?.paymentWidgetData?.firstOrNull()
-            val address = viewModel.listData.value.address()!!
-            putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, address.recipientAddressModel.id)
-            putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, paymentWidgetData?.profileCode ?: "")
-            putExtra(PaymentListingActivity.EXTRA_PAYMENT_MERCHANT, paymentWidgetData?.merchantCode ?: "")
-            val orderCost = viewModel.listData.value.cost()!!
-            putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, orderCost.totalPrice)
-            putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, paymentWidgetData?.bid ?: "")
-            val goCicilInstallmentRequest = viewModel.generateGoCicilInstallmentRequest(payment)
-            putExtra(
-                PaymentListingActivity.EXTRA_ORDER_METADATA,
-                goCicilInstallmentRequest.orderMetadata
-            )
-            putExtra(
-                PaymentListingActivity.EXTRA_PROMO_PARAM,
-                goCicilInstallmentRequest.promoParam
-            )
-            putExtra(
-                PaymentListingActivity.EXTRA_CALLBACK_URL,
-                paymentWidgetData?.callbackUrl ?: ""
-            )
-            val paymentRequest = viewModel.generatePaymentRequest(payment)
-            putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
-        }
-        startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
-    }
-
-    private fun onActivityResultFromPaymentListing(resultCode: Int, data: Intent?) {
-        val gateway = data?.getStringExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY)
-        val metadata = data?.getStringExtra(PaymentListingActivity.EXTRA_RESULT_METADATA)
-        if (gateway != null && metadata != null) {
-//            orderSummaryAnalytics.eventClickSelectedPaymentOption(gateway, userSession.get().userId)
-            viewModel.choosePayment(gateway, metadata)
-        }
-    }
-
-    private fun onActivityResultFromTopUp() {
-        viewModel.forceReloadPayment()
-    }
-
-    private fun onActivityResultFromActivation() {
-        viewModel.forceReloadPayment()
-    }
-
-    private fun onResultFromLinkAccount(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            val status = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
-            if (status.isNotEmpty()) {
-                val message = LinkStatusMatcher.getStatus(status)
-                val v = view
-                if (message.isNotEmpty() && v != null) {
-                    Toaster.build(v, message, Toaster.LENGTH_LONG).show()
-                }
-            }
-        }
-        viewModel.forceReloadPayment()
-    }
-
-    override fun onChangeInstallment(payment: CheckoutPaymentModel) {
-        if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
-            // gocicil
-            onChangeGoCicilInstallment(payment.data, payment)
-        } else if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
-            // cc
-            onChangeCcInstallment(payment.data, payment)
-        }
-    }
-
-    private fun onChangeCcInstallment(data: PaymentWidgetListData, payment: CheckoutPaymentModel) {
-        val paymentData = data.paymentWidgetData.first()
-        CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
-            this,
-            viewModel.generateCreditCardTenorListRequest(payment),
-            userSessionInterface.userId,
-            payment.tenorList!!,
-            paymentData.installmentPaymentData.selectedTenure,
-            object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
-                    viewModel.chooseInstallmentCC(selectedInstallment, installmentList)
-                }
-
-                override fun onFailedLoadInstallment() {
-                    view?.let { v ->
-                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-                    }
-                }
-            }
-        )
-    }
-
-    private fun onChangeGoCicilInstallment(data: PaymentWidgetListData, payment: CheckoutPaymentModel) {
-        val paymentData = data.paymentWidgetData.first()
-        GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(
-            this,
-            viewModel.generateGoCicilInstallmentRequest(payment),
-            payment.installmentData,
-            paymentData.installmentPaymentData.selectedTenure,
-            object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                override fun onSelectInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, isSilent: Boolean) {
-                    viewModel.chooseInstallment(selectedInstallment, installmentList, tickerMessage, isSilent)
-                }
-
-                override fun onFailedLoadInstallment() {
-                    view?.let { v ->
-                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-                    }
-                }
-            }
-        )
-    }
-
-    override fun onPaymentAction(payment: CheckoutPaymentModel) {
-        if (payment.validationReport is PaymentValidationReport.WalletAmountError) {
-            // top up
-            onPaymentTopUp(payment)
-        } else if (payment.validationReport is PaymentValidationReport.WalletActivationError) {
-            // activation
-            onPaymentActivation(payment)
-        }
-    }
-
-    private fun onPaymentActivation(payment: CheckoutPaymentModel) {
-        val paymentWidgetData = payment.data!!.paymentWidgetData.first()
-        val activationData = paymentWidgetData.walletData.activation
-
-        if (!URLUtil.isNetworkUrl(activationData.urlLink) && RouteManager.isSupportApplink(context, activationData.urlLink)) {
-            if (activationData.urlLink.startsWith(ApplinkConst.LINK_ACCOUNT)) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
-                    putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
-                    putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
-                }
-                startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
-            } else {
-                val intent = RouteManager.getIntentNoFallback(context, activationData.urlLink)
-                    ?: return
-                startActivityForResult(intent, REQUEST_CODE_WALLET_ACTIVATION)
-            }
-        } else {
-            PaymentActivationWebViewBottomSheet(
-                activationData.urlLink,
-                paymentWidgetData.callbackUrl,
-                activationData.headerTitle,
-                false,
-                object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
-                    override fun onActivationResult(isSuccess: Boolean) {
-                        view?.let {
-                            it.post {
-                                onActivityResultFromActivation()
-                            }
-                        }
-                    }
-                }
-            ).show(this, userSessionInterface)
-        }
-    }
-
-    private fun onPaymentTopUp(payment: CheckoutPaymentModel) {
-        val paymentWidgetData = payment.data!!.paymentWidgetData.first()
-        val topUpData = paymentWidgetData.walletData.topUp
-        context?.let {
-            startActivityForResult(
-                PaymentTopUpWebViewActivity.createIntent(
-                    it,
-                    topUpData.headerTitle,
-                    url = topUpData.urlLink,
-                    redirectUrl = paymentWidgetData.callbackUrl,
-                    isHideDigital = if (topUpData.isHideDigital) 1 else 0
-                ),
-                REQUEST_CODE_PAYMENT_TOP_UP
-            )
-    //                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
-    //                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
-    //                }
-        }
-    }
-
-    override fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee) {
-        PaymentFeeInfoBottomSheet().show(this, paymentFee)
-    }
-
-    companion object {
-
-        private const val REQUEST_CODE_COURIER_PINPOINT = 13
-
-        private const val REQUEST_CODE_UPSELL = 777
-
-        const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
-        const val REQUEST_CODE_MINI_CONSULTATION = 10022
-
-        private const val REQUEST_CODE_PROMO = 954
-
-        const val REQUEST_CODE_EDIT_PAYMENT = 19
-
-        const val REQUEST_CODE_PAYMENT_TOP_UP = 17
-
-        const val REQUEST_CODE_LINK_ACCOUNT = 22
-        const val REQUEST_CODE_WALLET_ACTIVATION = 23
-
-        private const val SHIPMENT_TRACE = "mp_shipment"
-
-        private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
-        private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
-
-        private const val ARG_PROMOS = "promos"
-
-        const val QUERY_SOURCE = "source"
-        const val QUERY_GATEWAY_CODE = "gateway_code"
-        const val QUERY_TENURE_TYPE = "tenure_type"
-
-        fun newInstance(
-            isOneClickShipment: Boolean,
-            leasingId: String,
-            pageSource: String,
-            isPlusSelected: Boolean,
-            promos: ArrayList<PromoExternalAutoApply>,
-            gatewayCode: String?,
-            tenureType: String?,
-            source: String?,
-            bundle: Bundle?
-        ): CheckoutFragment {
-            val b = bundle ?: Bundle()
-            b.putString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID, leasingId)
-            if (leasingId.isNotEmpty()) {
-                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, true)
-            } else {
-                b.putBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment)
-            }
-            b.putString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE, pageSource)
-            b.putBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, isPlusSelected)
-            b.putParcelableArrayList(ARG_PROMOS, promos)
-            b.putString(QUERY_GATEWAY_CODE, gatewayCode)
-            b.putString(QUERY_TENURE_TYPE, tenureType)
-            b.putString(QUERY_SOURCE, source)
-            val checkoutFragment = CheckoutFragment()
-            checkoutFragment.arguments = b
-            return checkoutFragment
         }
     }
 }

@@ -514,9 +514,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-            RemoteConfigInstance.getInstance().abTestPlatform
-        ).isRevamp()
+        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager().isRevamp()
         viewModel.usePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
             RemoteConfigInstance.getInstance().abTestPlatform
         ).enableNewInterface()

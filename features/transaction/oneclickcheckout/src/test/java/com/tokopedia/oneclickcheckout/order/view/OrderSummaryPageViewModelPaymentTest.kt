@@ -373,11 +373,11 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                             SummariesItemData(
                                 details = listOf(
                                     DetailsItemData(
-                                        amount = 1.0,
+                                        amount = 1,
                                         type = "subtype1"
                                     ),
                                     DetailsItemData(
-                                        amount = 3.0,
+                                        amount = 3,
                                         type = "subtype3"
                                     )
                                 ),
@@ -386,7 +386,7 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                             SummariesItemData(
                                 details = listOf(
                                     DetailsItemData(
-                                        amount = 2.0,
+                                        amount = 2,
                                         type = "subtype2"
                                     )
                                 ),
@@ -409,12 +409,12 @@ class OrderSummaryPageViewModelPaymentTest : BaseOrderSummaryPageViewModelTest()
                         usageSummaries = listOf(
                             UsageSummariesData(
                                 type = "type1",
-                                amount = 1.0,
+                                amount = 1,
                                 amountString = "1.0"
                             ),
                             UsageSummariesData(
                                 type = "type2",
-                                amount = 2.0,
+                                amount = 2,
                                 amountString = "2.0"
                             )
                         )
