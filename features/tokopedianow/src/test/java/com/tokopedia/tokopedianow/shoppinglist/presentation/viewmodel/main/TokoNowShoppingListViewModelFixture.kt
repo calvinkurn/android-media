@@ -2,6 +2,8 @@ package com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -88,10 +90,9 @@ abstract class TokoNowShoppingListViewModelFixture {
     protected val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     protected val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     protected val recommendedProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
+    protected val cartProducts = mutableListOf<ShoppingListCartProductItemUiModel>()
 
-    private val cartProducts = mutableListOf<ShoppingListCartProductItemUiModel>()
-
-    private var mMiniCartData: MiniCartSimplifiedData? = null
+    protected var mMiniCartData: MiniCartSimplifiedData? = null
     private var isFirstPageProductRecommendationError = false
     private var recommendationModel: RecommendationModel = RecommendationModel()
 
@@ -338,6 +339,50 @@ abstract class TokoNowShoppingListViewModelFixture {
     ) {
         coEvery {
             deleteFromWishlistUseCase.executeOnBackground()
+        } throws throwable
+    }
+
+    protected fun stubAddMultiProductsToCart(
+        response: Result<AtcMultiData>
+    ) {
+        coEvery {
+            val addToCartMultiParams = filteredAvailableProducts
+                .filter { it.isSelected }
+                .map { product ->
+                    AddToCartMultiParam(
+                        productId = product.id,
+                        productName = product.name,
+                        productPrice = product.priceInt,
+                        qty = product.minOrder,
+                        shopId = product.shopId,
+                        warehouseId = product.warehouseId
+                    )
+                }
+            addToCartMultiUseCase.invoke(
+                params = ArrayList(addToCartMultiParams)
+            )
+        } returns response
+    }
+
+    protected fun stubAddMultiProductsToCart(
+        throwable: Throwable
+    ) {
+        coEvery {
+            val addToCartMultiParams = filteredAvailableProducts
+                .filter { it.isSelected }
+                .map { product ->
+                    AddToCartMultiParam(
+                        productId = product.id,
+                        productName = product.name,
+                        productPrice = product.priceInt,
+                        qty = product.minOrder,
+                        shopId = product.shopId,
+                        warehouseId = product.warehouseId
+                    )
+                }
+            addToCartMultiUseCase.invoke(
+                params = ArrayList(addToCartMultiParams)
+            )
         } throws throwable
     }
 
@@ -667,6 +712,7 @@ abstract class TokoNowShoppingListViewModelFixture {
             shopId = shopId,
             isProductRecommendationError = true
         )
+
         updateLayout()
 
         // other verification
