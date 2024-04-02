@@ -70,6 +70,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
+import com.tokopedia.applink.internal.ApplinkConstInternalShare;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
@@ -83,6 +84,7 @@ import com.tokopedia.picker.common.MediaPicker;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -510,11 +512,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             proceedPartnerKyc(intent);
         }
 
-        if (requestCode == REQUEST_CODE_SHARE && resultCode == Activity.RESULT_OK) {
-
+        if (requestCode == REQUEST_CODE_SHARE) {
+            handleResultFromShare(intent, resultCode);
         }
 
         contactPicker.onContactSelected(requestCode, resultCode, intent, BaseWebViewFragment.this.getActivity().getContentResolver(), getContext(), webView);
+    }
+
+    private void handleResultFromShare(Intent intent, int resultCode) {
+        if (resultCode == ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK) {
+            String message = intent.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE);
+            View view = getView();
+            if (view != null && !TextUtils.isEmpty(message)) {
+                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+            }
+        }
     }
 
     private void proceedPartnerKyc(Intent intent) {

@@ -2,6 +2,13 @@ package com.tokopedia.applink.internal
 
 object ApplinkConstInternalShare {
 
+    const val ACTIVITY_RESULT_COPY_LINK = "copy_link"
+
+    object ActivityResult {
+        const val RESULT_CODE_COPY_LINK = 989
+        const val PARAM_TOASTER_MESSAGE = "toaster_message"
+    }
+
     object Param {
         const val PAGE_TYPE = "page_type"
         const val DEFAULT_URL = "default_url"

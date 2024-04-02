@@ -1,5 +1,6 @@
 package com.tokopedia.shareexperience.ui
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -56,6 +57,9 @@ class ShareExActivity : BaseSimpleActivity() {
             }
             shareExInitializer?.openShareBottomSheet(args!!)
             shareExInitializer?.setOnDismissListener {
+                val intentResult = Intent()
+                intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE, getString(R.string.shareex_success_copy_link))
+                setResult(ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK, intentResult)
                 finish()
             }
         } else {
