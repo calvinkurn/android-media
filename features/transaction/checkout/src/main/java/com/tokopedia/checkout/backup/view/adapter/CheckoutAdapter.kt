@@ -31,12 +31,12 @@ import com.tokopedia.checkout.backup.view.viewholder.CheckoutTickerViewHolder
 import com.tokopedia.checkout.backup.view.viewholder.CheckoutUpsellViewHolder
 import com.tokopedia.checkout.databinding.ItemCheckoutAddressBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
-import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutCostBackupBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutEpharmacyBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBackupBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBenefitBinding
-import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutProductBackupBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutTickerErrorBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
@@ -110,7 +110,7 @@ class CheckoutAdapter(
 
             CheckoutProductViewHolder.VIEW_TYPE -> {
                 CheckoutProductViewHolder(
-                    ItemCheckoutProductBinding.inflate(
+                    ItemCheckoutProductBackupBinding.inflate(
                         inflater,
                         parent,
                         false
@@ -157,7 +157,7 @@ class CheckoutAdapter(
             }
 
             CheckoutCostViewHolder.VIEW_TYPE -> {
-                CheckoutCostViewHolder(ItemCheckoutCostBinding.inflate(inflater, parent, false), inflater, listener)
+                CheckoutCostViewHolder(ItemCheckoutCostBackupBinding.inflate(inflater, parent, false), inflater, listener)
             }
 
             CheckoutCrossSellViewHolder.VIEW_TYPE -> {

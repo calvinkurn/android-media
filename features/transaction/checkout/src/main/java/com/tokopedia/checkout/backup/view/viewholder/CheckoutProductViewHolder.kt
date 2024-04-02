@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
-import com.tokopedia.checkout.databinding.LayoutCheckoutProductBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutProductBackupBinding
+import com.tokopedia.checkout.databinding.LayoutCheckoutProductBackupBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBmgmBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBundleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
@@ -58,12 +58,12 @@ import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CheckoutProductViewHolder(
-    private val binding: ItemCheckoutProductBinding,
+    private val binding: ItemCheckoutProductBackupBinding,
     private val listener: CheckoutAdapterListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private val productBinding: LayoutCheckoutProductBinding =
-        LayoutCheckoutProductBinding.bind(binding.root)
+    private val productBinding: LayoutCheckoutProductBackupBinding =
+        LayoutCheckoutProductBackupBinding.bind(binding.root)
 
     private val bundleBinding: LayoutCheckoutProductBundleBinding =
         LayoutCheckoutProductBundleBinding.bind(binding.root)
