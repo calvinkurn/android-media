@@ -2335,7 +2335,7 @@ class CheckoutViewModel @Inject constructor(
         hasClearPromoBeforeCheckout: Boolean
     ) {
         cartProcessor.processSaveShipmentState(listData.value, recipientAddressModel)
-        if (listData.value.payment()!!.enable) {
+        if (isPaymentEnable()) {
             val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), UPDATE_CART_SOURCE_CHECKOUT, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
             if (!updateCartResult.isSuccess) {
                 toasterProcessor.commonToaster.emit(
@@ -3391,7 +3391,6 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
-            // todo: remove update cart
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
                 UPDATE_CART_SOURCE_PAYMENT,
@@ -3452,6 +3451,37 @@ class CheckoutViewModel @Inject constructor(
             )
             listData.value = checkoutItems
             validatePromo(skipEE = true)
+        }
+    }
+
+    fun isPaymentEnable(): Boolean {
+        return listData.value.payment()?.enable ?: false
+    }
+
+    fun updateCartForPromo(onSuccess: (CheckoutPromoBottomSheetData) -> Unit) {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val updateCartRequest = cartProcessor.generateUpdateCartRequest(listData.value)
+            val paymentRequest = cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment())
+            val updateCartResult = cartProcessor.updateCart(updateCartRequest, UPDATE_CART_SOURCE_CHECKOUT, paymentRequest)
+            if (!updateCartResult.isSuccess) {
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update-cart"
+                    )
+                )
+                pageState.value = CheckoutPageState.Normal
+            } else {
+                pageState.value = CheckoutPageState.Normal
+                val promoRequestParam = generateCouponListRecommendationRequest()
+                val validateUseRequestParam = generateValidateUsePromoRequestForPromoUsage()
+                val totalAmount = listData.value.buttonPayment()!!.totalPriceNum
+                val boPromoCodes = getBboPromoCodes()
+                onSuccess(CheckoutPromoBottomSheetData(promoRequestParam, validateUseRequestParam, totalAmount, boPromoCodes))
+            }
         }
     }
 
@@ -3533,3 +3563,10 @@ internal fun List<CheckoutItem>.buttonPayment(): CheckoutButtonPaymentModel? {
     val item = getOrNull(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM)
     return item as? CheckoutButtonPaymentModel
 }
+
+data class CheckoutPromoBottomSheetData(
+    val promoRequest: PromoRequest,
+    val validateUsePromoRequest: ValidateUsePromoRequest,
+    val totalAmount: Double,
+    val boPromoCodes: List<String>
+)
