@@ -9,7 +9,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.databinding.LayoutTargetedTickerBinding
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.view.binding.viewBinding
@@ -39,8 +41,13 @@ class TargetedTickerViewHolder(
         // set pager description
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                HomePageTracking.eventClickTickerHomePage(tickerId)
                 listener.onSectionItemClicked(linkUrl.toString())
+
+                val index = findTickerPosition(element.unifyTickers, itemData)
+                if (index != -1) {
+                    tickerId = element.targetedTickers[index].id.orZero().toString()
+                    HomePageTracking.eventClickTickerHomePage(tickerId)
+                }
             }
         })
 
@@ -49,10 +56,15 @@ class TargetedTickerViewHolder(
             override fun onDescriptionViewClick(linkUrl: CharSequence) = Unit
 
             override fun onDismiss() {
-                HomePageTracking.eventClickOnCloseTickerHomePage(tickerId)
                 listener.onCloseTicker()
+                HomePageTracking.eventClickOnCloseTickerHomePage(tickerId)
             }
         })
+    }
+
+    private fun findTickerPosition(tickers: List<TickerData>, itemData: Any?): Int {
+        val ticker = itemData as? TickerData ?: return -1
+        return tickers.indexOf(ticker)
     }
 
     private fun requestFocusOnTicker() {
