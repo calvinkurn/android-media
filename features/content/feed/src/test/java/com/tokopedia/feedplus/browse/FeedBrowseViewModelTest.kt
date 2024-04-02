@@ -6,6 +6,7 @@ import com.tokopedia.content.test.util.assertNotEqualTo
 import com.tokopedia.content.test.util.assertType
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
@@ -37,7 +38,12 @@ class FeedBrowseViewModelTest {
     val coroutineRule = UnconfinedTestRule()
 
     private val mockChannel = mockk<PlayWidgetChannelUiModel>(relaxed = true)
-    private val mockTitle = "Feed Browse Title"
+    private val mockHeaderModel = HeaderDetailModel(
+        title = "Feed Browse Title",
+        true,
+        "searchbar placeholder",
+        "appLink"
+    )
 
     private val modelGen = ModelGenerator()
 
@@ -57,7 +63,7 @@ class FeedBrowseViewModelTest {
         val slots = listOf(slotChannel, slotAuthor, slotBanner)
 
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns slots
         coEvery { mockRepo.getWidgetContentSlot(WidgetRequestModel(slotChannel.group)) } returns ContentSlotModel.ChannelBlock(
             channels = listOf(mockChannel),
@@ -84,7 +90,7 @@ class FeedBrowseViewModelTest {
 
         val value = viewModel.uiState.value
         value.assertType<FeedBrowseUiState.Success> {
-            it.title.assertEqualTo(mockTitle)
+            it.headerDetail.title.assertEqualTo(mockHeaderModel.title)
             it.widgets.assertEqualTo(
                 listOf(
                     FeedBrowseStatefulModel(
@@ -115,7 +121,7 @@ class FeedBrowseViewModelTest {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         val widgetMenus = modelGen.widgetMenuModel.take(2).toList()
         val channelMenuSlotModel = modelGen.channelWithMenusSlot.first()
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns listOf(channelMenuSlotModel)
         coEvery { mockRepo.getWidgetContentSlot(WidgetRequestModel(channelMenuSlotModel.group)) } returns ContentSlotModel.TabMenus(
             widgetMenus
@@ -158,7 +164,7 @@ class FeedBrowseViewModelTest {
     fun `test trigger fetch banner widgets from outside (mostly for retry purpose)`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         val bannerSlotModel = modelGen.bannerSlot.first()
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns listOf(bannerSlotModel)
         coEvery { mockRepo.getWidgetRecommendation(bannerSlotModel.identifier) } returns WidgetRecommendationModel.Banners(
             listOf(modelGen.bannerModel.first())
@@ -207,7 +213,7 @@ class FeedBrowseViewModelTest {
     fun `test trigger fetch author widgets from outside (mostly for retry purpose)`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         val authorSlotModel = modelGen.authorSlot.first()
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns listOf(authorSlotModel)
         coEvery { mockRepo.getWidgetRecommendation(authorSlotModel.identifier) } returns WidgetRecommendationModel.Authors(
             listOf(modelGen.authorModel.first())
@@ -263,7 +269,7 @@ class FeedBrowseViewModelTest {
             nextCursor = ""
         )
 
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns listOf(channelWithMenuSlotModel)
         coEvery { mockRepo.getWidgetContentSlot(WidgetRequestModel(channelWithMenuSlotModel.group)) } returns ContentSlotModel.TabMenus(
             menusModel
@@ -316,7 +322,7 @@ class FeedBrowseViewModelTest {
         val channelSlotModel = modelGen.channelWithMenusSlot.take(2).toList()
         val exception = MessageErrorException()
 
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns channelSlotModel
         coEvery {
             mockRepo.getWidgetContentSlot(
@@ -354,7 +360,7 @@ class FeedBrowseViewModelTest {
         val authorSlot = modelGen.authorSlot.take(2).toList()
         val exception = MessageErrorException()
 
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns authorSlot
         coEvery {
             mockRepo.getWidgetRecommendation(
@@ -392,7 +398,7 @@ class FeedBrowseViewModelTest {
         val bannerSlot = modelGen.bannerSlot.take(2).toList()
         val exception = MessageErrorException()
 
-        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
         coEvery { mockRepo.getSlots() } returns bannerSlot
         coEvery {
             mockRepo.getWidgetRecommendation(
@@ -422,6 +428,19 @@ class FeedBrowseViewModelTest {
                 )
             )
         }
+    }
+
+    @Test
+    fun `should get feed search header data`() = runTestUnconfined {
+        val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
+        var headerData: HeaderDetailModel = HeaderDetailModel.DEFAULT
+
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
+        val viewModel = FeedBrowseViewModel(mockRepo)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+        headerData = viewModel.getHeaderDetail()
+
+        headerData.assertNotEqualTo(HeaderDetailModel.DEFAULT)
     }
 
     private fun runTestUnconfined(testBody: suspend TestScope.() -> Unit) = runTest(
