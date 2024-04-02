@@ -10,8 +10,3 @@ enum class AtcBuyType(val code: Int) {
     REPURCHASE(2),
     OCS(3)
 }
-
-object ThanksDataEventLabel {
-    const val REGULAR = "regular checkout"
-    const val OCC = "occ"
-}

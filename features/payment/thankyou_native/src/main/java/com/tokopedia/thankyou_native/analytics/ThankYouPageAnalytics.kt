@@ -90,7 +90,6 @@ class ThankYouPageAnalytics @Inject constructor(
             }
         }
         AppLogPdp.sendSubmitOrderResult(
-            data.eventLabel,
             SubmitOrderResult(
                 shippingPrice = data.shopOrder.sumOf { it.shippingAmount.toDouble() },
                 discountedShippingPrice = data.shopOrder.sumOf { it.discountShippingAmount.toDouble() },
