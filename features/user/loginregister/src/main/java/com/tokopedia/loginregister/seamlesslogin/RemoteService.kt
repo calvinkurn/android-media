@@ -74,7 +74,11 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
             val data = Bundle()
             viewModel.getKey({
                 data.apply {
-                    putString(SeamlessSellerConstant.KEY_TOKEN, it.key)
+                    if (it.error.isEmpty()) {
+                        putString(SeamlessSellerConstant.KEY_TOKEN, it.key)
+                    } else {
+                        putString(SeamlessSellerConstant.KEY_ERROR, it.error)
+                    }
                 }
                 broadCastResult(data, taskId = this@run)
             }, {
