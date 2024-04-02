@@ -136,8 +136,6 @@ class UniversalInboxRecommendationProductViewHolder(
     }
 
     private fun ProductCardGridView.setImageProductClickListener() {
-        //todo this value on discussion
-        val channelName = AppLogAnalytics.getTwoLastPage().orEmpty()
 
         setImageProductClickListener {
             AppLogTopAds.sendEventRealtimeClick(
@@ -153,7 +151,7 @@ class UniversalInboxRecommendationProductViewHolder(
                     "",
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
-                        channelName,
+                        getChannelName(),
                         productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
@@ -162,8 +160,6 @@ class UniversalInboxRecommendationProductViewHolder(
     }
 
     private fun ProductCardGridView.setShopTypeLocationOnClickListener() {
-
-        val channelName = AppLogAnalytics.getTwoLastPage().orEmpty()
 
         setShopTypeLocationOnClickListener {
             AppLogTopAds.sendEventRealtimeClick(
@@ -179,7 +175,7 @@ class UniversalInboxRecommendationProductViewHolder(
                     "",
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
-                        channel = channelName,
+                        channel = getChannelName(),
                         productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
