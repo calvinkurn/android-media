@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalShare
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.shareexperience.R
@@ -65,8 +66,8 @@ class ShareExActivity : BaseSimpleActivity() {
     private fun setMetadata(argsBuilder: ShareExBottomSheetArg.Builder, bundle: Bundle) {
         val metadata = mutableMapOf<String, String>()
         with(bundle) {
-            getString(ShareExConst.Applink.Param.REFERRAL_CODE)?.let {
-                metadata.put(ShareExConst.Applink.Param.REFERRAL_CODE, it)
+            getString(ApplinkConstInternalShare.Param.REFERRAL_CODE)?.let {
+                metadata.put(ApplinkConstInternalShare.Param.REFERRAL_CODE, it)
             }
         }
 
@@ -75,36 +76,36 @@ class ShareExActivity : BaseSimpleActivity() {
 
     private fun setFeatureIds(argsBuilder: ShareExBottomSheetArg.Builder, bundle: Bundle) {
         with(bundle) {
-            getString(ShareExConst.Applink.Param.PRODUCT_ID)?.let {
+            getString(ApplinkConstInternalShare.Param.PRODUCT_ID)?.let {
                 argsBuilder.withProductId(it)
             }
-            getString(ShareExConst.Applink.Param.CAMPAIGN_ID)?.let {
+            getString(ApplinkConstInternalShare.Param.CAMPAIGN_ID)?.let {
                 argsBuilder.withCampaignId(it)
             }
-            getString(ShareExConst.Applink.Param.SHOP_ID)?.let {
+            getString(ApplinkConstInternalShare.Param.SHOP_ID)?.let {
                 argsBuilder.withShopId(it)
             }
-            getString(ShareExConst.Applink.Param.REVIEW_ID)?.let {
+            getString(ApplinkConstInternalShare.Param.REVIEW_ID)?.let {
                 argsBuilder.withReviewId(it)
             }
-            getString(ShareExConst.Applink.Param.ATTACHMENT_ID)?.let {
+            getString(ApplinkConstInternalShare.Param.ATTACHMENT_ID)?.let {
                 argsBuilder.withAttachmentId(it)
             }
         }
     }
 
     private fun initializeMandatoryArgs(bundle: Bundle): ShareExBottomSheetArg.Builder {
-        val defaultUrl = bundle.getString(ShareExConst.Applink.Param.DEFAULT_URL).orEmpty()
-        val pageType = bundle.getString(ShareExConst.Applink.Param.PAGE_TYPE).orEmpty().toZeroStringIfNullOrBlank()
+        val defaultUrl = bundle.getString(ApplinkConstInternalShare.Param.DEFAULT_URL).orEmpty()
+        val pageType = bundle.getString(ApplinkConstInternalShare.Param.PAGE_TYPE).orEmpty().toZeroStringIfNullOrBlank()
         val pageTypeEnum = ShareExPageTypeEnum.fromValueInt(pageType.toIntSafely())
 
-        val utmCampaign = bundle.getString(ShareExConst.Applink.Param.UTM_CAMPAIGN).orEmpty()
-        val labelImpressionBottomSheet = bundle.getString(ShareExConst.Applink.Param.LABEL_IMPRESSION_BOTTOMSHEET).orEmpty()
-        val labelActionClickShareIcon = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_SHARE_ICON).orEmpty()
-        val labelActionCloseIcon = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_CLOSE_ICON).orEmpty()
-        val labelActionClickChannel = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_CHANNEL).orEmpty()
-        val labelImpressionAffiliateRegistration = bundle.getString(ShareExConst.Applink.Param.LABEL_IMPRESSION_AFFILIATE_REGISTRATION).orEmpty()
-        val labelActionClickAffiliateRegistration = bundle.getString(ShareExConst.Applink.Param.LABEL_ACTION_CLICK_AFFILIATE_REGISTRATION).orEmpty()
+        val utmCampaign = bundle.getString(ApplinkConstInternalShare.Param.UTM_CAMPAIGN).orEmpty()
+        val labelImpressionBottomSheet = bundle.getString(ApplinkConstInternalShare.Param.LABEL_IMPRESSION_BOTTOMSHEET).orEmpty()
+        val labelActionClickShareIcon = bundle.getString(ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_SHARE_ICON).orEmpty()
+        val labelActionCloseIcon = bundle.getString(ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CLOSE_ICON).orEmpty()
+        val labelActionClickChannel = bundle.getString(ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CHANNEL).orEmpty()
+        val labelImpressionAffiliateRegistration = bundle.getString(ApplinkConstInternalShare.Param.LABEL_IMPRESSION_AFFILIATE_REGISTRATION).orEmpty()
+        val labelActionClickAffiliateRegistration = bundle.getString(ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_AFFILIATE_REGISTRATION).orEmpty()
 
         val trackerArg = ShareExTrackerArg(
             utmCampaign = utmCampaign,

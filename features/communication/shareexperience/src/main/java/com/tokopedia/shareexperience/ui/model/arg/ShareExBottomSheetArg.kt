@@ -1,8 +1,8 @@
 package com.tokopedia.shareexperience.ui.model.arg
 
 import android.os.Parcelable
+import com.tokopedia.applink.internal.ApplinkConstInternalShare
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
-import com.tokopedia.shareexperience.ui.ShareExConst
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -119,7 +119,7 @@ class ShareExBottomSheetArg private constructor(
             ShareExPageTypeEnum.REVIEW -> reviewId
             ShareExPageTypeEnum.SHOP -> shopId
             ShareExPageTypeEnum.DISCOVERY -> campaignId
-            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> metadata[ShareExConst.Applink.Param.REFERRAL_CODE] ?: ""
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> metadata[ApplinkConstInternalShare.Param.REFERRAL_CODE] ?: ""
             else -> generalId
         }
     }

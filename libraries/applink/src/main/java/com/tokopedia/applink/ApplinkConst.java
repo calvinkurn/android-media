@@ -896,4 +896,8 @@ public interface ApplinkConst {
     interface Som {
         String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
     }
+
+    interface ShareExperience {
+        String SHARE_EXPERIENCE = /*"tokopedia://share"*/ "tokopedia://topchat"; // Todo: Revert
+    }
 }

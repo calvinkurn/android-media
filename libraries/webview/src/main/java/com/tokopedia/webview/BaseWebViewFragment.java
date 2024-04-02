@@ -132,7 +132,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String OTP_CODE = "otpCode";
     private static final String URL_PARAM = "?url=";
     private static final String OPEN_CONTACT_PICKER_APPLINK = "tokopedia://open-contact-picker";
-    private static final String SHARE_APPLINK = /*"tokopedia://share"*/ "tokopedia://topchat" ; // Todo : revert
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -140,6 +139,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int REQUEST_CODE_LIVENESS = 1235;
     private static final int REQUEST_CODE_PARTNER_KYC = 1236;
+    private static final int REQUEST_CODE_SHARE = 1237;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
@@ -508,6 +508,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (requestCode == REQUEST_CODE_PARTNER_KYC && resultCode == Activity.RESULT_OK) {
             proceedPartnerKyc(intent);
+        }
+
+        if (requestCode == REQUEST_CODE_SHARE && resultCode == Activity.RESULT_OK) {
+
         }
 
         contactPicker.onContactSelected(requestCode, resultCode, intent, BaseWebViewFragment.this.getActivity().getContentResolver(), getContext(), webView);
@@ -1040,17 +1044,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 Timber.w(e);
             }
-        } else if (url.contains(SHARE_APPLINK)) { // Todo : remove this handling once lite already able to redirect to share applink
-//            String DUMMY_APPLINK = "tokopedia://share?" +
-//                    "referral_code=TARI123" +
-//                    "&page_type=7" +
-//                    "&default_url=https://tkp.me/GPL-TARI123" +
-//                    "&label_action_click_share_icon={share_id}" +
-//                    "&label_action_click_close_icon={share_id}" +
-//                    "&label_action_click_channel={channel}%20-%20{share_id}" +
-//                    "&label_impression_bottomsheet={share_id}" +
-//                    "&utm_campaign=gopayReferral-{share_id}-010424";
-
+        } else if (url.contains(ApplinkConst.ShareExperience.SHARE_EXPERIENCE)) { // Todo : remove this handling once lite already able to redirect to share applink
             String DUMMY_APPLINK = "tokopedia://share?" +
                     "referral_code=TARI123" +
 //                    "product_id=2151019476" +
@@ -1062,7 +1056,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     "&label_impression_bottomsheet={share_id}" +
                     "&utm_campaign=gopayReferral-{share_id}-010424";
 
-            RouteManager.route(getContext(), DUMMY_APPLINK);
+            Intent intent = RouteManager.getIntent(getContext(), DUMMY_APPLINK);
+            startActivityForResult(intent, REQUEST_CODE_SHARE);
             return true;
         }
 
