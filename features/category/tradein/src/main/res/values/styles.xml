@@ -11,4 +11,14 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="TradeInHintTextInputLayout" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/Unify_N700_44</item>
+        <item name="focusedTextColorLabel">@color/Unify_N700_44</item>
+        <item name="disabledTextColorLabel">@color/Unify_N700_44</item>
+        <item name="android:theme">@style/TradeInHintTextInputLayoutColorLine</item>
+    </style>
+
+    <style name="TradeInHintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
+        <item name="android:textColorHint">@color/Unify_N100</item>
+    </style>
 </resources>
