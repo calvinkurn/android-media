@@ -213,11 +213,6 @@ class RechargeOrderDetailFragment :
     }
 
     override fun onCancelOrderButtonClicked() {
-        rechargeOrderDetailAnalytics.sendClickBatalkanTransaksiButtonEvent(
-            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
-            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
-        )
         context?.let {
             DialogUnify(
                 it,
@@ -238,11 +233,21 @@ class RechargeOrderDetailFragment :
         }
     }
 
-    override fun onViewCancelOrderButton() {
-        rechargeOrderDetailAnalytics.sendViewBatalkanTransaksiButtonEvent(
+    override fun onViewPrimaryButton(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendImpressionPrimaryButtonEvent(
             OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
             OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
-            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
+        )
+    }
+
+    override fun onViewSecondaryButton(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendImpressionSecondaryButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
         )
     }
 
@@ -533,16 +538,36 @@ class RechargeOrderDetailFragment :
     }
 
     private fun sendActionButtonClickedEvent(buttonName: String, buttonType: String) {
-        rechargeOrderDetailAnalytics.eventClickActionButton(
+        when (buttonType) {
+            PRIMARY_ACTION_BUTTON_TYPE -> sendClickPrimaryButtonEvent(buttonName)
+            SECONDARY_ACTION_BUTTON_TYPE -> sendClickSecondaryButtonEvent(buttonName)
+            else -> sendClickFeatureButtonEvent(buttonName)
+        }
+    }
+
+    private fun sendClickPrimaryButtonEvent(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendClickPrimaryButtonEvent(
             OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
             OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
-            buttonName,
-            when (buttonType) {
-                PRIMARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_PRIMARY_BUTTON
-                SECONDARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_SECONDARY_BUTTON
-                else -> RechargeOrderDetailAnalytics.EventAction.CLICK_FEATURE_BUTTON
-            },
-            (buttonType != PRIMARY_ACTION_BUTTON_TYPE && buttonType != SECONDARY_ACTION_BUTTON_TYPE)
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
+        )
+    }
+
+    private fun sendClickSecondaryButtonEvent(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendClickSecondaryButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
+        )
+    }
+
+    private fun sendClickFeatureButtonEvent(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendClickOnFeatureButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
         )
     }
 

@@ -51,29 +51,6 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickActionButton(
-        categoryName: String,
-        operatorName: String,
-        buttonName: String,
-        eventAction: String,
-        isFeatureButton: Boolean = false
-    ) {
-        val map = mutableMapOf(
-            Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
-            Keys.EVENT_ACTION to eventAction,
-            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-            Keys.EVENT_LABEL to "$categoryName - $operatorName - $buttonName",
-            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
-        )
-
-        if (isFeatureButton) {
-            map[Keys.USER_ID] = userSession.userId
-        }
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
-    }
-
     fun eventTopAdsImpression(data: RecommendationItem) {
         val bundle = Bundle().apply {
             putString(Keys.EVENT_NAME, EventName.VIEW_ITEM_LIST)
@@ -174,42 +151,107 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             .send()
     }
 
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
-    // Tracker ID: 50272
-    fun sendViewBatalkanTransaksiButtonEvent(
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 50618
+    fun sendImpressionPrimaryButtonEvent(
         categoryName: String,
         productId: String,
-        orderStatus: String
+        orderStatus: String,
+        buttonName: String
     ) {
-        val eventLabel = "$categoryName - $productId - $orderStatus"
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
         Tracker.Builder()
             .setEvent(EventName.VIEW_DIGITAL_IRIS)
-            .setEventAction(EventAction.VIEW_BATALKAN_TRANSAKSI_BUTTON)
+            .setEventAction(EventAction.IMPRESSION_PRIMARY_BUTTON)
             .setEventCategory(DefaultValue.EVENT_CATEGORY)
             .setEventLabel(eventLabel)
-            .setCustomProperty(Keys.TRACKER_ID, TrackerId.VIEW_BATALKAN_TRANSAKSI_BUTTON)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.IMPRESSION_PRIMARY_BUTTON)
             .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
             .setCurrentSite(DefaultValue.CURRENT_SITE)
             .build()
             .send()
     }
 
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
-    // Tracker ID: 50273
-    fun sendClickBatalkanTransaksiButtonEvent(
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 50619
+    fun sendImpressionSecondaryButtonEvent(
         categoryName: String,
         productId: String,
-        orderStatus: String
+        orderStatus: String,
+        buttonName: String
     ) {
-        val eventLabel = "$categoryName - $productId - $orderStatus"
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
         Tracker.Builder()
-            .setEvent(EventName.CLICK_DIGITAL)
-            .setEventAction(EventAction.CLICK_BATALKAN_TRANSAKSI_BUTTON)
+            .setEvent(EventName.VIEW_DIGITAL_IRIS)
+            .setEventAction(EventAction.IMPRESSION_SECONDARY_BUTTON)
             .setEventCategory(DefaultValue.EVENT_CATEGORY)
             .setEventLabel(eventLabel)
-            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_BATALKAN_TRANSAKSI_BUTTON)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.IMPRESSION_SECONDARY_BUTTON)
             .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
             .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 1559
+    fun sendClickPrimaryButtonEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_PRIMARY_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_PRIMARY_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 1560
+    fun sendClickSecondaryButtonEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_SECONDARY_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_SECONDARY_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 19558
+    fun sendClickOnFeatureButtonEvent(
+        categoryName: String,
+        productId: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_CHECKOUT)
+            .setEventAction(EventAction.CLICK_FEATURE_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_FEATURE_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
             .build()
             .send()
     }
@@ -270,8 +312,6 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         companion object {
             const val CLICK_SEE_INVOICE = "click lihat invoice"
             const val CLICK_COPY_BUTTON = "click copy button"
-            const val CLICK_PRIMARY_BUTTON = "click primary button"
-            const val CLICK_SECONDARY_BUTTON = "click secondary button"
             const val CLICK_FEATURE_BUTTON = "click on feature button"
 
             const val IMPRESSION_PRODUCT = "impression product"
@@ -280,8 +320,11 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             const val VIEW_VOID_POPUP = "view void popup"
             const val CLICK_BATALKAN_VOID_POPUP = "click batalkan void popup"
             const val CLICK_KEMBALI_VOID_POPUP = "click kembali void popup"
-            const val VIEW_BATALKAN_TRANSAKSI_BUTTON = "view batalkan transaksi button"
-            const val CLICK_BATALKAN_TRANSAKSI_BUTTON = "click batalkan transaksi button"
+
+            const val CLICK_PRIMARY_BUTTON = "click primary button"
+            const val CLICK_SECONDARY_BUTTON = "click secondary button"
+            const val IMPRESSION_PRIMARY_BUTTON = "impression primary button"
+            const val IMPRESSION_SECONDARY_BUTTON = "impression secondary button"
         }
     }
 
@@ -301,8 +344,11 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             const val VIEW_VOID_POPUP = "28223"
             const val CLICK_BATALKAN_VOID_POPUP = "28224"
             const val CLICK_KEMBALI_VOID_POPUP = "28227"
-            const val VIEW_BATALKAN_TRANSAKSI_BUTTON = "50272"
-            const val CLICK_BATALKAN_TRANSAKSI_BUTTON = "50273"
+            const val CLICK_PRIMARY_BUTTON = "1559"
+            const val CLICK_SECONDARY_BUTTON = "1560"
+            const val CLICK_FEATURE_BUTTON = "19558"
+            const val IMPRESSION_PRIMARY_BUTTON = "50618"
+            const val IMPRESSION_SECONDARY_BUTTON = "50619"
         }
     }
 }

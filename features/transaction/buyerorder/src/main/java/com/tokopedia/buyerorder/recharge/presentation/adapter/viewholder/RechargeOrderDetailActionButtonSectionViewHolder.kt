@@ -59,17 +59,15 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
         if (actionButton.buttonType.equals(PRIMARY_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
             button.buttonVariant = UnifyButton.Variant.FILLED
+            listener?.onViewPrimaryButton(actionButton.name)
         } else if (actionButton.buttonType.equals(SECONDARY_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
             button.buttonVariant = UnifyButton.Variant.GHOST
+            listener?.onViewSecondaryButton(actionButton.name)
         } else if (actionButton.buttonType.equals(DISABLED_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
             button.buttonVariant = UnifyButton.Variant.FILLED
             button.isEnabled = false
-        }
-
-        if (actionButton.mappingUri.equals(MAPPING_URI_CANCEL_ORDER, true)) {
-            listener?.onViewCancelOrderButton()
         }
 
         button.setOnClickListener {
@@ -108,7 +106,8 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
     interface ActionListener {
         fun onActionButtonClicked(actionButton: RechargeOrderDetailActionButtonModel)
         fun onVoidButtonClicked()
-        fun onViewCancelOrderButton()
+        fun onViewPrimaryButton(buttonName: String)
+        fun onViewSecondaryButton(buttonName: String)
         fun onCancelOrderButtonClicked()
     }
 
