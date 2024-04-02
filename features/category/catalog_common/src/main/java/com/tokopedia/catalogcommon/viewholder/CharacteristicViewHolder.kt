@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemLayoutCharacteristicBinding
 import com.tokopedia.catalogcommon.databinding.WidgetItemCharacteristicBinding
-import com.tokopedia.catalogcommon.listener.CharacteristicListener
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -20,8 +19,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 
 class CharacteristicViewHolder(
-    itemView: View,
-    val characteristicListener: CharacteristicListener? = null
+    itemView: View
 ) :
     AbstractViewHolder<CharacteristicUiModel>(itemView) {
 
@@ -54,7 +52,6 @@ class CharacteristicViewHolder(
 
         onceCreateView = true
 
-        characteristicListener?.onCharacteristicImpression(element.widgetName)
     }
 
     private fun createItem(item: CharacteristicUiModel.ItemCharacteristicUiModel) {

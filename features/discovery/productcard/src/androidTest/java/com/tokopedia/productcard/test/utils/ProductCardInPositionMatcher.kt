@@ -1,12 +1,12 @@
 package com.tokopedia.productcard.test.utils
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
 import org.hamcrest.Description
@@ -18,12 +18,12 @@ internal fun productCardInPosition(position: Int, itemMatcherList: Map<Int, Matc
 }
 
 private class ProductCardInPositionMatcher(
-        private val position: Int,
-        private val itemMatcherList: Map<Int, Matcher<View?>>
-): BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
+    private val position: Int,
+    private val itemMatcherList: Map<Int, Matcher<View?>>
+) : BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
 
     private var currentViewComponentName = ""
-    private var currentMatcher : Matcher<View?>? = null
+    private var currentMatcher: Matcher<View?>? = null
 
     override fun describeTo(description: Description?) {
         description?.appendText("Product Card Position: $position, $currentViewComponentName ")
@@ -45,9 +45,12 @@ private class ProductCardInPositionMatcher(
     }
 
     private fun ViewGroup.checkChildrenInMatchers(): Boolean {
+        if (itemMatcherList.containsKey(R.id.productCardGenericCtaMain)) {
+            Log.d("ProductCardInPositionMatcher", "productCardGenericCtaMain ${itemMatcherList[R.id.productCardGenericCtaMain]}")
+        }
         return itemMatcherList.all {
             val viewToMatch = this.findViewById<View>(it.key)
-                    ?: throw AssertionError("View with id ${resources.getResourceEntryName(it.key)} not found")
+                ?: throw AssertionError("View with id ${resources.getResourceEntryName(it.key)} not found")
             it.value.matchProductCardComponent(viewToMatch)
         }
     }
@@ -60,12 +63,12 @@ private class ProductCardInPositionMatcher(
     }
 
     private fun getResourceEntryName(view: View) =
-            try {
-                view.resources.getResourceEntryName(view.id)
-            } catch (throwable: Throwable) {
-                ""
-            }
-    
+        try {
+            view.resources.getResourceEntryName(view.id)
+        } catch (throwable: Throwable) {
+            ""
+        }
+
     private val alwaysShownComponentId = listOf(
         R.id.containerCardViewProductCard,
         R.id.cardViewProductCard,
@@ -83,20 +86,20 @@ private class ProductCardInPositionMatcher(
         productcardtestR.id.productCardReimagineListView,
         productcardtestR.id.productCardTestDivider,
         productcardtestR.id.productCardReimagineListCarouselView,
-        productcardtestR.id.productCardContainerHeightCalculator,
+        productcardtestR.id.productCardContainerHeightCalculator
     )
 
     private fun ViewGroup.getUncheckedChildren(): List<View> {
         return this.getChildren().filter { productCardComponent ->
             !itemMatcherList.any {
-                productCardComponent.id == it.key
+                productCardComponent.id == it.key ||
                     // Ignore, because Label Variant does not have Id
-                    || productCardComponent.tag == LABEL_VARIANT_TAG
+                    productCardComponent.tag == LABEL_VARIANT_TAG ||
                     // These layouts will always be shown
-                    || productCardComponent.id in alwaysShownComponentId
+                    productCardComponent.id in alwaysShownComponentId ||
                     // Ignore spaces, barriers, and not visible view helpers
-                    || productCardComponent is Space
-                    || productCardComponent is Group
+                    productCardComponent is Space ||
+                    productCardComponent is Group
             }
         }
     }

@@ -2,9 +2,9 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.View
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDividerModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
-import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2DividerBinding
+import com.tokopedia.home.databinding.ItemBalanceWidgetDividerBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -16,13 +16,13 @@ import com.tokopedia.home.R as homeR
 class BalanceDividerViewHolder(
     v: View,
     private val homeThematicUtil: HomeThematicUtil,
-): BaseBalanceViewHolder<BalanceAtf2DividerModel>(v) {
+): BaseBalanceViewHolder<BalanceDividerModel>(v) {
     companion object {
-        val LAYOUT = homeR.layout.item_balance_widget_atf2_divider
+        val LAYOUT = homeR.layout.item_balance_widget_divider
     }
-    private val binding: ItemBalanceWidgetAtf2DividerBinding? by viewBinding()
+    private val binding: ItemBalanceWidgetDividerBinding? by viewBinding()
 
-    override fun bind(model: BalanceAtf2DividerModel?, listener: HomeCategoryListener?) {
+    override fun bind(model: BalanceDividerModel?, listener: HomeCategoryListener?) {
         if ((itemView.context.isDarkMode() && homeThematicUtil.isDefault()) || homeThematicUtil.isDarkMode()) {
             binding?.dividerBalance?.setBackgroundColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN100, itemView.context))
         } else {
@@ -31,7 +31,7 @@ class BalanceDividerViewHolder(
     }
 
     override fun bind(
-        model: BalanceAtf2DividerModel?,
+        model: BalanceDividerModel?,
         listener: HomeCategoryListener?,
         payloads: MutableList<Any>
     ) {

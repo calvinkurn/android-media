@@ -13,8 +13,11 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.merchantvoucher.MerchantVoucherTrackingMapper.dataToMvcTrackingProperties
 import com.tokopedia.discovery2.analytics.merchantvoucher.MvcTrackingProperties
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
+import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.CtaActionHandler
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
@@ -22,6 +25,7 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import javax.inject.Inject
 
 const val RATIO_FOR_CAROUSEL = 0.85
 
@@ -38,6 +42,9 @@ class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragme
         merchantVoucherCarouselItemViewModel?.let {
             setupView(it.components.design)
             setupMargins(it.components.name)
+        }
+        merchantVoucherCarouselItemViewModel?.apply {
+            getSubComponent().inject(this)
         }
     }
 
@@ -137,6 +144,7 @@ class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragme
         onClick {
             trackClickEvent()
             RouteManager.route(itemView.context, redirectAppLink)
+            merchantVoucherCarouselItemViewModel?.trackTopAdsClick()
         }
     }
 

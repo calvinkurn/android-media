@@ -122,7 +122,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     }
 
     fun getPromoInfo() {
-        topAdsGetGroupIdUseCase.setParams(adId.value ?: "", userSession.shopId)
+        topAdsGetGroupIdUseCase.setParams(adId.value.orEmpty(), userSession.shopId)
         topAdsGetGroupIdUseCase.execute({
             _topAdsPromoInfo.value = it
             checkIsSingleAds()
@@ -140,7 +140,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         topAdsGetProductStatisticsUseCase.setParams(
             startDate,
             endDate,
-            listOf(_adId.value ?: ""),
+            listOf(_adId.value.orEmpty()),
             goalId = goalId
         )
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode({
@@ -173,7 +173,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             mapOf(
                 PARAM_KEY to AdGroupsParams(
                     shopId = userSession.shopId,
-                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID ?: ""
+                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID.orEmpty()
                 )
             )
         )
@@ -189,7 +189,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
 
     fun getTotalAdsAndKeywordsCount(){
         launchCatchError(block = {
-            val response = topAdsGetTotalAdsAndKeywordsUseCase(listOf(_topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID ?: ""))
+            val response = topAdsGetTotalAdsAndKeywordsUseCase(listOf(_topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID.orEmpty()))
             if (response.topAdsGetTotalAdsAndKeywords.errors.isEmpty())
                 _totalAdsAndKeywordsCount.postValue(response.topAdsGetTotalAdsAndKeywords.data)
         }) {}
