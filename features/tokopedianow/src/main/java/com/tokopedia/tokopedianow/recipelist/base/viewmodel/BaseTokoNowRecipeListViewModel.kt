@@ -95,7 +95,7 @@ open class BaseTokoNowRecipeListViewModel(
         launchCatchError(block = {
             showProgressBar()
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
+            getRecipeListParam.warehouses = addressData.getWarehousesData()
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)
             hasNext = response.metadata.hasNext
@@ -178,8 +178,8 @@ open class BaseTokoNowRecipeListViewModel(
                         title = title,
                         recipeId = recipeId,
                         isSuccess = true
+                    )
                 )
-            )
             )
 
             visitableItems.updateRecipeBookmark(
@@ -195,8 +195,8 @@ open class BaseTokoNowRecipeListViewModel(
                     model = ToasterModel(
                         recipeId = recipeId,
                         isSuccess = false
+                    )
                 )
-            )
             )
         }
     }
@@ -249,7 +249,7 @@ open class BaseTokoNowRecipeListViewModel(
 
         launchCatchError(block = {
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
+            getRecipeListParam.warehouses = addressData.getWarehousesData()
             getRecipeListParam.page = getRecipeListParam.page + 1
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)

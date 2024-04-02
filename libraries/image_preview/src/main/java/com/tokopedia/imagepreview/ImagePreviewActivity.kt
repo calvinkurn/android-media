@@ -39,6 +39,8 @@ import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 import java.util.*
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.abstraction.R as abstractionR
 
 @Deprecated("Do not use this class",
     ReplaceWith("Please use ImageSecurePreviewActivity")
@@ -95,10 +97,11 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         adapter = ImagePreviewTouchImageAdapter(this@ImagePreviewActivity, fileLocations)
         adapter?.SetonImageStateChangeListener(object : ImagePreviewTouchImageAdapter.OnImageStateChange {
             override fun OnStateDefault() {
-                viewPager.SetAllowPageSwitching(true);
+                viewPager.SetAllowPageSwitching(true)
             }
+
             override fun OnStateZoom() {
-                viewPager.SetAllowPageSwitching(false);
+                viewPager.SetAllowPageSwitching(false)
             }
         })
         viewPager.adapter = adapter
@@ -163,7 +166,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 .setContentText(getString(R.string.download_in_process))
                 .setSmallIcon(R.drawable.image_preview_ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                    com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
+                    resourcescommonR.drawable.ic_big_notif_customerapp))
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
@@ -249,7 +252,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         notificationManager.notify(notificationId, notificationBuilder.build())
         Toaster.make(findViewById<View>(android.R.id.content), getString(R.string.download_failed),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(
-                com.tokopedia.abstraction.R.string.title_ok))
+                abstractionR.string.title_ok))
     }
 
     override fun getNewFragment(): Fragment? {

@@ -1,15 +1,20 @@
 package com.tokopedia.topads.dashboard.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
 import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
+import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.dashboard.data.model.insightkey.ErrorsItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopadsHeadlineKeywordSuggestion
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopKeywordSuggestionUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -50,18 +55,39 @@ class TopAdsInsightViewModelTest {
     fun `applyRecommendedKeywords on non empty id should invoke keyword count in live data`() {
 
         val mockObject = TopAdsManageHeadlineInput2(
-            TopAdsManageHeadlineInput2.Operation(group = TopAdsManageHeadlineInput2.Operation.Group(
-                keywordOperations = listOf(TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation())
-            )))
-        val responseMockObject : TopadsManageHeadlineAdResponse.Data = mockk()
+            TopAdsManageHeadlineInput2.Operation(
+                group = TopAdsManageHeadlineInput2.Operation.Group(
+                    keywordOperations = listOf(TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation())
+                )
+            )
+        )
+        val responseMockObject: TopadsManageHeadlineAdResponse.Data = mockk()
 
         every { createHeadlineAdsUseCase.setParams(mockObject) } returns Unit
         coEvery { createHeadlineAdsUseCase.executeOnBackground() } returns responseMockObject
         every { responseMockObject.topadsManageHeadlineAd.success.id } returns "12"
 
         viewModel.applyRecommendedKeywords(mockObject)
-        assertEquals(viewModel.applyKeyword.value,
-            mockObject.operation.group.keywordOperations.size)
+        assertEquals(
+            viewModel.applyKeyword.value,
+            mockObject.operation.group.keywordOperations.size
+        )
+    }
+
+    @Test
+    fun `applyRecommendedKeywords on non empty error should invoke null live data`() {
+        val data = TopAdsManageHeadlineInput2(
+            TopAdsManageHeadlineInput2.Operation(
+                group = TopAdsManageHeadlineInput2.Operation.Group(
+                    keywordOperations = listOf(TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation())
+                )
+            )
+        )
+        coEvery {
+            createHeadlineAdsUseCase.executeOnBackground().topadsManageHeadlineAd.errors
+        } returns listOf(com.tokopedia.topads.common.data.response.Error())
+        viewModel.applyRecommendedKeywords(data)
+        assertEquals(viewModel.applyKeyword.value, null)
     }
 
     @Test
@@ -92,14 +118,46 @@ class TopAdsInsightViewModelTest {
         } returns mockObject
 
         viewModel.getShopKeywords("", emptyArray())
-        assertEquals(viewModel.recommendedKeyword.value , mockObject.suggestion!!.recommendedKeywordData)
+        assertEquals(
+            viewModel.recommendedKeyword.value,
+            mockObject.suggestion!!.recommendedKeywordData
+        )
     }
 
     @Test
-    fun `getShopKeywords onError block test`() = testRule.runTest{
+    fun `valid object response on getShopKeyword method  should invoke error value to live data`() {
+        val mockObject =
+            TopAdsShopHeadlineKeyword(
+                TopadsHeadlineKeywordSuggestion(
+                    recommendedKeywordData = null,
+                    errors = listOf(ErrorsItem(null, "", ""))
+                )
+            )
+        val gqlResponse =
+            mockk<com.tokopedia.graphql.data.model.GraphqlResponse>(relaxed = true)
+
+        coEvery {
+            shopKeywordSuggestionUseCase.getKeywordRecommendation(any())
+        } returns gqlResponse
+
+        coEvery {
+            gqlResponse.getData<TopAdsShopHeadlineKeyword>(TopAdsShopHeadlineKeyword::class.java)
+        } returns mockObject
+
+        viewModel.getShopKeywords("", emptyArray())
+        assertEquals(
+            viewModel.recommendedKeyword.value,
+            mockObject.suggestion!!.recommendedKeywordData
+        )
+    }
+
+    @Test
+    fun `getShopKeywords onError block test`() {
         val exp = "error"
 
-        coEvery { shopKeywordSuggestionUseCase.getKeywordRecommendation(any()) } throws Exception(exp)
+        coEvery { shopKeywordSuggestionUseCase.getKeywordRecommendation(any()) } throws Exception(
+            exp
+        )
 
         viewModel.getShopKeywords("", emptyArray())
         assertEquals(exp, viewModel.error.value)
