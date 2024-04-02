@@ -153,10 +153,6 @@ object PageName {
     const val RECOMMENDATION = "recommendation"
 }
 
-object FragmentName {
-    const val HOME_FRAGMENT = "HomeFragment"
-}
-
 object QuitType {
     const val RETURN = "return"
     const val NEXT = "next"

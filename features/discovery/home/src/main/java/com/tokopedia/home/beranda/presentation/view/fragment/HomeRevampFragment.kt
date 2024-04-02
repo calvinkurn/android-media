@@ -554,7 +554,7 @@ open class HomeRevampFragment :
     }
 
     override fun getFragmentName(): String {
-        return FragmentName.HOME_FRAGMENT
+        return PageName.HOME
     }
 
     override fun isEnterFromWhitelisted(): Boolean {
