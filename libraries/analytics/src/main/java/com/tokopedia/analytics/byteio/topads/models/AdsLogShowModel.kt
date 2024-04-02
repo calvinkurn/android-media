@@ -1,7 +1,8 @@
 package com.tokopedia.analytics.byteio.topads.models
 
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+
 data class AdsLogShowModel(
-    val nt: String,
     val adsValue: String,
     val logExtra: String,
     val rit: String,
@@ -11,8 +12,8 @@ data class AdsLogShowModel(
 ) {
     data class AdExtraData(
         val channel: String,
-        val enterFrom: String,
-        val mallCardType: String,
+        val enterFrom: String = "",
+        val mallCardType: String = AdsLogConst.AdCardStyle.PRODUCT_CARD,
         val productId: String
     )
 }

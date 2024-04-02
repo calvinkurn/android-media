@@ -6,6 +6,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -62,6 +64,12 @@ internal class ReimagineGridViewStrategy(
     private val guidelineStart by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
     private val guidelineEnd by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
     private val guidelineBottom by lazyView<Guideline?>(R.id.productCardGuidelineBottomContent)
+
+    private val productCardPriceContainer by lazyView<RelativeLayout?>(R.id.productCardPriceContainer)
+    private val productCardSlashedPrice by lazyView<Typography?>(R.id.productCardSlashedPrice)
+    private val productCardDiscount by lazyView<Typography?>(R.id.productCardDiscount)
+    private val productCardCredibility by lazyView<LinearLayout?>(R.id.productCardCredibility)
+    private val productCardShopSection by lazyView<LinearLayout?>(R.id.productCardShopSection)
 
     private var useCompatPadding = false
 
@@ -210,5 +218,21 @@ internal class ReimagineGridViewStrategy(
 
     override fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+    override fun setProductImageOnClickListener(l: (View) -> Unit) {
+        imageView?.setOnClickListener(l)
+    }
+
+    override fun setProductInfoOnClickListener(l: (View) -> Unit) {
+        nameText?.setOnClickListener(l)
+        productCardPriceContainer?.setOnClickListener(l)
+        productCardSlashedPrice?.setOnClickListener(l)
+        productCardDiscount?.setOnClickListener(l)
+        productCardCredibility?.setOnClickListener(l)
+    }
+
+    override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
+        productCardShopSection?.setOnClickListener(l)
     }
 }

@@ -1,9 +1,8 @@
 package com.tokopedia.analytics.byteio.topads.models
 
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+
 data class AdsLogShowOverModel(
-    val isAdEvent: String,
-    val nt: String,
-    val refer: String,
     val adsValue: String,
     val logExtra: String,
     val rit: String,
@@ -13,8 +12,8 @@ data class AdsLogShowOverModel(
 ) {
     data class AdExtraData(
         val channel: String,
-        val enterFrom: String,
-        val mallCardType: String,
+        val enterFrom: String = "",
+        val mallCardType: String = AdsLogConst.AdCardStyle.PRODUCT_CARD,
         val productId: String,
         // todo need to confirm
         val sizePercent: String,

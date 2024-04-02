@@ -50,7 +50,7 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     }
 
     /**
-     *
+     * Ads Realtime Click
      */
     fun setImageProductClickListener(imageProductClickListener: (View) -> Unit) {
         productCardStrategy.setProductImageOnClickListener(imageProductClickListener)

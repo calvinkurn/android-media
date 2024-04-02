@@ -32,8 +32,8 @@ object AppLogTopAds {
                     put(
                         AdsLogConst.Param.AD_EXTRA_DATA,
                         JSONObject().apply {
-                            putChannelName(currentPageName)
-                            putEnterFrom()
+                            putChannelName(adsLogShowOverModel.adExtraData.channel)
+                            putEnterFrom(adsLogShowOverModel.adExtraData.enterFrom)
                             put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                             put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
                             // todo need to confirm
@@ -78,8 +78,8 @@ object AppLogTopAds {
                     put(
                         AdsLogConst.Param.AD_EXTRA_DATA,
                         JSONObject().apply {
-                            putChannelName(currentPageName)
-                            putEnterFrom()
+                            putChannelName(adsLogShowModel.adExtraData.channel)
+                            putEnterFrom(adsLogShowModel.adExtraData.enterFrom)
                             put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                             put(AdsLogConst.Param.PRODUCT_ID, adsLogShowModel.adExtraData.productId)
                         }
@@ -117,9 +117,9 @@ object AppLogTopAds {
                     put(
                         AdsLogConst.Param.AD_EXTRA_DATA,
                         JSONObject().apply {
-                            putChannelName(currentPageName)
-                            putEnterFrom()
-                            put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
+                            putChannelName(adsLogRealtimeClickModel.adExtraData.channel)
+                            putEnterFrom(adsLogRealtimeClickModel.adExtraData.enterFrom)
+                            put(AdsLogConst.Param.MALL_CARD_TYPE, adsLogRealtimeClickModel.adExtraData.mallCardType)
                             put(AdsLogConst.Param.PRODUCT_ID, adsLogRealtimeClickModel.adExtraData.productId)
                         }
                     )
@@ -140,16 +140,18 @@ object AppLogTopAds {
         )
     }
 
-    private fun JSONObject.putEnterFrom() {
+    fun getEnterFrom(): String {
         val twoLastFragmentName = AppLogAnalytics.getTwoLastPage()
-        val enterFrom = if (twoLastFragmentName == FragmentName.HOME_FRAGMENT) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+        return if (twoLastFragmentName == FragmentName.HOME_FRAGMENT) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+    }
+
+    private fun JSONObject.putEnterFrom(enterFrom: String) {
         put(AdsLogConst.Param.ENTER_FROM, enterFrom)
     }
 
     // todo need to confirm for this value
-    private fun JSONObject.putChannelName(pageName: String) {
-        val pageNameSearch = "$pageName search"
-        put(AdsLogConst.Param.CHANNEL, pageNameSearch)
+    private fun JSONObject.putChannelName(channelName: String) {
+        put(AdsLogConst.Param.CHANNEL, channelName)
     }
 
     private fun JSONObject.putTag(currentPageName: String) {
