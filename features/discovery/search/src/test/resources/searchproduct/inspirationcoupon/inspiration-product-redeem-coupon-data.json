@@ -1,0 +1,32 @@
+{
+  "hachikoRedeem": {
+    "coupons": [
+      {
+        "id": 0,
+        "owner": 19016250,
+        "promo_id": 37153641,
+        "code": "ATCDWDC10KBBL167F98",
+        "title": "[Testing] ATCoupWidg For Dormant User",
+        "description": "Untuk produk PLN",
+        "cta": "tokopedia://tokopoints/kupon-saya/detail/ATCDWDC10KBBL167F98",
+        "cta_desktop": "https://www.tokopedia.com/tokopoints/kupon-saya/detail/ATCDWDC10KBBL167F98",
+        "url": "https://www.tokopedia.com/tokopoints/kupon-saya/detail/ATCDWDC10KBBL167F98",
+        "appLink": "tokopedia://tokopoints/kupon-saya/detail/ATCDWDC10KBBL167F98"
+      }
+    ],
+    "reward_points": 0,
+    "redeemMessage": "Kupon berhasil diklaim",
+    "ctaList": [
+      {
+        "icon": "",
+        "text": "Dormant User",
+        "url": "",
+        "applink": "",
+        "type": "redirect",
+        "isShown": true,
+        "isDisabled": false,
+        "jsonMetadata": "{\"url\":\"https://www.tokopedia.com/cart\",\"app_link\":\"tokopedia://cart\"}"
+      }
+    ]
+  }
+}

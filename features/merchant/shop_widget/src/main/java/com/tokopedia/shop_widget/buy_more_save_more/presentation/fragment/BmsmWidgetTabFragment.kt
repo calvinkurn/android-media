@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -57,6 +59,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.util.NonFatalIssueLogger
 import com.tokopedia.shop_widget.buy_more_save_more.util.Status
 import com.tokopedia.shop_widget.databinding.FragmentBmsmWidgetBinding
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.R.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,7 +67,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 class BmsmWidgetTabFragment :
     BaseDaggerFragment(),
@@ -90,6 +92,7 @@ class BmsmWidgetTabFragment :
         private const val imageAlphaValue = 128
         private const val OFFER_TYPE_GWP = 2
         private const val OFFER_TYPE_PD = 1
+        private const val PD_WIDGET_TITLE_LOADER_LEFT_MARGIN = 64
 
         @JvmStatic
         fun newInstance(
@@ -140,7 +143,12 @@ class BmsmWidgetTabFragment :
             ?: ColorType.LIGHT
     }
 
-    private var productListAdapter = BmsmWidgetProductListAdapter(this@BmsmWidgetTabFragment)
+    private val productListAdapter by lazy {
+        BmsmWidgetProductListAdapter(
+            this@BmsmWidgetTabFragment,
+            colorThemeConfiguration == BmsmWidgetColorThemeConfig.REIMAGINE
+        )
+    }
 
     private var onSuccessAtc: (String, String, AddToCartDataModel) -> Unit = { _, _, _ -> }
     private var onErrorAtc: (String) -> Unit = {}
@@ -165,7 +173,7 @@ class BmsmWidgetTabFragment :
             DaggerBmsmWidgetComponent
                 .builder()
                 .bmsmWidgetModule(BmsmWidgetModule())
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this@BmsmWidgetTabFragment)
         }
@@ -197,7 +205,11 @@ class BmsmWidgetTabFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AtcVariantHelper.ATC_VARIANT_RESULT_CODE) viewModel.getMinicartV3()
+        context?.let {
+            AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
+                if (atcMessage.isNotEmpty()) viewModel.getMinicartV3()
+            }
+        }
     }
 
     override fun onAtcClicked(product: Product) {
@@ -252,12 +264,13 @@ class BmsmWidgetTabFragment :
         }
 
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
+            getOfferingData()
+            viewModel.getMinicartV3()
             when (atc) {
                 is Success -> {
                     if (atc.data.isDataError()) {
                         onErrorAtc.invoke(atc.data.getAtcErrorMessage().orEmpty())
                     } else {
-                        getOfferingData()
                         onSuccessAtc.invoke(
                             currentState.offerIds.firstOrNull().toString(),
                             offerTypeId.toString(),
@@ -269,6 +282,16 @@ class BmsmWidgetTabFragment :
                 is Fail -> {
                     sendLogger(atc.throwable)
                     onErrorAtc.invoke(atc.throwable.localizedMessage.orEmpty())
+                }
+            }
+        }
+
+        viewModel.miniCartSimplifiedData.observe(viewLifecycleOwner) { minicartSimplifiedData ->
+            binding?.apply {
+                val offerMessage = minicartSimplifiedData.bmgmData.offerMessage
+                when (offerTypeId) {
+                    OFFER_TYPE_PD -> tpgPdUpsellingWording.setUpsellingPd(offerMessage)
+                    OFFER_TYPE_GWP -> tpgSubTitleWidget.setUpsellingGwp(offerMessage)
                 }
             }
         }
@@ -344,9 +367,6 @@ class BmsmWidgetTabFragment :
                 setViewState(VIEW_ERROR, Status.GIFT_OOS)
             } else {
                 tpgTitleWidget.setTitle(offerMessage, upsellWording, defaultOfferMessage)
-                tpgSubTitleWidget.setUpsellingGwp(offerMessage)
-                tpgPdUpsellingWording.setUpsellingPd(offerMessage)
-
                 when (offerTypeId) {
                     OFFER_TYPE_PD -> setupPdHeader(offerMessage)
                     OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)
@@ -402,7 +422,16 @@ class BmsmWidgetTabFragment :
         binding?.apply {
             when (viewState) {
                 VIEW_LOADING -> {
-                    loadingState.root.visible()
+                    loadingState.apply {
+                        root.visible()
+                        val isGwpWidget = offerTypeId == OFFER_TYPE_GWP
+                        clGiftImageLoaderWrapper.showWithCondition(isGwpWidget)
+                        if (!isGwpWidget) {
+                            val params = loaderTitle.layoutParams as MarginLayoutParams
+                            params.marginStart = PD_WIDGET_TITLE_LOADER_LEFT_MARGIN
+                            loaderTitle.layoutParams = params
+                        }
+                    }
                     cardErrorState.gone()
                     flContentWrapper.gone()
                 }
@@ -450,10 +479,11 @@ class BmsmWidgetTabFragment :
                         text = context.getString(R.string.bmsm_widget_gift_oos_description)
                     }
                 }
+
                 Status.OOS -> {
                     emptyPageLarge.apply {
                         visible()
-                        setImageUrl(TokopediaImageUrl.OLP_NOT_FOUND_ILLUSTRATION)
+                        setImageUrl(TokopediaImageUrl.ILLUSTRATION_GENERAL_EMPTY_BASKET)
                         setTitle(title)
                         setDescription(description)
                         emptyStateTitleID.setEmptyStateTextColor()
@@ -480,7 +510,7 @@ class BmsmWidgetTabFragment :
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                 shopId = shopId.toString(),
-                saveAfterClose = false,
+                saveAfterClose = true,
                 extParams = AtcVariantHelper.generateExtParams(
                     mapOf(
                         EXT_PARAM_OFFER_ID to stringOfferIds,
@@ -494,12 +524,12 @@ class BmsmWidgetTabFragment :
 
     private fun setupPdHeader(offerMessage: List<String>) {
         binding?.apply {
-            //gift image section
+            // gift image section
             imgGiftItems.gone()
             imgGiftWhiteFrameBroder.gone()
             groupStackedImg.gone()
 
-            //upselling wording section
+            // upselling wording section
             tpgSubTitleWidget.gone()
             pdUpsellingWrapper.apply {
                 visibleWithCondition(offerMessage.isNotEmpty())
@@ -526,7 +556,7 @@ class BmsmWidgetTabFragment :
             productGiftImages?.firstOrNull() ?: defaultOfferingData.thumbnails.firstOrNull()
 
         binding?.apply {
-            //gift image section
+            // gift image section
             if (productGiftImages.isNullOrEmpty()) {
                 imgGiftItems.gone()
                 imgGiftWhiteFrameBroder.gone()
@@ -539,7 +569,7 @@ class BmsmWidgetTabFragment :
                 imgGiftWhiteFrameBroder.visible()
                 groupStackedImg.showWithCondition(productGiftImages.size > Int.ONE)
             }
-            //upselling wording section
+            // upselling wording section
             pdUpsellingWrapper.gone()
         }
     }
@@ -575,7 +605,7 @@ class BmsmWidgetTabFragment :
             context,
             R.color.dms_static_white
         )
-        if (childCount.isZero()){
+        if (childCount.isZero()) {
             setFactory {
                 Typography(context).apply {
                     setType(Typography.SMALL)
@@ -609,7 +639,7 @@ class BmsmWidgetTabFragment :
                 R.color.dms_pd_sub_title_text_color
             )
         }
-        if (childCount.isZero()){
+        if (childCount.isZero()) {
             setFactory {
                 Typography(context).apply {
                     setType(Typography.SMALL)
@@ -641,7 +671,7 @@ class BmsmWidgetTabFragment :
 
             BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(
                 context,
-                R.color.dms_static_black
+                color.Unify_NN1000
             )
         }
         setTextColor(textColor)

@@ -1950,7 +1950,7 @@ class ShopPageProductListResultFragment :
     }
 
     override fun onPrimaryButtonEmptyClicked() {
-        shopPageTracking?.clickPrimaryBtnEmptyStateSearch(shopId, shopInfo?.shopHomeType)
+        shopPageTracking?.clickPrimaryBtnEmptyStateSearch(shopId, customDimensionShopPage.shopType.orEmpty())
         context?.let {
             startActivity(
                 createIntent(
@@ -1968,7 +1968,7 @@ class ShopPageProductListResultFragment :
     }
 
     override fun onSecondaryButtonEmptyClicked() {
-        shopPageTracking?.clickSecondaryBtnEmptyStateSearch(shopId, shopInfo?.shopHomeType)
+        shopPageTracking?.clickSecondaryBtnEmptyStateSearch(shopId, customDimensionShopPage.shopType.orEmpty())
         RouteManager.route(
             context,
             "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"

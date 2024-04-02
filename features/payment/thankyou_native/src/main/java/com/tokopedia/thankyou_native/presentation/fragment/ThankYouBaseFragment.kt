@@ -29,6 +29,9 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.SubmitOrderResult
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -153,6 +156,7 @@ open class ThankYouBaseFragment :
     lateinit var thanksPageData: ThanksPageData
     private var isWidgetOrderingEnabled: Boolean = true
     private var isV2Enabled: Boolean = true
+    private var isPurchaseInfoEnabled: Boolean = true
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -193,6 +197,9 @@ open class ThankYouBaseFragment :
             if (it.containsKey(ARG_IS_V2_ENABLED)) {
                 isV2Enabled = it.getBoolean(ARG_IS_V2_ENABLED)
             }
+            if (it.containsKey(ARG_IS_PURCHASE_INFO_ENABLED)) {
+                isPurchaseInfoEnabled = it.getBoolean(ARG_IS_PURCHASE_INFO_ENABLED)
+            }
         }
         activity?.apply {
             digitalRecomTrackingQueue = TrackingQueue(this)
@@ -226,11 +233,14 @@ open class ThankYouBaseFragment :
             addRecommendation(getRecommendationContainer())
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
-            topadsHeadlineView.getHeadlineAds(
-                ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
-                this::showTopAdsHeadlineView,
-                this::hideTopAdsHeadlineView
-            )
+
+            if (thanksPageData.configFlagData?.shouldHideProductRecom != true) {
+                topadsHeadlineView.getHeadlineAds(
+                    ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
+                    this::showTopAdsHeadlineView,
+                    this::hideTopAdsHeadlineView
+                )
+            }
 
             showOnBoardingShare()
             startAnimate()
@@ -253,7 +263,7 @@ open class ThankYouBaseFragment :
 
         getBottomContentRecyclerView()?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
+                if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus) == InstantPaymentPage) {
                     (activity as ThankYouPageActivity).lottieSuccess.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
                 } else {
                     (activity as ThankYouPageActivity).header_background.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
@@ -274,7 +284,7 @@ open class ThankYouBaseFragment :
     private fun addHeader() {
         if (!isV2Enabled) return
 
-        when(PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
+        when(PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus)) {
             WaitingPaymentPage -> thanksPageDataViewModel.addBottomContentWidget(WaitingHeaderUiModel.create(thanksPageData, context))
             InstantPaymentPage -> { thanksPageDataViewModel.addBottomContentWidget(InstantHeaderUiModel.create(thanksPageData, context)) }
             ProcessingPaymentPage -> { thanksPageDataViewModel.addBottomContentWidget(ProcessingHeaderUiModel.create(thanksPageData, context)) }
@@ -364,6 +374,8 @@ open class ThankYouBaseFragment :
         pageType: DigitalRecommendationPage
     ) {
         if (::thanksPageData.isInitialized) {
+            if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
+
             if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     DigitalRecommendationWidgetModel(
@@ -375,8 +387,6 @@ open class ThankYouBaseFragment :
                 )
                 return
             }
-
-            if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
 
             iDigitalRecommendationView = containerView?.let { container ->
                 val view = getRecommendationView(digitalRecommendationLayout)
@@ -672,7 +682,7 @@ open class ThankYouBaseFragment :
     }
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
-        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
+        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData, isPurchaseInfoEnabled)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(
             thanksPageData.profileCode,
             PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
@@ -685,7 +695,7 @@ open class ThankYouBaseFragment :
     }
 
     override fun openInvoiceDetail() {
-        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
+        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData, isPurchaseInfoEnabled)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(
             thanksPageData.profileCode,
             PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
@@ -1079,6 +1089,7 @@ open class ThankYouBaseFragment :
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         const val ARG_IS_WIDGET_ORDERING_ENABLED = "arg_is_enabled_ordering_enabled"
         const val ARG_IS_V2_ENABLED = "arg_is_v2_enabled"
+        const val ARG_IS_PURCHASE_INFO_ENABLED = "arg_is_purchase_info_enabled"
 
         /* Constant for toads headlines widget*/
         const val TOP_ADS_SRC = "thank_you_page"
@@ -1098,13 +1109,15 @@ open class ThankYouBaseFragment :
             bundle: Bundle,
             thanksPageData: ThanksPageData,
             isWidgetOrderingEnabled: Boolean,
-            isV2Enabled: Boolean
+            isV2Enabled: Boolean,
+            isPurchaseInfoEnabled: Boolean
         ): ThankYouBaseFragment = ThankYouBaseFragment().apply {
             bundle.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
                 bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
                 bundle.putBoolean(ARG_IS_V2_ENABLED, isV2Enabled)
+                bundle.putBoolean(ARG_IS_PURCHASE_INFO_ENABLED, isPurchaseInfoEnabled)
             }
         }
     }

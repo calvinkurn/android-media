@@ -265,6 +265,7 @@ object CommonTopupBillsGqlQuery {
                   name
                   default_product_id
                   image_url
+                  status
                 }
               }
             }

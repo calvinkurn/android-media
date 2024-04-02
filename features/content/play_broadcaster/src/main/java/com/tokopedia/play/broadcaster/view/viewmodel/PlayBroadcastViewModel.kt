@@ -34,8 +34,10 @@ import com.tokopedia.play.broadcaster.domain.model.Chat
 import com.tokopedia.play.broadcaster.domain.model.Freeze
 import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
 import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.NewMetricList
+import com.tokopedia.play.broadcaster.domain.model.TotalLike
+import com.tokopedia.play.broadcaster.domain.model.TotalView
+import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -59,9 +61,8 @@ import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.EventUiModel
-import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
-import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -612,10 +613,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
             is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
-            is PlayBroadcastAction.GetTickerBottomSheetConfig -> handleTickerBottomSheetConfig(event.page)
-            is PlayBroadcastAction.SetLiveToVodPref -> handleSetLiveToVodPref(
-                type = event.type, page = event.page
-            )
+            is PlayBroadcastAction.GetDynamicTickerBottomSheetConfig -> handleGetDynamicTickerBottomSheetConfig(event.page)
+            is PlayBroadcastAction.SetDynamicTickerBottomSheetPref -> handleSetDynamicTickerBottomSheetPref(type = event.type)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -802,7 +801,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (configUiModel.channelStatus == ChannelStatus.Draft ||
                 configUiModel.channelStatus == ChannelStatus.CompleteDraft
             ) {
-                handleTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
+                handleGetDynamicTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
             }
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
@@ -903,43 +902,44 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
-    private fun handleTickerBottomSheetConfig(page: TickerBottomSheetPage) {
+    private fun handleGetDynamicTickerBottomSheetConfig(page: TickerBottomSheetPage) {
         viewModelScope.launchCatchError(block = {
             val response = repo.getTickerBottomSheetConfig(GetTickerBottomSheetRequest(page))
+            val cacheKey = response.cacheKey.ifBlank { return@launchCatchError }
             val pref = when (response.type) {
                 TickerBottomSheetType.BOTTOM_SHEET -> {
-                    sharedPref.getLiveToVodBottomSheetPref(
-                        page = page.value,
-                        authorId = selectedAccount.id
+                    sharedPref.getDynamicBottomSheetPref(
+                        key = cacheKey,
+                        userId = userSession.userId,
                     )
                 }
                 TickerBottomSheetType.TICKER -> {
-                    sharedPref.getLiveToVodTickerPref(
-                        page = page.value,
-                        authorId = selectedAccount.id
+                    sharedPref.getDynamicTickerPref(
+                        key = cacheKey,
+                        userId = userSession.userId,
                     )
                 }
                 TickerBottomSheetType.UNKNOWN -> false
             }
 
-            _tickerBottomSheetConfig.value = if (pref) response else TickerBottomSheetUiModel.Empty
+            _tickerBottomSheetConfig.value = if (pref) TickerBottomSheetUiModel.Empty else response
         }) {
             _tickerBottomSheetConfig.value = TickerBottomSheetUiModel.Empty
         }
     }
 
-    private fun handleSetLiveToVodPref(type: TickerBottomSheetType, page: TickerBottomSheetPage) {
+    private fun handleSetDynamicTickerBottomSheetPref(type: TickerBottomSheetType) {
         when (type) {
             TickerBottomSheetType.BOTTOM_SHEET -> {
-                sharedPref.setLiveToVodBottomSheetPref(
-                    page = page.value,
-                    authorId = selectedAccount.id
+                sharedPref.setDynamicBottomSheetPref(
+                    key = _tickerBottomSheetConfig.value.cacheKey,
+                    userId = userSession.userId,
                 )
             }
             TickerBottomSheetType.TICKER -> {
-                sharedPref.setLiveToVodTickerPref(
-                    page = page.value,
-                    authorId = selectedAccount.id
+                sharedPref.setDynamicTickerPref(
+                    key = _tickerBottomSheetConfig.value.cacheKey,
+                    userId = userSession.userId,
                 )
             }
             TickerBottomSheetType.UNKNOWN -> return

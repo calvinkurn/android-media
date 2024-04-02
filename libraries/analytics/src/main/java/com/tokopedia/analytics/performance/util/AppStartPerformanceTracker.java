@@ -40,7 +40,7 @@ public class AppStartPerformanceTracker {
 
     public static void stopMonitoring() {
         if (getInstance(false) != null && isStarted) {
-            getInstance(false).stopMonitoring();
+            getInstance(false).stopMonitoring(null);
             isStarted = false;
             isColdStart = false;
         }

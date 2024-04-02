@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceWidgetFailedModel
-import com.tokopedia.home.databinding.LayoutBalanceWidgetFailedAtf2Binding
+import com.tokopedia.home.databinding.LayoutBalanceWidgetFailedBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -13,10 +13,10 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class BalanceWidgetFailedViewHolder (itemView: View, val listener: HomeCategoryListener?) :
     AbstractViewHolder<BalanceWidgetFailedModel>(itemView) {
-    private var binding: LayoutBalanceWidgetFailedAtf2Binding? by viewBinding()
+    private var binding: LayoutBalanceWidgetFailedBinding? by viewBinding()
 
     companion object {
-        val LAYOUT = R.layout.layout_balance_widget_failed_atf2
+        val LAYOUT = R.layout.layout_balance_widget_failed
         private const val START_PROGRESS_STATE = true
     }
 

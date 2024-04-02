@@ -61,6 +61,8 @@ object CategoryProductMapper {
             id = product.shop.id,
             name = product.shop.name
         ),
+        shopId = product.shop.id,
+        shopName = product.shop.name,
         shopType = getShopType(product.shop),
         categoryBreadcrumbs = product.categoryBreadcrumb,
         position = index + ADDITIONAL_POSITION,

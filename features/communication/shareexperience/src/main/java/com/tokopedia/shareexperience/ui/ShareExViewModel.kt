@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.net.URLDecoder
 import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
@@ -319,24 +320,25 @@ class ShareExViewModel @Inject constructor(
         channelEnum: ShareExChannelEnum,
         campaign: String
     ): String {
-        val utmSource = ShareExConstants.ShortLinkValue.SOURCE
+        val utmMedium = ShareExConstants.UTM.MEDIUM_VALUE
         val uri = Uri.parse(url)
-        val newUri = Uri.Builder()
+        val newUriBuilder = Uri.Builder()
 
         // Only set scheme, authority, and path if they are not null
-        uri.scheme?.let { newUri.scheme(it) }
-        uri.authority?.let { newUri.authority(it) }
-        uri.path?.let { newUri.path(it) }
+        uri.scheme?.let { newUriBuilder.scheme(it) }
+        uri.authority?.let { newUriBuilder.authority(it) }
+        uri.path?.let { newUriBuilder.path(it) }
 
         if (!uri.query.isNullOrEmpty()) {
-            newUri.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, utmSource)
-            newUri.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, channelEnum.label)
-            newUri.appendQueryParameter(ShareExConstants.UTM.CAMPAIGN_KEY, campaign)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, channelEnum.label)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, utmMedium)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.CAMPAIGN_KEY, campaign)
         } else {
-            val query = "${ShareExConstants.UTM.SOURCE_KEY}=$utmSource&${ShareExConstants.UTM.MEDIUM_KEY}=${channelEnum.label}&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign"
-            newUri.query(query)
+            val query = "${ShareExConstants.UTM.SOURCE_KEY}=${channelEnum.label}&${ShareExConstants.UTM.MEDIUM_KEY}=$utmMedium&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign"
+            newUriBuilder.query(query)
         }
-        return newUri.build().toString()
+        val newUri = newUriBuilder.build().toString()
+        return URLDecoder.decode(newUri, "UTF-8")
     }
 
     private fun generateShortLinkRequest(
@@ -413,6 +415,11 @@ class ShareExViewModel @Inject constructor(
         errorEnum: ShareExIntentErrorEnum?
     ) {
         _channelIntentUiState.update {
+            val newErrorHistory = if (errorEnum != null) {
+                it.errorHistory + errorEnum
+            } else {
+                it.errorHistory
+            }
             it.copy(
                 intent = intent,
                 message = message,
@@ -421,7 +428,7 @@ class ShareExViewModel @Inject constructor(
                 isLoading = isLoading,
                 error = error,
                 imageType = imageType,
-                errorEnum = errorEnum
+                errorHistory = newErrorHistory
             )
         }
     }
@@ -535,33 +542,49 @@ class ShareExViewModel @Inject constructor(
         val imageUrl = shortLinkRequest.linkerPropertiesRequest.ogImageUrl
         val message = shortLinkRequest.linkerPropertiesRequest.message
         val messageWithUrl = if (message.isNotBlank()) "$message $shortLink" else shortLink
-        getDownloadedImageUseCase.downloadImage(imageUrl).collectLatest {
-            when (it) {
-                is ShareExResult.Success -> {
-                    updateIntentUiState(
-                        intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
-                        message = messageWithUrl,
-                        shortLink = shortLink,
-                        channelEnum = channelItemModel.channelEnum,
-                        isLoading = false,
-                        error = null,
-                        imageType = imageType,
-                        errorEnum = null
-                    )
+        when(channelItemModel.mimeType) {
+            ShareExMimeTypeEnum.ALL, ShareExMimeTypeEnum.IMAGE -> {
+                getDownloadedImageUseCase.downloadImageThumbnail(imageUrl).collectLatest {
+                    when (it) {
+                        is ShareExResult.Success -> {
+                            updateIntentUiState(
+                                intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
+                                message = messageWithUrl,
+                                shortLink = shortLink,
+                                channelEnum = channelItemModel.channelEnum,
+                                isLoading = false,
+                                error = null,
+                                imageType = imageType,
+                                errorEnum = null
+                            )
+                        }
+                        is ShareExResult.Error -> {
+                            updateIntentUiState(
+                                intent = getAppIntent(channelItemModel, messageWithUrl, null),
+                                message = messageWithUrl,
+                                shortLink = shortLink,
+                                channelEnum = channelItemModel.channelEnum,
+                                isLoading = false,
+                                error = it.throwable,
+                                imageType = imageType,
+                                errorEnum = ShareExIntentErrorEnum.IMAGE_DOWNLOADER
+                            )
+                        }
+                        ShareExResult.Loading -> Unit
+                    }
                 }
-                is ShareExResult.Error -> {
-                    updateIntentUiState(
-                        intent = getAppIntent(channelItemModel, messageWithUrl, null),
-                        message = messageWithUrl,
-                        shortLink = shortLink,
-                        channelEnum = channelItemModel.channelEnum,
-                        isLoading = false,
-                        error = it.throwable,
-                        imageType = imageType,
-                        errorEnum = ShareExIntentErrorEnum.IMAGE_DOWNLOADER
-                    )
-                }
-                ShareExResult.Loading -> Unit
+            }
+            else -> {
+                updateIntentUiState(
+                    intent = getAppIntent(channelItemModel, messageWithUrl, null),
+                    message = messageWithUrl,
+                    shortLink = shortLink,
+                    channelEnum = channelItemModel.channelEnum,
+                    isLoading = false,
+                    error = null,
+                    imageType = imageType,
+                    errorEnum = null
+                )
             }
         }
     }

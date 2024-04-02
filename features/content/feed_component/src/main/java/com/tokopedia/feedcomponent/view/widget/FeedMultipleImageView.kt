@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
@@ -122,7 +122,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
             private val ivDelete: ImageView = itemView.findViewById(R.id.delete)
             private val icPlayVid: ImageView = itemView.findViewById(R.id.ic_play_vid)
-            private val itemImageView: SquareImageView = itemView.findViewById(R.id.itemImageView)
+            private val itemImageView: AppCompatImageView = itemView.findViewById(R.id.itemImageView)
 
             init {
                 itemView.setOnClickListener {
