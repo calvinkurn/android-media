@@ -1046,7 +1046,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         }
 
         Assert.assertTrue(viewModel.updateCartLiveData.value is Success)
-        Assert.assertEquals((viewModel.updateCartLiveData.value as Success).data, "sukses gan")
+        Assert.assertEquals(
+            (viewModel.updateCartLiveData.value as Success).data.message,
+            "sukses gan"
+        )
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
     }
 
