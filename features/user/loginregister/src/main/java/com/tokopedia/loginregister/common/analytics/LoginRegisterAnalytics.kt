@@ -206,7 +206,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button ubah",
-                "${getClientLabelIfAvailable(clientName)}"
+                "${getClientLabelIfAvailable(clientName, removeDash = true)}"
         ))
     }
 
@@ -216,7 +216,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on hide kata sandi",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -226,7 +226,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on unhide kata sandi",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -291,7 +291,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click back",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -337,7 +337,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN_PAGE,
                 "click on button phone number",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
 
         val map = HashMap<String, Any>()
@@ -360,7 +360,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_BACK,
                 CATEGORY_ACTIVATION_PAGE,
                 "click back button",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -369,7 +369,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_ACTIVATION_PAGE,
                 "click on aktivasi",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -378,7 +378,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_ACTIVATION_PAGE,
                 "click on kirim ulang",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -397,7 +397,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_REGISTER_PAGE,
                 "click on masuk",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -429,7 +429,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_REGISTER_PAGE,
                 "click on pop up box register (ya, masuk)",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -447,7 +447,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_REGISTER_PAGE,
                 "click on pop up box register (ya, benar)",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -465,7 +465,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_BACK,
                 CATEGORY_REGISTER_PAGE,
                 "click back (daftar dengan email)",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -474,7 +474,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 "click on daftar (daftar dengan email)",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -512,7 +512,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_HOME_PAGE,
                 CATEGORY_WELCOME_PAGE,
                 "click on lanjut",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -521,7 +521,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_USER_PROFILE,
                 CATEGORY_WELCOME_PAGE,
                 "click on lengkapi profil",
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -705,7 +705,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_TICKER_LOGIN,
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -723,7 +723,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLOSE_TICKER_LOGIN,
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -732,7 +732,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_SOCMED,
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -741,7 +741,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
-                "${getClientLabelIfAvailable(clientName)}"
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
