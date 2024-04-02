@@ -41,6 +41,8 @@ class PlayVideoWidgetView : CardUnify2 {
 
     private var mIsIdleOrEnded = true
 
+    private var mWidthToHeightRatio = WidthToHeightRatio("9:16")
+
     private val playerListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             binding.playerView.showWithCondition(
@@ -97,6 +99,15 @@ class PlayVideoWidgetView : CardUnify2 {
         mSizeMode = SizeMode.of(
             attributeArray.getInt(R.styleable.PlayVideoWidgetView_sizeMode, SizeMode.FollowWidth.value)
         )
+        runCatching {
+            val ratio = attributeArray.getString(R.styleable.PlayVideoWidgetView_widthToHeightRatio)
+            requireNotNull(ratio)
+            WidthToHeightRatio(ratio)
+        }.onSuccess {
+            mWidthToHeightRatio = it
+        }.onFailure {
+            error("Width to Height Ratio must be in the format of w:h")
+        }
 
         attributeArray.recycle()
     }
@@ -111,13 +122,13 @@ class PlayVideoWidgetView : CardUnify2 {
                     widthSize,
                     MeasureSpec.EXACTLY
                 ) to MeasureSpec.makeMeasureSpec(
-                    (widthSize / 9f * 16f).toInt(),
+                    (widthSize / mWidthToHeightRatio.widthRatio * mWidthToHeightRatio.heightRatio).toInt(),
                     MeasureSpec.EXACTLY
                 )
             }
             SizeMode.FollowHeight -> {
                 MeasureSpec.makeMeasureSpec(
-                    (heightSize / 16f * 9f).toInt(),
+                    (heightSize / mWidthToHeightRatio.heightRatio * mWidthToHeightRatio.widthRatio).toInt(),
                     MeasureSpec.EXACTLY
                 ) to MeasureSpec.makeMeasureSpec(
                     heightSize,
@@ -227,9 +238,22 @@ class PlayVideoWidgetView : CardUnify2 {
         }
     }
 
-    companion object {
-        const val COVER_ERROR_HEIGHT = 132
-        const val COVER_ERROR_WIDTH = 132
+    private data class WidthToHeightRatio(val value: String) {
+
+        val widthRatio: Float
+        val heightRatio: Float
+
+        init {
+            require(value.matches(Regex(REGEX_PATTERN)))
+
+            val ratioList = value.split(":")
+            widthRatio = ratioList[0].toFloat()
+            heightRatio = ratioList[1].toFloat()
+        }
+
+        companion object {
+            private const val REGEX_PATTERN = "^\\d+(\\.?\\d+)?:\\d+(\\.?\\d+)?\$"
+        }
     }
 
     interface Listener {
