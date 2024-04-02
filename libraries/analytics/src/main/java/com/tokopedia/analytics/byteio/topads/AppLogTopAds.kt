@@ -36,9 +36,7 @@ object AppLogTopAds {
                             putEnterFrom(adsLogShowOverModel.adExtraData.enterFrom)
                             put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                             put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
-                            // todo need to confirm
                             put(AdsLogConst.Param.SIZE_PERCENT, adsLogShowOverModel.adExtraData.sizePercent)
-                            put(AdsLogConst.RIT, adsLogShowOverModel.rit)
                         }
                     )
 
@@ -46,16 +44,14 @@ object AppLogTopAds {
                     put(AdsLogConst.Param.IS_AD_EVENT, "1")
                     putNetworkType(context)
                     put(AdsLogConst.Param.VALUE, adsLogShowOverModel.adsValue)
-                    put(AdsLogConst.Param.LOG_EXTRA, adsLogShowOverModel.logExtra)
+                    put(AdsLogConst.Param.LOG_EXTRA, JSONObject().apply {
+                        put(AdsLogConst.RIT, adsLogShowOverModel.rit)
+                    })
                     put(AdsLogConst.Param.GROUP_ID, "0")
-
-                    // todo need to confirm
-                    put(AdsLogConst.Param.SIZE_PERCENT, adsLogShowOverModel.adExtraData.sizePercent)
 
                     put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, adsLogShowOverModel.systemTimeStartClick)
 
                     putTag(currentPageName)
-                    put(AdsLogConst.RIT, adsLogShowOverModel.rit)
                 })
             }
         )
@@ -89,12 +85,13 @@ object AppLogTopAds {
                     put(AdsLogConst.Param.IS_AD_EVENT, "1")
                     putNetworkType(context)
                     put(AdsLogConst.Param.VALUE, adsLogShowModel.adsValue)
-                    put(AdsLogConst.Param.LOG_EXTRA, adsLogShowModel.logExtra)
+                    put(AdsLogConst.Param.LOG_EXTRA, JSONObject().apply {
+                        put(AdsLogConst.RIT, adsLogShowModel.rit)
+                    })
                     put(AdsLogConst.Param.GROUP_ID, "0")
                     put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, adsLogShowModel.systemTimeStartClick)
 
                     putTag(currentPageName)
-                    put(AdsLogConst.RIT, adsLogShowModel.rit)
                 })
             }
         )
@@ -128,13 +125,14 @@ object AppLogTopAds {
                     put(AdsLogConst.Param.IS_AD_EVENT, "1")
                     putNetworkType(context)
                     put(AdsLogConst.Param.VALUE, adsLogRealtimeClickModel.adsValue)
-                    put(AdsLogConst.Param.LOG_EXTRA, adsLogRealtimeClickModel.logExtra)
+                    put(AdsLogConst.Param.LOG_EXTRA, JSONObject().apply {
+                        put(AdsLogConst.RIT, adsLogRealtimeClickModel.rit)
+                    })
                     put(AdsLogConst.Param.GROUP_ID, "0")
                     put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
                     put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, adsLogRealtimeClickModel.systemTimeStartClick)
 
                     putTag(currentPageName)
-                    put(AdsLogConst.RIT, adsLogRealtimeClickModel.rit)
                 })
             }
         )

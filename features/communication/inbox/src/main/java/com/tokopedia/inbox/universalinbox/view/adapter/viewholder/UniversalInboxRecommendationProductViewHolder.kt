@@ -237,7 +237,9 @@ class UniversalInboxRecommendationProductViewHolder(
     }
 
     //need to confirm
-    private fun getChannelName() = AppLogAnalytics.getTwoLastPage().orEmpty()
+    private fun getChannelName(): String {
+        return AppLogAnalytics.getTwoLastPage().orEmpty()
+    }
 
     companion object {
         @LayoutRes

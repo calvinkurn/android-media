@@ -4,7 +4,6 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 
 data class AdsLogShowModel(
     val adsValue: String,
-    val logExtra: String,
     val rit: String,
     // todo need to confirm
     val systemTimeStartClick: String,
