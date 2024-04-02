@@ -132,21 +132,22 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
         ShopPageMockWidgetModelMapper.listMockWidgetDataToJson(listMockShopWidgetData.map { it.getMockShopWidgetData() })?.let {
             sharedPref.edit().putString(SHARED_PREF_MOCK_WIDGET_DATA, it).apply()
         }
-    }
-
-    override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
-        if (shopPageMockWidgetModel.getWidgetType().equals("group_offering_product", true)) {
-            if (shopPageMockWidgetModel.getWidgetName().equals("bmgm_banner_group", true)) {
-                ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmPdWidgetMockResponse().mockBmsmWidgetData)?.let {
-                    sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
-                }
-            } else {
-                ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmGwpWidgetMockResponse().mockBmsmWidgetData)?.let {
-                    sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+        listMockShopWidgetData.forEach {
+            if (it.getWidgetType().equals("group_offering_product", true)) {
+                if (it.getWidgetName().equals("bmgm_banner_group", true)) {
+                    ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmPdWidgetMockResponse().mockBmsmWidgetData)?.let {
+                        sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+                    }
+                } else {
+                    ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmGwpWidgetMockResponse().mockBmsmWidgetData)?.let {
+                        sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+                    }
                 }
             }
         }
     }
+
+    override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) { }
 
     override fun onClearMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {
         adapter.removeSelectedMockWidget(shopPageMockWidgetModel)
