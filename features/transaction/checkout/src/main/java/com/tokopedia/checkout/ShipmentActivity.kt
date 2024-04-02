@@ -67,7 +67,7 @@ open class ShipmentActivity :
                     isPlusSelected,
                     bundle
                 )
-                return checkoutFragment
+                return backupCheckoutFragment
             }
         } else {
             shipmentFragment = ShipmentFragment.newInstance(
