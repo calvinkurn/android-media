@@ -43,8 +43,8 @@ class ProductInfoCallbackImpl(
     }
 
     private fun putAppLogEnterMethod() {
-        if (AppLogAnalytics.getLastDataExactStep(PAGE_NAME) == PageName.PDP) {
-            AppLogAnalytics.putPreviousPageData(
+        if (AppLogAnalytics.getCurrentData(PAGE_NAME) == PageName.PDP) {
+            AppLogAnalytics.putPageData(
                 AppLogParam.ENTER_METHOD,
                 EnterMethod.CLICK_ATC_TOASTER_PDP.str
             )
