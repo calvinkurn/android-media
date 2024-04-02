@@ -17,7 +17,6 @@ import com.tokopedia.home.beranda.di.module.HomeDataSourceModule
 import com.tokopedia.home.beranda.di.module.HomeDatabaseModule
 import com.tokopedia.home.beranda.di.module.HomeMapperModule
 import com.tokopedia.home.beranda.di.module.HomeUseCaseModule
-import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -53,12 +52,6 @@ class HomeTestModule {
         @ApplicationContext context: Context?
     ): UserSessionInterface = UserSession(context)
 
-    @HomeScope
-    @Provides
-    fun provideHomePrefController(
-        @ApplicationContext context: Context?
-    ): HomePrefController = HomePrefController(context)
-
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
@@ -68,7 +61,7 @@ class HomeTestModule {
 
     @Provides
     @HomeScope
-    fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, homePrefController: HomePrefController, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, homePrefController, remoteConfig, HomeDefaultDataSource())
+    fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, remoteConfig, HomeDefaultDataSource())
 
     @Provides
     @HomeScope
