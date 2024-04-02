@@ -472,7 +472,7 @@ class CheckoutCartProcessor @Inject constructor(
                 paymentData.metadata
             )
         }
-        return null
+        return UpdateCartPaymentRequest()
     }
 
     companion object {
