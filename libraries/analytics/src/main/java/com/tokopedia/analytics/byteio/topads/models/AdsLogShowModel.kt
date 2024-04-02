@@ -10,7 +10,7 @@ data class AdsLogShowModel(
     val adExtraData: AdExtraData
 ) {
     data class AdExtraData(
-        val channel: String,
+        val channel: String = "",
         val enterFrom: String = "",
         val mallCardType: String = AdsLogConst.AdCardStyle.PRODUCT_CARD,
         val productId: String

@@ -123,11 +123,8 @@ class UniversalInboxRecommendationProductViewHolder(
                     "",
                     //todo this value from BE
                     "",
-                    //todo this value from BE
-                    "",
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
-                        "",
                         productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
@@ -147,11 +144,8 @@ class UniversalInboxRecommendationProductViewHolder(
                     "",
                     //todo this value from BE
                     "",
-                    //todo this value from BE
-                    "",
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
-                        getChannelName(),
                         productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
@@ -171,11 +165,8 @@ class UniversalInboxRecommendationProductViewHolder(
                     "",
                     //todo this value from BE
                     "",
-                    //todo this value from BE
-                    "",
                     System.currentTimeMillis().toString(),
                     AdsLogRealtimeClickModel.AdExtraData(
-                        channel = getChannelName(),
                         productId = recommendationItem?.productId.orZero().toString()
                     )
                 )
@@ -197,11 +188,8 @@ class UniversalInboxRecommendationProductViewHolder(
                     "",
                     //todo this value from BE
                     "",
-                    //todo this value from BE
-                    "",
                     System.currentTimeMillis().toString(),
                     AdsLogShowModel.AdExtraData(
-                        channel = getChannelName(),
                         productId = recommendationItem?.productId.orZero().toString(),
                     )
                 )
@@ -222,25 +210,15 @@ class UniversalInboxRecommendationProductViewHolder(
                     "",
                     //todo this value from BE
                     "",
-                    //todo this value from BE
-                    "",
                     System.currentTimeMillis().toString(),
                     AdsLogShowOverModel.AdExtraData(
-                        channel = getChannelName(),
                         productId = recommendationItem?.productId.orZero().toString(),
                         sizePercent = visiblePercentage,
-                        rit = ""
                     )
                 )
             )
         }
     }
-
-    //need to confirm
-    private fun getChannelName(): String {
-        return AppLogAnalytics.getTwoLastPage().orEmpty()
-    }
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.universal_inbox_recommendation_product_item
