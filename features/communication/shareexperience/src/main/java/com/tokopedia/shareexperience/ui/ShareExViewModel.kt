@@ -294,9 +294,9 @@ class ShareExViewModel @Inject constructor(
                 val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
                 val campaign = bottomSheetArg.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
-                    androidUrl = generateUrlWithUTM("https://staging." + shareProperty.linkProperties.androidUrl, channelEnum, campaign),
-                    iosUrl = generateUrlWithUTM("https://staging." + shareProperty.linkProperties.iosUrl, channelEnum, campaign),
-                    desktopUrl = generateUrlWithUTM("https://staging." + shareProperty.linkProperties.desktopUrl, channelEnum, campaign),
+                    androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
+                    iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
+                    desktopUrl = generateUrlWithUTM(shareProperty.linkProperties.desktopUrl, channelEnum, campaign),
                     campaign = campaign
                 )
                 // Get generated image first

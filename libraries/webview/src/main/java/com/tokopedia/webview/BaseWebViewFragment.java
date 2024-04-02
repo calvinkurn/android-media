@@ -1052,9 +1052,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 //                    "&utm_campaign=gopayReferral-{share_id}-010424";
 
             String DUMMY_APPLINK = "tokopedia://share?" +
-//                    "referral_code=TARI123" +
-                    "product_id=2151019476" +
-                    "&page_type=1" +
+                    "referral_code=TARI123" +
+//                    "product_id=2151019476" +
+                    "&page_type=7" +
                     "&default_url=https://tkp.me/GPL-TARI123" +
                     "&label_action_click_share_icon={share_id}" +
                     "&label_action_click_close_icon={share_id}" +
