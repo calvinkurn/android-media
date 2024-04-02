@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.backup.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.backup.view.BackupCheckoutVM
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
-import com.tokopedia.checkout.backup.view.CheckoutViewModel
 import com.tokopedia.checkout.backup.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -43,7 +43,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                     val platformFee = ShipmentPaymentFeeModel()
                     for (fee in paymentFee.data) {
                         if (fee.code.equals(
-                                CheckoutViewModel.PLATFORM_FEE_CODE,
+                                BackupCheckoutVM.PLATFORM_FEE_CODE,
                                 ignoreCase = true
                             )
                         ) {

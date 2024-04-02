@@ -8,11 +8,6 @@ import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
-import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
-import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
-import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
-import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.backup.view.converter.CheckoutDataConverter
 import com.tokopedia.checkout.backup.view.processor.CheckoutAddOnProcessor
 import com.tokopedia.checkout.backup.view.processor.CheckoutCalculator
@@ -47,6 +42,11 @@ import com.tokopedia.checkout.backup.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.backup.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.backup.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.backup.view.widget.CheckoutDropshipWidget
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -104,7 +104,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class CheckoutViewModel @Inject constructor(
+class BackupCheckoutVM @Inject constructor(
     private val cartProcessor: CheckoutCartProcessor,
     private val logisticProcessor: CheckoutLogisticProcessor,
     private val promoProcessor: CheckoutPromoProcessor,
@@ -1622,7 +1622,7 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             val shipmentAction =
                 order.shipmentAction[newCourierItemData.selectedShipper.shipperProductId.toLong()]
-            if (shipmentAction != null && !shipmentAction.action.equals(this@CheckoutViewModel.shipmentAction, ignoreCase = true)) {
+            if (shipmentAction != null && !shipmentAction.action.equals(this@BackupCheckoutVM.shipmentAction, ignoreCase = true)) {
                 if (shipmentAction.popup.title.isEmpty() && shipmentAction.popup.body.isEmpty()) {
                     doShipmentAction(shipmentAction)
                     return@launch

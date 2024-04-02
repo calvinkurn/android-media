@@ -215,8 +215,8 @@ class BackupCheckoutFragment :
     @Inject
     lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
 
-    private val viewModel: CheckoutViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
+    private val viewModel: BackupCheckoutVM by lazy {
+        ViewModelProvider(this, viewModelFactory)[BackupCheckoutVM::class.java]
     }
 
     private var binding by autoCleared<FragmentCheckoutBinding> {
