@@ -16,6 +16,7 @@ data class ProductVariantResult(
     var parentProductId: String = "",
     var requestCode: Int = 0, // flag to perform a task to the client after vbs dismiss
     var cartId: String = "",
+    var anchorCartId: String = "",
 
     /**
      * PDP Only

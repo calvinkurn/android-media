@@ -92,6 +92,7 @@ class UpdateCartUseCase @Inject constructor(
                           color
                         }
                     }
+                    anchor_cart_id
                 }
             }
         }

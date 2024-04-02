@@ -23,6 +23,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -91,8 +92,8 @@ class AtcVariantViewModel @Inject constructor(
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _updateCartLiveData = MutableLiveData<Result<String>>()
-    val updateCartLiveData: LiveData<Result<String>>
+    private val _updateCartLiveData = MutableLiveData<Result<Data>>()
+    val updateCartLiveData: LiveData<Result<Data>>
         get() = _updateCartLiveData
 
     private val _deleteCartLiveData = MutableLiveData<Result<String>>()
@@ -224,7 +225,8 @@ class AtcVariantViewModel @Inject constructor(
         shouldRefreshPreviousPage: Boolean? = null,
         isFollowShop: Boolean? = null,
         requestCode: Int? = null,
-        cartId: String? = null
+        cartId: String? = null,
+        anchorCartId: String? = null
     ) {
         variantActivityResult = AtcCommonMapper.updateActivityResultData(
             recentData = variantActivityResult,
@@ -235,7 +237,8 @@ class AtcVariantViewModel @Inject constructor(
             shouldRefreshPreviousPage = shouldRefreshPreviousPage,
             isFollowShop = isFollowShop,
             requestCode = requestCode,
-            cartId = cartId
+            cartId = cartId,
+            anchorCartId = anchorCartId
         )
     }
 
@@ -590,13 +593,10 @@ class AtcVariantViewModel @Inject constructor(
                     quantity = params.quantity,
                     notes = params.notes
                 )
-                _updateCartLiveData.postValue(result.data.message.asSuccess())
+                _updateCartLiveData.postValue(result.data.asSuccess())
             } else {
-                _updateCartLiveData.postValue(
-                    MessageErrorException(
-                        result.error.firstOrNull().orEmpty()
-                    ).asFail()
-                )
+                val errorMsg = result.error.firstOrNull().orEmpty()
+                _updateCartLiveData.postValue(MessageErrorException(errorMsg).asFail())
             }
         }) {
             _updateCartLiveData.postValue(it.cause?.asFail() ?: it.asFail())
