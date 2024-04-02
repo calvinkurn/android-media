@@ -26,10 +26,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.spyk
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
 /**
  * Created by Yehezkiel on 28/05/21
@@ -73,6 +73,10 @@ abstract class BaseAtcVariantViewModelTest {
             addToWishlistV2UseCase, updateCartUseCase,
             deleteCartUseCase, toggleFavoriteUseCase, remoteConfig
         )
+    }
+
+    val spykViewModel by lazy {
+        spyk(viewModel)
     }
 
     @Before
@@ -247,7 +251,7 @@ abstract class BaseAtcVariantViewModelTest {
         cashBackPercentage: Int,
         uspImageUrl: String,
         isTokoCabang: Boolean,
-        expectedMinOrder: Int,
+        expectedMinOrder: Int
     ) {
         visitables.forEach {
             when (it) {

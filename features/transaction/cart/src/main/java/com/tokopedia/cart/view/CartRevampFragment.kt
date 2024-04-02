@@ -6220,13 +6220,14 @@ class CartRevampFragment :
                 ) {
                     when (requestCode) {
                         ProductDetailCommonConstant.RC_VBS_UPDATE_VARIANT_SUCCESS -> {
-                            val shouldAutoScrollToChangedVariant = cartId.isNotBlankOrZero()
+                            val shouldAutoScrollToChangedVariant = anchorCartId.isNotBlankOrZero()
                             if (shouldAutoScrollToChangedVariant) {
-                                arguments?.putString(CartActivity.EXTRA_CART_ID, cartId)
+                                arguments?.putString(CartActivity.EXTRA_CART_ID, anchorCartId)
                                 viewModel.processInitialGetCartData(
                                     cartId = "0",
                                     initialLoad = false,
-                                    isLoadingTypeRefresh = true
+                                    isLoadingTypeRefresh = true,
+                                    isCartChangeVariant = true
                                 )
                             }
                         }

@@ -162,7 +162,6 @@ class CartViewModel @Inject constructor(
     private val deleteCartUseCase: DeleteCartUseCase,
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
-    private val compositeSubscription: CompositeSubscription,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
@@ -180,7 +179,6 @@ class CartViewModel @Inject constructor(
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
     private val cartPromoEntryPointProcessor: CartPromoEntryPointProcessor,
     private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
-    private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel(), CoroutineScope {
 
@@ -521,7 +519,8 @@ class CartViewModel @Inject constructor(
         cartId: String,
         initialLoad: Boolean,
         isLoadingTypeRefresh: Boolean,
-        getCartState: Int = GET_CART_STATE_DEFAULT
+        getCartState: Int = GET_CART_STATE_DEFAULT,
+        isCartChangeVariant: Boolean = false,
     ) {
         updateBuyAgainFloatingButtonVisibility(false)
         CartIdlingResource.increment()
@@ -533,13 +532,21 @@ class CartViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val cartData = getCartRevampV4UseCase(
-                    GetCartParam(
-                        cartId = cartId,
-                        state = getCartState,
-                        isCartReimagine = true
-                    )
+                val requestToaster = when {
+                    isCartChangeVariant -> {
+                        GetCartRevampV4UseCase.PARAM_VALUE_TOASTER_CART_VARIANT
+                    }
+                    else -> {
+                        GetCartRevampV4UseCase.PARAM_VALUE_TOASTER_DEFAULT
+                    }
+                }
+                val param = GetCartParam(
+                    cartId = cartId,
+                    state = getCartState,
+                    isCartReimagine = true,
+                    requestToaster = requestToaster
                 )
+                val cartData = getCartRevampV4UseCase(param)
                 onSuccessGetCartList(cartData, initialLoad)
             } catch (t: Throwable) {
                 onErrorGetCartList(t, initialLoad)

@@ -41,6 +41,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATION
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -447,10 +448,10 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun handleObserveUpdateCartOnGeneral(result: Result<String>) {
+    private fun handleObserveUpdateCartOnGeneral(result: Result<Data>) {
         when (result) {
             is Success -> {
-                showToasterSuccess(result.data, getString(R.string.atc_variant_oke_label))
+                showToasterSuccess(result.data.message, getString(R.string.atc_variant_oke_label))
             }
 
             is Fail -> {
@@ -460,12 +461,14 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun handleObserveUpdateCartByClient(result: Result<String>) {
+    private fun handleObserveUpdateCartByClient(result: Result<Data>) {
         when (result) {
             is Success -> {
+                val data = result.data
                 viewModel.updateActivityResult(
                     requestCode = ProductDetailCommonConstant.RC_VBS_UPDATE_VARIANT_SUCCESS,
-                    atcSuccessMessage = result.data
+                    atcSuccessMessage = data.message,
+                    anchorCartId = data.anchorCartId
                 )
                 dismissAfterTransaction()
             }
