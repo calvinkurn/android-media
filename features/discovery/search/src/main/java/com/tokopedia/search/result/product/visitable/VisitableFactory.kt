@@ -236,12 +236,8 @@ class VisitableFactory @Inject constructor(
         visitableList: MutableList<Visitable<*>>,
         cpmDataView: CpmDataView,
     ) {
-        var firstProductIndex = visitableList.indexOfFirstProductItem()
-        if (dynamicHeadlineAdsPosition(cpmDataView)) {
-            cpmDataView.cpmModel.data.firstOrNull()?.let { cpmData ->
-                firstProductIndex = firstProductIndex + cpmData.cpm.position
-            }
-        }
+        val pos = cpmDataView.cpmModel.data.first().cpm.position
+        var firstProductIndex = if (dynamicHeadlineAdsPosition(cpmDataView)) visitableList.getIndexForWidgetPosition(pos) else visitableList.indexOfFirstProductItem()
         if (firstProductIndex !in visitableList.indices) return
 
         visitableList.add(firstProductIndex, cpmDataView)
