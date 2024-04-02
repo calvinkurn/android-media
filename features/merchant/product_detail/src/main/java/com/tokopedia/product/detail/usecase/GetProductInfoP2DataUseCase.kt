@@ -69,6 +69,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
               superGraphicURL
               separatorColor
             }
+            productVariantWishlist {
+                productID
+                isWishlist
+            }
             ppGetItemDetailPage{
               program{
                 protectionAvailable

@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 
 data class ContentCardModel(
     val id: String,
@@ -17,7 +18,14 @@ data class ContentCardModel(
     val appLink: String,
     val imageUrl: String,
     val backgroundColor: List<String>,
-    val labelState: LabelState
+    val labelState: LabelState,
+    val position: Int,
+    val isAds: Boolean,
+    val shopId: String,
+    val pageName: String,
+    val appLog: RecommendationAppLog = RecommendationAppLog(),
+    val tabIndex: Int = -1,
+    val tabName: String = ""
 ) : ImpressHolder(), ForYouRecommendationVisitable {
 
     data class LabelState(

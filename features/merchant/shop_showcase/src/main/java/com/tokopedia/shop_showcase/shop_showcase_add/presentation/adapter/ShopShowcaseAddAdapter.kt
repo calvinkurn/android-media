@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop_showcase.databinding.ItemProductCardHorizontalBinding
@@ -77,7 +78,9 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         selectedProductList.removeAt(position)
         notifyDataSetChanged()
         if (deletedProductList.size.isMoreThanZero()) {
-            listener.setupDeleteCounter(deletedProductList[0] as ShowcaseProduct)
+            val productToBeDeleted = deletedProductList.getOrNull(Int.ZERO) ?: return
+            val product = (productToBeDeleted as? ShowcaseProduct) ?: return
+            listener.setupDeleteCounter(product)
             listener.showDeleteCounter()
         }
     }

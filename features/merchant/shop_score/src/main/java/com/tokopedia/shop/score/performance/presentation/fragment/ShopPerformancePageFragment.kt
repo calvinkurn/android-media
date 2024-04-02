@@ -154,6 +154,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         setPageBackground()
         setupActionBar()
+        setupTicker()
         setupAdapter()
         onSwipeRefreshShopPerformance()
         observeShopPeriod()
@@ -865,6 +866,10 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun setupTicker() {
+        binding?.shopPerformanceUnifiedTicker?.loadAndShow(SHOP_SCORE_PAGE)
+    }
+
     private fun setupAdapter() {
         binding?.rvShopPerformance?.run {
             layoutManager = context?.let { LinearLayoutManager(it) }
@@ -1058,6 +1063,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         private const val PENALTY_BADGE_DELAY = 1000L
         private const val COACH_MARK_RENDER_SHOW = 1000L
         private const val SIX_HOURS_OF_DAY = 6
+        private const val SHOP_SCORE_PAGE = "seller.shop-score"
 
         private const val COACHMARK_LAST_POSITION_PM_RM = 2
         private const val COACHMARK_HEADER_POSITION = 0

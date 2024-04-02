@@ -53,9 +53,14 @@ data class ComponentsItem(
     @SerializedName("creative_name")
     var creativeName: String? = "",
 
+    @SerializedName("source")
+    private var sourceData: String? = "",
+
     var isApplicable: Boolean = true,
 
     var topAdsTrackingStatus: Boolean = false,
+
+    var byteIoTrackingStatus: Boolean = false,
 
     var shimmerHeight: Int = 0,
 
@@ -157,4 +162,10 @@ data class ComponentsItem(
     fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()
 
     fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
+
+    fun getSource(): ComponentSourceData {
+        return sourceData?.let {
+            ComponentSourceData.getByValue(it)
+        } ?: ComponentSourceData.Unknown
+    }
 }

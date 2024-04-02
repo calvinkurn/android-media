@@ -6,6 +6,7 @@ import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.ExpiryDateResponse
 import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
@@ -15,14 +16,18 @@ import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpTypeUseCase
 import com.tokopedia.topads.domain.usecase.TopadsCreditHistoryUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -30,6 +35,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import java.util.*
 
 class TopAdsCreditHistoryViewModelTest {
     lateinit var viewModel: TopAdsCreditHistoryViewModel
@@ -38,13 +44,17 @@ class TopAdsCreditHistoryViewModelTest {
     lateinit var userSessionInterface: UserSessionInterface
 
     @get:Rule
+    val testRule = CoroutineTestRule()
+
+    @get:Rule
     val rule = InstantTaskExecutorRule()
 
     private val pendingRewardUseCase: TopadsGetFreeDepositUseCase = mockk(relaxed = true)
     private var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
     private val topAdsCreditHistoryUseCase: TopadsCreditHistoryUseCase = mockk(relaxed = true)
-    private val topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase = mockk(relaxed = true)
+    private val topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase =
+        mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Before
@@ -93,8 +103,10 @@ class TopAdsCreditHistoryViewModelTest {
         }
 
         viewModel.getAutoTopUpStatus()
-        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Success).data,
-            mockObject.response?.data)
+        Assert.assertEquals(
+            (viewModel.getAutoTopUpStatus.value as Success).data,
+            mockObject.response?.data
+        )
     }
 
     @Test
@@ -131,6 +143,30 @@ class TopAdsCreditHistoryViewModelTest {
     }
 
     @Test
+    fun `getCreditHistory on success should contain value in livedata`() {
+        val topAdsCreditHistory = TopAdsCreditHistory()
+        val data: Result<TopAdsCreditHistory> = Success(topAdsCreditHistory)
+        coEvery {
+            topAdsCreditHistoryUseCase.executeQuery(any(), any())
+        } answers {
+            flowOf(data)
+        }
+
+        viewModel.getCreditHistory(startDate = Date(), endDate = Date())
+        Assert.assertEquals(viewModel.creditsHistory.value, data)
+    }
+
+    @Test
+    fun `getCreditHistory on exception ,livedata value should Fail`() {
+        val actual = Throwable("my exception")
+
+        coEvery { topAdsCreditHistoryUseCase.executeQuery(any(), any()) } throws actual
+
+        viewModel.getCreditHistory(null, null)
+        Assert.assertEquals(viewModel.creditsHistory.value, Fail(actual))
+    }
+
+    @Test
     fun `getShopDeposit on success should contain value in livedata`() {
         val actual = Deposit(TopadsDashboardDeposits(DepositAmount(0, "10")))
 
@@ -139,8 +175,10 @@ class TopAdsCreditHistoryViewModelTest {
         }
 
         viewModel.getShopDeposit()
-        Assert.assertEquals(viewModel.creditAmount.value,
-            actual.topadsDashboardDeposits.data.amountFmt)
+        Assert.assertEquals(
+            viewModel.creditAmount.value,
+            actual.topadsDashboardDeposits.data.amountFmt
+        )
     }
 
     @Test
@@ -162,42 +200,61 @@ class TopAdsCreditHistoryViewModelTest {
     }
 
     @Test
-    fun `test success in getSelectedTopUpType when credit performance is topUpFrequently`(){
-        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
-            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY)
-        ))
+    fun `test success in getSelectedTopUpType when credit performance is topUpFrequently`() {
+        val actual = GetPersonalisedCopyResponse(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy(
+                GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(
+                    creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY
+                )
+            )
+        )
         every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
             firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
         }
         viewModel.getSelectedTopUpType()
 
-        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+        Assert.assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected,
+            true
+        )
     }
 
     @Test
-    fun `test success in getSelectedTopUpType when credit performance is INSUFFICIENT_CREDIT`(){
-        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
-            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT)
-        ))
+    fun `test success in getSelectedTopUpType when credit performance is INSUFFICIENT_CREDIT`() {
+        val actual = GetPersonalisedCopyResponse(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy(
+                GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(
+                    creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
+                )
+            )
+        )
         every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
             firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
         }
         viewModel.getSelectedTopUpType()
 
-        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+        Assert.assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected,
+            true
+        )
     }
 
     @Test
-    fun `test success in getSelectedTopUpType when credit performance is not INSUFFICIENT_CREDIT and not TOP_UP_FREQUENTLY`(){
-        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
-            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData()
-        ))
+    fun `test success in getSelectedTopUpType when credit performance is not INSUFFICIENT_CREDIT and not TOP_UP_FREQUENTLY`() {
+        val actual = GetPersonalisedCopyResponse(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy(
+                GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData()
+            )
+        )
         every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
             firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
         }
         viewModel.getSelectedTopUpType()
 
-        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, false)
+        Assert.assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected,
+            false
+        )
     }
 
     @Test
