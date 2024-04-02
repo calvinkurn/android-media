@@ -6226,7 +6226,8 @@ class CartRevampFragment :
                                 viewModel.processInitialGetCartData(
                                     cartId = "0",
                                     initialLoad = false,
-                                    isLoadingTypeRefresh = true
+                                    isLoadingTypeRefresh = true,
+                                    isCartChangeVariant = true
                                 )
                             }
                         }
