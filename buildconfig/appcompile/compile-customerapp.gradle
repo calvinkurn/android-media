@@ -45,6 +45,7 @@ includeIfEnabled("features:content:stories_internal")
 includeIfEnabled("features:content:product_picker")
 includeIfEnabled("features:content:creation_common")
 includeIfEnabled("features:content:stories_creation")
+includeIfEnabled("features:content:product_preview")
 
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:category:tradein")
@@ -303,7 +304,6 @@ includeIfEnabled("features:tokofood")
 
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
-includeIfEnabled("features:scp:auth")
 
 includeIfEnabled("testapp-features:user:logintestapp")
 includeIfEnabled("customerapp")

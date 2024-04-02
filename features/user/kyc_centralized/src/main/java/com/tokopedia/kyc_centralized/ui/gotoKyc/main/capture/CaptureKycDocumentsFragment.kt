@@ -45,6 +45,9 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
     @Inject
     lateinit var oneKycSdk: OneKycSdk
 
+    @Inject
+    lateinit var viewModel: CaptureKycDocumentsViewModel
+
     private val args: CaptureKycDocumentsFragmentArgs by navArgs()
 
     private val interactor = KycSdkStatusPublisher.get()
@@ -65,6 +68,13 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         kycStateObserver()
         gotoCaptureKycDocuments()
         initListener()
+        initObserver()
+    }
+
+    private fun initObserver() {
+        viewModel.retryExhausted.observe(viewLifecycleOwner) {
+            finishWithResultFinishAndRemoveCache()
+        }
     }
 
     private fun initListener() {
@@ -100,6 +110,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                     UnifiedKycFlowResult.FAILURE -> {
                         //show failed page
                         onFailedUploadDocuments()
+                        viewModel.onFailedUpload()
                     }
                     UnifiedKycFlowResult.SUCCESS -> {
                         GotoKycCleanupStorageWorker.cancelWorker(requireContext())
@@ -123,17 +134,25 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun finishWithResultFinishAndRemoveCache() {
+        removeGotoKycCache()
+        activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
+        activity?.finish()
+    }
+
     private fun finishWithResultCancelAndRemoveCache() {
-        val isUploading = oneKycSdk.getKycPlusPreferencesProvider()
-            .getOneKycState()
-        if (isUploading != OneKycResumeState.DOCUMENTS_UPLOADING) {
-            removeGotoKycCache()
-        }
+        removeGotoKycCache()
         activity?.setResult(Activity.RESULT_CANCELED)
         activity?.finish()
     }
 
     private fun removeGotoKycCache() {
+        val isUploading = oneKycSdk.getKycPlusPreferencesProvider()
+            .getOneKycState()
+        if (isUploading == OneKycResumeState.DOCUMENTS_UPLOADING) {
+            return
+        }
+
         val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
         val preferenceKey = OneKycConstants.KYC_UPLOAD_PROGRESS_STATE
         removeGotoKycPreference(

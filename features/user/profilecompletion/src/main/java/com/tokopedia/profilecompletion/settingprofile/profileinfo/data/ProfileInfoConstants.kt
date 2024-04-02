@@ -9,6 +9,7 @@ object ProfileInfoConstants {
     const val PHONE = "6"
     const val GENDER = "7"
     const val BIRTH_DATE = "8"
+    const val APPLOG_DEVICE_ID = "99"
 
     const val PROFILE_INFO_SECTION = "9"
     const val PROFILE_PERSONAL_INFO_SECTION = "10"

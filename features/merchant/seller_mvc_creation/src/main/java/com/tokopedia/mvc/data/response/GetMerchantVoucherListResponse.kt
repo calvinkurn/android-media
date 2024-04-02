@@ -39,6 +39,8 @@ data class MerchantVoucherModel(
     val discountAmt: Int = 0,
     @SerializedName("voucher_discount_amt_formatted")
     val discountAmtFormatted: String = "",
+    @SerializedName("voucher_discount_amt_decimal_formatted")
+    val discountAmtDecimalFormatted: String = "",
     @SerializedName("voucher_discount_amt_max")
     val discountAmtMax: Int = 0,
     @SerializedName("voucher_discount_type_formatted")

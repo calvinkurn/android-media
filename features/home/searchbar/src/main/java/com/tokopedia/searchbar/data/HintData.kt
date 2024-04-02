@@ -9,5 +9,9 @@ data class HintData (
     var placeholder: String = "",
     @SerializedName("keyword")
     @Expose
-    var keyword: String = ""
+    var keyword: String = "",
+
+    val groupId: String = "",
+    val imprId: String = "",
+    val wordsSource: String = "",
 )

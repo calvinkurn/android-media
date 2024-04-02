@@ -22,32 +22,32 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.people.databinding.FragmentUserProfileReviewBinding
-import com.tokopedia.people.utils.withCache
-import com.tokopedia.people.viewmodels.UserProfileViewModel
-import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
-import com.tokopedia.people.views.activity.UserProfileActivity
-import com.tokopedia.people.views.uimodel.state.UserProfileUiState
-import kotlinx.coroutines.flow.collectLatest
-import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserReviewImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.databinding.FragmentUserProfileReviewBinding
 import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
 import com.tokopedia.people.utils.getGreenColorSpan
 import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.utils.withCache
+import com.tokopedia.people.viewmodels.UserProfileViewModel
+import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
+import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.adapter.UserReviewAdapter
 import com.tokopedia.people.views.itemdecoration.UserReviewItemDecoration
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.people.views.viewholder.UserReviewViewHolder
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 12, 2023
@@ -170,7 +170,8 @@ class UserProfileReviewFragment @Inject constructor(
         setupView()
         setupObserver()
 
-        viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+        if (activity?.lastNonConfigurationInstance == null)
+            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
     }
 
     override fun onPause() {

@@ -1,8 +1,10 @@
 package com.tokopedia.productcard.reimagine
 
+import androidx.annotation.IdRes
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
 import com.tokopedia.productcard.experiments.ProductCardColor
+import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
 
@@ -23,7 +25,8 @@ data class ProductCardModel(
     val isSafeProduct: Boolean = false,
     val isInBackground: Boolean = false,
     val nonVariant: NonVariant? = null,
-    val colorMode: ProductCardColor? = null 
+    val colorMode: ProductCardColor? = null,
+    val productCardGenericCta: ProductCardGenericCta? = null
 ) {
 
     fun labelBenefit(): LabelGroupReimagine? =
@@ -43,8 +46,8 @@ data class ProductCardModel(
 
     fun labelPreventiveOverlay(): LabelGroupReimagine? =
         labelGroup(LABEL_PREVENTIVE_OVERLAY)?.takeIf {
-            it.hasTitle()
-                && labelPreventiveBlock() == null
+            it.hasTitle() &&
+                labelPreventiveBlock() == null
         }
 
     fun labelPreventiveBlock(): LabelGroupReimagine? =
@@ -70,7 +73,7 @@ data class ProductCardModel(
         .filter { it.position.startsWith(LABEL_OVERLAY_) && it.hasImage() }
         .sortedBy { it.position }
 
-    fun stockInfo() : StockInfo? = stockInfo.takeIf { it.hasTitle() }
+    fun stockInfo(): StockInfo? = stockInfo.takeIf { it.hasTitle() }
 
     fun showPrice() = price.isNotBlank() && labelNettPrice() == null
 
@@ -80,7 +83,9 @@ data class ProductCardModel(
 
     fun showQuantityEditor(): Boolean = (nonVariant?.quantity ?: 0) > 0
 
-    fun showAddToCartButton(): Boolean = hasAddToCart || showAddToCartNonVariant()
+    fun showAddToCartButton(): Boolean = (hasAddToCart || showAddToCartNonVariant()) && !shouldShowGenericCta()
+
+    fun shouldShowGenericCta() = productCardGenericCta != null
 
     private fun labelGroup(position: String) = labelGroupList.find { it.position == position }
 
@@ -89,7 +94,7 @@ data class ProductCardModel(
         val title: String = "",
         val type: String = "",
         val imageUrl: String = "",
-        val styles: List<Style> = listOf(),
+        val styles: List<Style> = listOf()
     ) {
         private val style = styles.associate { it.key to it.value }
 
@@ -123,7 +128,7 @@ data class ProductCardModel(
 
     data class ShopBadge(
         val imageUrl: String = "",
-        val title: String = "",
+        val title: String = ""
     ) {
 
         fun hasImage() = imageUrl.isNotEmpty()
@@ -134,7 +139,7 @@ data class ProductCardModel(
             internal fun from(shopBadge: ProductCardModel.ShopBadge?): ShopBadge =
                 ShopBadge(
                     imageUrl = shopBadge?.imageUrl ?: "",
-                    title = shopBadge?.title ?: "",
+                    title = shopBadge?.title ?: ""
                 )
         }
     }
@@ -151,7 +156,7 @@ data class ProductCardModel(
                 StockInfo(
                     percentage = productCardModel.stockBarPercentage,
                     label = productCardModel.stockBarLabel,
-                    labelColor = productCardModel.stockBarLabelColor,
+                    labelColor = productCardModel.stockBarLabelColor
                 )
         }
     }
@@ -159,7 +164,7 @@ data class ProductCardModel(
     data class NonVariant(
         val quantity: Int = 0,
         internal val minQuantity: Int = 0,
-        internal val maxQuantity: Int = 0,
+        internal val maxQuantity: Int = 0
     ) {
         val minQuantityFinal = maxOf(minQuantity, MIN_QUANTITY_NON_VARIANT)
         val maxQuantityFinal = maxOf(maxQuantity, minQuantityFinal)
@@ -174,12 +179,51 @@ data class ProductCardModel(
                 return NonVariant(
                     quantity = nonVariant.quantity,
                     minQuantity = nonVariant.minQuantity,
-                    maxQuantity = nonVariant.maxQuantity,
+                    maxQuantity = nonVariant.maxQuantity
                 )
             }
         }
     }
-    
+
+    /**
+     * @property copyWriting text for the main button
+     * @property mainButtonVariant variant for the main button, value is UnifyButton.Variant
+     * @property mainButtonType type for the main button, value is UnifyButton.Type
+     * @property shouldShowSecondaryCta whether to show secondary CTA or not,
+     * secondary CTA is the smaller left one
+     * @property secondaryCtaIconResource icon resource Idl for the secondary CTA
+     * @property secondaryCtaIconResourceColorToken colorToken for the secondary CTA icon
+     * @property secondaryCtaBackgroundColorToken background color for the secondary CTA
+     * @property secondaryCtaBorderColorToken border color for the secondary CTA
+     */
+    data class ProductCardGenericCta(
+        val copyWriting: String? = "",
+        val mainButtonVariant: Int = UnifyButton.Variant.GHOST,
+        val mainButtonType: Int = UnifyButton.Type.MAIN,
+        val shouldShowSecondaryCta: Boolean = false,
+        @IdRes
+        val secondaryCtaIconResource: Int? = null,
+        val secondaryCtaIconResourceColorToken: Int? = null,
+        val secondaryCtaBackgroundColorToken: Int? = null,
+        val secondaryCtaBorderColorToken: Int? = null
+    ) {
+        companion object {
+            internal fun from(productCardGenericCta: ProductCardModel.ProductCardGenericCta?): ProductCardGenericCta? {
+                if (productCardGenericCta == null) return null
+                return ProductCardGenericCta(
+                    copyWriting = productCardGenericCta.copyWriting,
+                    mainButtonVariant = productCardGenericCta.mainButtonVariant,
+                    mainButtonType = productCardGenericCta.mainButtonType,
+                    shouldShowSecondaryCta = productCardGenericCta.shouldShowSecondaryCta,
+                    secondaryCtaIconResource = productCardGenericCta.secondaryCtaIconResource,
+                    secondaryCtaIconResourceColorToken = productCardGenericCta.secondaryCtaIconResourceColorToken,
+                    secondaryCtaBackgroundColorToken = productCardGenericCta.secondaryCtaBackgroundColorToken,
+                    secondaryCtaBorderColorToken = productCardGenericCta.secondaryCtaBorderColorToken
+                )
+            }
+        }
+    }
+
     companion object {
         fun from(productCardModel: ProductCardModel): ProductCardModelReimagine =
             ProductCardModelReimagine(
@@ -199,6 +243,7 @@ data class ProductCardModel(
                 isInBackground = productCardModel.isInBackground,
                 nonVariant = NonVariant.from(productCardModel.nonVariant),
                 colorMode = productCardModel.colorMode,
+                productCardGenericCta = ProductCardGenericCta.from(productCardModel.productCardGenericCta)
             )
 
         private fun shopBadge(productCardModel: ProductCardModel) =

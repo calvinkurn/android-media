@@ -335,7 +335,6 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.Carouse
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -2832,12 +2831,12 @@ class ShopPageHomeTracking(
     }
 
     fun impressionProductCardThematicWidgetCampaign(
-        campaignId: String,
-        campaignName: String,
-        shopId: String,
-        userId: String,
-        products: List<ProductCardUiModel>,
-        isFestivity: Boolean
+            campaignId: String,
+            campaignName: String,
+            shopId: String,
+            userId: String,
+            products: List<ShopHomeProductUiModel>,
+            isFestivity: Boolean
     ) {
         var eventLabel = joinDash(shopId, campaignId, campaignName)
         if (isFestivity) {
@@ -2863,7 +2862,7 @@ class ShopPageHomeTracking(
                         productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong(),
                         itemListValue = itemListValue,
                         isFulfillment = productCardUiModel.isFulfillment,
-                        warehouseId = productCardUiModel.warehouseId
+                        warehouseId = productCardUiModel.warehouseId.orEmpty()
                     )
                 )
             }
@@ -2875,13 +2874,13 @@ class ShopPageHomeTracking(
     }
 
     fun clickProductCardThematicWidgetCampaign(
-        campaignId: String,
-        campaignName: String,
-        shopId: String,
-        userId: String,
-        product: ProductCardUiModel,
-        position: Int,
-        isFestivity: Boolean
+            campaignId: String,
+            campaignName: String,
+            shopId: String,
+            userId: String,
+            product: ShopHomeProductUiModel,
+            position: Int,
+            isFestivity: Boolean
     ) {
         var eventLabel = joinDash(shopId, campaignId, campaignName)
         if (isFestivity) {
@@ -2907,7 +2906,7 @@ class ShopPageHomeTracking(
                         productPrice = product.displayedPrice?.getDigits().orZero().toLong(),
                         itemListValue = itemListValue,
                         isFulfillment = product.isFulfillment,
-                        warehouseId = product.warehouseId
+                        warehouseId = product.warehouseId.orEmpty()
                     )
                 )
             )

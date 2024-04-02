@@ -11,6 +11,7 @@ import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridM
 import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide

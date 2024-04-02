@@ -394,8 +394,8 @@ class SearchBarViewModel @Inject constructor(
         } else {
             currentKeywords
         }
-        return if (keywords.size == 1) {
-            searchParameter.setSearchQuery(keywords.first().keyword)
+        return if (keywords.size <= 1) {
+            searchParameter.setSearchQuery(keywords.firstOrNull()?.keyword ?: "")
         } else {
             searchParameter.setSearchQueries(keywords.map { it.keyword })
         }

@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.TestSchedulersProvider
 import com.tokopedia.autocompletecomponent.initialstate.TestException
 import com.tokopedia.autocompletecomponent.jsonToObject
@@ -56,9 +57,17 @@ internal open class SuggestionPresenterTestFixtures {
         suggestionPresenter.attachView(suggestionView)
     }
 
-    protected fun SuggestionContract.View.onClickSuggestion(applink: String) {
+    protected fun SuggestionContract.View.onClickSuggestion(
+        applink: String,
+        byteIOEnterMethod: String = AppLogSearch.ParamValue.SEARCH_SUG,
+    ) {
         dropKeyBoard()
-        route(applink, suggestionPresenter.getSearchParameter(), suggestionPresenter.getActiveKeyword())
+        route(
+            applink,
+            suggestionPresenter.getSearchParameter(),
+            suggestionPresenter.getActiveKeyword(),
+            byteIOEnterMethod,
+        )
         finish()
     }
 

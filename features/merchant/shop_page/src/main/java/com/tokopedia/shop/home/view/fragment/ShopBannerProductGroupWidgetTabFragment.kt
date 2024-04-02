@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
@@ -34,15 +35,15 @@ import kotlin.collections.ArrayList
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.WidgetStyle
-class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
+class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
         private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
-        private const val CORNER_RADIUS_IMAGE_BANNER = 12
+        private const val CORNER_RADIUS_IMAGE_BANNER = 12f
 
         @JvmStatic
         fun newInstance(
@@ -65,6 +66,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     }
 
+    private val horizontalMainBannerCornerRadiusPx by lazy { CORNER_RADIUS_IMAGE_BANNER.toPx() }
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val widgets by lazy {
         arguments?.getParcelableArrayList<BannerProductGroupUiModel.Tab.ComponentList>(
@@ -146,7 +148,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             binding?.spaceMainBannerTop?.visible()
             
             binding?.imgMainBanner?.visible()
-            binding?.imgMainBanner?.cornerRadius = CORNER_RADIUS_IMAGE_BANNER
             
             binding?.spaceProductCarouselTop?.visible()
             
@@ -174,7 +175,9 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         mainBanner: BannerProductGroupUiModel.Tab.ComponentList.Data?
     ) {
         if (imageUrl.isNotEmpty()) {
-            binding?.imgMainBanner?.loadImage(imageUrl)
+            binding?.imgMainBanner?.loadImage(imageUrl) {
+                setRoundedRadius(horizontalMainBannerCornerRadiusPx)
+            }
             binding?.imgMainBanner?.setOnClickListener {
                 tracker.sendProductCarouselBannerClick(
                     displaySingleColumnComponentId,
