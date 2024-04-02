@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
+import android.graphics.pdf.PdfDocument.Page
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -32,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -144,12 +146,16 @@ object AppLogAnalytics {
         put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
     }
 
-    internal fun JSONObject.addEntranceInfoCart() {
-        val data = JSONObject().also {
-            it.addEnterFromInfo()
+    private fun generateEntranceInfoCartJson(): JSONObject {
+        return JSONObject().also {
+            it.put(ENTER_FROM_INFO, getEnterFromBeforeCart())
             it.put(ENTRANCE_FORM, PageName.CART)
             it.put(SOURCE_PAGE_TYPE, PageName.CART)
-        }.toString()
+        }
+    }
+
+    internal fun JSONObject.addEntranceInfoCart() {
+        val data = generateEntranceInfoCartJson().toString()
         put(ENTRANCE_INFO, data)
     }
 
@@ -285,7 +291,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-            ?.get(IS_SHADOW) == true
+                ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -338,6 +344,23 @@ object AppLogAnalytics {
             val map = _pageDataList[idx]
             map[key]?.let {
                 return it
+            }
+            idx--
+        }
+        return null
+    }
+
+    private fun getEnterFromBeforeCart(): Any? {
+        if (_pageDataList.isEmpty()) return null
+        var idx = _pageDataList.lastIndex
+        var start = false
+        while (idx >= 0) {
+            val map = _pageDataList[idx]
+            if (map.containsKey(ENTER_FROM) && start) {
+                return map[ENTER_FROM]
+            }
+            if (map[PAGE_NAME] == PageName.CART) {
+                start = true
             }
             idx--
         }
@@ -455,15 +478,28 @@ object AppLogAnalytics {
         return JSONObject().also {
             it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
             it.put("buy_type", buyType.code)
-            it.put("os_type", "android")
+            it.put("os_name", "android")
         }.toString()
     }
 
-    fun getEntranceInfoForCheckout(buyType: AtcBuyType): String {
+    fun getEntranceInfoForCheckout(buyType: AtcBuyType, cartIds: List<String>): String {
         return JSONObject().also {
-            it.addEntranceInfoCart()
-            it.put("buy_type", buyType.code)
-            it.put("os_type", "android")
+            it.put("funnel", if (buyType == AtcBuyType.ATC) "regular" else "occ")
+            it.put("buy_type", buyType.code.toString())
+            it.put("os_name", "android")
+            it.put("cart_item", JSONArray().also { item ->
+                cartIds.forEach { id ->
+                    item.put(JSONObject().also { j ->
+                        j.put("cart_id", id)
+                        if (buyType == AtcBuyType.ATC) {
+                            j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
+                        } else {
+                            j.put(ENTRANCE_INFO, generateEntranceInfoJson())
+                        }
+
+                    })
+                }
+            })
         }.toString()
     }
 

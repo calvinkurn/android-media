@@ -22,3 +22,15 @@ internal fun verifyRecommendationEventNot(expectedEvents: String) {
         AppLogAnalytics.send(expectedEvents, any())
     }
 }
+
+internal fun JSONObject.assertRecommendationParam(key: String, value: String) {
+    assert(this[key] == value)
+}
+
+internal fun JSONObject.assertRecommendationParam(key: String, value: Int) {
+    assert(this[key].toString() == value.toString())
+}
+
+internal fun JSONObject.assertCompareRecommendationParam(otherJSONObject: JSONObject, key: String) {
+    assert(this[key] == otherJSONObject[key])
+}

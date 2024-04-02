@@ -3,6 +3,8 @@ package com.tokopedia.search.result.product.cpm
 import android.content.Context
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SHOP_NAME
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -17,6 +19,7 @@ class BannerAdsListenerDelegate(
     private val redirectionListener: RedirectionListener?,
     private val bannerAdsPresenter: BannerAdsPresenter,
     private val userId: String,
+    private val remoteConfig : RemoteConfig
 ): BannerAdsListener,
     QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context) {
@@ -128,6 +131,10 @@ class BannerAdsListenerDelegate(
             AppLogSearch.eventSearchResultShow(
                 data.shopItemAsByteIOSearchResult(position, null)
             )
+    }
+
+    override fun isEnableFixByteIOCPM(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM, true)
     }
 
     companion object {

@@ -23,7 +23,7 @@ import com.tokopedia.topads.sdk.domain.model.Product as CPMProduct
 data class CpmDataView(
     val cpmModel: CpmModel = CpmModel(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
-    val byteIOTrackingData: ByteIOTrackingData,
+    var byteIOTrackingData: ByteIOTrackingData,
 ) : Visitable<ProductListTypeFactory>,
     VerticalSeparable,
     ByteIORanking by ByteIORankingImpl() {
