@@ -237,7 +237,7 @@ class MasterProductCardItemViewModel(
                             if (campaignResponse.success == true) {
                                 productItemData.notifyMe = !it
                                 dataItem.value = productItemData
-                                notifyMeCurrentStatus.postValue(productItemData.notifyMe)
+                                notifyMeCurrentStatus.value = productItemData.notifyMe
                                 showNotifyToast.value = Pair(false, campaignResponse.message)
                                 this@MasterProductCardItemViewModel.syncData.value =
                                     productCardItemUseCase?.notifyProductComponentUpdate(
