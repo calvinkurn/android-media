@@ -81,7 +81,7 @@ class ChatbotImageUploadViewHolder(
             val replyTime = element.replyTime.toEmptyStringIfNull()
             if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
                 listener.onImageUploadClicked(
-                    "https://images.tokopedia.net/img/chatbot/gif/test/giffffftanya.gif",
+                    imageUrl
                     replyTime,
                     false
                 )
@@ -106,7 +106,7 @@ class ChatbotImageUploadViewHolder(
             attachmentUnify?.let { attachementUnify ->
                 loadImage(
                     attachementUnify,
-                    "https://images.tokopedia.net/img/chatbot/gif/test/giffffftanya.gif"
+                    imageUrl
                 )
             }
         }
