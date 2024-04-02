@@ -83,6 +83,23 @@ data class Carts(
             }
             return pppLabelList
         }
+
+    val cartIds: ArrayList<String>
+        get() {
+            val arr = arrayListOf<String>()
+            data.forEach { data ->
+                data.groupOrders.forEach { groupOrder ->
+                    groupOrder.shopOrders.forEach { shopOrders ->
+                        shopOrders.bundle.forEach { bundle ->
+                            bundle.productData.forEach { product ->
+                                arr.add(product.cartId)
+                            }
+                        }
+                    }
+                }
+            }
+            return arr
+        }
 }
 
 data class Data(

@@ -1027,6 +1027,15 @@ public class MainParentActivity extends BaseActivity implements
     private void saveInstanceState(Bundle outState) {
         if (getIntent() != null) {
             outState.putBoolean(IS_RECURRING_APPLINK, presenter.get().isRecurringApplink());
+
+            //only save position when feed page is active and remove only if it is not feed
+            boolean isCurrentFragmentFeed = currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE);
+            if (!isCurrentFragmentFeed) {
+                if (getIntent().getIntExtra(ARGS_TAB_POSITION, 0) != FEED_MENU) return;
+                getIntent().removeExtra(ARGS_TAB_POSITION);
+            } else {
+                getIntent().putExtra(ARGS_TAB_POSITION, FEED_MENU);
+            }
         }
     }
 
@@ -1232,7 +1241,7 @@ public class MainParentActivity extends BaseActivity implements
                         PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getPageLoadTimePerformanceInterface().stopMonitoring();
+            getPageLoadTimePerformanceInterface().stopMonitoring(null);
         }
     }
 

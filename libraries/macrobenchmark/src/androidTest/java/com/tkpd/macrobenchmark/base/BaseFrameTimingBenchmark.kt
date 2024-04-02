@@ -2,6 +2,7 @@ package com.tkpd.macrobenchmark.base
 import android.content.Intent
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.StartupMode
+import androidx.benchmark.macro.TraceSectionMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -42,6 +43,8 @@ abstract class BaseFrameTimingBenchmark {
 
     open fun packageName(): String = MacroIntent.TKPD_PACKAGE_NAME
 
+    open fun customTrace(): List<String> = emptyList()
+
     @Test
     fun macroBenchmarkFps() {
         /**
@@ -49,8 +52,10 @@ abstract class BaseFrameTimingBenchmark {
          * https://developer.android.com/studio/profile/macrobenchmark
          */
         var currentIteration = 0
+        val customTraceMetrics = customTrace().map { TraceSectionMetric(it) }
+        val metrics = listOf(FrameTimingMetric()).plus(customTraceMetrics)
         benchmarkRule.measureTokopediaApps(
-            metrics = listOf(FrameTimingMetric()),
+            metrics = metrics,
             packageName = packageName(),
             startupMode = StartupMode.COLD,
             setupBlock = {
