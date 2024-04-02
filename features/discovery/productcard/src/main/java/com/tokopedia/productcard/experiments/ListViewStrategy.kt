@@ -156,7 +156,7 @@ internal class ListViewStrategy(
     private val spaceCampaignBestSeller: Space? by lazy(NONE) {
         findViewById(R.id.spaceCampaignBestSeller)
     }
-    private val remoteConfig: RemoteConfig by lazy(NONE) {
+    private val remoteConfig : RemoteConfig by lazy(NONE) {
         FirebaseRemoteConfigImpl(context)
     }
     private val productCardFooterLayoutContainer: FrameLayout? by lazy(NONE) {
@@ -248,7 +248,7 @@ internal class ListViewStrategy(
         }
     }
 
-    private fun initAttributes(attrs: AttributeSet?) {
+    private fun initAttributes(attrs: AttributeSet?){
         attrs ?: return
 
         val typedArray = context
@@ -268,22 +268,21 @@ internal class ListViewStrategy(
     }
 
     private fun inflateFooterView(): View =
-        if (isUsingViewStub) {
+        if (isUsingViewStub)
             View.inflate(
                 context,
                 R.layout.product_card_footer_with_viewstub_layout,
                 null
             )
-        } else {
+        else
             View.inflate(context, R.layout.product_card_footer_layout, null)
-        }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         productCardModel.layoutStrategy.renderProductCardShadow(
             productCardModel,
             productCardView,
             cardViewProductCard,
-            false
+            false,
         )
 
         productCardView.renderProductCardRibbon(productCardModel, false)
@@ -299,7 +298,7 @@ internal class ListViewStrategy(
             labelOverlayBackground,
             labelOverlay,
             labelOverlayStatus,
-            productCardModel
+            productCardModel,
         )
 
         productCardModel.layoutStrategy.renderCampaignLabel(
@@ -325,7 +324,7 @@ internal class ListViewStrategy(
 
         productCardModel.layoutStrategy.renderSpaceCampaignBestSeller(
             spaceCampaignBestSeller,
-            productCardModel
+            productCardModel,
         )
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
@@ -375,14 +374,12 @@ internal class ListViewStrategy(
     }
 
     private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
-        return if (productCardModel.cardInteraction != null) {
+        return if(productCardModel.cardInteraction != null) {
             val isOverlayBounce =
-                remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true) &&
-                    productCardModel.cardInteraction
+                remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
+                    && productCardModel.cardInteraction
             if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
-        } else {
-            productCardModel.animateOnPress
-        }
+        } else productCardModel.animateOnPress
     }
 
     private fun forceLightModeColor() {
@@ -419,7 +416,7 @@ internal class ListViewStrategy(
 
     override fun setImageProductViewHintListener(
         impressHolder: ImpressHolder,
-        viewHintListener: ViewHintListener
+        viewHintListener: ViewHintListener,
     ) {
         imageProduct?.addOnImpressionListener(impressHolder, viewHintListener)
     }
