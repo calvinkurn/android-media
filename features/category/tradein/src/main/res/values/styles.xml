@@ -12,9 +12,6 @@
     </style>
 
     <style name="TradeInHintTextInputLayout" parent="TextInputLayout">
-        <item name="defaultTextColorLabel">@color/Unify_N700_44</item>
-        <item name="focusedTextColorLabel">@color/Unify_N700_44</item>
-        <item name="disabledTextColorLabel">@color/Unify_N700_44</item>
         <item name="android:theme">@style/TradeInHintTextInputLayoutColorLine</item>
     </style>
 
