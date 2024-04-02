@@ -16,6 +16,6 @@
     </style>
 
     <style name="TradeInHintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
-        <item name="android:textColorHint">@color/Unify_N100</item>
+        <item name="android:textColorHint">@color/Unify_N100_96</item>
     </style>
 </resources>
