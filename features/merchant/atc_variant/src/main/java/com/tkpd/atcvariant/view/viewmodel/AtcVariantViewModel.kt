@@ -137,7 +137,8 @@ class AtcVariantViewModel @Inject constructor(
         variantLevel: Int
     ) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            val selectedVariantIds = updateSelectedOptionIdsVisitable(selectedOptionKey, selectedOptionId)
+            val selectedVariantIds =
+                updateSelectedOptionIdsVisitable(selectedOptionKey, selectedOptionId)
 
             // Run variant logic to determine selected , empty , flash sale, etc
             val processedVariant = AtcVariantMapper.processVariant(
@@ -147,7 +148,8 @@ class AtcVariantViewModel @Inject constructor(
                 isNewLogic = isNewVariantLogic()
             )
 
-            val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds.values.toList())
+            val selectedVariantChild =
+                getVariantData()?.getChildByOptionId(selectedVariantIds.values.toList())
             val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
             val shouldShowDeleteButton = selectedMiniCart != null
             val cartData = AtcCommonMapper.mapToCartRedirectionData(
@@ -158,7 +160,8 @@ class AtcVariantViewModel @Inject constructor(
                 aggregatorData?.alternateCopy
             )
 
-            val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
+            val isPartiallySelected =
+                AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
             val selectedQuantity = getSelectedQuantity(selectedVariantChild?.productId ?: "")
 
@@ -274,7 +277,8 @@ class AtcVariantViewModel @Inject constructor(
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
             // generate variant component and data, initial render need to determine selected option
-            val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(getVariantData(), selectedChild)
+            val initialSelectedOptionIds =
+                AtcCommonMapper.determineSelectedOptionIds(getVariantData(), selectedChild)
             val processedVariant = AtcVariantMapper.processVariant(
                 variantData = getVariantData(),
                 mapOfSelectedVariant = initialSelectedOptionIds,
@@ -320,7 +324,8 @@ class AtcVariantViewModel @Inject constructor(
 
     fun toggleFavorite(shopId: String) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            val requestParams = ToggleFavoriteUseCase.createParams(shopId, ToggleFavoriteUseCase.FOLLOW_ACTION)
+            val requestParams =
+                ToggleFavoriteUseCase.createParams(shopId, ToggleFavoriteUseCase.FOLLOW_ACTION)
             val favoriteData = toggleFavoriteUseCase.executeOnBackground(requestParams).followShop
             if (favoriteData?.isSuccess == true) {
                 _toggleFavoriteShop.postValue(favoriteData.isSuccess.asSuccess())
@@ -359,7 +364,10 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
+    private suspend fun getAggregatorAndMiniCartData(
+        aggregatorParams: ProductVariantBottomSheetParams,
+        isLoggedIn: Boolean
+    ) {
         /**
          * If data completely provided from previous page, use that
          * if not call GQL
@@ -391,7 +399,11 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    fun addWishlistV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+    fun addWishlistV2(
+        productId: String,
+        userId: String,
+        wishlistV2ActionListener: WishlistV2ActionListener
+    ) {
         viewModelScope.launch(dispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userId)
             val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
@@ -411,7 +423,13 @@ class AtcVariantViewModel @Inject constructor(
         val selectedChild = getVariantData()?.getChildByProductId(productId)
         selectedChild?.isWishlist = true
 
-        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData?.cardRedirection, isShopOwner, false, aggregatorData?.alternateCopy)
+        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(
+            getVariantData()?.getChildByProductId(productId),
+            aggregatorData?.cardRedirection,
+            isShopOwner,
+            false,
+            aggregatorData?.alternateCopy
+        )
         _buttonData.postValue(generateCartRedir.asSuccess())
     }
 
@@ -419,7 +437,13 @@ class AtcVariantViewModel @Inject constructor(
         minicartData?.remove(productId)
 
         // we dont want to use alternate tokonow, use cart redir button instead
-        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData?.cardRedirection, isShopOwner, false, aggregatorData?.alternateCopy)
+        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(
+            getVariantData()?.getChildByProductId(productId),
+            aggregatorData?.cardRedirection,
+            isShopOwner,
+            false,
+            aggregatorData?.alternateCopy
+        )
         _buttonData.postValue(generateCartRedir.asSuccess())
     }
 
@@ -447,12 +471,21 @@ class AtcVariantViewModel @Inject constructor(
             minicartData?.get(productId)?.quantity = quantity
         }
 
-        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData?.cardRedirection, isShopOwner, true, aggregatorData?.alternateCopy)
+        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(
+            getVariantData()?.getChildByProductId(productId),
+            aggregatorData?.cardRedirection,
+            isShopOwner,
+            true,
+            aggregatorData?.alternateCopy
+        )
         _buttonData.postValue(generateCartRedir.asSuccess())
     }
 
     private fun updateRemindMeCartRedirection(productId: String) {
-        val availableButtonIngatkanSaya = generateAvailableButtonIngatkanSaya(aggregatorData?.alternateCopy, aggregatorData?.cardRedirection?.get(productId))
+        val availableButtonIngatkanSaya = generateAvailableButtonIngatkanSaya(
+            aggregatorData?.alternateCopy,
+            aggregatorData?.cardRedirection?.get(productId)
+        )
         // update cart redir localy
         aggregatorData?.cardRedirection?.let {
             it[productId]?.availableButtons = availableButtonIngatkanSaya ?: return@let
@@ -524,12 +557,16 @@ class AtcVariantViewModel @Inject constructor(
     private fun addToCart(atcParams: Any, showQtyEditor: Boolean) {
         viewModelScope.launchCatchError(block = {
             val requestParams = RequestParams.create()
-            requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
+            requestParams.putObject(
+                AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                atcParams
+            )
 
             when (atcParams) {
                 is AddToCartRequestParams -> {
                     getAddToCartUseCase(requestParams, showQtyEditor)
                 }
+
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
@@ -545,12 +582,12 @@ class AtcVariantViewModel @Inject constructor(
 
     fun updateCart(
         params: ProductVariantBottomSheetParams
-    ) = viewModelScope.launch {
-        val variantData = getVariantData() ?: return@launch
-        val optionIdsSelected = getSelectedOptionIds() ?: return@launch
+    ) {
+        val variantData = getVariantData() ?: return
+        val optionIdsSelected = getSelectedOptionIds() ?: return
         val selectedChild = variantData.getChildByOptionId(
             selectedIds = optionIdsSelected.values.toList()
-        ) ?: return@launch
+        ) ?: return
         val changeVariantParams = params.changeVariantOnCart
         val selectedMiniCart = MiniCartItem.MiniCartItemProduct(
             cartId = changeVariantParams.cartId,
@@ -605,7 +642,10 @@ class AtcVariantViewModel @Inject constructor(
 
     private fun updateQuantityEditorDeleteButtonAfterAtc(showQtyEditor: Boolean, value: Boolean) {
         if (showQtyEditor) {
-            val updatedList = AtcCommonMapper.updateDeleteButtonQtyEditor((_initialData.value as Success).data, value)
+            val updatedList = AtcCommonMapper.updateDeleteButtonQtyEditor(
+                (_initialData.value as Success).data,
+                value
+            )
             _initialData.postValue(updatedList.asSuccess())
         }
     }
@@ -660,7 +700,10 @@ class AtcVariantViewModel @Inject constructor(
      *  - Before update (warna, 0), (ukuran, 0)
      *  - After update (warna, merah), (ukuran, 0)
      */
-    private fun updateSelectedOptionIdsVisitable(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String> {
+    private fun updateSelectedOptionIdsVisitable(
+        selectedOptionKey: String,
+        selectedOptionId: String
+    ): MutableMap<String, String> {
         val variantDataModel = (_initialData.value as Success).data.firstOrNull {
             it is VariantComponentDataModel
         } as? VariantComponentDataModel
