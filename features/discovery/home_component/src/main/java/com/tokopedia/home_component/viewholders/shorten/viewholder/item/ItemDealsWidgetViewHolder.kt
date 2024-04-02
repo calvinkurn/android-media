@@ -20,8 +20,8 @@ class ItemDealsWidgetViewHolder(
     fun bind(element: ItemDealsWidgetUiModel) {
         binding?.card?.setData(SmallProductModel(
             bannerImageUrl = "",
-            title = Pair(element.title, null),
-            subtitle = Pair("Deals #${bindingAdapterPosition}", null),
+            title = Pair(element.title, SmallProductModel.TextStyle()),
+            subtitle = Pair("Deals #${bindingAdapterPosition}", SmallProductModel.TextStyle()),
         ))
     }
 
