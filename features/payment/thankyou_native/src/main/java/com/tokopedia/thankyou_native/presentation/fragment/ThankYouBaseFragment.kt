@@ -253,13 +253,6 @@ open class ThankYouBaseFragment :
     private fun startAnimate() {
         if (!isV2Enabled) return
 
-        if (context?.isDeviceAnimationDisabled() == true) {
-            (activity as ThankYouPageActivity).globalNabToolbar.alpha = 1f
-            getBottomContentRecyclerView()?.translationY = 0f
-            getBottomContentRecyclerView()?.alpha = 1f
-        }
-        (activity as ThankYouPageActivity).globalNabToolbar.alpha = 1f
-
         getBottomContentRecyclerView()?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 (activity as ThankYouPageActivity).header_background.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F

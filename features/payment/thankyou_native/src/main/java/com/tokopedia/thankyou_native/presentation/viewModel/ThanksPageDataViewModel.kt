@@ -57,6 +57,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -104,7 +105,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val _membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
     val membershipRegisterData: LiveData<Result<MembershipRegister>> = _membershipRegisterData
 
-    private val visitableHolder = mutableListOf<Visitable<*>>()
+//    private val visitableHolder = mutableListOf<Visitable<*>>()
     private val _bottomContentVisitableList = MutableLiveData<List<Visitable<*>>>()
     val bottomContentVisitableList: LiveData<List<Visitable<*>>> = _bottomContentVisitableList
 
@@ -158,7 +159,7 @@ class ThanksPageDataViewModel @Inject constructor(
                 thanksPageData,
                 null
             ) {
-                launch(Dispatchers.IO) {
+                launch(Dispatchers.Default) {
                     processFeatureEngine(it, location, thanksPageData)
                 }
             }
@@ -310,7 +311,10 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     fun addBottomContentWidget(visitable: Visitable<*>) {
-        orderWidget(visitableHolder.orEmpty() + visitable)
+        launch {
+            _bottomContentVisitableList.value = _bottomContentVisitableList.value.orEmpty() + visitable
+            orderWidget(_bottomContentVisitableList.value.orEmpty())
+        }
     }
 
     fun setTicker(listTicker: List<TickerData>) {
@@ -326,20 +330,8 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     private fun orderWidget(visitableList: List<Visitable<*>>) {
-        if (widgetOrder.isEmpty()) {
-            _bottomContentVisitableList.postValue(visitableList)
-            visitableHolder.clear()
-            visitableHolder.addAll(visitableList)
-        } else {
+        if (widgetOrder.isNotEmpty()) {
             _bottomContentVisitableList.postValue(visitableList.filter {
-                if (it is MixTopDataModel) widgetOrder.contains(FLASHSALE_TAG)
-                else widgetOrder.contains((it as WidgetTag).tag)
-            }.sortedBy {
-                if (it is MixTopDataModel) widgetOrder.indexOf(FLASHSALE_TAG)
-                else widgetOrder.indexOf((it as WidgetTag).tag)
-            })
-            visitableHolder.clear()
-            visitableHolder.addAll(visitableList.filter {
                 if (it is MixTopDataModel) widgetOrder.contains(FLASHSALE_TAG)
                 else widgetOrder.contains((it as WidgetTag).tag)
             }.sortedBy {

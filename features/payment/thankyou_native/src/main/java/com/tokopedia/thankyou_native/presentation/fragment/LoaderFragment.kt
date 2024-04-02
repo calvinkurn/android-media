@@ -34,6 +34,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
@@ -146,7 +147,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
-        hideLoaderView()
+        triggerHaptics()
         if (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus) == Invalid) {
             callback?.onInvalidThankYouPage()
             return
@@ -155,30 +156,7 @@ class LoaderFragment : BaseDaggerFragment() {
                 callback?.onThankYouPageDataLoaded(thanksPageData)
                 return
             }
-
             callback?.onThankYouPageDataLoaded(thanksPageData)
-            val header = (activity as ThankYouPageActivity).findViewById<ImageView>(R.id.header_background)
-            when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
-                InstantPaymentPage -> {
-                    context?.let {
-                        header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_GN500))
-                    }
-                }
-                ProcessingPaymentPage -> {
-                    context?.let {
-                        header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_TN50))
-                    }
-                }
-                WaitingPaymentPage -> {
-                    context?.let {
-                        header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_YN50))
-                    }
-                }
-                null -> {
-                    // no op
-                }
-            }
-            header.animate().alpha(1f).setDuration(UnifyMotion.T5).setInterpolator(UnifyMotion.EASE_OUT).start()
         }
     }
 

@@ -1,9 +1,14 @@
 package com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent
 
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.databinding.ThankInstantHeaderBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.InstantHeaderUiModel
@@ -30,11 +35,14 @@ class InstantHeaderViewHolder(
 ): AbstractViewHolder<InstantHeaderUiModel>(view) {
 
     private val binding: ThankInstantHeaderBinding? by viewBinding()
+    private var hasAnimationStarted: Boolean = false
 
     override fun bind(data: InstantHeaderUiModel?) {
         if (data == null) return
 
-        setupIcon(data)
+        if (hasAnimationStarted == false) {
+            setupIcon(data)
+        }
         binding?.headerTitle?.text = data.title
         binding?.headerDescription?.text = data.description
         binding?.headerTips?.shouldShowWithAction(data.note.isNotEmpty()) {
@@ -62,16 +70,24 @@ class InstantHeaderViewHolder(
         val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.check_circle)
 
         binding?.headerIcon?.setImageDrawable(checkDrawable)
-        binding?.headerIcon?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(UnifyMotion.T3)?.setInterpolator(UnifyMotion.EASE_OVERSHOOT)?.setStartDelay(1000)?.start()
+        binding?.headerIcon?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(UnifyMotion.T3)?.setInterpolator(UnifyMotion.EASE_OVERSHOOT)?.start()
 
-        data.gatewayImage.getBitmapImageUrl(itemView.context) {
-            binding?.headerIcon?.animate()?.rotationY(90f)?.setDuration(UnifyMotion.T2)?.withEndAction {
-                val bitmapDrawable = BitmapDrawable(itemView.context.resources, it)
-                binding?.headerIcon?.setImageDrawable(bitmapDrawable)
-                binding?.headerIcon?.rotationY = 270f
-                binding?.headerIcon?.animate()?.rotationY(360f)?.setDuration(UnifyMotion.T1)?.start()
-            }?.setStartDelay(3000)?.start()
-        }
+        Glide.with(itemView.context).asBitmap().load(data.gatewayImage).into(object: CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                val bitmapDrawable = BitmapDrawable(itemView.context.resources, resource)
+
+                binding?.headerIcon?.animate()?.rotationY(90f)?.setInterpolator(UnifyMotion.LINEAR)?.setDuration(UnifyMotion.T3)?.withEndAction {
+                    binding?.headerIcon?.setImageDrawable(bitmapDrawable)
+                    binding?.headerIcon?.rotationY = 270f
+                    binding?.headerIcon?.animate()?.rotationY(360f)?.setDuration(UnifyMotion.T3)?.setStartDelay(0)?.start()
+                }?.setStartDelay(2000)?.start()
+            }
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+        })
+
+        hasAnimationStarted = true
 //        Handler().postDelayed({
 //
 //
