@@ -24,6 +24,7 @@ import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSect
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -2513,7 +2514,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun updateLiveReportSummary(newLiveStats: List<LiveStatsUiModel>, timestamp: String) {
         runCatching {
             _liveReportSummary.update {
-                if (timestamp.toLong() >= it.timestamp.toLong()) {
+                if (timestamp.toLongOrZero() >= it.timestamp.toLongOrZero()) {
                     it.copy(
                         liveStats = it.liveStats.map { liveStats ->
                             newLiveStats.firstOrNull { item ->
