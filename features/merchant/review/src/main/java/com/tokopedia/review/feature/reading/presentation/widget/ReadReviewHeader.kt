@@ -12,6 +12,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -159,9 +160,13 @@ class ReadReviewHeader @JvmOverloads constructor(
             topicFilterChipIndex = filter.indexOf(topicFilter)
         }
         if(availableFilters.variant){
-            val variantFilter = SortFilterItem("Varian", ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
+            val variantFilter = SortFilterItem(
+                context.getString(R.string.review_reading_filter_all_variants),
+                ChipsUnify.TYPE_NORMAL,
+                ChipsUnify.SIZE_SMALL
+            )
             setListenerAndChevronListener(variantFilter){
-                listener.onFilterWithVariantClicked()
+                listener.onFilterWithVariantClicked(isChipsActive(variantFilter.type))
             }
             filter.add(variantFilter)
             filterVariantItem = variantFilter
@@ -287,6 +292,12 @@ class ReadReviewHeader @JvmOverloads constructor(
                 listener.onClearFiltersClicked()
             }
         }
+
+        binding.readReviewSortFilter.chipItems?.find {
+            it.title == context.getString(R.string.review_reading_filter_all_variants)
+        }?.refChipUnify?.apply {
+            showNewNotification = shouldShowNewBadge()
+        }
     }
 
     fun setTopicExtraction(
@@ -381,5 +392,16 @@ class ReadReviewHeader @JvmOverloads constructor(
 
     fun loadingTopicExtraction() {
         if (isTopicExtraction) binding.readReviewExtractedTopic.loading()
+    }
+
+    fun removeNewBadge(title: String){
+        binding.readReviewSortFilter.chipItems?.find { it.title == title }?.refChipUnify?.apply {
+            if(showNewNotification) chip_new_notification.setLayoutWidth(0)
+        }
+    }
+
+    private fun shouldShowNewBadge(): Boolean {
+        val sharedPref = context.getSharedPreferences("READ_REVIEW", Context.MODE_PRIVATE)
+        return sharedPref.getBoolean("VARIANT_FILTER_BADGE", true)
     }
 }

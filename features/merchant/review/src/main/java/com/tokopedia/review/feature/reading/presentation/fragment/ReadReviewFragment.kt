@@ -524,7 +524,26 @@ open class ReadReviewFragment :
         }
     }
 
-    override fun onFilterWithVariantClicked() {
+    override fun onFilterWithVariantClicked(isActive: Boolean) {
+        val title = context?.getString(R.string.review_reading_filter_all_variants) ?: ""
+        if (isProductReview) {
+            ReadReviewTracking.trackOnFilterClicked(
+                title,
+                isActive,
+                viewModel.getProductId()
+            )
+        } else {
+            ReadReviewTracking.trackOnFilterShopReviewClicked(
+                title,
+                isActive,
+                viewModel.getProductId()
+            )
+        }
+
+        reviewHeader?.removeNewBadge(
+            context?.getString(R.string.review_reading_filter_all_variants) ?: ""
+        )
+
         VariantFilterBottomSheet.instance(
             this,
             filterVariants,

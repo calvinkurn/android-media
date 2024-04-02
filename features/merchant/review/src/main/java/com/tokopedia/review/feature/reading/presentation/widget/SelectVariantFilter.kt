@@ -197,7 +197,7 @@ data class SelectVariantUiModel(
             isEachLevelOption = isEachLevelOption && selectedOptions.size == 1
         }
 
-        if (isEachLevelOption) {
+        if (isEachLevelOption && variants.size > 1) {
             val isAvailable = pairedOptions.any { it.containsAll(pairedOption) }
             if (!isAvailable) this.opt = "variant_unavailable=true"
         }

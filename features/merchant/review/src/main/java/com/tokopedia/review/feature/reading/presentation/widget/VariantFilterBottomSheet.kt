@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reading.presentation.widget
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -70,9 +71,18 @@ class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
     }
 
     override fun onApplyClicked(uiModel: SelectVariantUiModel) {
+        updateBadgeStatus()
         uiModel.calculate()
         listener?.onFilterVariant(uiModel)
         dismiss()
+    }
+
+    private fun updateBadgeStatus(){
+        val sharedPref = context?.getSharedPreferences("READ_REVIEW", Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()){
+            putBoolean("VARIANT_FILTER_BADGE", false)
+            apply()
+        }
     }
 
 }
