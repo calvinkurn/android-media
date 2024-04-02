@@ -1385,7 +1385,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void sendEnterPage(int position) {
         Fragment fragment = fragmentList.get(position);
-        if (fragment instanceof AppLogInterface appLogInterface &&
+        if (!isFirstTimeUser() && fragment instanceof AppLogInterface appLogInterface &&
                 appLogInterface.shouldTrackEnterPage()) {
             AppLogRecommendation.INSTANCE.sendEnterPageAppLog();
         }
