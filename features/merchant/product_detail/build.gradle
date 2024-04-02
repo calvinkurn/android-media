@@ -122,6 +122,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.storiesWidget)
+    implementation projectOrAar(rootProject.ext.features.productPreview)
     implementation projectOrAar(rootProject.ext.features.shareexperience)
 
     implementation project(rootProject.ext.libraries.sdui)
@@ -201,6 +202,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.accompanistFlowLayout
 }
 
 project.ext {

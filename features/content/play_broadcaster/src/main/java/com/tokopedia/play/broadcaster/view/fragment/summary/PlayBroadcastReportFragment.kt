@@ -164,7 +164,7 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private fun checkTickerLiveToVodConfig() {
         parentViewModel.submitAction(
-            PlayBroadcastAction.GetTickerBottomSheetConfig(
+            PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                 page = TickerBottomSheetPage.LIVE_REPORT,
             )
         )
@@ -259,9 +259,8 @@ class PlayBroadcastReportFragment @Inject constructor(
 
                 override fun onDismiss() {
                     parentViewModel.submitAction(
-                        PlayBroadcastAction.SetLiveToVodPref(
+                        PlayBroadcastAction.SetDynamicTickerBottomSheetPref(
                             type = TickerBottomSheetType.TICKER,
-                            page = TickerBottomSheetPage.LIVE_REPORT,
                         )
                     )
                 }

@@ -1,19 +1,21 @@
 package com.tokopedia.shareexperience.data.usecase
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetDownloadedImageUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExResult
-import com.tokopedia.shareexperience.domain.util.asFlowResult
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File
 import java.io.FileOutputStream
-import java.net.URL
 import javax.inject.Inject
 
 class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
@@ -21,26 +23,54 @@ class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ShareExGetDownloadedImageUseCase {
 
-    override suspend fun downloadImage(imageUrl: String): Flow<ShareExResult<Uri>> {
-        return flow {
-            val filename = getFileName()
-            val shareFolder = File("${context.externalCacheDir}/share")
-            if (!shareFolder.exists()) {
-                shareFolder.mkdirs()
-            }
-            val outputFile = File(shareFolder, filename)
-            val inputStream = URL(imageUrl).openStream()
-            val outputStream = FileOutputStream(outputFile)
-            inputStream.use { input ->
-                outputStream.use { output ->
-                    input.copyTo(output)
+    override suspend fun downloadImageThumbnail(mediaUrl: String): Flow<ShareExResult<Uri>> {
+        return callbackFlow {
+            trySend(ShareExResult.Loading)
+            mediaUrl.getBitmapImageUrl(
+                context = context,
+                properties = {
+                    this.listener(
+                        onSuccess = { bitmap, _ ->
+                            if (bitmap != null) {
+                                onSuccessDownloadThumbnail(this@callbackFlow, bitmap)
+                                close()
+                            }
+                        },
+                        onError = {
+                            if (it != null) {
+                                trySend(ShareExResult.Error(it))
+                                close()
+                            }
+                        },
+                    )
                 }
-            }
-            val contentUri = MethodChecker.getUri(context, outputFile)
-            emit(contentUri)
+            )
+            awaitClose { channel.close() }
+        }.flowOn(dispatchers.io)
+    }
+
+    private fun onSuccessDownloadThumbnail(
+        scope: ProducerScope<ShareExResult<Uri>>,
+        bitmap: Bitmap
+    ) {
+        val outputFile = getImageCacheFile()
+        // Save Image Thumbnail
+        val outputStream = FileOutputStream(outputFile)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        outputStream.flush()
+        outputStream.close()
+        // Get Uri
+        val contentUri = MethodChecker.getUri(context, outputFile)
+        scope.trySend(ShareExResult.Success(contentUri))
+    }
+
+    private fun getImageCacheFile(): File {
+        val filename = getFileName()
+        val shareFolder = File("${context.externalCacheDir}/share")
+        if (!shareFolder.exists()) {
+            shareFolder.mkdirs()
         }
-            .asFlowResult()
-            .flowOn(dispatchers.io)
+        return File(shareFolder, filename)
     }
 
     private fun getFileName(): String {

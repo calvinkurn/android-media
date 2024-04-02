@@ -8,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.ProductListType
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -28,15 +29,27 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
     }
 }
 
+fun RecommendationEntity.AppLog.toAppLogModel(recParam: String = ""): RecommendationAppLog {
+    return RecommendationAppLog(
+        sessionId = sessionId,
+        requestId = requestId,
+        logId = logId,
+        recParam = recParam
+    )
+}
+
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
-            val badges = if (isTokonow()) emptyList()
-            else recommendation.badges.map {
-                RecommendationItem.Badge(
-                    title = it.title,
-                    imageUrl = it.imageUrl
-                )
+            val badges = if (isTokonow()) {
+                emptyList()
+            } else {
+                recommendation.badges.map {
+                    RecommendationItem.Badge(
+                        title = it.title,
+                        imageUrl = it.imageUrl
+                    )
+                }
             }
 
             RecommendationItem(
@@ -112,6 +125,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
                 gridPosition = recommendation.getGridPosition(),
+                appLog = appLog.toAppLogModel(recommendation.recParam),
+                countSold = recommendation.countSold,
             )
         },
         title = title,
@@ -130,6 +145,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
         recommendationBanner = campaign.mapToBannerData(),
         isTokonow = isTokonow(),
         endDate = campaign.endDate,
+        appLog = appLog.toAppLogModel(),
     )
 }
 
@@ -149,9 +165,9 @@ fun RecommendationItem.toProductCardModel(
     productCardListType: ProductListType = ProductListType.CONTROL,
     cardType: Int = CardUnify2.TYPE_SHADOW,
     animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
-    forceLightMode: Boolean = false,
+    forceLightMode: Boolean = false
 ): ProductCardModel {
-    val productCardAnimate = if(cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
+    val productCardAnimate = if (cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     var hasThreeDotsFinalValue = hasThreeDots
@@ -209,7 +225,7 @@ fun RecommendationItem.toProductCardModel(
         cardType = cardType,
         animateOnPress = productCardAnimate,
         productListType = productCardListType,
-        forceLightModeColor = forceLightMode,
+        forceLightModeColor = forceLightMode
     )
 }
 
@@ -234,6 +250,7 @@ const val LABEL_FULFILLMENT: String = "fulfillment"
 const val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
 const val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
 const val PAGENAME_IDENTIFIER_RECOM_ATC: String = "hatc"
+const val PAGENAME_PREFIX_CART: String = "cart"
 const val DEFAULT_QTY_0: Int = 0
 const val DEFAULT_QTY_1: Int = 1
 
@@ -259,11 +276,12 @@ fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
 
 private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
     return if (hasQuantityEditor()) RecommendationItem.AddToCartType.QuantityEditor
+    else if(hasDirectAtc()) RecommendationItem.AddToCartType.DirectAtc
     else RecommendationItem.AddToCartType.None
 }
 
 private fun RecommendationEntity.Recommendation.getGridPosition(): RecommendationItem.GridPosition {
-    return when(gridPosition) {
+    return when (gridPosition) {
         GRID_POS_LEFT -> RecommendationItem.GridPosition.Left
         GRID_POS_TOP_RIGHT -> RecommendationItem.GridPosition.TopRight
         GRID_POS_BOTTOM_RIGHT -> RecommendationItem.GridPosition.BottomRight
@@ -273,6 +291,9 @@ private fun RecommendationEntity.Recommendation.getGridPosition(): Recommendatio
 
 private fun RecommendationEntity.RecommendationData.hasQuantityEditor() =
     isTokonow() || pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+
+private fun RecommendationEntity.RecommendationData.hasDirectAtc() =
+    pageName.startsWith(PAGENAME_PREFIX_CART)
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {

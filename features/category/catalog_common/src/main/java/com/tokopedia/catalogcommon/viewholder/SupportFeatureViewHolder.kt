@@ -7,13 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.ItemSupportFeatureAdapter
 import com.tokopedia.catalogcommon.databinding.WidgetItemSupportFeatureBinding
-import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.utils.view.binding.viewBinding
 
 
-class SupportFeatureViewHolder(itemView: View, val listener: SupportFeatureListener? = null) :
+class SupportFeatureViewHolder(itemView: View) :
     AbstractViewHolder<SupportFeaturesUiModel>(itemView) {
 
     companion object {
@@ -31,7 +30,6 @@ class SupportFeatureViewHolder(itemView: View, val listener: SupportFeatureListe
             layoutManager =
                 LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         }
-        listener?.onSupportFeatureImpression(element.widgetName)
     }
 
 }

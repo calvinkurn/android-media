@@ -3,7 +3,7 @@ package com.tokopedia.chat_common.data
 /**
  * @author by nisie on 12/12/18.
  */
-class WebsocketEvent{
+class WebsocketEvent {
 
     object Event {
         const val EVENT_REPLY_MESSAGE = 102
@@ -12,6 +12,7 @@ class WebsocketEvent{
         const val EVENT_END_TYPING = 202
         const val EVENT_TOPCHAT_TYPING = 203
         const val EVENT_TOPCHAT_END_TYPING = 204
+        const val EVENT_TOPCHAT_REFRESH_ROOM = 205
         const val EVENT_TOPCHAT_READ_MESSAGE = 301
         const val EVENT_DELETE_MSG = 104
 
@@ -41,7 +42,7 @@ class WebsocketEvent{
         }
     }
 
-    object Mode{
+    object Mode {
         val MODE_WEBSOCKET = 1
         val MODE_API = 2
     }

@@ -2,6 +2,7 @@ package com.tokopedia.common_epharmacy.network.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -18,6 +19,10 @@ data class EPharmacyPrepareProductsGroupResponse(
 
         @Parcelize
         data class GroupData(
+            @SerializedName("checkout_flow")
+            val checkoutFlow: CheckoutFlowEPharmacy?,
+            @SerializedName("user_cart_content")
+            val userCartContent: List<UpdateCart>?,
             @SerializedName("attachment_page_ticker_text")
             val attachmentPageTickerText: String?,
             @SerializedName("attachment_page_ticker_logo_url")
@@ -29,6 +34,22 @@ data class EPharmacyPrepareProductsGroupResponse(
             @SerializedName("pap_primary_cta")
             val papPrimaryCTA: PapPrimaryCTA?
         ) : Parcelable {
+
+            @Parcelize
+            data class CheckoutFlowEPharmacy(
+                @SerializedName("error_message")
+                val checkoutIsBlockErrorMessage: String?
+            ) : Parcelable
+
+            @Parcelize
+            data class UpdateCart(
+                @SerializedName("cart_id")
+                val cartId: Long?,
+                @SerializedName("product_id")
+                val productId: Long,
+                @SerializedName("current_qty")
+                val currentQuantity: Int?
+            ) : Parcelable
 
             @Parcelize
             data class EpharmacyGroup(
@@ -47,8 +68,19 @@ data class EPharmacyPrepareProductsGroupResponse(
                 @SerializedName("products_info")
                 val shopInfo: List<ProductsInfo?>?,
                 @SerializedName("prescription_cta")
-                val prescriptionCTA: PrescriptionCTA?
+                val prescriptionCTA: PrescriptionCTA?,
+                @SerializedName("ticker")
+                val ticker: Ticker?
             ) : Parcelable {
+
+                @Parcelize
+                data class Ticker(
+                    @SerializedName("type_int")
+                    var tickerType: Int?,
+                    @SerializedName("message")
+                    val message: String?
+                ) : Parcelable
+
                 @Parcelize
                 data class ConsultationData(
                     @SerializedName("consultation_status")
@@ -95,7 +127,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("id")
                         val id: String?,
                         @SerializedName("type")
-                        val type: String?
+                        val type: String?,
+                        @SerializedName("expiry_date")
+                        val expiryDate: String?
                     ) : Parcelable
                 }
 
@@ -111,6 +145,12 @@ data class EPharmacyPrepareProductsGroupResponse(
                     val enablerLogoUrl: String?,
                     @SerializedName("pwa_link")
                     val pwaLink: String?,
+                    @SerializedName("price")
+                    val price: String? = "",
+                    @SerializedName("price_str")
+                    val priceStr: String? = "",
+                    @SerializedName("note")
+                    val note: String?,
                     @SerializedName("status")
                     val status: String?
                 ) : Parcelable {
@@ -119,7 +159,11 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("close_days")
                         val closeDays: List<String?>?,
                         @SerializedName("daily")
-                        val daily: Daily?
+                        val daily: Daily?,
+                        @SerializedName("duration")
+                        val duration: String? = "",
+                        @SerializedName("is_closing_hour")
+                        val isClosingHour: Boolean? = false
                     ) : Parcelable {
                         @Parcelize
                         data class Daily(
@@ -182,13 +226,34 @@ data class EPharmacyPrepareProductsGroupResponse(
                         val name: String?,
                         @SerializedName("product_id")
                         val productId: Long?,
+                        @SerializedName("cart_id")
+                        val cartId: Long?,
                         @SerializedName("product_image")
                         val productImage: String?,
                         @SerializedName("product_total_weight_fmt")
                         val productTotalWeightFmt: String?,
                         @SerializedName("quantity")
-                        val quantity: String?
-                    ) : Parcelable
+                        val quantity: String?,
+                        @SerializedName("qty_comparison")
+                        val qtyComparison: QtyComparison?,
+                        @SerializedName("price")
+                        val price: Double?
+                    ) : Parcelable {
+
+                        @IgnoredOnParcel
+                        var subTotal: Double = 0.0
+
+                        @Parcelize
+                        data class QtyComparison(
+                            @SerializedName("initial_qty")
+                            var initialQty: Int?,
+                            @SerializedName("recommend_qty")
+                            val recommendedQty: Int?
+                        ) : Parcelable {
+                            @IgnoredOnParcel
+                            var currentQty: Int = 0
+                        }
+                    }
                 }
             }
         }
@@ -212,5 +277,16 @@ data class EPharmacyPrepareProductsGroupResponse(
         val redirectLinkApps: String?,
         @SerializedName("state")
         val state: String?
-    ) : Parcelable
+    ) : Parcelable {
+        @Parcelize
+        data class PapSecondaryCTA(
+            @SerializedName("title")
+            val title: String?,
+            @SerializedName("redirect_link_apps")
+            val redirectLinkApps: String?,
+            @SerializedName("state")
+            val state: String?
+
+        ) : Parcelable
+    }
 }
