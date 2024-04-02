@@ -122,6 +122,7 @@ import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHo
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
+import com.tokopedia.home_component.viewholders.V2OrigamiSDUIViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.visitable.BannerDataModel
@@ -471,6 +472,10 @@ class HomeAdapterFactory(
     }
 
     override fun type(origamiSDUIDataModel: OrigamiSDUIDataModel): Int {
+        if (shouldUseFixesAdaptiveOrigami()) {
+            return V2OrigamiSDUIViewHolder.LAYOUT
+        }
+
         return OrigamiSDUIViewHolder.LAYOUT
     }
 
@@ -649,6 +654,7 @@ class HomeAdapterFactory(
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
+            V2OrigamiSDUIViewHolder.LAYOUT -> viewHolder = V2OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
@@ -656,4 +662,6 @@ class HomeAdapterFactory(
 
         return viewHolder
     }
+
+    private fun shouldUseFixesAdaptiveOrigami() = true
 }
