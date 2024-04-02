@@ -156,8 +156,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun onDeleteItem(position: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_EDIT_KEYWORD_DELETE, "")
         ticker.gone()
-        bidInfoAdapter.items.removeAt(position)
-        bidInfoAdapter.notifyItemRemoved(position)
+        if (position >= 0 && position < bidInfoAdapter.itemCount){
+            bidInfoAdapter.items.removeAt(position)
+            bidInfoAdapter.notifyItemRemoved(position)
+        }
         updateString()
         setCount()
         view?.let {
