@@ -10,16 +10,21 @@ internal object KeywordSearchHintQuery {
     private const val uniqueId = "\$uniqueId"
 
     const val KEYWORD_SEARCH_HINT_QUERY_NAME = "KeywordSearchHintUniversalQuery"
-    const val KEYWORD_SEARCH_HINT_QUERY = "query universeplaceholder($firstInstall: Boolean, $uniqueId:String){\n" +
-            "            universe_placeholder(navsource:\"home\", first_install:$firstInstall, unique_id:$uniqueId){\n" +
-            "                data { \n" +
-            "                    placeholder \n" +
-            "                    keyword \n" +
-            "                    placeholder_list {\n" +
-            "                        placeholder\n" +
-            "                        keyword\n" +
-            "                    }\n" +
-            "                }\n" +
-            "            }\n" +
-            "        }"
+    const val KEYWORD_SEARCH_HINT_QUERY =
+        "query universeplaceholder($firstInstall: Boolean, $uniqueId:String){\n" +
+        "            universe_placeholder(navsource:\"home\", first_install:$firstInstall, unique_id:$uniqueId){\n" +
+        "                data { \n" +
+        "                    placeholder \n" +
+        "                    keyword \n" +
+        "                    words_source \n" +
+        "                    impr_id \n" +
+        "                    group_id\n" +
+        "                    placeholder_list {\n" +
+        "                        placeholder\n" +
+        "                        keyword\n" +
+        "                        group_id\n" +
+        "                    }\n" +
+        "                }\n" +
+        "            }\n" +
+        "        }"
 }

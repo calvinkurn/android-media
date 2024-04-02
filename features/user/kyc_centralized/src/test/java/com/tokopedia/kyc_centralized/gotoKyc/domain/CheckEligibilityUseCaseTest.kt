@@ -44,7 +44,8 @@ class CheckEligibilityUseCaseTest {
                     formFlow = "",
                     hashedNIK = "",
                     maskedName = maskedName
-                )
+                ),
+                uiMessages = hashMapOf()
             )
         )
 
@@ -66,7 +67,8 @@ class CheckEligibilityUseCaseTest {
                     formFlow = "",
                     hashedNIK = "",
                     maskedName = ""
-                )
+                ),
+                uiMessages = hashMapOf()
             )
         )
 
@@ -87,7 +89,8 @@ class CheckEligibilityUseCaseTest {
                     formFlow = "",
                     hashedNIK = "",
                     maskedName = ""
-                )
+                ),
+                uiMessages = hashMapOf()
             )
         )
 
@@ -111,7 +114,8 @@ class CheckEligibilityUseCaseTest {
                     formFlow = "",
                     hashedNIK = "",
                     maskedName = ""
-                )
+                ),
+                uiMessages = hashMapOf()
             )
         )
 
@@ -134,7 +138,8 @@ class CheckEligibilityUseCaseTest {
                     formFlow = "",
                     hashedNIK = "",
                     maskedName = ""
-                )
+                ),
+                uiMessages = hashMapOf()
             )
         )
 
@@ -164,7 +169,8 @@ class CheckEligibilityUseCaseTest {
                     formFlow = "",
                     hashedNIK = "",
                     maskedName = ""
-                )
+                ),
+                uiMessages = hashMapOf()
             )
         )
 

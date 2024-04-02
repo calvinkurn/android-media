@@ -11,6 +11,7 @@
         android:id="@+id/card_see_all"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/cardunify_background"
         app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,12 +43,15 @@
                     android:layout_height="wrap_content"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold"
+                    android:textColor="@color/Unify_NN1000"
                     tools:text="20+" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tpg_other_product_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bmsm_widget_text_another_product"
+                    android:textColor="@color/Unify_NN1000"
                     app:typographyType="paragraph_3"
                     app:typographyWeight="reguler" />
 
@@ -59,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="@string/bmsm_widget_text_see_all"
-                android:textColor="@color/dms_clr_thematic_widget_bg_default_second_color"
+                android:textColor="@color/dms_clr_bmsm_bg_default_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/wrapper_remaining_product_count"
                 app:typographyType="display_3"
@@ -72,10 +76,10 @@
                 app:icon_name="CHEVRON_RIGHT"
                 app:icon_enable_state="true"
                 android:layout_marginEnd="16dp"
-                app:icon_color_light_enable="@color/dms_clr_thematic_widget_bg_default_second_color"
-                app:icon_color_light_disabled="@color/dms_clr_thematic_widget_bg_default_second_color"
-                app:icon_color_night_enable="@color/dms_clr_thematic_widget_bg_default_second_color"
-                app:icon_color_night_disabled="@color/dms_clr_thematic_widget_bg_default_second_color"
+                app:icon_color_light_enable="@color/dms_clr_bmsm_bg_default_color"
+                app:icon_color_light_disabled="@color/dms_clr_bmsm_bg_default_color"
+                app:icon_color_night_enable="@color/dms_clr_bmsm_bg_default_color"
+                app:icon_color_night_disabled="@color/dms_clr_bmsm_bg_default_color"
                 app:layout_constraintBottom_toBottomOf="@+id/tpg_see_all"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tpg_see_all" />

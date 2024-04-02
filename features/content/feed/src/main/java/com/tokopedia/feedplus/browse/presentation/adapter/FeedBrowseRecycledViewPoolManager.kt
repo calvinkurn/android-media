@@ -9,4 +9,6 @@ internal class FeedBrowseRecycledViewPoolManager {
     val channelRecycledViewPool = RecyclerView.RecycledViewPool()
 
     val authorRecycledViewPool = RecyclerView.RecycledViewPool()
+
+    val storyRecycledViewPool = RecyclerView.RecycledViewPool()
 }

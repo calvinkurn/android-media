@@ -330,11 +330,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
 
             if (show) {
                 includeLayout.clientNumberWidgetSimplifiedLayout.animateFadeInThenShow()
-                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.animateFadeOutThenGone()
+                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.gone()
                 clientNumberWidgetOperatorGroup.animateFadeOutThenInvisible()
             } else {
                 includeLayout.clientNumberWidgetSimplifiedLayout.animateFadeOutThenGone()
-                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.animateFadeInThenShow()
+                clientNumberWidgetMainLayout.clientNumberWidgetBase.root.show()
                 clientNumberWidgetOperatorGroup.animateFadeInThenShow()
             }
         }

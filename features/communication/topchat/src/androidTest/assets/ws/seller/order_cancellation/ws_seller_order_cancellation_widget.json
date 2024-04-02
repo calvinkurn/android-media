@@ -1,0 +1,52 @@
+{
+  "code":103,
+  "data":{
+    "msg_id":4018211,
+    "from":"bcdua",
+    "from_uid":9075738,
+    "from_user_name":"bcdua",
+    "from_role":"User",
+    "thumbnail":"https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/cf438cd7-a9f8-435f-910d-726100b587db.jpg",
+    "reminder_ticker":null,
+    "is_opposite":true,
+    "to_uid":9075737,
+    "message":{
+      "censored_reply":"Tanggapi Pembatalan",
+      "original_reply":"Tanggapi Pembatalan",
+      "timestamp":"2024-02-22T20:46:59.760549401+07:00",
+      "timestamp_fmt":"22 February 2024, 20:46 WIB",
+      "timestamp_unix":1708609619760,
+      "timestamp_unix_nano":1708609619760549000
+    },
+    "start_time":"2024-02-22 20:46:59.760549401 +0700 WIB m=+34636.966249394",
+    "attachment_id":742102,
+    "attachment":{
+      "attributes":{
+        "button_cancellation":{
+          "button_attributes":{
+            "app_link":"tokopedia://seller/buyer-request-cancel-respond?orderId=167963325\u0026statusCode=400\u0026statusText=Pesanan Diproses\u0026reason=Ingin mengubah produk yang dibeli\u0026description=Alasan pembeli mengajukan pembatalan pesanan:\u0026primaryButtonText=Batalkan Pesanan\u0026secondaryButtonText=Proses Pesanan\u0026primaryButtonKey=reject_order\u0026secondaryButtonKey=accept_order\u0026pageSource=chat",
+            "description":"Alasan pembeli mengajukan pembatalan pesanan:",
+            "primary_button_text":"Batalkan Pesanan",
+            "reason":"Ingin mengubah produk yang dibeli",
+            "secondary_button_text":"Proses Pesanan",
+            "title":"Tanggapi Pembatalan"
+          },
+          "invoice_ref_num":"INV/20240222/MPL/20929371",
+          "order_id":167963325,
+          "order_status":400
+        }
+      },
+      "fallback_attachment":{
+        "html":"\u003cdiv\u003eTanggapi Pembatalan\u003c/div\u003e",
+        "message":"Tanggapi Pembatalan"
+      },
+      "id":742102,
+      "type":36
+    },
+    "show_rating":false,
+    "rating_status":0,
+    "client_connect_time":"0001-01-01T00:00:00Z",
+    "source":"widget_cancellation",
+    "label":"Dikirim otomatis oleh sistem"
+  }
+}

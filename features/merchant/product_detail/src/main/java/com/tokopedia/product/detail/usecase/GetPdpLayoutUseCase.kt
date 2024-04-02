@@ -138,6 +138,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         bottomsheetTitle
                         recommendation
                       }
+                      liveIndicator {
+                        isLive
+                        channelID
+                        applink
+                      }
                       videos {
                         source
                         url
@@ -496,6 +501,19 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       status
                     },
                     ... on pdpDataDynamicOneLiner {
+                      name
+                      text
+                      applink
+                      separator
+                      icon
+                      status
+                      chevronPos
+                      padding {
+                        t
+                        b
+                      }
+                    }
+                    ... on pdpDataComponentDynamicOneLinerVariant {
                       name
                       text
                       applink
