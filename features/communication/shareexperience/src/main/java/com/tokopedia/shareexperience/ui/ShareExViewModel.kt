@@ -201,13 +201,13 @@ class ShareExViewModel @Inject constructor(
                 defaultUrl = it.defaultUrl,
                 trackerArg = it.trackerArg
             )
-            .withProductId(it.productId)
-            .withReviewId(it.reviewId)
-            .withShopId(it.shopId)
-            .withCampaignId(it.campaignId)
-            .withGeneralId(it.generalId)
-            .withSelectedChip(text)
-            .build()
+                .withProductId(it.productId)
+                .withReviewId(it.reviewId)
+                .withShopId(it.shopId)
+                .withCampaignId(it.campaignId)
+                .withGeneralId(it.generalId)
+                .withSelectedChip(text)
+                .build()
         }
         bottomSheetResultArg?.bottomSheetModel?.let { bottomSheetModel ->
             val updatedUiResult = bottomSheetModel.map(position = position)
@@ -239,7 +239,7 @@ class ShareExViewModel @Inject constructor(
             imageUrl = bottomSheetModel.getSelectedImageUrl(
                 chipPosition = chipPosition,
                 imagePosition = 0 // Default first image
-            )?: bottomSheetArg?.defaultImageUrl.orEmpty(),
+            ) ?: bottomSheetArg?.defaultImageUrl.orEmpty(),
             sourceId = imageGeneratorProperty?.sourceId,
             args = imageGeneratorProperty?.args
         )
@@ -294,9 +294,9 @@ class ShareExViewModel @Inject constructor(
                 val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
                 val campaign = bottomSheetArg.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
-                    androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
-                    iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
-                    desktopUrl = generateUrlWithUTM(shareProperty.linkProperties.desktopUrl, channelEnum, campaign),
+                    androidUrl = generateUrlWithUTM("https://staging." + shareProperty.linkProperties.androidUrl, channelEnum, campaign),
+                    iosUrl = generateUrlWithUTM("https://staging." + shareProperty.linkProperties.iosUrl, channelEnum, campaign),
+                    desktopUrl = generateUrlWithUTM("https://staging." + shareProperty.linkProperties.desktopUrl, channelEnum, campaign),
                     campaign = campaign
                 )
                 // Get generated image first
@@ -377,7 +377,7 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun generateShortLinkRequest(
-        identifier: String,
+        identifier: String, // 2151019476
         defaultUrl: String,
         pageTypeEnum: ShareExPageTypeEnum,
         channelEnum: ShareExChannelEnum,
@@ -580,7 +580,7 @@ class ShareExViewModel @Inject constructor(
     ) {
         val imageUrl = shortLinkRequest.linkerPropertiesRequest.ogImageUrl
         val message = shortLinkRequest.linkerPropertiesRequest.messageObject.getFinalMessage()
-        when(channelItemModel.mimeType) {
+        when (channelItemModel.mimeType) {
             ShareExMimeTypeEnum.ALL, ShareExMimeTypeEnum.IMAGE -> {
                 getDownloadedImageUseCase.downloadImageThumbnail(imageUrl).collectLatest {
                     when (it) {
