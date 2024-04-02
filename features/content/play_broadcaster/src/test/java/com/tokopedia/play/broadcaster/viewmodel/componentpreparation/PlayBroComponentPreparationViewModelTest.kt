@@ -67,14 +67,14 @@ class PlayBroComponentPreparationViewModelTest {
             }
 
             state.componentPreparation.statisticIcon.isReady.assertTrue()
-            state.componentPreparation.isAllComponentsReady.assertFalse()
+            state.componentPreparation.areAllComponentsReady.assertFalse()
 
             val state2 = robot.recordState {
                 startLive()
             }
 
             state2.componentPreparation.gameIcon.isReady.assertTrue()
-            state2.componentPreparation.isAllComponentsReady.assertTrue()
+            state2.componentPreparation.areAllComponentsReady.assertTrue()
         }
     }
 }
