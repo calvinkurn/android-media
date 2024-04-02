@@ -511,7 +511,6 @@ object AppLogAnalytics {
             it.put(IS_AD, getLastData(IS_AD))
             it.addRequestId()
             it.put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE))
-//            it.addEnterMethod()
             it.put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD))
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
