@@ -116,7 +116,7 @@ class NotificationFragment @Inject constructor(
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "/new-inbox/notif"
     override fun onItemClicked(t: Visitable<*>?) {}
-    override fun isAutoLoadEnabled(): Boolean = true
+    override fun isAutoLoadEnabled(): Boolean = false
 
     override fun onAttachActivity(context: Context?) {
         if (context is NotificationFragmentContainer) {
