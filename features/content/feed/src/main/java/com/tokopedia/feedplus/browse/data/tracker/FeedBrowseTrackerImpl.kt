@@ -431,6 +431,20 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
         )
     }
 
+    override fun clickSearchbar() {
+        Tracker.Builder()
+            .setEvent(Event.clickHomepage)
+            .setEventAction("click - search bar")
+            .setEventCategory("feed browse page")
+            .setEventLabel(prefix)
+            .setCustomProperty(Key.trackerId, "50385")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
     private fun sendEnhanceEcommerceEvent(
         eventName: String,
         eventAction: String,
