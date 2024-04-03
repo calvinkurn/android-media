@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.R
@@ -118,21 +119,25 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
+        val startPosition = adapter?.items?.size.orZero()
+        var itemCount = Int.ZERO
         this.cursor = cursor
         data.forEach { result ->
             if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT)) {
                 adapter?.items?.add(EditNegKeywordItemViewModel(result))
+                itemCount++
                 originalKeyList.add(result.tag)
             }
         }
         if (adapter?.items?.isEmpty() == true) {
             adapter?.items?.add(EditNegKeywordEmptyViewModel())
+            itemCount++
             setVisibilityOperation(View.GONE)
         } else {
             setVisibilityOperation(View.VISIBLE)
         }
         updateItemCount()
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemRangeInserted(startPosition, itemCount)
         recyclerviewScrollListener.updateStateAfterGetData()
     }
 
@@ -168,6 +173,8 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun deleteNegKeyword(position: Int) {
+        val startPosition = adapter?.items?.size.orZero()
+        var itemCount = Int.ZERO
         restoreData?.forEach {
             if (it.tag == (adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data.tag) {
                 it.isChecked = false
@@ -185,11 +192,13 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             addedKeywords?.removeAt(ind)
         }
         adapter?.items?.removeAt(position)
+        adapter?.notifyItemRemoved(position)
         if (adapter?.items?.isEmpty() == true) {
             adapter?.items?.add(EditNegKeywordEmptyViewModel())
+            itemCount++
             setVisibilityOperation(View.GONE)
         }
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemRangeInserted(startPosition, itemCount)
         updateItemCount()
         view?.let {
             Toaster.build(it,
@@ -264,6 +273,8 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun addKeywords(data: ArrayList<GetKeywordResponse.KeywordsItem>?) {
+        val startPosition = adapter?.items?.size.orZero()
+        var itemCount = Int.ZERO
         if (adapter?.items?.isNotEmpty() == true && adapter?.items?.getOrNull(Int.ZERO) is EditNegKeywordEmptyViewModel) {
             adapter?.items?.clear()
         }
@@ -271,11 +282,12 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             if (adapter?.items?.find { item -> (item as EditNegKeywordItemViewModel).data.tag == it.tag } == null) {
                 adapter?.items?.add(EditNegKeywordItemViewModel(it))
                 addedKeywords?.add(it)
+                itemCount++
             }
         }
         setVisibilityOperation(View.VISIBLE)
         updateItemCount()
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemRangeInserted(startPosition, itemCount)
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
