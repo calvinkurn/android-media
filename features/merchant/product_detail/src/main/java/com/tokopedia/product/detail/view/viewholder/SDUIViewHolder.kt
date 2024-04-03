@@ -6,9 +6,8 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.databinding.ItemSduiContainerBinding
 import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
-import com.tokopedia.product.detail.view.listener.ProductDetailListener
-import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.DynamicOneLinerCallback
-import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.event.DynamicOneLinerEvent
+import com.tokopedia.product.detail.view.viewholder.sdui.SDUICallback
+import com.tokopedia.product.detail.view.viewholder.sdui.SDUIEvent
 import com.tokopedia.sdui.SDUIManager
 import com.tokopedia.sdui.extention.ActionHandler
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
@@ -17,7 +16,7 @@ import org.json.JSONObject
 
 class SDUIViewHolder(
     view: View,
-    private val listener: ProductDetailListener
+    private val callback: SDUICallback
 ) : ProductDetailPageViewHolder<SDUIDataModel>(view) {
 
     companion object {
@@ -68,12 +67,12 @@ class SDUIViewHolder(
 
         view.addOnImpressionListener(
             holder = element.impressHolder,
-            holders = listener.getImpressionHolders(),
+            holders = callback.impressionHolders,
             name = element.name,
-            useHolders = listener.isRemoteCacheableActive()
+            useHolders = callback.isRemoteCacheableActive
         ) {
             val trackerData = getComponentTrackData(element = element)
-            listener.onImpressComponent(trackerData)
+            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
 
         binding.sduiViewContainer.addView(view)
@@ -92,13 +91,13 @@ class SDUIViewHolder(
             override fun onViewClick(trackerPayload: JSONObject?) {
                 val payload = trackerPayload ?: return
                 val eventMap = parsePayloadToEventMap(payload)
-                listener.sendTracker(eventMap)
+                callback.event(SDUIEvent.SendTracker(eventMap))
             }
 
             override fun onViewVisible(trackerPayload: JSONObject?) {
                 val payload = trackerPayload ?: return
                 val eventMap = parsePayloadToEventMap(payload)
-                listener.sendTracker(eventMap)
+                callback.event(SDUIEvent.SendTracker(eventMap))
             }
         }
     }

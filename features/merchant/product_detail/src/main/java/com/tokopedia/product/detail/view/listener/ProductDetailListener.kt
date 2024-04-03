@@ -557,6 +557,4 @@ interface ProductDetailListener {
 
     // remote config for pdp cacheable
     fun isRemoteCacheableActive(): Boolean
-
-    fun sendTracker(eventMap: HashMap<String, Any>)
 }
