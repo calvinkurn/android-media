@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +57,6 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiMod
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -385,7 +383,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun removeProductRecommendation() {
-        if (endlessRecyclerViewScrollListener?.currentPage.toZeroIfNull() <= 0) {
+        if (viewModel.getCurrentRecommendationPage() <= 1) {
             adapter.tryRemoveProductRecommendation()
         }
     }
@@ -450,7 +448,7 @@ class UniversalInboxFragment @Inject constructor(
     private fun setTopAdsHeadlineExperiment(newList: MutableList<Visitable<in UniversalInboxTypeFactory>>) {
         var index = Int.ZERO
         if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
-            val pageNum = endlessRecyclerViewScrollListener?.currentPage.toZeroIfNull()
+            val pageNum = viewModel.getCurrentRecommendationPage()
             // Get headline position for first page recommendation
             if (pageNum == 1) {
                 headlineExperimentPosition =
@@ -696,8 +694,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        Log.d("INBOX-PAGE", "FG - $page")
-        viewModel.processAction(UniversalInboxAction.LoadNextPage(page))
+        viewModel.processAction(UniversalInboxAction.LoadNextPage)
     }
 
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
