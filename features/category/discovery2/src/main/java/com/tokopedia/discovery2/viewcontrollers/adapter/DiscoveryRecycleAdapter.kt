@@ -100,21 +100,6 @@ class DiscoveryRecycleAdapter(
         return id ?: 0
     }
 
-    override fun getItemId(position: Int): Long {
-        if (componentList[position].name == ComponentNames.ShopOfferSupportingBrandItem.componentName) {
-            return componentList[position].data?.firstOrNull()?.shopId?.toLongOrNull()
-                ?: super.getItemId(position)
-        }
-        if (_componentList.isEmpty() || position >= componentList.size ||
-            _componentList[position].data.isNullOrEmpty() ||
-            _componentList[position].data?.firstOrNull()?.productId.isNullOrEmpty()
-        ) {
-            return super.getItemId(position)
-        }
-        return _componentList[position].data?.firstOrNull()?.productId?.toLongOrNull()
-            ?: super.getItemId(position)
-    }
-
     fun <T : DiscoveryBaseViewModel> getFirstViewModel(
         viewModelClass: Class<T>
     ): DiscoveryBaseViewModel? {

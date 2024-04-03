@@ -17,8 +17,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.StylesGroup
-import com.tokopedia.discovery2.datamapper.getComponent
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TAB_DEFAULT_BACKGROUND
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -34,6 +32,7 @@ import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlin.math.roundToInt
 
 private const val CHIPS = "Chips"
@@ -80,7 +79,7 @@ class DiscoveryDataMapper {
         ): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             component.data?.forEachIndexed { index, it ->
-                val id = "${TABS_ITEM}_${component.id}_$index"
+                val id = "${component.id}_${TABS_ITEM}_$index"
                 if (!it.name.isNullOrEmpty()) {
                     if (component.isSupportPinnedTab()) {
                         pinnedActiveTab(component.pinnedActiveTabId, it, index)
@@ -298,7 +297,8 @@ class DiscoveryDataMapper {
     fun mapDataItemToProductCardModel(
         dataItem: DataItem,
         componentName: String?,
-        cardType: String?
+        cardType: String?,
+        ctaWording: String? = ""
     ): ProductCardModel {
         val productName: String
         val slashedPrice: String
@@ -352,6 +352,19 @@ class DiscoveryDataMapper {
                         )
                     )
                 }
+            },
+            productCardGenericCta = if (dataItem.hasNotifyMe) {
+                ProductCardModel.ProductCardGenericCta(
+                    copyWriting = ctaWording,
+                    mainButtonVariant = UnifyButton.Variant.GHOST,
+                    mainButtonType = if (dataItem.notifyMe == true) {
+                        UnifyButton.Type.ALTERNATE
+                    } else {
+                        UnifyButton.Type.MAIN
+                    }
+                )
+            } else {
+                null
             },
             shopLocation = getShopLocation(dataItem),
             shopBadgeList = getShopBadgeList(dataItem.badges),
