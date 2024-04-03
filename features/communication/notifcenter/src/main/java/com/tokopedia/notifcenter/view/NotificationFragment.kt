@@ -133,6 +133,7 @@ class NotificationFragment @Inject constructor(
             }
             containerListener?.role?.let {
                 viewModel.loadFirstPageNotification(it)
+                endlessRecyclerViewScrollListener.resetState()
             }
         }
     }
@@ -427,9 +428,35 @@ class NotificationFragment @Inject constructor(
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
         val hasNext = isInfiniteNotificationScroll(data)
-        renderList(data.items, hasNext)
+
+        // call this function instead of BaseListFragment.renderList to avoid jumping currentPage.
+        // issue: renderList always calls updateScrollListenerState which increment the currentPage number,
+        // while EndlessRecyclerViewScrollListener.loadMoreNextPage increment the number as well.
+        renderNotifList(data.items, hasNext)
+
         if (hasNext) {
             showLoading()
+        }
+    }
+
+    private fun renderNotifList(list: List<Visitable<NotificationTypeFactory>>, hasNextPage: Boolean) {
+        hideLoading()
+        if (isLoadingInitialData) {
+            clearAllData()
+        } else {
+            adapter.clearAllNonDataElement()
+        }
+        adapter.addElement(list)
+
+        if (isListEmpty) {
+            showEmpty()
+        } else {
+            isLoadingInitialData = false
+        }
+
+        if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled()
+            && hasNextPage && endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.loadMoreNextPage()
         }
     }
 
