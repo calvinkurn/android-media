@@ -194,16 +194,7 @@ class ShopSecondaryInfoAdapter(
                     )
                     notifyItemChanged(index)
 
-                    if (shopType is RegularMerchant) {
-                        shopStatus.userShopInfoWrapper.userShopInfoUiModel?.let { userShopInfo ->
-                            setRmTranscationWidget(
-                                index,
-                                SettingResponseState.SettingSuccess(userShopInfo)
-                            )
-                        }
-                    } else {
-                        removeRmTransactionWidget()
-                    }
+                    removeRmTransactionWidget()
                 }
             }
         }
@@ -215,7 +206,7 @@ class ShopSecondaryInfoAdapter(
                 val loadingState = SettingResponseState.SettingLoading
                 visitables[index] = ShopStatusWidgetUiModel(loadingState)
                 notifyItemChanged(index)
-                setRmTranscationWidget(index, loadingState)
+                removeRmTransactionWidget()
             }
         }
     }
@@ -226,45 +217,8 @@ class ShopSecondaryInfoAdapter(
                 val errorState = SettingResponseState.SettingError(throwable)
                 visitables[index] = ShopStatusWidgetUiModel(errorState)
                 notifyItemChanged(index)
-                setRmTranscationWidget(index, errorState)
+                removeRmTransactionWidget()
             }
-        }
-    }
-
-    private fun setRmTranscationWidget(
-        shopStatusIndex: Int,
-        userShopInfoState: SettingResponseState<UserShopInfoWrapper.UserShopInfoUiModel>
-    ) {
-        val rmTransactionWidget =
-            when (userShopInfoState) {
-                is SettingResponseState.SettingSuccess -> {
-                    val userShopInfo = userShopInfoState.data
-                    val rmTransactionData = RmTransactionData(
-                        totalTransaction = userShopInfo.totalTransaction,
-                        dateCreated = userShopInfo.dateCreated,
-                        isBeforeOnDate = userShopInfo.isBeforeOnDate
-                    )
-                    RMTransactionWidgetUiModel(SettingResponseState.SettingSuccess(rmTransactionData))
-                }
-                is SettingResponseState.SettingError ->
-                    RMTransactionWidgetUiModel(SettingResponseState.SettingError(userShopInfoState.throwable))
-                else ->
-                    RMTransactionWidgetUiModel(SettingResponseState.SettingLoading)
-            }
-        val rmTransactionIndex = shopStatusIndex + 1
-        if (visitables?.get(rmTransactionIndex) is RMTransactionWidgetUiModel) {
-            val totalTransaction =
-                (rmTransactionWidget.state as? SettingResponseState.SettingSuccess)?.data?.totalTransaction.orZero()
-            if (totalTransaction > Constant.ShopStatus.THRESHOLD_TRANSACTION) {
-                visitables.removeAt(rmTransactionIndex)
-                notifyItemRemoved(rmTransactionIndex)
-            } else {
-                visitables[rmTransactionIndex] = rmTransactionWidget
-                notifyItemChanged(rmTransactionIndex)
-            }
-        } else {
-            visitables?.add(rmTransactionIndex, rmTransactionWidget)
-            notifyItemInserted(rmTransactionIndex)
         }
     }
 
