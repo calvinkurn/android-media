@@ -2318,6 +2318,10 @@ open class ProductDetailFragment :
         return !viewModel.isShopOwner() && !isPrefetch
     }
 
+    override fun onExpandProductName() {
+        pdpUiUpdater?.updateOnExpandProductName()
+    }
+
     override fun onMainImageClicked(
         componentTrackDataModel: ComponentTrackDataModel?,
         position: Int

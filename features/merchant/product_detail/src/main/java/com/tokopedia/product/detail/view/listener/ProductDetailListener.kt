@@ -86,6 +86,8 @@ interface ProductDetailListener {
 
     fun shouldShowWishlist(): Boolean
 
+    fun onExpandProductName()
+
     /**
      * ProductInfoViewHolder
      */

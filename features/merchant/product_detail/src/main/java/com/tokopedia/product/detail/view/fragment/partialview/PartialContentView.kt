@@ -32,7 +32,8 @@ class PartialContentView(
     fun renderData(
         data: ProductContentMainData,
         isUpcomingNplType: Boolean,
-        freeOngkirImgUrl: String
+        freeOngkirImgUrl: String,
+        listener: ProductDetailListener
     ) = with(binding) {
         txtMainPrice.contentDescription =
             context.getString(R.string.content_desc_txt_main_price, data.price.value)
@@ -41,7 +42,7 @@ class PartialContentView(
             MethodChecker.fromHtml(data.productName)
         )
 
-        renderProductName(data = data)
+        renderProductName(data = data, listener = listener)
 
         renderPriceCampaignSection(
             data = data,
@@ -66,8 +67,13 @@ class PartialContentView(
         }
     }
 
-    private fun renderProductName(data: ProductContentMainData) = with(binding) {
-        productNameDelegate.setTitle(title = data.productName, labelIcons = data.labelIcons)
+    private fun renderProductName(data: ProductContentMainData, listener: ProductDetailListener) = with(binding) {
+        productNameDelegate.setTitle(
+            title = data.productName,
+            labelIcons = data.labelIcons,
+            collapse = data.productNameCollapsed,
+            listener = listener
+        )
 
         if (productName.lineCount == 2) {
             pdpContentContainer.setPadding(0, 0, 0, 6.toPx())
