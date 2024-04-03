@@ -56,8 +56,7 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.EnterMethod;
-import com.tokopedia.analytics.byteio.IAppLogActivity;
-import com.tokopedia.analytics.byteio.PageName;
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -1354,6 +1353,7 @@ public class MainParentActivity extends BaseActivity implements
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         updateAppLogPageData(position);
         handleAppLogEnterMethod(pageTitle);
+        sendEnterPage(position);
         return true;
     }
 
@@ -1380,6 +1380,14 @@ public class MainParentActivity extends BaseActivity implements
             if (currentEnterMethod == null) {
                 AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
             }
+        }
+    }
+
+    private void sendEnterPage(int position) {
+        Fragment fragment = fragmentList.get(position);
+        if (!isFirstTimeUser() && fragment instanceof AppLogInterface appLogInterface &&
+                appLogInterface.shouldTrackEnterPage()) {
+            AppLogRecommendation.INSTANCE.sendEnterPageAppLog();
         }
     }
 
@@ -1415,6 +1423,7 @@ public class MainParentActivity extends BaseActivity implements
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
             updateAppLogPageData(homePosition);
+            sendEnterPage(homePosition);
             bottomNavigation.setInitialState(homePosition);
         }
     }
