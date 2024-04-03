@@ -85,7 +85,7 @@ class HomeRecommendationViewModel @Inject constructor(
         count: Int,
         locationParam: String = "",
         tabIndex: Int = 0,
-        sourceType: String
+        sourceType: String,
     ) {
         if (HomeRecommendationController.isUsingRecommendationCard()) {
             fetchHomeRecommendationCard(tabName, locationParam, sourceType)
@@ -113,15 +113,16 @@ class HomeRecommendationViewModel @Inject constructor(
     private fun fetchHomeRecommendationCard(
         tabName: String,
         locationParam: String,
-        sourceType: String
+        sourceType: String,
     ) {
         launchCatchError(coroutineContext, block = {
             val result = getHomeRecommendationCardUseCase.get().execute(
                 Int.ONE,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
             )
+
             if (result.homeRecommendations.isEmpty()) {
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.EmptyData(
@@ -169,7 +170,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 page,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
             )
 
             existingRecommendationDataMutableList.removeAll { it is HomeRecommendationLoadMore }

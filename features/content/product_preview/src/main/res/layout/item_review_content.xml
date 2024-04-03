@@ -230,4 +230,5 @@
         app:layout_constraintBottom_toTopOf="@+id/iv_review_menu"
         app:layout_constraintEnd_toEndOf="@id/layout_like_review"
         app:unify_image_type="circle" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -70,8 +70,6 @@ open class BaseCategoryViewModel(
 
     private var loadMoreJob: Job? = null
 
-    var navToolbarHeight = 0
-
     var categoryIdL1 = String.EMPTY
     var categoryIdL2 = String.EMPTY
     var currentCategoryId = String.EMPTY

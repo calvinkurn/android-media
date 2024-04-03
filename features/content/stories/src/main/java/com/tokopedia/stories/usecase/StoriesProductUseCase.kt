@@ -84,6 +84,7 @@ class StoriesProductUseCase @Inject constructor(
                   priceDiscountFmt
                   priceMasked
                   priceMaskedFmt
+                  priceFormatPriority
                   isBebasOngkir
                   bebasOngkirStatus
                   bebasOngkirURL

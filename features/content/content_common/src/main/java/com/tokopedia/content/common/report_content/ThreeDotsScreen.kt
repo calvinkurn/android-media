@@ -31,7 +31,7 @@ fun ThreeDotsPage(
     menuList: List<ContentMenuItem>,
     onMenuClicked: (ContentMenuItem) -> Unit = {}
 ) {
-    NestTheme {
+    NestTheme(isOverrideStatusBarColor = false) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
@@ -61,7 +61,7 @@ fun ThreeDotsPage(
 
 @Composable
 fun ItemMenu(menu: ContentMenuItem, onMenuClicked: (ContentMenuItem) -> Unit) {
-    NestTheme {
+    NestTheme(isOverrideStatusBarColor = false) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,15 +111,16 @@ fun ItemMenu(menu: ContentMenuItem, onMenuClicked: (ContentMenuItem) -> Unit) {
                 }
             )
 
-            Box(modifier = Modifier
-                .background(NestTheme.colors.NN._100)
-                .requiredHeight(1.dp)
-                .constrainAs(dividerView) {
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                    top.linkTo(nameView.bottom, margin = 16.dp)
-                }
-                .fillMaxWidth()
+            Box(
+                modifier = Modifier
+                    .background(NestTheme.colors.NN._100)
+                    .requiredHeight(1.dp)
+                    .constrainAs(dividerView) {
+                        end.linkTo(parent.end)
+                        start.linkTo(parent.start)
+                        top.linkTo(nameView.bottom, margin = 16.dp)
+                    }
+                    .fillMaxWidth()
             )
         }
     }

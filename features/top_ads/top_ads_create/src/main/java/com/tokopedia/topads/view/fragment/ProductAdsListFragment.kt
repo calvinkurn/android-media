@@ -33,8 +33,8 @@ import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.product.ProductListAdapter
 import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactoryImpl
-import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
-import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
+import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyUiModel
+import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemUiModel
 import com.tokopedia.topads.view.model.ProductAdsListViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -67,8 +67,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private lateinit var productListAdapter: ProductListAdapter
     private var items = mutableListOf<EtalaseUiModel>()
     private val productData = mutableMapOf(
-        CONST_1 to mutableListOf<ProductItemViewModel>(),
-        CONST_2 to mutableListOf<ProductItemViewModel>()
+        CONST_1 to mutableListOf<ProductItemUiModel>(),
+        CONST_2 to mutableListOf<ProductItemUiModel>()
     )
 
     @Inject
@@ -252,9 +252,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         productListAdapter.items.clear()
         productData[i]?.let { productListAdapter.items.addAll(it) }
         if (productListAdapter.items.isEmpty()) {
-            productListAdapter.items.addAll(mutableListOf(ProductEmptyViewModel()))
+            productListAdapter.items.addAll(mutableListOf(ProductEmptyUiModel()))
         }
-        if (productListAdapter.items[0] !is ProductEmptyViewModel) {
+        if (productListAdapter.items[0] !is ProductEmptyUiModel) {
             stepperModel?.selectedProductIds?.let {
                 productListAdapter.setSelectedList(it)
             }
@@ -336,7 +336,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onEmptyProduct() {
         clearShimmerList()
         btnNext?.isEnabled = false
-        productListAdapter.items = mutableListOf(ProductEmptyViewModel())
+        productListAdapter.items = mutableListOf(ProductEmptyUiModel())
         productListAdapter.notifyDataSetChanged()
         selectProductInfo?.text = MethodChecker.fromHtml(String.format(
             getString(topadscommonR.string.format_selected_produk),
@@ -359,9 +359,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         btnNext?.isEnabled = false
         data.forEach { result ->
             if (result.adID.toFloat() > Int.ZERO) {
-                productData[1]?.add(ProductItemViewModel(result))
+                productData[1]?.add(ProductItemUiModel(result))
             } else if (result.adID == Int.ZERO.toString()) {
-                productData[2]?.add(ProductItemViewModel(result))
+                productData[2]?.add(ProductItemUiModel(result))
             }
         }
         if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {

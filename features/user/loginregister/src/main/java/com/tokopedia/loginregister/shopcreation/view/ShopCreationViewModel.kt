@@ -22,13 +22,11 @@ import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCas
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,10 +41,9 @@ open class ShopCreationViewModel @Inject constructor(
     private val getUserProfileCompletionUseCase: GetUserProfileCompletionUseCase,
     private val validateUserProfileUseCase: ValidateUserProfileUseCase,
     private val updateUserProfileUseCase: UpdateUserProfileUseCase,
-    private val getProfileUseCase: GetProfileUseCase,
+    private val getProfileUseCase: GetUserInfoAndSaveSessionUseCase,
     private val shopInfoUseCase: ShopInfoUseCase,
-    private val userSession: UserSessionInterface,
-    dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _addNameResponse = MutableLiveData<Result<UserProfileUpdate>>()
@@ -158,7 +155,9 @@ open class ShopCreationViewModel @Inject constructor(
     fun registerPhoneAndName(phone: String, name: String) {
         launch {
             try {
-                val data = registerUseCase(RegisterUseCase.generateParamRegisterPhoneShopCreation(name, phone))
+                val data = registerUseCase(
+                    RegisterUseCase.generateParamRegisterPhoneShopCreation(name, phone)
+                )
                 val registerInfo = data.register
                 when {
                     registerInfo.accessToken.isNotEmpty() &&
@@ -200,21 +199,19 @@ open class ShopCreationViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        getProfileUseCase.execute(
-            GetProfileSubscriber(
-                userSession,
-                { _getUserInfoResponse.value = Success(it.profileInfo) },
-                { _getUserInfoResponse.postValue(Fail(it)) }
-            )
-        )
-    }
-
-    fun clearBackgroundTask() {
-        getProfileUseCase.unsubscribe()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        clearBackgroundTask()
+        launch {
+            try {
+                when (val profile = getProfileUseCase(Unit)) {
+                    is Success -> {
+                        _getUserInfoResponse.value = Success(profile.data.profileInfo)
+                    }
+                    is Fail -> {
+                        _getUserInfoResponse.value = Fail(profile.throwable)
+                    }
+                }
+            } catch (e: Exception) {
+                _getUserInfoResponse.value = Fail(e)
+            }
+        }
     }
 }

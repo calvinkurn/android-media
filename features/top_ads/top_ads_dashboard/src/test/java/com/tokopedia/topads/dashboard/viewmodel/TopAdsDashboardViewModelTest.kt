@@ -1,7 +1,12 @@
 package com.tokopedia.topads.dashboard.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.tokopedia.topads.common.data.model.ticker.DataMessage
+import com.tokopedia.topads.common.data.model.ticker.Status
+import com.tokopedia.topads.common.data.model.ticker.TickerInfo
+import com.tokopedia.topads.common.data.model.ticker.TopAdsTickerResponse
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.Error
@@ -18,6 +23,10 @@ import com.tokopedia.topads.dashboard.data.raw.topAdsHomepageLatestReadingJson
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
@@ -258,6 +267,104 @@ class TopAdsDashboardViewModelTest {
     }
 
     @Test
+    fun `getAutoTopUpStatus response null and error not empty test, livedata should be fail`() {
+        val actual = AutoTopUpData.Response(null)
+
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
+            firstArg<(AutoTopUpData.Response) -> Unit>().invoke(actual)
+        }
+
+        viewModel.getAutoTopUpStatus()
+        assertTrue(viewModel.autoTopUpStatusLiveData.value is Fail)
+    }
+
+    @Test
+    fun `fetchInsightItems failure test`() {
+
+        val throwable = Throwable()
+        coEvery {
+            topAdsListAllInsightCountsUseCase.invoke(any(), any(), any())
+        } answers {
+            throw throwable
+        }
+        viewModel.fetchInsightItems("", 0, null)
+        assertEquals(viewModel.productInsights.value, TopAdsListAllInsightState.Fail(throwable))
+    }
+
+    @Test
+    fun `fetchInsightItems success test`() {
+        val liveData = MutableLiveData<TopAdsListAllInsightState<MutableList<InsightListUiModel>>>()
+        liveData.value = TopAdsListAllInsightState.Success(mutableListOf())
+
+        coEvery {
+            topAdsListAllInsightCountsUseCase.invoke(any(), any(), any())
+        } answers {
+            TopAdsListAllInsightCountsResponse(
+                topAdsListAllInsightCounts =
+                TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts()
+            )
+        }
+
+        viewModel.fetchInsightItems("", 0, null)
+
+        assertEquals(
+            viewModel.productInsights.value,
+            liveData.value
+        )
+    }
+
+    @Test
+    fun `fetchInsightTitle failure test`() {
+        val throwable = Throwable()
+        coEvery {
+            topAdsGetTotalAdGroupsWithInsightUseCase(any(), any())
+        } answers {
+            throw throwable
+        }
+        viewModel.fetchInsightTitle()
+        assertEquals(viewModel.adGroupWithInsight.value, TopAdsListAllInsightState.Fail(throwable))
+    }
+
+    @Test
+    fun `fetchInsightTitle success`() {
+        val data: TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> =
+            TopAdsListAllInsightState.Success(TopAdsTotalAdGroupsWithInsightResponse())
+        coEvery {
+            topAdsGetTotalAdGroupsWithInsightUseCase(any(), any())
+        } answers {
+            data
+        }
+        viewModel.fetchInsightTitle()
+        assertEquals(
+            viewModel.adGroupWithInsight.value, TopAdsListAllInsightState.Success(data = data).data
+        )
+    }
+
+    @Test
+    fun `getTopadsTicker failure test, livedata should be null`() {
+        coEvery { topadsTickerUseCase.execute() } answers {
+            throw Throwable("it")
+        }
+        viewModel.getTopadsTicker()
+        assertEquals(viewModel.tickerLiveData.value, null)
+    }
+
+    @Test
+    fun `getTopadsTicker response not null`() {
+        val data = TopAdsTickerResponse(
+            data = DataMessage(arrayListOf(), TickerInfo("", "")),
+            status = Status()
+        )
+
+        coEvery { topadsTickerUseCase.execute() } answers {
+            data
+        }
+        viewModel.getTopadsTicker()
+        assertEquals(viewModel.tickerLiveData.value, data)
+
+    }
+
+    @Test
     fun `getAutoTopUpStatus on exception occured test`() {
         val actual = Exception("it")
 
@@ -273,7 +380,9 @@ class TopAdsDashboardViewModelTest {
     fun `test success in getSelectedTopUpType when credit performance is topUpFrequently`() {
         val actual = GetPersonalisedCopyResponse(
             GetPersonalisedCopyResponse.GetPersonalisedCopy(
-                GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY)
+                GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(
+                    creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY
+                )
             )
         )
         every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
@@ -281,14 +390,19 @@ class TopAdsDashboardViewModelTest {
         }
         viewModel.getSelectedTopUpType()
 
-        assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+        assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected,
+            true
+        )
     }
 
     @Test
     fun `test success in getSelectedTopUpType when credit performance is INSUFFICIENT_CREDIT`() {
         val actual = GetPersonalisedCopyResponse(
             GetPersonalisedCopyResponse.GetPersonalisedCopy(
-                GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT)
+                GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(
+                    creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
+                )
             )
         )
         every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
@@ -296,7 +410,10 @@ class TopAdsDashboardViewModelTest {
         }
         viewModel.getSelectedTopUpType()
 
-        assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+        assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected,
+            true
+        )
     }
 
     @Test
@@ -311,7 +428,10 @@ class TopAdsDashboardViewModelTest {
         }
         viewModel.getSelectedTopUpType()
 
-        assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, false)
+        assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected,
+            false
+        )
     }
 
     @Test

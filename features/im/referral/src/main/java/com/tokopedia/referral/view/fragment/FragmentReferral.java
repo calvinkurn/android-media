@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.analytics.ReferralAnalytics;
@@ -40,6 +39,9 @@ import com.tokopedia.referral.view.adapter.ReferralGuidePagerAdapter;
 import com.tokopedia.referral.view.listener.ReferralView;
 import com.tokopedia.referral.view.presenter.ReferralPresenter;
 import com.tokopedia.user.session.UserSession;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -75,6 +77,8 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
     private ProgressDialog progressBar;
     public static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
     public static final int LOGIN_REQUEST_CODE = 1012;
+    private static final NumberFormat dotFormat = NumberFormat.getNumberInstance(new Locale("in", "id"));
+    private static final NumberFormat commaFormat = NumberFormat.getNumberInstance(new Locale("en", "US"));
 
     private void assignViews(View view) {
         referralCodeTextView = view.findViewById(R.id.tv_referral_code);
@@ -189,9 +193,19 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
             progressBarReferral.setProgress((referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
                     referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getCurrentBenefit() * 100
                     / referralData.getPromoBenefit().getMaxBenefit()));
-            tvPercent.setText("Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getCurrentBenefit(), false) +
-                    " / Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(), false));
+            tvPercent.setText("Rp " + convertPriceValue((double) referralData.getPromoBenefit().getCurrentBenefit(), false) +
+                    " / Rp " + convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(), false));
         }
+    }
+
+    public String convertPriceValue(double price, boolean useCommaForThousand) {
+        String formattedString;
+        if (useCommaForThousand) {
+            formattedString = commaFormat.format(price);
+        } else {
+            formattedString = dotFormat.format(price);
+        }
+        return formattedString;
     }
 
     @Override

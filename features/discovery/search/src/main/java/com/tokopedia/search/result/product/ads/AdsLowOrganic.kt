@@ -6,7 +6,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ViewUpdater
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
@@ -27,6 +30,7 @@ class AdsLowOrganic @Inject constructor(
     private val requestParamsGenerator: RequestParamsGenerator,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
     responseCodeProvider: ResponseCodeProvider,
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
 ): ResponseCodeProvider by responseCodeProvider {
 
     private val isEnabledRollence by lazy(LazyThreadSafetyMode.NONE, ::getIsEnabledRollence)
@@ -65,7 +69,7 @@ class AdsLowOrganic @Inject constructor(
     ) {
         if (isHideProductAds || !isAdsLowOrganicAllowed || topAdsModel.data.isEmpty() || !isBelowInjectLimit) return
 
-        val topAdsProductList = createTopAdsProductList(topAdsModel, productData)
+        val topAdsProductList = createTopAdsProductList(topAdsModel, productData, true)
 
         lastPosition = topAdsProductList.lastOrNull()?.position ?: 0
 
@@ -80,6 +84,7 @@ class AdsLowOrganic @Inject constructor(
     private fun createTopAdsProductList(
         topAdsModel: TopAdsModel,
         productData: SearchPageProductData,
+        isFirstPage: Boolean,
     ) = topAdsModel.data.mapIndexed { index, data ->
         ProductItemDataView.create(
             data,
@@ -89,6 +94,7 @@ class AdsLowOrganic @Inject constructor(
             productData.externalReference,
             productData.keywordIntention,
             false,
+            byteIOTrackingDataFactory.create(isFirstPage),
         )
     }
 
@@ -153,7 +159,7 @@ class AdsLowOrganic @Inject constructor(
             return
         }
 
-        val topAdsProductList = createTopAdsProductList(topAdsModel, productData)
+        val topAdsProductList = createTopAdsProductList(topAdsModel, productData, false)
 
         lastPosition = topAdsProductList.lastOrNull()?.position ?: 0
 

@@ -53,7 +53,7 @@ internal fun ItemImageProductPreview(
         stateListener?.invoke(isZoomMode)
     }
 
-    NestTheme(darkTheme = true) {
+    NestTheme(darkTheme = true, isOverrideStatusBarColor = false) {
         BoxWithConstraints(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
