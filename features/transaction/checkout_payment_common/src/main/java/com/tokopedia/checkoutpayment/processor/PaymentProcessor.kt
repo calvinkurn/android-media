@@ -202,10 +202,16 @@ class PaymentProcessor @Inject constructor(
             }
 
             PaymentValidationReport.WalletActivationError -> {
+                // for future phase (ocs)
+//                latestWidget.copy(
+//                    title = currentData.walletData.activation.errorMessage,
+//                    subtitle = "",
+//                    isTitleRed = true,
+//                    actionButtonText = currentData.walletData.activation.buttonTitle
+//                )
                 latestWidget.copy(
-                    title = currentData.walletData.activation.errorMessage,
-                    subtitle = "",
-                    isTitleRed = true,
+                    description = currentData.walletData.activation.errorMessage,
+                    isDescriptionRed = true,
                     actionButtonText = currentData.walletData.activation.buttonTitle
                 )
             }
