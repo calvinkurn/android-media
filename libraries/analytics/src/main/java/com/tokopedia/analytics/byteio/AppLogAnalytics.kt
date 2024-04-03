@@ -502,7 +502,11 @@ object AppLogAnalytics {
         }.toString()
     }
 
-    private fun getEntranceInfoJsonForCheckoutOcc(): JSONObject {
+    /**
+     * This method should be refactored to the normal getEntranceInfoJson, this is separated
+     * to minimize changes and avoid regression during hotfix
+     * */
+    internal fun getEntranceInfoJsonForCheckoutOcc(): JSONObject {
         return JSONObject().also {
             it.addEnterFromInfo()
             it.addEntranceForm()
