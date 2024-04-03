@@ -29,7 +29,19 @@ class ActionHandler(
     }
 
     override fun handleAction(action: DivSightAction, view: DivViewFacade): Boolean {
-        onHandleAction(action.url, action.payload, view)
+        val mUrl = action.url?.evaluate(view.expressionResolver)
+
+        when (mUrl?.authority) {
+            CUSTOM_ACTION -> onHandleCustomAction(mUrl)
+            HOST_ROUTE -> onHandleRoute(mUrl)
+        }
+
+        if (sduiTrackingInterface != null) {
+            sduiTrackingInterface.onViewClick(action.payload)
+        } else {
+            sendTracker(action.payload)
+        }
+
         return super.handleAction(action, view)
     }
 
@@ -38,30 +50,12 @@ class ActionHandler(
         view: DivViewFacade,
         actionUid: String
     ): Boolean {
-        sendTracker(action.payload)
+        if (sduiTrackingInterface != null) {
+            sduiTrackingInterface.onViewVisible(action.payload)
+        } else {
+            sendTracker(action.payload)
+        }
         return super.handleAction(action, view, actionUid)
-    }
-
-    private fun onHandleAction(url: Expression<Uri>?, payload: JSONObject?, view: DivViewFacade) {
-        val mUrl = url?.evaluate(view.expressionResolver)
-
-        when (mUrl?.authority) {
-            CUSTOM_ACTION -> onHandleCustomAction(mUrl)
-            HOST_ROUTE -> onHandleRoute(mUrl)
-        }
-
-        if (sduiTrackingInterface != null) {
-            sduiTrackingInterface.onViewClick(payload)
-        } else {
-            sendTracker(payload)
-        }
-
-        //Send impression tracker
-        if (sduiTrackingInterface != null) {
-            sduiTrackingInterface.onViewVisible(payload)
-        } else {
-            sendTracker(payload)
-        }
     }
 
     private fun onHandleRoute(url: Uri) {
