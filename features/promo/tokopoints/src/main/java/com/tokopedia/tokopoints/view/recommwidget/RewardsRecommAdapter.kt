@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
@@ -14,6 +15,7 @@ import com.tokopedia.analytics.byteio.topads.provider.IAdsViewHolderTrackListene
 import com.tokopedia.analytics.byteio.topads.util.getVisibleHeightPercentage
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
@@ -52,87 +54,50 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                 }
             )
 
-            if (model.recomendationItem.isTopAds) {
-                with(productView) {
-                    setProductInfoClickListener(model.recomendationItem)
-                    setImageProductClickListener(model.recomendationItem)
-                    setShopTypeLocationOnClickListener(model.recomendationItem)
-                }
-            }
-
-            productView.setOnClickListener {
-                if (impressItem.isTopAds) {
+            productView.setOnClickListener(object : ProductCardClickListener{
+                override fun onClick(v: View) {
+                    if (impressItem.isTopAds) {
                         TopAdsUrlHitter(itemView.context).hitClickUrl(
                             className,
                             impressItem.clickUrl,
                             impressItem.productId.toString(),
                             impressItem.name,
                             impressItem.imageUrl,"")
+                    }
+                    listener.onProductClick(impressItem,"",bindingAdapterPosition)
                 }
-                listener.onProductClick(impressItem,"",position)
-            }
+
+                override fun onAreaClicked(v: View) {
+                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.SELLER_NAME)
+                }
+            })
+
         }
 
-        private fun ProductCardGridView.setProductInfoClickListener(uiModel: RecommendationItem) {
-            setProductInfoOnClickListener {
+        private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
+            if (recommendationItem?.isTopAds == true) {
                 AppLogTopAds.sendEventRealtimeClick(
                     itemView.context,
                     PageName.REWARD,
                     AdsLogRealtimeClickModel(
-                        AdsLogConst.Refer.AREA,
+                        refer,
                         // todo this value from BE
                         0,
                         // todo this value from BE
                         0,
-                        System.currentTimeMillis().toString(),
                         AdsLogRealtimeClickModel.AdExtraData(
-                            productId = uiModel.productId.toString()
+                            productId = recommendationItem?.productId.orZero().toString()
                         )
                     )
                 )
-                listener.onProductClick(uiModel,"", bindingAdapterPosition)
-            }
-        }
-
-        private fun ProductCardGridView.setImageProductClickListener(uiModel: RecommendationItem) {
-            setImageProductClickListener {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.REWARD,
-                    AdsLogRealtimeClickModel(
-                        AdsLogConst.Refer.COVER,
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        System.currentTimeMillis().toString(),
-                        AdsLogRealtimeClickModel.AdExtraData(
-                            productId = uiModel.productId.toString()
-                        )
-                    )
-                )
-                listener.onProductClick(uiModel,"", bindingAdapterPosition)
-            }
-        }
-
-        private fun ProductCardGridView.setShopTypeLocationOnClickListener(uiModel: RecommendationItem) {
-            setShopTypeLocationOnClickListener {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.REWARD,
-                    AdsLogRealtimeClickModel(
-                        AdsLogConst.Refer.SELLER_NAME,
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        System.currentTimeMillis().toString(),
-                        AdsLogRealtimeClickModel.AdExtraData(
-                            productId = uiModel.productId.toString()
-                        )
-                    )
-                )
-                listener.onProductClick(uiModel,"", bindingAdapterPosition)
             }
         }
 
@@ -146,7 +111,6 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                         0,
                         // todo this value from BE
                         0,
-                        System.currentTimeMillis().toString(),
                         AdsLogShowModel.AdExtraData(
                             productId = uiModel?.productId.orZero().toString(),
                         )
@@ -167,7 +131,6 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                         0,
                         // todo this value from BE
                         0,
-                        System.currentTimeMillis().toString(),
                         AdsLogShowOverModel.AdExtraData(
                             productId = uiModel?.productId.orZero().toString(),
                             sizePercent = visiblePercentage
