@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -196,7 +197,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun addRecommendationScrollListener() {
-        if(hasApplogScrollListener) return
+        if (hasApplogScrollListener) return
         binding?.inboxRv?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
@@ -359,7 +360,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
+        if (hasTrackEnterPage) return
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
     }
@@ -695,6 +696,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
+        Log.d("INBOX-PAGE", "FG - $page")
         viewModel.processAction(UniversalInboxAction.LoadNextPage(page))
     }
 

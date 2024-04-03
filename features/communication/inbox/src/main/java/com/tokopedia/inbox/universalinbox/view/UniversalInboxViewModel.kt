@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
@@ -380,6 +381,7 @@ class UniversalInboxViewModel @Inject constructor(
 
     private fun loadProductRecommendation(page: Int) {
         viewModelScope.launch {
+            Log.d("INBOX-PAGE", "VM - $page")
             try {
                 getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page)).collectLatest {
                     when (it) {
