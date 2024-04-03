@@ -142,7 +142,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
 
                     val loginListener = rememberLoginListener(userSession = userSession)
 
-                    NestTheme {
+                    NestTheme(isOverrideStatusBarColor = false) {
                         FollowingFollowerListScreen(
                             profileName = uiState.profileName,
                             totalFollowersFmt = uiState.totalFollowersFmt,
