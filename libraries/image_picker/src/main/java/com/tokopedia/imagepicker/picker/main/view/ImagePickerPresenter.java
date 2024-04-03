@@ -260,6 +260,9 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                                             },
                                             (a, b, c) -> { // onSuccess with source state
                                                 return null;
+                                            },
+                                            (a, b, c) -> {
+                                                return null;
                                             }
                                     );
                                     return null;
