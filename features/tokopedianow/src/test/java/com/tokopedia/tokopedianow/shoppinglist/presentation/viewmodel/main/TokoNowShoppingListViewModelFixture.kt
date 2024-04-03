@@ -217,6 +217,14 @@ abstract class TokoNowShoppingListViewModelFixture {
         } returns isOoc
     }
 
+    protected fun stubIsChosenAddressUpdated(
+        isChosenAddressUpdated: Boolean
+    ) {
+        every {
+            addressData.isChoosenAddressUpdated()
+        } returns isChosenAddressUpdated
+    }
+
     protected fun stubShopId(
         shopId: Long
     ) {

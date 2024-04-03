@@ -13,6 +13,7 @@ import com.tokopedia.tokopedianow.data.ShoppingListDataFactory.Main
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addErrorState
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.countSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.sumPriceSelectedItems
+import com.tokopedia.tokopedianow.shoppinglist.domain.extension.MainVisitableExtension.addLoadingState
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.BottomBulkAtcModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
@@ -1763,6 +1764,253 @@ class ShoppingListLoadLayout: TokoNowShoppingListViewModelFixture() {
             .isNavToolbarScrollingBehaviourEnabled
             .verifyValue(
                 true
+            )
+    }
+
+    @Test
+    fun `When resuming the page to load layout 2 times, isChosenAddressUpdated is false and layout has not been loaded yet, get mini cart, then the result should give the same result as first time load`() {
+        // create fake variables for stub
+        val shopId = 222121L
+        val miniCartData = Main.createMiniCart()
+        val shoppingList = Main.createShoppingList()
+        val recommendationWidget = Main.createRecommendationWidget(
+            hasNext = false,
+            title = "Rekomendasi Untuk Anda"
+        )
+
+        // stub section
+        stubOutOfCoverage(
+            isOoc = false
+        )
+
+        stubShopId(
+            shopId = shopId
+        )
+
+        stubLoggedIn(
+            isLoggedIn = true
+        )
+
+        stubGetMiniCart(
+            response = miniCartData
+        )
+
+        stubGetShoppingList(
+            response = shoppingList
+        )
+
+        stubGetProductRecommendation(
+            param = GetRecommendationRequestParam(
+                pageNumber = Int.ZERO,
+                userId = userSession.userId.toIntSafely(),
+                pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
+                xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                isTokonow = true
+            ),
+            response = recommendationWidget
+        )
+
+        // load layout
+        viewModel.loadLayout()
+        viewModel.resumeLayout()
+        viewModel.resumeLayout()
+
+        // update expected layout
+        setDataToGlobalVariables(
+            miniCartData = miniCartData,
+            shoppingList = shoppingList,
+            recommendationWidget = recommendationWidget,
+            shopId = shopId,
+            isProductRecommendationError = true
+        )
+        updateLayout()
+
+        // other verifications
+        viewModel
+            .layoutState
+            .verifySuccess(
+                LayoutModel(
+                    layout = mutableLayout,
+                    isRequiredToScrollUp = true
+                )
+            )
+
+        viewModel
+            .bottomBulkAtcData
+            .verifyValue(
+                BottomBulkAtcModel(
+                    counter = filteredAvailableProducts.countSelectedItems(),
+                    price = filteredAvailableProducts.sumPriceSelectedItems()
+                )
+            )
+
+        viewModel
+            .isProductAvailable
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .miniCartState
+            .verifyIsError()
+
+        viewModel
+            .isPageImpressionTracked
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isCoachMarkShown
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isOnScrollNotNeeded
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isNavToolbarScrollingBehaviourEnabled
+            .verifyValue(
+                true
+            )
+    }
+
+    @Test
+    fun `When resuming the page to load layout, isChosenAddressUpdated is true, refresh, then the result should give the same result as first time load`() {
+        // create fake variables for stub
+        val shopId = 222121L
+        val miniCartData = Main.createMiniCart()
+        val shoppingList = Main.createShoppingList()
+        val recommendationWidget = Main.createRecommendationWidget(
+            hasNext = false,
+            title = "Rekomendasi Untuk Anda"
+        )
+
+        // stub section
+        stubOutOfCoverage(
+            isOoc = false
+        )
+
+        stubIsChosenAddressUpdated(
+            isChosenAddressUpdated = true
+        )
+
+        stubShopId(
+            shopId = shopId
+        )
+
+        stubLoggedIn(
+            isLoggedIn = true
+        )
+
+        stubGetMiniCart(
+            response = miniCartData
+        )
+
+        stubGetShoppingList(
+            response = shoppingList
+        )
+
+        stubGetProductRecommendation(
+            param = GetRecommendationRequestParam(
+                pageNumber = Int.ZERO,
+                userId = userSession.userId.toIntSafely(),
+                pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
+                xSource = X_SOURCE_RECOMMENDATION_PARAM,
+                isTokonow = true
+            ),
+            response = recommendationWidget
+        )
+
+        // load layout
+        viewModel.loadLayout()
+        viewModel.resumeLayout()
+
+        // update expected layout
+        setDataToGlobalVariables(
+            miniCartData = miniCartData,
+            shoppingList = shoppingList,
+            recommendationWidget = recommendationWidget,
+            shopId = shopId,
+            isProductRecommendationError = true
+        )
+        updateLayout()
+
+        // other verifications
+        viewModel
+            .layoutState
+            .verifySuccess(
+                LayoutModel(
+                    layout = mutableLayout,
+                    isRequiredToScrollUp = true
+                )
+            )
+
+        viewModel
+            .bottomBulkAtcData
+            .verifyValue(
+                BottomBulkAtcModel(
+                    counter = filteredAvailableProducts.countSelectedItems(),
+                    price = filteredAvailableProducts.sumPriceSelectedItems()
+                )
+            )
+
+        viewModel
+            .isProductAvailable
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .miniCartState
+            .verifyIsError()
+
+        viewModel
+            .isPageImpressionTracked
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isCoachMarkShown
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isOnScrollNotNeeded
+            .verifyValue(
+                true
+            )
+
+        viewModel
+            .isNavToolbarScrollingBehaviourEnabled
+            .verifyValue(
+                true
+            )
+    }
+
+    @Test
+    fun `When resuming the page to load layout, isChosenAddressUpdated is false and layout has not been loaded yet, the result should give the same result as first time load`() {
+        // stub section
+        stubIsChosenAddressUpdated(false)
+
+        // load layout
+        viewModel.resumeLayout()
+
+        // verify still in the first state
+        viewModel
+            .layoutState
+            .verifyLoading(
+                LayoutModel(
+                    layout = mutableLayout.addLoadingState()
+                )
             )
     }
 }
