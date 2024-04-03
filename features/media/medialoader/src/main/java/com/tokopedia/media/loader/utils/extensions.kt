@@ -11,6 +11,7 @@ import android.widget.ImageView
 import com.tokopedia.media.loader.data.DEFAULT_TIMEOUT
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.module.GlideRequest
+import java.io.File
 import java.util.Locale
 
 private val handler by lazy(LazyThreadSafetyMode.NONE) {
@@ -19,8 +20,8 @@ private val handler by lazy(LazyThreadSafetyMode.NONE) {
     }
 }
 
-internal fun <T> GlideRequest<T>.mediaLoad(properties: Properties): GlideRequest<T> {
-    return if (properties.data is String) {
+internal fun <T> GlideRequest<T>.mediaLoad(properties: Properties, isDownload: Boolean = false): GlideRequest<T> {
+    return if (properties.data is String && !isDownload) {
         load(properties.generateUrl())
     } else {
         load(properties.data)
@@ -66,7 +67,7 @@ internal fun GlideRequest<Bitmap>.transition(properties: Properties): GlideReque
 }
 
 @SuppressLint("CheckResult")
-internal fun GlideRequest<Bitmap>.timeout(properties: Properties): GlideRequest<Bitmap> {
+internal fun <T> GlideRequest<T>.timeout(properties: Properties): GlideRequest<T> {
     timeout(properties.timeoutMS ?: DEFAULT_TIMEOUT)
     return this
 }

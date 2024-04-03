@@ -80,18 +80,14 @@ object JvmMediaLoader {
     ) {
         imageView.loadImage(url) {
             this.apply(properties)
-            this.loaderListener = object: MediaListener {
-                // for GIF format
-                override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {}
-
-                override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?, isFirstResource: Boolean) {
-                    onSuccess(resource, dataSource, isFirstResource)
+            this.listener(
+                onSuccessWithResource = {bitmap, mediaDataSource, isFirstResource ->
+                    onSuccess(bitmap, mediaDataSource, isFirstResource)
+                },
+                onError = { exception ->
+                    onError(exception)
                 }
-
-                override fun onFailed(error: MediaException?) {
-                    onError(error)
-                }
-            }
+            )
         }
     }
 

@@ -8,10 +8,8 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.AppWidgetTarget
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.MediaLoaderApi.setThumbnailUrl
 import com.tokopedia.media.loader.data.Properties
-import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.listener.MediaListenerBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
@@ -21,6 +19,7 @@ import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.media.loader.utils.transition
 import com.tokopedia.media.loader.utils.mediaLoad
 import com.tokopedia.media.loader.utils.timeout
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -44,9 +43,8 @@ object MediaLoaderTarget {
         return loadImageTarget(context, properties)?.submit()?.get(timeout, TimeUnit.MILLISECONDS)
     }
 
-    fun downloadImageFuture(context: Context, timeout: Long, properties: Properties): File? {
-        val size = properties.overrideSize ?: Resize(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-        return loadImageTarget(context, properties)?.downloadOnly(size.width, size.height)?.get()
+    fun downloadImageFuture(context: Context, properties: Properties): File? {
+        return downloadImageTarget(context, properties)?.submit()?.get()
     }
 
     fun loadGif(context: Context, properties: Properties, target: MediaBitmapEmptyTarget<GifDrawable>) {
@@ -59,6 +57,33 @@ object MediaLoaderTarget {
 
     fun imagePreload(context: Context, source: Any?) {
         GlideApp.with(context).load(source).preload()
+    }
+
+    private fun downloadImageTarget(context: Context, properties: Properties) : GlideRequest<File>? {
+        if (properties.data.toString().isEmpty()) return null
+        if (properties.data !is String) return null
+
+        // instance the feature toggle instance
+        properties.featureToggle = FeatureToggleManager.instance()
+        properties.cacheStrategy = MediaCacheStrategy.AUTOMATIC
+
+        // startTimeRequest will use for performance tracking
+        val startTimeRequest = System.currentTimeMillis()
+
+        return GlideApp
+            .with(context)
+            .downloadOnly()
+            .transform(properties)
+            .commonOptions(properties)
+            .timeout(properties)
+            .listener(
+                MediaListenerBuilder(
+                    context,
+                    properties,
+                    startTimeRequest
+                )
+            )
+            .mediaLoad(properties, isDownload = true)
     }
 
     private fun loadImageTarget(context: Context, properties: Properties): GlideRequest<Bitmap>? {

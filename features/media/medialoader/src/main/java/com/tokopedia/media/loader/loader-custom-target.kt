@@ -86,12 +86,11 @@ fun Any.getBitmapFromUrl(
     return MediaLoaderTarget.loadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
 }
 
-fun Any.downloadImageFromUrl(
+fun String.downloadImageFromUrl(
     context: Context,
-    timeout: Long = DEFAULT_TIMEOUT_MS,
     properties: Properties.() -> Unit = {}
 ): File? {
-    return MediaLoaderTarget.downloadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
+    return MediaLoaderTarget.downloadImageFuture(context, Properties().apply(properties).setSource(this))
 }
 
 fun AppWidgetTarget.loadImage(context: Context, url: String, properties: Properties.() -> Unit) {

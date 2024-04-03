@@ -15,6 +15,7 @@ import com.tokopedia.media.loader.utils.FeatureToggle
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
+import java.io.File
 
 data class Properties(
     internal var data: Any? = null,
@@ -194,6 +195,7 @@ data class Properties(
         onError: (MediaException?) -> Unit = { _ -> },
         onSuccessGif: (GifDrawable?, MediaDataSource?) -> Unit = { _, _ -> },
         onSuccessWithResource: (Bitmap?, MediaDataSource?, Boolean) -> Unit = { _, _, _ -> },
+        onSuccessDownload: (File?, MediaDataSource?) -> Unit = { _, _ -> }
     ) = apply {
         this.loaderListener = object : MediaListener {
             override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?, isFirstResource: Boolean) {
@@ -207,6 +209,10 @@ data class Properties(
 
             override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {
                 onSuccessGif(resource, dataSource)
+            }
+
+            override fun onDownload(file: File?, dataSource: MediaDataSource?) {
+                onSuccessDownload(file, dataSource)
             }
         }
     }
