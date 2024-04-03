@@ -90,4 +90,6 @@ internal interface FeedBrowseTracker {
         slotInfo: SlotInfo,
         widgetPositionInList: Int
     )
+
+    fun clickSearchbar()
 }

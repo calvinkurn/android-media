@@ -56,8 +56,8 @@
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
     <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
-    <string name="feed_onboarding_browse_entry_point_title">Temukan berbagai konten seru</string>
-    <string name="feed_onboarding_browse_entry_point_subtitle">Dapetin inspirasi belanja dari konten kreatif lainnya, yuk!</string>
+    <string name="feed_onboarding_browse_entry_point_title">Cari konten yang kamu sukain aja~</string>
+    <string name="feed_onboarding_browse_entry_point_subtitle">Cek juga siapa tahu ada produk hidden gem dan promo di kontennya!</string>
 
     <string name="feed_for_you_label">Untuk Kamu</string>
     <string name="feed_following_label">Following</string>
@@ -105,7 +105,7 @@
     <string name="feed_product_highlight_atc">+</string>
 
     <!-- Feed Local Search -->
-    <string name="feed_local_search_page_text_placeholder_fallback">Cari Kontent di Tokopedia Feed</string>
+    <string name="feed_local_search_page_text_placeholder_fallback">Cari kontent di Feed</string>
 
     <string name="feed_local_search_not_found_title">Oops, kontennya nggak ketemu</string>
     <string name="feed_local_search_not_found_desc">Coba periksa lagi kata kuncinya, ya.</string>

@@ -6,7 +6,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
-import com.tokopedia.feedplus.browse.data.model.HeaderDataModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
@@ -33,7 +33,7 @@ internal class FeedBrowseViewModel @Inject constructor(
     private val repository: FeedBrowseRepository
 ) : ViewModel() {
 
-    private val _headerDetail = MutableStateFlow(HeaderDataModel.DEFAULT)
+    private val _headerDetail = MutableStateFlow(HeaderDetailModel.DEFAULT)
     private val _slots = MutableStateFlow<ResultState>(ResultState.Loading)
     private val _widgets = MutableStateFlow<FeedBrowseModelMap>(emptyMap())
 
@@ -43,14 +43,14 @@ internal class FeedBrowseViewModel @Inject constructor(
         _headerDetail,
         _slots,
         _widgets
-    ) { headerData, slots, widgets ->
+    ) { headerDetail, slots, widgets ->
         if (slots is ResultState.Fail) {
             FeedBrowseUiState.Error(
                 slots.error
             )
         } else {
             FeedBrowseUiState.Success(
-                headerData = headerData,
+                headerDetail = headerDetail,
                 widgets = widgets.values.toList()
             )
         }
@@ -75,7 +75,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         }
     }
 
-    fun getHeaderData(): HeaderDataModel {
+    fun getHeaderDetail(): HeaderDetailModel {
         return _headerDetail.value
     }
 
@@ -86,7 +86,7 @@ internal class FeedBrowseViewModel @Inject constructor(
 
     private fun handleFetchHeaderDetail() {
         viewModelScope.launch {
-            val data = repository.getHeaderData()
+            val data = repository.getHeaderDetail()
             data?.let {
                 _headerDetail.value = it
             }

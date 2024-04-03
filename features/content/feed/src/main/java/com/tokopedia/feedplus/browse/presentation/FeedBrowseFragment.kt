@@ -24,7 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
-import com.tokopedia.feedplus.browse.data.model.HeaderDataModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
@@ -73,6 +73,20 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
+
+    private val searchPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val resultKeyword = it.data?.getStringExtra(FeedLocalBrowseFragment.LOCAL_BROWSE_SEARCH_KEYWORD)
+
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT)
+            intent.putExtra(FeedSearchResultActivity.KEYWORD_PARAM, resultKeyword)
+            searchResultPageLauncher.launch(intent)
+        }
+    }
+
+    private val searchResultPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // Todo
+    }
 
     private val tracker by lazyThreadSafetyNone {
         trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_BROWSE_PAGE)
@@ -316,7 +330,7 @@ internal class FeedBrowseFragment @Inject constructor(
                             hideError()
                             showContent()
 
-                            renderHeader(state.headerData)
+                            renderHeader(state.headerDetail)
                             renderContent(state.widgets)
                         }
                         is FeedBrowseUiState.Error -> {
@@ -391,12 +405,12 @@ internal class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseList.hide()
     }
 
-    private fun renderHeader(newHeaderData: HeaderDataModel) {
+    private fun renderHeader(newHeaderDetail: HeaderDetailModel) {
         binding.feedBrowseHeader.let {
-            if (!newHeaderData.isShowSearchBar) {
-                it.header?.title = newHeaderData.title
+            if (!newHeaderDetail.isShowSearchBar) {
+                it.header?.title = newHeaderDetail.title
             } else {
-                it.initSearchBar(false, newHeaderData.searchBarPlaceholder)
+                it.initSearchBar(false, newHeaderDetail.searchBarPlaceholder)
                 it.setSearchbarFocusListener { view, focusState ->
                     searchbarFocusHandler(view, focusState)
                 }
@@ -418,12 +432,14 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private fun searchbarFocusHandler(view: View, focusState: Boolean) {
-        if (focusState) {
-            val (searchbarPlaceholder, applink) = viewModel.getHeaderData()
+        tracker.clickSearchbar()
 
-            val intent = router.getIntent(context, applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
-            intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, searchbarPlaceholder)
-            startActivity(intent)
+        if (focusState) {
+            viewModel.getHeaderDetail().also {
+                val intent = router.getIntent(context, it.applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
+                intent.putExtra(FeedLocalBrowseActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
+                startActivity(intent)
+            }
         }
 
         view.clearFocus()
