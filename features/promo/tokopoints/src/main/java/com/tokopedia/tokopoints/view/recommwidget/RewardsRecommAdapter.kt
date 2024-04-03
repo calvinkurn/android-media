@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
@@ -12,7 +11,7 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.analytics.byteio.topads.provider.IAdsViewHolderTrackListener
-import com.tokopedia.analytics.byteio.topads.util.getVisibleHeightPercentage
+import com.tokopedia.analytics.byteio.topads.util.getVisibleSizePercentage
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardClickListener
@@ -33,6 +32,8 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
         val productView = itemView.findViewById<ProductCardGridView>(R.id.productCardView)
 
         private var uiModel: RecommendationItem? = null
+
+        private var viewVisiblePercentage = "0"
 
         fun bind(model: RecommendationWrapper) {
             productView.setProductModel(model.recomData)
@@ -94,7 +95,7 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                         // todo this value from BE
                         0,
                         AdsLogRealtimeClickModel.AdExtraData(
-                            productId = recommendationItem?.productId.orZero().toString()
+                            productId = recommendationItem.productId.orZero().toString()
                         )
                     )
                 )
@@ -103,6 +104,8 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
         override fun onViewAttachedToWindow(recyclerView: RecyclerView?) {
             if (uiModel?.isTopAds == true) {
+                viewVisiblePercentage = getVisibleSizePercentage(recyclerView, itemView)
+
                 AppLogTopAds.sendEventShow(
                     itemView.context,
                     PageName.REWARD,
@@ -121,8 +124,6 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
         override fun onViewDetachedToWindow(recyclerView: RecyclerView?) {
             if (uiModel?.isTopAds == true) {
-                val visiblePercentage = getVisibleHeightPercentage(recyclerView, productView)
-
                 AppLogTopAds.sendEventShowOver(
                     itemView.context,
                     PageName.REWARD,
@@ -133,7 +134,7 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                         0,
                         AdsLogShowOverModel.AdExtraData(
                             productId = uiModel?.productId.orZero().toString(),
-                            sizePercent = visiblePercentage
+                            sizePercent = viewVisiblePercentage
                         )
                     )
                 )
