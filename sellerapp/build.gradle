@@ -9,6 +9,7 @@ apply plugin: 'io.hansel.preprocessor'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply plugin: 'kotlin-parcelize'
+apply plugin: 'com.bytedance.security.ByteSignPlugin'
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -41,6 +42,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.gradlePlugin.googleServices
     }
+}
+SigningConfiguration {
+    applicationId = "com.tokopedia.sellerapp"
+    overwriteOriginalFile = false
+    enableDynamicFeature = true
 }
 
 android {
@@ -119,7 +125,6 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
-        applicationId "com.tokopedia.sellerapp"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         resConfigs "en", "id"
