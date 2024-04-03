@@ -32,7 +32,6 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.noRippleClickable
-import com.tokopedia.people.utils.LogCompositions
 import com.tokopedia.people.utils.onLoadMore
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import kotlinx.collections.immutable.ImmutableList
@@ -50,8 +49,6 @@ internal fun FollowListScreen(
     onFollowClicked: (PeopleUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LogCompositions(tag = "FollowList", msg = "Recompose the follow list screen")
-
     val listState = rememberLazyListState()
 
     LazyColumn(modifier, listState) {
@@ -107,7 +104,6 @@ private fun ShopFollowListItemRow(
     onFollowClicked: (PeopleUiModel) -> Unit,
     onItemClicked: (PeopleUiModel.ShopUiModel) -> Unit
 ) {
-    LogCompositions("Shop ${item.id}", "Draw - $item, OnFollowClicked: ${onFollowClicked.hashCode()}")
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -158,7 +154,6 @@ private fun UserFollowListItemRow(
     onFollowClicked: (PeopleUiModel) -> Unit,
     onItemClicked: (PeopleUiModel.UserUiModel) -> Unit
 ) {
-    LogCompositions("User ${item.id}", "Draw - $item, OnFollowClicked: ${onFollowClicked.hashCode()}")
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
