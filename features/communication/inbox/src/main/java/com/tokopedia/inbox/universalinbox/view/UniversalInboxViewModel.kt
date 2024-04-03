@@ -113,6 +113,10 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentRecommendationPage(): Int {
+        return getRecommendationUseCase.currentPage
+    }
+
     /**
      * Flow Observe
      */
@@ -141,10 +145,10 @@ class UniversalInboxViewModel @Inject constructor(
                 // Recommendation process
                 is UniversalInboxAction.RefreshRecommendation -> {
                     removeAllProductRecommendation(true)
-                    loadProductRecommendation(1) // Load first page
+                    loadProductRecommendation(true) // Load first page
                 }
                 is UniversalInboxAction.LoadNextPage -> {
-                    loadProductRecommendation(it.page)
+                    loadProductRecommendation()
                 }
                 is UniversalInboxAction.ResetUserScrollState -> {
                     resetUserScrollState()
@@ -378,12 +382,18 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun loadProductRecommendation(page: Int) {
+    private fun loadProductRecommendation(isFirstPage: Boolean = false) {
         viewModelScope.launch {
             try {
+                val page = if (isFirstPage) {
+                    1
+                } else {
+                    getRecommendationUseCase.currentPage + 1
+                }
                 getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page)).collectLatest {
                     when (it) {
                         is Result.Success -> {
+                            getRecommendationUseCase.updateCurrentPage(page)
                             handleSuccessGetProductRecommendation(it.data)
                         }
                         is Result.Error -> {
