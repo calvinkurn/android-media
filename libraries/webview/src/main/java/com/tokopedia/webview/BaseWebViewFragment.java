@@ -216,14 +216,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (getActivity() != null && isSmsRegistered) {
-            getActivity().unregisterReceiver(smsBroadcastReceiver);
-        }
-    }
-
-    @Override
     public void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
@@ -755,6 +747,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } else {
                 if (getActivity() != null && isSmsRegistered) {
                     getActivity().unregisterReceiver(smsBroadcastReceiver);
+                    isSmsRegistered = false;
                 }
             }
         }
