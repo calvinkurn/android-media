@@ -6223,13 +6223,13 @@ class CartRevampFragment :
                             val shouldAutoScrollToChangedVariant = anchorCartId.isNotBlankOrZero()
                             if (shouldAutoScrollToChangedVariant) {
                                 arguments?.putString(CartActivity.EXTRA_CART_ID, anchorCartId)
-                                viewModel.processInitialGetCartData(
-                                    cartId = "0",
-                                    initialLoad = false,
-                                    isLoadingTypeRefresh = true,
-                                    isCartChangeVariant = true
-                                )
                             }
+                            viewModel.processInitialGetCartData(
+                                cartId = "0",
+                                initialLoad = false,
+                                isLoadingTypeRefresh = true,
+                                isCartChangeVariant = true
+                            )
                         }
                         ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR -> {
                             val shouldShowErrorMessage = atcMessage.isNotBlank()
