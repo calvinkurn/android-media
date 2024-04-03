@@ -453,11 +453,6 @@ class NotificationFragment @Inject constructor(
         } else {
             isLoadingInitialData = false
         }
-
-        if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled()
-            && hasNextPage && endlessRecyclerViewScrollListener != null) {
-            endlessRecyclerViewScrollListener.loadMoreNextPage()
-        }
     }
 
     private fun isInfiniteNotificationScroll(data: NotificationDetailResponseModel): Boolean {
