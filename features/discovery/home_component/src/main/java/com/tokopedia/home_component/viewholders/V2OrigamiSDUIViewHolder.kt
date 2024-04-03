@@ -40,7 +40,7 @@ class V2OrigamiSDUIViewHolder(
         this.origamiSDUIDataModel = element
 
         val dataSDUIJson = JSONObject(element.origamiData)
-        val templateJson = dataSDUIJson.optJSONObject("templates") ?: return
+        val templateJson = dataSDUIJson.optJSONObject("templates")
         val cardJson = dataSDUIJson.getJSONObject("card")
 
         binding?.homeComponentOrigamiContainer?.removeAllViews()
@@ -69,9 +69,9 @@ class V2OrigamiSDUIViewHolder(
     override fun onHandleCustomAction(queryParameter: String?) {
         // custom handling when timer from SDUI widget is expired then delete the viewholder from position
         if (queryParameter?.equals("timer_ended") == true) {
-            val model = origamiSDUIDataModel ?: return
+            val model = origamiSDUIDataModel
 
-            model.channelModel?.let { channelModel ->
+            model?.channelModel?.let { channelModel ->
                 homeComponentListener.onChannelExpired(
                     channelModel,
                     channelModel.verticalPosition,
