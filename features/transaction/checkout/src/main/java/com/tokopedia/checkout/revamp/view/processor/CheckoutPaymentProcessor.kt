@@ -438,7 +438,7 @@ class CheckoutPaymentProcessor @Inject constructor(
             },
             ccfeeSignature = paymentData.installmentPaymentData.creditCardAttribute.tenureSignature,
             timestamp = paymentData.unixTimestamp,
-            additionalData = payment.metadata,
+            additionalData = paymentData.metadata,
             detailData = paymentRequest
         )
     }
@@ -508,7 +508,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                 )
             },
             promoCodes = getValidPromoCodes(checkoutItems.promo()?.promo),
-            additionalData = payment.metadata,
+            additionalData = paymentData.metadata,
             detailData = paymentRequest
         )
     }

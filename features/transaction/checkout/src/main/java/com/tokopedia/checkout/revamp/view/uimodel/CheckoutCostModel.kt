@@ -72,6 +72,6 @@ data class CheckoutCostModel(
 
     val totalProductAndShippingPrice: Double
         get() {
-            return finalItemPrice + finalShippingFee
+            return originalItemPrice + originalShippingFee
         }
 }
