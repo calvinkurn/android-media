@@ -306,6 +306,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         super.onViewDetachedToWindow()
         tabsHolder.tabLayout.removeOnTabSelectedListener(this)
         tabsViewModel?.getColorTabComponentLiveData()?.removeObservers(fragment.viewLifecycleOwner)
+        tabsViewModel?.redirectToOther()?.removeObservers(fragment.viewLifecycleOwner)
         tabsHandler.removeCallbacks(tabsRunnable)
         scrollToCurrentTabPositionRunnable?.apply {
             scrollToCurrentTabPositionHandler.removeCallbacks(this)
@@ -322,6 +323,17 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 (fragment as DiscoveryFragment).reSync()
             }
         }
+
+        lifecycleOwner?.run {
+            tabsViewModel?.redirectToOther()?.observe(this) {
+                selectOtherTab(it)
+            }
+        }
+    }
+
+    private fun selectOtherTab(position: Int) {
+        val tab = tabsHolder.tabLayout.getTabAt(position)
+        tabsHolder.tabLayout.selectTab(tab)
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
