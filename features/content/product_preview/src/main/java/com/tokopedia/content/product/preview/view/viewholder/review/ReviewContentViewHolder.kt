@@ -56,6 +56,7 @@ class ReviewContentViewHolder(
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
+                isShareAble = false
                 mVideoPlayer = null
                 binding.rvReviewMedia.removeOnScrollListener(mediaScrollListener)
                 removeLikeAnimationListener()
@@ -123,6 +124,8 @@ class ReviewContentViewHolder(
         captionViewListener
     )
 
+    private var isShareAble: Boolean = false
+
     init {
         binding.tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
         binding.layoutLikeReview.root.setOnClickListener {
@@ -137,6 +140,7 @@ class ReviewContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
+        bindShare(item.isShareAble)
         setupTap(item)
     }
 
@@ -151,6 +155,10 @@ class ReviewContentViewHolder(
     fun bindWatchMode(isWatchMode: Boolean) {
         binding.groupReviewDetails.showWithCondition(!isWatchMode)
         binding.groupReviewInteraction.showWithCondition(!isWatchMode)
+
+        // join ivReviewShare with groupReviewInteraction when share ab test is done
+        binding.ivReviewShare.showWithCondition(!isWatchMode)
+
         binding.icWatchMode.showWithCondition(isWatchMode)
 
         binding.icWatchMode.setOnClickListener {
@@ -253,7 +261,11 @@ class ReviewContentViewHolder(
             reviewInteractionListener.onMenuClicked()
         }
         binding.ivReviewShare.setOnClickListener {
-            reviewInteractionListener.onShareClicked(item)
+            reviewInteractionListener.onShareClicked(
+                item = item,
+                selectedMediaId = item.medias.getOrNull(getContentCurrentPosition())?.mediaId
+                    ?: item.medias.firstOrNull()?.mediaId.orEmpty()
+            )
         }
     }
 
@@ -289,6 +301,11 @@ class ReviewContentViewHolder(
     ) = with(binding.pcReviewContent) {
         setIndicator(mediaSize)
         setCurrentIndicator(mediaSelectedPosition)
+    }
+
+    private fun bindShare(isUsingShare: Boolean) {
+        isShareAble = isUsingShare // remove this when ab test is done
+        binding.ivReviewShare.showWithCondition(isShareAble)
     }
 
     private fun scrollTo(position: Int) {
@@ -337,12 +354,14 @@ class ReviewContentViewHolder(
     override fun onScrubbing() {
         binding.groupReviewDetails.hide()
         binding.groupReviewInteraction.hide()
+        binding.ivReviewShare.hide() // remove this when ab test is done
         binding.pcReviewContent.hide()
     }
 
     override fun onStopScrubbing() {
         binding.groupReviewDetails.show()
         binding.groupReviewInteraction.show()
+        binding.ivReviewShare.showWithCondition(isShareAble) // remove this when ab test is done
         binding.pcReviewContent.show()
     }
 

@@ -30,6 +30,7 @@ import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
+import com.tokopedia.content.product.preview.utils.isUsingShare
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
@@ -51,6 +52,14 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.DefaultValue.SOURCE
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.CHANNEL_KEY
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.SHARE_ID_KEY
+import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -61,7 +70,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewFragment @Inject constructor(
     private val analyticsFactory: ProductPreviewAnalytics.Factory,
-    private val router: Router
+    private val router: Router,
+    private val abTestPlatform: AbTestPlatform
 ) : TkpdBaseV4Fragment(),
     ReviewInteractionListener,
     MenuBottomSheet.Listener,
@@ -127,6 +137,8 @@ class ReviewFragment @Inject constructor(
         if (loginStatus) viewModel.onAction(ProductPreviewAction.LikeFromResult)
     }
 
+    private var shareExInitializer: ShareExInitializer? = null
+
     override fun getScreenName() = REVIEW_FRAGMENT_TAG
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,6 +163,7 @@ class ReviewFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeReviewMainData()
+        initializeShareEx()
 
         setupView()
 
@@ -211,14 +224,16 @@ class ReviewFragment @Inject constructor(
                         is ProductPreviewUiEvent.ShowErrorToaster -> {
                             val view = ReviewReportBottomSheet.get(childFragmentManager)?.view?.rootView ?: requireView().rootView
                             Toaster.toasterCustomBottomHeight = 60
-                            Toaster.buildWithAction(view ?: return@collect,
+                            Toaster.buildWithAction(
+                                view ?: return@collect,
                                 text = event.message.message.ifNull { getString(event.type.textRes) },
                                 duration = Toaster.LENGTH_LONG,
                                 type = Toaster.TYPE_ERROR,
                                 actionText = getString(R.string.bottom_atc_failed_click_toaster),
                                 clickListener = {
                                     event.onClick()
-                                }).show()
+                                }
+                            ).show()
                         }
                         else -> {}
                     }
@@ -359,8 +374,43 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
     }
 
-    override fun onShareClicked(item: ReviewContentUiModel) {
-        //TODO("Not yet implemented")
+    override fun onShareClicked(item: ReviewContentUiModel, selectedMediaId: String) {
+        val reviewId = item.reviewId
+        val productId = viewModel.productPreviewSource.productId
+        val mediaType = item.medias.find { it.mediaId == selectedMediaId }?.type?.value.orEmpty()
+        val partialLabel = "$SHARE_ID_KEY-$productId-$reviewId"
+        val label = "$SHARE_ID_KEY - $productId - $reviewId - $mediaType"
+        shareExInitializer?.openShareBottomSheet(
+            bottomSheetArg = ShareExBottomSheetArg.Builder(
+                pageTypeEnum = ShareExPageTypeEnum.REVIEW,
+                defaultUrl = generateCurrentPageAppLink(
+                    productId = productId,
+                    reviewId = reviewId,
+                    attachmentId = selectedMediaId,
+                    source = SOURCE
+                ),
+                trackerArg = ShareExTrackerArg(
+                    utmCampaign = "ViewReview-$partialLabel-$selectedMediaId",
+                    labelActionClickShareIcon = label,
+                    labelActionCloseIcon = label,
+                    labelActionClickChannel = "$CHANNEL_KEY - $label",
+                    labelImpressionBottomSheet = label
+                )
+            )
+                .withReviewId(item.reviewId)
+                .withAttachmentId(selectedMediaId)
+                .withProductId(productId)
+                .build()
+        )
+    }
+
+    private fun generateCurrentPageAppLink(
+        productId: String,
+        reviewId: String,
+        attachmentId: String,
+        source: String
+    ): String {
+        return "tokopedia://product-review/$productId?review_id=$reviewId&attachment_id=$attachmentId&source=$source"
     }
 
     /**
@@ -374,6 +424,14 @@ class ReviewFragment @Inject constructor(
     private fun getCurrentPosition(): Int {
         return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
             ?: RecyclerView.NO_POSITION
+    }
+
+    private fun initializeShareEx() {
+        if (abTestPlatform.isUsingShare()) {
+            context?.let {
+                shareExInitializer = ShareExInitializer(it)
+            }
+        }
     }
 
     companion object {

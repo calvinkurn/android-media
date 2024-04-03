@@ -6,8 +6,8 @@ import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ShareExLinkProperties(
-    val message: String = "",
+data class ShareExLinkPropertiesModel(
+    val messageObject: ShareExLinkMessagePropertiesModel = ShareExLinkMessagePropertiesModel(),
     val ogTitle: String = "",
     val ogDescription: String = "",
     val ogType: String = "",

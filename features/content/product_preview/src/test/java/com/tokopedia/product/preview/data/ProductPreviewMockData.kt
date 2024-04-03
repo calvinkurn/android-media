@@ -160,7 +160,8 @@ class ProductPreviewMockData {
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false
+                isScrolling = false,
+                isShareAble = true
             )
         )
         return ReviewUiModel(
@@ -211,7 +212,8 @@ class ProductPreviewMockData {
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false
+                isScrolling = false,
+                isShareAble = true
             ),
             ReviewContentUiModel(
                 reviewId = "reviewId_1234",
@@ -253,7 +255,8 @@ class ProductPreviewMockData {
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false
+                isScrolling = false,
+                isShareAble = true
             ),
             ReviewContentUiModel(
                 reviewId = "reviewId_1235",
@@ -295,7 +298,8 @@ class ProductPreviewMockData {
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false
+                isScrolling = false,
+                isShareAble = true
             )
         )
         return ReviewUiModel(
