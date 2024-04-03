@@ -97,7 +97,11 @@ object DeeplinkMapperTokopediaNow {
             val categoryL2 = content.getOrElse(indexCategoryId + 1) { "" }.let {
                 if (it.isNotEmpty()) "&$PARAM_CATEGORY_L2=$it" else ""
             }
-            "${ApplinkConstInternalTokopediaNow.CATEGORY_L2}?$categoryL1$categoryL2$queryString"
+            if (categoryL2.isEmpty()) {
+                "${ApplinkConstInternalTokopediaNow.CATEGORY_L1}?$categoryL1$queryString"
+            } else {
+                "${ApplinkConstInternalTokopediaNow.CATEGORY_L2}?$categoryL1$categoryL2$queryString"
+            }
         }
     }
 
