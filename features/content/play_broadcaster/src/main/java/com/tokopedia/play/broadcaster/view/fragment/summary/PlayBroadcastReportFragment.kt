@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastReportBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
@@ -47,6 +48,7 @@ import com.tokopedia.content.common.R as contentcommonR
 class PlayBroadcastReportFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
+    private val reportAnalyticFactory: PlayBroadcastReportAnalytic.Factory,
     private val router: Router,
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
@@ -69,6 +71,12 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
+
+    private val reportAnalytic = reportAnalyticFactory.create(
+        getAccount = { parentViewModel.selectedAccount },
+        getChannelId = { parentViewModel.channelId },
+        getChannelTitle = { parentViewModel.channelTitle }
     )
 
     override fun getScreenName(): String = "Play Report Page"
@@ -273,6 +281,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     override fun onMetricClicked(view: SummaryInfoViewComponent, liveStats: LiveStatsUiModel) {
         when (liveStats) {
             is LiveStatsUiModel.EstimatedIncome -> {
+                reportAnalytic.clickEstimatedIncomeCardOnSummaryPage()
                 openProductReportSummarySheet()
             }
             is LiveStatsUiModel.GameParticipant -> {

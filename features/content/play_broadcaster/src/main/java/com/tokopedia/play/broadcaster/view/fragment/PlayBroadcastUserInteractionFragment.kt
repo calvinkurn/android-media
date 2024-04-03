@@ -47,6 +47,7 @@ import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
@@ -106,6 +107,7 @@ import javax.inject.Inject
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
+    private val reportAnalyticFactory: PlayBroadcastReportAnalytic.Factory,
     private val beautificationUiBridge: BeautificationUiBridge,
     private val sharedPref: HydraSharedPreferences,
 ) : PlayBaseBroadcastFragment(),
@@ -235,6 +237,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private var isPausedFragment = false
 
     private val toasterManager = PlayBroadcastToasterManager(this)
+
+    private val reportAnalytic = reportAnalyticFactory.create(
+        getAccount = { parentViewModel.selectedAccount },
+        getChannelId = { parentViewModel.channelId },
+        getChannelTitle = { parentViewModel.channelTitle }
+    )
 
     private val liveMenuCoachMark by lazyThreadSafetyNone {
         LiveMenuCoachMark(requireContext())
@@ -398,6 +406,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icStatistic.setOnClickListener {
+            reportAnalytic.clickStatisticIcon()
             openProductReportSummarySheet()
         }
 
@@ -427,13 +436,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
             }
         }
-        
+
         liveMenuCoachMark.setListener(object : LiveMenuCoachMark.Listener {
             override fun onImpress(coachMarkType: LiveMenuCoachMarkType) {
                 when (coachMarkType) {
                     is LiveMenuCoachMarkType.Statistic -> {
                         sharedPref.setFirstStatisticIconShown(parentViewModel.selectedAccount.id)
-                        /** JOE TODO: handle analytic */
+                        reportAnalytic.impressStatisticIconCoachMark()
                     }
                     else -> {}
                 }
@@ -452,6 +461,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     LiveStatsView(
                         liveStatsList = uiState.liveReportSummary.liveStats,
                         onClick = {
+                            reportAnalytic.clickLiveStatsArea()
                             openLiveStatsSheet()
                         }
                     )
