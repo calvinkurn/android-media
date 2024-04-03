@@ -665,6 +665,7 @@ class ShopPageReimagineHeaderFragment :
                     initMiniCart()
                     sendTrackerImpressionShopHeader()
                     sendTrackerImpressionShopBottomNav()
+                    getShopShareAndOperationalHourStatusData()
                 }
 
                 is Fail -> {
@@ -791,7 +792,6 @@ class ShopPageReimagineHeaderFragment :
                     }
                 }
             }
-
         }
 
         shopHeaderViewModel?.shopImagePath?.observe(owner) {
@@ -1140,7 +1140,6 @@ class ShopPageReimagineHeaderFragment :
 
     private fun getShopPageP2Data() {
         if (!isAlreadyGetShopPageP2Data) {
-            getShopShareAndOperationalHourStatusData()
             getFollowStatus()
             getSellerPlayWidget()
             isAlreadyGetShopPageP2Data = true
@@ -2856,8 +2855,9 @@ class ShopPageReimagineHeaderFragment :
         val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
         return if (isOverrideTextColor) {
             if (getShopHeaderConfig()?.getFinalPatternColorType(
-                context?.isDarkMode().orFalse()
-            ) == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+                    context?.isDarkMode().orFalse()
+                ) == ShopPageHeaderLayoutUiModel.ColorType.DARK.value
+            ) {
                 unifyprinciplesR.color.Unify_Static_White
             } else {
                 R.color.dms_static_Unify_NN950_light
