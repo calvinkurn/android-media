@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MixLeft
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardPaginationLoadState
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
@@ -228,7 +229,7 @@ class ProductCardCarouselViewModelTest {
                 componentsItem.pageEndPoint,
                 10
             )
-        } returns true
+        } returns ProductCardPaginationLoadState.LOAD_MORE
 
         viewModel.fetchCarouselPaginatedProducts()
 
@@ -256,7 +257,7 @@ class ProductCardCarouselViewModelTest {
                 componentsItem.pageEndPoint,
                 10
             )
-        } returns true
+        } returns ProductCardPaginationLoadState.LOAD_MORE
 
         viewModel.fetchCarouselPaginatedProducts()
 
@@ -284,7 +285,7 @@ class ProductCardCarouselViewModelTest {
                 componentsItem.pageEndPoint,
                 10
             )
-        } returns true
+        } returns ProductCardPaginationLoadState.LOAD_MORE
 
         viewModel.fetchCarouselPaginatedProducts()
 

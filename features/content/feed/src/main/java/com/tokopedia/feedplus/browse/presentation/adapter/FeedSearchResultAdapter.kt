@@ -26,6 +26,8 @@ internal class FeedSearchResultAdapter(
     }
 
     override fun List<FeedSearchResultContent>.mapToItems(): List<FeedBrowseItemListModel> {
+        var channelCount = 0
+
         return map {
             when (it) {
                 is FeedSearchResultContent.Title -> {
@@ -39,7 +41,7 @@ internal class FeedSearchResultAdapter(
                         slotInfo = SlotInfo.Empty,
                         item = it.channel,
                         config = it.config,
-                        index = 0 /** JOE TODO: pls adjust this */
+                        index = channelCount++,
                     )
                 }
                 is FeedSearchResultContent.Loading -> {
