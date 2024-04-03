@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -19,7 +18,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.calculateWindowSizeClass
@@ -73,20 +71,6 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
-
-    private val searchPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val resultKeyword = it.data?.getStringExtra(FeedLocalBrowseFragment.LOCAL_BROWSE_SEARCH_KEYWORD)
-
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT)
-            intent.putExtra(FeedSearchResultActivity.KEYWORD_PARAM, resultKeyword)
-            searchResultPageLauncher.launch(intent)
-        }
-    }
-
-    private val searchResultPageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // Todo
-    }
 
     private val tracker by lazyThreadSafetyNone {
         trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_BROWSE_PAGE)
@@ -437,7 +421,7 @@ internal class FeedBrowseFragment @Inject constructor(
         if (focusState) {
             viewModel.getHeaderDetail().also {
                 val intent = router.getIntent(context, it.applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
-                intent.putExtra(FeedLocalBrowseActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
+                intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
                 startActivity(intent)
             }
         }
