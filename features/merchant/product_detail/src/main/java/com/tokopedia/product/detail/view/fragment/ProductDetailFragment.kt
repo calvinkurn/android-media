@@ -281,6 +281,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
+import com.tokopedia.product.detail.view.viewholder.media.tracker.MediaTracking
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
@@ -2453,15 +2454,35 @@ open class ProductDetailFragment :
         }
     }
 
-    override fun onShowProductMediaRecommendationClicked() {
-        val productMediaRecomBasicInfo =
-            viewModel.getProductInfoP1?.data?.productMediaRecomBasicInfo
-        val basicData = viewModel.getProductInfoP1?.basic
+    override fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val productMediaRecomBasicInfo = productInfo.data.productMediaRecomBasicInfo
+        val basicData = productInfo.basic
+        val title = productMediaRecomBasicInfo.bottomsheetTitle
+        val iconText = productMediaRecomBasicInfo.iconText
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+
         viewModel.showProductMediaRecomBottomSheet(
-            title = productMediaRecomBasicInfo?.bottomsheetTitle.orEmpty(),
-            pageName = productMediaRecomBasicInfo?.recommendation.orEmpty(),
-            productId = basicData?.productID.orEmpty(),
-            isTokoNow = basicData?.isTokoNow.orFalse()
+            title = title,
+            pageName = productMediaRecomBasicInfo.recommendation,
+            productId = basicData.productID,
+            isTokoNow = basicData.isTokoNow.orFalse()
+        )
+        MediaTracking.onOverlayRecommClicked(
+            title = iconText,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
+        )
+    }
+
+    override fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val title = productInfo.data.productMediaRecomBasicInfo.iconText
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+        MediaTracking.onOverlayRecommImpressed(
+            title = title,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
         )
     }
 

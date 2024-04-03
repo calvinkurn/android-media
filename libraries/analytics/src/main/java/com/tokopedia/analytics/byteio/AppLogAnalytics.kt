@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
-import android.graphics.pdf.PdfDocument.Page
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -308,6 +307,18 @@ object AppLogAnalytics {
     fun putPageData(key: String, value: Any) {
         _pageDataList.lastOrNull()?.put(key, value)
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
+    }
+
+    /**
+     * To update the previous page data (current page index - 1)
+     * For example: if the current page data is a bottom sheet,
+     * then it will be useless to put any data there
+     * since the bottom sheet will be dismissed when navigating to the next page.
+     * Putting the data in the previous page data will fix the issue.
+     */
+    fun putPreviousPageData(key: String, value: Any) {
+        val secondToLastData = _pageDataList.getOrNull(_pageDataList.lastIndex - 1)
+        secondToLastData?.put(key, value)
     }
 
     fun removePageData(key: String) {
