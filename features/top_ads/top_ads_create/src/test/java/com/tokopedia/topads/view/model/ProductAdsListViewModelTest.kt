@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.topads.view.model
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -38,7 +40,14 @@ class ProductAdsListViewModelTest {
     @Before
     fun setUp() {
         userSession = mockk(relaxed = true)
-        viewModel = spyk(ProductAdsListViewModel(rule.dispatchers, userSession, getEtalaseListUseCase, topAdsGetListProductUseCase))
+        viewModel = spyk(
+            ProductAdsListViewModel(
+                rule.dispatchers,
+                userSession,
+                getEtalaseListUseCase,
+                topAdsGetListProductUseCase
+            )
+        )
     }
 
     @Test
@@ -52,8 +61,8 @@ class ProductAdsListViewModelTest {
         every { getEtalaseListUseCase.execute(any(), any()) } throws expected
 
         viewModel.etalaseList(
-                onSuccess = {},
-                onError = onError
+            onSuccess = {},
+            onError = onError
         )
         Assert.assertEquals(actual?.message, expected.message)
     }
@@ -62,17 +71,23 @@ class ProductAdsListViewModelTest {
     fun `test result in etalaseList`() {
         val expected = "name"
         var actual = ""
-        val data = ResponseEtalase.Data(ResponseEtalase.Data.ShopShowcasesByShopID(listOf(ResponseEtalase.Data.ShopShowcasesByShopID.Result(name = expected))))
+        val data = ResponseEtalase.Data(
+            ResponseEtalase.Data.ShopShowcasesByShopID(
+                listOf(
+                    ResponseEtalase.Data.ShopShowcasesByShopID.Result(name = expected)
+                )
+            )
+        )
         val onSuccess: (List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) -> Unit = {
             actual = it.first().name
         }
         every { userSession.shopId } returns "2"
         every { getEtalaseListUseCase.execute(captureLambda(), any()) } answers {
-            onSuccess(data.shopShowcasesByShopID.result)
+            firstArg<(ResponseEtalase.Data) -> Unit>().invoke(data)
         }
         viewModel.etalaseList(
-                onSuccess = onSuccess,
-                onError = {}
+            onSuccess = onSuccess,
+            onError = {}
         )
         Assert.assertEquals(expected, actual)
     }
@@ -108,7 +123,8 @@ class ProductAdsListViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(expected)
         }
 
-        viewModel.productList("", "", "", "", 0, 0, "",
+        viewModel.productList(
+            "", "", "", "", 0, 0, "",
             onSuccess = { _, _ -> },
             onEmpty = {},
             onError = onError
@@ -127,10 +143,11 @@ class ProductAdsListViewModelTest {
         every { userSession.shopId } returns "2"
         every { topAdsGetListProductUseCase.execute(any(), any()) } throws expected
 
-        viewModel.productList("", "", "", "", 0, 0, "",
-                onSuccess = { _, _ -> },
-                onEmpty = {},
-                onError = onError
+        viewModel.productList(
+            "", "", "", "", 0, 0, "",
+            onSuccess = { _, _ -> },
+            onEmpty = {},
+            onError = onError
         )
         Assert.assertEquals(actual?.message, expected.message)
     }
@@ -147,14 +164,12 @@ class ProductAdsListViewModelTest {
         every { userSession.shopId } returns "2"
 
         every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
-            if (data.topadsGetListProduct.data.isEmpty()) {
-                onEmpty()
-            }
+            firstArg<(ResponseProductList.Result) -> Unit>().invoke(data)
         }
         viewModel.productList("", "", "", "", 0, 0, "",
-                onSuccess = { _, _ -> },
-                onEmpty = onEmpty,
-                onError = {})
+            onSuccess = { _, _ -> },
+            onEmpty = onEmpty,
+            onError = {})
         Assert.assertEquals(expected, actual)
     }
 
@@ -168,7 +183,11 @@ class ProductAdsListViewModelTest {
             actualSize = list.size
             actualEof = eof
         }
-        val data = ResponseProductList.Result(ResponseProductList.Result.TopadsGetListProduct(listOf(TopAdsProductModel()), eof = expectedEof))
+        val data = ResponseProductList.Result(
+            ResponseProductList.Result.TopadsGetListProduct(
+                listOf(TopAdsProductModel()), eof = expectedEof
+            )
+        )
         every { userSession.shopId } returns "2"
         every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
             if (data.topadsGetListProduct.data.isNotEmpty()) {
@@ -176,9 +195,9 @@ class ProductAdsListViewModelTest {
             }
         }
         viewModel.productList("", "eid", "", "", 0, 0, "",
-                onSuccess = onSuccess,
-                onEmpty = { },
-                onError = {})
+            onSuccess = onSuccess,
+            onEmpty = { },
+            onError = {})
 
         Assert.assertEquals(expectedSize, actualSize)
         Assert.assertEquals(expectedEof, actualEof)
@@ -187,10 +206,14 @@ class ProductAdsListViewModelTest {
     @Test
     fun `check invocation of onSuccess on etalseid empty in productList`() {
 
-        val data = ResponseProductList.Result(ResponseProductList.Result.TopadsGetListProduct(listOf(TopAdsProductModel())))
+        val data = ResponseProductList.Result(
+            ResponseProductList.Result.TopadsGetListProduct(
+                listOf(TopAdsProductModel())
+            )
+        )
         every { userSession.shopId } returns "2"
         every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
-            firstArg<(ResponseProductList.Result)->Unit>().invoke(data)
+            firstArg<(ResponseProductList.Result) -> Unit>().invoke(data)
         }
         var successCalled = false
         viewModel.productList("", "", "", "", 0, 0, "",
@@ -205,8 +228,13 @@ class ProductAdsListViewModelTest {
     fun `addsemuaProudk totalcount check if etalseid is empty in productList`() {
         val expected = 1
         val data =
-            ResponseProductList.Result(ResponseProductList.Result.TopadsGetListProduct(listOf(
-                TopAdsProductModel())))
+            ResponseProductList.Result(
+                ResponseProductList.Result.TopadsGetListProduct(
+                    listOf(
+                        TopAdsProductModel()
+                    )
+                )
+            )
         every { userSession.shopId } returns "2"
         every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
             firstArg<(ResponseProductList.Result) -> Unit>().invoke(data)

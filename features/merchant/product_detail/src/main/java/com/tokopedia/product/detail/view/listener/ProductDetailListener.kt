@@ -61,7 +61,9 @@ interface ProductDetailListener {
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     )
-    fun onShowProductMediaRecommendationClicked()
+
+    fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?)
+    fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?)
 
     /**
      * ProductSnapshotViewHolder
@@ -133,6 +135,7 @@ interface ProductDetailListener {
     fun onSeeAllLastItemMediaReview(componentTrackDataModel: ComponentTrackDataModel?)
     fun onMediaReviewClick(
         reviewID: String,
+        attachmentID: String,
         position: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
         detailedMediaResult: ProductrevGetReviewMedia
@@ -529,7 +532,9 @@ interface ProductDetailListener {
     fun onProductMediaRecomBottomSheetDismissed()
 
     fun onClickDynamicOneLiner(
-        title: String, url: String, component: ComponentTrackDataModel
+        title: String,
+        url: String,
+        component: ComponentTrackDataModel
     )
 
     /**

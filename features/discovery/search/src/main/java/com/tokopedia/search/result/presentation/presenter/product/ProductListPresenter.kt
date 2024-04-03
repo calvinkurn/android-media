@@ -321,6 +321,10 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    override fun getIsLocalSearch(): Boolean {
+        return isLocalSearch()
+    }
+
     private fun searchProductLoadMore(searchParameter: Map<String, Any>) {
         if (isViewNotAttached) return
 
