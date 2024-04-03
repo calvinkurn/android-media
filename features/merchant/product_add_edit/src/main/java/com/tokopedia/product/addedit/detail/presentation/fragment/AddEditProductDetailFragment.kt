@@ -644,7 +644,9 @@ class AddEditProductDetailFragment :
                     productCategoryRecListView?.setToDisplayText(categoryName.orEmpty(), requireContext())
 
                     // clear specification, get new annotation spec
-                    getAnnotationCategory()
+                    if (productCategoryId.isNotEmpty()) {
+                        viewModel.getAnnotationCategory(productCategoryId, "")
+                    }
 
                     // only need set category, no need to get category list
                     needToSetCategoryName = true
@@ -2367,7 +2369,10 @@ class AddEditProductDetailFragment :
             setSelected(items, position) {
                 productCategoryId = it.getCategoryId().toString()
                 productCategoryName = it.getCategoryName()
-                getAnnotationCategory() // update annotation specification
+                // update annotation specification
+                if (productCategoryId.isNotEmpty()) {
+                    viewModel.getAnnotationCategory(productCategoryId, "")
+                }
                 true
             }
         }
