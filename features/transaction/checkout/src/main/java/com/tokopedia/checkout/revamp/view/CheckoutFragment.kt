@@ -1944,7 +1944,7 @@ class CheckoutFragment :
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
         if (!viewModel.isLoading()) {
-            if (viewModel.isPaymentEnable() || false) {
+            if (viewModel.isPaymentEnable() && false) {
                 // temp
                 viewModel.updateCartForPromo {
                     val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
