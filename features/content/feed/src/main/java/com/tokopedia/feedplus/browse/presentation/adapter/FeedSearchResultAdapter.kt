@@ -26,7 +26,7 @@ internal class FeedSearchResultAdapter(
     }
 
     override fun List<FeedSearchResultContent>.mapToItems(): List<FeedBrowseItemListModel> {
-        var channelCount = 1
+        var channelCount = 0
 
         return map {
             when (it) {
