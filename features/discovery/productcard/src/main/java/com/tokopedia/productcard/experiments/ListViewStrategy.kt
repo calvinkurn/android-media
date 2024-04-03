@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardCartExtension
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderProductCardContent
@@ -409,6 +410,11 @@ internal class ListViewStrategy(
     override fun setOnClickListener(l: View.OnClickListener?) {
         cardViewProductCard?.setOnClickListener(l)
     }
+    override fun setOnClickListener(l: ProductCardClickListener) {
+        cardViewProductCard?.setOnClickListener { l.onAreaClicked(it) }
+        setProductImageOnClickListener { l.onProductImageClicked(it) }
+        setShopTypeLocationOnClickListener { l.onSellerInfoClicked(it) }
+    }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
         cardViewProductCard?.setOnLongClickListener(l)
@@ -443,16 +449,6 @@ internal class ListViewStrategy(
 
     override fun setProductImageOnClickListener(l: (View) -> Unit) {
         imageProduct?.setOnClickListener(l)
-    }
-
-    override fun setProductInfoOnClickListener(l: (View) -> Unit) {
-        productName?.setOnClickListener(l)
-        productPrice?.setOnClickListener(l)
-        productSlashPrice?.setOnClickListener(l)
-        rating?.setOnClickListener(l)
-        soldCount?.setOnClickListener(l)
-        salesRatingFloatLine?.setOnClickListener(l)
-        labelPriceReposition?.setOnClickListener(l)
     }
 
     override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {

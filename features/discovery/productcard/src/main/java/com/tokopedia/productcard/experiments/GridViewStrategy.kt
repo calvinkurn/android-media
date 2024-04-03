@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardCartExtension
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderProductCardContent
@@ -466,16 +467,6 @@ internal class GridViewStrategy(
         imageProduct?.setOnClickListener(l)
     }
 
-    override fun setProductInfoOnClickListener(l: (View) -> Unit) {
-        productName?.setOnClickListener(l)
-        productPrice?.setOnClickListener(l)
-        productSlashPrice?.setOnClickListener(l)
-        rating?.setOnClickListener(l)
-        soldCount?.setOnClickListener(l)
-        salesRatingFloatLine?.setOnClickListener(l)
-        labelPriceReposition?.setOnClickListener(l)
-    }
-
     override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
         imageShopBadge?.setOnClickListener(l)
         textViewShopLocation?.setOnClickListener(l)
@@ -485,6 +476,20 @@ internal class GridViewStrategy(
 
     override fun setOnClickListener(l: View.OnClickListener?) {
         cardViewProductCard?.setOnClickListener(l)
+    }
+    override fun setOnClickListener(l: ProductCardClickListener) {
+        cardViewProductCard?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
     }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {

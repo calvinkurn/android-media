@@ -7,6 +7,7 @@ import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.video_widget.VideoPlayerController
@@ -36,8 +37,6 @@ internal interface IGridViewStrategy {
     // Ads tracker (byteio)
     fun setProductImageOnClickListener(l: (View) -> Unit)
 
-    fun setProductInfoOnClickListener(l: (View) -> Unit)
-
     fun setShopTypeLocationOnClickListener(l: (View) -> Unit)
 }
 
@@ -56,6 +55,7 @@ internal interface ProductCardStrategy :
         viewHintListener: ViewHintListener
     )
     fun setOnClickListener(l: View.OnClickListener?)
+    fun setOnClickListener(l: ProductCardClickListener)
     fun setAddToCartOnClickListener(l: View.OnClickListener?)
     fun setOnLongClickListener(l: View.OnLongClickListener?) { }
     fun setThreeDotsOnClickListener(l: View.OnClickListener?) { }

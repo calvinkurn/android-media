@@ -14,6 +14,8 @@ import org.json.JSONObject
  */
 object AppLogTopAds {
 
+    private var lastClickTimestamp = System.currentTimeMillis()
+
     /**
      * @param context Context
      * @param currentPageName String
@@ -50,7 +52,7 @@ object AppLogTopAds {
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
 
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, adsLogShowOverModel.systemTimeStartClick)
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
 
                 putTag(currentPageName)
             }
@@ -91,7 +93,7 @@ object AppLogTopAds {
                     }
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, adsLogShowModel.systemTimeStartClick)
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
 
                 putTag(currentPageName)
             }
@@ -108,6 +110,7 @@ object AppLogTopAds {
         currentPageName: String,
         adsLogRealtimeClickModel: AdsLogRealtimeClickModel
     ) {
+        val timeStamp = System.currentTimeMillis()
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
             JSONObject().apply {
@@ -133,12 +136,15 @@ object AppLogTopAds {
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, adsLogRealtimeClickModel.systemTimeStartClick)
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
+                put(AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK, (timeStamp - lastClickTimestamp).toString())
 
                 putTag(currentPageName)
             }
         )
+        lastClickTimestamp = timeStamp
     }
+
 
     fun getEnterFrom(): String {
         val twoLastFragmentName = AppLogAnalytics.getTwoLastPage()

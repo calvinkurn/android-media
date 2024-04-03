@@ -6,7 +6,6 @@ data class AdsLogRealtimeClickModel(
     val refer: String,
     val adsValue: Long,
     val rit: Long,
-    val systemTimeStartClick: String,
     val adExtraData: AdExtraData
 ) {
     data class AdExtraData(

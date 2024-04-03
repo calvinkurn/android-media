@@ -2,11 +2,11 @@ package com.tokopedia.productcard.reimagine
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ReimagineGridViewStrategy
 import com.tokopedia.video_widget.VideoPlayerController
 
@@ -58,20 +58,12 @@ class ProductCardGridView: ConstraintLayout {
         strategy.setOnClickListener(l)
     }
 
+    fun setOnClickListener(l: ProductCardClickListener) {
+        strategy.setOnClickListener(l)
+    }
+
     fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         strategy.setAddToCartNonVariantClickListener(addToCartNonVariantClickListener)
-    }
-
-    fun setImageProductClickListener(imageProductClickListener: (View) -> Unit) {
-        strategy.setProductImageOnClickListener(imageProductClickListener)
-    }
-
-    fun setProductInfoOnClickListener(productInfoClickListener: (View) -> Unit) {
-        strategy.setProductInfoOnClickListener(productInfoClickListener)
-    }
-
-    fun setShopTypeLocationOnClickListener(shopTypeLocationOnClickListener: (View) -> Unit) {
-        strategy.setShopTypeLocationOnClickListener(shopTypeLocationOnClickListener)
     }
 
     fun recycle() {

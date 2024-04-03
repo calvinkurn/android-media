@@ -49,21 +49,6 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         productCardStrategy.setImageProductViewHintListener(impressHolder, viewHintListener)
     }
 
-    /**
-     * Ads Realtime Click
-     */
-    fun setImageProductClickListener(imageProductClickListener: (View) -> Unit) {
-        productCardStrategy.setProductImageOnClickListener(imageProductClickListener)
-    }
-
-    fun setProductInfoOnClickListener(productInfoClickListener: (View) -> Unit) {
-        productCardStrategy.setProductInfoOnClickListener(productInfoClickListener)
-    }
-
-    fun setShopTypeLocationOnClickListener(shopTypeLocationOnClickListener: (View) -> Unit) {
-        productCardStrategy.setShopTypeLocationOnClickListener(shopTypeLocationOnClickListener)
-    }
-
     fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) {
         productCardStrategy.setThreeDotsOnClickListener(threeDotsClickListener)
     }
@@ -132,6 +117,10 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
 
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
+        productCardStrategy.setOnClickListener(l)
+    }
+
+    fun setOnClickListener(l: ProductCardClickListener) {
         productCardStrategy.setOnClickListener(l)
     }
 

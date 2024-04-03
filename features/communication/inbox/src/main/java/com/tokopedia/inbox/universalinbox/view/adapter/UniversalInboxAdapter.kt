@@ -34,9 +34,6 @@ class UniversalInboxAdapter(
 ) : BaseListAdapter<Visitable<in UniversalInboxTypeFactory>, UniversalInboxTypeFactory>(
     typeFactory
 ) {
-
-    private var recyclerView: RecyclerView? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         val holder = typeFactory.createViewHolder(view, viewType)
@@ -74,31 +71,6 @@ class UniversalInboxAdapter(
     override fun onViewRecycled(holder: AbstractViewHolder<*>) {
         holder.onViewRecycled()
     }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        this.recyclerView = null
-    }
-
-    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is UniversalInboxRecommendationProductViewHolder) {
-            holder.onViewAttachedToWindow(recyclerView)
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is UniversalInboxRecommendationProductViewHolder) {
-            holder.onViewDetachedToWindow(recyclerView)
-        }
-    }
-
     private var menuSeparatorPosition: Int? = null
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null

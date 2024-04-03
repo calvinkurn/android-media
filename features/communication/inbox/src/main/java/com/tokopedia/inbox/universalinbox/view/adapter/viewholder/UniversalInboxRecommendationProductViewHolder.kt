@@ -3,7 +3,6 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -15,8 +14,6 @@ import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
-import com.tokopedia.analytics.byteio.topads.provider.IAdsViewHolderTrackListener
-import com.tokopedia.analytics.byteio.topads.util.getVisibleHeightPercentage
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationProductItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
@@ -24,7 +21,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -34,17 +31,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 class UniversalInboxRecommendationProductViewHolder(
     itemView: View,
     private val recommendationListener: RecommendationListener
-) : AbstractViewHolder<UniversalInboxRecommendationUiModel>(itemView), AppLogRecTriggerInterface, IAdsViewHolderTrackListener {
+) : AbstractViewHolder<UniversalInboxRecommendationUiModel>(itemView), AppLogRecTriggerInterface {
 
     private val binding: UniversalInboxRecommendationProductItemBinding? by viewBinding()
 
     private var recTriggerObject = RecommendationTriggerObject()
 
-    private var recommendationItem: RecommendationItem? = null
-
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
-        recommendationItem = uiModel.recommendationItem
-
         setRecTriggerObject(uiModel.recommendationItem)
         binding?.inboxProductRecommendation?.run {
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))
@@ -63,23 +56,31 @@ class UniversalInboxRecommendationProductViewHolder(
                 )
             }
 
-            if (recommendationItem?.isTopAds == true) {
-                setProductInfoClickListener(uiModel.recommendationItem)
-                setImageProductClickListener(uiModel.recommendationItem)
-                setShopTypeLocationOnClickListener(uiModel.recommendationItem)
-            }
+            setOnClickListener(object : ProductCardClickListener {
+                override fun onClick(v: View) {
+                    AppLogRecommendation.sendProductClickAppLog(
+                        uiModel.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
+                    )
 
-            setOnClickListener {
-                AppLogRecommendation.sendProductClickAppLog(
-                    uiModel.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
-                )
+                    recommendationListener.onProductClick(
+                        uiModel.recommendationItem,
+                        null,
+                        bindingAdapterPosition
+                    )
+                }
 
-                recommendationListener.onProductClick(
-                    uiModel.recommendationItem,
-                    null,
-                    bindingAdapterPosition
-                )
-            }
+                override fun onAreaClicked(v: View) {
+                    sendClickAdsByteIO(uiModel.recommendationItem, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    sendClickAdsByteIO(uiModel.recommendationItem, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    sendClickAdsByteIO(uiModel.recommendationItem, AdsLogConst.Refer.SELLER_NAME)
+                }
+            })
 
             setThreeDotsOnClickListener {
                 recommendationListener.onThreeDotsClick(
@@ -87,6 +88,65 @@ class UniversalInboxRecommendationProductViewHolder(
                     bindingAdapterPosition
                 )
             }
+        }
+    }
+
+    private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
+        if (recommendationItem?.isTopAds == true) {
+            AppLogTopAds.sendEventRealtimeClick(
+                itemView.context,
+                PageName.INBOX,
+                AdsLogRealtimeClickModel(
+                    refer,
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
+                    AdsLogRealtimeClickModel.AdExtraData(
+                        productId = recommendationItem?.productId.orZero().toString()
+                    )
+                )
+            )
+        }
+    }
+
+    override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
+        if (element?.recommendationItem?.isTopAds == true) {
+            AppLogTopAds.sendEventShow(
+                itemView.context,
+                PageName.INBOX,
+                AdsLogShowModel(
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
+                    AdsLogShowModel.AdExtraData(
+                        productId = element.recommendationItem.productId.orZero().toString()
+                    )
+                )
+            )
+        }
+    }
+
+    override fun onViewDetachedFromWindow(
+        element: UniversalInboxRecommendationUiModel?,
+        visiblePercentage: Int
+    ) {
+        if (element?.recommendationItem?.isTopAds == true) {
+            AppLogTopAds.sendEventShowOver(
+                itemView.context,
+                PageName.INBOX,
+                AdsLogShowOverModel(
+                    // todo this value from BE
+                    0,
+                    // todo this value from BE
+                    0,
+                    AdsLogShowOverModel.AdExtraData(
+                        productId = element.recommendationItem.productId.orZero().toString(),
+                        sizePercent = visiblePercentage.toString()
+                    )
+                )
+            )
         }
     }
 
@@ -102,128 +162,12 @@ class UniversalInboxRecommendationProductViewHolder(
         recTriggerObject = RecommendationTriggerObject(
             sessionId = model.appLog.sessionId,
             requestId = model.appLog.requestId,
-            moduleName = model.pageName
+            moduleName = model.pageName,
         )
-    }
-
-    private fun ProductCardGridView.setProductInfoClickListener(uiModel: RecommendationItem) {
-        setProductInfoOnClickListener {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogRealtimeClickModel(
-                    AdsLogConst.Refer.AREA,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    System.currentTimeMillis().toString(),
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString()
-                    )
-                )
-            )
-            recommendationListener.onProductClick(
-                uiModel,
-                null,
-                bindingAdapterPosition
-            )
-        }
-    }
-
-    private fun ProductCardGridView.setImageProductClickListener(uiModel: RecommendationItem) {
-        setImageProductClickListener {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogRealtimeClickModel(
-                    AdsLogConst.Refer.COVER,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    System.currentTimeMillis().toString(),
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString()
-                    )
-                )
-            )
-            recommendationListener.onProductClick(
-                uiModel,
-                null,
-                bindingAdapterPosition
-            )
-        }
-    }
-
-    private fun ProductCardGridView.setShopTypeLocationOnClickListener(uiModel: RecommendationItem) {
-        setShopTypeLocationOnClickListener {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogRealtimeClickModel(
-                    AdsLogConst.Refer.SELLER_NAME,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    System.currentTimeMillis().toString(),
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = uiModel.productId.toString()
-                    )
-                )
-            )
-            recommendationListener.onProductClick(
-                uiModel,
-                null,
-                bindingAdapterPosition
-            )
-        }
     }
 
     override fun onViewRecycled() {
         binding?.inboxProductRecommendation?.recycle()
-    }
-
-    override fun onViewAttachedToWindow(recyclerView: RecyclerView?) {
-        if (recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventShow(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    System.currentTimeMillis().toString(),
-                    AdsLogShowModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString()
-                    )
-                )
-            )
-        }
-    }
-
-    override fun onViewDetachedToWindow(recyclerView: RecyclerView?) {
-        if (recommendationItem?.isTopAds == true) {
-            val visiblePercentage = getVisibleHeightPercentage(recyclerView, binding?.inboxProductRecommendation)
-
-            AppLogTopAds.sendEventShowOver(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    System.currentTimeMillis().toString(),
-                    AdsLogShowOverModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString(),
-                        sizePercent = visiblePercentage
-                    )
-                )
-            )
-        }
     }
 
     companion object {

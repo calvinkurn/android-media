@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
@@ -201,6 +202,20 @@ internal class ReimagineGridViewStrategy(
     override fun setOnClickListener(l: View.OnClickListener?) {
         cardContainer?.setOnClickListener(l)
     }
+    override fun setOnClickListener(l: ProductCardClickListener) {
+        cardContainer?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
+    }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
         cardContainer?.setOnLongClickListener(l)
@@ -222,14 +237,6 @@ internal class ReimagineGridViewStrategy(
 
     override fun setProductImageOnClickListener(l: (View) -> Unit) {
         imageView?.setOnClickListener(l)
-    }
-
-    override fun setProductInfoOnClickListener(l: (View) -> Unit) {
-        nameText?.setOnClickListener(l)
-        productCardPriceContainer?.setOnClickListener(l)
-        productCardSlashedPrice?.setOnClickListener(l)
-        productCardDiscount?.setOnClickListener(l)
-        productCardCredibility?.setOnClickListener(l)
     }
 
     override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
