@@ -20,6 +20,7 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     }
 
     public abstract void bind(T element);
+    public float visibilityExtent = 0L;
 
     /*
     This method is used to bind the view holder when only some parts of the model is changed.
@@ -45,5 +46,17 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     protected String getString(@StringRes int stringRes, String value) {
         return itemView.getContext().getString(stringRes, value);
+    }
+
+    public void onViewDetachedFromWindow(T element, int visiblePercentage) {}
+
+    public void onViewAttachedToWindow(T element) {}
+
+    public void setVisibilityExtent(float visibilityExtent) {
+        this.visibilityExtent = visibilityExtent;
+    }
+
+    public int getVisiblePercentage() {
+        return (int) (visibilityExtent * 100);
     }
 }

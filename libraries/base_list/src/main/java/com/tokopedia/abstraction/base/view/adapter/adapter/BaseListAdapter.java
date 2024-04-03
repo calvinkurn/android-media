@@ -2,6 +2,8 @@ package com.tokopedia.abstraction.base.view.adapter.adapter;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -25,9 +27,40 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
             LoadingModel.class, LoadingMoreModel.class});
 
     private OnAdapterInteractionListener<T> onAdapterInteractionListener;
+    private PercentageScrollListener scrollListener = new PercentageScrollListener();
 
     public BaseListAdapter(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        recyclerView.addOnScrollListener(scrollListener);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        recyclerView.removeOnScrollListener(scrollListener);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull AbstractViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if(holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            Visitable item = visitables.get(holder.getAbsoluteAdapterPosition());
+            holder.onViewAttachedToWindow(item);
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull AbstractViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if(holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            Visitable item = visitables.get(holder.getAbsoluteAdapterPosition());
+            holder.onViewDetachedFromWindow(item, holder.getVisiblePercentage());
+        }
     }
 
     public BaseListAdapter(F baseListAdapterTypeFactory, OnAdapterInteractionListener<T> onAdapterInteractionListener) {

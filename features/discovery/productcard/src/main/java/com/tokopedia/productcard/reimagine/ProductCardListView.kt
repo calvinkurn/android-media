@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ReimagineListViewStrategy
 import com.tokopedia.video_widget.VideoPlayerController
 
@@ -51,6 +52,10 @@ class ProductCardListView: ConstraintLayout {
 
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
+        strategy.setOnClickListener(l)
+    }
+
+    fun setOnClickListener(l: ProductCardClickListener) {
         strategy.setOnClickListener(l)
     }
 

@@ -8,3 +8,7 @@ interface AppLogInterface {
 
     fun isShadow() : Boolean = false
 }
+
+interface AppLogFragmentInterface {
+    fun getFragmentName(): String
+}

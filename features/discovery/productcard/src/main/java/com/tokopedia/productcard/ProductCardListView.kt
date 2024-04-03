@@ -117,6 +117,10 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
         productCardStrategy.setOnClickListener(l)
     }
 
+    fun setOnClickListener(l: ProductCardClickListener) {
+        productCardStrategy.setOnClickListener(l)
+    }
+
     override fun setOnLongClickListener(l: OnLongClickListener?) {
         super.setOnLongClickListener(l)
         productCardStrategy.setOnLongClickListener(l)

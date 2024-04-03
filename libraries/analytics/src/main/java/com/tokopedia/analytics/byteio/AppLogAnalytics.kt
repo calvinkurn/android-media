@@ -2,7 +2,8 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
-import android.graphics.pdf.PdfDocument.Page
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -66,6 +67,15 @@ object AppLogAnalytics {
     @JvmField
     var pageNames = mutableListOf<Pair<String, Int?>>()
 
+    /**
+     * key = Activity name from Activity class
+     * value = activity hashcode value.
+     * We store activity name to prevent the newly created activity
+     * to override value for current page name
+     */
+    @JvmField
+    var pageFragmentNames = mutableListOf<Pair<Fragment?, Int?>>()
+
     @JvmField
     var activityCount: Int = 0
 
@@ -91,13 +101,17 @@ object AppLogAnalytics {
 
     internal fun addPageName(activity: Activity) {
         val actName = activity.javaClass.simpleName
+        val currentFragment = getCurrentFragment(activity)
+
         if (activity is IAppLogActivity) {
             synchronized(lock) {
                 pageNames.add(actName to activity.hashCode())
+                pageFragmentNames.add(currentFragment to currentFragment.hashCode())
             }
         } else {
             synchronized(lock) {
                 pageNames.add(actName to null)
+                pageFragmentNames.add(currentFragment to null)
             }
         }
     }
@@ -506,6 +520,22 @@ object AppLogAnalytics {
     fun getSourcePreviousPage(): String? {
         getLastDataBeforeCurrent(PAGE_NAME)?.let {
             return it.toString()
+        }
+        return null
+    }
+
+    fun getTwoLastPage(): String? {
+        if (pageFragmentNames.size < 3) return null
+        return (pageFragmentNames[pageFragmentNames.size - 3].first as? AppLogFragmentInterface)?.getFragmentName()
+    }
+
+    private fun getCurrentFragment(currentActivity: Activity): Fragment? {
+        if (currentActivity is FragmentActivity) {
+            currentActivity.supportFragmentManager.fragments.forEach {
+                if (it.isVisible) {
+                    return it
+                }
+            }
         }
         return null
     }

@@ -33,9 +33,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogFragmentInterface
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.FragmentName
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -272,7 +274,8 @@ open class HomeRevampFragment :
     CMHomeWidgetCallback,
     HomePayLaterWidgetListener,
     AppLogInterface,
-    AppLogGlidePageInterface {
+    AppLogGlidePageInterface,
+    AppLogFragmentInterface {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -547,6 +550,10 @@ open class HomeRevampFragment :
     }
 
     override fun getPageName(): String {
+        return PageName.HOME
+    }
+
+    override fun getFragmentName(): String {
         return PageName.HOME
     }
 
@@ -3154,4 +3161,5 @@ open class HomeRevampFragment :
     override fun getDistanceToTop(): Int {
         return scrollPositionY
     }
+
 }

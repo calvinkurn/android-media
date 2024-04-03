@@ -1,6 +1,12 @@
 package com.tokopedia.analytics.byteio.topads
 
+import android.content.Context
+import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import org.json.JSONObject
 
 /**
@@ -8,173 +14,159 @@ import org.json.JSONObject
  */
 object AppLogTopAds {
 
-    /**
-     * @param rit String
-     * @param productId ID of Product
-     * @param cardType AdsLogConst.AdCardStyle
-     */
-    fun sendEventShowMallAd(
-        rit: String,
-        productId: String,
-        cardType: String,
-        sessionInfo: String
-    ) {
-        AppLogAnalytics.send(
-            AdsLogConst.Event.SHOW,
-            JSONObject().apply {
-                put(AdsLogConst.TAG, AdsLogConst.Tag.TOKO_MALL_AD)
-                put(AdsLogConst.RIT, rit)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
-                put(AdsLogConst.Param.PRODUCT_ID, productId)
-                put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                // todo need to confirm
-                put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
-            }
-        )
-    }
+    private var lastClickTimestamp = System.currentTimeMillis()
 
     /**
-     * @param rit String
-     * @param productId ID of Product
-     * @param enterFrom AdsLogConst.EnterFrom
-     * @param channel AdsLogConst.Channel
-     * @param cardType AdsLogConst.AdCardStyle
+     * @param context Context
+     * @param currentPageName String
+     * @param adsLogShowOverModel AdsLogShowOverModel
      */
-    fun sendEventShowMallAdResult(
-        rit: String,
-        productId: String,
-        enterFrom: String,
-        channel: String,
-        cardType: String
-    ) {
-        AppLogAnalytics.send(
-            AdsLogConst.Event.SHOW,
-            JSONObject().apply {
-                put(AdsLogConst.TAG, AdsLogConst.Tag.TOKO_RESULT_MALL_AD)
-                put(AdsLogConst.RIT, rit)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
-                put(AdsLogConst.Param.PRODUCT_ID, productId)
-                put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                put(AdsLogConst.Param.ENTER_FROM, enterFrom)
-                put(AdsLogConst.Param.CHANNEL, channel)
-            }
-        )
-    }
-
-    /**
-     * @param rit String
-     * @param productId ID of Product
-     * @param cardType AdsLogConst.AdCardStyle
-     */
-    fun sendEventShowOverMallAd(
-        rit: String,
-        productId: String,
-        cardType: String,
-        sessionInfo: String,
-        sizePercent: String
+    fun sendEventShowOver(
+        context: Context,
+        currentPageName: String,
+        adsLogShowOverModel: AdsLogShowOverModel
     ) {
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
             JSONObject().apply {
-                put(AdsLogConst.TAG, AdsLogConst.Tag.TOKO_MALL_AD)
-                put(AdsLogConst.RIT, rit)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
-                put(AdsLogConst.Param.PRODUCT_ID, productId)
-                put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                // TODO: Need to confirm, whether the sessionInfo contains the structured JSON string.
-                put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
-                put(AdsLogConst.Param.SIZE_PERCENT, sizePercent)
+                put(
+                    AdsLogConst.Param.AD_EXTRA_DATA,
+                    JSONObject().apply {
+                        putChannelName(adsLogShowOverModel.adExtraData.channel)
+                        putEnterFrom(adsLogShowOverModel.adExtraData.enterFrom)
+                        put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
+                        put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
+                        put(AdsLogConst.Param.SIZE_PERCENT, adsLogShowOverModel.adExtraData.sizePercent)
+                    }
+                )
+
+                put(AdsLogConst.Param.CATEGORY, AdsLogConst.EVENT_V3)
+                put(AdsLogConst.Param.IS_AD_EVENT, "1")
+                putNetworkType(context)
+                put(AdsLogConst.Param.VALUE, adsLogShowOverModel.adsValue)
+                put(
+                    AdsLogConst.Param.LOG_EXTRA,
+                    JSONObject().apply {
+                        put(AdsLogConst.RIT, adsLogShowOverModel.rit)
+                    }
+                )
+                put(AdsLogConst.Param.GROUP_ID, "0")
+
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
+
+                putTag(currentPageName)
             }
         )
     }
 
     /**
-     * @param rit String
-     * @param productId ID of Product
-     * @param enterFrom AdsLogConst.EnterFrom
-     * @param channel AdsLogConst.Channel
-     * @param cardType AdsLogConst.AdCardStyle
+     * @param context Context
+     * @param currentPageName String
+     * @param adsLogShowModel AdsLogShowModel
      */
-    fun sendEventShowOverMallAdResult(
-        rit: String,
-        productId: String,
-        enterFrom: String,
-        channel: String,
-        cardType: String,
-        sizePercent: String
+    fun sendEventShow(
+        context: Context,
+        currentPageName: String,
+        adsLogShowModel: AdsLogShowModel
     ) {
         AppLogAnalytics.send(
-            AdsLogConst.Event.SHOW_OVER,
+            AdsLogConst.Event.SHOW,
             JSONObject().apply {
-                put(AdsLogConst.TAG, AdsLogConst.Tag.TOKO_RESULT_MALL_AD)
-                put(AdsLogConst.RIT, rit)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
-                put(AdsLogConst.Param.PRODUCT_ID, productId)
-                put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                put(AdsLogConst.Param.ENTER_FROM, enterFrom)
-                put(AdsLogConst.Param.CHANNEL, channel)
-                put(AdsLogConst.Param.SIZE_PERCENT, sizePercent)
+                put(
+                    AdsLogConst.Param.AD_EXTRA_DATA,
+                    JSONObject().apply {
+                        putChannelName(adsLogShowModel.adExtraData.channel)
+                        putEnterFrom(adsLogShowModel.adExtraData.enterFrom)
+                        put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
+                        put(AdsLogConst.Param.PRODUCT_ID, adsLogShowModel.adExtraData.productId)
+                    }
+                )
+
+                put(AdsLogConst.Param.CATEGORY, AdsLogConst.EVENT_V3)
+                put(AdsLogConst.Param.IS_AD_EVENT, "1")
+                putNetworkType(context)
+                put(AdsLogConst.Param.VALUE, adsLogShowModel.adsValue)
+                put(
+                    AdsLogConst.Param.LOG_EXTRA,
+                    JSONObject().apply {
+                        put(AdsLogConst.RIT, adsLogShowModel.rit)
+                    }
+                )
+                put(AdsLogConst.Param.GROUP_ID, "0")
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
+
+                putTag(currentPageName)
             }
         )
     }
 
     /**
-     * @param rit
-     * @param productId ID of Product
-     * @param refer AdsLogConst.Refer
-     * @param cardType AdsLogConst.AdCardStyle
+     * @param context Context
+     * @param currentPageName String
+     * @param adsLogRealtimeClickModel AdsLogRealtimeClickModel
      */
-    fun sendEventRealtimeClickMallAd(
-        rit: String,
-        productId: String,
-        refer: String,
-        cardType: String,
-        sessionInfo: String,
-        timeIntervalClick: String
+    fun sendEventRealtimeClick(
+        context: Context,
+        currentPageName: String,
+        adsLogRealtimeClickModel: AdsLogRealtimeClickModel
     ) {
-        AppLogAnalytics.send(
-            AdsLogConst.Event.REALTIME_CLICK,
-            JSONObject().apply {
-                put(AdsLogConst.RIT, rit)
-                put(AdsLogConst.TAG, AdsLogConst.Tag.TOKO_MALL_AD)
-                put(AdsLogConst.REFER, refer)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
-                put(AdsLogConst.Param.PRODUCT_ID, productId)
-                put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                put(AdsLogConst.Param.SESSION_INFO, sessionInfo)
-                put(AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK, timeIntervalClick)
-            }
-        )
-    }
-
-    /**
-     * @param rit
-     * @param productId ID of Product
-     * @param refer AdsLogConst.Refer
-     * @param cardType AdsLogConst.AdCardStyle
-     * @param channel AdsLogConst.Channel
-     * @param enterFrom AdsLogConst.EnterFrom
-     */
-    fun sendEventRealtimeClickMallAdResult(
-        rit: String,
-        productId: String,
-        refer: String,
-        cardType: String,
-        channel: String,
-        enterFrom: String
-    ) {
+        val timeStamp = System.currentTimeMillis()
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
             JSONObject().apply {
-                put(AdsLogConst.RIT, rit)
-                put(AdsLogConst.TAG, AdsLogConst.Tag.TOKO_RESULT_MALL_AD)
-                put(AdsLogConst.REFER, refer)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis())
-                put(AdsLogConst.Param.PRODUCT_ID, productId)
-                put(AdsLogConst.Param.MALL_CARD_TYPE, cardType)
-                put(AdsLogConst.Param.CHANNEL, channel)
-                put(AdsLogConst.Param.ENTER_FROM, enterFrom)
+                put(
+                    AdsLogConst.Param.AD_EXTRA_DATA,
+                    JSONObject().apply {
+                        putChannelName(adsLogRealtimeClickModel.adExtraData.channel)
+                        putEnterFrom(adsLogRealtimeClickModel.adExtraData.enterFrom)
+                        put(AdsLogConst.Param.MALL_CARD_TYPE, adsLogRealtimeClickModel.adExtraData.mallCardType)
+                        put(AdsLogConst.Param.PRODUCT_ID, adsLogRealtimeClickModel.adExtraData.productId)
+                    }
+                )
+
+                put(AdsLogConst.Param.CATEGORY, AdsLogConst.EVENT_V3)
+                put(AdsLogConst.Param.IS_AD_EVENT, "1")
+                putNetworkType(context)
+                put(AdsLogConst.Param.VALUE, adsLogRealtimeClickModel.adsValue)
+                put(
+                    AdsLogConst.Param.LOG_EXTRA,
+                    JSONObject().apply {
+                        put(AdsLogConst.RIT, adsLogRealtimeClickModel.rit)
+                    }
+                )
+                put(AdsLogConst.Param.GROUP_ID, "0")
+                put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
+                put(AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK, (timeStamp - lastClickTimestamp).toString())
+
+                putTag(currentPageName)
             }
         )
+        lastClickTimestamp = timeStamp
+    }
+
+
+    fun getEnterFrom(): String {
+        val twoLastFragmentName = AppLogAnalytics.getTwoLastPage()
+        return if (twoLastFragmentName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+    }
+
+    private fun JSONObject.putEnterFrom(enterFrom: String) {
+        put(AdsLogConst.Param.ENTER_FROM, enterFrom)
+    }
+
+    // todo need to confirm for this value
+    private fun JSONObject.putChannelName(channelName: String) {
+        put(AdsLogConst.Param.CHANNEL, channelName)
+    }
+
+    private fun JSONObject.putTag(currentPageName: String) {
+        val tagName = if (currentPageName == PageName.SEARCH_RESULT) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
+        put(AdsLogConst.TAG, tagName)
+    }
+
+    private fun JSONObject.putNetworkType(context: Context) {
+        val networkType = NetworkUtils.getNetworkType(context)
+        put(AdsLogConst.Param.NT, networkType)
     }
 }

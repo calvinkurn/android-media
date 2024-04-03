@@ -9,8 +9,11 @@ object AdsLogConst {
     const val RIT = "rit"
     const val TAG = "tag"
     const val REFER = "refer"
-    //todo need to confirm, we use params or not
+
+    // todo need to confirm, we use params or not
     const val PARAMS = "params"
+
+    const val EVENT_V3 = "event_v3"
     object Event {
         const val SHOW = "show"
         const val SHOW_OVER = "show_over"
@@ -29,9 +32,11 @@ object AdsLogConst {
         const val SYSTEM_START_TIMESTAMP = "system_start_timestamp"
         const val PRODUCT_ID = "product_id"
         const val MALL_CARD_TYPE = "mall_card_type"
-        //todo need to confirm, how to get the value of session_info
+
+        // todo need to confirm, how to get the value of session_info
         const val SESSION_INFO = "session_info"
-        //todo need to confirm, how to get the value of size_percent
+
+        // todo need to confirm, how to get the value of size_percent
         const val SIZE_PERCENT = "size_percent"
         const val CHANNEL = "channel"
         const val ENTER_FROM = "enter_from"
@@ -47,8 +52,6 @@ object AdsLogConst {
     }
     object AdCardStyle {
         const val PRODUCT_CARD = "product card"
-        const val LIVE_CARD = "live card"
-        const val VIDEO_CARD = "video card"
     }
     object Channel {
         const val PRODUCT_SEARCH = "product search"
@@ -69,6 +72,5 @@ object AdsLogConst {
         const val MISSION_WIDGET_BEST_SELLER = "583733155"
         const val MISSION_WIDGET_SIMILIAR_PRODUCT = "583733156"
         const val MISSION_WIDGET_RETARGETING_CONTEXT = "583733157"
-
     }
 }
