@@ -149,10 +149,6 @@ internal class FeedSearchResultFragment @Inject constructor(
             )
             it.adapter = adapter
         }
-
-        binding.errorView.setActionClickListener {
-            viewModel.submitAction(FeedSearchResultAction.LoadResult)
-        }
     }
 
     private fun setupObserver() {
@@ -209,6 +205,7 @@ internal class FeedSearchResultFragment @Inject constructor(
                     errorAction.hide()
                     errorSecondaryAction.show()
                     errorIllustration.setImageResource(feedplusR.drawable.feed_search_restricted_illustration)
+
                 }
             }
             is FeedSearchResultPageState.NotFound -> {
@@ -220,10 +217,24 @@ internal class FeedSearchResultFragment @Inject constructor(
                     errorAction.show()
                     errorSecondaryAction.hide()
                     errorIllustration.setImageResource(feedplusR.drawable.feed_search_not_found_illustration)
+
+                    setActionClickListener {
+                        val intent = router.getIntent(requireContext(), ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
+                        intent.putExtra(FeedLocalSearchActivity.TAG_KEYWORD, viewModel.searchKeyword)
+                        startActivity(intent)
+
+                        activity?.finish()
+                    }
                 }
             }
             is FeedSearchResultPageState.InternalError -> {
-                binding.errorView.setType(GlobalError.SERVER_ERROR)
+                binding.errorView.apply {
+                    setType(GlobalError.SERVER_ERROR)
+
+                    setActionClickListener {
+                        viewModel.submitAction(FeedSearchResultAction.LoadResult)
+                    }
+                }
             }
             else -> {
                 binding.errorView.setType(GlobalError.NO_CONNECTION)
