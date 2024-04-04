@@ -6186,7 +6186,7 @@ class CartRevampFragment :
         onProductClicked(product.recommendationItem.productId.toString())
     }
 
-    override fun onChangeVariantClicked(
+    override fun onClickChangeVariant(
         productId: String,
         shopId: String,
         cartId: String,
@@ -6207,7 +6207,12 @@ class CartRevampFragment :
                     changeVariantLauncher.launch(intent)
                 }
             )
+            cartPageAnalytics.eventClickVariantEditor(cartId)
         }
+    }
+
+    override fun onViewChangeVariant(cartId: String) {
+        cartPageAnalytics.eventViewVariantEditor()
     }
 
     private fun onResultFromChangeVariant(resultCode: Int, intent: Intent?) {
@@ -6230,6 +6235,7 @@ class CartRevampFragment :
                                 isLoadingTypeRefresh = true,
                                 isCartChangeVariant = true
                             )
+                            cartPageAnalytics.eventClickSimpanVariantBottomSheet(anchorCartId)
                         }
                         ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR -> {
                             val shouldShowErrorMessage = atcMessage.isNotBlank()

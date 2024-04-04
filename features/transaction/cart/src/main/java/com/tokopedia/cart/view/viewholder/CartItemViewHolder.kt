@@ -134,6 +134,9 @@ class CartItemViewHolder(
         itemView.addOnImpressionListener(data, onView = {
             if (!data.isError) {
                 actionListener?.onAvailableCartItemImpression(listOf(data))
+                if (data.isEnableCartVariant) {
+                    actionListener?.onViewChangeVariant(data.cartId)
+                }
             }
         })
 
@@ -1177,7 +1180,7 @@ class CartItemViewHolder(
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
             if (data.isEnableCartVariant) {
                 textProductVariant.setOnClickListener {
-                    actionListener?.onChangeVariantClicked(
+                    actionListener?.onClickChangeVariant(
                         data.productId,
                         data.shopHolderData.shopId,
                         data.cartId,
@@ -1186,7 +1189,7 @@ class CartItemViewHolder(
                 }
                 binding.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
                 binding.iconVariant.setOnClickListener {
-                    actionListener?.onChangeVariantClicked(
+                    actionListener?.onClickChangeVariant(
                         data.productId,
                         data.shopHolderData.shopId,
                         data.cartId,
