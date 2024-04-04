@@ -37,7 +37,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.applink.ApplinkConst
@@ -735,7 +738,7 @@ class AtcVariantBottomSheet :
                     pageSource
                 )
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartDataModel.data.cartId)
-                AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_ATC_TOASTER_PDP)
+                putAppLogEnterMethod()
             }
             atcMessage = message
         }
@@ -744,6 +747,15 @@ class AtcVariantBottomSheet :
             requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
             cartId = cartData.cartId
         )
+    }
+
+    private fun putAppLogEnterMethod() {
+        if (AppLogAnalytics.getLastDataExactStep(AppLogParam.PAGE_NAME) == PageName.PDP) {
+            AppLogAnalytics.putPreviousPageData(
+                AppLogParam.ENTER_METHOD,
+                EnterMethod.CLICK_ATC_TOASTER_PDP.str
+            )
+        }
     }
 
     private fun showPostATC(

@@ -10,6 +10,7 @@ import com.tokopedia.dropoff.databinding.ItemNearbyLocationBinding
 import com.tokopedia.dropoff.ui.dropoff_picker.model.*
 import com.tokopedia.dropoff.util.getDescription
 import com.tokopedia.logisticCommon.util.toKilometers
+import com.tokopedia.baselist.R as baselistR
 
 internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -55,7 +56,7 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
         is DropoffNearbyModel -> R.layout.item_nearby_location
         is EmptyType -> R.layout.item_empty_nearby_location
         is HeaderType -> R.layout.item_dropoff_list_header
-        is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
+        is LoadingType -> baselistR.layout.item_shimmering_list
     }
 
     fun setData(item: List<DropoffNearbyModel>) {

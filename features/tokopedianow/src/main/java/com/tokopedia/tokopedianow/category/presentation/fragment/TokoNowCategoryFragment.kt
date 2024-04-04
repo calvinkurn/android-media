@@ -14,6 +14,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.observe
@@ -42,7 +43,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcase
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder
-import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
@@ -51,7 +52,6 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL1Binding
@@ -113,14 +113,13 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
 
     override fun createAdapterTypeFactory(): CategoryAdapterTypeFactory {
         return CategoryAdapterTypeFactory(
-            categoryTitleListener = createTitleCallback(),
             categoryNavigationListener = createCategoryNavigationCallback(),
             categoryShowcaseItemListener = createCategoryShowcaseItemCallback(),
             categoryShowcaseHeaderListener = createCategoryShowcaseHeaderCallback(),
             tokoNowView = createTokoNowViewCallback(),
-            tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
+            tokoNowHeaderListener = createTitleCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
             brandWidgetListener = createBrandWidgetListener(),
             brandWidgetAnalytic = createBrandWidgetAnalytic(),
@@ -327,8 +326,8 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
      * -- callback function section --
      */
 
-    private fun createTitleCallback() = object : CategoryTitleViewHolder.CategoryTitleListener {
-        override fun onClickMoreCategories() {
+    private fun createTitleCallback() = object : TokoNowThematicHeaderViewHolder.TokoNowHeaderListener {
+        override fun onClickCtaHeader() {
             RouteManager.route(
                 context,
                 ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
@@ -339,6 +338,17 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
                 warehouseIds = viewModel.getWarehouseIds()
             )
         }
+
+        override fun onClickChooseAddressWidgetTracker() = analytic.sendClickWidgetChooseAddressEvent(
+            categoryIdL1 = categoryIdL1,
+            warehouseIds = viewModel.getWarehouseIds()
+        )
+
+        override fun onCloseTicker() {
+            viewModel.removeTicker()
+        }
+
+        override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) { /* do nothing */ }
     }
 
     private fun createCategoryNavigationCallback() = object : CategoryNavigationViewHolder.CategoryNavigationListener {
@@ -486,17 +496,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         )
 
         override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) { /* nothing to do */ }
-    }
-
-    private fun createTokoNowChooseAddressWidgetCallback() = object : TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener {
-        override fun onChooseAddressWidgetRemoved() {
-            /* nothing to do */
-        }
-
-        override fun onClickChooseAddressWidgetTracker() = analytic.sendClickWidgetChooseAddressEvent(
-            categoryIdL1 = categoryIdL1,
-            warehouseIds = viewModel.getWarehouseIds()
-        )
     }
 
     private fun createProductRecommendationCallback() = object : TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
