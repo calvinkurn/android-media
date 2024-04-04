@@ -47,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -57,6 +58,7 @@ import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -877,50 +879,25 @@ fun SellerMenuShopStatusInfo(
 ) {
     when (val shopType = userShopInfoWrapper.shopType) {
         is RegularMerchant -> {
-            val totalTransaction =
-                userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
-            userShopInfoWrapper.userShopInfoUiModel?.let { uiModel ->
-                var statsRmText: String? = null
-                var totalStatsRmText: String? = null
+            userShopInfoWrapper.userShopInfoUiModel?.let {
 
-                val shouldShowTransactionSection =
-                    totalTransaction < Constant.ShopStatus.THRESHOLD_TRANSACTION &&
-                        uiModel.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO
-
-                val ctaColor =
-                    when (shopType) {
-                        is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
-                            NestTheme.colors.GN._500
-                        }
-
-                        is RegularMerchant.Pending -> {
-                            NestTheme.colors.NN._950.copy(
-                                alpha = 0.68f
-                            )
-                        }
-
-                        else -> {
-                            null
-                        }
+                val ctaColor = when (shopType) {
+                    is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
+                        NestTheme.colors.GN._500
                     }
 
-                if (shouldShowTransactionSection) {
-                    if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
-                        statsRmText = MethodChecker.fromHtml(
-                            stringResource(id = sellermenuR.string.transaction_passed)
-                        ).toString()
-                        totalStatsRmText = null
-                    } else {
-                        statsRmText = stringResource(id = getRmStatsTextRes(uiModel))
-                        totalStatsRmText = stringResource(
-                            id = sellermenuR.string.total_transaction,
-                            totalTransaction.toString()
+                    is RegularMerchant.Pending -> {
+                        NestTheme.colors.NN._950.copy(
+                            alpha = 0.68f
                         )
                     }
+
+                    else -> {
+                        null
+                    }
                 }
+
                 SellerMenuStatusRegular(
-                    rmStatsText = statsRmText,
-                    rmTotalStatsText = totalStatsRmText,
                     pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
                     ctaTextRes = getRmVerificationTextRes(shopType),
                     ctaColor = ctaColor,
@@ -944,9 +921,9 @@ fun SellerMenuShopStatusInfo(
                         else -> true
                     }
                 SellerMenuStatusPm(
-                    isActive = pm is PowerMerchantStatus.Active,
                     canUpgrade = canUpgrade,
                     modifier = modifier,
+                    isKyc = userShopInfoWrapper.userShopInfoUiModel?.isKyc.orFalse(),
                     onActionClick = onActionClick
                 )
             }
@@ -1517,8 +1494,6 @@ fun SellerMenuOrderSectionItem(
 
 @Composable
 fun SellerMenuStatusRegular(
-    rmStatsText: String?,
-    rmTotalStatsText: String?,
     pmEligibleIcon: Int?,
     @StringRes ctaTextRes: Int?,
     ctaColor: Color?,
@@ -1544,10 +1519,7 @@ fun SellerMenuStatusRegular(
                 shopStatusTitle,
                 iconEligiblePm,
                 regularMerchantStatus,
-                dividerSpacer,
-                dividerStatsRm,
-                textStatsRm,
-                textTotalStatsRm
+                dividerSpacer
             ) = createRefs()
 
             val leftGuideline = createGuidelineFromStart(16.dp)
@@ -1599,89 +1571,31 @@ fun SellerMenuStatusRegular(
                         }
                 )
             }
-
-            if (rmStatsText != null) {
-                Spacer(
-                    modifier = Modifier
-                        .height(12.dp)
-                        .constrainAs(dividerSpacer) {
-                            top.linkTo(shopStatusTitle.bottom)
-                        }
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_divider_stats_rm),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .constrainAs(dividerStatsRm) {
-                            start.linkTo(shopStatusTitle.start)
-                            end.linkTo(regularMerchantStatus.end)
-                            top.linkTo(dividerSpacer.bottom)
-                            bottom.linkTo(textStatsRm.top)
-                        }
-                )
-
-                NestTypography(
-                    text = rmStatsText,
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.NN._950.copy(
-                            alpha = 0.68f
-                        )
-                    ),
-                    modifier = Modifier
-                        .constrainAs(textStatsRm) {
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(leftGuideline)
-                            top.linkTo(dividerStatsRm.bottom)
-                        }
-                        .padding(
-                            top = 12.dp,
-                            end = 16.dp
-                        )
-                )
-            }
-
-            if (rmTotalStatsText != null) {
-                NestTypography(
-                    text = rmTotalStatsText,
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.NN._950.copy(
-                            alpha = 0.96f
-                        ),
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .padding(
-                            top = 12.dp,
-                            end = 16.dp
-                        )
-                        .constrainAs(textTotalStatsRm) {
-                            top.linkTo(dividerStatsRm.bottom)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                        }
-                )
-            }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewSellerMenuStatusPm() {
+    SellerMenuStatusPm(false, Modifier, false) {
+
     }
 }
 
 @Composable
 fun SellerMenuStatusPm(
-    isActive: Boolean,
     canUpgrade: Boolean,
     modifier: Modifier,
+    isKyc: Boolean,
     onActionClick: (SellerMenuActionClick) -> Unit
 ) {
     val actionClick =
         when {
-            !isActive -> SellerMenuActionClick.POWER_MERCHANT_INACTIVE
+            !isKyc -> SellerMenuActionClick.POWER_MERCHANT_KYC
             canUpgrade -> SellerMenuActionClick.POWER_MERCHANT_UPGRADE
             else -> SellerMenuActionClick.POWER_MERCHANT
         }
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -1704,12 +1618,7 @@ fun SellerMenuStatusPm(
 
             val middleGuideline = createGuidelineFromStart(40.dp)
 
-            val pmText =
-                if (isActive) {
-                    stringResource(id = sellermenucommonR.string.power_merchant_upgrade)
-                } else {
-                    stringResource(id = sellermenucommonR.string.power_merchant_status)
-                }
+            val pmText = stringResource(id = sellermenucommonR.string.power_merchant_upgrade)
 
             NestTypography(
                 text = pmText,
@@ -1726,11 +1635,28 @@ fun SellerMenuStatusPm(
                     }
             )
 
-            if (!isActive) {
+            if (isKyc) {
+                if (canUpgrade) {
+                    NestTypography(
+                        text = stringResource(id = sellermenuR.string.setting_upgrade),
+                        textStyle = NestTheme.typography.body2.copy(
+                            color = NestTheme.colors.GN._500,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier
+                            .constrainAs(upgradePMText) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                            }
+                            .padding(end = 16.dp)
+                    )
+                }
+            } else {
                 NestTypography(
-                    text = stringResource(id = sellermenucommonR.string.setting_not_active),
+                    text = stringResource(id = sellermenucommonR.string.setting_other_not_verified),
                     textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.RN._500,
+                        color = NestTheme.colors.NN._950,
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier
@@ -1743,22 +1669,6 @@ fun SellerMenuStatusPm(
                 )
             }
 
-            if (canUpgrade) {
-                NestTypography(
-                    text = stringResource(id = sellermenuR.string.setting_upgrade),
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.GN._500,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .constrainAs(upgradePMText) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                        }
-                        .padding(end = 16.dp)
-                )
-            }
 
             NestIcon(
                 iconId = IconUnify.BADGE_PM_FILLED,

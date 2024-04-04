@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.presentation.adapter.viewholder
 
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -49,6 +51,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
 import java.util.*
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopInfoViewHolder(
     itemView: View,
@@ -62,10 +66,10 @@ class ShopInfoViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.layout_seller_menu_shop_info
 
-        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+        private val GREY_TEXT_COLOR = unifyprinciplesR.color.Unify_NN950_68
 
-        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_TN500
-        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_YN400
+        private val TEAL_TEXT_COLOR = unifyprinciplesR.color.Unify_TN500
+        private val YELLOW_TEXT_COLOR = unifyprinciplesR.color.Unify_YN400
 
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val TICKER_TYPE_WARNING = "warning"
@@ -196,7 +200,7 @@ class ShopInfoViewHolder(
                 binding.successShopInfoLayout.shopScore.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                        unifyprinciplesR.color.Unify_NN950_96
                     )
                 )
                 binding.successShopInfoLayout.shopScoreMaxLabel.hide()
@@ -205,7 +209,7 @@ class ShopInfoViewHolder(
                 binding.successShopInfoLayout.shopScore.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 )
                 binding.successShopInfoLayout.shopScoreMaxLabel.show()
@@ -263,7 +267,7 @@ class ShopInfoViewHolder(
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
         binding.layoutSahOtherSaldo.run {
             balanceTitle.text =
-                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_balance)
+                context.resources.getString(sellermenucommonR.string.setting_balance)
             balanceValue.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(
                 saldoBalanceUiModel,
@@ -280,36 +284,13 @@ class ShopInfoViewHolder(
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
-        val pmProEligibleIcon =
-            shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val itemView: View? = shopType?.getLayoutRes()?.let {
             LayoutInflater.from(context).inflate(it, null, false)
         }
         val shopStatusLayout: View? = when (shopType) {
-            is RegularMerchant -> {
-                itemView?.apply {
-                    setRegularMerchantShopStatus(
-                        shopType,
-                        shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
-                    )
-                    sendSettingShopInfoImpressionTracking(
-                        shopStatusUiModel,
-                        trackingListener::sendImpressionDataIris
-                    )
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe()
-                        if (shopType is RegularMerchant.Verified && pmProEligibleIcon != null) {
-                            goToPowerMerchantSubscribe()
-                        } else {
-                            goToPowerMerchantSubscribe()
-                        }
-                        sellerMenuTracker?.sendEventClickShopSettingNew()
-                    }
-                }
-            }
             is PowerMerchantStatus -> {
                 itemView?.apply {
-                    setPowerMerchantShopStatus(shopType, shopStatusUiModel)
+                    setPowerMerchantShopStatus(shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(
                         shopStatusUiModel,
                         trackingListener::sendImpressionDataIris
@@ -388,7 +369,7 @@ class ShopInfoViewHolder(
         }
 
         val paddingTop =
-            itemView?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            itemView?.resources?.getDimensionPixelSize(unifyprinciplesR.dimen.spacing_lvl3)
         val paddingBottom =
             itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
         if (paddingTop != null && paddingBottom != null) {
@@ -413,129 +394,6 @@ class ShopInfoViewHolder(
             )
         }
         context?.let { RouteManager.route(context, appLink) }
-    }
-
-    private fun View.setRegularMerchantShopStatus(
-        regularMerchant: RegularMerchant,
-        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
-    ): View {
-        val regularMerchantStatus = findViewById<Typography>(R.id.regularMerchantStatus)
-        val eligiblePmIconView = findViewById<IconUnify>(R.id.iconEligiblePm)
-
-        val pmProEligibleIcon = userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
-        val pmEligibleIcon = userShopInfoUiModel?.getPowerMerchantEligibleIcon()
-
-        when (regularMerchant) {
-            is RegularMerchant.Verified -> {
-                when {
-                    pmProEligibleIcon != null -> {
-                        setRegularMerchantVerification(
-                            regularMerchantStatus,
-                            eligiblePmIconView,
-                            pmProEligibleIcon
-                        )
-                    }
-                    pmEligibleIcon != null -> {
-                        setRegularMerchantVerification(
-                            regularMerchantStatus,
-                            eligiblePmIconView,
-                            pmEligibleIcon
-                        )
-                    }
-                }
-            }
-            is RegularMerchant.Pending -> setRegularMerchantPending(
-                regularMerchantStatus,
-                eligiblePmIconView
-            )
-            is RegularMerchant.NeedUpgrade -> setRegularMerchantNeedUpgrade(
-                regularMerchantStatus,
-                eligiblePmIconView
-            )
-        }
-
-        setupTransactionSection(userShopInfoUiModel)
-        return this
-    }
-
-    private fun setRegularMerchantNeedUpgrade(
-        regularMerchantStatus: Typography,
-        eligiblePmIcon: IconUnify
-    ) {
-        eligiblePmIcon.hide()
-        regularMerchantStatus.run {
-            text = context.resources.getString(R.string.setting_upgrade)
-            setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                )
-            )
-        }
-    }
-
-    private fun setRegularMerchantPending(
-        regularMerchantStatus: Typography,
-        eligiblePmIconView: IconUnify
-    ) {
-        eligiblePmIconView.hide()
-        regularMerchantStatus.run {
-            text =
-                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verified)
-            setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
-                )
-            )
-            isClickable = false
-        }
-    }
-
-    private fun setRegularMerchantVerification(
-        regularMerchantStatus: Typography,
-        eligiblePmIconView: IconUnify,
-        pmIcon: Int
-    ) {
-        eligiblePmIconView.run {
-            show()
-            setImage(pmIcon)
-        }
-        regularMerchantStatus.run {
-            text =
-                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verifikasi)
-            setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                )
-            )
-        }
-    }
-
-    private fun View.setupTransactionSection(userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
-        val txStatsRM = findViewById<Typography>(R.id.tx_stats_rm)
-        val txTotalStatsRM = findViewById<Typography>(R.id.tx_total_stats_rm)
-        val totalTransaction = userShopInfoUiModel?.totalTransaction ?: 0
-        if (totalTransaction >= Constant.ShopStatus.THRESHOLD_TRANSACTION) {
-            hideTransactionSection()
-        } else {
-            if (userShopInfoUiModel?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                showTransactionSection(totalTransaction)
-                if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
-                    txStatsRM.text =
-                        MethodChecker.fromHtml(getString(R.string.transaction_passed))
-                    txTotalStatsRM.hide()
-                } else {
-                    txStatsRM.setupStatsWordingRM(userShopInfoUiModel)
-                    txTotalStatsRM.show()
-                    txTotalStatsRM.text =
-                        getString(R.string.total_transaction, totalTransaction.toString())
-                }
-            } else {
-                hideTransactionSection()
-            }
-        }
     }
 
     private fun Typography.setupStatsWordingRM(userShopInfo: UserShopInfoWrapper.UserShopInfoUiModel) {
@@ -571,46 +429,38 @@ class ShopInfoViewHolder(
     }
 
     private fun View.setPowerMerchantShopStatus(
-        powerMerchantStatus: PowerMerchantStatus,
         statusUiModel: ShopStatusUiModel
     ): View {
         val upgradePMTextView: Typography = findViewById(R.id.upgradePMText)
-        val powerMerchantStatusTextView: Typography = findViewById(R.id.powerMerchantStatusText)
         val powerMerchantText: Typography = findViewById(R.id.powerMerchantText)
-        val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
-        val isNewSeller = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
-        when (powerMerchantStatus) {
-            is PowerMerchantStatus.Active -> {
-                if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    with(upgradePMTextView) {
-                        val shouldShow = isNewSeller == false
-                        showWithCondition(shouldShow)
-                        if (shouldShow) {
-                            setOnClickListener {
-                                goToPowerMerchantSubscribe(true)
-                            }
+        val isKyc = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isKyc.orFalse()
+        if (isKyc) {
+            val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
+            val isNewSeller = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
+            if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+                with(upgradePMTextView) {
+                    val shouldShow = isNewSeller == false
+                    showWithCondition(shouldShow)
+                    if (shouldShow) {
+                        setOnClickListener {
+                            goToPowerMerchantSubscribe(true)
                         }
                     }
-                } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
-                    upgradePMTextView.hide()
                 }
-                powerMerchantText.text =
-                    getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
-
-                powerMerchantStatusTextView.hide()
-            }
-            is PowerMerchantStatus.NotActive -> {
-                powerMerchantStatusTextView.show()
+            } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                 upgradePMTextView.hide()
-                powerMerchantText.text =
-                    getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
-
-                powerMerchantStatusTextView.setOnClickListener {
-                    goToPowerMerchantSubscribe()
-                    sellerMenuTracker?.sendEventClickShopType()
+            }
+        } else {
+            with(upgradePMTextView) {
+                text = getString(sellermenucommonR.string.setting_other_not_verified)
+                visible()
+                setOnClickListener {
+                    goToPowerMerchantSubscribe(false)
                 }
             }
         }
+        powerMerchantText.text =
+            getString(sellermenucommonR.string.power_merchant_upgrade)
         return this
     }
 
