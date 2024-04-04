@@ -51,7 +51,6 @@ import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -459,10 +458,8 @@ class CheckoutPaymentProcessor @Inject constructor(
             val selectedTenure = widgetData.installmentPaymentData.selectedTenure
             val selectedTenor = tenorList?.firstOrNull { it.tenure == selectedTenure }
             if (selectedTenor?.disable != false) {
-                // reset selected tenure if current tenure is disabled
-                val newGatewayCode = tenorList?.firstOrNull { it.tenure == 0 }?.gatewayCode.ifNullOrBlank { widgetData.gatewayCode }
-                paymentWidgetData[0] = widgetData.copy(installmentPaymentData = widgetData.installmentPaymentData.copy(selectedTenure = 0), gatewayCode = newGatewayCode)
-                return payment.copy(tenorList = tenorList, data = payment.data.copy(paymentWidgetData = paymentWidgetData))
+                // force user to choose tenure again
+                return payment.copy(tenorList = null)
             }
             val newGatewayCode = selectedTenor.gatewayCode.ifBlank { widgetData.gatewayCode }
             paymentWidgetData[0] = widgetData.copy(gatewayCode = newGatewayCode)
@@ -554,8 +551,7 @@ class CheckoutPaymentProcessor @Inject constructor(
             val selectedTenure = widgetData.installmentPaymentData.selectedTenure
             if (installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.isActive != false) {
                 // reset selected tenure if current tenure is disabled
-                paymentWidgetData[0] = widgetData.copy(installmentPaymentData = widgetData.installmentPaymentData.copy(selectedTenure = 0))
-                return payment.copy(installmentData = installmentData, data = payment.data.copy(paymentWidgetData = paymentWidgetData))
+                return payment.copy(installmentData = null)
             }
             return payment.copy(installmentData = installmentData)
         } catch (e: Exception) {

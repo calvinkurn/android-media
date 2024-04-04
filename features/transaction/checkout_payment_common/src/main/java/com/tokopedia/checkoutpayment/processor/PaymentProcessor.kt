@@ -188,8 +188,7 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.UnavailableTenureError -> {
                 latestWidget.copy(
-                    state = CheckoutPaymentWidgetState.Error,
-                    errorMessage = currentData.installmentPaymentData.errorMessageUnavailableTenure
+                    installmentText = "Pilih cicilan"
                 )
             }
 

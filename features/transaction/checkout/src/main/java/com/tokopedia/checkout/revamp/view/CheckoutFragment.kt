@@ -1944,7 +1944,7 @@ class CheckoutFragment :
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
         if (!viewModel.isLoading()) {
-            if (viewModel.isPaymentEnable() && false) {
+            if (viewModel.isPaymentEnable()) {
                 // temp
                 viewModel.updateCartForPromo {
                     val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
@@ -2892,7 +2892,7 @@ class CheckoutFragment :
             this,
             viewModel.generateCreditCardTenorListRequest(payment),
             userSessionInterface.userId,
-            payment.tenorList!!,
+            payment.tenorList,
             paymentData.installmentPaymentData.selectedTenure,
             object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                 override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {

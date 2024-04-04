@@ -21,6 +21,7 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutAddOnProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCalculator
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_CHECKOUT
+import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_CHECKOUT_OPEN_PROMO
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_NOTES
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_PAYMENT
 import com.tokopedia.checkout.revamp.view.processor.CheckoutDataHelper
@@ -2131,6 +2132,21 @@ class CheckoutViewModel @Inject constructor(
                         hasNoPayment = true
                     } else if (checkoutItem.enable && !checkoutItem.widget.isValidToCheckout) {
                         hasInvalidPayment = true
+                    } else if (checkoutItem.enable) {
+                        val paymentWidgetData = checkoutItem.data?.paymentWidgetData?.firstOrNull()
+                        if (paymentWidgetData != null && paymentWidgetData.mandatoryHit.contains(MANDATORY_HIT_CC_TENOR_LIST)) {
+                            val selectedTenure = paymentWidgetData.installmentPaymentData.selectedTenure
+                            val selectedTenor = checkoutItem.tenorList?.firstOrNull { it.tenure == selectedTenure && !it.disable }
+                            if (selectedTenor == null) {
+                                hasInvalidPayment = true
+                            }
+                        } else if (paymentWidgetData != null && paymentWidgetData.mandatoryHit.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS)) {
+                            val selectedTenure = paymentWidgetData.installmentPaymentData.selectedTenure
+                            val selectedTenor = checkoutItem.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure && it.isActive }
+                            if (selectedTenor == null) {
+                                hasInvalidPayment = true
+                            }
+                        }
                     }
                 }
             }
@@ -3184,7 +3200,6 @@ class CheckoutViewModel @Inject constructor(
                 ),
                 payment
             )
-            // todo: hit update cart harus success
 
             if (payment.widget.state == CheckoutPaymentWidgetState.Error) {
                 // show error
@@ -3195,6 +3210,20 @@ class CheckoutViewModel @Inject constructor(
                 updateTotalAndPayment(cost, payment)
                 return
             }
+
+            val updateCartRequest = cartProcessor.generateUpdateCartRequest(listData.value)
+            val newPaymentRequest = cartProcessor.generateUpdateCartPaymentRequest(payment)
+            val updateCartResult = cartProcessor.updateCart(updateCartRequest, UPDATE_CART_SOURCE_PAYMENT, newPaymentRequest)
+            if (!updateCartResult.isSuccess) {
+                // show error
+                cost = cost.copy(
+                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                    usePaymentFees = true
+                )
+                updateTotalAndPayment(cost, payment)
+                return
+            }
+
             updateTotalAndPayment(cost, payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading)), skipValidatePayment = true)
             // validate promo after get payment
             validatePromo(skipEE = true)
@@ -3236,16 +3265,7 @@ class CheckoutViewModel @Inject constructor(
             payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost)
 
             if (payment.tenorList == null) {
-                // show error
-                payment = payment.copy(
-                    widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
-                )
-                cost = cost.copy(
-                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
-                    usePaymentFees = true
-                )
-                updateTotalAndPayment(cost, payment)
-                return
+                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, "Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi."))
             }
         }
 
@@ -3253,16 +3273,7 @@ class CheckoutViewModel @Inject constructor(
             payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost)
 
             if (payment.installmentData == null) {
-                // show error
-                payment = payment.copy(
-                    widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
-                )
-                cost = cost.copy(
-                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
-                    usePaymentFees = true
-                )
-                updateTotalAndPayment(cost, payment)
-                return
+                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, "Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi."))
             }
         }
 
@@ -3463,7 +3474,7 @@ class CheckoutViewModel @Inject constructor(
             pageState.value = CheckoutPageState.Loading
             val updateCartRequest = cartProcessor.generateUpdateCartRequest(listData.value)
             val paymentRequest = cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment())
-            val updateCartResult = cartProcessor.updateCart(updateCartRequest, UPDATE_CART_SOURCE_CHECKOUT, paymentRequest)
+            val updateCartResult = cartProcessor.updateCart(updateCartRequest, UPDATE_CART_SOURCE_CHECKOUT_OPEN_PROMO, paymentRequest)
             if (!updateCartResult.isSuccess) {
                 toasterProcessor.commonToaster.emit(
                     CheckoutPageToaster(
