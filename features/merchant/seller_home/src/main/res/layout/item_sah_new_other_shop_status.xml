@@ -60,29 +60,13 @@
         app:icon_name="BADGE_PM_FILLED"
         tools:visibility="visible"/>
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_sah_new_other_shop_status_warning"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="4dp"
-        android:visibility="gone"
-        android:adjustViewBounds="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_sah_new_other_shop_status_desc"
-        app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_desc"
-        app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_desc"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:icon_name="WARNING"
-        app:icon_color_light_enable="@color/Unify_RN500"
-        tools:visibility="visible"/>
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_new_other_shop_status_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tv_sah_new_other_shop_status_title"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ic_sah_new_other_shop_status_warning"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintVertical_chainStyle="packed"

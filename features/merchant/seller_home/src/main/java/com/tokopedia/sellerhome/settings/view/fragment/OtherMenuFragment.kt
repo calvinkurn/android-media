@@ -560,6 +560,10 @@ class OtherMenuFragment :
         showCoachMarkTopAdsMenuItem(topAdsMenuName, topAdsView)
     }
 
+    override fun navigate(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
     private fun observeLiveData() {
         observeShopBadge()
         observeTotalTokoMember()

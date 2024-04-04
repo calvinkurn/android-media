@@ -54,7 +54,8 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
                     statusMessage = shopInfoByIDResult?.statusInfo?.statusMessage.orEmpty(),
                     tickerType = shopInfoByIDResult?.statusInfo?.tickerType.orEmpty(),
                     shopStatus = shopInfoByIDResult?.statusInfo?.shopStatus.orZero()
-                )
+                ),
+                kycStatus = shopInfoByIDResult?.kycStatus ?: Constant.Kyc.INACTIVE
             )
         )
     }

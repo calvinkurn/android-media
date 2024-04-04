@@ -3,15 +3,17 @@ package com.tokopedia.sellerhome.settings.view.adapter
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
-import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
-import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
-import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.*
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.FreeShippingWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ReputationBadgeWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopFollowersWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopOperationalWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopSecondaryInfoWidget
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopStatusWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.TokoMemberWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.TokoPlusWidgetUiModel
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 
 class ShopSecondaryInfoAdapter(
@@ -193,8 +195,6 @@ class ShopSecondaryInfoAdapter(
                         shopStatus.userShopInfoWrapper.userShopInfoUiModel
                     )
                     notifyItemChanged(index)
-
-                    removeRmTransactionWidget()
                 }
             }
         }
@@ -206,7 +206,6 @@ class ShopSecondaryInfoAdapter(
                 val loadingState = SettingResponseState.SettingLoading
                 visitables[index] = ShopStatusWidgetUiModel(loadingState)
                 notifyItemChanged(index)
-                removeRmTransactionWidget()
             }
         }
     }
@@ -217,18 +216,6 @@ class ShopSecondaryInfoAdapter(
                 val errorState = SettingResponseState.SettingError(throwable)
                 visitables[index] = ShopStatusWidgetUiModel(errorState)
                 notifyItemChanged(index)
-                removeRmTransactionWidget()
-            }
-        }
-    }
-
-    private fun removeRmTransactionWidget() {
-        visitables?.run {
-            indexOfFirst { it is RMTransactionWidgetUiModel }.let { index ->
-                if (index >= START_INDEX) {
-                    removeAt(index)
-                    notifyItemRemoved(index)
-                }
             }
         }
     }
@@ -237,7 +224,6 @@ class ShopSecondaryInfoAdapter(
         return listOf(
             ShopOperationalWidgetUiModel(SettingResponseState.SettingLoading),
             ShopStatusWidgetUiModel(SettingResponseState.SettingLoading),
-            RMTransactionWidgetUiModel(SettingResponseState.SettingLoading),
             ReputationBadgeWidgetUiModel(SettingResponseState.SettingLoading),
             TokoMemberWidgetUiModel(SettingResponseState.SettingLoading),
             ShopFollowersWidgetUiModel(SettingResponseState.SettingLoading),

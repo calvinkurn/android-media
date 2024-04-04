@@ -22,4 +22,8 @@ object Constant {
 
     }
 
+    object Kyc {
+        const val ACTIVE = 0
+        const val INACTIVE = 1
+    }
 }
