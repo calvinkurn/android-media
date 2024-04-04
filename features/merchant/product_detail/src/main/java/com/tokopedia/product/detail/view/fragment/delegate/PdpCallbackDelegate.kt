@@ -18,6 +18,7 @@ interface PdpCallbackDelegate {
     val gwp: GWPCallback
     val dynamicOneLiner: DynamicOneLinerCallback
     val productRecomm: PartialRecommendationManager
+    val atcAnimation: AtcAnimationManager
 
     fun registerCallback(mediator: PdpComponentCallbackMediator)
 }

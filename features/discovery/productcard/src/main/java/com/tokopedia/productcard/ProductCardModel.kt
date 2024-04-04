@@ -1,5 +1,6 @@
 package com.tokopedia.productcard
 
+import androidx.annotation.IdRes
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.layout.LayoutStrategyFactory
@@ -26,76 +27,79 @@ import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
-data class ProductCardModel (
-        val productImageUrl: String = "",
-        @Deprecated("Cannot wishlist from product card anymore")
-        var isWishlisted: Boolean = false,
-        @Deprecated("Cannot wishlist from product card anymore")
-        val isWishlistVisible: Boolean = false,
-        @Deprecated("replace with labelGroupList")
-        val labelPromo: Label = Label(),
-        @Deprecated("No more shop image")
-        val shopImageUrl: String = "",
-        @Deprecated("No more shop name")
-        val shopName: String = "",
-        val productName: String = "",
-        val discountPercentage: String = "",
-        val slashedPrice: String = "",
-        val priceRange: String = "",
-        val formattedPrice: String = "",
-        val shopBadgeList: List<ShopBadge> = listOf(),
-        val shopLocation: String = "",
-        val ratingCount: Int = 0,
-        val reviewCount: Int = 0,
-        @Deprecated("replace with labelGroupList")
-        val labelCredibility: Label = Label(),
-        @Deprecated("replace with labelGroupList")
-        val labelOffers: Label = Label(),
-        val freeOngkir: FreeOngkir = FreeOngkir(),
-        val isTopAds: Boolean = false,
-        val ratingString: String = "",
-        val hasThreeDots: Boolean = false,
-        val labelGroupList: List<LabelGroup> = listOf(),
-        val hasDeleteProductButton: Boolean = false,
-        val hasAddToCartButton: Boolean = false,
-        val hasRemoveFromWishlistButton: Boolean = false,
-        val pdpViewCount: String = "",
-        val stockBarLabel: String = "",
-        val stockBarLabelColor: String = "",
-        val stockBarPercentage: Int = 0,
-        val isOutOfStock: Boolean = false,
-        val addToCardText: String = "",
-        val shopRating: String = "",
-        val isShopRatingYellow: Boolean = false,
-        val countSoldRating: String = "",
-        val hasNotifyMeButton: Boolean = false,
-        val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
-        @Deprecated("determined from product card")
-        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
-        val isWideContent: Boolean = false,
-        val variant: Variant? = null,
-        val nonVariant: NonVariant? = null,
-        val hasSimilarProductButton: Boolean = false,
-        val hasButtonThreeDotsWishlist: Boolean = false,
-        val hasAddToCartWishlist: Boolean = false,
-        val hasSimilarProductWishlist: Boolean = false,
-        val customVideoURL : String = "",
-        @Deprecated("replaced with animateOnPress")
-        val cardInteraction: Boolean? = null,
-        val productListType: ProductListType = ProductListType.CONTROL,
-        val isPortrait: Boolean = false,
-        val seeOtherProductText: String = "",
-        val isTopStockBar: Boolean = false,
-        val cardType: Int = CardUnify2.TYPE_SHADOW,
-        val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
-        val forceLightModeColor: Boolean = false,
-        val isInBackground: Boolean = false,
-        val colorMode: ProductCardColor? = null
+data class ProductCardModel(
+    val productImageUrl: String = "",
+    @Deprecated("Cannot wishlist from product card anymore")
+    var isWishlisted: Boolean = false,
+    @Deprecated("Cannot wishlist from product card anymore")
+    val isWishlistVisible: Boolean = false,
+    @Deprecated("replace with labelGroupList")
+    val labelPromo: Label = Label(),
+    @Deprecated("No more shop image")
+    val shopImageUrl: String = "",
+    @Deprecated("No more shop name")
+    val shopName: String = "",
+    val productName: String = "",
+    val discountPercentage: String = "",
+    val slashedPrice: String = "",
+    val priceRange: String = "",
+    val formattedPrice: String = "",
+    val shopBadgeList: List<ShopBadge> = listOf(),
+    val shopLocation: String = "",
+    val ratingCount: Int = 0,
+    val reviewCount: Int = 0,
+    @Deprecated("replace with labelGroupList")
+    val labelCredibility: Label = Label(),
+    @Deprecated("replace with labelGroupList")
+    val labelOffers: Label = Label(),
+    val freeOngkir: FreeOngkir = FreeOngkir(),
+    val isTopAds: Boolean = false,
+    val ratingString: String = "",
+    val hasThreeDots: Boolean = false,
+    val labelGroupList: List<LabelGroup> = listOf(),
+    val hasDeleteProductButton: Boolean = false,
+    val hasAddToCartButton: Boolean = false,
+    val hasRemoveFromWishlistButton: Boolean = false,
+    val pdpViewCount: String = "",
+    val stockBarLabel: String = "",
+    val stockBarLabelColor: String = "",
+    val stockBarPercentage: Int = 0,
+    val isOutOfStock: Boolean = false,
+    val addToCardText: String = "",
+    val shopRating: String = "",
+    val isShopRatingYellow: Boolean = false,
+    val countSoldRating: String = "",
+    val hasNotifyMeButton: Boolean = false,
+    val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
+    @Deprecated("determined from product card")
+    val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+    val isWideContent: Boolean = false,
+    val variant: Variant? = null,
+    val nonVariant: NonVariant? = null,
+    val hasSimilarProductButton: Boolean = false,
+    val hasButtonThreeDotsWishlist: Boolean = false,
+    val hasAddToCartWishlist: Boolean = false,
+    val hasSimilarProductWishlist: Boolean = false,
+    val customVideoURL: String = "",
+    @Deprecated("replaced with animateOnPress")
+    val cardInteraction: Boolean? = null,
+    val productListType: ProductListType = ProductListType.CONTROL,
+    val isPortrait: Boolean = false,
+    val seeOtherProductText: String = "",
+    val isTopStockBar: Boolean = false,
+    val cardType: Int = CardUnify2.TYPE_SHADOW,
+    val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+    val forceLightModeColor: Boolean = false,
+    val isInBackground: Boolean = false,
+    val colorMode: ProductCardColor? = null,
+    val productCardGenericCta: ProductCardGenericCta? = null
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
+
     @Deprecated("replace with labelGroupList")
     var isProductPreOrder: Boolean = false
+
     @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
 
@@ -105,27 +109,27 @@ data class ProductCardModel (
     val showRibbon: Boolean
         get() = getLabelRibbon()?.title?.isNotEmpty() == true
 
-    val hasVideo : Boolean = customVideoURL.isNotBlank()
+    val hasVideo: Boolean = customVideoURL.isNotBlank()
 
     val discountPercentageInt: Int
         get() = discountPercentage.filter(Char::isDigit).toIntOrZero()
 
     @Deprecated("replace with LabelGroup")
     data class Label(
-            val position: String = "",
-            val title: String = "",
-            val type: String = ""
+        val position: String = "",
+        val title: String = "",
+        val type: String = ""
     )
 
     data class FreeOngkir(
-            val isActive: Boolean = false,
-            val imageUrl: String = ""
+        val isActive: Boolean = false,
+        val imageUrl: String = ""
     )
 
     data class ShopBadge(
         val isShown: Boolean = true,
         val imageUrl: String = "",
-        val title: String = "",
+        val title: String = ""
     )
 
     data class LabelGroup(
@@ -133,7 +137,7 @@ data class ProductCardModel (
         val title: String = "",
         val type: String = "",
         val imageUrl: String = "",
-        val styleList: List<Style> = listOf(),
+        val styleList: List<Style> = listOf()
     ) {
         fun isGimmick() = position == LABEL_GIMMICK
 
@@ -141,10 +145,10 @@ data class ProductCardModel (
     }
 
     data class LabelGroupVariant(
-            val typeVariant: String = "",
-            var title: String = "",
-            val type: String = "",
-            val hexColor: String = ""
+        val typeVariant: String = "",
+        var title: String = "",
+        val type: String = "",
+        val hexColor: String = ""
     ) {
         fun isColor() = typeVariant == TYPE_VARIANT_COLOR
         fun isSize() = typeVariant == TYPE_VARIANT_SIZE
@@ -152,7 +156,7 @@ data class ProductCardModel (
     }
 
     data class Variant(
-            val quantity: Int = 0,
+        val quantity: Int = 0
     )
 
     fun hasVariant(): Boolean {
@@ -164,9 +168,9 @@ data class ProductCardModel (
     }
 
     data class NonVariant(
-            val quantity: Int = 0,
-            internal val minQuantity: Int = 0,
-            internal val maxQuantity: Int = 0,
+        val quantity: Int = 0,
+        internal val minQuantity: Int = 0,
+        internal val maxQuantity: Int = 0
     ) {
         val minQuantityFinal = maxOf(minQuantity, MIN_QUANTITY_NON_VARIANT)
         val maxQuantityFinal = maxOf(maxQuantity, this.minQuantityFinal)
@@ -174,6 +178,28 @@ data class ProductCardModel (
         val quantityRange: IntRange
             get() = minQuantityFinal..maxQuantityFinal
     }
+
+    /**
+     * @property copyWriting text for the main button
+     * @property mainButtonVariant variant for the main button, value is UnifyButton.Variant
+     * @property mainButtonType type for the main button, value is UnifyButton.Type
+     * @property shouldShowSecondaryCta whether to show secondary CTA or not,
+     * secondary CTA is the smaller left one
+     * @property secondaryCtaIconResource icon resource Id for the secondary CTA
+     * @property secondaryCtaBackgroundColorToken background color for the secondary CTA
+     * @property secondaryCtaBorderColorToken border color for the secondary CTA
+     */
+    data class ProductCardGenericCta(
+        val copyWriting: String? = "",
+        val mainButtonVariant: Int = UnifyButton.Variant.GHOST,
+        val mainButtonType: Int = UnifyButton.Type.MAIN,
+        val shouldShowSecondaryCta: Boolean = false,
+        @IdRes
+        val secondaryCtaIconResource: Int? = null,
+        val secondaryCtaIconResourceColorToken: Int? = null,
+        val secondaryCtaBackgroundColorToken: Int? = null,
+        val secondaryCtaBorderColorToken: Int? = null
+    )
 
     fun shouldShowAddToCartNonVariantQuantity(): Boolean {
         return nonVariant?.quantity == 0
@@ -253,11 +279,11 @@ data class ProductCardModel (
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
 
-    fun willShowSalesAndRating(): Boolean{
+    fun willShowSalesAndRating(): Boolean {
         return countSoldRating.isNotEmpty() && getLabelIntegrity() != null
     }
 
-    fun willShowRating(): Boolean{
+    fun willShowRating(): Boolean {
         return countSoldRating.isNotEmpty()
     }
 
@@ -284,23 +310,23 @@ data class ProductCardModel (
     fun isShowLabelCampaign(): Boolean {
         val labelCampaign = getLabelCampaign()
 
-        return !isShowLabelBestSeller()
-                && labelCampaign != null
-                && labelCampaign.title.isNotEmpty()
-                && labelCampaign.imageUrl.isNotEmpty()
+        return !isShowLabelBestSeller() &&
+            labelCampaign != null &&
+            labelCampaign.title.isNotEmpty() &&
+            labelCampaign.imageUrl.isNotEmpty()
     }
 
     fun isShowLabelOverlay(): Boolean {
         val labelOverlay = getLabelOverlay()
 
-        return labelOverlay != null
-                && labelOverlay.title.isNotEmpty()
-                && (labelOverlay.imageUrl.isNotEmpty() || labelOverlay.type.isNotEmpty())
+        return labelOverlay != null &&
+            labelOverlay.title.isNotEmpty() &&
+            (labelOverlay.imageUrl.isNotEmpty() || labelOverlay.type.isNotEmpty())
     }
 
     fun isShowLabelGimmick() =
-            !isShowLabelBestSeller()
-                    && !isShowLabelCampaign()
+        !isShowLabelBestSeller() &&
+            !isShowLabelCampaign()
 
     fun willShowVariant(): Boolean {
         return labelGroupVariantList.isNotEmpty()
@@ -310,12 +336,12 @@ data class ProductCardModel (
         return labelGroupVariantList.any { it.isColor() }
     }
 
-    fun willShowFulfillment(): Boolean{
+    fun willShowFulfillment(): Boolean {
         val labelFulfillment = getLabelFulfillment()
 
-        return labelFulfillment != null
-                && labelFulfillment.title.isNotEmpty()
-                && labelFulfillment.imageUrl.isNotEmpty()
+        return labelFulfillment != null &&
+            labelFulfillment.title.isNotEmpty() &&
+            labelFulfillment.imageUrl.isNotEmpty()
     }
 
     fun isShowLabelCategory() = getLabelCategory()?.title?.isNotEmpty() == true
@@ -326,9 +352,9 @@ data class ProductCardModel (
 
     fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
-    fun willShowBigImage() : Boolean {
-        return productListType == ProductListType.LONG_IMAGE
-            || (productListType == ProductListType.PORTRAIT && isPortrait)
+    fun willShowBigImage(): Boolean {
+        return productListType == ProductListType.LONG_IMAGE ||
+            (productListType == ProductListType.PORTRAIT && isPortrait)
     }
 
     fun willShowButtonSeeOtherProduct() = seeOtherProductText.isNotEmpty()
@@ -336,23 +362,24 @@ data class ProductCardModel (
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
 
-        if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
+        if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant)) {
             return listOf()
+        }
 
         val colorVariantTaken = layoutStrategy.getLabelVariantColorCount(colorVariant)
         val sizeVariantTaken =
             layoutStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
 
         return colorVariant.take(colorVariantTaken) +
-                sizeVariant.take(sizeVariantTaken) +
-                customVariant
+            sizeVariant.take(sizeVariantTaken) +
+            customVariant
     }
 
     private fun isLabelVariantCountBelowMinimum(
-            colorVariant: List<LabelGroupVariant>,
-            sizeVariant: List<LabelGroupVariant>
-    ) = colorVariant.size < MIN_LABEL_VARIANT_COUNT
-            && sizeVariant.size < MIN_LABEL_VARIANT_COUNT
+        colorVariant: List<LabelGroupVariant>,
+        sizeVariant: List<LabelGroupVariant>
+    ) = colorVariant.size < MIN_LABEL_VARIANT_COUNT &&
+        sizeVariant.size < MIN_LABEL_VARIANT_COUNT
 
     private fun getSplittedLabelGroupVariant():
         Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
@@ -371,13 +398,12 @@ data class ProductCardModel (
                 element.isSize() -> {
                     val additionalSize = element.title.length + layoutStrategy.extraCharSpace
                     val isWithinCharLimit =
-                            (sizeVariantCount + additionalSize) <= layoutStrategy.sizeCharLimit
+                        (sizeVariantCount + additionalSize) <= layoutStrategy.sizeCharLimit
 
                     if (isWithinCharLimit) {
                         sizeVariant.add(element)
                         sizeVariantCount += additionalSize
-                    }
-                    else {
+                    } else {
                         hiddenSizeVariant++
                     }
                 }
@@ -396,7 +422,7 @@ data class ProductCardModel (
         if (hiddenSizeVariant <= 0) return
 
         val labelGroupCustomVariant = customVariant.getOrNull(0)
-                ?: LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "0")
+            ?: LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "0")
 
         val title = (labelGroupCustomVariant.title.toIntOrZero() + hiddenSizeVariant).toString()
 
@@ -423,6 +449,6 @@ data class ProductCardModel (
         ETA,
         BEST_SELLER,
         FIXED_GRID,
-        LIST_VIEW,
+        LIST_VIEW
     }
 }

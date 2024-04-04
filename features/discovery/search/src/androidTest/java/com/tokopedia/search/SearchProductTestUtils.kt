@@ -92,46 +92,11 @@ internal fun createInspirationCardListener(): InspirationCardListener {
     }
 }
 
-internal fun createBroadMatchListener(): BroadMatchListener {
-    return object: BroadMatchListener {
-        override fun onBroadMatchImpressed(
-            broadMatchDataView: BroadMatchDataView,
-            adapterPosition: Int
-        ) {}
-
-        override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
-        override fun onBroadMatchItemImpressed(
-            broadMatchItemDataView: BroadMatchItemDataView,
-            adapterPosition: Int
-        ) {}
-        override fun onBroadMatchItemClicked(
-            broadMatchItemDataView: BroadMatchItemDataView,
-            adapterPosition: Int
-        ) {}
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
-        override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
-
-        override val productCardLifecycleObserver: ProductCardLifecycleObserver?
-            get() = null
-    }
-}
-
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
         override fun onGlobalNavWidgetImpressed(globalNavDataView: GlobalNavDataView) {}
         override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {}
         override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {}
-    }
-}
-
-internal fun createBannerAdsListener(): BannerAdsListener {
-    return object: BannerAdsListener {
-        override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {}
-        override fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {}
-
-        override fun onBannerAdsImpression1PxListener(adapterPosition: Int, data: CpmDataView) {}
-
-        override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {}
     }
 }
 
