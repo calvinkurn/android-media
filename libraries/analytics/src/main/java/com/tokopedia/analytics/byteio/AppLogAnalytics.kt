@@ -207,7 +207,10 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        put(ENTER_METHOD, getLastDataBeforeCurrent(ENTER_METHOD))
+        val enterMethod = if(pageDataList.size > 1)
+            getLastDataBeforeCurrent(ENTER_METHOD)
+        else getLastData(ENTER_METHOD)
+        put(ENTER_METHOD, enterMethod)
     }
 
     fun lastTwoIsHavingHash(hash: Int): Boolean {
