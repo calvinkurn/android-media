@@ -347,8 +347,8 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 if (snappedPosition < FAKE_COUNT_PER_SIDE) {
                     val stepToOriginalStart = FAKE_COUNT_PER_SIDE - snappedPosition
                     val modulus = stepToOriginalStart % realItemSize
-                    val substractBy = if (modulus == 0) realItemSize else modulus
-                    val stepToCorrectIndex = stepToOriginalStart + realItemSize - substractBy
+                    val subtractBy = if (modulus == 0) realItemSize else modulus
+                    val stepToCorrectIndex = stepToOriginalStart + realItemSize - subtractBy
 
                     recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getTotalHorizontalOffset()), 0)
                     onWidgetSelected(snappedPosition + stepToCorrectIndex)
@@ -469,8 +469,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     private fun roughlyScrollTo(position: Int, onScrolled: () -> Unit) {
         binding.rvChannels.scrollToPosition(position)
         binding.rvChannels.post {
-            val firstItem = layoutManager.findFirstCompletelyVisibleItemPosition()
-            val view = binding.rvChannels.findViewHolderForAdapterPosition(firstItem)?.itemView ?: return@post
+            val view = binding.rvChannels.findViewHolderForLayoutPosition(position)?.itemView ?: return@post
             val scrollBy = ((2 * view.x + view.width) / 2 - binding.rvChannels.width / 2).toInt()
 
             binding.rvChannels.scrollBy(scrollBy, 0)
