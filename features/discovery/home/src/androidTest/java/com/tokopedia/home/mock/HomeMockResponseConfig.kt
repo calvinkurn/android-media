@@ -17,6 +17,7 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON_V2 = "getHomeIconV2"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
+        const val KEY_QUERY_DYNAMIC_POSITION_TARGETED_TICKER = "GetTargetedTicker"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER_V2 = "getHomeTickerV2"
         const val KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC = "add_to_cart_occ"
         const val KEY_CONTAINS_WIDGET_TAB = "widget_tab"
@@ -93,6 +94,12 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         addMockResponse(
             KEY_QUERY_DYNAMIC_POSITION_TICKER,
             getRawString(context, R.raw.response_mock_data_dynamic_position_ticker),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_QUERY_DYNAMIC_POSITION_TARGETED_TICKER,
+            getRawString(context, R.raw.response_mock_data_dyanmic_position_targeted_ticker),
             FIND_BY_CONTAINS
         )
 
