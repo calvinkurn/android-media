@@ -3,6 +3,7 @@ package com.tokopedia.media.loader.module.model
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.util.Log
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Key
@@ -18,13 +19,13 @@ import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylistParser
 import com.tokopedia.network.utils.ErrorHandler
+import java.lang.StringBuilder
 import java.net.HttpURLConnection
 import java.net.URL
 
 private const val SCHEME_HTTPS = "https"
 private const val M3U8_EXTENSION = ".m3u8"
 private const val M3U8_VIDEO_ID_QUERY_PARAM = "id"
-private const val M3U8_SEGMENT_URL_FORMAT = "%s://%s/%s/%s"
 private const val M3U8_UNABLE_FIND_SEGMENT_ERROR_FORMAT = "Unable to find first video segment URL for video with URL: %s"
 
 class M3U8ModelLoader : ModelLoader<String, Bitmap> {
@@ -173,8 +174,13 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
             val uri = Uri.parse(hlsPlaylist.baseUri)
             val scheme = uri.scheme.orEmpty()
             val host = uri.host.orEmpty()
-            val videoId = masterPlaylistUrl.getVideoID()
-            String.format(M3U8_SEGMENT_URL_FORMAT, scheme, host, videoId, segment.url)
+            val segmentUrl = StringBuilder()
+                .append(scheme)
+                .append("://")
+                .append(host)
+            uri.pathSegments.take(uri.pathSegments.size.dec()).forEach { segmentUrl.append("/$it") }
+            segmentUrl.append("/${segment.url}")
+            return segmentUrl.toString()
         }
     }
 }
