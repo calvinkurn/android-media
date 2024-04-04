@@ -38,7 +38,6 @@ class CategoryBestSellerViewHolder(itemView: View, val fragment: Fragment) : Abs
         linearLayoutManager.initialPrefetchItemCount = 4
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-        mDiscoveryRecycleAdapter.setHasStableIds(true)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
     }
 

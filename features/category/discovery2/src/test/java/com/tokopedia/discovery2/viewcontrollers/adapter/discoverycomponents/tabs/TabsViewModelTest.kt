@@ -4,10 +4,12 @@ import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.usecase.tabsusecase.DynamicTabsUseCase
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.OfTypeMatcher
@@ -60,7 +62,6 @@ class TabsViewModelTest {
 
         assert(viewModel.dynamicTabsUseCase === dynamicTabsUseCase)
     }
-
 
     @Test
     fun `test for position passed`() {
@@ -148,8 +149,7 @@ class TabsViewModelTest {
     /**************************** test for updateTabItems() *******************************************/
     @Test
     fun `Test for updateTabItems when background equals plain`() {
-        val tempProperties = Properties(background = "plain")
-        every { componentsItem.properties } returns tempProperties
+        every { componentsItem.name } returns ComponentNames.PlainTab.componentName
         val componentItemList = mockk<ArrayList<ComponentsItem>>(relaxed = true)
         every { componentsItem.getComponentsItem() } returns componentItemList
 
@@ -288,6 +288,23 @@ class TabsViewModelTest {
         assert(viewModel.isFromCategory())
         every { componentsItem.isFromCategory } returns false
         assert(!viewModel.isFromCategory())
+    }
+
+    /**************************** test for selectTab() *******************************************/
+    @Test
+    fun `given invalid position should not post value to redirect to other tab`() {
+        val position = (Int.MIN_VALUE..0).random()
+        viewModel.selectTab(position)
+
+        assert(viewModel.redirectToOther().value == null)
+    }
+
+    @Test
+    fun `given valid position should post position value`() {
+        val position = (Int.ONE..Int.MAX_VALUE).random()
+        viewModel.selectTab(position)
+
+        assert(viewModel.redirectToOther().value == position.dec())
     }
 
 

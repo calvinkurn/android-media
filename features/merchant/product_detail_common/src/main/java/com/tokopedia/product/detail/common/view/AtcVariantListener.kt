@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.view
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.product.detail.common.VariantConstant.IGNORE_STATE
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 
@@ -21,4 +22,6 @@ interface AtcVariantListener {
     fun onClickRefresh() {}
     fun hideVariantName(): Boolean = false
     fun shouldHideTextHabis(): Boolean = false
+
+    fun onProductImageChanged(container: ImageView) {}
 }

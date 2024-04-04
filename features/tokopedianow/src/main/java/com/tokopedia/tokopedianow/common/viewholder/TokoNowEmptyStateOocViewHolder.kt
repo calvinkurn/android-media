@@ -27,6 +27,7 @@ class TokoNowEmptyStateOocViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_empty_state_ooc
         const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
+        const val SOURCE = "tokonow"
     }
 
     private var binding: ItemTokopedianowEmptyStateOocBinding? by viewBinding()

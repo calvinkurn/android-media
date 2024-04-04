@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -172,6 +173,7 @@ class ProductBundlingViewModelTest {
     }
 
     @Test
+    @Ignore("Flaky test case https://jenkins-android.tokopedia.net/job/Webhook-UnitTest/21639/console")
     fun `test for fetchProductBundlingPaginatedData returns true`() {
         viewModel.productBundlingUseCase = productBundlingUseCase
         val list = ArrayList<DataItem>()
