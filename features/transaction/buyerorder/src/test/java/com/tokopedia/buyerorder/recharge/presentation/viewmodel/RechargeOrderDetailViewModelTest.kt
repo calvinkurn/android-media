@@ -16,10 +16,14 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -30,11 +34,15 @@ import org.junit.runners.JUnit4
 /**
  * @author by furqan on 08/11/2021
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class RechargeOrderDetailViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: RechargeOrderDetailViewModel
@@ -55,7 +63,7 @@ class RechargeOrderDetailViewModelTest {
             bestSellerMapper,
             recommendationUseCase,
             rechargeSetFailUseCase,
-            dispatcher
+            testCoroutineRule.dispatchers
         )
     }
 
@@ -453,7 +461,7 @@ class RechargeOrderDetailViewModelTest {
     }
 
     @Test
-    fun executeCancelOrder_shouldReturnSuccess() {
+    fun executeCancelOrder_shouldReturnSuccess() = runTest {
         // given
         coEvery {
             rechargeSetFailUseCase(any())
@@ -461,6 +469,7 @@ class RechargeOrderDetailViewModelTest {
 
         // when
         viewModel.executeCancelOrder(-1)
+        advanceUntilIdle()
 
         // then
         assert(viewModel.rechargeSetFailResult.value is Success)

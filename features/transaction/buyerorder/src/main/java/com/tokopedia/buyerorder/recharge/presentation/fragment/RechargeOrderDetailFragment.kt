@@ -24,6 +24,8 @@ import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailActionButtonSectionViewHolder.Companion.MAPPING_URI_CANCEL_ORDER
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailActionButtonSectionViewHolder.Companion.MAPPING_URI_VOID
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailActionButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailStaticButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.utils.RechargeOrderDetailAnalytics
@@ -213,24 +215,7 @@ class RechargeOrderDetailFragment :
     }
 
     override fun onCancelOrderButtonClicked() {
-        context?.let {
-            DialogUnify(
-                it,
-                DialogUnify.HORIZONTAL_ACTION,
-                DialogUnify.NO_IMAGE
-            ).apply {
-                setTitle(it.getString(R.string.recharge_order_detail_cancel_order_dialog_title))
-                setDescription(it.getString(R.string.recharge_order_detail_cancel_order_dialog_description))
-                setPrimaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_primary))
-                setPrimaryCTAClickListener {
-                    rechargeViewModel.executeCancelOrder(orderId.toIntOrZero())
-                }
-                setSecondaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_secondary))
-                setSecondaryCTAClickListener {
-                    dismiss()
-                }
-            }.show()
-        }
+        showCancelOrderDialog()
     }
 
     override fun onViewPrimaryButton(buttonName: String) {
@@ -358,10 +343,16 @@ class RechargeOrderDetailFragment :
                             primaryActionButton.name,
                             primaryActionButton.buttonType
                         )
-                        if (!primaryActionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
-                            onStickyActionButtonClicked(ctx, primaryActionButton.uri)
-                        } else {
-                            showVoidDialog()
+                        when {
+                            primaryActionButton.mappingUri.equals(MAPPING_URI_VOID, true) -> {
+                                showVoidDialog()
+                            }
+                            primaryActionButton.mappingUri.equals(MAPPING_URI_CANCEL_ORDER, true) -> {
+                                showCancelOrderDialog()
+                            }
+                            else -> {
+                                onStickyActionButtonClicked(ctx, primaryActionButton.uri)
+                            }
                         }
                     }
                 }
@@ -451,13 +442,19 @@ class RechargeOrderDetailFragment :
         })
 
         rechargeViewModel.rechargeSetFailResult.observe(viewLifecycleOwner) {
+            hideLoading()
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
-                    if (isSuccess && it.data.isNeedRefresh) {
-//                        it.data.isNeedRefresh = false
-                        rechargeViewModel.resetOrderDetailData()
-                        activity?.recreate()
+                    if (isSuccess) {
+                        if (it.data.isNeedRefresh) {
+                            it.data.isNeedRefresh = false
+                            rechargeViewModel.resetOrderDetailData()
+                            activity?.run {
+                                finish()
+                                startActivity(intent)
+                            }
+                        }
                     } else {
                         Toaster.build(
                             binding.root,
@@ -614,6 +611,29 @@ class RechargeOrderDetailFragment :
         }
     }
 
+    private fun showCancelOrderDialog() {
+        context?.let {
+            DialogUnify(
+                it,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            ).apply {
+                setTitle(it.getString(R.string.recharge_order_detail_cancel_order_dialog_title))
+                setDescription(it.getString(R.string.recharge_order_detail_cancel_order_dialog_description))
+                setPrimaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_primary))
+                setPrimaryCTAClickListener {
+                    showLoading()
+                    rechargeViewModel.executeCancelOrder(orderId.toIntOrZero())
+                    dismiss()
+                }
+                setSecondaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_secondary))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
+        }
+    }
+
     companion object {
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         private const val EXTRA_ORDER_CATEGORY = "EXTRA_ORDER_CATEGORY"
@@ -627,7 +647,6 @@ class RechargeOrderDetailFragment :
         private const val IDEM_POTENCY_KEY = "idem_potency_key"
 
         private const val INVOICE_NUMBER_LABEL = "Nomor Invoice"
-        private const val MAPPING_URI_VOID = "void"
 
         fun getInstance(
             orderId: String,

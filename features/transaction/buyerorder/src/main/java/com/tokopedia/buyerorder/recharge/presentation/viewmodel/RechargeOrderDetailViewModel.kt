@@ -21,6 +21,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -147,6 +148,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
             runCatching {
                 val result = rechargeSetFailUseCase(orderId)
                 result.isNeedRefresh = true
+                delay(500)
                 _rechargeSetFailResult.postValue(Success(result))
             }.onFailure {
                 _rechargeSetFailResult.postValue(Fail(it))
