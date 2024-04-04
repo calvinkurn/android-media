@@ -345,12 +345,13 @@ class ReadReviewHeader @JvmOverloads constructor(
         }
     }
 
-    fun updateSelectedVariant(count:Int){
-        if (count > 0){
-            filterVariantItem?.title = "$count Varian"
+    fun updateSelectedVariant(count: Int) {
+        val title = context.getString(R.string.review_reading_filter_all_variants)
+        if (count > 0) {
+            filterVariantItem?.title = "$count $title"
             filterVariantItem?.type = ChipsUnify.TYPE_SELECTED
-        }else{
-            filterVariantItem?.title = "Varian"
+        } else {
+            filterVariantItem?.title = title
             filterVariantItem?.type = ChipsUnify.TYPE_NORMAL
         }
     }

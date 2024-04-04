@@ -13,6 +13,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
 
     companion object {
+        const val TAG = "VariantFilterBottomSheet Tag"
 
         fun instance(
             listener: ReadReviewFilterBottomSheetListener,

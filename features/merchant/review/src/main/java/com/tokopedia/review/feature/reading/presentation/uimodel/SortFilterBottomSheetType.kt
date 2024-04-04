@@ -4,5 +4,4 @@ sealed class SortFilterBottomSheetType {
     object RatingFilterBottomSheet: SortFilterBottomSheetType()
     object TopicFilterBottomSheet: SortFilterBottomSheetType()
     object SortBottomSheet: SortFilterBottomSheetType()
-    object TestVariantFilterBottomSheet: SortFilterBottomSheetType()
 }

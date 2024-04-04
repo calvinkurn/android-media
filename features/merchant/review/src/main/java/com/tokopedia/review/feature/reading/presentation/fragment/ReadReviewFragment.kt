@@ -548,7 +548,7 @@ open class ReadReviewFragment :
             this,
             filterVariants,
             pairedOptions
-        ).show(parentFragmentManager, "Test")
+        ).show(parentFragmentManager, VariantFilterBottomSheet.TAG)
     }
 
     override fun onFilterSubmitted(

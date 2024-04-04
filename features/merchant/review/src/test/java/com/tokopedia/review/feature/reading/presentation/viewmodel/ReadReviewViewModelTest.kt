@@ -885,6 +885,34 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         coVerify(exactly = 2) { getProductRatingAndTopicsUseCase.executeOnBackground() }
     }
 
+    @Test
+    fun `update variant filter when enabled`(){
+        val expectedResponse = ProductReviewList()
+
+        val variantFilter = ""
+        val opt = ""
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setVariantFilter(variantFilter, opt, true)
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+    }
+
+    @Test
+    fun `update variant filter when disabled`(){
+        val expectedResponse = ProductReviewList()
+
+        val variantFilter = "variant_l1=Hitam"
+        val opt = ""
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setVariantFilter(variantFilter, opt, true)
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+    }
+
     private fun onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse: ProductRatingAndTopic) {
         coEvery { getProductRatingAndTopicsUseCase.executeOnBackground() } returns expectedResponse
     }
