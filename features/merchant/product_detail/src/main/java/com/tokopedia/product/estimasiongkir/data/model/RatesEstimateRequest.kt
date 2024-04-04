@@ -30,7 +30,7 @@ data class RatesEstimateRequest(
     val productMetadata: String = "",
     val categoryId: String = "",
     val isScheduled: Boolean = false,
-    val weightWording: String
+    val weightWording: String = ""
 ) {
     companion object {
         const val KG_TEXT = "kilo"
