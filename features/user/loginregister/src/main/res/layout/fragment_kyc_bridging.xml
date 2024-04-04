@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/toolbar_shop_creation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_landing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mulai berjualan di Tokopedia!"
+            android:textColor="@color/Unify_NN950_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_1"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="10dp"
+            android:id="@+id/text_view_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jenis toko apa yang ingin kamu buat?"
+            android:textColor="@color/Unify_NN950_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_landing"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/normal_shop_card"
+            android:padding="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="90dp"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_desc">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imageUnify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/img_shop_icon_normal" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/typography2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Toko Perorangan"
+                    app:layout_constraintStart_toEndOf="@+id/imageUnify"
+                    app:layout_constraintTop_toTopOf="@+id/imageUnify"
+                    app:typographyWeight="bold"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Buka toko gratis, mudah dan cepat, hanya dengan verifikasi e-KTP."
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageUnify"
+                    app:layout_constraintTop_toBottomOf="@+id/typography2"
+                    app:typographyType="paragraph_3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.tokopedia.unifycomponents.CardUnify2>
+
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:layout_marginTop="20dp"
+            android:id="@+id/official_shop_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:maxHeight="90dp"
+            app:layout_constraintTop_toBottomOf="@+id/normal_shop_card"
+            tools:layout_editor_absoluteX="16dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imageUnify2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/img_official_store" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/typography3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Official Store"
+                    app:layout_constraintStart_toEndOf="@+id/imageUnify2"
+                    app:layout_constraintTop_toTopOf="@+id/imageUnify2"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="Toko dengan layanan eksklusif yang memiliki dokumen SIUP/NIB, KTP dan NPWP. "
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageUnify2"
+                    app:layout_constraintTop_toBottomOf="@+id/typography3"
+                    app:typographyType="paragraph_3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.tokopedia.unifycomponents.CardUnify2>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_continue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lanjut"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -29,11 +29,11 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
 import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
-import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
-import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
+import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
@@ -119,6 +119,14 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             else -> {
                 hideLoading()
                 super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+    }
+
+    private fun openKycBridgePage() {
+        activity?.let {
+            if (it is LandingShopCreationActivity) {
+                it.switchToKycBridgeFragment()
             }
         }
     }
@@ -255,7 +263,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 } else {
                     if (userSession.hasShop())
                         shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
-                    else goToShopName()
+                    else {
+                        openKycBridgePage()
+//                        goToShopName()
+                    }
                 }
             } else {
                 goToPhoneShopCreation(userProfileCompletionData.phone)
@@ -412,6 +423,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         private const val REQUEST_CODE_NAME_SHOP_CREATION = 100
         private const val REQUEST_CODE_PHONE_SHOP_CREATION = 101
+        private const val REQUEST_CODE_FORCE_KYC = 102
 
         private const val DEFAULT_SHOP_ID_NOT_OPEN = "0"
 

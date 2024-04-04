@@ -20,4 +20,18 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
         }
         return LandingShopCreationFragment.createInstance(bundle)
     }
+
+    fun switchToKycBridgeFragment() {
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(
+                com.tokopedia.loginregister.R.id.parent_view,
+                KycBridgingFragment.createInstance(bundle),
+                "kyc_bridge_tag"
+            )
+            .commit()
+    }
 }
