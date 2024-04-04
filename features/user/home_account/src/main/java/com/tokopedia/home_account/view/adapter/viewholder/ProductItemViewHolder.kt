@@ -66,7 +66,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventRealtimeClick(
                 itemView.context,
-                PageName.REWARD,
+                PageName.ACCOUNT,
                 AdsLogRealtimeClickModel(
                     refer,
                     // todo this value from BE
@@ -85,7 +85,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
-                PageName.REWARD,
+                PageName.ACCOUNT,
                 AdsLogShowModel(
                     // todo this value from BE
                     0,
@@ -103,7 +103,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
-                PageName.REWARD,
+                PageName.ACCOUNT,
                 AdsLogShowOverModel(
                     // todo this value from BE
                     0,

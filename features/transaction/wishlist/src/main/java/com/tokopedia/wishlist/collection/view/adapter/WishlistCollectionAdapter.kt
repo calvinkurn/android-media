@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
@@ -43,6 +44,8 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     private var allCollectionView: View? = null
     private var firstCollectionItemView: View? = null
     private var carouselItems = arrayListOf<Any>()
+
+    private var recyclerView: RecyclerView? = null
 
     companion object {
         const val LAYOUT_COLLECTION_TICKER = 0
@@ -201,6 +204,30 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     (holder as WishlistCollectionDividerViewHolder).bind()
                 }
             }
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView = null
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewAttachedToWindow(recyclerView)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewDetachedFromWindow(recyclerView)
         }
     }
 

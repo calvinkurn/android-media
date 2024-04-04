@@ -154,6 +154,7 @@ object PageName {
     const val EXTERNAL_PROMO = "external_promo"
     const val RECOMMENDATION = "recommendation"
     const val REWARD = "reward"
+    const val ACCOUNT = "account"
 }
 
 object QuitType {
