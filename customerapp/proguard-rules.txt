@@ -253,8 +253,10 @@
 -keep class com.tokopedia.dynamicfeatures.DFInstallerFragment
 -keep class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
 -keep class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
--keep class com.tokopedia.darkmodeconfig.model.UiMode
--keep class * extends com.tokopedia.darkmodeconfig.model.UiMode
+-keep class com.tokopedia.darkmodeconfig.model.UiMode { *; }
+-keepclassmembers class com.tokopedia.darkmodeconfig.model.UiMode$Light { *; }
+-keepclassmembers class com.tokopedia.darkmodeconfig.model.UiMode$Dark { *; }
+-keepclassmembers class com.tokopedia.darkmodeconfig.model.UiMode$FollowSystemSetting { *; }
 
 # feed_shop
 -keepnames class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
