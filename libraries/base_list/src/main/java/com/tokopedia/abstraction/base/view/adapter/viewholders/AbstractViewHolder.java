@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.adapter.IAdsViewHolderTrackListener;
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener;
 
 import java.util.List;
 

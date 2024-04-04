@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -231,6 +232,10 @@ open class HomeAccountUserFragment :
 
     private val startEditProfileForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
         viewModel.refreshUserProfile(isUpdateLayout = true)
+    }
+
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
     }
 
     override fun getScreenName(): String = "homeAccountUserFragment"
@@ -1145,6 +1150,7 @@ open class HomeAccountUserFragment :
     private fun setupList() {
         binding?.homeAccountUserFragmentRv?.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding?.homeAccountUserFragmentRv?.addOnScrollListener(percentageScrollListener)
         binding?.homeAccountUserFragmentRv?.adapter = adapter
         binding?.homeAccountUserFragmentRv?.isNestedScrollingEnabled = false
     }

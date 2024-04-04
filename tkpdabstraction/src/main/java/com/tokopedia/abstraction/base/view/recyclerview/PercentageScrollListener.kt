@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.adapter.adapter
+package com.tokopedia.abstraction.base.view.recyclerview
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.GridLayoutManager
@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import kotlin.math.roundToInt
 
 open class PercentageScrollListener : OnScrollListener() {
@@ -49,7 +50,8 @@ open class PercentageScrollListener : OnScrollListener() {
                 val totalArea = view.width * view.height
                 val visibleAreaPercentage = ((visibleArea.toFloat() / totalArea) * 100).roundToInt()
 
-                val viewHolder = recycler.findViewHolderForAdapterPosition(pos) as? IAdsViewHolderTrackListener ?: continue
+                val viewHolder = recycler.findViewHolderForAdapterPosition(pos) as? IAdsViewHolderTrackListener
+                    ?: continue
                 viewHolder.setVisiblePercentage(visibleAreaPercentage)
             }
         }
