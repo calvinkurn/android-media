@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -345,7 +346,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
 
-        activity?.let { MapsInitializer.initialize(it) }
+        activity?.let { MapsInitializer.initialize(requireActivity()) }
 
         moveMap(
             getLatLng(viewModel.uiModel.lat, viewModel.uiModel.long)
@@ -644,7 +645,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
+    private fun getLocation(looper: Looper? = Looper.myLooper()) {
         showLoading()
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
@@ -656,11 +657,13 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     )
                 }
             } else {
-                fusedLocationClient?.requestLocationUpdates(
-                    AddNewAddressUtils.getLocationRequest(),
-                    locationCallback,
-                    null
-                )
+                looper?.let {
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        locationCallback,
+                        looper
+                    )
+                }
             }
         }
     }

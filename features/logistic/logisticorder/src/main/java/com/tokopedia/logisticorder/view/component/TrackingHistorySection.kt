@@ -72,7 +72,9 @@ fun TrackingHistoryItem(
     isLast: Boolean,
     seeProofOfDelivery: (proof: ProofModel) -> Unit
 ) {
-    ConstraintLayout {
+    ConstraintLayout(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         val (day, time, description, courier, circle, line, pod, endSpacing) = createRefs()
         val circleColor = if (isFirst) NestTheme.colors.GN._500 else NestTheme.colors.NN._50
         Box(
@@ -93,11 +95,12 @@ fun TrackingHistoryItem(
         }
         NestTypography(
             modifier = Modifier
-                .fillMaxWidth()
                 .constrainAs(day) {
                     start.linkTo(circle.end, margin = 8.dp)
+                    end.linkTo(time.start)
                     top.linkTo(circle.top)
                     bottom.linkTo(circle.bottom)
+                    width = Dimension.fillToConstraints
                 },
             text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", trackHistoryModel.date),
             textStyle = NestTheme.typography.heading5.copy(color = if (isFirst) NestTheme.colors.GN._500 else NestTheme.colors.NN._950)
@@ -113,10 +116,11 @@ fun TrackingHistoryItem(
 
         NestTypography(
             modifier = Modifier
-                .fillMaxWidth()
                 .constrainAs(description) {
+                    end.linkTo(parent.end)
                     start.linkTo(day.start)
                     top.linkTo(day.bottom, margin = 5.dp)
+                    width = Dimension.fillToConstraints
                 }
                 .tag("tracking_history"),
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950),
@@ -131,6 +135,8 @@ fun TrackingHistoryItem(
                 .fillMaxWidth()
                 .constrainAs(courier) {
                     start.linkTo(day.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
                     top.linkTo(description.bottom, margin = 5.dp)
                     visibility =
                         if (trackHistoryModel.partnerName.isNotEmpty()) Visibility.Visible else Visibility.Gone
@@ -255,7 +261,7 @@ private fun TrackingHistoryNormalPreview() {
             TrackHistoryModel(
                 dateTime = "2021-11-12 22:38:55",
                 date = "2021-11-12",
-                status = "Pesanan dalam perjalanan",
+                status = "Kurir Toped sudah ditugaskan dan pesananan akan segera diantar ke pembeli",
                 city = "Bandung",
                 time = "22:38:55",
                 partnerName = "JNT",
@@ -264,7 +270,7 @@ private fun TrackingHistoryNormalPreview() {
             TrackHistoryModel(
                 dateTime = "2021-11-12 22:38:55",
                 date = "2021-11-12",
-                status = "Pesanan dalam perjalanan",
+                status = "Pesanan sampai di sorting center JAKARTA SELATAN HUB  ",
                 city = "Bandung",
                 time = "22:38:55",
                 partnerName = "JNT"
@@ -272,7 +278,7 @@ private fun TrackingHistoryNormalPreview() {
             TrackHistoryModel(
                 dateTime = "2021-11-10 22:38:55",
                 date = "2021-11-10",
-                status = "Pesanan telah di pickup",
+                status = "Pesanan dalam perjalanan",
                 city = "Surabaya",
                 time = "22:38:55"
             )
