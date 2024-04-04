@@ -30,48 +30,23 @@ open class PercentageScrollListener : OnScrollListener() {
         } ?: return
 
         val globalVisibleRect = Rect()
-//        val itemVisibleRect = Rect()
 
         recycler.getGlobalVisibleRect(globalVisibleRect)
 
         for (pos in firstPosition..lastPosition) {
-            val view = layoutManager?.findViewByPosition(pos)
-//            if (view != null && view.getGlobalVisibleRect(itemVisibleRect)) {
-//
-//                val viewVisibleSize = view.width * view.height
-//
-//                val heightVisibility = if (itemVisibleRect.bottom >= globalVisibleRect.bottom) {
-//                    val visibleHeight = globalVisibleRect.bottom - itemVisibleRect.top
-//                    Math.min(visibleHeight.toFloat() / view.height, 0f)
-//                } else {
-//                    val visibleHeight = itemVisibleRect.bottom - globalVisibleRect.top
-//                    Math.min(visibleHeight.toFloat() / view.height, 0f)
-//                }
-//
-//                val widthVisibility = if (itemVisibleRect.right >= globalVisibleRect.right) {
-//                    val visibleWidth = globalVisibleRect.right - itemVisibleRect.left
-//                    Math.min(visibleWidth.toFloat() / view.width, 0f)
-//                } else {
-//                    val visibleWidth = itemVisibleRect.right - globalVisibleRect.left
-//                    Math.min(visibleWidth.toFloat() / view.width, 0f)
-//                }
-//
-//                val viewHolder = recycler.findViewHolderForAdapterPosition(pos) as AbstractViewHolder<*>
-//                viewHolder.setVisibilityExtent(heightVisibility)
-//            }
+            val view = layoutManager?.findViewByPosition(pos) ?: continue
 
-            if (view != null) {
-                val itemVisibleRect = Rect()
-                if (view.getGlobalVisibleRect(itemVisibleRect)) {
-                    val intersectionRect = Rect()
-                    if (intersectionRect.setIntersect(globalVisibleRect, itemVisibleRect)) {
-                        val visibleArea = intersectionRect.width() * intersectionRect.height()
-                        val totalArea = view.width * view.height
-                        val visibleAreaPercentage = ((visibleArea.toFloat() / totalArea) * 100).roundToInt()
-                        val viewHolder = recycler.findViewHolderForAdapterPosition(pos) as? IAdsViewHolderTrackListener
-                        viewHolder?.setVisiblePercentage(visibleAreaPercentage)
-                    }
-                }
+            val itemVisibleRect = Rect()
+            if (view.getGlobalVisibleRect(itemVisibleRect)) {
+                val visibleWidth = minOf(itemVisibleRect.right, globalVisibleRect.right) - maxOf(itemVisibleRect.left, globalVisibleRect.left)
+                val visibleHeight = minOf(itemVisibleRect.bottom, globalVisibleRect.bottom) - maxOf(itemVisibleRect.top, globalVisibleRect.top)
+                val visibleArea = maxOf(0, visibleWidth) * maxOf(0, visibleHeight)
+
+                val totalArea = view.width * view.height
+                val visibleAreaPercentage = ((visibleArea.toFloat() / totalArea) * 100).roundToInt()
+
+                val viewHolder = recycler.findViewHolderForAdapterPosition(pos) as? IAdsViewHolderTrackListener ?: continue
+                viewHolder.setVisiblePercentage(visibleAreaPercentage)
             }
         }
     }
