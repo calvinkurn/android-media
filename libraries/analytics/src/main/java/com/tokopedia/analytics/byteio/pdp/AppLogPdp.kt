@@ -228,7 +228,10 @@ object AppLogPdp {
                 it.addTrackId()
                 it.put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
                 it.addEntranceForm()
-                it.addEntranceInfo()
+                it.put(
+                    AppLogParam.ENTRANCE_INFO,
+                    AppLogAnalytics.getEntranceInfoJsonForCheckoutOcc()
+                )
                 it.addSourcePageType()
             }
             it.addPage()

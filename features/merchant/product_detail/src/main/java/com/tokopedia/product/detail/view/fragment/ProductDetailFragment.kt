@@ -2963,7 +2963,8 @@ open class ProductDetailFragment :
             cartItemId = cartId
         }
         if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+//            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
+            ) {
             AppLogPdp.sendConfirmCartResult(model)
         }
     }
