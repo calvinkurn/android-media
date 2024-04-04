@@ -264,8 +264,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     if (userSession.hasShop())
                         shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
                     else {
-                        openKycBridgePage()
-//                        goToShopName()
+                        goToShopName()
                     }
                 }
             } else {
@@ -358,12 +357,21 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToShopName() {
-        activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
-            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            it.startActivity(intent)
-            it.finish()
+        // Force user to go to kyc flow
+        if (isForceKycEnabkled()) {
+            openKycBridgePage()
+        } else {
+            activity?.let {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                it.startActivity(intent)
+                it.finish()
+            }
         }
+    }
+
+    private fun isForceKycEnabkled(): Boolean {
+        return true
     }
 
     private fun goToShopLogistic() {

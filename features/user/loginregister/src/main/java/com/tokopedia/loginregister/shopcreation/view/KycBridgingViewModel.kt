@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
+import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
+import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class KycBridgingViewModel @Inject constructor(
@@ -20,6 +23,7 @@ class KycBridgingViewModel @Inject constructor(
     private val updateUserProfileUseCase: UpdateUserProfileUseCase,
     private val getProfileUseCase: GetUserInfoAndSaveSessionUseCase,
     private val shopInfoUseCase: ShopInfoUseCase,
+    private val projectInfoUseCase: ProjectInfoUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ShopCreationViewModel(
     registerUseCase,
@@ -35,11 +39,22 @@ class KycBridgingViewModel @Inject constructor(
     val selectedShopType: LiveData<Int>
         get() = _selectedShopType
 
+    private val _projectInfo = MutableLiveData<ProjectInfoResult>()
+    val projectInfo: LiveData<ProjectInfoResult>
+        get() = _projectInfo
+
     fun setSelectedShopType(int: Int) {
         _selectedShopType.value = int
     }
 
     fun checkKycStatus() {
-
+        launch {
+            try {
+                val resp = projectInfoUseCase(10)
+                _projectInfo.value = resp
+            } catch (e: Exception) {
+                _projectInfo.value = ProjectInfoResult.Failed(e)
+            }
+        }
     }
 }

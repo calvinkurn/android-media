@@ -1,15 +1,19 @@
 package com.tokopedia.loginregister.shopcreation.view.landingshop
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.unifycomponents.CardUnify2
@@ -90,6 +94,44 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     // Handle Error
                 }
             }
+        }
+
+        viewModel.projectInfo.observe(viewLifecycleOwner) {
+            when (it) {
+                is ProjectInfoResult.Verified -> {
+                    gotoCreateShop()
+                }
+                is ProjectInfoResult.NotVerified -> {
+                    enterKycFlow()
+                }
+                is ProjectInfoResult.Failed -> {
+                    handleApiError()
+                }
+                else -> {
+                    gotoStatusPage()
+                }
+            }
+        }
+    }
+
+    private fun handleApiError() {
+
+    }
+
+    private fun enterKycFlow() {
+
+    }
+
+    private fun gotoStatusPage() {
+
+    }
+
+    private fun gotoCreateShop() {
+        activity?.let {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            it.startActivity(intent)
+            it.finish()
         }
     }
 
