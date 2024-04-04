@@ -73,10 +73,6 @@ class GetShopReviewListUseCase @Inject constructor(
                   variantProductFailed
                   productFailed
                 }
-                variantFilter {
-                  isUnavailable
-                  ticker
-                }
               }
             }
         """
