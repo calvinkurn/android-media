@@ -120,24 +120,21 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         val startPosition = adapter?.items?.size.orZero()
-        var itemCount = Int.ZERO
         this.cursor = cursor
         data.forEach { result ->
             if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT)) {
                 adapter?.items?.add(EditNegKeywordItemViewModel(result))
-                itemCount++
                 originalKeyList.add(result.tag)
             }
         }
         if (adapter?.items?.isEmpty() == true) {
             adapter?.items?.add(EditNegKeywordEmptyViewModel())
-            itemCount++
             setVisibilityOperation(View.GONE)
         } else {
             setVisibilityOperation(View.VISIBLE)
         }
         updateItemCount()
-        adapter?.notifyItemRangeInserted(startPosition, itemCount)
+        adapter?.notifyItemRangeInserted(startPosition, adapter?.items?.size.orZero())
         recyclerviewScrollListener.updateStateAfterGetData()
     }
 
