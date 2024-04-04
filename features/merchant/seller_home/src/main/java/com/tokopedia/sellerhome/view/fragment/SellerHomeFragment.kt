@@ -1507,12 +1507,12 @@ class SellerHomeFragment :
     }
 
     private fun setOnSuccessGetShopLocation(data: ShippingLoc) {
-//        if (data.provinceID == PROVINCE_ID_EMPTY) {
-//            activity?.let {
-//                RouteManager.route(it, ApplinkConst.CREATE_SHOP)
-//                it.finish()
-//            }
-//        }
+        if (data.provinceID == PROVINCE_ID_EMPTY) {
+            activity?.let {
+                RouteManager.route(it, ApplinkConst.CREATE_SHOP)
+                it.finish()
+            }
+        }
     }
 
     private fun observeWidgetLayoutLiveData() {
