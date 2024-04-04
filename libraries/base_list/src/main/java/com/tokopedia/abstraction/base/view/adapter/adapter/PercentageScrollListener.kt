@@ -29,6 +29,10 @@ open class PercentageScrollListener : OnScrollListener() {
             else -> (layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
         } ?: return
 
+        if (firstPosition == RecyclerView.NO_POSITION || lastPosition == RecyclerView.NO_POSITION) {
+            return
+        }
+
         val globalVisibleRect = Rect()
 
         recycler.getGlobalVisibleRect(globalVisibleRect)

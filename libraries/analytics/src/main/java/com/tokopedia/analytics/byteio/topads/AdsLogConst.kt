@@ -57,6 +57,8 @@ object AdsLogConst {
         const val PRODUCT_SEARCH = "product search"
         const val PDP_SEARCH = "pdp search"
         const val STORE_SEARCH = "store search"
+        const val DISCOVERY_SEARCH = "discovery search"
+        const val FIND_SEARCH = "find search"
     }
     object EnterFrom {
         const val MALL = "mall"

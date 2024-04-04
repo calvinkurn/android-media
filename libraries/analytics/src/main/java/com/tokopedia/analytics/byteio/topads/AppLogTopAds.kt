@@ -148,11 +148,24 @@ object AppLogTopAds {
 
     fun getEnterFrom(): String {
         val twoLastFragmentName = AppLogAnalytics.getTwoLastPage()
-        return if (twoLastFragmentName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+        return if (twoLastFragmentName == PageName.HOME || twoLastFragmentName == PageName.SEARCH_RESULT) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
     }
 
     private fun JSONObject.putEnterFrom(enterFrom: String) {
         put(AdsLogConst.Param.ENTER_FROM, enterFrom)
+    }
+
+    fun getChannelName(): String {
+        return when (AppLogAnalytics.getTwoLastPage()) {
+            PageName.HOME, PageName.SEARCH_RESULT -> AdsLogConst.Channel.PRODUCT_SEARCH
+            PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
+            //todo need to make store that means whether official store or shop page
+            PageName.OFFICIAL_STORE -> AdsLogConst.Channel.STORE_SEARCH
+            //todo need to implement fragment page name using AppLogFragmentInterface in discovery and find page
+            PageName.DISCOVERY -> AdsLogConst.Channel.DISCOVERY_SEARCH
+            PageName.FIND_PAGE -> AdsLogConst.Channel.FIND_SEARCH
+            else -> ""
+        }
     }
 
     // todo need to confirm for this value

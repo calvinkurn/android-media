@@ -145,6 +145,8 @@ object PageName {
     const val NOTIFICATION = "notification"
     const val PDP = "product_detail"
     const val SEARCH_RESULT = "search_result"
+    const val DISCOVERY = "discovery"
+    const val FIND_PAGE = "find_page"
     const val CART = "cart"
     const val SHOP = "shop"
     const val SKU = "sku"
