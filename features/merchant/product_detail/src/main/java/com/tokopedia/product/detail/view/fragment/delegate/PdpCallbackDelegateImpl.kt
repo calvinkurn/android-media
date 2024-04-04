@@ -26,4 +26,5 @@ class PdpCallbackDelegateImpl : PdpCallbackDelegate {
     //Fragment Level
     override val productRecomm by lazy { PartialRecommendationManager(mediator = _mediator) }
 
+    override val atcAnimation by lazy { AtcAnimationManager(mediator = _mediator) }
 }

@@ -45,7 +45,6 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         val uri = intent.data
         val bundle = intent.extras
         val productId = if (uri != null) {
@@ -70,13 +69,13 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface {
             paramsData.shopId = shopId
             paramsData.cacheId = bundle.getString(ATC_VARIANT_CACHE_ID, "") ?: ""
             paramsData.dismissAfterTransaction = intent
-                    .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
+                .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
             paramsData.saveAfterClose = intent
-                    .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
+                .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
             paramsData.extParams = intent
-                    .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
+                .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
             paramsData.showQtyEditor = intent
-                    .getBooleanExtra(AtcVariantHelper.KEY_SHOW_QTY_EDITOR, false)
+                .getBooleanExtra(AtcVariantHelper.KEY_SHOW_QTY_EDITOR, false)
         }
 
         super.onCreate(savedInstanceState)
@@ -98,7 +97,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface {
 
     private fun observeData() {
         sharedViewModel.activityResult.observe(this) {
-            val cacheManager = SaveInstanceCacheManager(this, true)
+            val cacheManager = SaveInstanceCacheManager(applicationContext, true)
             val resultIntent = Intent().apply {
                 putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
             }
