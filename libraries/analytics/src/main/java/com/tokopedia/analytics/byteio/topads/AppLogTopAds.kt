@@ -152,7 +152,7 @@ object AppLogTopAds {
 
 
     fun getEnterFrom(): String {
-        val twoLastFragmentName = AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)
+        val twoLastFragmentName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
         return if (twoLastFragmentName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
     }
 
