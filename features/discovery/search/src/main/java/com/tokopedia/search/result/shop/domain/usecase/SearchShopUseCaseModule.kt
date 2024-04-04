@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.shop.domain.usecase
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -18,10 +19,13 @@ internal class SearchShopUseCaseModule {
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
-    fun provideSearchShopFirstPageUseCase(): UseCase<SearchShopModel> {
+    fun provideSearchShopFirstPageUseCase(
+        reimagineRollence: ReimagineRollence
+    ): UseCase<SearchShopModel> {
         return SearchShopFirstPageUseCase(
-                GraphqlCacheStrategy.Builder(CacheType.NONE).build(),
-                GraphqlInteractor.getInstance().graphqlRepository
+            GraphqlCacheStrategy.Builder(CacheType.NONE).build(),
+            GraphqlInteractor.getInstance().graphqlRepository,
+            reimagineRollence
         )
     }
 
