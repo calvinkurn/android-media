@@ -61,7 +61,7 @@ class HomeBannerFeedViewHolder(
             .asBitmap()
             .load(imageUrl)
             .dontAnimate()
-            .placeholder(topadssdkR.drawable.loading_page)
+            .placeholder(topadssdkR.drawable.loading_page_topads)
             .error(R.drawable.error_drawable)
             .into(binding.bannerImageView)
     }

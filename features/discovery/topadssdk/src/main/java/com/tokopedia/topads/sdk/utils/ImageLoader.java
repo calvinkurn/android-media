@@ -60,7 +60,7 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(product.getImage().getS_ecs())
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -85,7 +85,7 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(shop.getImageShop().getXsEcs())
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -107,7 +107,7 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(ecs)
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -128,7 +128,7 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(shop.getImageShop().getXsEcs())
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
