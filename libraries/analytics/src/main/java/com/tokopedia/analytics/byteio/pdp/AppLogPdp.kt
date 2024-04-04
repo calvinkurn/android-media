@@ -224,7 +224,7 @@ object AppLogPdp {
                 it.addEntranceForm()
                 it.put(
                     AppLogParam.ENTRANCE_INFO,
-                    AppLogAnalytics.getEntranceInfoJsonForCheckoutOcc()
+                    AppLogAnalytics.getEntranceInfoJsonForCheckoutOcc().toString()
                 )
                 it.addSourcePageType()
             } else {
