@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedplusR
+import com.tokopedia.content.common.R as contentcommonR
 
 internal class FeedSearchResultFragment @Inject constructor(
     private val viewModelFactoryCreator: FeedSearchResultViewModelFactory.Creator,
@@ -241,8 +243,11 @@ internal class FeedSearchResultFragment @Inject constructor(
                     errorSecondaryAction.show()
                     errorIllustration.loadImage(getString(feedplusR.string.feed_search_restricted_illustration))
 
-                    setActionClickListener {
-                        /** JOE TODO: handle this when restricted state from BE is ready */
+                    setSecondaryActionClickListener {
+                        val template = getString(contentcommonR.string.feed_webview_template)
+                        val link = getString(feedplusR.string.feed_content_tnc_link)
+
+                        router.route(requireContext(), template.format(ApplinkConst.WEBVIEW, link))
                     }
                 }
             }

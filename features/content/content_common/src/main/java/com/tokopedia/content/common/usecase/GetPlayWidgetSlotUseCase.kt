@@ -112,6 +112,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                     hash
                   }
                   meta {
+                    message
                     next_cursor
                     is_autoplay
                     max_autoplay_in_cell

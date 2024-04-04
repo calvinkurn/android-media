@@ -8,6 +8,7 @@ import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.presentation.FeedSearchResultViewModel
 import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
+import com.tokopedia.feedplus.browse.presentation.model.exception.RestrictedKeywordException
 import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
 import com.tokopedia.feedplus.data.FeedBrowseModelBuilder
@@ -251,8 +252,21 @@ class FeedSearchResultViewModelTest {
     }
 
     @Test
-    fun feedLocalSearchSRP_loadResult_restricted() {
-        /** JOE TODO: to be handled soon since BE is not ready */
+    fun feedLocalSearchSRP_loadResult_restricted() = runTestUnconfined {
+        /** Prepare */
+        coEvery { mockRepo.getWidgetContentSlot(any()) } throws RestrictedKeywordException()
+
+        val viewModel = getViewModel()
+
+        /** Test */
+        viewModel.submitAction(FeedSearchResultAction.LoadResult)
+
+        /** Verify */
+        viewModel.uiState.value.apply {
+            searchKeyword.assertEqualTo(mockSearchKeyword)
+            pageState.assertEqualTo(FeedSearchResultPageState.Restricted)
+            hasNextPage.assertTrue()
+        }
     }
 
     private fun TestScope.getViewModel(): FeedSearchResultViewModel {
