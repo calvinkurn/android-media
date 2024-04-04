@@ -32,6 +32,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.loadImage
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -238,8 +239,11 @@ internal class FeedSearchResultFragment @Inject constructor(
 
                     errorAction.hide()
                     errorSecondaryAction.show()
-                    errorIllustration.setImageResource(feedplusR.drawable.feed_search_restricted_illustration)
+                    errorIllustration.loadImage(getString(feedplusR.string.feed_search_restricted_illustration))
 
+                    setActionClickListener {
+                        /** JOE TODO: handle this when restricted state from BE is ready */
+                    }
                 }
             }
             is FeedSearchResultPageState.NotFound -> {
@@ -250,7 +254,7 @@ internal class FeedSearchResultFragment @Inject constructor(
 
                     errorAction.show()
                     errorSecondaryAction.hide()
-                    errorIllustration.setImageResource(feedplusR.drawable.feed_search_not_found_illustration)
+                    errorIllustration.loadImage(getString(feedplusR.string.feed_search_not_found_illustration))
 
                     setActionClickListener {
                         val intent = router.getIntent(requireContext(), ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
