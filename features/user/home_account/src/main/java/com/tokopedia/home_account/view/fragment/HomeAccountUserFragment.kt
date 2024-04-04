@@ -234,10 +234,6 @@ open class HomeAccountUserFragment :
         viewModel.refreshUserProfile(isUpdateLayout = true)
     }
 
-    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
-
     override fun getScreenName(): String = "homeAccountUserFragment"
 
     override fun initInjector() {
@@ -1150,7 +1146,6 @@ open class HomeAccountUserFragment :
     private fun setupList() {
         binding?.homeAccountUserFragmentRv?.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        binding?.homeAccountUserFragmentRv?.addOnScrollListener(percentageScrollListener)
         binding?.homeAccountUserFragmentRv?.adapter = adapter
         binding?.homeAccountUserFragmentRv?.isNestedScrollingEnabled = false
     }

@@ -166,6 +166,7 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
         this.recyclerView = null
     }
 

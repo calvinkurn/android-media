@@ -2,6 +2,7 @@ package com.tokopedia.home_account.view.adapter
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
 import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.home_account.R
@@ -29,6 +30,10 @@ class HomeAccountUserAdapter(
     shopAdsNewPositionCallback: (Int, CpmModel) -> Unit,
 ): BaseCommonAdapter() {
 
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+
     private var memberTitle: Typography? = null
 
     private var recyclerView: RecyclerView? = null
@@ -55,6 +60,7 @@ class HomeAccountUserAdapter(
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
         this.recyclerView = null
     }
 
