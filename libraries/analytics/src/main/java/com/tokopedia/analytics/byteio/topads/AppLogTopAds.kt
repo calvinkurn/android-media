@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
@@ -34,9 +35,10 @@ object AppLogTopAds {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        putChannelName(adsLogShowOverModel.adExtraData.channel)
-//                        putEnterFrom(adsLogShowOverModel.adExtraData.enterFrom)
-                        put(AdsLogConst.Param.ENTER_FROM, getEnterFrom())
+                        if(currentPageName == PageName.SEARCH_RESULT) {
+                            putChannelName(getChannel())
+                            putEnterFrom(getEnterFrom())
+                        }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
                         put(AdsLogConst.Param.SIZE_PERCENT, adsLogShowOverModel.adExtraData.sizePercent)
@@ -78,9 +80,10 @@ object AppLogTopAds {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        putChannelName(adsLogShowModel.adExtraData.channel)
-//                        putEnterFrom(adsLogShowModel.adExtraData.enterFrom)
-                        put(AdsLogConst.Param.ENTER_FROM, getEnterFrom())
+                        if(currentPageName == PageName.SEARCH_RESULT) {
+                            putChannelName(getChannel())
+                            putEnterFrom(getEnterFrom())
+                        }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowModel.adExtraData.productId)
                     }
@@ -121,9 +124,10 @@ object AppLogTopAds {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        putChannelName(getChannel())
-//                        putEnterFrom(adsLogRealtimeClickModel.adExtraData.enterFrom)
-                        put(AdsLogConst.Param.ENTER_FROM, getEnterFrom())
+                        if(currentPageName == PageName.SEARCH_RESULT) {
+                            putChannelName(getChannel())
+                            putEnterFrom(getEnterFrom())
+                        }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, adsLogRealtimeClickModel.adExtraData.mallCardType)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogRealtimeClickModel.adExtraData.productId)
                     }
@@ -142,7 +146,12 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
-                put(AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK, (timeStamp - lastClickTimestamp).toString())
+                if(currentPageName != PageName.SEARCH_RESULT) {
+                    put(
+                        AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK,
+                        (timeStamp - lastClickTimestamp).toString()
+                    )
+                }
 
                 putTag(currentPageName)
             }
@@ -152,12 +161,19 @@ object AppLogTopAds {
 
 
     fun getEnterFrom(): String {
-        val twoLastFragmentName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
-        return if (twoLastFragmentName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+        val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
+        return if (prevPageName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
     }
 
     fun getChannel(): String {
-        return ""
+        val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
+        return when(prevPageName) {
+            AppLogSearch.ParamValue.GOODS_SEARCH -> "product search"
+            PageName.PDP -> "pdp search"
+            PageName.SHOP -> "store search"
+            PageName.EXTERNAL_PROMO -> "find search"
+            else -> "discovery search"
+        }
     }
 
     private fun JSONObject.putEnterFrom(enterFrom: String) {
