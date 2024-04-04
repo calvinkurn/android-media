@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.destination.view.viewmodel
 
+import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationAvailability
@@ -97,14 +98,13 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
+    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient,looper: Looper? = Looper.myLooper() ) {
         locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
 
         locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                if (locationResult == null) return
+            override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.locations.forEach {
                     if (it != null) {
                         validateLocation(it.latitude, it.longitude)
@@ -122,11 +122,17 @@ class HotelDestinationViewModel @Inject constructor(
             }
         }
 
-        try {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
-        } catch (e: SecurityException) {
-            e.printStackTrace()
+        looper?.let {
+            try {
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback,
+                    looper
+                )
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
         }
+
+
     }
 
     fun validateLocation(latitude: Double, longitude: Double) {

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionViewModel
@@ -47,6 +48,11 @@ abstract class GotoKycViewModelModule {
     @IntoMap
     @ViewModelKey(StatusSubmissionViewModel::class)
     abstract fun statusSubmissionViewModel(viewModel: StatusSubmissionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CaptureKycDocumentsViewModel::class)
+    abstract fun statusCaptureKycDocumentsViewModel(viewModel: CaptureKycDocumentsViewModel): ViewModel
 
     @Binds
     @ActivityScope

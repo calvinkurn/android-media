@@ -35,6 +35,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchSessionId
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
@@ -152,10 +153,10 @@ class SearchActivity :
         proceed()
         handleIntent()
         observeSearchState()
-        searchViewModel?.getThematic()
 
         SearchSessionId.update()
         AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance.value())
+        handleSearchHeaderThematic()
     }
 
     private fun observeSearchState() {
@@ -169,6 +170,12 @@ class SearchActivity :
                     }
                 }
             }
+        }
+    }
+
+    private fun handleSearchHeaderThematic() {
+        if (!DeviceScreenInfo.isTablet(this)) {
+            searchViewModel?.getThematic()
         }
     }
 

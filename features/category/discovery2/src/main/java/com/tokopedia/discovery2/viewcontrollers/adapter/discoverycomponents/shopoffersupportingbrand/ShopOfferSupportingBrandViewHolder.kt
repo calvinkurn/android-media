@@ -105,7 +105,6 @@ class ShopOfferSupportingBrandViewHolder(
     }
 
     private fun setupRecyclerView() {
-        supportingBrandAdapter.setHasStableIds(true)
         supportingBrandRV.apply {
             adapter = supportingBrandAdapter
             layoutManager = supportingBrandLayoutManager

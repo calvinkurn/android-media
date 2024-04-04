@@ -19,7 +19,6 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS_OS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -251,14 +250,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return if (draftId.isBlank()) 0 else draftId.toLong()
     }
 
-    fun getMaxProductPhotos(): Int {
-        return if (userSession.isShopOfficialStore) {
-            MAX_PRODUCT_PHOTOS_OS
-        } else {
-            MAX_PRODUCT_PHOTOS
-        }
-    }
-
     fun setProductId(id: String) {
         productId.value = id
     }
@@ -431,7 +422,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
 
         // validate images already reached limit
-        if (detailInputModel.imageUrlOrPathList.size > getMaxProductPhotos()) {
+        if (detailInputModel.imageUrlOrPathList.size > MAX_PRODUCT_PHOTOS) {
             errorMessage = resourceProvider.getInvalidPhotoReachErrorMessage() ?: ""
         }
 
