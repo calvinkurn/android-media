@@ -34,11 +34,11 @@ class SellerOfferingViewHolder(
 
     private val binding by viewBinding<WidgetItemSellerOfferingBinding>()
     private var productId: String = ""
-
+    private var shopId: String = ""
     init {
         binding?.apply {
             btnAtc.setOnClickListener {
-                sellerOfferingListener?.onSellerOfferingAtcButtonClicked()
+                sellerOfferingListener?.onSellerOfferingAtcButtonClicked(productId, shopId)
             }
             btnChat.setOnClickListener {
                 sellerOfferingListener?.onSellerOfferingChatButtonClicked()
@@ -47,16 +47,18 @@ class SellerOfferingViewHolder(
                 sellerOfferingListener?.onSellerOfferingProductImageClicked(productId)
             }
             lnVariant.setOnClickListener {
-                sellerOfferingListener?.onSellerOfferingVariantArrowClicked(productId)
+                sellerOfferingListener?.onSellerOfferingVariantArrowClicked(productId, shopId)
             }
             clProductCard.setOnClickListener {
-                sellerOfferingListener?.onSellerOfferingProductInfo(productId)
+                sellerOfferingListener?.onSellerOfferingProductInfo(productId, shopId)
             }
         }
     }
 
     override fun bind(element: SellerOfferingUiModel) {
         productId = element.productId
+        shopId = element.shopId
+        sellerOfferingListener?.onImpressionSellerOffering(productId,shopId)
         binding?.apply {
             setStyleWidget(element)
             lnVariant.showWithCondition(element.variantsName.isNotEmpty())

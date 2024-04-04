@@ -1890,7 +1890,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun logoutGoogleAccountIfExist() {
-        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(requireContext())
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 

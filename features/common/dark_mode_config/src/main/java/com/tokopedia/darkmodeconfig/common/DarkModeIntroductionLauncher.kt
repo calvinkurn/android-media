@@ -62,10 +62,10 @@ object DarkModeIntroductionLauncher : CoroutineScope {
         launch {
             val sharedPref = getSharedPref(context.applicationContext)
             val isDarkModeOS = context.applicationContext.isDarkMode()
-            val isLightModeApp = !isDarkModeApp()
+            val isLightModeApp = isLightModeApp()
             val isEligibleTimeRange = has3DaysOpenedApp(sharedPref)
             val neverOpenedPopup = !hasOpenedPopup(sharedPref)
-            val neverOpenedConfigPage = hasOpenedConfigPage(sharedPref)
+            val neverOpenedConfigPage = !hasOpenedConfigPage(sharedPref)
             val shouldShowPopup = isEligibleTimeRange && isLightModeApp && isDarkModeOS &&
                 isLoggedIn && neverOpenedPopup && neverOpenedConfigPage
             if (shouldShowPopup) {
@@ -123,9 +123,9 @@ object DarkModeIntroductionLauncher : CoroutineScope {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    private fun isDarkModeApp(): Boolean {
+    private fun isLightModeApp(): Boolean {
         val currentNightMode = AppCompatDelegate.getDefaultNightMode()
-        return currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
+        return currentNightMode == AppCompatDelegate.MODE_NIGHT_NO
     }
 
     private fun showPupUp(context: Context, fm: FragmentManager) {
@@ -146,7 +146,7 @@ object DarkModeIntroductionLauncher : CoroutineScope {
         val message = context.getString(darkmodeconfigR.string.dmc_apply_dark_mode_toaster_message)
         val cta = context.getString(darkmodeconfigR.string.dmc_apply_dark_mode_toaster_cta)
         Toaster.toasterCustomBottomHeight = context.dpToPx(96).toInt()
-        Toaster.build(
+        Toaster.buildWithAction(
             view,
             message,
             Toaster.LENGTH_SHORT,
