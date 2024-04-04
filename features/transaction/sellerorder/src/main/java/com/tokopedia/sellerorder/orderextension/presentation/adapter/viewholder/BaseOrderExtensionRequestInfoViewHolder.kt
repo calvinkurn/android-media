@@ -48,5 +48,5 @@ abstract class BaseOrderExtensionRequestInfoViewHolder<T : OrderExtensionRequest
     }
 
     open fun onViewAttachedFromWindow() {}
-    open fun onViewDetachedFromWindow() {}
+    override fun onViewDetachedFromWindow() {}
 }

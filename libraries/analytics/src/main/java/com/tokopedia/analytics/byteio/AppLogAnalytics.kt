@@ -103,6 +103,10 @@ object AppLogAnalytics {
         val actName = activity.javaClass.simpleName
         val currentFragment = getCurrentFragment(activity)
 
+        if(currentFragment is AppLogInterface) {
+            val name = (currentFragment as AppLogInterface).getPageName()
+        }
+
         if (activity is IAppLogActivity) {
             synchronized(lock) {
                 pageNames.add(actName to activity.hashCode())

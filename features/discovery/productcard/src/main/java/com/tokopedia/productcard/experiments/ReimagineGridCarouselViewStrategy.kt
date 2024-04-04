@@ -171,9 +171,18 @@ internal class ReimagineGridCarouselViewStrategy(
         cardContainer?.setOnClickListener(l)
     }
     override fun setOnClickListener(l: ProductCardClickListener) {
-        cardContainer?.setOnClickListener { l.onAreaClicked(it) }
-        setProductImageOnClickListener { l.onProductImageClicked(it) }
-        setShopTypeLocationOnClickListener { l.onSellerInfoClicked(it) }
+        cardContainer?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
     }
 
     override fun setAddToCartOnClickListener(l: View.OnClickListener?) {

@@ -3,6 +3,8 @@ package com.tokopedia.analytics.byteio.topads
 import android.content.Context
 import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
@@ -33,7 +35,8 @@ object AppLogTopAds {
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
                         putChannelName(adsLogShowOverModel.adExtraData.channel)
-                        putEnterFrom(adsLogShowOverModel.adExtraData.enterFrom)
+//                        putEnterFrom(adsLogShowOverModel.adExtraData.enterFrom)
+                        put(AdsLogConst.Param.ENTER_FROM, getEnterFrom())
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
                         put(AdsLogConst.Param.SIZE_PERCENT, adsLogShowOverModel.adExtraData.sizePercent)
@@ -76,7 +79,8 @@ object AppLogTopAds {
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
                         putChannelName(adsLogShowModel.adExtraData.channel)
-                        putEnterFrom(adsLogShowModel.adExtraData.enterFrom)
+//                        putEnterFrom(adsLogShowModel.adExtraData.enterFrom)
+                        put(AdsLogConst.Param.ENTER_FROM, getEnterFrom())
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowModel.adExtraData.productId)
                     }
@@ -117,8 +121,9 @@ object AppLogTopAds {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        putChannelName(adsLogRealtimeClickModel.adExtraData.channel)
-                        putEnterFrom(adsLogRealtimeClickModel.adExtraData.enterFrom)
+                        putChannelName(getChannel())
+//                        putEnterFrom(adsLogRealtimeClickModel.adExtraData.enterFrom)
+                        put(AdsLogConst.Param.ENTER_FROM, getEnterFrom())
                         put(AdsLogConst.Param.MALL_CARD_TYPE, adsLogRealtimeClickModel.adExtraData.mallCardType)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogRealtimeClickModel.adExtraData.productId)
                     }
@@ -147,8 +152,12 @@ object AppLogTopAds {
 
 
     fun getEnterFrom(): String {
-        val twoLastFragmentName = AppLogAnalytics.getTwoLastPage()
+        val twoLastFragmentName = AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)
         return if (twoLastFragmentName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
+    }
+
+    fun getChannel(): String {
+        return ""
     }
 
     private fun JSONObject.putEnterFrom(enterFrom: String) {

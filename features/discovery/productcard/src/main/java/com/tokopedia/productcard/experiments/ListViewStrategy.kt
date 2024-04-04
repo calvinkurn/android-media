@@ -411,9 +411,18 @@ internal class ListViewStrategy(
         cardViewProductCard?.setOnClickListener(l)
     }
     override fun setOnClickListener(l: ProductCardClickListener) {
-        cardViewProductCard?.setOnClickListener { l.onAreaClicked(it) }
-        setProductImageOnClickListener { l.onProductImageClicked(it) }
-        setShopTypeLocationOnClickListener { l.onSellerInfoClicked(it) }
+        cardViewProductCard?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
     }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
