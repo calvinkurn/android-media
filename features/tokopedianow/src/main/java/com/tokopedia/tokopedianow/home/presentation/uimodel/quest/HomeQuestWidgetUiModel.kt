@@ -12,5 +12,12 @@ data class HomeQuestWidgetUiModel(
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun getChangePayload(newModel: HomeLayoutUiModel): Any? {
+        return when(newModel) {
+            is HomeQuestWidgetUiModel -> questList != newModel.questList
+            else -> null
+        }
+    }
 }
 

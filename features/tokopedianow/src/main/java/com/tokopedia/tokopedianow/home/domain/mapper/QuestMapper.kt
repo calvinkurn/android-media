@@ -10,7 +10,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder.Companion.STATUS_IDLE
 
 object QuestMapper {
     private const val BANNER_TITLE = "banner_title"
@@ -45,31 +44,74 @@ object QuestMapper {
         val questList = mutableListOf<HomeQuestWidgetUiModel>()
         questListResponse.forEach {
             val mapConfig = convertJsonStringToMap(it.config)
-            questList.add(HomeQuestWidgetUiModel(
-                id = it.id,
-                title = getValueFromConfig(mapConfig, BANNER_TITLE),
-                desc = getValueFromConfig(mapConfig, BANNER_DESCRIPTION),
-                currentProgress = it.task.firstOrNull()?.progress?.current.orZero(),
-                totalProgress = it.task.firstOrNull()?.progress?.target.orZero(),
-                status = it.questUser.status,
-                iconUrl = getValueFromConfig(mapConfig, ICON_URL)
-            ))
+            questList.add(
+                HomeQuestWidgetUiModel(
+                    id = it.id,
+                    title = getValueFromConfig(mapConfig, BANNER_TITLE),
+                    desc = getValueFromConfig(mapConfig, BANNER_DESCRIPTION),
+                    currentProgress = it.task.firstOrNull()?.progress?.current.orZero(),
+                    totalProgress = it.task.firstOrNull()?.progress?.target.orZero(),
+                    status = it.questUser.status,
+                    iconUrl = getValueFromConfig(mapConfig, ICON_URL)
+                )
+            )
         }
         return questList
     }
 
-    fun mapQuestCardData(questListResponse: List<QuestList>): List<HomeQuestCardItemUiModel> = questListResponse.map {
+    fun mapQuestCardData(
+        channelId: String,
+        questListResponse: List<QuestList>
+    ) = questListResponse.mapIndexed { index, it ->
         val mapConfig = convertJsonStringToMap(it.config)
         val currentProgress = it.task.firstOrNull()?.progress?.current.orZero()
         val totalProgress = it.task.firstOrNull()?.progress?.target.orZero()
+        val previousQuest = questListResponse.getOrNull(index - 1)
+        val questClaimed = previousQuest == null || previousQuest.isClaimed()
+        val showLockedIcon = it.isIdle() && previousQuest?.isClaimed() == false
+        val showStartBtn = it.isManualStart() && it.isIdle() && questClaimed
+
         HomeQuestCardItemUiModel(
             id = it.id,
+            channelId = channelId,
             title = getValueFromConfig(mapConfig, BANNER_TITLE),
             description = getValueFromConfig(mapConfig, BANNER_DESCRIPTION),
-            isLockedShown = it.questUser.status == STATUS_IDLE,
+            isLockedShown = showLockedIcon,
+            showStartBtn = showStartBtn,
+            isLoading = false,
             currentProgress = currentProgress,
             totalProgress = totalProgress
         )
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.updateQuestStartBtn(
+        channelId: String,
+        questId: Int,
+        visible: Boolean = true,
+        isLoading: Boolean = false
+    ) {
+        updateQuestItemUiModel(channelId, questId) {
+            it.copy(showStartBtn = visible, isLoading = isLoading)
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.updateQuestItemUiModel(
+        channelId: String,
+        questId: Int,
+        result: (HomeQuestCardItemUiModel) -> HomeQuestCardItemUiModel
+    ) {
+        find { it?.layout is com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel && it.layout.id == channelId }?.let { itemUiModel ->
+            val questWidget = itemUiModel.layout as com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
+            val questList = questWidget.questList.toMutableList()
+            val questItem = questList.first { it.id == questId.toString() }
+            val questWidgetIndex = indexOf(itemUiModel)
+            val questItemIndex = questList.indexOf(questItem)
+
+            questList[questItemIndex] = result.invoke(questItem)
+
+            val newQuestWidget = questWidget.copy(questList = questList)
+            this[questWidgetIndex] = itemUiModel.copy(layout = newQuestWidget)
+        }
     }
 
     private fun getValueFromConfig(config: Map<String, String>, key: String): String {

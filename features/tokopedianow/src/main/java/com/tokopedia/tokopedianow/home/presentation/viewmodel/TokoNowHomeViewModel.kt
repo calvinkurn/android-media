@@ -98,6 +98,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapProductCarouselChipsWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.setProductCarouselChipsLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.updateQuestStartBtn
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.getRealTimeRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapLatestRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapLoadingRealTimeRecommendation
@@ -109,6 +110,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.RecomParamMapper.mapToRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.domain.model.StartQuestResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetCatalogCouponListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
@@ -117,6 +119,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.RedeemCouponUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.StartQuestUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.model.HomeClaimCouponDataModel
@@ -167,6 +170,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase,
     private val getBuyerCommunicationUseCase: GetBuyerCommunicationUseCase,
     private val getHomeBannerUseCase: GetHomeBannerUseCase,
+    private val startQuestUseCase: StartQuestUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
@@ -226,6 +230,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _couponClaimed
     val blockAddToCart: LiveData<Unit>
         get() = _blockAddToCart
+    val startQuestResult: LiveData<Result<StartQuestResponse>>
+        get() = _startQuestResult
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -241,6 +247,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
     private val _couponClaimed = MutableLiveData<Result<HomeClaimCouponDataModel>>()
+    private val _startQuestResult = MutableLiveData<Result<StartQuestResponse>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var channelToken = ""
@@ -421,18 +428,10 @@ class TokoNowHomeViewModel @Inject constructor(
             val warehouseId = addressData.warehouse_id
             val response = getCategoryList(addressData)
             homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {
             homeLayoutItemList.mapHomeCategoryMenuData(null)
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }
     }
 
@@ -450,22 +449,14 @@ class TokoNowHomeViewModel @Inject constructor(
                 slugs = slugs,
                 state = TokoNowLayoutState.SHOW
             )
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {
             homeLayoutItemList.mapHomeCatalogCouponList(
                 widgetId = widgetId,
                 slugs = slugs,
                 state = TokoNowLayoutState.HIDE
             )
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }
     }
 
@@ -495,11 +486,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     catalogId = catalogId,
                     ctaText = COUPON_STATUS_CLAIMED
                 )
-                val data = HomeLayoutListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.UPDATE
-                )
-                _homeLayoutList.postValue(Success(data))
+                updateVisitableList()
             } else {
                 _couponClaimed.postValue(Success(HomeClaimCouponDataModel(code = COUPON_STATUS_LOGIN)))
             }
@@ -564,26 +551,14 @@ class TokoNowHomeViewModel @Inject constructor(
     fun removeLeftCarouselAtc(id: String) {
         launchCatchError(block = {
             homeLayoutItemList.removeItem(id)
-
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {}
     }
 
     fun removeWidget(id: String) {
         launchCatchError(block = {
             homeLayoutItemList.removeItem(id)
-
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {}
     }
 
@@ -614,13 +589,7 @@ class TokoNowHomeViewModel @Inject constructor(
         getQuestUiModel()?.let { item ->
             launchCatchError(block = {
                 getQuestListData(item)
-
-                val data = HomeLayoutListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.UPDATE
-                )
-
-                _homeLayoutList.postValue(Success(data))
+                updateVisitableList()
             }) {
                 removeWidget(item.id)
             }
@@ -637,12 +606,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     finishedWidgetContentDescription = uiModel.finishedWidgetContentDescription
                 )
 
-                val data = HomeLayoutListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.UPDATE
-                )
-
-                _homeLayoutList.postValue(Success(data))
+                updateVisitableList()
             }) {
                 removeWidget(uiModel.id)
             }
@@ -653,13 +617,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val playWidgetUiModel = getPlayWidget(item, isAutoRefresh = true)
             homeLayoutItemList.mapPlayWidgetData(playWidgetUiModel)
-
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }, onError = {
                 removeWidget(item.id)
             })
@@ -668,13 +626,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun updatePlayWidget(channelId: String, totalView: String) {
         launchCatchError(block = {
             homeLayoutItemList.updatePlayWidget(channelId, totalView)
-
-            val data = HomeLayoutListUiModel(
-                getHomeVisitableList(),
-                TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {
             // do nothing
         }
@@ -756,12 +708,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     else -> getTokoNowGlobalComponent(item, localCacheModel) // TokoNow Common Component
                 }
 
-                val data = HomeLayoutListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.UPDATE
-                )
-
-                _homeLayoutList.postValue(Success(data))
+                updateVisitableList()
             }
         }) {
             _homeLayoutList.postValue(Fail(it))
@@ -793,15 +740,47 @@ class TokoNowHomeViewModel @Inject constructor(
 
             getCarouselChipsProductList(carouselModel, selectedChip)
 
-            val data = HomeLayoutListUiModel(
-                getHomeVisitableList(),
-                TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {
         }.let {
             switchProductCarouselChipJob = it
+        }
+    }
+
+    fun startQuest(channelId: String, questId: Int) {
+        launchCatchError(block = {
+            homeLayoutItemList.updateQuestStartBtn(
+                channelId = channelId,
+                questId = questId,
+                isLoading = true,
+                visible = true
+            )
+
+            updateVisitableList()
+
+            val response = startQuestUseCase.execute(questId)
+
+            homeLayoutItemList.updateQuestStartBtn(
+                channelId = channelId,
+                questId = questId,
+                isLoading = false,
+                visible = false
+            )
+
+            _startQuestResult.postValue(Success(response))
+
+            updateVisitableList()
+        }) {
+            _startQuestResult.postValue(Fail(it))
+
+            homeLayoutItemList.updateQuestStartBtn(
+                channelId = channelId,
+                questId = questId,
+                isLoading = false,
+                visible = true
+            )
+
+            updateVisitableList()
         }
     }
 
@@ -813,13 +792,7 @@ class TokoNowHomeViewModel @Inject constructor(
             carouselModel,
             selectedChip
         )
-
-        val data = HomeLayoutListUiModel(
-            getHomeVisitableList(),
-            TokoNowLayoutState.UPDATE
-        )
-
-        _homeLayoutList.postValue(Success(data))
+        updateVisitableList()
     }
 
     /**
@@ -1002,7 +975,7 @@ class TokoNowHomeViewModel @Inject constructor(
         val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
         if (questListResponse.questWidgetList.isEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
             homeLayoutItemList.removeItem(id)
-        }  else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
+        } else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
             homeLayoutItemList.mapQuestReloadWidget(
                 id = id,
                 mainTitle = mainTitle,
@@ -1010,7 +983,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 finishedWidgetContentDescription = finishedWidgetContentDescription
             )
         } else {
-            val questList = QuestMapper.mapQuestCardData(questListResponse.questWidgetList)
+            val questList = QuestMapper.mapQuestCardData(id, questListResponse.questWidgetList)
             val currentQuestFinished = questList.filter { it.isFinished() }.size
             val totalQuestTarget = questList.size
             if (currentQuestFinished == totalQuestTarget) {
@@ -1133,25 +1106,13 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun showRealTimeRecommendationLoading(channelId: String, type: String) {
         homeLayoutItemList.mapLoadingRealTimeRecommendation(channelId, type)
-
-        val data = HomeLayoutListUiModel(
-            getHomeVisitableList(),
-            TokoNowLayoutState.UPDATE
-        )
-
-        _homeLayoutList.postValue(Success(data))
+        updateVisitableList()
     }
 
     fun removeRealTimeRecommendation(channelId: String, @TokoNowLayoutType type: String) {
         launchCatchError(block = {
             homeLayoutItemList.removeRealTimeRecommendation(channelId, type)
-
-            val data = HomeLayoutListUiModel(
-                getHomeVisitableList(),
-                TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {
         }
     }
@@ -1202,12 +1163,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.mapLatestRealTimeRecommendation(channelId, type)
             }
 
-            val data = HomeLayoutListUiModel(
-                getHomeVisitableList(),
-                TokoNowLayoutState.UPDATE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            updateVisitableList()
         }) {
         }
     }
@@ -1220,12 +1176,7 @@ class TokoNowHomeViewModel @Inject constructor(
             type = type
         )
 
-        val data = HomeLayoutListUiModel(
-            getHomeVisitableList(),
-            TokoNowLayoutState.UPDATE
-        )
-
-        _homeLayoutList.postValue(Success(data))
+        updateVisitableList()
     }
 
     private fun getRefreshRealTimeRecommendation(channelId: String, productId: String) {
@@ -1234,12 +1185,7 @@ class TokoNowHomeViewModel @Inject constructor(
             productId = productId
         )
 
-        val data = HomeLayoutListUiModel(
-            getHomeVisitableList(),
-            TokoNowLayoutState.UPDATE
-        )
-
-        _homeLayoutList.postValue(Success(data))
+        updateVisitableList()
     }
 
     private suspend fun getCarouselChipsProductList(
@@ -1433,11 +1379,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun showProgressBar() {
         homeLayoutItemList.addProgressBar()
-        val data = HomeLayoutListUiModel(
-            getHomeVisitableList(),
-            TokoNowLayoutState.UPDATE
-        )
-        _homeLayoutList.postValue(Success(data))
+        updateVisitableList()
     }
 
     private fun getHomeVisitableList(): List<Visitable<*>> {
@@ -1461,4 +1403,13 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun getEnableNewQuestWidget() = abTestPlatform
         .getString(RollenceKey.TOKOPEDIA_NOW_EXPERIMENT) == EXPERIMENT_ENABLED
+
+    private fun updateVisitableList() {
+        val data = HomeLayoutListUiModel(
+            getHomeVisitableList(),
+            TokoNowLayoutState.UPDATE
+        )
+
+        _homeLayoutList.postValue(Success(data))
+    }
 }

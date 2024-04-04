@@ -37,7 +37,21 @@ data class QuestList(
     @SerializedName("task")
     @Expose
     val task: List<Task>,
-)
+    @SerializedName("sequenceQuestIDs")
+    val sequenceQuestIDs: List<Int> = emptyList()
+) {
+
+    companion object {
+        private const val STATUS_IDLE = "Idle"
+        private const val STATUS_CLAIMED = "Claimed"
+    }
+
+    fun isIdle() = questUser.status == STATUS_IDLE
+
+    fun isClaimed() = questUser.status == STATUS_CLAIMED
+
+    fun isManualStart() = sequenceQuestIDs.isEmpty()
+}
 
 data class QuestUser(
     @SerializedName("id")

@@ -51,6 +51,7 @@ import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
 import com.tokopedia.tokopedianow.home.domain.model.RedeemCouponResponse
 import com.tokopedia.tokopedianow.home.domain.model.ReferralEvaluateJoinResponse
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.domain.model.StartQuestResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetCatalogCouponListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
@@ -59,6 +60,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.RedeemCouponUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.StartQuestUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
@@ -162,6 +164,9 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getHomeBannerUseCase: GetHomeBannerUseCase
 
     @RelaxedMockK
+    lateinit var startQuestUseCase: StartQuestUseCase
+
+    @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
 
     @RelaxedMockK
@@ -208,6 +213,7 @@ abstract class TokoNowHomeViewModelTestFixture {
             getProductBundleRecomUseCase,
             getBuyerCommunicationUseCase,
             getHomeBannerUseCase,
+            startQuestUseCase,
             playWidgetTools,
             addressData,
             userSession,
@@ -721,6 +727,18 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery {
             abTestPlatform.getString("now_experiment")
         } returns value
+    }
+
+    protected fun onStartQuest_thenReturn(questId: Int, response: StartQuestResponse) {
+        coEvery {
+            startQuestUseCase.execute(questId)
+        } returns response
+    }
+
+    protected fun onStartQuest_thenReturn(questId: Int, error: Throwable) {
+        coEvery {
+            startQuestUseCase.execute(questId)
+        } throws error
     }
 
     object UnknownHomeLayout : HomeLayoutUiModel("1") {

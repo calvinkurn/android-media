@@ -1171,6 +1171,19 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.openLoginPage) {
             openLoginPage()
         }
+
+        observe(viewModelTokoNow.startQuestResult) {
+            when(it) {
+                is Success -> {
+                    val message = getString(R.string.tokopedianow_start_quest_success_message)
+                    showToaster(message = message, type = TYPE_NORMAL)
+                }
+                is Fail -> {
+                    val message = getString(R.string.tokopedianow_start_quest_error_message)
+                    showToaster(message = message, type = TYPE_ERROR)
+                }
+            }
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -2105,6 +2118,10 @@ class TokoNowHomeFragment :
 
         override fun onImpressQuestCardSwiped() {
             analyticsQuestWidget.trackImpressionSwipeQuestCardQuestWidget()
+        }
+
+        override fun onClickStartButton(channelId: String, questId: Int) {
+            viewModelTokoNow.startQuest(channelId, questId)
         }
     }
 
