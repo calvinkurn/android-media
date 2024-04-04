@@ -39,10 +39,6 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
                 }
             })
 
-        binding?.productCardView?.setOnClickListener {
-            listener.onProductRecommendationClicked(element, adapterPosition)
-        }
-
         binding?.productCardView?.setOnClickListener(object : ProductCardClickListener {
             override fun onClick(v: View) {
                 listener.onProductRecommendationClicked(element, adapterPosition)
