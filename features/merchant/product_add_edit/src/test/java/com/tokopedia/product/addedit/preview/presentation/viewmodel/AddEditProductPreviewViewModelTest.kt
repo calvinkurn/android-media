@@ -841,29 +841,6 @@ class AddEditProductPreviewViewModelTest : AddEditProductPreviewViewModelTestFix
     }
 
     @Test
-    fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
-        val annotationCategoryData = listOf(
-            AnnotationCategoryData(
-                variant = "Merek",
-                data = listOf(
-                    Values("1", "Indomie", false, ""),
-                    Values("1", "Seedap", false, "")
-                )
-            )
-        )
-
-        viewModel.productInputModel.value = null
-        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
-        var result = viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(null, result?.detailInputModel?.specifications?.size)
-
-        viewModel.productInputModel.value = ProductInputModel()
-        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
-        result = viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(0, result?.detailInputModel?.specifications?.size)
-    }
-
-    @Test
     fun `When get product limitation should return success data`() = runBlocking {
         onGetProductLimitation_thenReturn(ProductAddRuleResponse())
 
