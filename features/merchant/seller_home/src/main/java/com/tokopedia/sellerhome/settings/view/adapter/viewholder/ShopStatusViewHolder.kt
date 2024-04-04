@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -22,7 +23,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.kyc.KycCons
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopStatusWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.seller.menu.common.R as sellermenucommonR
@@ -87,7 +87,7 @@ class ShopStatusViewHolder(
 
         when (shopType) {
             is RegularMerchant -> setRegularMerchantLayout(shopType, userShopInfoUiModel)
-            is PowerMerchantStatus -> setPowerMerchantLayout(userShopInfoUiModel?.isKyc().orFalse())
+            is PowerMerchantStatus -> setPowerMerchantLayout(userShopInfoUiModel?.isKyc.orFalse())
             is PowerMerchantProStatus -> setPowerMerchantProLayout(shopType)
             is ShopType.OfficialStore -> setOfficialStoreLayout()
         }
@@ -182,7 +182,7 @@ class ShopStatusViewHolder(
             shopStatusDescTextView?.run {
                 isClickable = true
                 setOnClickListener {
-                    navigate(KycCons.PowerMerchant.KYC_APPLINK)
+                    navigate(ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
                 }
             }
         }

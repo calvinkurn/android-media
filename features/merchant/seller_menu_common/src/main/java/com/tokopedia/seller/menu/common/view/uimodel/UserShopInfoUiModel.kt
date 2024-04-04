@@ -22,7 +22,7 @@ data class UserShopInfoWrapper(
         var isEligiblePmPro: Boolean = false,
         var isEligiblePm: Boolean = false,
         val statusInfoUiModel: StatusInfoUiModel = StatusInfoUiModel(),
-        val kycStatus: Int = Constant.Kyc.INACTIVE
+        val isKyc: Boolean = false
     ) {
         data class StatusInfoUiModel(
             val statusTitle: String = "",
@@ -44,10 +44,6 @@ data class UserShopInfoWrapper(
             } else {
                 null
             }
-        }
-
-        fun isKyc(): Boolean {
-            return kycStatus == Constant.Kyc.ACTIVE
         }
     }
 }

@@ -21,9 +21,4 @@ object Constant {
         const val ROUNDED_RADIUS = 16f
 
     }
-
-    object Kyc {
-        const val ACTIVE = 0
-        const val INACTIVE = 1
-    }
 }
