@@ -30,7 +30,6 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMai
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -194,6 +193,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         }
 
         tabTitle?.apply {
+            /**
+             * since setting text weight will cause the text to overflow to next line,
+             * we try to use html <b> text to solve this issue
+             */
             text = MethodChecker.fromHtml("<b>$text</b>")
             setTextColor(highEmphasizeColor)
         }
