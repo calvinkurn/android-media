@@ -129,4 +129,7 @@ object RollenceKey {
     const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
     const val SEARCH_ROLLOUT_UNIVERSE_V2 = "rollout_universe_v2"
     const val ANDROID_INTERNAL_TEST = "android_internal"
+
+    const val PDP_ATC_ANIMATION_VARIANT = "variant_animation"
+    const val PDP_ATC_ANIMATION_KEY = "pdp_animation_atc"
 }

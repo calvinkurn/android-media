@@ -171,8 +171,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
         componentName = ComponentNames.ShopOfferSupportingBrandItem.componentName
     ),
 
-    TabsImage(R.layout.tabs_layout, ComponentNames.TabsImage.componentName),
-    TabsImageItem(R.layout.tabs_image_item_layout, ComponentNames.TabsImageItem.componentName),
+    PlainTab(R.layout.tabs_layout, ComponentNames.PlainTab.componentName),
+    PlainTabItem(R.layout.tabs_image_item_layout, ComponentNames.PlainTabItem.componentName),
 
     // Automate Coupon
     SingleAutomateCoupon(

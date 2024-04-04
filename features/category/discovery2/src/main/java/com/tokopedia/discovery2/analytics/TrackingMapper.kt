@@ -23,6 +23,12 @@ object TrackingMapper {
         }
     }
 
+    fun List<ComponentsItem>?.updatePaginatedPosition(offset: Int) {
+        this?.forEachIndexed { index, component ->
+            component.data?.firstOrNull()?.itemPosition = offset + index
+        }
+    }
+
     fun getTopLevelParentComponent(component: ComponentsItem?): TopLevelTab {
         try {
             if (component == null) return UnknownTab

@@ -55,6 +55,10 @@ class ProductVideoViewHolder(
         binding.pdpMainVideo.layoutTransition.setAnimateParentHierarchy(false)
     }
 
+    fun getImageUnify(): ImageView? {
+        return binding.pdpVideoOverlay
+    }
+
     override fun bind(data: MediaDataModel) {
         mVideoId = data.id
         thumbnail = data.urlOriginal
