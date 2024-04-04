@@ -116,6 +116,8 @@
     <string name="phone_shop_tnc_policy">Dengan klik tombol di bawah, kamu menyetujui %s serta %s Pendaftaran Toko.</string>
     <string name="phone_shop_tnc_title">Syarat &amp; Ketentuan</string>
     <string name="phone_shop_policy_title">Pemberitahuan Privasi</string>
+    <string name="shop_creation_kyc_error_know_code">Oops, lagi ada kendala yang perlu kami beresin. Coba lagi nanti, ya!</string>
+    <string name="shop_creation_error_code">Kode Error: %s</string>
 
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_login_phone">Cancel login phone</string>
