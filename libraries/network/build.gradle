@@ -41,7 +41,6 @@ dependencies {
 
 //    // Tik tok Slardar
     implementation rootProject.ext.slardarDependencies.commonMonitor
-    implementation rootProject.ext.slardarDependencies.npth
     implementation rootProject.ext.slardarDependencies.npthCore
 }
 
