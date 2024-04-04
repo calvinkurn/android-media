@@ -167,7 +167,7 @@ fun CheckoutPaymentWidget(
                                                 color = if (data.isDescriptionRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._600
                                             ),
                                             modifier = Modifier.weight(1f, fill = false),
-                                            maxLines = 2,
+                                            maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
                                         if (data.actionButtonText.isNotBlank()) {
