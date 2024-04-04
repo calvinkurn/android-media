@@ -188,7 +188,7 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.UnavailableTenureError -> {
                 latestWidget.copy(
-                    installmentText = "Pilih cicilan"
+                    installmentText = "Pilih periode pembayaran"
                 )
             }
 

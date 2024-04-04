@@ -19,6 +19,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkoutpayment.domain.CreditCardTenorListData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.domain.PaymentAmountValidation
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.domain.TenorListData
@@ -172,6 +173,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             dynamicPaymentFeeUseCase(any())
         } returns emptyList()
 
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
         // When
         viewModel.calculateTotal()
 
@@ -224,6 +229,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             dynamicPaymentFeeUseCase(any())
         } throws IOException()
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
 
         // When
         viewModel.calculateTotal()
@@ -288,6 +297,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             )
         )
 
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
         // When
         viewModel.calculateTotal()
 
@@ -337,7 +350,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         } returns PaymentWidgetListData(
             paymentWidgetData = listOf(PaymentWidgetData(
                 gatewayCode = "VA",
-                mandatoryHit = listOf("CreditCardTenorList")
+                mandatoryHit = listOf("CreditCardTenorList"),
+                amountValidation = PaymentAmountValidation(
+                    maximumAmount = 10000
+                )
             ))
         )
 
@@ -349,11 +365,17 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             creditCardTenorListUseCase(any())
         } throws IOException()
 
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
         // When
         viewModel.calculateTotal()
 
         // Then
-        assertEquals(CheckoutPaymentWidgetState.Error, viewModel.listData.value.payment()!!.widget.state)
+        assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
+        assertEquals("Pilih periode pembayaran", viewModel.listData.value.payment()!!.widget.installmentText)
+        assertNotNull(latestToaster)
         coVerify(exactly = 1) {
             dynamicPaymentFeeUseCase(any())
         }
@@ -415,6 +437,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             )
         )
 
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
         // When
         viewModel.calculateTotal()
 
@@ -464,7 +490,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         } returns PaymentWidgetListData(
             paymentWidgetData = listOf(PaymentWidgetData(
                 gatewayCode = "VA",
-                mandatoryHit = listOf("getInstallmentInfo")
+                mandatoryHit = listOf("getInstallmentInfo"),
+                amountValidation = PaymentAmountValidation(
+                    maximumAmount = 10000
+                )
             ))
         )
 
@@ -476,11 +505,17 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             goCicilInstallmentOptionUseCase(any())
         } throws IOException()
 
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
         // When
         viewModel.calculateTotal()
 
         // Then
-        assertEquals(CheckoutPaymentWidgetState.Error, viewModel.listData.value.payment()!!.widget.state)
+        assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
+        assertEquals("Pilih periode pembayaran", viewModel.listData.value.payment()!!.widget.installmentText)
+        assertNotNull(latestToaster)
         coVerify(exactly = 1) {
             dynamicPaymentFeeUseCase(any())
         }
@@ -973,6 +1008,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             dynamicPaymentFeeUseCase(any())
         } returns emptyList()
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
 
         // When
         viewModel.forceReloadPayment()
