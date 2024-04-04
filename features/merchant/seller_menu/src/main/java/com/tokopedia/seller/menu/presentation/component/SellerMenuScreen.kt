@@ -1656,16 +1656,17 @@ fun SellerMenuStatusPm(
                 NestTypography(
                     text = stringResource(id = sellermenucommonR.string.setting_other_not_verified),
                     textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.NN._950,
+                        color = NestTheme.colors.GN._500,
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier
                         .widthIn(min = 0.dp)
                         .constrainAs(powerMerchantStatusText) {
-                            start.linkTo(powerMerchantText.end)
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
                         }
+                        .padding(end = 16.dp)
                 )
             }
 

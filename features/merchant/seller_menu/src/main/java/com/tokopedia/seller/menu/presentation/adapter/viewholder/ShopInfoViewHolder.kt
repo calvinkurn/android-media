@@ -1,6 +1,5 @@
 package com.tokopedia.seller.menu.presentation.adapter.viewholder
 
-import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
@@ -288,7 +286,7 @@ class ShopInfoViewHolder(
             LayoutInflater.from(context).inflate(it, null, false)
         }
         val shopStatusLayout: View? = when (shopType) {
-            is PowerMerchantStatus -> {
+            is PowerMerchantStatus.Active -> {
                 itemView?.apply {
                     setPowerMerchantShopStatus(shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(
@@ -353,18 +351,6 @@ class ShopInfoViewHolder(
                     }
                 }
             }
-            is PowerMerchantStatus.NotActive -> {
-                itemView?.apply {
-                    sendSettingShopInfoImpressionTracking(
-                        shopStatusUiModel,
-                        trackingListener::sendImpressionDataIris
-                    )
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe()
-                        sellerMenuTracker?.sendEventClickShopSettingNew()
-                    }
-                }
-            }
             else -> null
         }
 
@@ -394,38 +380,6 @@ class ShopInfoViewHolder(
             )
         }
         context?.let { RouteManager.route(context, appLink) }
-    }
-
-    private fun Typography.setupStatsWordingRM(userShopInfo: UserShopInfoWrapper.UserShopInfoUiModel) {
-        text = if (userShopInfo.dateCreated.isBlank()) {
-            context?.getString(R.string.transaction_on_date)
-        } else {
-            if (userShopInfo.isBeforeOnDate) {
-                context?.getString(R.string.transaction_on_date)
-            } else {
-                context?.getString(R.string.transaction_since_joining)
-            }
-        }
-    }
-
-    private fun View.hideTransactionSection() {
-        findViewById<View>(R.id.divider_stats_rm)?.hide()
-        findViewById<Typography>(R.id.tx_stats_rm)?.hide()
-        findViewById<Typography>(R.id.tx_total_stats_rm)?.hide()
-        findViewById<View>(R.id.view_rm_transaction_cta)?.hide()
-    }
-
-    private fun View.showTransactionSection(totalTransaction: Long) {
-        findViewById<View>(R.id.divider_stats_rm)?.show()
-        findViewById<View>(R.id.divider_stats_rm)?.setBackgroundResource(R.drawable.ic_divider_stats_rm)
-        findViewById<Typography>(R.id.tx_stats_rm)?.show()
-        findViewById<Typography>(R.id.tx_total_stats_rm)?.show()
-        findViewById<View>(R.id.view_rm_transaction_cta)?.run {
-            show()
-            setOnClickListener {
-                listener?.onRMTransactionClicked(totalTransaction)
-            }
-        }
     }
 
     private fun View.setPowerMerchantShopStatus(
