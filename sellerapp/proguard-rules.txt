@@ -363,7 +363,7 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -dontwarn com.yandex.div.core.util.KAssert
 
 # Slardar
+-keep class android.os.**{ *;}
 -keep class com.bytedance.retrofit2.SsResponse { *; }
 -keep class com.bytedance.crash.entity.EventBody { *; }
 -keep class com.bytedance.crash.entity.Header { *; }
--keep class android.os.Looper$Observer { *; }
