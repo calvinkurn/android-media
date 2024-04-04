@@ -82,15 +82,18 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun renderExpiredDate(limit: TimeLimit?) {
-        if (limit?.isAvailable() != true) {
-            binding.tvTimeLimitPrefix.hide()
-            binding.tvTimeLimit.hide()
-            binding.timerCoupon.hide()
-            return
+        if (limit == null || !limit.isAvailable()) {
+            hideTimer()
+        } else {
+            limit.prefix?.let { binding.tvTimeLimitPrefix.render(it) }
+            limit.showExpiredInfo()
         }
+    }
 
-        limit.prefix?.let { binding.tvTimeLimitPrefix.render(it) }
-        limit.showExpiredInfo()
+    private fun hideTimer() {
+        binding.tvTimeLimitPrefix.hide()
+        binding.tvTimeLimit.hide()
+        binding.timerCoupon.hide()
     }
 
     private fun TimeLimit.showExpiredInfo() {
@@ -110,19 +113,23 @@ class AutomateCouponListView @JvmOverloads constructor(
             val parsedCalendar: Calendar = Calendar.getInstance()
             parsedCalendar.time = it
 
+            binding.timerCoupon.show()
+            binding.tvTimeLimit.hide()
+
             binding.timerCoupon.apply {
                 backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
                 targetDate = parsedCalendar
             }
-
-            binding.timerCoupon.show()
-            binding.tvTimeLimit.hide()
         }
     }
 
     private fun showTimeLimit(text: String?) {
-        binding.tvTimeLimit.text = text
-        binding.tvTimeLimit.show()
+        if (text.isNullOrEmpty()) {
+            binding.tvTimeLimit.hide()
+        } else {
+            binding.tvTimeLimit.text = text
+            binding.tvTimeLimit.show()
+        }
 
         binding.timerCoupon.hide()
     }

@@ -1,10 +1,10 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.sessioncommon.data.admin.AccountAdminInfoGqlParam
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
@@ -74,3 +74,8 @@ class AccountAdminInfoUseCase @Inject constructor(
         }
     }
 }
+
+data class AccountAdminInfoGqlParam(
+    val source: String,
+    val isLocationAdmin: Boolean = false
+)

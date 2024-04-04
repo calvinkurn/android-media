@@ -4,8 +4,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 
 class AddEditProductDetailConstants {
     companion object {
-        const val MAX_PRODUCT_PHOTOS = 5
-        const val MAX_PRODUCT_PHOTOS_OS = 7
+        const val MAX_PRODUCT_PHOTOS = 9
         const val MAX_WHOLESALE_PRICES = 5
         const val MAX_SUGGESTION_NAME = 5
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"

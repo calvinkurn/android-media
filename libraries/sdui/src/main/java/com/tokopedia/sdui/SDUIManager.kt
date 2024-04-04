@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sdui.extention.ActionHandler
 import com.tokopedia.sdui.extention.CustomActionInterface
 import com.tokopedia.sdui.extention.GlideDivImageLoader
@@ -39,8 +40,10 @@ class SDUIManager : SDUIinterface {
         sduiTrackingInterface: SDUITrackingInterface? = null,
         customActionInterface: CustomActionInterface? = null
     ) {
-        divContext = Div2Context(baseContext = context as ContextThemeWrapper,
-            configuration = createDivConfiguration(context, sduiTrackingInterface, customActionInterface))
+        divContext = Div2Context(
+            baseContext = context as ContextThemeWrapper,
+            configuration = createDivConfiguration(context, sduiTrackingInterface, customActionInterface)
+        )
     }
 
     private fun createDivConfiguration(
@@ -74,6 +77,9 @@ class SDUIManager : SDUIinterface {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
+
+                // disable red dots
+                visualErrorsEnabled = GlobalConfig.isAllowDebuggingTools()
             }
         }
         return bindJsonToView(cardsJsonObject, divView, parsingEnvironment)

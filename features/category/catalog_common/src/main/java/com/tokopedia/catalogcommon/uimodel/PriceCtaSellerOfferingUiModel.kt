@@ -10,6 +10,8 @@ data class PriceCtaSellerOfferingUiModel(
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
     var price: String = "",
+    var productId:String = "",
+    var shopId:String = "",
     var textTitleColor: Int? = null,
     var textPriceColor: Int? = null,
     var iconColor: Int? = null
