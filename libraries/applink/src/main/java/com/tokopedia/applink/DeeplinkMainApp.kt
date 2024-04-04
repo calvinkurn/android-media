@@ -614,6 +614,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("all-annotation") { deeplink: String ->
                 DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowAllAnnotation(deeplink)
+            },
+            DLP.matchPattern("list-belanja") {  _: String ->
+                ApplinkConstInternalTokopediaNow.SHOPPING_LIST
             }
         ),
         "occ" to mutableListOf(

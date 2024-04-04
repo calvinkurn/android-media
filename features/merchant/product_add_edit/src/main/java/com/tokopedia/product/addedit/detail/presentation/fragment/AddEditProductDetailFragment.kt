@@ -79,6 +79,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
@@ -1450,7 +1451,7 @@ class AddEditProductDetailFragment :
 
             // show error message when maximum product image is reached
             val productPhotoCount = adapter.getProductPhotoPaths().size
-            if (productPhotoCount == viewModel.getMaxProductPhotos()) {
+            if (productPhotoCount == MAX_PRODUCT_PHOTOS) {
                 showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
             } else {
                 val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
@@ -1472,14 +1473,13 @@ class AddEditProductDetailFragment :
         val ctx = context ?: return
         val isEditing = viewModel.isEditing
         val isAdding = viewModel.isAdding || !isEditing
-        val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
         if (RemoteConfig.getImagePickerRemoteConfig(ctx)) {
             val pageSource = if (!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
                 ctx,
-                maxProductPhotoCount,
+                MAX_PRODUCT_PHOTOS,
                 pageSource,
                 ArrayList(imageUrlOrPathList)
             )
@@ -1493,7 +1493,7 @@ class AddEditProductDetailFragment :
             val intent = ImagePickerAddEditNavigation.getIntent(
                 ctx,
                 ArrayList(imageUrlOrPathList),
-                maxProductPhotoCount,
+                MAX_PRODUCT_PHOTOS,
                 isAdding
             )
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -1973,7 +1973,7 @@ class AddEditProductDetailFragment :
     private fun setupProductPhotoViews() {
         addProductPhotoButton = binding?.addEditProductPhotoLayout?.tvAddProductPhoto
         productPhotosView = binding?.addEditProductPhotoLayout?.rvProductPhotos
-        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, viewModel.productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, viewModel.productPhotoPaths, this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

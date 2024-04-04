@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,9 @@ import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.clearCustomTarget
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.sellerorder.R
@@ -39,6 +43,10 @@ class SomDetailProductBundlingAdapter(
         holder.bind(products[position])
     }
 
+    override fun onViewRecycled(holder: ViewHolder) {
+        holder.onViewRecycled()
+    }
+
     override fun getItemCount(): Int = products.size
 
     inner class ViewHolder(
@@ -48,6 +56,8 @@ class SomDetailProductBundlingAdapter(
         AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
         private val binding by viewBinding<ItemSomProductBundlingProductBinding>()
+
+        private var productImageLoadTarget: MediaBitmapEmptyTarget<Bitmap>? = null
 
         init {
             registerAddOnSummaryDelegate(this)
@@ -70,10 +80,10 @@ class SomDetailProductBundlingAdapter(
                 root.setOnClickListener {
                     actionListener?.onClickProduct(product.detail.orderDetailId.toLongOrZero())
                 }
-                imgSomBundleProduct.loadProductImage(
+                productImageLoadTarget = imgSomBundleProduct.loadProductImage(
                     url = product.detail.thumbnail,
                     archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
-                )
+                ) { productImageLoadTarget = null }
                 tvSomBundleProductName.text = product.detail.name
                 tvSomBundlePrice.text =
                     StringBuilder("${product.detail.quantity} x ${product.detail.priceText}")
@@ -88,6 +98,11 @@ class SomDetailProductBundlingAdapter(
                 }
             }
             bindAddonSummary(product.addOnSummaryUiModel)
+        }
+
+        fun onViewRecycled() {
+            binding?.imgSomBundleProduct.clearImage()
+            binding?.imgSomBundleProduct.clearCustomTarget(productImageLoadTarget)
         }
     }
 }
