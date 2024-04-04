@@ -25,6 +25,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
@@ -626,7 +627,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun showOnBoarding(isShowMiniCartWidget: Boolean) {
         context?.let { context ->
-            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG) && isShowMiniCartWidget) {
+            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG) && isShowMiniCartWidget && isVisible) {
                 coachMark = CoachMark2(context)
                 this.totalAmount?.labelTitleView?.let { anchor ->
                     coachMark?.let { coachMark2 ->

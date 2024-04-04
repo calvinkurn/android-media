@@ -223,7 +223,7 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
                 )
             ).spannedString ?: ""
         } else {
-            description
+            HtmlLinkHelper(context, description).spannedString ?: ""
         }
     }
 
@@ -338,21 +338,18 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
                 binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
             } else {
                 show()
-                if (disableExpandable) {
-                    binding.tvAddOnDescription.text =
-                        HtmlLinkHelper(context, description).spannedString
-                } else {
-                    renderExpandableDescription(expanded)
-                }
+                renderExpandableDescription(expanded, disableExpandable)
             }
         }
     }
 
-    private fun renderExpandableDescription(expanded: Boolean) {
-        viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
-        viewTreeObserver.addOnPreDrawListener(descriptionOnPreDrawListener)
-        setDescriptionText(expanded)
-        updateDescriptionMaxLines(expanded)
+    private fun renderExpandableDescription(expanded: Boolean, disableExpandable: Boolean) {
+        if (!disableExpandable) {
+            viewTreeObserver.removeOnPreDrawListener(descriptionOnPreDrawListener)
+            viewTreeObserver.addOnPreDrawListener(descriptionOnPreDrawListener)
+        }
+        setDescriptionText(expanded && !disableExpandable)
+        updateDescriptionMaxLines(expanded || disableExpandable)
         val layoutParamsCopy = layoutParams
         layoutParamsCopy.height = ViewGroup.LayoutParams.WRAP_CONTENT
         layoutParams = layoutParamsCopy

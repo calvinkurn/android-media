@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifycomponents.TextAreaUnify
         android:id="@+id/wrapper_imei"
-        style="@style/HintTextInputLayout"
+        style="@style/TradeInHintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="false"

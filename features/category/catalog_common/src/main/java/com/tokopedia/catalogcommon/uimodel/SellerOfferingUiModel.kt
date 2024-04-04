@@ -9,6 +9,7 @@ data class SellerOfferingUiModel(
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
+    val shopId: String = "",
     val productId: String = "",
     var productImage: String = "",
     var shopBadge: String = "",

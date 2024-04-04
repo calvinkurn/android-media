@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 161
-        const val SIZE_PATH = 273
+        const val SIZE_PATH = 274
     }
 
     override fun setup() {
@@ -2537,6 +2537,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val annotationType = "BRAND"
         val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.ALL_ANNOTATION}?category_id=$categoryIdL1&warehouses=$warehouses&annotation_type=$annotationType"
         val actualDeeplink = "${ApplinkConst.TokopediaNow.ALL_ANNOTATION}?category_id=$categoryIdL1&warehouses=$warehouses&annotation_type=$annotationType"
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow shopping list appLink then should return tokopedia internal shopping list in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.SHOPPING_LIST
+        val actualDeeplink = ApplinkConst.TokopediaNow.SHOPPING_LIST
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 

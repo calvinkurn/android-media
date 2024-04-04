@@ -621,6 +621,9 @@ data class DataItem(
     @SerializedName("catalog_subcategory_id")
     var catalogSubCategoryIds: List<String>? = null,
 
+    @SerializedName("inactive_text_color")
+    val inactiveFontColor: String? = "",
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
