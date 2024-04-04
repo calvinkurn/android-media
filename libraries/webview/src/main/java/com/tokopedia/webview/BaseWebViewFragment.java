@@ -116,7 +116,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String TOKOPEDIA_COM = ".tokopedia.com";
 
     public TkpdWebView webView;
-    ProgressBar progressBar;
+    protected ProgressBar progressBar;
     private SwipeToRefresh swipeRefreshLayout;
     private GlobalError globalError;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
@@ -736,6 +736,32 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
+    public void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
+        progressBar.setVisibility(View.GONE);
+        WebViewLoggerKt.logWebReceivedError(getActivity(), webView, failingUrl, String.valueOf(errorCode), description);
+        if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
+                description.contains(ERR_INTERNET_DISCONNECTED) &&
+                globalError != null && swipeRefreshLayout != null) {
+            webView.clearView();
+            globalError.setActionClickListener(new Function1<View, Unit>() {
+                @Override
+                public Unit invoke(View view) {
+                    reloadPage();
+                    return Unit.INSTANCE;
+                }
+            });
+            globalError.setVisibility(View.VISIBLE);
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+            }
+        } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
+            routeToNativeBrowser(webUrl);
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+        }
+    }
+
     class MyWebViewClient extends WebViewClient {
         @Override
         public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
@@ -900,32 +926,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     });
                 });
                 task.addOnFailureListener(e -> {});
-            }
-        }
-    }
-
-    private void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
-        progressBar.setVisibility(View.GONE);
-        WebViewLoggerKt.logWebReceivedError(getActivity(), webView, failingUrl, String.valueOf(errorCode), description);
-        if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
-                description.contains(ERR_INTERNET_DISCONNECTED) &&
-                globalError != null && swipeRefreshLayout != null) {
-            webView.clearView();
-            globalError.setActionClickListener(new Function1<View, Unit>() {
-                @Override
-                public Unit invoke(View view) {
-                    reloadPage();
-                    return Unit.INSTANCE;
-                }
-            });
-            globalError.setVisibility(View.VISIBLE);
-            if (swipeRefreshLayout != null) {
-                swipeRefreshLayout.setVisibility(View.GONE);
-            }
-        } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
-            routeToNativeBrowser(webUrl);
-            if (getActivity() != null) {
-                getActivity().finish();
             }
         }
     }
