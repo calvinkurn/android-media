@@ -6,6 +6,7 @@ import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
+import com.tokopedia.feedplus.browse.presentation.model.exception.RestrictedKeywordException
 import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultUiState
@@ -115,8 +116,13 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
                 }
             }
 
-        }) {
-            _pageState.update { FeedSearchResultPageState.InternalError }
+        }) { throwable ->
+            _pageState.update {
+                if (throwable is RestrictedKeywordException)
+                    FeedSearchResultPageState.Restricted
+                else
+                    FeedSearchResultPageState.InternalError
+            }
         }
     }
 
