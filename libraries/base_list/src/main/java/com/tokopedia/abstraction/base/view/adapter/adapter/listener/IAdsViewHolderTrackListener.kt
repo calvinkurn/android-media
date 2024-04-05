@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.recyclerview.listener
+package com.tokopedia.abstraction.base.view.adapter.adapter.listener
 
 import androidx.recyclerview.widget.RecyclerView
 
