@@ -113,7 +113,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
                     onPending()
                 }
                 is ProjectInfoResult.Blacklisted -> {
-//                    onBlacklisted()
+                    onBlacklisted()
                 }
                 is ProjectInfoResult.Rejected -> {
                     onRejected(it.rejectionReason)
@@ -138,6 +138,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             layoutStatusPending.layoutBenefit.iconBenefit3.loadImage(getString(R.string.shop_creation_icon_benefit))
             layoutStatusPending.root.show()
             layoutStatusRejected.root.hide()
+            layoutStatusBlacklisted.root.hide()
             globalError.hide()
             loader.hide()
         }
@@ -149,7 +150,20 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             layoutStatusPending.root.hide()
             layoutStatusRejected.ivStatusSubmission.loadImageWithoutPlaceholder(getString(R.string.shop_creation_kyc_rejected))
             layoutStatusRejected.root.show()
+            layoutStatusBlacklisted.root.hide()
             layoutStatusRejected.tvReason.text = rejectionReason
+            globalError.hide()
+            loader.hide()
+        }
+    }
+
+    private fun onBlacklisted() {
+        binding?.apply {
+            unifyToolbar.show()
+            layoutStatusPending.root.hide()
+            layoutStatusBlacklisted.ivStatusSubmission.loadImageWithoutPlaceholder(getString(R.string.shop_creation_kyc_rejected))
+            layoutStatusRejected.root.hide()
+            layoutStatusBlacklisted.root.show()
             globalError.hide()
             loader.hide()
         }
@@ -172,6 +186,10 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         }
 
         binding?.layoutStatusRejected?.btnSecondary?.setOnClickListener {
+            goToTokopediaCare()
+        }
+
+        binding?.layoutStatusBlacklisted?.btnSecondary?.setOnClickListener {
             goToTokopediaCare()
         }
 
@@ -200,6 +218,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             loader.hide()
             layoutStatusPending.root.hide()
             layoutStatusRejected.root.hide()
+            layoutStatusBlacklisted.root.hide()
             globalError.show()
             unifyToolbar.show()
         }
@@ -226,6 +245,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             loader.show()
             layoutStatusPending.root.hide()
             layoutStatusRejected.root.hide()
+            layoutStatusBlacklisted.root.hide()
             globalError.hide()
         }
         viewModel.checkKycStatus()
