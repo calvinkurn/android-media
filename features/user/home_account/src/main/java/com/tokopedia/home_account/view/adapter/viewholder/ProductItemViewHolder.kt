@@ -81,7 +81,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
         }
     }
 
-    override fun onViewAttachedToWindow(recyclerView: RecyclerView?) {
+    override fun onViewAttachedToWindow() {
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
@@ -99,7 +99,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
         }
     }
 
-    override fun onViewDetachedFromWindow(recyclerView: RecyclerView?) {
+    override fun onViewDetachedFromWindow() {
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,

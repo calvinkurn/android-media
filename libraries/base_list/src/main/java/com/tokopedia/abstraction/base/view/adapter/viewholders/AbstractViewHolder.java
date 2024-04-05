@@ -1,7 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -57,16 +56,6 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     public void onViewDetachedFromWindow(T element, int visiblePercentage) {}
 
     public void onViewAttachedToWindow(T element) {}
-
-    @Override
-    public void onViewAttachedToWindow(@Nullable RecyclerView recyclerView) {
-
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(@Nullable RecyclerView recyclerView) {
-
-    }
 
     @Override
     public void setVisiblePercentage(int visiblePercentage) {

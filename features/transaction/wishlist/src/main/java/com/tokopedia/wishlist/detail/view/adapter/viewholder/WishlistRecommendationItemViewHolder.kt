@@ -108,7 +108,7 @@ class WishlistRecommendationItemViewHolder(
         }
     }
 
-    override fun onViewAttachedToWindow(recyclerView: RecyclerView?) {
+    override fun onViewAttachedToWindow() {
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
@@ -126,7 +126,7 @@ class WishlistRecommendationItemViewHolder(
         }
     }
 
-    override fun onViewDetachedFromWindow(recyclerView: RecyclerView?) {
+    override fun onViewDetachedFromWindow() {
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,

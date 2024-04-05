@@ -168,29 +168,16 @@ object AppLogTopAds {
     fun getChannel(): String {
         val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
         return when(prevPageName) {
-            AppLogSearch.ParamValue.GOODS_SEARCH -> "product search"
-            PageName.PDP -> "pdp search"
-            PageName.SHOP -> "store search"
-            PageName.EXTERNAL_PROMO -> "find search"
-            else -> "discovery search"
+            AppLogSearch.ParamValue.GOODS_SEARCH -> AdsLogConst.Channel.PRODUCT_SEARCH
+            PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
+            PageName.SHOP -> AdsLogConst.Channel.STORE_SEARCH
+            PageName.EXTERNAL_PROMO -> AdsLogConst.Channel.FIND_SEARCH
+            else -> AdsLogConst.Channel.DISCOVERY_SEARCH
         }
     }
 
     private fun JSONObject.putEnterFrom(enterFrom: String) {
         put(AdsLogConst.Param.ENTER_FROM, enterFrom)
-    }
-
-    fun getChannelName(): String {
-        return when (AppLogAnalytics.getTwoLastPage()) {
-            PageName.HOME, PageName.SEARCH_RESULT -> AdsLogConst.Channel.PRODUCT_SEARCH
-            PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
-            //todo need to make store that means whether official store or shop page
-            PageName.OFFICIAL_STORE -> AdsLogConst.Channel.STORE_SEARCH
-            //todo need to implement fragment page name using AppLogFragmentInterface in discovery and find page
-            PageName.DISCOVERY -> AdsLogConst.Channel.DISCOVERY_SEARCH
-            PageName.FIND_PAGE -> AdsLogConst.Channel.FIND_SEARCH
-            else -> ""
-        }
     }
 
     // todo need to confirm for this value
