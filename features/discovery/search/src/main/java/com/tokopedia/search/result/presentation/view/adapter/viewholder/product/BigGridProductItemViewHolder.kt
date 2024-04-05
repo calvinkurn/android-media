@@ -102,8 +102,6 @@ class BigGridProductItemViewHolder(
                     // todo this value from BE
                     0,
                     AdsLogShowModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
                         productId = element.productID
                     )
                 )
@@ -122,8 +120,6 @@ class BigGridProductItemViewHolder(
                     // todo this value from BE
                     0,
                     AdsLogShowOverModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
                         productId = element.productID,
                         sizePercent = visiblePercentage.toString()
                     )
@@ -144,8 +140,6 @@ class BigGridProductItemViewHolder(
                     // todo this value from BE
                     0,
                     AdsLogRealtimeClickModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
                         productId = element.productID
                     )
                 )

@@ -8,8 +8,6 @@ data class AdsLogShowOverModel(
     val adExtraData: AdExtraData
 ) {
     data class AdExtraData(
-        val channel: String = "",
-        val enterFrom: String = "",
         val mallCardType: String = AdsLogConst.AdCardStyle.PRODUCT_CARD,
         val productId: String,
         // todo need to confirm
