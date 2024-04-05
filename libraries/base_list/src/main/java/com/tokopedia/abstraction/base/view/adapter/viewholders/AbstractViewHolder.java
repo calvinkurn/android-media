@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author kulomady on 1/24/17.
  */
-public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerView.ViewHolder {
+public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerView.ViewHolder implements VisibleVH {
 
     public AbstractViewHolder(View itemView) {
         super(itemView);
@@ -48,14 +48,6 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
         return itemView.getContext().getString(stringRes, value);
     }
 
-    public void onViewDetachedFromWindow() {}
-
-    public void onViewAttachedToWindow() {}
-
-    public void onViewDetachedFromWindow(T element, int visiblePercentage) {}
-
-    public void onViewAttachedToWindow(T element) {}
-
     public void setVisibilityExtent(float visibilityExtent) {
         this.visibilityExtent = visibilityExtent;
     }
@@ -63,4 +55,10 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     public int getVisiblePercentage() {
         return (int) (visibilityExtent * 100);
     }
+
+    @Override
+    public void onViewAttachedToWindow() {}
+
+    @Override
+    public void onViewDetachedFromWindow(int visiblePercentage) {}
 }

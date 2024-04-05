@@ -2,11 +2,10 @@ package com.tokopedia.carouselproductcard
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.carouselproductcard.databinding.CarouselProductCardItemGridLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardGridViewHolder(
     itemView: View,
@@ -20,10 +19,13 @@ internal class CarouselProductCardGridViewHolder(
             else R.layout.carousel_product_card_item_grid_layout
     }
 
+    private var carouselProductCardModel: CarouselProductCardModel? = null
+
     private fun productCardGridView(): ProductCardGridView? =
         itemView.findViewById(R.id.carouselProductCardItem)
 
     override fun bind(carouselProductCardModel: CarouselProductCardModel) {
+        this.carouselProductCardModel = carouselProductCardModel
         val productCardGridView = productCardGridView()
         val productCardModel = carouselProductCardModel.productCardModel
 
@@ -34,6 +36,18 @@ internal class CarouselProductCardGridViewHolder(
         registerProductCardLifecycleObserver(productCardGridView, productCardModel)
 
         setCarouselProductCardListeners(carouselProductCardModel)
+    }
+
+    override fun onViewAttachedToWindow() {
+        carouselProductCardModel?.let { model ->
+            model.getOnViewListener()?.onViewAttachedToWindow(model.productCardModel, absoluteAdapterPosition)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
+        carouselProductCardModel?.let { model ->
+            model.getOnViewListener()?.onViewDetachedFromWindow(model.productCardModel, absoluteAdapterPosition, visiblePercentage)
+        }
     }
 
     private fun setCarouselProductCardListeners(carouselProductCardModel: CarouselProductCardModel) {
@@ -48,9 +62,23 @@ internal class CarouselProductCardGridViewHolder(
         val onAddVariantClickListener = carouselProductCardModel.getAddVariantClickListener()
         val onSeeOtherProductClickListener = carouselProductCardModel.getSeeOtherClickListener()
 
-        productCardGridView?.setOnClickListener {
-            onItemClickListener?.onItemClick(productCardModel, bindingAdapterPosition)
-        }
+        productCardGridView?.setOnClickListener(object : ProductCardClickListener {
+            override fun onClick(v: View) {
+                onItemClickListener?.onItemClick(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onAreaClicked(v: View) {
+                onItemClickListener?.onAreaClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                onItemClickListener?.onProductImageClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                onItemClickListener?.onSellerInfoClicked(productCardModel, bindingAdapterPosition)
+            }
+        })
 
         onItemImpressedListener?.getImpressHolder(bindingAdapterPosition)?.let {
             productCardGridView?.setImageProductViewHintListener(it, object : ViewHintListener {

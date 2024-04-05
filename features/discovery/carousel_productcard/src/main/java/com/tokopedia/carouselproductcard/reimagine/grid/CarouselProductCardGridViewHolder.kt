@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardReimagineGridItemBinding
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardGridViewHolder(
@@ -12,17 +13,46 @@ internal class CarouselProductCardGridViewHolder(
 ): AbstractViewHolder<CarouselProductCardGridModel>(itemView) {
 
     private val binding: CarouselProductCardReimagineGridItemBinding? by viewBinding()
+    private var element: CarouselProductCardGridModel? = null
 
     override fun bind(element: CarouselProductCardGridModel) {
+        this.element = element
         binding?.carouselProductCardReimagineGridItem?.run {
             setProductModel(element.productCardModel)
 
             addOnImpressionListener(element)
 
-            setOnClickListener { element.onClick() }
+            setOnClickListener(object : ProductCardClickListener {
+                override fun onClick(v: View) {
+                    element.onClick()
+                }
+
+                override fun onAreaClicked(v: View) {
+                    element.onAreaClicked()
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    element.onProductImageClicked()
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    element.onSellerInfoClicked()
+                }
+            })
+
 
             setAddToCartOnClickListener { element.onAddToCart() }
         }
+    }
+
+    override fun onViewAttachedToWindow() {
+        element?.onViewAttachedToWindow?.invoke()
+    }
+
+    override fun onViewDetachedFromWindow(
+        visiblePercentage: Int
+    ) {
+        element?.onViewDetachedFromWindow?.invoke(visiblePercentage)
     }
 
     private fun addOnImpressionListener(element: CarouselProductCardGridModel) {

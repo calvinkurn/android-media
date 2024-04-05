@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.VisibleVH
 
 open class PercentageScrollListener : OnScrollListener() {
-    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        super.onScrollStateChanged(recyclerView, newState)
-    }
+
+    val globalVisibleRect = Rect()
+    val itemVisibleRect = Rect()
 
     override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
         val layoutManager = recycler.layoutManager
@@ -30,9 +30,6 @@ open class PercentageScrollListener : OnScrollListener() {
         else
             (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
 
-        val globalVisibleRect = Rect()
-        val itemVisibleRect = Rect()
-
         recycler.getGlobalVisibleRect(globalVisibleRect)
 
         for (pos in firstPosition..lastPosition) {
@@ -45,8 +42,8 @@ open class PercentageScrollListener : OnScrollListener() {
                     val visibleHeight = itemVisibleRect.bottom - globalVisibleRect.top
                     Math.min(visibleHeight.toFloat() / view.height, 1f)
                 }
-                val viewHolder = recycler.findViewHolderForAdapterPosition(pos) as AbstractViewHolder<*>
-                viewHolder.setVisibilityExtent(visibilityExtent)
+                val viewHolder = recycler.findViewHolderForAdapterPosition(pos)
+                if (viewHolder is VisibleVH) viewHolder.setVisibilityExtent(visibilityExtent)
             }
         }
     }

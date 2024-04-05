@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardItemListLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardListViewHolder(
@@ -43,9 +44,24 @@ internal class CarouselProductCardListViewHolder(
         val onATCNonVariantClickListener = carouselProductCardModel.getOnATCNonVariantClickListener()
         val onAddVariantClickListener = carouselProductCardModel.getAddVariantClickListener()
 
-        binding.carouselProductCardItem.setOnClickListener {
-            onItemClickListener?.onItemClick(productCardModel, adapterPosition)
-        }
+        binding.carouselProductCardItem.setOnClickListener(object : ProductCardClickListener {
+            override fun onClick(v: View) {
+                onItemClickListener?.onItemClick(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onAreaClicked(v: View) {
+                onItemClickListener?.onAreaClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                onItemClickListener?.onProductImageClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                onItemClickListener?.onSellerInfoClicked(productCardModel, bindingAdapterPosition)
+            }
+        })
+
 
         onItemImpressedListener?.getImpressHolder(adapterPosition)?.let {
             binding.carouselProductCardItem.setImageProductViewHintListener(it, object : ViewHintListener {

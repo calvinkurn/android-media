@@ -6,6 +6,10 @@ import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.CardName
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
@@ -15,6 +19,43 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 object TrackRecommendationMapper {
+
+    fun RecommendationItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(
+            refer,
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogRealtimeClickModel.AdExtraData(
+                productId = productId.orZero().toString()
+            )
+        )
+    }
+    fun RecommendationItem.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogShowOverModel.AdExtraData(
+                productId = productId.orZero().toString(),
+                sizePercent = visiblePercentage.toString()
+            )
+        )
+    }
+
+    fun RecommendationItem.asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogShowModel.AdExtraData(
+                productId = productId.orZero().toString()
+            )
+        )
+    }
 
     fun RecommendationItem.asProductTrackModel(
         isCache: Boolean = false,

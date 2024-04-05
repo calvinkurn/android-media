@@ -3,6 +3,7 @@ package com.tokopedia.carouselproductcard
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardListTypeFactoryImpl
 
 internal class CarouselProductCardListAdapter(
@@ -12,6 +13,27 @@ internal class CarouselProductCardListAdapter(
     CarouselProductCardAdapter {
 
     private val adapterTypeFactory = CarouselProductCardListTypeFactoryImpl(internalListener)
+    private val scrollListener = PercentageScrollListener()
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.addOnScrollListener(scrollListener)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        recyclerView.removeOnScrollListener(scrollListener)
+    }
+
+    override fun onViewAttachedToWindow(holder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
+        super.onViewAttachedToWindow(holder)
+        holder.onViewAttachedToWindow()
+    }
+
+    override fun onViewDetachedFromWindow(holder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onViewDetachedFromWindow(holder.getVisiblePercentage())
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         return adapterTypeFactory.onCreateViewHolder(viewGroup, viewType)
