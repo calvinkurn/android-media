@@ -1391,7 +1391,7 @@ class ProductListFragment :
 
         onBoardingListenerDelegate.dismissCoachmark()
         presenter?.clearData()
-        recyclerViewUpdater.productListAdapter?.clearData()
+        recyclerViewUpdater.clearData()
         productVideoAutoplay.stopVideoAutoplay()
 
         hideSearchSortFilter()
