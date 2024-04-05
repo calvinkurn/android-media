@@ -2,20 +2,15 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardListBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView

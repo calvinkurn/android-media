@@ -220,8 +220,6 @@ class ProductItemDataView:
             // todo this value from BE
             0,
             AdsLogShowModel.AdExtraData(
-                channel = AppLogTopAds.getChannelName(),
-                enterFrom = AppLogTopAds.getEnterFrom(),
                 productId = productID
             )
         )

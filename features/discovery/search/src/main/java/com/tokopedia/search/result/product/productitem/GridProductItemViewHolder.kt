@@ -6,13 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
