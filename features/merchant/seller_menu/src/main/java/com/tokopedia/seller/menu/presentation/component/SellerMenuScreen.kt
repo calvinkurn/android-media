@@ -1613,7 +1613,8 @@ fun SellerMenuStatusPm(
                 powerMerchantText,
                 powerMerchantStatusText,
                 pmIcon,
-                upgradePMText
+                upgradePMText,
+                kycNotVerified
             ) = createRefs()
 
             val middleGuideline = createGuidelineFromStart(40.dp)
@@ -1653,11 +1654,27 @@ fun SellerMenuStatusPm(
                     )
                 }
             } else {
+                NestIcon(
+                    iconId = IconUnify.INFORMATION,
+                    colorLightEnable = NestTheme.colors.RN._500,
+                    colorNightEnable = NestTheme.colors.RN._500,
+                    modifier = Modifier
+                        .width(16.dp)
+                        .height(16.dp)
+                        .clip(CircleShape)
+                        .background(Color.Transparent)
+                        .constrainAs(kycNotVerified) {
+                            end.linkTo(powerMerchantStatusText.start)
+                            top.linkTo(powerMerchantStatusText.top)
+                            bottom.linkTo(powerMerchantStatusText.bottom)
+                        }
+                )
+
                 NestTypography(
                     text = stringResource(id = sellermenucommonR.string.setting_other_not_verified),
                     textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.GN._500,
-                        fontWeight = FontWeight.Bold
+                        color = NestTheme.colors.NN._950,
+                        fontWeight = FontWeight.Normal
                     ),
                     modifier = Modifier
                         .widthIn(min = 0.dp)

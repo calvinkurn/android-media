@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking.sendEventClickShopStatus
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
@@ -52,6 +53,8 @@ class ShopStatusViewHolder(
         itemView?.findViewById(R.id.ic_sah_new_other_shop_status_pm_pro)
     private val shopStatusTitleTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_status_title)
+    private val icKycNotVerified: IconUnify? =
+        itemView?.findViewById(R.id.icKycNotVerified)
     private val shopStatusDescTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_status_desc)
     private val shopStatusEligiblePmIcon: IconUnify? =
@@ -64,13 +67,14 @@ class ShopStatusViewHolder(
     private var onItemViewClicked: () -> Unit = {}
 
     override fun bind(element: ShopStatusWidgetUiModel) {
-        when(val state = element.state) {
+        when (val state = element.state) {
             is SettingResponseState.SettingSuccess -> {
                 itemView.addOnImpressionListener(element.impressHolder) {
                     onShopStatusImpression(state.data)
                 }
                 setShopStatusSuccessLayout(state.data, element.userShopInfoUiModel)
             }
+
             is SettingResponseState.SettingError -> setShopStatusErrorLayout()
             is SettingResponseState.SettingLoading -> setShopStatusLoadingLayout()
         }
@@ -78,12 +82,14 @@ class ShopStatusViewHolder(
 
     private fun setShopStatusSuccessLayout(
         shopType: ShopType,
-        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
+        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
+    ) {
 
         shopStatusDescTextView?.run {
             setOnClickListener(null)
             isClickable = false
         }
+        icKycNotVerified?.gone()
 
         when (shopType) {
             is RegularMerchant -> setRegularMerchantLayout(shopType, userShopInfoUiModel)
@@ -119,6 +125,7 @@ class ShopStatusViewHolder(
                     else -> setRegularMerchantVerification()
                 }
             }
+
             is RegularMerchant.Pending -> setRegularMerchantPending()
             else -> setRegularMerchantNeedUpgrade()
         }
@@ -128,7 +135,8 @@ class ShopStatusViewHolder(
         successOsLayout?.gone()
 
         onItemViewClicked = if (regularMerchant is RegularMerchant.Verified &&
-            pmProEligibleIcon != null) {
+            pmProEligibleIcon != null
+        ) {
             {
                 onGoToPowerMerchant(TAB_PM_PRO, false)
             }
@@ -173,8 +181,10 @@ class ShopStatusViewHolder(
     private fun setPowerMerchantLayout(isKyc: Boolean) {
         setTitle(sellermenucommonR.string.power_merchant_upgrade)
         if (isKyc) {
+            icKycNotVerified?.gone()
             shopStatusDescTextView?.gone()
         } else {
+            icKycNotVerified?.visible()
             setDescription(
                 sellermenucommonR.string.setting_other_not_verified,
                 unifyprinciplesR.color.Unify_NN950
@@ -204,10 +214,12 @@ class ShopStatusViewHolder(
                 statusStringRes = R.string.sah_new_other_status_pm_pro_advanced
                 statusColorRes = unifyprinciplesR.color.Unify_NN600
             }
+
             is PowerMerchantProStatus.Expert -> {
                 statusStringRes = R.string.sah_new_other_status_pm_pro_expert
                 statusColorRes = unifyprinciplesR.color.Unify_TN500
             }
+
             is PowerMerchantProStatus.Ultimate -> {
                 statusStringRes = R.string.sah_new_other_status_pm_pro_ultimate
                 statusColorRes = unifyprinciplesR.color.Unify_YN500
