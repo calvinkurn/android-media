@@ -3,8 +3,11 @@ package com.tokopedia.carouselproductcard.reimagine
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 
 private typealias CarouselProductCardAdapter =
     ListAdapter<Visitable<CarouselProductCardTypeFactory>, AbstractViewHolder<*>>
@@ -13,6 +16,37 @@ internal class Adapter(
     private val typeFactory: CarouselProductCardTypeFactory,
     private val onCurrentListChanged: () -> Unit,
 ): CarouselProductCardAdapter(DiffUtilItemCallback(typeFactory)) {
+
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+    private var recyclerView: RecyclerView? = null
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+        this.recyclerView?.addOnScrollListener(scrollListener)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView?.removeOnScrollListener(scrollListener)
+        this.recyclerView = null
+    }
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewAttachedToWindow()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewDetachedFromWindow(holder.visiblePercentage)
+        }
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

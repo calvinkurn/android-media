@@ -180,6 +180,19 @@ object AppLogTopAds {
         put(AdsLogConst.Param.ENTER_FROM, enterFrom)
     }
 
+    fun getChannelName(): String {
+        return when (AppLogAnalytics.getTwoLastPage()) {
+            PageName.HOME, PageName.SEARCH_RESULT -> AdsLogConst.Channel.PRODUCT_SEARCH
+            PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
+            //todo need to make store that means whether official store or shop page
+            PageName.OFFICIAL_STORE -> AdsLogConst.Channel.STORE_SEARCH
+            //todo need to implement fragment page name using AppLogFragmentInterface in discovery and find page
+            PageName.DISCOVERY -> AdsLogConst.Channel.DISCOVERY_SEARCH
+            PageName.FIND_PAGE -> AdsLogConst.Channel.FIND_SEARCH
+            else -> ""
+        }
+    }
+
     // todo need to confirm for this value
     private fun JSONObject.putChannelName(channelName: String) {
         put(AdsLogConst.Param.CHANNEL, channelName)

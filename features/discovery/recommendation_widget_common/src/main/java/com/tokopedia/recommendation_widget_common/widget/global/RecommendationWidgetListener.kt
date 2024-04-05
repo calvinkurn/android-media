@@ -5,7 +5,17 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 interface RecommendationWidgetListener {
 
+    fun onViewAttachedToWindow(position: Int, item: RecommendationItem) {}
+
+    fun onViewDetachedFromWindow(position: Int, item: RecommendationItem, visiblePercentage: Int) {}
+
     fun onProductClick(position: Int, item: RecommendationItem): Boolean = false
+
+    fun onAreaClicked(position: Int, item: RecommendationItem) {}
+
+    fun onProductImageClicked(position: Int, item: RecommendationItem) {}
+
+    fun onSellerInfoClicked(position: Int, item: RecommendationItem) {}
 
     fun onProductImpress(position: Int, item: RecommendationItem): Boolean = false
 

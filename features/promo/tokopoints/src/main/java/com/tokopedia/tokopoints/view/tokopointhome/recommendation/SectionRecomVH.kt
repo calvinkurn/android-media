@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokopoints.R
@@ -15,12 +16,23 @@ import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : RecyclerView.ViewHolder(view) {
+
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+
     val layoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(
             view.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
+    }
+
+    private val rvCarousel: RecyclerView = view.findViewById(R.id.rv_recomm)
+
+    init {
+        rvCarousel.addOnScrollListener(percentageScrollListener)
     }
 
     fun bind(data: RewardsRecommendation) {
@@ -37,7 +49,6 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
 
         (view.findViewById<View>(R.id.text_sub_title_recomm) as TextView).text =
             view.context.resources.getString(R.string.tp_recom_subtitle)
-        val rvCarousel: RecyclerView = view.findViewById(R.id.rv_recomm)
         rvCarousel?.isDrawingCacheEnabled = true
         rvCarousel.setHasFixedSize(true)
         rvCarousel?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
@@ -52,6 +63,7 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
                 )
             )
         }
+
         rvCarousel.adapter =
             RewardsRecommAdapter(data.recommendationWrapper as ArrayList<RecommendationWrapper> ,listener)
 

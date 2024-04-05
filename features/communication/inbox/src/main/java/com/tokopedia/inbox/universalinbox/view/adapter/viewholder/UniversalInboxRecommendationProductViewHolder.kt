@@ -11,17 +11,16 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationProductItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -34,7 +33,6 @@ class UniversalInboxRecommendationProductViewHolder(
 ) : AbstractViewHolder<UniversalInboxRecommendationUiModel>(itemView), AppLogRecTriggerInterface {
 
     private val binding: UniversalInboxRecommendationProductItemBinding? by viewBinding()
-
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
@@ -70,15 +68,27 @@ class UniversalInboxRecommendationProductViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-                    sendClickAdsByteIO(uiModel.recommendationItem, AdsLogConst.Refer.AREA)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.INBOX,
+                        uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
+                    )
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    sendClickAdsByteIO(uiModel.recommendationItem, AdsLogConst.Refer.COVER)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.INBOX,
+                        uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
+                    )
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    sendClickAdsByteIO(uiModel.recommendationItem, AdsLogConst.Refer.SELLER_NAME)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.INBOX,
+                        uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
+                    )
                 }
             })
 
@@ -91,40 +101,10 @@ class UniversalInboxRecommendationProductViewHolder(
         }
     }
 
-    private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
-        if (recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogRealtimeClickModel(
-                    refer,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString()
-                    )
-                )
-            )
-        }
-    }
-
     override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
-        if (element?.recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventShow(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowModel.AdExtraData(
-                        productId = element.recommendationItem.productId.orZero().toString()
-                    )
-                )
-            )
+        element?.recommendationItem?.let { item ->
+            if (item.isTopAds) AppLogTopAds.sendEventShow(itemView.context, PageName.INBOX,
+                item.asAdsLogShowModel())
         }
     }
 
@@ -132,21 +112,9 @@ class UniversalInboxRecommendationProductViewHolder(
         element: UniversalInboxRecommendationUiModel?,
         visiblePercentage: Int
     ) {
-        if (element?.recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventShowOver(
-                itemView.context,
-                PageName.INBOX,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowOverModel.AdExtraData(
-                        productId = element.recommendationItem.productId.orZero().toString(),
-                        sizePercent = visiblePercentage.toString()
-                    )
-                )
-            )
+        element?.recommendationItem?.let { item ->
+            if (item.isTopAds) AppLogTopAds.sendEventShowOver(itemView.context, PageName.INBOX,
+                item.asAdsLogShowOverModel(visiblePercentage))
         }
     }
 

@@ -3,8 +3,16 @@ package com.tokopedia.search.result.product.productitem
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
@@ -44,13 +52,60 @@ class GridProductItemViewHolder(
                 productListener.onProductImpressed(productItemData, bindingAdapterPosition)
             }
 
-            setOnClickListener {
-                productListener.onItemClicked(productItemData, bindingAdapterPosition)
-            }
+            setOnClickListener(object: ProductCardClickListener {
+
+                override fun onClick(v: View) {
+                    productListener.onItemClicked(productItemData, bindingAdapterPosition)
+                }
+
+                override fun onAreaClicked(v: View) {
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
+                    )
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
+                    )
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
+                    )
+                }
+            })
 
             addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
                 productListener.onProductImpressedByteIO(productItemData)
             }
+        }
+    }
+
+    override fun onViewAttachedToWindow(element: ProductItemDataView?) {
+        if (element?.isAds == true) {
+            AppLogTopAds.sendEventShow(
+                itemView.context,
+                PageName.SEARCH_RESULT,
+                element.asAdsLogShowModel()
+            )
+        }
+    }
+
+    override fun onViewDetachedFromWindow(element: ProductItemDataView?, visiblePercentage: Int) {
+        if (element?.isAds == true) {
+            AppLogTopAds.sendEventShowOver(
+                itemView.context,
+                PageName.SEARCH_RESULT,
+                element.asAdsLogShowOverModel(visiblePercentage)
+            )
         }
     }
 

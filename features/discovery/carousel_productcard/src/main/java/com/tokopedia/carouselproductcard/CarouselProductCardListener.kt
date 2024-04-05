@@ -7,6 +7,14 @@ interface CarouselProductCardListener {
 
     interface OnItemClickListener {
         fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
+        fun onAreaClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {}
+        fun onProductImageClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {}
+        fun onSellerInfoClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {}
+    }
+
+    interface OnViewListener {
+        fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
+        fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int)
     }
 
     interface OnItemImpressedListener {
