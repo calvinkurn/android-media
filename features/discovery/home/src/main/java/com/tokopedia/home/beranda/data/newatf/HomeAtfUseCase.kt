@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -65,8 +66,10 @@ class HomeAtfUseCase @Inject constructor(
     fun fetchAtfDataList() {
         // only fetch dynamic position on first load
         workerJob = launch(homeDispatcher.io) {
-            async { dynamicPositionRepository.getCachedData() }.await()
-            async { dynamicPositionRepository.getRemoteData() }.await()
+            val cache = launch { dynamicPositionRepository.getCachedData() }
+            val remote = launch { dynamicPositionRepository.getRemoteData() }
+
+            joinAll(cache, remote)
         }
 
         observeDynamicPositionFlow()
@@ -99,6 +102,12 @@ class HomeAtfUseCase @Inject constructor(
                 }
             }
         }
+    }
+
+    fun dispose() {
+        workerJob?.cancel()
+        positionObserverJob?.cancel()
+        atfDataObserverJob?.cancel()
     }
 
     /**
