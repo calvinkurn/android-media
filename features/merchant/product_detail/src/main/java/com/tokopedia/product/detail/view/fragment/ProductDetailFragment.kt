@@ -3744,8 +3744,7 @@ open class ProductDetailFragment :
         }
 
         pdpUiUpdater?.removeComponentP2Data(
-            it,
-            viewModel.getProductInfoP1?.basic?.stats?.countReview ?: ""
+            it
         )
 
         renderRestrictionBottomSheet(it.restrictionInfo)
