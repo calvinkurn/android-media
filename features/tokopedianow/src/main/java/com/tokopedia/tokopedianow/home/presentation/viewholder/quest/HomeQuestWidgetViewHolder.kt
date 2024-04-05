@@ -90,6 +90,7 @@ class HomeQuestWidgetViewHolder(
     override fun bind(element: HomeQuestWidgetUiModel?, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty() && element != null) {
             mAdapter.submitList(element.questList)
+            setupProgressBar(element)
         }
     }
 

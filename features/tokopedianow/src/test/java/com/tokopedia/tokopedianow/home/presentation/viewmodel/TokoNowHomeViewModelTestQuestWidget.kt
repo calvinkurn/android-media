@@ -265,7 +265,8 @@ class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
                     showStartBtn = false,
                     isLoading = false,
                     currentProgress = 1f,
-                    totalProgress = 1f
+                    totalProgress = 1f,
+                    isIdle = false
                 ),
                 HomeQuestCardItemUiModel(
                     id = "1234",
@@ -276,7 +277,8 @@ class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
                     showStartBtn = false,
                     isLoading = false,
                     currentProgress = 0f,
-                    totalProgress = 1f
+                    totalProgress = 1f,
+                    isIdle = false
                 ),
                 HomeQuestCardItemUiModel(
                     id = "1235",
@@ -287,10 +289,12 @@ class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
                     showStartBtn = false,
                     isLoading = false,
                     currentProgress = 0f,
-                    totalProgress = 1f
+                    totalProgress = 1f,
+                    isIdle = true
                 )
             ),
-            currentProgressPosition = 1
+            currentProgressPosition = 1,
+            isStarted = true
         )
 
         verifyGetHomeLayoutDataUseCaseCalled()
@@ -387,7 +391,8 @@ class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
                             showStartBtn = false,
                             isLoading = false,
                             currentProgress = 0f,
-                            totalProgress = 100f
+                            totalProgress = 100f,
+                            isIdle = false
                         ),
                         HomeQuestCardItemUiModel(
                             id = "255",
@@ -398,10 +403,12 @@ class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
                             showStartBtn = true,
                             isLoading = false,
                             currentProgress = 0f,
-                            totalProgress = 100f
+                            totalProgress = 100f,
+                            isIdle = true
                         )
                     ),
-                    currentProgressPosition = 0
+                    currentProgressPosition = 0,
+                    isStarted = true
                 )
             ),
             state = TokoNowLayoutState.UPDATE
@@ -452,7 +459,8 @@ class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
                             showStartBtn = false,
                             isLoading = false,
                             currentProgress = 0f,
-                            totalProgress = 100f
+                            totalProgress = 100f,
+                            isIdle = false
                         ),
                         HomeQuestCardItemUiModel(
                             id = "255",
@@ -463,10 +471,12 @@ class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
                             showStartBtn = true,
                             isLoading = false,
                             currentProgress = 0f,
-                            totalProgress = 100f
+                            totalProgress = 100f,
+                            isIdle = true
                         )
                     ),
-                    currentProgressPosition = 0
+                    currentProgressPosition = 0,
+                    isStarted = true
                 )
             ),
             state = TokoNowLayoutState.UPDATE

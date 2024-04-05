@@ -98,7 +98,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapProductCarouselChipsWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.setProductCarouselChipsLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper
-import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.updateQuestStartBtn
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.updateQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.getRealTimeRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapLatestRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapLoadingRealTimeRecommendation
@@ -749,22 +749,21 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun startQuest(channelId: String, questId: Int) {
         launchCatchError(block = {
-            homeLayoutItemList.updateQuestStartBtn(
+            homeLayoutItemList.updateQuestWidgetUiModel(
                 channelId = channelId,
                 questId = questId,
-                isLoading = true,
-                visible = true
+                isLoading = true
             )
 
             updateVisitableList()
 
             val response = startQuestUseCase.execute(questId)
 
-            homeLayoutItemList.updateQuestStartBtn(
+            homeLayoutItemList.updateQuestWidgetUiModel(
                 channelId = channelId,
                 questId = questId,
                 isLoading = false,
-                visible = false
+                showStartBtn = false,
             )
 
             _startQuestResult.postValue(Success(response))
@@ -773,11 +772,10 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {
             _startQuestResult.postValue(Fail(it))
 
-            homeLayoutItemList.updateQuestStartBtn(
+            homeLayoutItemList.updateQuestWidgetUiModel(
                 channelId = channelId,
                 questId = questId,
-                isLoading = false,
-                visible = true
+                isLoading = false
             )
 
             updateVisitableList()
@@ -975,7 +973,7 @@ class TokoNowHomeViewModel @Inject constructor(
         val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
         if (questListResponse.questWidgetList.isEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
             homeLayoutItemList.removeItem(id)
-        } else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
+        }  else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
             homeLayoutItemList.mapQuestReloadWidget(
                 id = id,
                 mainTitle = mainTitle,

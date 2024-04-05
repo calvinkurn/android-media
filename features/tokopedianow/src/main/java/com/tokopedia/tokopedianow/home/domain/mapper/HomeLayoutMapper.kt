@@ -397,6 +397,7 @@ object HomeLayoutMapper {
     ) {
         updateItemById(id) {
             val hasFinishedQuest = questList.lastOrNull { it.isFinished() } != null
+            val isQuestStarted = !questList.all { it.isIdle }
             val currentProgressPosition = if(hasFinishedQuest) {
                 questList.indexOfLast { it.isFinished() } + 1
             } else {
@@ -406,7 +407,8 @@ object HomeLayoutMapper {
                 id = id,
                 title = title,
                 questList = questList,
-                currentProgressPosition = currentProgressPosition
+                currentProgressPosition = currentProgressPosition,
+                isStarted = isQuestStarted
             )
             HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }

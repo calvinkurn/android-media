@@ -80,22 +80,23 @@ object QuestMapper {
             showStartBtn = showStartBtn,
             isLoading = false,
             currentProgress = currentProgress,
-            totalProgress = totalProgress
+            totalProgress = totalProgress,
+            isIdle = it.isIdle()
         )
     }
 
-    fun MutableList<HomeLayoutItemUiModel?>.updateQuestStartBtn(
+    fun MutableList<HomeLayoutItemUiModel?>.updateQuestWidgetUiModel(
         channelId: String,
         questId: Int,
-        visible: Boolean = true,
-        isLoading: Boolean = false
+        isLoading: Boolean = false,
+        showStartBtn: Boolean = true
     ) {
-        updateQuestItemUiModel(channelId, questId) {
-            it.copy(showStartBtn = visible, isLoading = isLoading)
+        updateQuestWidgetUiModel(channelId, questId) {
+            it.copy(showStartBtn = showStartBtn, isLoading = isLoading)
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel?>.updateQuestItemUiModel(
+    private fun MutableList<HomeLayoutItemUiModel?>.updateQuestWidgetUiModel(
         channelId: String,
         questId: Int,
         result: (HomeQuestCardItemUiModel) -> HomeQuestCardItemUiModel
@@ -109,7 +110,8 @@ object QuestMapper {
 
             questList[questItemIndex] = result.invoke(questItem)
 
-            val newQuestWidget = questWidget.copy(questList = questList)
+            val isStarted = !questList.all { it.isIdle }
+            val newQuestWidget = questWidget.copy(questList = questList, isStarted = isStarted)
             this[questWidgetIndex] = itemUiModel.copy(layout = newQuestWidget)
         }
     }

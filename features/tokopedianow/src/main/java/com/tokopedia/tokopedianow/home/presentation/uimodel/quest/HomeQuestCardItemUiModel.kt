@@ -9,7 +9,8 @@ data class HomeQuestCardItemUiModel(
     val showStartBtn: Boolean,
     val isLoading: Boolean,
     val currentProgress: Float,
-    val totalProgress: Float
+    val totalProgress: Float,
+    val isIdle: Boolean
 ) {
 
     fun isFinished(): Boolean {

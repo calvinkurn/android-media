@@ -97,8 +97,14 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
             val currentProgressPosition = uiModel.currentProgressPosition
             val itemSpacing = binding.viewBackground.width / (questCount - 1)
             val viewBackgroundResId = R.color.tokopedianow_quest_circle_border_dms_color
+            val starImageDrawable = if(uiModel.isStarted) {
+                ContextCompat.getDrawable(context, R.drawable.tokopedianow_ic_quest_star)
+            } else {
+                ContextCompat.getDrawable(context, R.drawable.tokopedianow_ic_quest_star_grey)
+            }
 
             viewBackground.setBackgroundColor(ContextCompat.getColor(context, viewBackgroundResId))
+            imageStar.setImageDrawable(starImageDrawable)
 
             for (i in 0 until questCount) {
                 val view = if (progressItems.getOrNull(i) == null) {
