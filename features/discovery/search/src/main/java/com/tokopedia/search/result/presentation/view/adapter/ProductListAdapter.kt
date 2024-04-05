@@ -42,16 +42,16 @@ class ProductListAdapter(
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
         super.onViewAttachedToWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            val item = list.get(holder.absoluteAdapterPosition)
+        if (holder is IAdsViewHolderTrackListener && holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            val item = list[holder.absoluteAdapterPosition]
             (holder as AbstractViewHolder<Visitable<*>>).onViewAttachedToWindow(item)
         }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
         super.onViewDetachedFromWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            val item = list.get(holder.absoluteAdapterPosition)
+        if (holder is IAdsViewHolderTrackListener && holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            val item = list[holder.absoluteAdapterPosition]
             (holder as AbstractViewHolder<Visitable<*>>).onViewDetachedFromWindow(item, holder.visiblePercentage)
         }
     }
