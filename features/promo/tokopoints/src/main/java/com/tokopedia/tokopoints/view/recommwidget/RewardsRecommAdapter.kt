@@ -9,13 +9,12 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHold
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
@@ -93,55 +92,33 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                 AppLogTopAds.sendEventRealtimeClick(
                     itemView.context,
                     PageName.REWARD,
-                    AdsLogRealtimeClickModel(
-                        refer,
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        AdsLogRealtimeClickModel.AdExtraData(
-                            productId = recommendationItem.productId.orZero().toString()
-                        )
-                    )
+                    recommendationItem.asAdsLogRealtimeClickModel(refer)
                 )
             }
         }
 
 
         override fun onViewAttachedToWindow() {
-            if (uiModel?.isTopAds == true) {
-                AppLogTopAds.sendEventShow(
-                    itemView.context,
-                    PageName.REWARD,
-                    AdsLogShowModel(
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        AdsLogShowModel.AdExtraData(
-                            productId = uiModel?.productId.orZero().toString(),
-                        )
+            uiModel?.let {
+                if (it.isTopAds) {
+                    AppLogTopAds.sendEventShow(
+                        itemView.context,
+                        PageName.REWARD,
+                        it.asAdsLogShowModel()
                     )
-                )
+                }
             }
         }
 
         override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-            if (uiModel?.isTopAds == true) {
-                AppLogTopAds.sendEventShowOver(
-                    itemView.context,
-                    PageName.REWARD,
-                    AdsLogShowOverModel(
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        AdsLogShowOverModel.AdExtraData(
-                            productId = uiModel?.productId.orZero().toString(),
-                            sizePercent = visiblePercentage.toString()
-                        )
+            uiModel?.let {
+                if (it.isTopAds) {
+                    AppLogTopAds.sendEventShowOver(
+                        itemView.context,
+                        PageName.REWARD,
+                        it.asAdsLogShowOverModel(visiblePercentage)
                     )
-                )
+                }
             }
         }
 

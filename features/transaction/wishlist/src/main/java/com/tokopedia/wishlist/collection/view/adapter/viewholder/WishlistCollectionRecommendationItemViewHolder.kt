@@ -10,15 +10,14 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
@@ -90,54 +89,32 @@ class WishlistCollectionRecommendationItemViewHolder(
             AppLogTopAds.sendEventRealtimeClick(
                 itemView.context,
                 PageName.WISHLIST,
-                AdsLogRealtimeClickModel(
-                    refer,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = recommendationItem.productId.orZero().toString()
-                    )
-                )
+                recommendationItem.asAdsLogRealtimeClickModel(refer)
             )
         }
     }
 
     override fun onViewAttachedToWindow() {
-        if (recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventShow(
-                itemView.context,
-                PageName.WISHLIST,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString(),
-                    )
+        recommendationItem?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventShow(
+                    itemView.context,
+                    PageName.WISHLIST,
+                    it.asAdsLogShowModel()
                 )
-            )
+            }
         }
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        if (recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventShowOver(
-                itemView.context,
-                PageName.WISHLIST,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowOverModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString(),
-                        sizePercent = visiblePercentage.toString()
-                    )
+        recommendationItem?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventShowOver(
+                    itemView.context,
+                    PageName.WISHLIST,
+                    it.asAdsLogShowOverModel(visiblePercentage)
                 )
-            )
+            }
         }
     }
 

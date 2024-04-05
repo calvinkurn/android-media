@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
@@ -55,12 +56,26 @@ class RecommendationCardGridViewHolder constructor(
     }
 
     private fun setItemProductCardClickListener(element: RecommendationCardModel) {
-        productCardView?.setOnClickListener {
-            listener.onProductCardClicked(
-                element,
-                bindingAdapterPosition
-            )
-        }
+        productCardView?.setOnClickListener(object : ProductCardClickListener{
+            override fun onClick(v: View) {
+                listener.onProductCardClicked(
+                    element,
+                    bindingAdapterPosition
+                )
+            }
+
+            override fun onAreaClicked(v: View) {
+
+            }
+
+            override fun onProductImageClicked(v: View) {
+
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+
+            }
+        })
     }
 
     private fun setItemThreeDotsClickListener(productCardItem: RecommendationCardModel) {

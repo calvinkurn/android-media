@@ -6,15 +6,14 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.HomeAccountRecommendationItemProductCardBinding
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.utils.view.binding.viewBinding
@@ -63,58 +62,38 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
     }
 
     private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
-        if (recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.ACCOUNT,
-                AdsLogRealtimeClickModel(
-                    refer,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = recommendationItem.productId.orZero().toString()
-                    )
+        recommendationItem?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventRealtimeClick(
+                    itemView.context,
+                    PageName.ACCOUNT,
+                    it.asAdsLogRealtimeClickModel(refer)
                 )
-            )
+            }
         }
     }
 
     override fun onViewAttachedToWindow() {
-        if (recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventShow(
-                itemView.context,
-                PageName.ACCOUNT,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString(),
-                    )
+        recommendationItem?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventShow(
+                    itemView.context,
+                    PageName.ACCOUNT,
+                    it.asAdsLogShowModel()
                 )
-            )
+            }
         }
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        if (recommendationItem?.isTopAds == true) {
-            AppLogTopAds.sendEventShowOver(
-                itemView.context,
-                PageName.ACCOUNT,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowOverModel.AdExtraData(
-                        productId = recommendationItem?.productId.orZero().toString(),
-                        sizePercent = visiblePercentage.toString()
-                    )
+        recommendationItem?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventShowOver(
+                    itemView.context,
+                    PageName.ACCOUNT,
+                    it.asAdsLogShowOverModel(visiblePercentage)
                 )
-            )
+            }
         }
     }
 
