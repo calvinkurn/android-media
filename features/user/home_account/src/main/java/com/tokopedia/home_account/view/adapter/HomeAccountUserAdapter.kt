@@ -2,6 +2,8 @@ package com.tokopedia.home_account.view.adapter
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.ProfileDataView
@@ -28,7 +30,13 @@ class HomeAccountUserAdapter(
     shopAdsNewPositionCallback: (Int, CpmModel) -> Unit,
 ): BaseCommonAdapter() {
 
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+
     private var memberTitle: Typography? = null
+
+    private var recyclerView: RecyclerView? = null
 
     init {
         delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener, tokopediaPlusListener, balanceAndPointAdapter, memberAdapter))
@@ -47,6 +55,31 @@ class HomeAccountUserAdapter(
         if (holder is ProfileViewHolder) {
             val memberSection = holder.itemView.findViewById<ConstraintLayout>(R.id.home_account_profile_member_section)
             memberTitle = memberSection.findViewById(R.id.home_account_member_layout_title)
+        }
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
+        this.recyclerView = null
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewAttachedToWindow(recyclerView)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewDetachedFromWindow(recyclerView)
         }
     }
 

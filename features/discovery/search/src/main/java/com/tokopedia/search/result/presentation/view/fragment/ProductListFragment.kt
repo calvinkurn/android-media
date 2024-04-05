@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogFragmentInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
@@ -29,6 +30,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
@@ -193,7 +195,8 @@ class ProductListFragment :
     ClassNameProvider,
     ScreenNameProvider,
     BackToTopView,
-    AppLogInterface by ProductPageNameDelegate() {
+    AppLogInterface by ProductPageNameDelegate(),
+    AppLogFragmentInterface {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -1713,5 +1716,9 @@ class ProductListFragment :
         val selectedSortName = getSelectedSortName(searchParameter, dynamicFilterModel.data.sort)
 
         return ecomSortName(selectedSortName)
+    }
+
+    override fun getFragmentName(): String {
+        return PageName.SEARCH_RESULT
     }
 }

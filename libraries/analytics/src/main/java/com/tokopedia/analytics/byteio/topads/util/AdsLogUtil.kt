@@ -2,29 +2,27 @@ package com.tokopedia.analytics.byteio.topads.util
 
 import android.graphics.Rect
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.roundToInt
 
-fun getVisibleHeightPercentage(recyclerView: RecyclerView?, itemView: View?): String {
-
-    if (itemView == null || recyclerView == null) return "0"
-
-    val globalRect = Rect()
-    recyclerView.getGlobalVisibleRect(globalRect)
+fun getVisibleSizePercentage(itemView: View?): String {
+    if (itemView == null) return "0"
 
     val itemRect = Rect()
-    itemView.getLocalVisibleRect(itemRect)
+    itemView.getGlobalVisibleRect(itemRect)
 
-    val visibleHeightItem = if (itemRect.bottom >= globalRect.bottom) {
-        max(0, globalRect.bottom - itemRect.top)
+    val totalArea = itemView.width.toFloat() * itemView.height.toFloat()
+
+    val visibleHeight = max(0, itemRect.bottom - itemRect.top)
+    val visibleWidth = max(0, itemRect.right - itemRect.left)
+
+    val visibleArea = visibleHeight * visibleWidth
+
+    val visibleSizeAreaPercentage = if (totalArea <= 0f) {
+        0f
     } else {
-        max(0, itemRect.bottom - globalRect.top)
+        (visibleArea / totalArea) * 100
     }
 
-    val percentHeight = (visibleHeightItem * 100.0 / itemView.height).toInt()
-
-    val cappedPercent = min(percentHeight, 100)
-
-    return cappedPercent.toString()
+    return visibleSizeAreaPercentage.roundToInt().toString()
 }

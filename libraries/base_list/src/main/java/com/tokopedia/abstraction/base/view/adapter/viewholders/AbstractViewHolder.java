@@ -1,11 +1,13 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener;
 
 import java.util.List;
 
@@ -13,14 +15,14 @@ import java.util.List;
 /**
  * @author kulomady on 1/24/17.
  */
-public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerView.ViewHolder implements VisibleVH {
+public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerView.ViewHolder implements IAdsViewHolderTrackListener {
 
     public AbstractViewHolder(View itemView) {
         super(itemView);
     }
 
     public abstract void bind(T element);
-    public float visibilityExtent = 0L;
+    public int visibilityPercentage = 0;
 
     /*
     This method is used to bind the view holder when only some parts of the model is changed.
@@ -48,17 +50,27 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
         return itemView.getContext().getString(stringRes, value);
     }
 
-    public void setVisibilityExtent(float visibilityExtent) {
-        this.visibilityExtent = visibilityExtent;
+    public void onViewDetachedFromWindow(T element, int visiblePercentage) {}
+
+    public void onViewAttachedToWindow(T element) {}
+
+    @Override
+    public void onViewAttachedToWindow(@Nullable RecyclerView recyclerView) {
+
     }
+
+    @Override
+    public void onViewDetachedFromWindow(@Nullable RecyclerView recyclerView) {
+
+    }
+
+    @Override
+    public void setVisiblePercentage(int visiblePercentage) {
+        this.visibilityPercentage = visiblePercentage;
+    }
+
 
     public int getVisiblePercentage() {
-        return (int) (visibilityExtent * 100);
+        return visibilityPercentage;
     }
-
-    @Override
-    public void onViewAttachedToWindow() {}
-
-    @Override
-    public void onViewDetachedFromWindow(int visiblePercentage) {}
 }
