@@ -342,7 +342,6 @@ import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster

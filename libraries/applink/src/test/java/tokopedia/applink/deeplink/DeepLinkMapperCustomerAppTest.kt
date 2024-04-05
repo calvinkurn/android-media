@@ -513,6 +513,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check product webview bottom sheet appLink internal`() {
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_WEBVIEW_BS)
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-webview-bs"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check product info appLink with no extras then should return internal product info`() {
         val productId = "890495024"
         val keyLayoutId = "layoutID"
