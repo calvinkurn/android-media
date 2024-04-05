@@ -11,6 +11,7 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
