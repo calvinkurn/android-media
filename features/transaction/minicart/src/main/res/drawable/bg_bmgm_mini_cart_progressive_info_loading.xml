@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:startColor="@color/mini_cart_progressive_info_start_dms"
+        android:startColor="@color/mini_cart_progressive_info_loading_start_dms"
         android:centerColor="@color/mini_cart_progressive_info_center_end_dms"
         android:endColor="@color/mini_cart_progressive_info_center_end_dms"
         android:angle="0"
