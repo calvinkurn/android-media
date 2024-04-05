@@ -1,9 +1,12 @@
 package com.tokopedia.review.feature.reading.presentation.widget
 
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +32,17 @@ fun SelectVariantFilter(
     uiEvent: SelectVariantUiEvent
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        uiModel.variants.forEachIndexed { index, variant ->
-            VariantOptions(
-                index = index,
-                variant = variant
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
+            uiModel.variants.forEachIndexed { index, variant ->
+                VariantOptions(
+                    index = index,
+                    variant = variant
+                )
+            }
         }
         Row(
             modifier = Modifier
@@ -158,13 +167,18 @@ fun SelectVariantFilterPreview() {
             ),
             pairedOptions = emptyList()
         )
-        SelectVariantFilter(uiModel, object : SelectVariantUiEvent {
-            override fun onApplyClicked(uiModel: SelectVariantUiModel) {
+        SelectVariantFilter(
+            uiModel,
+            object : SelectVariantUiEvent {
+                override fun onApplyClicked(uiModel: SelectVariantUiModel) {
+                }
             }
-
-        })
+        )
     }
 }
+
+// TODO - cek variant yang text panjang, perlu scoll atau ngga di column paling atas
+// nanti coba tambahin modifier scrollable
 
 data class SelectVariantUiModel(
     val variants: List<Variant>,
@@ -185,11 +199,13 @@ data class SelectVariantUiModel(
         variants.forEach { variant ->
             val selectedOptions = variant.options.filter { it.isSelected }
 
+            count += selectedOptions.size
+
             if (selectedOptions.isNotEmpty()) {
                 val optionNames = selectedOptions.joinToString(",") { it.name }
-                filter.add("variant_l${variant.level}=${optionNames}")
-                count += selectedOptions.size
+                filter.add("variant_l${variant.level}=$optionNames")
             }
+
             if (selectedOptions.size == 1) {
                 val option = selectedOptions.first()
                 pairedOption.add(option.id)
@@ -205,7 +221,7 @@ data class SelectVariantUiModel(
         this.filter = filter.joinToString(";")
     }
 
-    private fun reset(){
+    private fun reset() {
         count = 0
         filter = ""
         opt = ""

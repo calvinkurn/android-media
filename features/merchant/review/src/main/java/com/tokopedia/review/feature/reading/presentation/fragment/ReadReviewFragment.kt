@@ -173,7 +173,7 @@ open class ReadReviewFragment :
 
     private var selectedTopic: String? = null
 
-    private var filterVariants:List<SelectVariantUiModel.Variant> = emptyList()
+    private var filterVariants: List<SelectVariantUiModel.Variant> = emptyList()
     private var pairedOptions: List<List<String>> = emptyList()
 
     private val readReviewFilterFactory by lazy {
@@ -898,7 +898,7 @@ open class ReadReviewFragment :
         }
     }
 
-    private fun resetFilterVariants(){
+    private fun resetFilterVariants() {
         val options = filterVariants.flatMap { it.options }
         options.forEach { it.isSelected = false }
     }

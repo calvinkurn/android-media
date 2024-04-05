@@ -316,8 +316,8 @@ class ReadReviewViewModel @Inject constructor(
         variantFilter: String,
         opt: String,
         isProductReview: Boolean
-    ){
-        this.filter.variant = if(variantFilter.isEmpty()) null
+    ) {
+        this.filter.variant = if (variantFilter.isEmpty()) null
         else FilterType.FilterVariant(variantFilter)
         this.opt = opt
         resetPage(isProductReview)

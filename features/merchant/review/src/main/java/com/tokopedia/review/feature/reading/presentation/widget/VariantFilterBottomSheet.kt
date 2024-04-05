@@ -78,9 +78,10 @@ class VariantFilterBottomSheet : BottomSheetUnify(), SelectVariantUiEvent {
         dismiss()
     }
 
-    private fun updateBadgeStatus(){
-        val sharedPref = context?.getSharedPreferences("READ_REVIEW", Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()){
+    private fun updateBadgeStatus() {
+        val sharedPref =
+            context?.getSharedPreferences("READ_REVIEW", Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
             putBoolean("VARIANT_FILTER_BADGE", false)
             apply()
         }

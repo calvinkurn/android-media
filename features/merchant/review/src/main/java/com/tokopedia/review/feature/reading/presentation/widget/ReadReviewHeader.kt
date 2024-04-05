@@ -159,13 +159,13 @@ class ReadReviewHeader @JvmOverloads constructor(
             filter.add(topicFilter)
             topicFilterChipIndex = filter.indexOf(topicFilter)
         }
-        if(availableFilters.variant){
+        if (availableFilters.variant) {
             val variantFilter = SortFilterItem(
                 context.getString(R.string.review_reading_filter_all_variants),
                 ChipsUnify.TYPE_NORMAL,
                 ChipsUnify.SIZE_SMALL
             )
-            setListenerAndChevronListener(variantFilter){
+            setListenerAndChevronListener(variantFilter) {
                 listener.onFilterWithVariantClicked(isChipsActive(variantFilter.type))
             }
             filter.add(variantFilter)
@@ -395,9 +395,9 @@ class ReadReviewHeader @JvmOverloads constructor(
         if (isTopicExtraction) binding.readReviewExtractedTopic.loading()
     }
 
-    fun removeNewBadge(title: String){
+    fun removeNewBadge(title: String) {
         binding.readReviewSortFilter.chipItems?.find { it.title == title }?.refChipUnify?.apply {
-            if(showNewNotification) chip_new_notification.setLayoutWidth(0)
+            if (showNewNotification) chip_new_notification.setLayoutWidth(0)
         }
     }
 

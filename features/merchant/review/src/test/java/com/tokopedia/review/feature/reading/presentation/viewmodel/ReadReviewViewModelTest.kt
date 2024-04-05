@@ -886,7 +886,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `update variant filter when enabled`(){
+    fun `update variant filter when enabled`() {
         val expectedResponse = ProductReviewList()
 
         val variantFilter = ""
@@ -900,7 +900,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `update variant filter when disabled`(){
+    fun `update variant filter when disabled`() {
         val expectedResponse = ProductReviewList()
 
         val variantFilter = "variant_l1=Hitam"
