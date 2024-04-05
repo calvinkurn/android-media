@@ -19,9 +19,6 @@ import dagger.Provides
 @Module
 class RecommendationCoroutineModule {
     @Provides
-    fun provideRecommendationByteIoUseCase(): RecommendationByteIoUseCase = RecommendationByteIoUseCase()
-
-    @Provides
     fun provideGetCoroutineRecommendationUseCase(
         @ApplicationContext context: Context,
         coroutineGqlRepository: GraphqlRepository,
