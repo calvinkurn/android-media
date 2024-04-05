@@ -81,7 +81,7 @@ class FeedSearchResultViewModelTest {
         /** Verify */
         viewModel.uiState.value.apply {
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.Success)
+            pageState.assertEqualTo(FeedSearchResultPageState.SUCCESS)
             hasNextPage.assertTrue()
             contents.size.assertEqualTo(mockChannelList.size + 1) /** + 1 for title */
             contents.forEachIndexed { index, item ->
@@ -107,7 +107,7 @@ class FeedSearchResultViewModelTest {
         /** Verify */
         viewModel.uiState.value.apply {
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.NotFound)
+            pageState.assertEqualTo(FeedSearchResultPageState.NOT_FOUND)
             hasNextPage.assertFalse()
             contents.assertEmpty()
         }
@@ -126,7 +126,7 @@ class FeedSearchResultViewModelTest {
         /** Verify */
         viewModel.uiState.value.apply {
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.NotFound)
+            pageState.assertEqualTo(FeedSearchResultPageState.NOT_FOUND)
             hasNextPage.assertFalse()
         }
     }
@@ -144,7 +144,7 @@ class FeedSearchResultViewModelTest {
         /** Verify */
         viewModel.uiState.value.apply {
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.InternalError)
+            pageState.assertEqualTo(FeedSearchResultPageState.INTERNAL_ERROR)
         }
     }
 
@@ -162,7 +162,7 @@ class FeedSearchResultViewModelTest {
         /** Verify */
         viewModel.uiState.value.apply {
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.Success)
+            pageState.assertEqualTo(FeedSearchResultPageState.SUCCESS)
             hasNextPage.assertTrue()
             contents.size.assertEqualTo((mockChannelList.size * 2) + 1) /** + 1 for title */
             contents.forEachIndexed { index, item ->
@@ -192,7 +192,7 @@ class FeedSearchResultViewModelTest {
         viewModel.uiState.value.apply {
             coVerify(exactly = 2) { mockRepo.getWidgetContentSlot(any()) }
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.Success)
+            pageState.assertEqualTo(FeedSearchResultPageState.SUCCESS)
             hasNextPage.assertFalse()
             contents.size.assertEqualTo(mockChannelList.size + 1) /** + 1 for title */
             contents.forEachIndexed { index, item ->
@@ -220,7 +220,7 @@ class FeedSearchResultViewModelTest {
         viewModel.uiState.value.apply {
             coVerify(exactly = 2) { mockRepo.getWidgetContentSlot(any()) }
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.Success)
+            pageState.assertEqualTo(FeedSearchResultPageState.SUCCESS)
             hasNextPage.assertFalse()
             contents.size.assertEqualTo(mockChannelList.size + 1) /** + 1 for title */
             contents.forEachIndexed { index, item ->
@@ -246,7 +246,7 @@ class FeedSearchResultViewModelTest {
         /** Verify */
         viewModel.uiState.value.apply {
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.InternalError)
+            pageState.assertEqualTo(FeedSearchResultPageState.INTERNAL_ERROR)
             hasNextPage.assertTrue()
         }
     }
@@ -264,7 +264,7 @@ class FeedSearchResultViewModelTest {
         /** Verify */
         viewModel.uiState.value.apply {
             searchKeyword.assertEqualTo(mockSearchKeyword)
-            pageState.assertEqualTo(FeedSearchResultPageState.Restricted)
+            pageState.assertEqualTo(FeedSearchResultPageState.RESTRICTED)
             hasNextPage.assertTrue()
         }
     }
