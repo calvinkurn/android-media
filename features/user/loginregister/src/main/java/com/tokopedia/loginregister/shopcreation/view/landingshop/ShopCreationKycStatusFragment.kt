@@ -32,7 +32,6 @@ import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
