@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.LayoutShopCreationKycStatusBinding
+import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
@@ -146,7 +147,9 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     private fun launchKyc() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
             putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, "")
-            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "")
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK, "")
+            putExtra(ShopCreationConstant.IS_RE_VERIFY, true)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, ShopCreationConstant.OPEN_SHOP_KYC_PROJECT_ID)
         }
         startReVerifyKycForResult.launch(intent)
     }
@@ -175,7 +178,6 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         } else {
             binding?.globalError?.setType(GlobalError.MAINTENANCE)
         }
-
     }
 
     private fun onRefreshStatus() {
@@ -204,7 +206,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         )
     }
 
-    override fun getScreenName(): String  = ""
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(ShopCreationComponent::class.java).inject(this)
