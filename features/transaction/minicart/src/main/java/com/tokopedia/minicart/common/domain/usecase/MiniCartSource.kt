@@ -70,6 +70,11 @@ sealed interface MiniCartSource {
             get() = "tokonow"
     }
 
+    object TokonowShoppingList : MiniCartSource {
+        override val value: MiniCartSourceValue
+            get() = "tokonow_shopping_list"
+    }
+
     object PDPRecommendationWidget : MiniCartSource {
         override val value: MiniCartSourceValue
             get() = "pdp_recom_widget"

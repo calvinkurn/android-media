@@ -58,7 +58,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-        mDiscoveryRecycleAdapter.setHasStableIds(true)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
         carouselEmptyState = itemView.findViewById(R.id.viewEmptyState)
     }

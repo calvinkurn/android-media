@@ -188,7 +188,10 @@ class MiniCartListBottomSheet @Inject constructor(
                 cancelAllDebounceJob()
                 resetObserver()
                 Toaster.onCTAClick = View.OnClickListener { }
-                bottomSheetListener?.onMiniCartListBottomSheetDismissed()
+                if (!viewBinding.totalAmount.isTotalAmountLoading && adapter?.isLoading == false) {
+                    // only call listener if not loading
+                    bottomSheetListener?.onMiniCartListBottomSheetDismissed()
+                }
                 this@MiniCartListBottomSheet.viewBinding = null
                 this@MiniCartListBottomSheet.bottomSheet = null
             }
@@ -200,6 +203,8 @@ class MiniCartListBottomSheet @Inject constructor(
     private fun initializeCartData(viewBinding: LayoutBottomsheetMiniCartListBinding, viewModel: MiniCartViewModel) {
         adapter?.clearAllElements()
         bottomSheet?.setTitle("")
+        // cancel calculation to prevent racing condition
+        calculationDebounceJob?.cancel()
         showLoading()
         setTotalAmountLoading(viewBinding, true)
         viewModel.getCartList(isFirstLoad = true)
