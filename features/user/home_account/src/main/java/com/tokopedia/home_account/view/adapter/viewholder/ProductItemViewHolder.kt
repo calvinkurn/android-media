@@ -1,8 +1,7 @@
 package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst

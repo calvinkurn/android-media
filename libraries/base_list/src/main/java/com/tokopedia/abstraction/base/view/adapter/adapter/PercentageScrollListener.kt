@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.recyclerview
+package com.tokopedia.abstraction.base.view.adapter.adapter
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.GridLayoutManager
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import kotlin.math.roundToInt
 
 open class PercentageScrollListener : OnScrollListener() {

@@ -2,8 +2,8 @@ package com.tokopedia.home_account.view.adapter
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.ProfileDataView

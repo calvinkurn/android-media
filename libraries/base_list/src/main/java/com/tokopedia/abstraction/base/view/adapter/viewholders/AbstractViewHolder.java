@@ -1,13 +1,12 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener;
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener;
 
 import java.util.List;
 

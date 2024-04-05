@@ -68,9 +68,9 @@ object AppLogAnalytics {
     var pageNames = mutableListOf<Pair<String, Int?>>()
 
     /**
-     * key = Activity name from Activity class
-     * value = activity hashcode value.
-     * We store activity name to prevent the newly created activity
+     * key = Fragment name from Activity class
+     * value = fragment hashcode value.
+     * We store fragment name to prevent the newly created fragment
      * to override value for current page name
      */
     @JvmField

@@ -112,7 +112,7 @@ class SmallGridProductItemViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: ProductItemDataView?) {
-        if (element?.isTopAds == true) {
+        if (element?.isAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
                 PageName.SEARCH_RESULT,
@@ -122,7 +122,7 @@ class SmallGridProductItemViewHolder(
     }
 
     override fun onViewDetachedFromWindow(element: ProductItemDataView?, visiblePercentage: Int) {
-        if (element?.isTopAds == true) {
+        if (element?.isAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
                 PageName.SEARCH_RESULT,

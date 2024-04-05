@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -67,6 +69,11 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var isRefreshing = false
     private var isAutoSelected = false
     private var isAddBulkModeFromOthers = false
+
+    private var recyclerView: RecyclerView? = null
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -418,6 +425,32 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     (holder as WishlistCollectionEmptyStateViewHolder).bind(element)
                 }
             }
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+        this.recyclerView?.addOnScrollListener(percentageScrollListener)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
+        this.recyclerView = null
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewAttachedToWindow()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewDetachedFromWindow()
         }
     }
 
