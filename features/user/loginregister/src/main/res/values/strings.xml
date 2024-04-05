@@ -118,6 +118,19 @@
     <string name="phone_shop_policy_title">Pemberitahuan Privasi</string>
     <string name="shop_creation_kyc_error_know_code">Oops, lagi ada kendala yang perlu kami beresin. Coba lagi nanti, ya!</string>
     <string name="shop_creation_error_code">Kode Error: %s</string>
+    <string name="shop_creation_status_verification">Status Verifikasi</string>
+    <string name="shop_creation_rejected">Ditolak</string>
+    <string name="shop_creation_processing">Sedang Diproses</string>
+    <string name="shop_creation_retry_verification">Verifikasi Ulang</string>
+    <string name="shop_creation_connect_tokopedia_care">Hubungi Tokopedia Care</string>
+    <string name="shop_creation_refresh_data">Refresh Status</string>
+    <string name="shop_creation_title_benefit">Berbagai tips untuk mulai berjualan</string>
+    <string name="shop_creation_benefit_1">Buat nama, deskripsi dan foto produk yang jelas dan menarik.</string>
+    <string name="shop_creation_benefit_2">Responsif dalam menjawab pertanyaan pembeli.</string>
+    <string name="shop_creation_benefit_3">Promosikan tokomu dengan kreatif, pakai media yang kamu sukai.</string>
+    <string name="shop_creation_guideline">Lihat Selengkapnya di Panduan Seller Baru</string>
+    <string name="shop_creation_title_pending">Kamu bisa lanjut buat toko setelah verifikasinya selesai, ya...</string>
+    <string name="shop_creation_title_rejected">Yaah, belum berhasil. Biar bisa lanjut buat toko, coba verifikasi ulang ya</string>
 
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_login_phone">Cancel login phone</string>

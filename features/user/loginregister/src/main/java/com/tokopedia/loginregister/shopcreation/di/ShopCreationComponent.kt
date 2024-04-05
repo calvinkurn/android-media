@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.shopcreation.view.landingshop.KycBridgingFragment
 import com.tokopedia.loginregister.shopcreation.view.landingshop.LandingShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.view.landingshop.ShopCreationKycStatusFragment
 import com.tokopedia.loginregister.shopcreation.view.nameshop.NameShopCreationFragment
 import com.tokopedia.loginregister.shopcreation.view.phoneshop.PhoneShopCreationFragment
 import com.tokopedia.sessioncommon.di.SessionCommonScope
@@ -30,4 +31,5 @@ interface ShopCreationComponent {
     fun inject(fragment: PhoneShopCreationFragment)
 
     fun inject(fragment: KycBridgingFragment)
+    fun inject(fragment: ShopCreationKycStatusFragment)
 }

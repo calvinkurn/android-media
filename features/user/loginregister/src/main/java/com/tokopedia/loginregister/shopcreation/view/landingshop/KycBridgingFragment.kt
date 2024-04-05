@@ -17,6 +17,7 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
+import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
@@ -53,7 +54,8 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     override fun getToolbar(): Toolbar? = viewBinding?.toolbarShopCreation
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         viewBinding = FragmentKycBridgingBinding.inflate(inflater, container, false)
@@ -140,7 +142,6 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun handleApiError() {
-
     }
 
     private fun gotoStatusPage() {
@@ -164,7 +165,8 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
             putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, "")
             putExtra(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK, "")
-            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "10")
+            putExtra(ShopCreationConstant.IS_RE_VERIFY, true)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, ShopCreationConstant.OPEN_SHOP_KYC_PROJECT_ID)
         }
         startReVerifyKycForResult.launch(intent)
     }

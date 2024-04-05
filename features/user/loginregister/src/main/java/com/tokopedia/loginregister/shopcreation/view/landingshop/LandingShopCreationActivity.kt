@@ -43,8 +43,7 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
         supportFragmentManager.beginTransaction()
             .replace(
                 com.tokopedia.loginregister.R.id.parent_view,
-                // TODO change this fragment to the Kyc Status Fragment.
-                KycBridgingFragment.createInstance(bundle),
+                ShopCreationKycStatusFragment.createInstance(),
                 "kyc_bridge_tag"
             )
             .commit()
