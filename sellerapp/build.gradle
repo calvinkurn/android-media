@@ -46,7 +46,6 @@ buildscript {
 SigningConfiguration {
     applicationId = "com.tokopedia.sellerapp"
     overwriteOriginalFile = false
-    enableDynamicFeature = true
 }
 
 android {
