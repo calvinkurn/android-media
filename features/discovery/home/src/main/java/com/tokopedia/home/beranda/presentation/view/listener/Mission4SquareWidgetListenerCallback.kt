@@ -34,7 +34,7 @@ class Mission4SquareWidgetListenerCallback(
             AppLogRecommendation.sendProductClickAppLog(
                 model.asProductModel(
                     isCache = model.isCache,
-                    enterMethod = "${model.data.pageName}_${model.cardPosition+1}"
+                    enterMethod = "${model.data.pageName}_${model.cardPosition + 1}"
                 )
             )
         } else {
