@@ -34,7 +34,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:text="@string/shop_creation_benefit_1"
             app:layout_constraintBottom_toBottomOf="@+id/icon_benefit_1"
@@ -61,7 +61,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:text="@string/shop_creation_benefit_2"
             app:layout_constraintBottom_toBottomOf="@+id/icon_benefit_2"
@@ -88,7 +88,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:text="@string/shop_creation_benefit_3"
             app:layout_constraintBottom_toBottomOf="@+id/icon_benefit_3"

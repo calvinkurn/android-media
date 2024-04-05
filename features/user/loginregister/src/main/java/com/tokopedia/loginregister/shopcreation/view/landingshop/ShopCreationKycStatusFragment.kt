@@ -1,14 +1,21 @@
 package com.tokopedia.loginregister.shopcreation.view.landingshop
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -23,6 +30,7 @@ import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
@@ -38,7 +46,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModel: KycBridgingViewModel
 
-    private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
         onRefreshStatus()
     }
 
@@ -57,11 +65,39 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         initObserver()
         onRefreshStatus()
         initToolbar()
+        initGuidelineShopSpannable()
     }
 
     private fun initToolbar() {
         binding?.unifyToolbar?.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+    }
+
+    private fun initGuidelineShopSpannable() {
+        val message = getString(R.string.shop_creation_guideline)
+        val spannable = SpannableString(message)
+        spannable.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    goToGuidelineOpenShop()
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            },
+            message.indexOf(getString(R.string.shop_creation_guideline_spannable)),
+            message.indexOf(getString(R.string.shop_creation_guideline_spannable)) + getString(R.string.shop_creation_guideline_spannable).length,
+            0
+        )
+        binding?.layoutStatusPending?.tvGuidelineOpenShop?.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            setText(spannable, TextView.BufferType.SPANNABLE)
         }
     }
 
@@ -77,7 +113,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
                     onPending()
                 }
                 is ProjectInfoResult.Blacklisted -> {
-//                    onBlacklisted()
+                    onBlacklisted()
                 }
                 is ProjectInfoResult.Rejected -> {
                     onRejected(it.rejectionReason)
@@ -93,31 +129,41 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     }
 
     private fun onPending() {
-        context?.getString(R.string.shop_creation_kyc_pending)?.let { loadImage(it) }
-
         binding?.apply {
             unifyToolbar.show()
-            tvHeader.text = context?.getString(R.string.shop_creation_title_pending)
-            tvHeader.show()
-            ivStatusSubmission.show()
+            layoutStatusPending.ivStatusSubmission.loadImageWithoutPlaceholder(getString(R.string.shop_creation_kyc_pending))
+            layoutStatusPending.btnPrimary.isLoading = false
+            layoutStatusPending.layoutBenefit.iconBenefit1.loadImage(getString(R.string.shop_creation_icon_benefit))
+            layoutStatusPending.layoutBenefit.iconBenefit2.loadImage(getString(R.string.shop_creation_icon_benefit))
+            layoutStatusPending.layoutBenefit.iconBenefit3.loadImage(getString(R.string.shop_creation_icon_benefit))
             layoutStatusPending.root.show()
             layoutStatusRejected.root.hide()
+            layoutStatusBlacklisted.root.hide()
             globalError.hide()
             loader.hide()
         }
     }
 
     private fun onRejected(rejectionReason: String) {
-        context?.getString(R.string.shop_creation_kyc_rejected)?.let { loadImage(it) }
-
         binding?.apply {
             unifyToolbar.show()
-            tvHeader.text = context?.getString(R.string.shop_creation_title_rejected)
-            tvHeader.show()
-            ivStatusSubmission.show()
             layoutStatusPending.root.hide()
+            layoutStatusRejected.ivStatusSubmission.loadImageWithoutPlaceholder(getString(R.string.shop_creation_kyc_rejected))
             layoutStatusRejected.root.show()
+            layoutStatusBlacklisted.root.hide()
             layoutStatusRejected.tvReason.text = rejectionReason
+            globalError.hide()
+            loader.hide()
+        }
+    }
+
+    private fun onBlacklisted() {
+        binding?.apply {
+            unifyToolbar.show()
+            layoutStatusPending.root.hide()
+            layoutStatusBlacklisted.ivStatusSubmission.loadImageWithoutPlaceholder(getString(R.string.shop_creation_kyc_rejected))
+            layoutStatusRejected.root.hide()
+            layoutStatusBlacklisted.root.show()
             globalError.hide()
             loader.hide()
         }
@@ -131,7 +177,8 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.layoutStatusPending?.btnPrimary?.setOnClickListener {
-            onRefreshStatus()
+            binding?.layoutStatusPending?.btnPrimary?.isLoading = true
+            viewModel.checkKycStatus()
         }
 
         binding?.layoutStatusRejected?.btnPrimary?.setOnClickListener {
@@ -139,6 +186,10 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         }
 
         binding?.layoutStatusRejected?.btnSecondary?.setOnClickListener {
+            goToTokopediaCare()
+        }
+
+        binding?.layoutStatusBlacklisted?.btnSecondary?.setOnClickListener {
             goToTokopediaCare()
         }
 
@@ -165,11 +216,9 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     private fun handleGlobalError(throwable: Throwable?) {
         binding?.apply {
             loader.hide()
-            tvHeader.hide()
-            ivStatusSubmission.hide()
             layoutStatusPending.root.hide()
             layoutStatusRejected.root.hide()
-            ivStatusSubmission.hide()
+            layoutStatusBlacklisted.root.hide()
             globalError.show()
             unifyToolbar.show()
         }
@@ -194,17 +243,12 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         binding?.apply {
             unifyToolbar.hide()
             loader.show()
-            tvHeader.hide()
             layoutStatusPending.root.hide()
             layoutStatusRejected.root.hide()
+            layoutStatusBlacklisted.root.hide()
             globalError.hide()
-            ivStatusSubmission.hide()
         }
         viewModel.checkKycStatus()
-    }
-
-    private fun loadImage(imageUrl: String) {
-        binding?.ivStatusSubmission?.loadImageWithoutPlaceholder(imageUrl)
     }
 
     private fun goToTokopediaCare() {
@@ -215,6 +259,14 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             TokopediaUrl.getInstance().WEB.plus(PATH_TOKOPEDIA_CARE).plus(articleId).plus(
                 PARAM_TOKOPEDIA_CARE
             )
+        )
+    }
+
+    private fun goToGuidelineOpenShop() {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalGlobal.WEBVIEW,
+            getString(R.string.shop_creation_guideline_open_shop)
         )
     }
 
