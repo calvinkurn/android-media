@@ -58,7 +58,7 @@ class DynamicPositionRepository @Inject constructor(
                 // to re-fetch every ATF components data from remote
                 remote.copy(needToFetchComponents = true)
             }
-        } else if(remote != null) {
+        } else if (remote != null) {
             // if remote comes faster than cache, need to fetch each data
             remote.copy(needToFetchComponents = true)
         } else {
