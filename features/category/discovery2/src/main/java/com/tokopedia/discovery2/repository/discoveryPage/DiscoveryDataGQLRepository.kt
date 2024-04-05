@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -42,7 +43,9 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
                 (Utils.addAddressQueryMapWithWareHouse(localCacheModel) as? MutableMap<String, Any>)
             val filterMap = addMap ?: mutableMapOf()
             filterMap[ACCEPT_SECTION] = true
+            if (ProductCardExperiment.isReimagine()) {
             filterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
+            }
             var finalQueryString = Utils.getQueryString(filterMap)
             if (it.containsKey(QUERY_PARAMS_KEY) && !(it[QUERY_PARAMS_KEY] as? String).isNullOrEmpty()) {
                 finalQueryString = finalQueryString + "&" + it[QUERY_PARAMS_KEY] as String

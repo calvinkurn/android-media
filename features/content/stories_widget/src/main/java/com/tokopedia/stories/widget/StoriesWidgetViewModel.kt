@@ -50,7 +50,9 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
 
     fun onIntent(intent: StoriesWidgetIntent) {
         when (intent) {
-            is StoriesWidgetIntent.GetStoriesStatus -> onGetStories(intent.shopIds)
+            is StoriesWidgetIntent.GetStoriesStatus -> {
+                onGetStories(intent.shopIds, intent.categoryIds, intent.productIds)
+            }
             is StoriesWidgetIntent.GetLatestStoriesStatus -> onGetLatestStoriesStatus()
             StoriesWidgetIntent.ShowCoachMark -> onShowCoachMark()
             StoriesWidgetIntent.HasSeenCoachMark -> onHasSeenCoachMark()
@@ -67,12 +69,16 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         }
     }
 
-    private fun onGetStories(shopIds: List<String>) {
+    private fun onGetStories(
+        shopIds: List<String>,
+        categoryIds: List<String>,
+        productIds: List<String>,
+    ) {
         if (shopIds.isEmpty()) return
 
         viewModelScope.launch {
             try {
-                val storiesInfo = repository.getStoriesWidgetInfo(entryPoint, shopIds)
+                val storiesInfo = repository.getStoriesWidgetInfo(entryPoint, shopIds, categoryIds, productIds)
                 _storiesState.update {
                     it.copy(
                         widgetStates = it.widgetStates + storiesInfo.widgetStates,

@@ -8,14 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
-import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
-import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
-import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
-import com.tokopedia.content.common.util.throwable.isNetworkError
 import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.databinding.BottomSheetUserProductPickerBinding
 import com.tokopedia.content.product.picker.seller.model.PriceUnknown
@@ -23,12 +17,16 @@ import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProduc
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
-import java.text.ParseException
 import javax.inject.Inject
 
 /**

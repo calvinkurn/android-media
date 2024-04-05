@@ -1,6 +1,8 @@
 package com.tokopedia.search
 
 import android.content.Context
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
@@ -8,7 +10,12 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
 internal class SearchMockModelConfig(
     private val mockModel: Int = R.raw.search_product_common_response
 ): MockModelConfig() {
-
+    init {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            RollenceKey.REVERSE_PRODUCT_CARD,
+            RollenceKey.REVERSE_PRODUCT_CARD_V4
+        )
+    }
     override fun createMockModel(context: Context): MockModelConfig {
         val mapMockResponse = createMapOfMockResponse(context)
 

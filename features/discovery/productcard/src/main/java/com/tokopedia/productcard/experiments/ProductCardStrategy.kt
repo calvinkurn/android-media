@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.ProductCardModel as ReimagineProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.video_widget.VideoPlayerController
 
@@ -61,4 +62,8 @@ internal interface ProductCardStrategy :
     fun setThreeDotsOnClickListener(l: View.OnClickListener?) { }
     fun getVideoPlayerController(): VideoPlayerController = VideoPlayerController.empty()
     fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener)
+    fun setGenericCtaButtonOnClickListener(l: View.OnClickListener?) { }
+    fun setGenericCtaSecondaryButtonOnClickListener(l: View.OnClickListener?) { }
+    fun reRenderGenericCtaButton(productCardModel: ReimagineProductCardModel) { }
+
 }
