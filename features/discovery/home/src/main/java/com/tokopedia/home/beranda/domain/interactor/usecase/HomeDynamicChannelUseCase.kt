@@ -1033,7 +1033,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
             if (isNewAtfMechanism) {
                 if (!isFirstLoad) {
-                    launch { homeAtfUseCase.refreshData() }
+                    homeAtfUseCase.refreshData()
                     launch { homeHeaderUseCase.updateBalanceWidget(true) }
                 }
             } else {

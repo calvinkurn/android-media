@@ -1,15 +1,12 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -17,7 +14,6 @@ import javax.inject.Inject
  */
 @HomeScope
 class DynamicPositionRepository @Inject constructor(
-    private val homeDispatcher: CoroutineDispatchers,
     private val atfDao: AtfDao,
     private val atfDataRepository: HomeAtfRepository,
     private val atfMapper: AtfMapper
@@ -67,21 +63,7 @@ class DynamicPositionRepository @Inject constructor(
         }
     }
 
-    /**
-     * Get cached and remote data in parallel
-     */
-    suspend fun getData() {
-        coroutineScope {
-            launch(homeDispatcher.io) {
-                getCachedData()
-            }
-            launch(homeDispatcher.io) {
-                getRemoteData()
-            }
-        }
-    }
-
-    private suspend fun getCachedData() {
+    suspend fun getCachedData() {
         val cachedData = AtfDataList(
             listAtfData = atfDao.getAtfDynamicPosition().map(atfMapper::mapCacheToDomainAtfData),
             isCache = true,
