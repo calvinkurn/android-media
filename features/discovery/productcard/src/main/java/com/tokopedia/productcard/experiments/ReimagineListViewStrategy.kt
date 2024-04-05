@@ -164,9 +164,18 @@ internal class ReimagineListViewStrategy(
         cardContainer?.setOnClickListener(l)
     }
     override fun setOnClickListener(l: ProductCardClickListener) {
-        cardContainer?.setOnClickListener { l.onAreaClicked(it) }
-        setProductImageOnClickListener { l.onProductImageClicked(it) }
-        setShopTypeLocationOnClickListener { l.onSellerInfoClicked(it) }
+        cardContainer?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
     }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {

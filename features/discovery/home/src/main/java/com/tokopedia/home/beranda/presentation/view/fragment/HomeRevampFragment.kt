@@ -37,7 +37,6 @@ import com.tokopedia.analytics.byteio.AppLogFragmentInterface
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.EnterMethod
-import com.tokopedia.analytics.byteio.FragmentName
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener

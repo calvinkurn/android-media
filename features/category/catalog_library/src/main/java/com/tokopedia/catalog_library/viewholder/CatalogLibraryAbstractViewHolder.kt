@@ -9,7 +9,6 @@ abstract class CatalogLibraryAbstractViewHolder<T : Visitable<*>>(itemView: View
 
     override fun onViewAttachedToWindow() {}
 
-    open fun onViewDetachedFromWindow() {}
+    override fun onViewDetachedFromWindow() {}
 
-    override fun onViewDetachedFromWindow(recyclerView: RecyclerView?, visiblePercentage: Int) {}
 }

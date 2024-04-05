@@ -50,6 +50,10 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
         return itemView.getContext().getString(stringRes, value);
     }
 
+    public void onViewDetachedFromWindow() {}
+
+    public void onViewAttachedToWindow() {}
+
     public void onViewDetachedFromWindow(T element, int visiblePercentage) {}
 
     public void onViewAttachedToWindow(T element) {}
