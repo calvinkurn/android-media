@@ -124,6 +124,7 @@ class CategoryInspirationViewModelTest {
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = "page_3"
         )
+        val menuResponsePage3 = ContentSlotModel.NoData(nextCursor = "")
 
         backgroundScope.launch { viewModel.uiState.collect() }
 
@@ -134,6 +135,7 @@ class CategoryInspirationViewModelTest {
         } returns ContentSlotModel.TabMenus(menus = menus)
         coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("")) } returns menuResponsePage1
         coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("page_2")) } returns menuResponsePage2
+        coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("page_3")) } returns menuResponsePage3
 
         viewModel.onAction(CategoryInspirationAction.Init)
         viewModel.onAction(CategoryInspirationAction.LoadData(menus[0]))
@@ -147,6 +149,27 @@ class CategoryInspirationViewModelTest {
                         listOf(mockChannel, mockChannel2),
                         nextCursor = menuResponsePage2.nextCursor,
                         hasNextPage = menuResponsePage2.hasNextPage,
+                        config = menuResponsePage2.config
+                    )
+                ),
+                menus[1].id to CategoryInspirationData(
+                    menus[1],
+                    FeedBrowseChannelListState.initLoading()
+                )
+            )
+        )
+
+        /** Try to load more but it return ContentSlotModel.NoData */
+        viewModel.onAction(CategoryInspirationAction.LoadMoreData)
+
+        viewModel.uiState.value.items.assertEqualTo(
+            mapOf(
+                menus[0].id to CategoryInspirationData(
+                    menus[0],
+                    FeedBrowseChannelListState.initSuccess(
+                        listOf(mockChannel, mockChannel2),
+                        nextCursor = menuResponsePage3.nextCursor,
+                        hasNextPage = menuResponsePage3.hasNextPage,
                         config = menuResponsePage2.config
                     )
                 ),
