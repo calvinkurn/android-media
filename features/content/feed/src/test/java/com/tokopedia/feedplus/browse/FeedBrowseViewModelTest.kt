@@ -7,6 +7,8 @@ import com.tokopedia.content.test.util.assertType
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
+import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
@@ -53,14 +55,16 @@ class FeedBrowseViewModelTest {
 
     @Test
     fun `test load initial data`() = runTestUnconfined {
+        val slotStoryGroup = modelGen.storyGroupSlot.first()
         val slotChannel = modelGen.channelWithMenusSlot.first()
         val slotAuthor = modelGen.authorSlot.first()
         val slotBanner = modelGen.bannerSlot.first()
 
+        val mockStoryGroup = mockk<StoryNodeModel>(relaxed = true)
         val mockAuthorModel = modelGen.authorModel.first()
         val mockBannerModel = modelGen.bannerModel.first()
 
-        val slots = listOf(slotChannel, slotAuthor, slotBanner)
+        val slots = listOf(slotStoryGroup, slotChannel, slotAuthor, slotBanner)
 
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
@@ -82,6 +86,10 @@ class FeedBrowseViewModelTest {
                 else -> error("Not support for $identifier")
             }
         }
+        coEvery { mockRepo.getStoryGroups(any(), any()) } returns StoryGroupsModel(
+            storyList = listOf(mockStoryGroup),
+            nextCursor = "",
+        )
 
         val viewModel = FeedBrowseViewModel(mockRepo)
 
@@ -94,6 +102,10 @@ class FeedBrowseViewModelTest {
             it.headerDetail.title.assertEqualTo(mockHeaderModel.title)
             it.widgets.assertEqualTo(
                 listOf(
+                    FeedBrowseStatefulModel(
+                        ResultState.Success,
+                        slotStoryGroup.copy(storyList = listOf(mockStoryGroup))
+                    ),
                     FeedBrowseStatefulModel(
                         ResultState.Success,
                         slotChannel.copy(
@@ -429,6 +441,53 @@ class FeedBrowseViewModelTest {
                     )
                 )
             )
+        }
+    }
+
+    @Test
+    fun `test failed fetch story group`() = runTestUnconfined {
+        val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
+        val storyGroupSlot = modelGen.storyGroupSlot.first()
+        val exception = MessageErrorException()
+
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
+        coEvery { mockRepo.getSlots() } returns listOf(storyGroupSlot)
+        coEvery { mockRepo.getStoryGroups(any(), any()) } throws exception
+
+        val viewModel = FeedBrowseViewModel(mockRepo)
+        backgroundScope.launch { viewModel.uiState.collect() }
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+        viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
+            it.widgets.assertEqualTo(
+                listOf(
+                    FeedBrowseStatefulModel(
+                        ResultState.Fail(exception),
+                        storyGroupSlot
+                    ),
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `test failed fetch slot`() = runTestUnconfined {
+        val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
+        val bannerSlot = modelGen.bannerSlot.take(2).toList()
+        val exception = MessageErrorException()
+
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
+        coEvery { mockRepo.getSlots() } throws exception
+        coEvery {
+            mockRepo.getWidgetRecommendation(
+                bannerSlot[0].identifier
+            )
+        } returns WidgetRecommendationModel.Banners(emptyList())
+
+        val viewModel = FeedBrowseViewModel(mockRepo)
+        backgroundScope.launch { viewModel.uiState.collect() }
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+        viewModel.uiState.value.assertType<FeedBrowseUiState.Error> {
+            it.throwable.assertEqualTo(exception)
         }
     }
 
