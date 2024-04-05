@@ -73,7 +73,7 @@ class CalculationTest {
     fun `WHEN calculate product after first load mini cart list THEN isFirstLoad flag should be true`() {
         // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }
@@ -91,7 +91,7 @@ class CalculationTest {
     fun `WHEN calculate product after first load mini cart list THEN needToCalculateAfterLoad flag should be false`() {
         // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }

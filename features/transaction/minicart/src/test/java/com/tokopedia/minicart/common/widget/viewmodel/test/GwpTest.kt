@@ -74,16 +74,16 @@ class GwpTest {
     }
 
     private fun stubGetMiniCartListParams() = coEvery {
-        getMiniCartListUseCase.setParams((any()))
+        getMiniCartListUseCase.setParams(any(), any(), any())
     } just Runs
 
     private fun stubUpdateCartParams() = coEvery {
         updateCartUseCase.setParams(any(), any())
     } just Runs
 
-    private fun stubGetMiniCartResponse(response: MiniCartData) =  coEvery {
+    private fun stubGetMiniCartResponse(response: MiniCartData) = coEvery {
         getMiniCartListUseCase.execute(any(), any())
-    }  answers {
+    } answers {
         firstArg<(MiniCartData) -> Unit>().invoke(response)
     }
 
