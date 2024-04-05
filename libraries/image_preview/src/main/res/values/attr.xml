@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ImagePreviewTouchViewPager">
+        <attr name="can_swipe" format="boolean" />
+        <attr name="default_measure" format="boolean" />
+    </declare-styleable>
+</resources>

@@ -58,6 +58,39 @@ class ProductCardListCarouselView: ConstraintLayout {
         strategy.setAddToCartNonVariantClickListener(addToCartNonVariantClickListener)
     }
 
+    fun  setGenericCtaButtonOnClickListener(onClickListener: OnClickListener) {
+        strategy.setGenericCtaButtonOnClickListener(onClickListener)
+    }
+
+    fun setGenericCtaSecondaryButtonOnClickListener(onClickListener: OnClickListener) {
+        strategy.setGenericCtaSecondaryButtonOnClickListener(onClickListener)
+    }
+
+    /**
+     * Used to re-render the generic cta button.
+     * Not recommended for common use. Please copy model and rerender the whole card if possible.
+     * Only created from request by Discovery team to prevent flashing UI when updating product card.
+     * Please update the adapter's list productCardModel too to prevent wrong recycling render
+     * if you use RecyclerView.
+     * @param productCardModel ProductCardModel(Old) with updated CTA data
+     */
+    fun reRenderGenericCtaButton(productCardModel: com.tokopedia.productcard.ProductCardModel) {
+        val reimagineModel = ProductCardModel.from(productCardModel)
+        reRenderGenericCtaButton(reimagineModel)
+    }
+
+    /**
+     * Used to re-render the generic cta button.
+     * Not recommended for common use. Please copy model and rerender the whole card if possible.
+     * Only created from request by Discovery team to prevent flashing UI when updating product card.
+     * Please update the adapter's list productCardModel too to prevent wrong recycling render
+     * if you use RecyclerView.
+     * @param productCardModel ProductCardModel(Reimagine) with updated CTA data
+     */
+    fun reRenderGenericCtaButton(productCardModel: ProductCardModel) {
+        strategy.reRenderGenericCtaButton(productCardModel)
+    }
+
     fun recycle() {
         strategy.recycle()
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewStub
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,9 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearCustomTarget
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
@@ -32,6 +36,8 @@ open class ProductViewHolder(
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
     }
+
+    private var productImageLoadTarget: MediaBitmapEmptyTarget<Bitmap>? = null
 
     private var ivBuyerOrderDetailProductThumbnail: ImageUnify? = null
     private var element: ProductListUiModel.ProductUiModel? = null
@@ -71,6 +77,11 @@ open class ProductViewHolder(
             }
         }
         super.bind(element, payloads)
+    }
+
+    override fun onViewRecycled() {
+        ivBuyerOrderDetailProductThumbnail.clearImage()
+        ivBuyerOrderDetailProductThumbnail.clearCustomTarget(productImageLoadTarget)
     }
 
     override fun getAddOnSummaryLayout(): View? {
@@ -114,10 +125,10 @@ open class ProductViewHolder(
 
     protected open fun setupProductThumbnail(productThumbnailUrl: String) {
         ivBuyerOrderDetailProductThumbnail?.apply {
-            loadProductImage(
+            productImageLoadTarget = loadProductImage(
                 url = productThumbnailUrl,
                 archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
-            )
+            ) { productImageLoadTarget = null }
         }
     }
 

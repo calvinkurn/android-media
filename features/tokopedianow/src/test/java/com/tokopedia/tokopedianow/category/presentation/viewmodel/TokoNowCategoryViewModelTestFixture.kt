@@ -19,15 +19,13 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse
 import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse.GetAnnotationListResponse
 import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
 import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
 import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAnnotationWidgetUseCase
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryHeader
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
@@ -46,6 +44,7 @@ import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.AddressMapper
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -62,6 +61,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class TokoNowCategoryViewModelTestFixture {
 
@@ -162,6 +162,9 @@ open class TokoNowCategoryViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase
 
+    @RelaxedMockK
+    lateinit var resourceProvider: ResourceProvider
+
     /**
      * variable with annotation section
      */
@@ -197,10 +200,10 @@ open class TokoNowCategoryViewModelTestFixture {
             deleteCartUseCase = deleteCartUseCase,
             affiliateService = affiliateService,
             aceSearchParamMapper = aceSearchParamMapper,
+            resourceProvider = resourceProvider,
             dispatchers = CoroutineTestDispatchersProvider
         )
 
-        viewModel.navToolbarHeight = navToolbarHeight
         viewModel.categoryIdL1 = categoryIdL1
 
         onGetIsLoggedIn_thenReturn(loggedIn = true)
@@ -510,26 +513,17 @@ open class TokoNowCategoryViewModelTestFixture {
     }
 
     protected fun createVisitableList(): MutableList<Visitable<*>> {
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -541,10 +535,7 @@ open class TokoNowCategoryViewModelTestFixture {
         )
 
         return mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )

@@ -668,7 +668,9 @@ open class ChatListInboxFragment :
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         if (role == RoleType.BUYER) {
-            mStoriesWidgetManager?.updateStories(data.list.map { it.id })
+            mStoriesWidgetManager.updateStories(
+                data.list.mapNotNull { if (it.isSeller()) it.id else null }
+            )
         }
         fpmStopTrace()
         setIndicatorCurrentActiveChat(currentActiveMessageId)

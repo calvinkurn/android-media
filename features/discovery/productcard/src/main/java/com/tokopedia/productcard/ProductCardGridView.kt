@@ -11,6 +11,7 @@ import com.tokopedia.productcard.experiments.ProductCardStrategy
 import com.tokopedia.productcard.experiments.ProductCardStrategyFactory
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.video_widget.VideoPlayerController
+import com.tokopedia.productcard.reimagine.ProductCardModel as ReimagineProductCardModel
 
 class ProductCardGridView : ConstraintLayout, IProductCardView {
 
@@ -127,5 +128,27 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     override fun setOnLongClickListener(l: OnLongClickListener?) {
         super.setOnLongClickListener(l)
         productCardStrategy.setOnLongClickListener(l)
+    }
+
+    fun  setGenericCtaButtonOnClickListener(onClickListener: OnClickListener) {
+        productCardStrategy.setGenericCtaButtonOnClickListener(onClickListener)
+    }
+
+    fun setGenericCtaSecondaryButtonOnClickListener(onClickListener: OnClickListener) {
+        productCardStrategy.setGenericCtaSecondaryButtonOnClickListener(onClickListener)
+    }
+
+
+    /**
+     * Used to re-render the generic cta button.
+     * Not recommended for common use. Please copy model and rerender the whole card if possible.
+     * Only created from request by Discovery team to prevent flashing UI when updating product card.
+     * Please update the adapter's list productCardModel too to prevent wrong recycling render
+     * if you use RecyclerView.
+     * @param productCardModel ProductCardModel(Old) with updated CTA data
+     */
+    fun reRenderGenericCtaButton(productCardModel: ProductCardModel) {
+        val reimagineModel = ReimagineProductCardModel.from(productCardModel)
+        productCardStrategy.reRenderGenericCtaButton(reimagineModel)
     }
 }

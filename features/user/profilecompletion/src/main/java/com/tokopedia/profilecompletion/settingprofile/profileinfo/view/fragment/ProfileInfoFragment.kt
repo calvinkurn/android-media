@@ -426,7 +426,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         }
 
         profileClickedTime++
-        if (profileClickedTime >= 5) {
+        if (profileClickedTime >= MIN_PROFILE_CLICK_FOR_DEVICE_ID) {
             adapter.addElement(ProfileInfoItemUiModel(
                 ProfileInfoConstants.APPLOG_DEVICE_ID,
                 title = getString(R.string.profile_info_title_applog_device_id),
@@ -615,14 +615,14 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     private fun copyUserId() {
         tracker.trackOnEntryPointListClick(LABEL_ENTRY_POINT_USER_ID)
         val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val myClip: ClipData = ClipData.newPlainText("user_id", userSession.userId)
+        val myClip: ClipData = ClipData.newPlainText(CLIP_DATA_USER_ID, userSession.userId)
         myClipboard.setPrimaryClip(myClip)
         showNormalToaster(getString(R.string.profile_info_success_copy_userid))
     }
 
     private fun copyApplogDeviceId() {
         val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val myClip: ClipData = ClipData.newPlainText("applog_device_id", getApplogDeviceId())
+        val myClip: ClipData = ClipData.newPlainText(CLIP_DATA_APPLOG_DEVICE_ID, getApplogDeviceId())
         myClipboard.setPrimaryClip(myClip)
         showNormalToaster(getString(R.string.profile_info_success_copy_applog_device_id))
     }
@@ -852,8 +852,11 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val LIMIT_STACKTRACE = 1000
+        private const val MIN_PROFILE_CLICK_FOR_DEVICE_ID = 5
         private val DIFFERENT_EXCEPTION =
             Throwable(message = "Value is different from User Session")
+        private const val CLIP_DATA_APPLOG_DEVICE_ID = "applog_device_id"
+        private const val CLIP_DATA_USER_ID = "user_id"
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

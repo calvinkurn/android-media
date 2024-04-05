@@ -2,13 +2,15 @@ package com.tokopedia.media.loader
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.widget.ImageView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.data.DEBUG_TIMBER_TAG
-import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.FeatureToggleManager
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import timber.log.Timber
 
 @PublishedApi
@@ -54,6 +56,12 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
 fun ImageView?.clearImage() {
     if (this != null && context.isValid()) {
         GlideApp.with(this.context).clear(this)
+    }
+}
+
+fun ImageView?.clearCustomTarget(target: MediaBitmapEmptyTarget<Bitmap>?) {
+    if (this != null && context.isValid() && target != null) {
+        GlideApp.with(this.context).clear(target)
     }
 }
 

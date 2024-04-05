@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName
  * Copyright (c) 2024 android-tokopedia-core All rights reserved.
  */
 
-
 data class LiveIndicatorData(
     @SerializedName("isLive")
     @Expose
@@ -18,5 +17,8 @@ data class LiveIndicatorData(
     val channelID: String = "",
     @SerializedName("applink")
     @Expose
-    val appLink: String = ""
+    val appLink: String = "",
+    @SerializedName("mediaURL")
+    @Expose
+    val mediaUrl: String = ""
 )

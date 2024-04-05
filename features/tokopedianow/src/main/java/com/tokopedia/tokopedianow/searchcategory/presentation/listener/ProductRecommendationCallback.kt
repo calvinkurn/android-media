@@ -8,24 +8,24 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
 import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
-import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
-import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 data class ProductRecommendationCallback(
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
-    private val baseSearchCategoryViewModel: BaseSearchCategoryViewModel,
+    private val searchViewModel: TokoNowSearchViewModel,
     private val activity: FragmentActivity?,
     private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
@@ -42,8 +42,8 @@ data class ProductRecommendationCallback(
     private val eventActionClicked: String,
     private val eventActionImpressed: String,
     private val eventCategory: String,
-    private val getListValue: (RecommendationItem) -> String,
-): TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
+    private val getListValue: (RecommendationItem) -> String
+) : TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
     companion object {
         private const val REQUEST_CODE_LOGIN = 69
     }
@@ -51,7 +51,7 @@ data class ProductRecommendationCallback(
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecommendationViewModel
 
     override fun hideProductRecommendationWidget() {
-        baseSearchCategoryViewModel.removeProductRecommendationWidget()
+        searchViewModel.removeProductRecommendationWidget()
     }
 
     override fun openLoginPage() {
@@ -71,7 +71,7 @@ data class ProductRecommendationCallback(
                 isTokoNow = true,
                 shopId = shopId,
                 trackerCdListName = cdListName,
-                startActivitResult = startActivityForResult,
+                startActivitResult = startActivityForResult
             )
         }
     }
@@ -83,7 +83,7 @@ data class ProductRecommendationCallback(
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
-        val appLink = baseSearchCategoryViewModel.createAffiliateLink(product.appLink)
+        val appLink = searchViewModel.createAffiliateLink(product.appLink)
 
         SearchResultTracker.trackClickProduct(
             position,
