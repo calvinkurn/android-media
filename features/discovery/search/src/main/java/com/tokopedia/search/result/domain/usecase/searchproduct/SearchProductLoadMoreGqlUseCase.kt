@@ -22,12 +22,16 @@ class SearchProductLoadMoreGqlUseCase(
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
-        val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams()
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams(
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
+        )
         val headlineAdsParams = createHeadlineParams(
                 requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any?>,
                 HEADLINE_ITEM_VALUE_LOAD_MORE,
                 requestParams.parameters[SEEN_ADS] as String
-        ) + sreParams()
+        ) + sreParams(
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
+        )
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(reimagineRollence, params)

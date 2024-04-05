@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -12,14 +13,17 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 
 class GetInspirationCarouselChipsProductsUseCase(
-    private val graphqlUseCase: GraphqlUseCase
+    private val graphqlUseCase: GraphqlUseCase,
+    private val reimagineRollence: ReimagineRollence = ReimagineRollence()
 ): UseCase<InspirationCarouselChipsProductModel>() {
 
     @GqlQuery("GetInspirationCarouselChipProductsQuery", GQL_QUERY)
     override fun createObservable(
         requestParams: RequestParams
     ): Observable<InspirationCarouselChipsProductModel> {
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams()
+        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams(
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
+        )
         val graphqlRequest = GraphqlRequest(
             GetInspirationCarouselChipProductsQuery(),
             InspirationCarouselChipsProductModel::class.java,
