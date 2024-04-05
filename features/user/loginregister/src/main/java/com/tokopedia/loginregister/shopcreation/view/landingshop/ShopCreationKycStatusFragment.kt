@@ -181,12 +181,12 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     binding?.globalError?.apply {
-                        setType(GlobalError.MAINTENANCE)
+                        setType(GlobalError.SERVER_ERROR)
                     }
                 }
             }
         } else {
-            binding?.globalError?.setType(GlobalError.MAINTENANCE)
+            binding?.globalError?.setType(GlobalError.SERVER_ERROR)
         }
     }
 
