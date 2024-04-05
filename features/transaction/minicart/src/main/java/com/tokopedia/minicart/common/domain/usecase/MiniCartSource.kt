@@ -73,6 +73,9 @@ sealed interface MiniCartSource {
     object TokonowShoppingList : MiniCartSource {
         override val value: MiniCartSourceValue
             get() = "tokonow_shopping_list"
+
+        override val usecase: String
+            get() = "tokonow"
     }
 
     object PDPRecommendationWidget : MiniCartSource {
