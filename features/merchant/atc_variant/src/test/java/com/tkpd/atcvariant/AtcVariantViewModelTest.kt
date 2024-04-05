@@ -15,6 +15,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -1527,7 +1528,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         )
         val updateAtcResponse = UpdateCartV2Data(
             status = "OK",
-            data = Data(anchorCartId = params.changeVariantOnCart.cartId)
+            data = Data(anchorCartId = params.changeVariantOnCart.cartId.toLongOrZero())
         )
 
         coEvery {
@@ -1540,7 +1541,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val result = spykViewModel.updateCartLiveData.value as? Success
         assertNotNull(result)
-        assertEquals(params.changeVariantOnCart.cartId, result?.data?.anchorCartId)
+        assertEquals(params.changeVariantOnCart.cartId, result?.data?.anchorCartId.toString())
     }
     // endregion
 }

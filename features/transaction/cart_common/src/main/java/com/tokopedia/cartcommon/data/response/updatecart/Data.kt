@@ -15,5 +15,5 @@ data class Data(
     @SerializedName("toaster_action")
     val toasterAction: ToasterAction = ToasterAction(),
     @SerializedName("anchor_cart_id")
-    val anchorCartId: String = ""
+    val anchorCartId: Long = 0
 )

@@ -468,7 +468,7 @@ class AtcVariantBottomSheet :
                 viewModel.updateActivityResult(
                     requestCode = ProductDetailCommonConstant.RC_VBS_UPDATE_VARIANT_SUCCESS,
                     atcSuccessMessage = data.message,
-                    anchorCartId = data.anchorCartId
+                    anchorCartId = data.anchorCartId.toString()
                 )
                 dismissAfterTransaction()
             }
