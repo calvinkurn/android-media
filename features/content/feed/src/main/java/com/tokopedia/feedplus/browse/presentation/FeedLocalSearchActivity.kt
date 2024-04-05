@@ -37,7 +37,7 @@ class FeedLocalSearchActivity: BaseActivity() {
                 replace(
                     R.id.local_browse_fragment_container,
                     FeedLocalSearchFragment.create(supportFragmentManager, classLoader, intent.extras),
-                    TAG_BROWSE_FRAGMENT
+                    TAG_FEED_LOCAL_SEARCH_FRAGMENT
                 )
             }
     }
@@ -63,9 +63,8 @@ class FeedLocalSearchActivity: BaseActivity() {
     }
 
     companion object {
-        private const val TAG_BROWSE_FRAGMENT = "feed_local_search"
+        private const val TAG_FEED_LOCAL_SEARCH_FRAGMENT = "feed_local_search_fragment"
         const val TAG_PLACEHOLDER_PARAM = "search_placeholder_param"
         const val TAG_KEYWORD = "keyword"
     }
-
 }
