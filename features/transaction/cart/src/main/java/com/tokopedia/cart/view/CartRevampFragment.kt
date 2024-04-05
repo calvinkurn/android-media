@@ -6212,7 +6212,7 @@ class CartRevampFragment :
     }
 
     override fun onViewChangeVariant(cartId: String) {
-        cartPageAnalytics.eventViewVariantEditor()
+        cartPageAnalytics.eventViewVariantEditor(cartId)
     }
 
     private fun onResultFromChangeVariant(resultCode: Int, intent: Intent?) {
