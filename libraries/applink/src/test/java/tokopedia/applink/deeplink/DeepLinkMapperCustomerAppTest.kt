@@ -33,8 +33,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 161
-        const val SIZE_PATH = 274
+        const val SIZE_HOST = 162
+        const val SIZE_PATH = 275
     }
 
     override fun setup() {
@@ -510,6 +510,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
         assertEqualsDeeplinkParameters(appLink, productId to null)
+    }
+
+    @Test
+    fun `check product webview bottom sheet appLink internal`() {
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_WEBVIEW_BS)
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-webview-bs"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
