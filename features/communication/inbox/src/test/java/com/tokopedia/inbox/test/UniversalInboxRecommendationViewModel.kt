@@ -150,7 +150,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 skipItems(1)
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(1))
 
                 // Then updated state
                 assertUpdatedState(
@@ -176,7 +176,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 skipItems(1)
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(1))
 
                 // Then updated state
                 assertUpdatedState(
@@ -202,7 +202,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 viewModel.setupViewModelObserver()
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(1))
 
                 // Then updated state
                 assertErrorState(awaitItem())
@@ -212,7 +212,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
 
             viewModel.errorUiState.test {
                 // When update state 2
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(2))
                 // Then show error
                 val errorState = awaitItem()
                 Assert.assertEquals(
@@ -240,7 +240,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 skipItems(1)
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(2))
                 // Then update state
                 assertLoadingState(awaitItem())
 
@@ -307,42 +307,6 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 // Then
                 val initialValue = awaitItem()
                 assertEquals(false, initialValue.shouldScroll)
-            }
-        }
-    }
-
-    @Test
-    fun `get currentPage, should get current page number`() {
-        runTest {
-            // Given
-            mockRecommendationFlow(Result.Success(dummyProductRecommendationEmpty))
-
-            viewModel.productRecommendationUiState.test {
-                // When
-                val initialResult = viewModel.getCurrentRecommendationPage()
-
-                viewModel.setupViewModelObserver()
-                viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
-
-                awaitItem()
-                every {
-                    getRecommendationUseCase.currentPage
-                } returns 1
-                val result = viewModel.getCurrentRecommendationPage()
-
-                awaitItem()
-                every {
-                    getRecommendationUseCase.currentPage
-                } returns 2
-                val updatedResult = viewModel.getCurrentRecommendationPage()
-
-                // Then
-                assertEquals(0, initialResult)
-                assertEquals(1, result)
-                assertEquals(2, updatedResult)
-
-                cancelAndIgnoreRemainingEvents()
             }
         }
     }
