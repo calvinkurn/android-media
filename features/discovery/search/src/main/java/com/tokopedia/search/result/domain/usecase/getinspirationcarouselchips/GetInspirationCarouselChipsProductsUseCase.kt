@@ -63,6 +63,10 @@ class GetInspirationCarouselChipsProductsUseCase(
                         type
                         position
                         url
+                        styles { 
+                            key 
+                            value 
+                        }
                     }
                     original_price
                     discount_percentage
