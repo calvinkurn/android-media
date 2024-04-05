@@ -54,7 +54,9 @@ class StoriesRepositoryImpl @Inject constructor(
         authorType: String,
         source: String,
         sourceId: String,
-        entryPoint: String
+        entryPoint: String,
+        categoryIds: List<String>,
+        productIds: List<String>
     ): StoriesUiModel =
         withContext(dispatchers.io) {
             val groupRequest = async {
@@ -64,7 +66,9 @@ class StoriesRepositoryImpl @Inject constructor(
                         authorType = authorType,
                         source = source,
                         sourceID = sourceId,
-                        entryPoint = entryPoint
+                        entryPoint = entryPoint,
+                        categoryIds = categoryIds,
+                        productIds = productIds
                     )
                 )
             }
@@ -75,7 +79,9 @@ class StoriesRepositoryImpl @Inject constructor(
                         authorType = authorType,
                         source = source,
                         sourceID = sourceId,
-                        entryPoint = entryPoint
+                        entryPoint = entryPoint,
+                        categoryIds = categoryIds,
+                        productIds = productIds
                     )
                 )
             }
@@ -89,7 +95,9 @@ class StoriesRepositoryImpl @Inject constructor(
         authorType: String,
         source: String,
         sourceId: String,
-        entryPoint: String
+        entryPoint: String,
+        categoryIds: List<String>,
+        productIds: List<String>
     ): StoriesDetail =
         withContext(dispatchers.io) {
             val detailRequest = storiesDetailsUseCase(
@@ -98,7 +106,9 @@ class StoriesRepositoryImpl @Inject constructor(
                     authorType = authorType,
                     source = source,
                     sourceID = sourceId,
-                    entryPoint = entryPoint
+                    entryPoint = entryPoint,
+                    categoryIds = categoryIds,
+                    productIds = productIds
                 )
             )
             return@withContext mapper.mapStoriesDetailRequest("", detailRequest)

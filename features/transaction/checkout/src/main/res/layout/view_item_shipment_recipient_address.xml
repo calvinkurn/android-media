@@ -29,7 +29,7 @@
         android:layout_toRightOf="@+id/tv_shipment_address"
         android:scaleX="0.75"
         android:scaleY="0.75"
-        app:srcCompat="@drawable/ic_info_black"
+        app:srcCompat="@drawable/ic_info_black_checkout"
         app:unifyImageButtonVariant="image" />
 
     <com.tokopedia.unifyprinciples.Typography

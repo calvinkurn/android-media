@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.aggregator
 
+import android.graphics.Point
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -34,6 +35,7 @@ data class ProductVariantBottomSheetParams(
     var variantAggregator: ProductVariantAggregatorUiData = ProductVariantAggregatorUiData(),
     var miniCartData: Map<String, MiniCartItem.MiniCartItemProduct>? = null,
     var alreadyFollowShop: Boolean = false,
+    var cartPosition: Point? = null,
 
     // Basic info pdp
     var minimumShippingPrice: Double = DEFAULT_PRICE_MINIMUM_SHIPPING,

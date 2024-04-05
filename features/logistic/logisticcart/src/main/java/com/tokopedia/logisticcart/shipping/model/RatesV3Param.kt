@@ -93,4 +93,10 @@ data class OngkirRatesV3Input(
     val grouping_state: Int = 0
 ) : GqlParam
 
-data class RatesMetadata(@SerializedName("cart_data") val cartData: String) : GqlParam
+data class RatesMetadata(
+    @SerializedName("cart_data")
+    val cartData: String,
+    // selisih ongkir
+    @SerializedName("action_metadata")
+    val action_metadata: String = ""
+) : GqlParam

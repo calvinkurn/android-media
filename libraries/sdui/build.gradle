@@ -34,6 +34,7 @@ dependencies {
     implementation rootProject.ext.sduiDependencies.divcore
     implementation rootProject.ext.sduiDependencies.div
     implementation rootProject.ext.sduiDependencies.divjson
+    implementation rootProject.ext.sduiDependencies.divEvaluable
     implementation rootProject.ext.sduiDependencies.divlottie
     implementation rootProject.ext.sduiDependencies.divutils
 }

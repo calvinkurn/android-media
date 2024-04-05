@@ -462,6 +462,7 @@ object CartUiModelMapper {
                         isTokoNow = availableShop.shop.isTokoNow
                         cartString = group.cartString
                         cartStringOrder = availableShop.cartStringOrder
+                        orderMetadata = availableShop.orderMetadata
                         isFulfillment = group.isFulfillment
                         shouldValidateWeight =
                             availableShop.shop.maximumShippingWeight > 0.0 && availableShop.shop.maximumWeightWording.isNotEmpty()
@@ -483,6 +484,12 @@ object CartUiModelMapper {
                 actionsData = cartData.availableSection.actions
                 isError = false
             }
+            identifier = generateIdentifier(
+                availableShop?.cartStringOrder,
+                bundleGroupId,
+                cartDetail.cartDetailInfo.bmgmData.offerId,
+                cartDetail.cartDetailInfo.bmgmData.offerTypeId
+            )
             shopHolderData = shopData
             originWarehouseIds = product.originWarehouseIds
             needPrescription = product.ethicalDrug.needPrescription
@@ -601,6 +608,7 @@ object CartUiModelMapper {
             cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
             showBmGmBottomDivider = shouldShowBmGmBottomDivider
             cartProductLabelData = mapProductLabel(product.productLabel)
+            productMetadata = product.productMetadata
             isEnableCartVariant = product.isEnableCartVariant
         }
     }
@@ -952,5 +960,14 @@ object CartUiModelMapper {
             lineColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.lineColor),
             alwaysShowTimer = remainingTimeMillis.isMoreThanZero()
         )
+    }
+
+    private fun generateIdentifier(
+        cartStringOrder: String?,
+        bundleGroupId: String,
+        offerId: Long,
+        offerTypeId: Long
+    ): String {
+        return "$cartStringOrder|$bundleGroupId|$offerId|$offerTypeId"
     }
 }

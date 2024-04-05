@@ -128,6 +128,8 @@ internal class SortFilterBottomSheetViewModel {
 
     fun getSelectedCategoryFilterValue() = filterController.getFilterValue(SearchApiConst.SC)
 
+    fun getActiveFilterOptionIndexed() = filterController.getActiveFilterOptionIndexed()
+
     fun onViewCreated() {
         if (this.dynamicFilterModel == null) {
             isLoadingForDynamicFilterMutableLiveData.value = true

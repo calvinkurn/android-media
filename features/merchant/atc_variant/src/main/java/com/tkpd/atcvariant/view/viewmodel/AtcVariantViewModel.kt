@@ -15,6 +15,12 @@ import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanS
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.ProductType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
+import com.tokopedia.analytics.byteio.TrackConfirmSku
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -27,10 +33,12 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -40,6 +48,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -50,6 +59,13 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -88,9 +104,23 @@ class AtcVariantViewModel @Inject constructor(
     val buttonData: LiveData<Result<PartialButtonDataModel>>
         get() = _buttonData
 
-    private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
-    val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
-        get() = _addToCartLiveData
+    private val _atcAnimationEnded = MutableStateFlow(false)
+    private val _addToCartState = MutableStateFlow<Result<AddToCartDataModel>?>(null)
+
+    val addToCartResultState = combine(
+        _atcAnimationEnded,
+        _addToCartState,
+        transform = { animation, addToCart -> animation to addToCart }
+    ).filter {
+        it.first && it.second != null
+    }.map {
+        _atcAnimationEnded.emit(false)
+        _addToCartState.emit(null)
+        it.second
+    }.filterNotNull().shareIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000)
+    )
 
     private val _updateCartLiveData = MutableLiveData<Result<Data>>()
     val updateCartLiveData: LiveData<Result<Data>>
@@ -150,7 +180,8 @@ class AtcVariantViewModel @Inject constructor(
 
             val selectedVariantChild =
                 getVariantData()?.getChildByOptionId(selectedVariantIds.values.toList())
-            val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
+            val productId = selectedVariantChild?.productId ?: ""
+            val selectedMiniCart = minicartData?.get(productId)
             val shouldShowDeleteButton = selectedMiniCart != null
             val cartData = AtcCommonMapper.mapToCartRedirectionData(
                 selectedVariantChild,
@@ -162,8 +193,8 @@ class AtcVariantViewModel @Inject constructor(
 
             val isPartiallySelected =
                 AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
-            val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
-            val selectedQuantity = getSelectedQuantity(selectedVariantChild?.productId ?: "")
+            val selectedWarehouse = getSelectedWarehouse(productId)
+            val selectedQuantity = getSelectedQuantity(productId)
 
             // We update visitable to re-render selected variant and header
             val list = AtcCommonMapper.updateVisitable(
@@ -189,11 +220,11 @@ class AtcVariantViewModel @Inject constructor(
                 _stockCopy.postValue(selectedVariantChild?.stock?.stockCopy ?: "")
 
                 // generate restriction data (shop followers or exclusive campaign)
-                assignReData(aggregatorData?.reData, selectedVariantChild?.productId ?: "")
-                assignRatesData(selectedVariantChild?.productId ?: "")
+                assignReData(aggregatorData?.reData, productId)
+                assignRatesData(productId)
 
                 updateActivityResult(
-                    selectedProductId = selectedVariantChild?.productId ?: "",
+                    selectedProductId = productId,
                     mapOfSelectedVariantOption = selectedVariantIds
                 )
             }
@@ -510,6 +541,40 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    private fun sendByteIoConfirmTracker(actionButton: Int, selectedChild: VariantChild?) {
+        val parentId = getVariantData()?.parentId.orEmpty()
+        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
+        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON
+            || actionButton == ProductDetailCommonConstant.OCS_BUTTON) {
+            AppLogPdp.addToCart.set(true)
+            AppLogPdp.sendConfirmCart(
+                TrackConfirmCart(
+                    productId = parentId,
+                    productCategory = categoryLvl1,
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    addSkuNum = selectedChild?.getFinalMinOrder().orZero()
+                )
+            )
+        } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
+            AppLogPdp.sendConfirmSku(
+                TrackConfirmSku(
+                    productId = parentId,
+                    productCategory = categoryLvl1,
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    isSingleSku = getVariantData()?.children?.size == 1,
+                    qty = selectedChild?.getFinalMinOrder().orZero().toString(),
+                    isHaveAddress = false
+                )
+            )
+        }
+    }
+
     fun hitAtc(
         actionButton: Int,
         shopId: String,
@@ -529,6 +594,7 @@ class AtcVariantViewModel @Inject constructor(
         val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
             ?: selectedChild?.getFinalMinOrder() ?: Int.ONE
 
+        sendByteIoConfirmTracker(actionButton, selectedChild)
         if (selectedMiniCart != null && showQtyEditor) {
             getUpdateCartUseCase(
                 params = selectedMiniCart.copy(quantity = updatedQuantity),
@@ -576,7 +642,7 @@ class AtcVariantViewModel @Inject constructor(
                 }
             }
         }) {
-            _addToCartLiveData.value = it.cause?.asFail() ?: it.asFail()
+            _addToCartState.emit(value = it.cause?.asFail() ?: it.asFail())
         }
     }
 
@@ -605,7 +671,9 @@ class AtcVariantViewModel @Inject constructor(
 
     private fun getUpdateCartUseCase(
         params: MiniCartItem.MiniCartItemProduct,
-        showQtyEditor: Boolean,
+
+        showQtyEditor: Boolean
+    ,
         source: String
     ) {
         viewModelScope.launchCatchError(block = {
@@ -654,9 +722,10 @@ class AtcVariantViewModel @Inject constructor(
         val result = withContext(dispatcher.io) {
             addToCartUseCase.createObservable(requestParams).toBlocking().single()
         }
+
         if (result.isDataError()) {
             val errorMessage = result.errorMessage.firstOrNull() ?: ""
-            _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
             updateQuantityEditorDeleteButtonAfterAtc(showQtyEditor, true)
             updateMiniCartAndButtonData(
@@ -666,8 +735,25 @@ class AtcVariantViewModel @Inject constructor(
                 cartId = result.data.cartId,
                 notes = result.data.notes
             )
-            _addToCartLiveData.postValue(result.asSuccess())
+            _addToCartState.emit(result.asSuccess())
         }
+    }
+
+    fun getConfirmCartResultModel(): TrackConfirmCartResult {
+        val selectedChild = getVariantData()?.getChildByOptionId(
+            getSelectedOptionIds()?.values.orEmpty().toList()
+        )
+        val parentId = getVariantData()?.parentId.orEmpty()
+        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
+        return TrackConfirmCartResult(
+            productId = parentId,
+            productCategory = categoryLvl1,
+            productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
+            originalPrice = selectedChild?.finalMainPrice.orZero(),
+            salePrice = selectedChild?.finalPrice.orZero(),
+            skuId = selectedChild?.productId.orEmpty(),
+            addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
+        )
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
@@ -677,9 +763,9 @@ class AtcVariantViewModel @Inject constructor(
         if (result.isDataError()) {
             val errorMessage = result.errorMessage.firstOrNull() ?: ""
 
-            _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
-            _addToCartLiveData.postValue(result.asSuccess())
+            _addToCartState.emit(result.asSuccess())
         }
     }
 
@@ -689,9 +775,9 @@ class AtcVariantViewModel @Inject constructor(
         }
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
-            _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
-            _addToCartLiveData.postValue(result.asSuccess())
+            _addToCartState.emit(result.asSuccess())
         }
     }
 
@@ -760,5 +846,9 @@ class AtcVariantViewModel @Inject constructor(
         )
 
         _variantImagesData.postValue(productDetailGalleryData)
+    }
+
+    fun atcAnimationEnd() = viewModelScope.launch {
+        _atcAnimationEnded.emit(true)
     }
 }

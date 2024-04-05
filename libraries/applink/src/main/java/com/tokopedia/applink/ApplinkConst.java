@@ -3,8 +3,6 @@ package com.tokopedia.applink;
 import static com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST;
 import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE;
 
-import com.tokopedia.applink.internal.ApplinkConstInternalContent;
-
 /**
  * @author ricoharisin .
  * <p>
@@ -644,8 +642,8 @@ public interface ApplinkConst {
         String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
         String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
-        String OLD_CATEGORY = "tokopedia://now/category";
-        String CATEGORY = "tokopedia://now/category/l1";
+        String CATEGORY = "tokopedia://now/category";
+        String CATEGORY_L1 = "tokopedia://now/category/l1";
         String CATEGORY_L2 = "tokopedia://now/category/l2";
         String REPURCHASE = "tokopedia://now/repurchase-page";
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
@@ -655,6 +653,7 @@ public interface ApplinkConst {
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
         String SEE_ALL_CATEGORY = "tokopedia://now/see-all-category";
         String ALL_ANNOTATION = "tokopedia://now/all-annotation";
+        String SHOPPING_LIST = "tokopedia://now/list-belanja";
     }
 
     interface TokoFood {

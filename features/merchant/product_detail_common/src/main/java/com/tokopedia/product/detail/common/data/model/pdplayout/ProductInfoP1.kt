@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 data class ProductInfoP1(
     val basic: BasicInfo = BasicInfo(),
@@ -51,8 +54,31 @@ data class ProductInfoP1(
             }
         }
 
+    val originalPrice: Double
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.originalPrice
+            } else {
+                data.price.value
+            }
+        }
+
+    val originalPriceFmt: String
+        get() {
+            return data.campaign.slashPriceFmt.ifBlank { data.price.priceFmt }
+        }
+
     val isFromCache
         get() = cacheState.isFromCache
+
+    val productType: ProductType
+        get() {
+            return when {
+                basic.isActive() && getFinalStock().isNotBlankOrZero() -> ProductType.AVAILABLE
+                basic.isActive() && getFinalStock().isBlankOrZero() -> ProductType.SOLD_OUT
+                else -> ProductType.NOT_AVAILABLE
+            }
+        }
 
     fun getFinalStock(): String {
         return if (data.campaign.isActive) {

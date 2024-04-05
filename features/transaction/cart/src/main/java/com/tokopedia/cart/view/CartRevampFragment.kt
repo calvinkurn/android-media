@@ -46,6 +46,8 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -385,6 +387,8 @@ class CartRevampFragment :
     }
 
     private var enablePromoEntryPointNewInterface: Boolean = false
+
+    private var hasApplogScrollListener: Boolean = false
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -1811,6 +1815,12 @@ class CartRevampFragment :
         viewModel.addAvailableCartItemImpression(availableCartItems)
     }
 
+    private fun addRecommendationScrollListener(cartRecyclerView: RecyclerView) {
+        if(hasApplogScrollListener) return
+        cartRecyclerView.addVerticalTrackListener()
+        hasApplogScrollListener = true
+    }
+
     private fun addEndlessRecyclerViewScrollListener(
         cartRecyclerView: RecyclerView,
         gridLayoutManager: GridLayoutManager
@@ -1906,6 +1916,7 @@ class CartRevampFragment :
             if (hasRedStatePromo) {
                 viewModel.doClearRedPromosBeforeGoToCheckout(clearPromo)
             } else {
+                viewModel.sendAtcButtonTracker()
                 goToCheckoutPage()
             }
         } else {
@@ -2533,6 +2544,7 @@ class CartRevampFragment :
             addItemDecoration(cartItemDecoration)
             setSpanSize(gridLayoutManager)
             addRecyclerViewScrollListener(this)
+            addRecommendationScrollListener(this)
             addEndlessRecyclerViewScrollListener(this, gridLayoutManager)
         }
     }
@@ -2997,6 +3009,7 @@ class CartRevampFragment :
             }
         }
     }
+
 
     private fun observeRemoveFromWishlist() {
         viewModel.removeFromWishlistEvent.observe(viewLifecycleOwner) { removeFromWishlistEvent ->
@@ -4409,6 +4422,14 @@ class CartRevampFragment :
         }
 
         sendAnalyticsScreenNameCartPage()
+        val availCount = cartData.availableSection.availableGroupGroups.sumOf {
+            group -> group.groupShopCartData.sumOf { it.cartDetails.sumOf { c -> c.products.size } }
+        }
+        val unavailCount = cartData.unavailableSections.sumOf { it.productsCount.toInt() }
+        /**
+         * This will hit when user refresh the cart TBC
+         * */
+        AppLogPdp.sendCartEnterPage(availCount, unavailCount)
         updateStateAfterFinishGetCartList()
 
         renderTickerAnnouncement(cartData)
@@ -4560,7 +4581,7 @@ class CartRevampFragment :
     private fun renderToShipmentFormSuccess(
         eeCheckoutData: Map<String, Any>,
         checkoutProductEligibleForCashOnDelivery: Boolean,
-        condition: Int
+        condition: Int,
     ) {
         when (condition) {
             CartViewModel.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(

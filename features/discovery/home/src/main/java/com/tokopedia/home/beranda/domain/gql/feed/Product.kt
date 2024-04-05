@@ -96,6 +96,7 @@ data class Product(
             imageUrl = imageUrl,
             recommendationType = recommendationType,
             priceInt = priceInt,
+            slashedPriceInt = slashedPriceInt,
             freeOngkirIsActive = freeOngkirInformation.isActive,
             labelGroup = labelGroup.map {
                 HomeRecommendationItemDataModel.HomeRecommendationProductItem.LabelGroup(

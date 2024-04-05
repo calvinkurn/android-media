@@ -3,15 +3,15 @@ package com.tokopedia.topads.view.adapter.bidinfo
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoViewModel
+import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoUiModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoViewHolder
 
-class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : RecyclerView.Adapter<BidInfoViewHolder<BidInfoViewModel>>() {
+class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : RecyclerView.Adapter<BidInfoViewHolder<BidInfoUiModel>>() {
 
-    var items: MutableList<BidInfoViewModel> = mutableListOf()
+    var items: MutableList<BidInfoUiModel> = mutableListOf()
     var minBid: String = "0"
 
-    override fun onBindViewHolder(holder: BidInfoViewHolder<BidInfoViewModel>, position: Int) {
+    override fun onBindViewHolder(holder: BidInfoViewHolder<BidInfoUiModel>, position: Int) {
         holder.bind(items[position],minBid)
     }
 
@@ -19,9 +19,9 @@ class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : Recy
         return items[position].type(typeFactory)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BidInfoViewHolder<BidInfoViewModel> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BidInfoViewHolder<BidInfoUiModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return typeFactory.holder(viewType, view) as BidInfoViewHolder<BidInfoViewModel>
+        return typeFactory.holder(viewType, view) as BidInfoViewHolder<BidInfoUiModel>
     }
 
     override fun getItemCount(): Int {

@@ -14,6 +14,7 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.VariantConstant
@@ -25,9 +26,10 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
-import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -39,7 +41,13 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -52,10 +60,12 @@ import org.junit.Test
 /**
  * Created by Yehezkiel on 28/05/21
  */
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @get:Rule
-    val coroutineScopeRule = CoroutineTestRule()
+    val coroutineScopeRule = UnconfinedTestRule()
 
     //region helper function
     @Test
@@ -945,10 +955,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
-    fun `on success atc tokonow`() {
+    fun `on success atc tokonow`() = runTest {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
-        val actionButtonAtc = 2
-
+        val actionButtonAtc = ProductDetailCommonConstant.ATC_BUTTON
         val atcResponseSuccess = AddToCartDataModel(
             data = DataModel(
                 success = 1,
@@ -958,48 +967,62 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             status = "OK"
         )
         val slotRequest = slot<RequestParams>()
+        val result = async {
+            viewModel.addToCartResultState.first()
+        }
         coEvery {
             addToCartUseCase.createObservable(capture(slotRequest)).toBlocking().single()
         } returns atcResponseSuccess
-
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", true, "")
+        viewModel.atcAnimationEnd()
         verifyAtcUsecase(verifyAtc = true)
 
         val request =
             slotRequest.captured.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
         Assert.assertEquals(request.quantity, 2)
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
     }
 
     @Test
-    fun `on success atc non tokonow`() {
+    fun `on success atc non tokonow`() = runTest {
         `render initial variant with given parent id and hit gql non tokonow`()
-        val actionButtonAtc = 2
+        val actionButtonAtc = ProductDetailCommonConstant.ATC_BUTTON
         val slot = slot<RequestParams>()
-
         val atcResponseSuccess = AddToCartDataModel(
             data = DataModel(success = 1, productId = "2147818576"),
             status = "OK"
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartUseCase.createObservable(capture(slot)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "attribution", "trackerlist", false, "")
+        viewModel.hitAtc(
+            actionButtonAtc,
+            "1234",
+            "",
+            "321",
+            0.0,
+            "attribution",
+            "trackerlist",
+            false,
+            ""
+        )
+        viewModel.atcAnimationEnd()
         verifyAtcUsecase(verifyAtc = true)
 
         val requestParams =
             slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartRequestParams
         Assert.assertEquals(requestParams.listTracker, "trackerlist")
         Assert.assertEquals(requestParams.attribution, "attribution")
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
         assertButton(expectedIsBuyable = true)
     }
 
     @Test
-    fun `on fail atc`() {
+    fun `on fail atc`() = runTest {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
         val atcResponseError = AddToCartDataModel(
@@ -1007,30 +1030,32 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             status = "",
             errorMessage = arrayListOf("gagal ya")
         )
-
+        val result = async { viewModel.addToCartResultState.first() }
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", true, "")
+        viewModel.atcAnimationEnd()
         verifyAtcUsecase(verifyAtc = true)
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
         assertButton(expectedIsBuyable = true)
     }
 
     @Test
-    fun `on atc fail cause by throw`() {
+    fun `on atc fail cause by throw`() = runTest {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 2
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } throws Throwable()
-
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", true, "")
+        viewModel.atcAnimationEnd()
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
         assertButton(expectedIsBuyable = true)
     }
 
@@ -1097,55 +1122,58 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
-    fun `on success ocs`() {
+    fun `on success ocs`() = runTest {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
-        val actionButtonAtc = 3
+        val actionButtonAtc = ProductDetailCommonConstant.OCS_BUTTON
         val slot = slot<RequestParams>()
-
         val atcResponseSuccess = AddToCartDataModel(
             data = DataModel(success = 1, productId = "2147818593"),
             status = "OK"
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOcsUseCase.createObservable(capture(slot)).toBlocking().single()
         } returns atcResponseSuccess
 
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 30000.0, "", "", true, "")
+        viewModel.atcAnimationEnd()
         verifyAtcUsecase(verifyOcs = true)
 
         val requestParams =
             slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartOcsRequestParams
         Assert.assertEquals(requestParams.shippingPrice, 30000.0, 0.0)
 
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
         assertButton(expectedIsBuyable = true)
     }
 
     @Test
-    fun `on fail ocs`() {
+    fun `on fail ocs`() = runTest {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
-        val actionButtonAtc = 3
-
+        val actionButtonAtc = ProductDetailCommonConstant.OCS_BUTTON
         val atcResponseError = AddToCartDataModel(
             data = DataModel(success = 0),
             status = "",
             errorMessage = arrayListOf("gagal ya")
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", true, "")
+        viewModel.atcAnimationEnd()
+
         verifyAtcUsecase(verifyOcs = true)
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
         assertButton(expectedIsBuyable = true)
     }
 
     @Test
-    fun `on success occ`() {
+    fun `on success occ`() = runTest {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
         val actionButtonAtc = 4
         val atcResponseError = AddToCartDataModel(
@@ -1153,58 +1181,95 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             status = "",
             errorMessage = arrayListOf("gagal ya")
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseError
 
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", true, "")
+        viewModel.atcAnimationEnd()
         verifyAtcUsecase(verifyOcc = true)
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
         assertButton(expectedIsBuyable = true)
     }
 
     @Test
-    fun `on fail occ`() {
+    fun `on fail occ`() = runTest {
         `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
-        val actionButtonAtc = 4
-
+        val actionButtonAtc = ProductDetailCommonConstant.OCC_BUTTON
         val atcResponseSuccess = AddToCartDataModel(
             data = DataModel(success = 1, productId = "2147818593"),
             status = "OK"
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", true, "")
+        viewModel.atcAnimationEnd()
+
         verifyAtcUsecase(verifyOcc = true)
 
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
         assertButton(expectedIsBuyable = true)
     }
 
     @Test
-    fun `hit atc with empty variant data`() {
+    fun `hit atc with empty variant data`() = runTest {
         decideFailValueHitGqlAggregator()
-        val actionButtonAtc = 4
-
+        val actionButtonAtc = ProductDetailCommonConstant.OCC_BUTTON
         val atcResponseSuccess = AddToCartDataModel(
             data = DataModel(success = 1, productId = "2147818593"),
             status = "OK"
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", false, "")
+        viewModel.atcAnimationEnd()
+
         verifyAtcUsecase(verifyOcc = true)
 
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
     }
+
+    @Test
+    fun `ensure add-to-cart state is null when gql is finished but animation has not ended`() =
+        runTest {
+            `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
+            val actionButtonAtc = ProductDetailCommonConstant.ATC_BUTTON
+            val atcResponseSuccess = AddToCartDataModel(
+                data = DataModel(
+                    success = 1,
+                    productId = "2147818593",
+                    cartId = "2147818593"
+                ),
+                status = "OK"
+            )
+            val slotRequest = slot<RequestParams>()
+            val result = mutableListOf<Result<AddToCartDataModel>>()
+
+            backgroundScope.launch { viewModel.addToCartResultState.toList(result) }
+            coEvery {
+                addToCartUseCase.createObservable(capture(slotRequest)).toBlocking().single()
+            } returns atcResponseSuccess
+            viewModel.hitAtc(actionButtonAtc, "1234", "", "321", 0.0, "", "", true, "")
+
+            verifyAtcUsecase(verifyAtc = true)
+
+            val request =
+                slotRequest.captured.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
+            assertTrue(result.isEmpty())
+            Assert.assertEquals(request.quantity, 2)
+            assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
+        }
     //endregion
 
     //region favorite shop
