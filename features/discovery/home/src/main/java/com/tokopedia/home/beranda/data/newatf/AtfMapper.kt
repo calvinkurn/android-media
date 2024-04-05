@@ -3,11 +3,13 @@ package com.tokopedia.home.beranda.data.newatf
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
+import com.tokopedia.home.beranda.data.model.GetTargetedTicker
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelMapper
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper
 import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
-import com.tokopedia.home.beranda.data.newatf.ticker.TickerMapper
+import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TargetedTickerMapper
+import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TickerMapper
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
@@ -90,7 +92,7 @@ class AtfMapper @Inject constructor(
         return when(this.component) {
             AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> content?.getAtfContent<BannerDataModel>()
             AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> content?.getAtfContent<DynamicHomeIcon>()
-            AtfKey.TYPE_TICKER -> content?.getAtfContent<Ticker>()
+            AtfKey.TYPE_TICKER -> content?.getAtfContent<GetTargetedTicker>() ?: content?.getAtfContent<Ticker>()
             AtfKey.TYPE_CHANNEL -> content?.getAtfContent<DynamicHomeChannel>()
             AtfKey.TYPE_MISSION,
             AtfKey.TYPE_MISSION_V2,
@@ -113,6 +115,7 @@ class AtfMapper @Inject constructor(
                     is BannerDataModel -> visitables.add(homepageBannerMapper.asVisitable(this, index, value))
                     is DynamicHomeIcon -> visitables.add(dynamicIconMapper.asVisitable(this, value))
                     is Ticker -> tickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
+                    is GetTargetedTicker -> TargetedTickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
                     is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(missionWidgetMapper.asVisitable(this, index, value))
                     is HomeTodoWidgetData.GetHomeTodoWidget -> todoWidgetMapper.asVisitable(this, index, value)?.let { visitables.add(it) }
                     is DynamicHomeChannel -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))

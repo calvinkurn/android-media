@@ -10,9 +10,14 @@ data class RecommendationLabel(
     val imageUrl: String = "",
     val styles: List<Style> = emptyList(),
 ) {
+    companion object {
+        private const val WEIGHT_POSITION = "weight"
+    }
 
     data class Style(
         val key: String = "",
         val value: String = "",
     )
+
+    fun isWeightPosition() = position == WEIGHT_POSITION
 }

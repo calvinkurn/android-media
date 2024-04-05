@@ -52,6 +52,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomePayLaterWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ReviewViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TargetedTickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TopAdsVerticalBannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TopadsBannerViewHolder
@@ -124,6 +125,7 @@ import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHo
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
+import com.tokopedia.home_component.viewholders.V2OrigamiSDUIViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.viewholders.mission.v3.Mission4SquareWidgetListener
@@ -238,7 +240,11 @@ class HomeAdapterFactory(
     }
 
     override fun type(tickerDataModel: TickerDataModel): Int {
-        return TickerViewHolder.LAYOUT
+        return if (tickerDataModel.targetedTickers.isNotEmpty()) {
+            TargetedTickerViewHolder.LAYOUT
+        } else {
+            TickerViewHolder.LAYOUT
+        }
     }
 
     override fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int {
@@ -479,6 +485,10 @@ class HomeAdapterFactory(
     }
 
     override fun type(origamiSDUIDataModel: OrigamiSDUIDataModel): Int {
+        if (shouldUseFixesAdaptiveOrigami()) {
+            return V2OrigamiSDUIViewHolder.LAYOUT
+        }
+
         return OrigamiSDUIViewHolder.LAYOUT
     }
 
@@ -490,6 +500,7 @@ class HomeAdapterFactory(
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
+            TargetedTickerViewHolder.LAYOUT -> viewHolder = TargetedTickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener, cardInteraction = true)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
@@ -658,6 +669,7 @@ class HomeAdapterFactory(
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
+            V2OrigamiSDUIViewHolder.LAYOUT -> viewHolder = V2OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
@@ -665,4 +677,6 @@ class HomeAdapterFactory(
 
         return viewHolder
     }
+
+    private fun shouldUseFixesAdaptiveOrigami() = true
 }

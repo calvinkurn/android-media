@@ -4,18 +4,18 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingProperties
 import com.tokopedia.discovery2.analytics.CouponTrackingProperties
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.databinding.GridAutomateCouponLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.resources.isDarkMode
-import com.tokopedia.utils.view.binding.viewBinding
 
 class GridAutomateCouponViewHolder(
     itemView: View,
@@ -26,8 +26,7 @@ class GridAutomateCouponViewHolder(
         private const val GRID_SPAN_COUNT = 2
     }
 
-    private val binding: GridAutomateCouponLayoutBinding?
-        by viewBinding()
+    private val automateCouponRv = itemView.findViewById<RecyclerView>(R.id.automate_coupon_rv)
 
     private val mAdapter: DiscoveryRecycleAdapter
         by lazy {
@@ -47,7 +46,7 @@ class GridAutomateCouponViewHolder(
     private var viewModel: ListAutomateCouponViewModel? = null
 
     init {
-        binding?.setupRecyclerView()
+        setupRecyclerView()
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -65,7 +64,7 @@ class GridAutomateCouponViewHolder(
         if (lifecycleOwner == null) return
 
         viewModel?.getComponentList()?.observe(lifecycleOwner) { items ->
-            binding?.showWidget(items)
+            showWidget(items)
             trackImpression(items)
         }
     }
@@ -77,7 +76,7 @@ class GridAutomateCouponViewHolder(
         super.removeObservers(lifecycleOwner)
     }
 
-    private fun GridAutomateCouponLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
+    private fun showWidget(items: ArrayList<ComponentsItem>) {
         automateCouponRv.show()
         mAdapter.setDataList(items)
     }
@@ -94,7 +93,7 @@ class GridAutomateCouponViewHolder(
         if (properties.isNotEmpty()) analytics?.trackCouponImpression(properties)
     }
 
-    private fun GridAutomateCouponLayoutBinding.setupRecyclerView() {
+    private fun setupRecyclerView() {
         automateCouponRv.apply {
             adapter = mAdapter
             layoutManager = mLayoutManager
