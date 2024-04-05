@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.adapter.viewholders.VisibleVH
+import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import com.tokopedia.cart.databinding.ItemCartBuyAgainBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
@@ -90,26 +90,35 @@ class CartAdapter(
         const val SELLER_CASHBACK_ACTION_DELETE = 3
     }
 
-    private val scrollListener = PercentageScrollListener()
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+    private var recyclerView: RecyclerView? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(scrollListener)
+        this.recyclerView = recyclerView
+        this.recyclerView?.addOnScrollListener(scrollListener)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(scrollListener)
+        this.recyclerView?.removeOnScrollListener(scrollListener)
+        this.recyclerView = null
     }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
-        if(holder is VisibleVH) holder.onViewAttachedToWindow()
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewAttachedToWindow()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        if (holder is VisibleVH) holder.onViewDetachedFromWindow(holder.getVisiblePercentage())
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewDetachedFromWindow(holder.visiblePercentage)
+        }
     }
 
     fun updateList(newList: ArrayList<Any>) {

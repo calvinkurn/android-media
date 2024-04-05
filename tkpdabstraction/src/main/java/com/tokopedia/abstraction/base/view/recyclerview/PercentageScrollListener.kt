@@ -11,10 +11,6 @@ import kotlin.math.roundToInt
 
 open class PercentageScrollListener : OnScrollListener() {
 
-    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        super.onScrollStateChanged(recyclerView, newState)
-    }
-
     override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
         val layoutManager = recycler.layoutManager
 

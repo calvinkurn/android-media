@@ -52,17 +52,13 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     public void onViewDetachedFromWindow(T element, int visiblePercentage) {}
 
+    @Override
+    public void onViewDetachedFromWindow(int visiblePercentage) {}
+
     public void onViewAttachedToWindow(T element) {}
 
     @Override
-    public void onViewAttachedToWindow(@Nullable RecyclerView recyclerView) {
-
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(@Nullable RecyclerView recyclerView) {
-
-    }
+    public void onViewAttachedToWindow() {}
 
     @Override
     public void setVisiblePercentage(int visiblePercentage) {

@@ -19,9 +19,11 @@ internal class CarouselProductCardListViewHolder(
     }
 
     private var binding: CarouselProductCardItemListLayoutBinding? by viewBinding()
+    private var carouselProductCardModel: CarouselProductCardModel? = null
 
     override fun bind(carouselProductCardModel: CarouselProductCardModel) {
         val binding = binding ?: return
+        this.carouselProductCardModel = carouselProductCardModel
         val productCardModel = carouselProductCardModel.productCardModel
 
         binding.carouselProductCardItem.applyCarousel()
@@ -94,5 +96,18 @@ internal class CarouselProductCardListViewHolder(
         binding?.carouselProductCardItem?.recycle()
 
         unregisterProductCardLifecycleObserver(binding?.carouselProductCardItem)
+        carouselProductCardModel = null
+    }
+
+    override fun onViewAttachedToWindow() {
+        carouselProductCardModel?.let { model ->
+            model.getOnViewListener()?.onViewAttachedToWindow(model.productCardModel, absoluteAdapterPosition)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
+        carouselProductCardModel?.let { model ->
+            model.getOnViewListener()?.onViewDetachedFromWindow(model.productCardModel, absoluteAdapterPosition, visiblePercentage)
+        }
     }
 }

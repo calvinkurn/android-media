@@ -2,14 +2,14 @@ package com.tokopedia.carouselproductcard
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.VisibleVH
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
 
 internal abstract class BaseProductCardViewHolder<T>(
     itemView: View,
     protected val internalListener: CarouselProductCardInternalListener?,
-): RecyclerView.ViewHolder(itemView), VisibleVH {
+): RecyclerView.ViewHolder(itemView), IAdsViewHolderTrackListener {
     abstract fun bind(model: T)
     abstract fun recycle()
 
@@ -34,13 +34,13 @@ internal abstract class BaseProductCardViewHolder<T>(
             ?.unregister(productCardView)
     }
 
-    override fun getVisiblePercentage(): Int {
-        return (visibilityExtent * 100).toInt()
+    override fun setVisiblePercentage(visiblePercentage: Int) {
+        this.visibleViewPercentage = visiblePercentage
     }
 
-    override fun setVisibilityExtent(visibilityExtent: Float) {
-        this.visibilityExtent = visibilityExtent
-    }
+    override val visiblePercentage: Int
+        get() = visibleViewPercentage
 
-    private var visibilityExtent = 0f
+    private var visibleViewPercentage: Int = 0
+
 }

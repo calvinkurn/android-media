@@ -11,16 +11,12 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationProductItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
@@ -37,11 +33,9 @@ class UniversalInboxRecommendationProductViewHolder(
 ) : AbstractViewHolder<UniversalInboxRecommendationUiModel>(itemView), AppLogRecTriggerInterface {
 
     private val binding: UniversalInboxRecommendationProductItemBinding? by viewBinding()
-    private var recommendationItem: RecommendationItem? = null
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
-        this.recommendationItem = recommendationItem
         setRecTriggerObject(uiModel.recommendationItem)
         binding?.inboxProductRecommendation?.run {
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))
@@ -76,7 +70,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 override fun onAreaClicked(v: View) {
                     AppLogTopAds.sendEventRealtimeClick(
                         itemView.context,
-                        PageName.CART,
+                        PageName.INBOX,
                         uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
                     )
                 }
@@ -84,7 +78,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 override fun onProductImageClicked(v: View) {
                     AppLogTopAds.sendEventRealtimeClick(
                         itemView.context,
-                        PageName.CART,
+                        PageName.INBOX,
                         uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
                     )
                 }
@@ -92,7 +86,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 override fun onSellerInfoClicked(v: View) {
                     AppLogTopAds.sendEventRealtimeClick(
                         itemView.context,
-                        PageName.CART,
+                        PageName.INBOX,
                         uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
                     )
                 }
@@ -107,15 +101,18 @@ class UniversalInboxRecommendationProductViewHolder(
         }
     }
 
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.let { item ->
+    override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
+        element?.recommendationItem?.let { item ->
             if (item.isTopAds) AppLogTopAds.sendEventShow(itemView.context, PageName.INBOX,
                 item.asAdsLogShowModel())
         }
     }
 
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.let { item ->
+    override fun onViewDetachedFromWindow(
+        element: UniversalInboxRecommendationUiModel?,
+        visiblePercentage: Int
+    ) {
+        element?.recommendationItem?.let { item ->
             if (item.isTopAds) AppLogTopAds.sendEventShowOver(itemView.context, PageName.INBOX,
                 item.asAdsLogShowOverModel(visiblePercentage))
         }

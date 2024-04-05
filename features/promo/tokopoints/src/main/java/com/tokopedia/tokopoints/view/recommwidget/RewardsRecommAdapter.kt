@@ -31,7 +31,8 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
     private var recyclerView: RecyclerView? = null
 
-    inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), IAdsViewHolderTrackListener {
+    inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        IAdsViewHolderTrackListener {
 
         val productView = itemView.findViewById<ProductCardGridView>(R.id.productCardView)
 
@@ -107,7 +108,7 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
         }
 
 
-        override fun onViewAttachedToWindow(recyclerView: RecyclerView?) {
+        override fun onViewAttachedToWindow() {
             if (uiModel?.isTopAds == true) {
                 AppLogTopAds.sendEventShow(
                     itemView.context,
@@ -125,7 +126,7 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
             }
         }
 
-        override fun onViewDetachedFromWindow(recyclerView: RecyclerView?) {
+        override fun onViewDetachedFromWindow(visiblePercentage: Int) {
             if (uiModel?.isTopAds == true) {
                 AppLogTopAds.sendEventShowOver(
                     itemView.context,
@@ -172,12 +173,12 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
     override fun onViewAttachedToWindow(holder: ProductCardViewHolder) {
         super.onViewAttachedToWindow(holder)
-        holder.onViewAttachedToWindow(recyclerView)
+        holder.onViewAttachedToWindow()
     }
 
     override fun onViewDetachedFromWindow(holder: ProductCardViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        holder.onViewDetachedFromWindow(recyclerView)
+        holder.onViewDetachedFromWindow(holder.visiblePercentage)
     }
 
     override fun getItemCount(): Int {

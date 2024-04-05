@@ -12,6 +12,7 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
@@ -58,15 +59,27 @@ class GridProductItemViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-                    sendClickAdsByteIO(productItemData, AdsLogConst.Refer.AREA)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
+                    )
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    sendClickAdsByteIO(productItemData, AdsLogConst.Refer.COVER)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
+                    )
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    sendClickAdsByteIO(productItemData, AdsLogConst.Refer.SELLER_NAME)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
+                    )
                 }
             })
 
@@ -77,63 +90,21 @@ class GridProductItemViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: ProductItemDataView?) {
-        if (element?.isTopAds == true) {
+        if (element?.isAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowModel()
             )
         }
     }
 
     override fun onViewDetachedFromWindow(element: ProductItemDataView?, visiblePercentage: Int) {
-        if (element?.isTopAds == true) {
+        if (element?.isAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowOverModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
-                        productId = element.productID,
-                        sizePercent = visiblePercentage.toString()
-                    )
-                )
-            )
-        }
-    }
-
-    private fun sendClickAdsByteIO(element: ProductItemDataView?, refer: String) {
-        if (element?.isTopAds == true) {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.SEARCH_RESULT,
-                AdsLogRealtimeClickModel(
-                    refer,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowOverModel(visiblePercentage)
             )
         }
     }

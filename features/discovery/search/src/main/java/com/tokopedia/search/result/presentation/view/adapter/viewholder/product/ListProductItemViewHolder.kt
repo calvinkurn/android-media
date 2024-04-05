@@ -76,15 +76,27 @@ class ListProductItemViewHolder(
             }
 
             override fun onAreaClicked(v: View) {
-                sendClickAdsByteIO(productItemData, AdsLogConst.Refer.AREA)
+                AppLogTopAds.sendEventRealtimeClick(
+                    itemView.context,
+                    PageName.SEARCH_RESULT,
+                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
+                )
             }
 
             override fun onProductImageClicked(v: View) {
-                sendClickAdsByteIO(productItemData, AdsLogConst.Refer.COVER)
+                AppLogTopAds.sendEventRealtimeClick(
+                    itemView.context,
+                    PageName.SEARCH_RESULT,
+                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
+                )
             }
 
             override fun onSellerInfoClicked(v: View) {
-                sendClickAdsByteIO(productItemData, AdsLogConst.Refer.SELLER_NAME)
+                AppLogTopAds.sendEventRealtimeClick(
+                    itemView.context,
+                    PageName.SEARCH_RESULT,
+                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
+                )
             }
         })
 
@@ -107,17 +119,7 @@ class ListProductItemViewHolder(
             AppLogTopAds.sendEventShow(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowModel()
             )
         }
     }
@@ -127,39 +129,7 @@ class ListProductItemViewHolder(
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowOverModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
-                        productId = element.productID,
-                        sizePercent = visiblePercentage.toString()
-                    )
-                )
-            )
-        }
-    }
-
-    private fun sendClickAdsByteIO(element: ProductItemDataView?, refer: String) {
-        if (element?.isTopAds == true) {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.SEARCH_RESULT,
-                AdsLogRealtimeClickModel(
-                    refer,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        channel = AppLogTopAds.getChannelName(),
-                        enterFrom = AppLogTopAds.getEnterFrom(),
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowOverModel(visiblePercentage)
             )
         }
     }

@@ -28,12 +28,11 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
             LoadingModel.class, LoadingMoreModel.class});
 
     private OnAdapterInteractionListener<T> onAdapterInteractionListener;
+    private PercentageScrollListener scrollListener = new PercentageScrollListener();
 
     public BaseListAdapter(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory);
     }
-
-    private PercentageScrollListener scrollListener = new PercentageScrollListener();
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -50,13 +49,19 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
     @Override
     public void onViewAttachedToWindow(@NonNull AbstractViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        holder.onViewAttachedToWindow();
+        if(holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            Visitable item = visitables.get(holder.getAbsoluteAdapterPosition());
+            holder.onViewAttachedToWindow(item);
+        }
     }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull AbstractViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        holder.onViewDetachedFromWindow(holder.getVisiblePercentage());
+        if(holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            Visitable item = visitables.get(holder.getAbsoluteAdapterPosition());
+            holder.onViewDetachedFromWindow(item, holder.getVisiblePercentage());
+        }
     }
 
     public BaseListAdapter(F baseListAdapterTypeFactory, OnAdapterInteractionListener<T> onAdapterInteractionListener) {

@@ -3,7 +3,8 @@ package com.tokopedia.carouselproductcard
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardGridTypeFactoryImpl
 
 internal class CarouselProductCardGridAdapter(
@@ -14,26 +15,35 @@ internal class CarouselProductCardGridAdapter(
     CarouselProductCardAdapter {
 
     private val adapterTypeFactory = CarouselProductCardGridTypeFactoryImpl(internalListener, isReimagine)
-    private val scrollListener = PercentageScrollListener()
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+    private var recyclerView: RecyclerView? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(scrollListener)
+        this.recyclerView = recyclerView
+        this.recyclerView?.addOnScrollListener(scrollListener)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(scrollListener)
+        this.recyclerView?.removeOnScrollListener(scrollListener)
+        this.recyclerView = null
     }
 
     override fun onViewAttachedToWindow(holder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
         super.onViewAttachedToWindow(holder)
-        holder.onViewAttachedToWindow()
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewAttachedToWindow()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
         super.onViewDetachedFromWindow(holder)
-        holder.onViewDetachedFromWindow(holder.getVisiblePercentage())
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewDetachedFromWindow(holder.visiblePercentage)
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {

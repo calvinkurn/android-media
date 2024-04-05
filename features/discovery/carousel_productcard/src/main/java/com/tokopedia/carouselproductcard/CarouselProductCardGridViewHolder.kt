@@ -116,5 +116,6 @@ internal class CarouselProductCardGridViewHolder(
         productCardView?.recycle()
 
         unregisterProductCardLifecycleObserver(productCardView)
+        carouselProductCardModel = null
     }
 }

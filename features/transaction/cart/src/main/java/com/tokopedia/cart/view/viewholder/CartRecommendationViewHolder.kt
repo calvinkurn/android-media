@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.VisibleVH
+import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.PageName
@@ -30,7 +30,7 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 
 class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBinding, val actionListener: ActionListener?) :
-    RecyclerView.ViewHolder(binding.root), AppLogRecTriggerInterface, VisibleVH {
+    RecyclerView.ViewHolder(binding.root), AppLogRecTriggerInterface, IAdsViewHolderTrackListener {
 
     companion object {
         @JvmStatic
@@ -38,7 +38,7 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
     }
 
     internal var isTopAds = false
-    private var visibilityExtent = 0f
+    private var visibleViewPercentage: Int = 0
     private var recTriggerObject = RecommendationTriggerObject()
     private var recommendationItem: RecommendationItem? = null
 
@@ -127,13 +127,12 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
         }
     }
 
-    override fun getVisiblePercentage(): Int {
-        return (visibilityExtent * 100).toInt()
+    override fun setVisiblePercentage(visiblePercentage: Int) {
+        this.visibleViewPercentage = visiblePercentage
     }
 
-    override fun setVisibilityExtent(visibilityExtent: Float) {
-        this.visibilityExtent = visibilityExtent
-    }
+    override val visiblePercentage: Int
+        get() = visibleViewPercentage
 
     private fun setRecTriggerObject(model: RecommendationItem) {
         recTriggerObject = RecommendationTriggerObject(
