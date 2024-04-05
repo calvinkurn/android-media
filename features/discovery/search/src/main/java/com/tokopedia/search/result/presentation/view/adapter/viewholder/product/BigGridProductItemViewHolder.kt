@@ -92,7 +92,7 @@ class BigGridProductItemViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: ProductItemDataView?) {
-        if (element?.isTopAds == true) {
+        if (element?.isAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
                 PageName.SEARCH_RESULT,
@@ -110,7 +110,7 @@ class BigGridProductItemViewHolder(
     }
 
     override fun onViewDetachedFromWindow(element: ProductItemDataView?, visiblePercentage: Int) {
-        if (element?.isTopAds == true) {
+        if (element?.isAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
                 PageName.SEARCH_RESULT,
@@ -129,7 +129,7 @@ class BigGridProductItemViewHolder(
     }
 
     private fun sendClickAdsByteIO(element: ProductItemDataView?, refer: String) {
-        if (element?.isTopAds == true) {
+        if (element?.isAds == true) {
             AppLogTopAds.sendEventRealtimeClick(
                 itemView.context,
                 PageName.SEARCH_RESULT,
