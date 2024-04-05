@@ -81,19 +81,17 @@ object BmgmParamMapper {
         offerId: Long,
         qty: Int?
     ): BmGmGetGroupProductTickerParams {
-        val carts = (
-            params?.carts?.filter { cart ->
-                cart.cartDetails.any { it.offer.offerId == offerId }
-            } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
-            )
+        val carts = params?.carts?.filter { cart ->
+            cart.cartDetails.any { it.offer.offerId == offerId }
+        } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
 
         if (qty != null) {
             carts.forEachIndexed { index, it ->
                 val cartDetails = mutableListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
                 it.cartDetails.forEach {
-                    val products = mutableListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
-                    it.products.forEach { product ->
-                        products.add(product.copy(qty = qty))
+                    var products = it.products
+                    if (it.offer.offerId == offerId) {
+                        products = it.products.map { product -> product.copy(qty = qty) }
                     }
                     cartDetails.add(it.copy(products = products))
                 }

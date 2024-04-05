@@ -38,7 +38,9 @@ object MiniCartListGwpUiModelMapper {
         response: BmGmGetGroupProductTickerResponse,
         uiModel: MiniCartGwpGiftUiModel
     ): MiniCartGwpGiftUiModel {
-        response.getGroupProductTicker.data.multipleData.find { data ->
+        response.getGroupProductTicker.data.multipleData.filter {
+            it.offerId == uiModel.offerId.toString()
+        }.find { data ->
             return data.bmgmData.tierProductList.first().run {
                 uiModel.copy(
                     tierId = tierId,
