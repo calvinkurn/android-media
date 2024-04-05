@@ -10,9 +10,8 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.di.DaggerFeedBrowseComponent
-import com.tokopedia.feedplus.databinding.ActivityFeedLocalSearchBinding
+import com.tokopedia.feedplus.databinding.ActivityFragmentOnlyBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -22,7 +21,7 @@ class FeedLocalSearchActivity: BaseActivity() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    var binding: ActivityFeedLocalSearchBinding? = null
+    private lateinit var binding: ActivityFragmentOnlyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -30,14 +29,14 @@ class FeedLocalSearchActivity: BaseActivity() {
 
         super.onCreate(savedInstanceState)
         setupStatusBar()
-        binding = ActivityFeedLocalSearchBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        binding = ActivityFragmentOnlyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportFragmentManager.commit {
                 replace(
-                    R.id.local_browse_fragment_container,
+                    binding.root.id,
                     FeedLocalSearchFragment.create(supportFragmentManager, classLoader, intent.extras),
-                    TAG_BROWSE_FRAGMENT
+                    TAG_FEED_LOCAL_SEARCH_FRAGMENT
                 )
             }
     }
@@ -63,9 +62,8 @@ class FeedLocalSearchActivity: BaseActivity() {
     }
 
     companion object {
-        private const val TAG_BROWSE_FRAGMENT = "feed_local_search"
+        private const val TAG_FEED_LOCAL_SEARCH_FRAGMENT = "feed_local_search_fragment"
         const val TAG_PLACEHOLDER_PARAM = "search_placeholder_param"
         const val TAG_KEYWORD = "keyword"
     }
-
 }

@@ -12,7 +12,7 @@ data class FeedSearchResultUiState(
 
         fun empty(searchKeyword: String) = FeedSearchResultUiState(
             searchKeyword = searchKeyword,
-            pageState = FeedSearchResultPageState.Unknown,
+            pageState = FeedSearchResultPageState.UNKNOWN,
             contents = emptyList(),
             hasNextPage = true,
         )

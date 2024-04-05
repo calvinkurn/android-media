@@ -34,7 +34,7 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
 
     private val _cursor = MutableStateFlow("")
 
-    private val _pageState = MutableStateFlow<FeedSearchResultPageState>(FeedSearchResultPageState.Unknown)
+    private val _pageState = MutableStateFlow(FeedSearchResultPageState.UNKNOWN)
     private val _contents = MutableStateFlow<List<FeedSearchResultContent>>(emptyList())
     private val _hasNextPage = MutableStateFlow(true)
 
@@ -64,11 +64,11 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
     private fun handleLoadResult() {
         viewModelScope.launchCatchError(block = {
 
-            if (_pageState.value is FeedSearchResultPageState.Loading ||
+            if (_pageState.value == FeedSearchResultPageState.LOADING ||
                 !_hasNextPage.value
             ) return@launchCatchError
 
-            _pageState.update { FeedSearchResultPageState.Loading }
+            _pageState.update { FeedSearchResultPageState.LOADING }
             
             val response = repo.getWidgetContentSlot(
                 extraParam = WidgetRequestModel(
@@ -83,7 +83,7 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
             when (response) {
                 is ContentSlotModel.ChannelBlock -> {
                     if (response.channels.isEmpty() && _contents.value.isEmpty()) {
-                        _pageState.update { FeedSearchResultPageState.NotFound }
+                        _pageState.update { FeedSearchResultPageState.NOT_FOUND }
                         _hasNextPage.update { false }
                         return@launchCatchError
                     }
@@ -100,15 +100,15 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
                     }
                     _cursor.update { response.nextCursor }
                     _hasNextPage.update { response.channels.isNotEmpty() }
-                    _pageState.update { FeedSearchResultPageState.Success }
+                    _pageState.update { FeedSearchResultPageState.SUCCESS }
                 }
                 is ContentSlotModel.NoData -> {
                     _hasNextPage.update { false }
 
                     if (_contents.value.isEmpty()) {
-                        _pageState.update { FeedSearchResultPageState.NotFound }
+                        _pageState.update { FeedSearchResultPageState.NOT_FOUND }
                     } else {
-                        _pageState.update { FeedSearchResultPageState.Success }
+                        _pageState.update { FeedSearchResultPageState.SUCCESS }
                     }
                 }
                 else -> {
@@ -119,9 +119,9 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
         }) { throwable ->
             _pageState.update {
                 if (throwable is RestrictedKeywordException)
-                    FeedSearchResultPageState.Restricted
+                    FeedSearchResultPageState.RESTRICTED
                 else
-                    FeedSearchResultPageState.InternalError
+                    FeedSearchResultPageState.INTERNAL_ERROR
             }
         }
     }
