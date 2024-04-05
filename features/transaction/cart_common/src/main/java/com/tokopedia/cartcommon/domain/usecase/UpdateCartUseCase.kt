@@ -86,12 +86,13 @@ class UpdateCartUseCase @Inject constructor(
                         title
                         description
                         buttons {
-                          id
-                          code
-                          message
-                          color
+                            id
+                            code
+                            message
+                            color
                         }
                     }
+                    anchor_cart_id
                 }
             }
         }
