@@ -433,6 +433,28 @@ class FeedBrowseViewModelTest {
     }
 
     @Test
+    fun `test failed fetch slot`() = runTestUnconfined {
+        val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
+        val bannerSlot = modelGen.bannerSlot.take(2).toList()
+        val exception = MessageErrorException()
+
+        coEvery { mockRepo.getHeaderDetail() } returns mockHeaderModel
+        coEvery { mockRepo.getSlots() } throws exception
+        coEvery {
+            mockRepo.getWidgetRecommendation(
+                bannerSlot[0].identifier
+            )
+        } returns WidgetRecommendationModel.Banners(emptyList())
+
+        val viewModel = FeedBrowseViewModel(mockRepo)
+        backgroundScope.launch { viewModel.uiState.collect() }
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+        viewModel.uiState.value.assertType<FeedBrowseUiState.Error> {
+            it.throwable.assertEqualTo(exception)
+        }
+    }
+
+    @Test
     fun `should get feed search header data`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         var headerData: HeaderDetailModel = HeaderDetailModel.DEFAULT
