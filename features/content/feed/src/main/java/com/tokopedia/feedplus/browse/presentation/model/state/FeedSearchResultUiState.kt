@@ -12,7 +12,7 @@ data class FeedSearchResultUiState(
         val Empty: FeedSearchResultUiState
             get() = FeedSearchResultUiState(
                 searchKeyword = "",
-                pageState = FeedSearchResultPageState.Unknown,
+                pageState = FeedSearchResultPageState.UNKNOWN,
                 contents = emptyList(),
                 hasNextPage = true,
             )

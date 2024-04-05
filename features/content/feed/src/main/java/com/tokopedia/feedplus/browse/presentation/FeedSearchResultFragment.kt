@@ -185,12 +185,12 @@ internal class FeedSearchResultFragment @Inject constructor(
         if (prevPageState == pageState) return
 
         when(pageState) {
-            is FeedSearchResultPageState.Loading -> {
+            FeedSearchResultPageState.LOADING -> {
                 if (contents.isEmpty()) {
                     adapter.setShimmer()
                 }
             }
-            is FeedSearchResultPageState.Success -> {
+            FeedSearchResultPageState.SUCCESS -> {
                 val finalContents = contents + if (hasNextPage) {
                     listOf(FeedSearchResultContent.Loading)
                 } else {
@@ -199,7 +199,7 @@ internal class FeedSearchResultFragment @Inject constructor(
 
                 adapter.setItems(finalContents)
             }
-            is FeedSearchResultPageState.Restricted -> {
+            FeedSearchResultPageState.RESTRICTED -> {
                 binding.errorView.apply {
                     errorTitle.text = getString(feedplusR.string.feed_local_search_restricted_title)
                     errorDescription.text = getString(feedplusR.string.feed_local_search_restricted_desc)
@@ -217,7 +217,7 @@ internal class FeedSearchResultFragment @Inject constructor(
                     }
                 }
             }
-            is FeedSearchResultPageState.NotFound -> {
+            FeedSearchResultPageState.NOT_FOUND -> {
                 binding.errorView.apply {
                     errorTitle.text = getString(feedplusR.string.feed_local_search_not_found_title)
                     errorDescription.text = getString(feedplusR.string.feed_local_search_not_found_desc)
@@ -236,7 +236,7 @@ internal class FeedSearchResultFragment @Inject constructor(
                     }
                 }
             }
-            is FeedSearchResultPageState.InternalError -> {
+            FeedSearchResultPageState.INTERNAL_ERROR -> {
                 binding.errorView.apply {
                     setType(GlobalError.SERVER_ERROR)
 
@@ -258,7 +258,7 @@ internal class FeedSearchResultFragment @Inject constructor(
     }
 
     private fun shouldShowResult(pageState: FeedSearchResultPageState): Boolean {
-        return pageState == FeedSearchResultPageState.Loading || pageState == FeedSearchResultPageState.Success
+        return pageState == FeedSearchResultPageState.LOADING || pageState == FeedSearchResultPageState.SUCCESS
     }
 
     private fun showResult() {
