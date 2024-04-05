@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokopoints.R

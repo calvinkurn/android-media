@@ -2,7 +2,7 @@ package com.tokopedia.carouselproductcard
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
 

@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.cart.databinding.ItemCartBuyAgainBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding

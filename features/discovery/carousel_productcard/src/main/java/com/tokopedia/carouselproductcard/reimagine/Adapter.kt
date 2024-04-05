@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.recyclerview.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.recyclerview.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 
 private typealias CarouselProductCardAdapter =
     ListAdapter<Visitable<CarouselProductCardTypeFactory>, AbstractViewHolder<*>>
