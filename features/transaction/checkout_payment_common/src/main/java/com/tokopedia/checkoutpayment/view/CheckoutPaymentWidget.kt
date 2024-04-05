@@ -159,7 +159,7 @@ fun CheckoutPaymentWidget(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
-                                if (data.description.isNotEmpty()) {
+                                if (data.description.isNotEmpty() || data.actionButtonText.isNotBlank()) {
                                     Row(modifier = Modifier.padding(top = 2.dp)) {
                                         NestTypography(
                                             text = data.description,
@@ -174,7 +174,7 @@ fun CheckoutPaymentWidget(
                                             NestTypography(
                                                 text = data.actionButtonText,
                                                 modifier = Modifier
-                                                    .padding(start = 4.dp)
+                                                    .padding(start = if (data.description.isNotEmpty()) 4.dp else 0.dp)
                                                     .setOnClickDebounceListener {
                                                         onActionClickedListener()
                                                     },
