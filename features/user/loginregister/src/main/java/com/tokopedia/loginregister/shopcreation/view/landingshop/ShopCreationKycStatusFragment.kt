@@ -39,8 +39,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     lateinit var viewModel: KycBridgingViewModel
 
     private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        activity?.setResult(result.resultCode)
-        activity?.finish()
+        onRefreshStatus()
     }
 
     override fun onCreateView(
