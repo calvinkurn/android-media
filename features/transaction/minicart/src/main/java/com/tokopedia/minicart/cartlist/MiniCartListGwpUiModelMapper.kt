@@ -63,36 +63,50 @@ object MiniCartListGwpUiModelMapper {
         uiModel: MiniCartListUiModel?,
         response: BmGmGetGroupProductTickerResponse
     ) = uiModel?.copy(
-        visitables = uiModel.visitables.mapNotNull { uiModel ->
-            when (uiModel) {
+        visitables = uiModel.visitables.mapNotNull { miniCartUiModel ->
+            when (miniCartUiModel) {
                 is MiniCartProgressiveInfoUiModel -> updateMiniCartProgressiveInfoUiModel(
                     response = response,
-                    uiModel = uiModel
+                    uiModel = miniCartUiModel
                 )
                 is MiniCartGwpGiftUiModel -> updateMiniCartGwpGiftUiModel(
                     response = response,
-                    uiModel = uiModel
+                    uiModel = miniCartUiModel
                 )
-                else -> uiModel
+                else -> miniCartUiModel
             }
         }.toMutableList()
-    )
+    ) ?: MiniCartListUiModel()
 
     fun getGwpLoadingState(
         uiModel: MiniCartListUiModel?,
         offerId: Long
     ) = uiModel?.copy(
-        visitables = uiModel.visitables.map { uiModel ->
-            if (uiModel is MiniCartProgressiveInfoUiModel && uiModel.offerId == offerId) updateMiniCartProgressiveInfoUiModel(uiModel, MiniCartProgressiveInfoUiModel.State.LOADING) else uiModel
+        visitables = uiModel.visitables.map { miniCartUiModel ->
+            if (miniCartUiModel is MiniCartProgressiveInfoUiModel && miniCartUiModel.offerId == offerId) {
+                updateMiniCartProgressiveInfoUiModel(
+                    miniCartUiModel,
+                    MiniCartProgressiveInfoUiModel.State.LOADING
+                )
+            } else {
+                miniCartUiModel
+            }
         }.toMutableList()
-    )
+    ) ?: MiniCartListUiModel()
 
     fun getGwpErrorState(
         uiModel: MiniCartListUiModel?,
         offerId: Long
     ) = uiModel?.copy(
-        visitables = uiModel.visitables.map { uiModel ->
-            if (uiModel is MiniCartProgressiveInfoUiModel && uiModel.offerId == offerId) updateMiniCartProgressiveInfoUiModel(uiModel, MiniCartProgressiveInfoUiModel.State.ERROR) else uiModel
+        visitables = uiModel.visitables.map { miniCartUiModel ->
+            if (miniCartUiModel is MiniCartProgressiveInfoUiModel && miniCartUiModel.offerId == offerId) {
+                updateMiniCartProgressiveInfoUiModel(
+                    miniCartUiModel,
+                    MiniCartProgressiveInfoUiModel.State.ERROR
+                )
+            } else {
+                miniCartUiModel
+            }
         }.toMutableList()
-    )
+    ) ?: MiniCartListUiModel()
 }
