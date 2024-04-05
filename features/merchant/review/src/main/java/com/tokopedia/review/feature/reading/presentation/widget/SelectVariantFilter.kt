@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.reading.presentation.widget
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +34,9 @@ fun SelectVariantFilter(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f, false)
                 .verticalScroll(rememberScrollState())
+                .padding(bottom = 32.dp)
         ) {
             uiModel.variants.forEachIndexed { index, variant ->
                 VariantOptions(
@@ -47,7 +48,6 @@ fun SelectVariantFilter(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp)
         ) {
             NestButton(
                 text = "Terapkan Filter",
@@ -88,18 +88,14 @@ fun VariantOptions(
         crossAxisSpacing = 8.dp,
         mainAxisSpacing = 8.dp
     ) {
-        variant.options.forEachIndexed { index, option ->
-            Option(
-                index = index,
-                option = option
-            )
+        variant.options.forEach { option ->
+            Option(option = option)
         }
     }
 }
 
 @Composable
 fun Option(
-    index: Int,
     option: SelectVariantUiModel.Option
 ) {
     val image = option.image
@@ -176,9 +172,6 @@ fun SelectVariantFilterPreview() {
         )
     }
 }
-
-// TODO - cek variant yang text panjang, perlu scoll atau ngga di column paling atas
-// nanti coba tambahin modifier scrollable
 
 data class SelectVariantUiModel(
     val variants: List<Variant>,
