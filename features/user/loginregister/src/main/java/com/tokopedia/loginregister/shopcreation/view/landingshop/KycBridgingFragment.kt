@@ -16,8 +16,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
-import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
@@ -35,6 +35,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         if (result.resultCode == Activity.RESULT_OK) {
             onKycFinished()
         }
+        viewModel.showLoader(false)
     }
 
     @Inject
@@ -68,6 +69,8 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initViews() {
+        viewBinding?.btnContinue?.isEnabled = false
+
         viewBinding?.normalShopCard?.run {
             setOnClickListener {
                 viewModel.setSelectedShopType(TYPE_NORMAL_SHOP)
@@ -125,15 +128,22 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                         showOfficialShopBottomSheet()
                     }
                 }
-
                 is ShopStatus.Pending -> {
                     Toaster.build(viewBinding?.root!!, "Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
-
                 is ShopStatus.Error -> {
                     Toaster.build(viewBinding?.root!!, it.throwable.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
             }
+        }
+
+        viewModel.buttonLoader.observe(viewLifecycleOwner) {
+            viewBinding?.btnContinue?.isLoading = it
+            viewBinding?.btnContinue?.isClickable = !it
+        }
+
+        viewModel.selectedShopType.observe(viewLifecycleOwner) {
+            viewBinding?.btnContinue?.isEnabled = it > 0
         }
     }
 
@@ -168,6 +178,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
             putExtra(ShopCreationConstant.IS_RE_VERIFY, true)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, ShopCreationConstant.OPEN_SHOP_KYC_PROJECT_ID)
         }
+        viewModel.showLoader(true)
         startReVerifyKycForResult.launch(intent)
     }
 

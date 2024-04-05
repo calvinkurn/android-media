@@ -16,6 +16,7 @@ import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,6 +45,10 @@ class KycBridgingViewModel @Inject constructor(
     val selectedShopType: LiveData<Int>
         get() = _selectedShopType
 
+    private val _buttonLoader = SingleLiveEvent<Boolean>()
+    val buttonLoader: SingleLiveEvent<Boolean>
+        get() = _buttonLoader
+
     private val _projectInfo = MutableLiveData<ProjectInfoResult>()
     val projectInfo: LiveData<ProjectInfoResult>
         get() = _projectInfo
@@ -58,23 +63,33 @@ class KycBridgingViewModel @Inject constructor(
 
     fun checkKycStatus() {
         launch {
+            showLoader(true)
             try {
                 val resp = projectInfoUseCase(ShopCreationConstant.OPEN_SHOP_KYC_PROJECT_ID.toIntOrZero())
                 _projectInfo.value = resp
             } catch (e: Exception) {
                 _projectInfo.value = ProjectInfoResult.Failed(e)
+            } finally {
+                showLoader(false)
             }
         }
     }
 
     fun getShopStatus() {
         launch {
+            showLoader(true)
             try {
                 val resp = getShopStatusUseCase("")
                 _shopStatus.value = resp
             } catch (e: Exception) {
                 _shopStatus.value = ShopStatus.Error(e)
+            } finally {
+                showLoader(false)
             }
         }
+    }
+
+    fun showLoader(isShowing: Boolean) {
+        _buttonLoader.value = isShowing
     }
 }
