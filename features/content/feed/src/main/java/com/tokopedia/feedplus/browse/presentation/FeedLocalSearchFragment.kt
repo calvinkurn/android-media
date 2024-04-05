@@ -47,23 +47,29 @@ class FeedLocalSearchFragment @Inject constructor(
                 onBackPressed()
             }
 
-            val keyword = activity?.intent?.getStringExtra(FeedLocalSearchActivity.TAG_KEYWORD).orEmpty()
+            val keyword = getStringExtra(FeedLocalSearchActivity.TAG_KEYWORD)
             it.setSearchbarText(keyword)
 
-            val placeholder =
-                activity?.intent?.getStringExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM)
-                    ?: getString(feedplusR.string.feed_local_search_page_text_placeholder_fallback)
+            val placeholder = getStringExtra(
+                FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM,
+                getString(feedplusR.string.feed_local_search_page_text_placeholder_fallback)
+            )
             it.setSearchPlaceholder(placeholder)
 
             it.setSearchDoneListener { keyword ->
                 submitSearchKeyword(keyword)
             }
+
             it.setSearchFocus()
         }
     }
 
     private fun onBackPressed() {
         activity?.finish()
+    }
+
+    private fun getStringExtra(key: String, default: String = ""): String {
+        return activity?.intent?.getStringExtra(key) ?: default
     }
 
     private fun submitSearchKeyword(keyword: String) {
