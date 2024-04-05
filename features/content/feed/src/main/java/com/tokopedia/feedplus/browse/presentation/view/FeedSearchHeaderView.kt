@@ -25,7 +25,6 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(
     private val binding = ViewFeedSearchHeaderLayoutBinding.inflate(
         LayoutInflater.from(context),
         this,
-        true
     )
 
     init {
