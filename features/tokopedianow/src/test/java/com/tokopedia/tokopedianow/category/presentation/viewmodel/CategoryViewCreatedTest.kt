@@ -1,10 +1,8 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryHeader
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.NO_WAREHOUSE_ID
@@ -14,6 +12,7 @@ import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
@@ -29,26 +28,17 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -60,10 +50,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         val resultList = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )
@@ -98,19 +85,12 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        // Add header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // Add choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
-        // Add title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = emptyList()
+        )
 
         // Add category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -122,9 +102,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         val resultList = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )

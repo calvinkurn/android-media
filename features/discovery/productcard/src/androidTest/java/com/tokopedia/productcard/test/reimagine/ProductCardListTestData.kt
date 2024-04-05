@@ -21,6 +21,8 @@ internal val productCardReimagineListTestData =
         stockInfoTersedia(),
         stockInfoSegeraHabis(),
         overlayWithStockInfo(),
+        genericCta(),
+        genericCtaWithSecondary()
     )
 
 private fun video(): ProductCardReimagineMatcher {
@@ -28,11 +30,11 @@ private fun video(): ProductCardReimagineMatcher {
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
+        type = TEXT_DARK_GREY
     )
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name",
+        title = "Shop Name"
     )
     val model = ProductCardModel(
         imageUrl = productImageUrl,
@@ -43,7 +45,7 @@ private fun video(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        videoUrl = productVideoUrl,
+        videoUrl = productVideoUrl
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -62,7 +64,7 @@ private fun video(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardVideoIdentifier to isDisplayed(),
+        R.id.productCardVideoIdentifier to isDisplayed()
     )
 
     return Triple(model, matcher, "Video")
@@ -73,11 +75,11 @@ private fun threeDots(): ProductCardReimagineMatcher {
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
+        type = TEXT_DARK_GREY
     )
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name",
+        title = "Shop Name"
     )
     val model = ProductCardModel(
         imageUrl = productImageUrl,
@@ -89,7 +91,7 @@ private fun threeDots(): ProductCardReimagineMatcher {
         rating = "4.5",
         shopBadge = shopBadge,
         videoUrl = productVideoUrl,
-        hasThreeDots = true,
+        hasThreeDots = true
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -109,13 +111,11 @@ private fun threeDots(): ProductCardReimagineMatcher {
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
         R.id.productCardVideoIdentifier to isDisplayed(),
-        R.id.productCardThreeDots to isDisplayed(),
+        R.id.productCardThreeDots to isDisplayed()
     )
 
     return Triple(model, matcher, "Three Dots")
 }
-
-
 
 private fun stockInfoTersedia(): ProductCardReimagineMatcher {
     val stockInfo = ProductCardModel.StockInfo(
@@ -126,11 +126,11 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
+        type = TEXT_DARK_GREY
     )
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name",
+        title = "Shop Name"
     )
     val model = ProductCardModel(
         imageUrl = productImageUrl,
@@ -140,7 +140,7 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         discountPercentage = 10,
         labelGroupList = listOf(
             reimagineBenefitLabel,
-            reimagineCredibilityLabel,
+            reimagineCredibilityLabel
         ),
         rating = "4.5",
         shopBadge = shopBadge,
@@ -165,7 +165,7 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         R.id.productCardShopNameLocation to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
-        R.id.productCardStockInfoBar to isDisplayed(),
+        R.id.productCardStockInfoBar to isDisplayed()
     )
 
     return Triple(model, matcher, "Stock Info Tersedia")
@@ -180,11 +180,11 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
+        type = TEXT_DARK_GREY
     )
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name",
+        title = "Shop Name"
     )
     val model = ProductCardModel(
         imageUrl = productImageUrl,
@@ -194,7 +194,7 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         discountPercentage = 10,
         labelGroupList = listOf(
             reimagineBenefitLabel,
-            reimagineCredibilityLabel,
+            reimagineCredibilityLabel
         ),
         rating = "4.5",
         shopBadge = shopBadge,
@@ -219,7 +219,7 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         R.id.productCardShopNameLocation to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
-        R.id.productCardStockInfoBar to isDisplayed(),
+        R.id.productCardStockInfoBar to isDisplayed()
     )
 
     return Triple(model, matcher, "Stock Info Segera Habis")
@@ -230,11 +230,11 @@ private fun overlayWithStockInfo(): ProductCardReimagineMatcher {
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
+        type = TEXT_DARK_GREY
     )
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name paling panjang",
+        title = "Shop Name paling panjang"
     )
     val stockInfo = ProductCardModel.StockInfo(
         percentage = 40,
@@ -250,11 +250,11 @@ private fun overlayWithStockInfo(): ProductCardReimagineMatcher {
             reimagineProductOffers,
             reimagineCredibilityLabel,
             labelGroupOverlay1(),
-            labelGroupOverlay2(),
+            labelGroupOverlay2()
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        stockInfo = stockInfo,
+        stockInfo = stockInfo
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -276,8 +276,116 @@ private fun overlayWithStockInfo(): ProductCardReimagineMatcher {
         R.id.productCardShopNameLocation to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
-        R.id.productCardStockInfoBar to isDisplayed(),
+        R.id.productCardStockInfoBar to isDisplayed()
     )
 
     return Triple(model, matcher, "Label Overlay with Stock Info")
+}
+
+private fun genericCta(): ProductCardReimagineMatcher {
+    val productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+        copyWriting = "+ Keranjang"
+    )
+    val reimagineBenefitLabel = labelGroupBenefit()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name"
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(
+            reimagineBenefitLabel,
+            reimagineCredibilityLabel
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        productCardGenericCta = productCardGenericCta
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardGenericCta to isDisplayed(),
+        R.id.productCardGenericCtaMain to isDisplayed(),
+        R.id.productCardGenericCtaMain to isDisplayedWithText(productCardGenericCta.copyWriting!!)
+    )
+
+    return Triple(model, matcher, "Generic CTA")
+}
+
+private fun genericCtaWithSecondary(): ProductCardReimagineMatcher {
+    val productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+        copyWriting = "+ Keranjang",
+        shouldShowSecondaryCta = true
+    )
+    val reimagineBenefitLabel = labelGroupBenefit()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name"
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(
+            reimagineBenefitLabel,
+            reimagineCredibilityLabel
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        productCardGenericCta = productCardGenericCta
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardGenericCta to isDisplayed(),
+        R.id.productCardGenericCtaMain to isDisplayed(),
+        R.id.productCardGenericCtaMain to isDisplayedWithText(productCardGenericCta.copyWriting!!),
+        R.id.productCardGenericCtaSecondary to isDisplayed()
+    )
+
+    return Triple(model, matcher, "Generic CTA Secondary")
 }

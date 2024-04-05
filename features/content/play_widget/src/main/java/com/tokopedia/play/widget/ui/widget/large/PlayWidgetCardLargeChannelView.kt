@@ -15,6 +15,7 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetRatio
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.getWidthAndHeight
 import com.tokopedia.play.widget.ui.model.switch
@@ -32,12 +33,17 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initAttrs(attrs)
+    }
+
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        initAttrs(attrs)
+    }
 
     private val thumbnail: ImageUnify
     private val pvVideo: PlayerView
@@ -63,6 +69,8 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     private lateinit var mModel: PlayWidgetChannelUiModel
 
+    private var mRatio = PlayWidgetRatio.Unknown
+
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_large_channel, this)
         thumbnail = view.findViewById(R.id.play_widget_thumbnail)
@@ -86,10 +94,28 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         view.touchDelegate = compositeTouchDelegate
     }
 
+    private fun initAttrs(attrs: AttributeSet?) {
+        if (attrs == null) return
+
+        val attributeArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.PlayWidgetCardLargeView
+        )
+        val rawDimensionRatio = attributeArray.getString(R.styleable.PlayWidgetCardLargeView_dimensionRatio).orEmpty()
+        mRatio = PlayWidgetRatio.parse(rawDimensionRatio)
+
+        attributeArray.recycle()
+    }
+
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             pvVideo.showWithCondition(isPlaying)
         }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val (newWidthMeasureSpec, newHeightMeasureSpec) = mRatio.getMeasureSpec(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(newWidthMeasureSpec, newHeightMeasureSpec)
     }
 
     fun setListener(listener: Listener) {

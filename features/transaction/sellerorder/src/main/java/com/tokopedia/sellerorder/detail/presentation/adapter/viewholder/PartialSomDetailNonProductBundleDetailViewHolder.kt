@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imageassets.TokopediaImageUrl
@@ -9,6 +10,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.media.loader.clearCustomTarget
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.PartialNonProductBundleDetailBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
@@ -18,6 +22,8 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
     private var binding: PartialNonProductBundleDetailBinding?,
     private var actionListener: SomDetailAdapterFactoryImpl.ActionListener?
 ) {
+
+    private var productImageLoadTarget: MediaBitmapEmptyTarget<Bitmap>? = null
 
     private fun setupProductDetail(element: SomDetailOrder.GetSomDetail.Details.Product?) {
         binding?.run {
@@ -41,10 +47,10 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
     }
 
     private fun PartialNonProductBundleDetailBinding.setupProductImage(thumbnailUrl: String) {
-        ivProduct.loadProductImage(
+        productImageLoadTarget = ivProduct.loadProductImage(
             url = thumbnailUrl,
             archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
-        )
+        ) { productImageLoadTarget = null }
     }
 
     private fun PartialNonProductBundleDetailBinding.setupProductName(name: String) {
@@ -80,6 +86,11 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
 
     fun bind(product: SomDetailOrder.GetSomDetail.Details.Product?) {
         setupProductDetail(product)
+    }
+
+    fun onViewRecycled() {
+        binding?.ivProduct.clearImage()
+        binding?.ivProduct.clearCustomTarget(productImageLoadTarget)
     }
 
     fun isShowing() = binding?.root?.isVisible == true

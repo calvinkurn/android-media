@@ -28,8 +28,6 @@ object ProductDetailConstant {
     // PAYLOADS
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
-    const val PAYLOAD_MEDIA_UPDATE = 6
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
@@ -144,6 +142,8 @@ object ProductDetailConstant {
     const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
+    const val ARG_AFFILIATE_SUB_IDS = "ARG_AFFILIATE_SUB_IDS"
+    const val ARG_AFFILIATE_SOURCE = "ARG_AFFILIATE_SOURCE"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
     const val ARG_LAYOUT_ID = "ARG_LAYOUT_ID"
     const val ARG_EXT_PARAM = "ARG_EXT_PARAM"

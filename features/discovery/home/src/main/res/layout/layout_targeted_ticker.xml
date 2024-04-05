@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginTop="8dp"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/component"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        app:tickerType="announcement"
+        app:tickerShapeType="loose"
+        app:closeButtonVisibility="visible"
+        app:enableAutoSlide="true"
+        app:autoSlideDelayNumber="5000"
+        android:clickable="true"
+        android:focusable="true" />
+
+</FrameLayout>
