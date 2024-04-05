@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardItemListLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardListViewHolder(
@@ -18,9 +19,11 @@ internal class CarouselProductCardListViewHolder(
     }
 
     private var binding: CarouselProductCardItemListLayoutBinding? by viewBinding()
+    private var carouselProductCardModel: CarouselProductCardModel? = null
 
     override fun bind(carouselProductCardModel: CarouselProductCardModel) {
         val binding = binding ?: return
+        this.carouselProductCardModel = carouselProductCardModel
         val productCardModel = carouselProductCardModel.productCardModel
 
         binding.carouselProductCardItem.applyCarousel()
@@ -43,9 +46,24 @@ internal class CarouselProductCardListViewHolder(
         val onATCNonVariantClickListener = carouselProductCardModel.getOnATCNonVariantClickListener()
         val onAddVariantClickListener = carouselProductCardModel.getAddVariantClickListener()
 
-        binding.carouselProductCardItem.setOnClickListener {
-            onItemClickListener?.onItemClick(productCardModel, adapterPosition)
-        }
+        binding.carouselProductCardItem.setOnClickListener(object : ProductCardClickListener {
+            override fun onClick(v: View) {
+                onItemClickListener?.onItemClick(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onAreaClicked(v: View) {
+                onItemClickListener?.onAreaClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                onItemClickListener?.onProductImageClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                onItemClickListener?.onSellerInfoClicked(productCardModel, bindingAdapterPosition)
+            }
+        })
+
 
         onItemImpressedListener?.getImpressHolder(adapterPosition)?.let {
             binding.carouselProductCardItem.setImageProductViewHintListener(it, object : ViewHintListener {
@@ -78,5 +96,18 @@ internal class CarouselProductCardListViewHolder(
         binding?.carouselProductCardItem?.recycle()
 
         unregisterProductCardLifecycleObserver(binding?.carouselProductCardItem)
+        carouselProductCardModel = null
+    }
+
+    override fun onViewAttachedToWindow() {
+        carouselProductCardModel?.let { model ->
+            model.getOnViewListener()?.onViewAttachedToWindow(model.productCardModel, absoluteAdapterPosition)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
+        carouselProductCardModel?.let { model ->
+            model.getOnViewListener()?.onViewDetachedFromWindow(model.productCardModel, absoluteAdapterPosition, visiblePercentage)
+        }
     }
 }

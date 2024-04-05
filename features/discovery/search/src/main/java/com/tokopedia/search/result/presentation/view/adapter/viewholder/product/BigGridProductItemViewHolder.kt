@@ -65,15 +65,27 @@ class BigGridProductItemViewHolder(
             }
 
             override fun onAreaClicked(v: View) {
-                sendClickAdsByteIO(productItemData, AdsLogConst.Refer.AREA)
+                AppLogTopAds.sendEventRealtimeClick(
+                    itemView.context,
+                    PageName.SEARCH_RESULT,
+                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
+                )
             }
 
             override fun onProductImageClicked(v: View) {
-                sendClickAdsByteIO(productItemData, AdsLogConst.Refer.COVER)
+                AppLogTopAds.sendEventRealtimeClick(
+                    itemView.context,
+                    PageName.SEARCH_RESULT,
+                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
+                )
             }
 
             override fun onSellerInfoClicked(v: View) {
-                sendClickAdsByteIO(productItemData, AdsLogConst.Refer.SELLER_NAME)
+                AppLogTopAds.sendEventRealtimeClick(
+                    itemView.context,
+                    PageName.SEARCH_RESULT,
+                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
+                )
             }
         })
 
@@ -96,15 +108,7 @@ class BigGridProductItemViewHolder(
             AppLogTopAds.sendEventShow(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowModel.AdExtraData(
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowModel()
             )
         }
     }
@@ -114,35 +118,7 @@ class BigGridProductItemViewHolder(
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowOverModel.AdExtraData(
-                        productId = element.productID,
-                        sizePercent = visiblePercentage.toString()
-                    )
-                )
-            )
-        }
-    }
-
-    private fun sendClickAdsByteIO(element: ProductItemDataView?, refer: String) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.SEARCH_RESULT,
-                AdsLogRealtimeClickModel(
-                    refer,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowOverModel(visiblePercentage)
             )
         }
     }

@@ -122,7 +122,7 @@ class WishlistCollectionRecommendationItemViewHolder(
         }
     }
 
-    override fun onViewDetachedFromWindow() {
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,

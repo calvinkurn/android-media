@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -21,6 +23,38 @@ class ProductListAdapter(
 
     val itemList: List<Visitable<*>>
         get() = list
+
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+    private var recyclerView: RecyclerView? = null
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
+        this.recyclerView = null
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is IAdsViewHolderTrackListener && holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            val item = list[holder.absoluteAdapterPosition]
+            (holder as AbstractViewHolder<Visitable<*>>).onViewAttachedToWindow(item)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is IAdsViewHolderTrackListener && holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
+            val item = list[holder.absoluteAdapterPosition]
+            (holder as AbstractViewHolder<Visitable<*>>).onViewDetachedFromWindow(item, holder.visiblePercentage)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val context = parent.context

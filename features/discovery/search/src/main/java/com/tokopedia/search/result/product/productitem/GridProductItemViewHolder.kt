@@ -6,9 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
@@ -58,15 +55,27 @@ class GridProductItemViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-                    sendClickAdsByteIO(productItemData, AdsLogConst.Refer.AREA)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
+                    )
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    sendClickAdsByteIO(productItemData, AdsLogConst.Refer.COVER)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
+                    )
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    sendClickAdsByteIO(productItemData, AdsLogConst.Refer.SELLER_NAME)
+                    AppLogTopAds.sendEventRealtimeClick(
+                        itemView.context,
+                        PageName.SEARCH_RESULT,
+                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
+                    )
                 }
             })
 
@@ -81,15 +90,7 @@ class GridProductItemViewHolder(
             AppLogTopAds.sendEventShow(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowModel.AdExtraData(
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowModel()
             )
         }
     }
@@ -99,35 +100,7 @@ class GridProductItemViewHolder(
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
                 PageName.SEARCH_RESULT,
-                AdsLogShowOverModel(
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogShowOverModel.AdExtraData(
-                        productId = element.productID,
-                        sizePercent = visiblePercentage.toString()
-                    )
-                )
-            )
-        }
-    }
-
-    private fun sendClickAdsByteIO(element: ProductItemDataView?, refer: String) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventRealtimeClick(
-                itemView.context,
-                PageName.SEARCH_RESULT,
-                AdsLogRealtimeClickModel(
-                    refer,
-                    // todo this value from BE
-                    0,
-                    // todo this value from BE
-                    0,
-                    AdsLogRealtimeClickModel.AdExtraData(
-                        productId = element.productID
-                    )
-                )
+                element.asAdsLogShowOverModel(visiblePercentage)
             )
         }
     }

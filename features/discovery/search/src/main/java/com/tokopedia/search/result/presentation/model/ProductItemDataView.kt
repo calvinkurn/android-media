@@ -8,6 +8,10 @@ import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
@@ -208,6 +212,44 @@ class ProductItemDataView:
 
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
+
+    fun asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogShowModel.AdExtraData(
+                productId = productID
+            )
+        )
+    }
+
+    fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogShowOverModel.AdExtraData(
+                productId = productID,
+                sizePercent = visiblePercentage.toString()
+            )
+        )
+    }
+
+    fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(
+            refer,
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogRealtimeClickModel.AdExtraData(
+                productId = productID
+            )
+        )
+    }
 
     fun asByteIOSearchResult(aladdinButtonType: String?) =
         AppLogSearch.SearchResult(

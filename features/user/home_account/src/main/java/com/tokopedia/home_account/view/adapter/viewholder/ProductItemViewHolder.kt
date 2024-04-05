@@ -20,7 +20,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListener) :
-    BaseViewHolder(itemView), IAdsViewHolderTrackListener {
+    BaseViewHolder(itemView),
+    IAdsViewHolderTrackListener {
 
     private val binding: HomeAccountRecommendationItemProductCardBinding? by viewBinding()
 
@@ -98,7 +99,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
         }
     }
 
-    override fun onViewDetachedFromWindow() {
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         if (recommendationItem?.isTopAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,

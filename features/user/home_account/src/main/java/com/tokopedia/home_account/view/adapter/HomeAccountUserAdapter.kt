@@ -79,7 +79,7 @@ class HomeAccountUserAdapter(
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow()
+            holder.onViewDetachedFromWindow(holder.visiblePercentage)
         }
     }
 
