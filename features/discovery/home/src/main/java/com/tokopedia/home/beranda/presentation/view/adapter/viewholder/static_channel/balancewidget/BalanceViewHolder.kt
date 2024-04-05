@@ -8,16 +8,14 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
-import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
-import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
+import com.tokopedia.home.databinding.ItemBalanceWidgetBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -38,12 +36,12 @@ class BalanceViewHolder(
     private val homeThematicUtil: HomeThematicUtil,
 ) : BaseBalanceViewHolder<BalanceDrawerItemModel>(v) {
     companion object {
-        val LAYOUT = R.layout.item_balance_widget_atf2
+        val LAYOUT = R.layout.item_balance_widget
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
         private const val BALANCE_FILL_WIDTH_THRESHOLD = 2
     }
 
-    private val binding: ItemBalanceWidgetAtf2Binding? by viewBinding()
+    private val binding: ItemBalanceWidgetBinding? by viewBinding()
     private var listener: HomeCategoryListener? = null
 
     private val containerLayoutParams by lazy { binding?.containerBalance?.layoutParams }
@@ -52,7 +50,6 @@ class BalanceViewHolder(
     private val subtitleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvSubtitle?.layoutParams as? ConstraintLayout.LayoutParams }
     private val imageLayoutParams by lazy { binding?.homeContainerBalance?.homeIvLogoBalance?.layoutParams }
     private val loaderImageLayoutParams by lazy { binding?.shimmerItemBalanceWidget?.loaderBalanceImage?.layoutParams }
-    private val isAtf3 by lazy { HomeRollenceController.isUsingAtf3Variant(DeviceScreenHelper(itemView.context).isFoldableOrTablet()) }
 
     override fun bind(
         model: BalanceDrawerItemModel?,
@@ -106,35 +103,13 @@ class BalanceViewHolder(
     private fun setDynamicWidth() {
         containerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
         successContainerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        val textMaxWidth = BalanceUtil.getBalanceTextWidth(itemView.context, isAtf3)
+        val textMaxWidth = BalanceUtil.getBalanceTextWidth(itemView.context)
         titleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
         subtitleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
     }
 
     private fun configureBalanceStyle() {
-        if(isAtf3) {
-            setupAtf3Balance()
-        } else {
-            setupAtf2Balance()
-        }
-    }
-
-    private fun setupAtf2Balance() {
-        // container padding
-        val leftPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_left_padding)
-        val rightPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_inner_right_padding)
-        val verticalPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_vertical_padding)
-        binding?.shimmerItemBalanceWidget?.homeContainerBalanceShimmer?.setPadding(leftPadding, verticalPadding, rightPadding, verticalPadding)
-        binding?.homeContainerBalance?.homeContainerBalance?.setPadding(leftPadding, verticalPadding, rightPadding, verticalPadding)
-
-        // image size
-        val imageSize = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_image_size)
-        imageLayoutParams?.width = imageSize
-        imageLayoutParams?.height = imageSize
-
-        // title font type
-        val fontType = Typography.DISPLAY_2
-        binding?.homeContainerBalance?.homeTvTitle?.setType(fontType)
+        setupAtf3Balance()
     }
 
     private fun setupAtf3Balance() {

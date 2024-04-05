@@ -68,6 +68,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerReposit
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeUserStatusRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.TargetedTicketRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
@@ -315,6 +316,12 @@ class HomeUseCaseModule {
         val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
         return HomeTickerRepository(graphqlRepository, isUsingV2)
     }
+
+    @Provides
+    @HomeScope
+    fun provideTargetedTicketRepository(
+        graphqlRepository: GraphqlRepository
+    ) = TargetedTicketRepository(graphqlRepository)
 
     @Provides
     @HomeScope

@@ -691,6 +691,9 @@ class ProductListFragment :
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
+        //add parameter for byteio performance tracker
+        recyclerViewUpdater.enterMethod = enterMethod
+        recyclerViewUpdater.isLocalSearch = presenter?.getIsLocalSearch() == true
         recyclerViewUpdater.setItems(list)
         SearchIdlingResource.decrement()
     }
@@ -1388,7 +1391,7 @@ class ProductListFragment :
 
         onBoardingListenerDelegate.dismissCoachmark()
         presenter?.clearData()
-        recyclerViewUpdater.productListAdapter?.clearData()
+        recyclerViewUpdater.clearData()
         productVideoAutoplay.stopVideoAutoplay()
 
         hideSearchSortFilter()
@@ -1674,7 +1677,7 @@ class ProductListFragment :
         }
     }
 
-    override fun sendTrackingByteIO() {
+    override fun sendTrackingByteIO(isSuccess: Boolean) {
         val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
             it.startPageDuration + it.networkRequestDuration
         }
@@ -1687,7 +1690,7 @@ class ProductListFragment :
                 enterMethod = enterMethod,
                 searchKeyword = queryKey,
                 durationMs = durationMs,
-                isSuccess = true,
+                isSuccess = isSuccess,
                 ecSearchSessionId = SearchSessionId.value,
                 preSearchId = SearchId.previousValue,
 

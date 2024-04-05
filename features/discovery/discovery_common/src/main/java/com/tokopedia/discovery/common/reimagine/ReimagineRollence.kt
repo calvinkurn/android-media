@@ -18,8 +18,8 @@ class ReimagineRollence @Inject constructor() {
         Search1InstAuto.fromVariant(getVariant(SEARCH_1_INST_AUTO))
 
     fun search2Component(): Search2Component =
-        Search2Component.fromVariant(getVariant(RollenceKey.PRODUCT_CARD_SRE_2024))
+        Search2Component.fromVariant(getVariant(RollenceKey.REVERSE_PRODUCT_CARD))
 
     fun search3ProductCard(): Search3ProductCard =
-        Search3ProductCard.fromVariant(getVariant(RollenceKey.PRODUCT_CARD_SRE_2024))
+        Search3ProductCard.fromVariant(getVariant(RollenceKey.REVERSE_PRODUCT_CARD))
 }

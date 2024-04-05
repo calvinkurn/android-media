@@ -34,8 +34,7 @@
             android:id="@+id/img_logo"
             android:layout_width="wrap_content"
             android:layout_height="18dp"
-
-            app:srcCompat="@drawable/ic_icon_alert"
+            app:srcCompat="@drawable/ic_icon_alert_logisticcart"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 

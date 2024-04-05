@@ -1,6 +1,5 @@
 package com.tokopedia.home.repository
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMapper
@@ -16,17 +15,14 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.mockk
 
 fun createDynamicPositionRepository(
-    homeDispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider,
     atfDao: AtfDao = mockk(relaxed = true),
     atfDataRepository: HomeAtfRepository = mockk(relaxed = true),
     atfMapper: AtfMapper = mockk(relaxed = true)
 ): DynamicPositionRepository {
     return DynamicPositionRepository(
-        homeDispatcher = homeDispatcher,
         atfDao = atfDao,
         atfDataRepository = atfDataRepository,
         atfMapper = atfMapper
@@ -127,34 +123,6 @@ fun mockMissionWidget(
     isCache = isCache
 )
 
-fun mockMission4SquareWidget(
-    status: Int = AtfKey.STATUS_SUCCESS,
-    isCache: Boolean = false,
-    position: Int = 4
-) = AtfData(
-    atfMetadata = AtfMetadata(
-        id = 9,
-        name = "mission_widget_v3",
-        position = position,
-        component = AtfKey.TYPE_MISSION_V3,
-        param = "",
-        isOptional = false,
-        isShimmer = false
-    ),
-    atfContent = if (status == AtfKey.STATUS_SUCCESS) {
-        HomeMissionWidgetData.GetHomeMissionWidget(
-            missions = listOf(
-                HomeMissionWidgetData.Mission(),
-                HomeMissionWidgetData.Mission()
-            )
-        )
-    } else {
-        null
-    },
-    atfStatus = status,
-    isCache = isCache
-)
-
 fun mockTodoWidget(
     status: Int = AtfKey.STATUS_SUCCESS,
     isCache: Boolean = false,
@@ -202,6 +170,34 @@ fun mockChannels(
             channels = listOf(
                 DynamicHomeChannel.Channels(id = "123", layout = DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET),
                 DynamicHomeChannel.Channels(id = "234", layout = DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT)
+            )
+        )
+    } else {
+        null
+    },
+    atfStatus = status,
+    isCache = isCache
+)
+
+fun mockMission4SquareWidget(
+    status: Int = AtfKey.STATUS_SUCCESS,
+    isCache: Boolean = false,
+    position: Int = 7
+) = AtfData(
+    atfMetadata = AtfMetadata(
+        id = 7,
+        name = "mission_widget_v3",
+        position = position,
+        component = AtfKey.TYPE_MISSION_V3,
+        param = "",
+        isOptional = false,
+        isShimmer = false
+    ),
+    atfContent = if (status == AtfKey.STATUS_SUCCESS) {
+        HomeMissionWidgetData.GetHomeMissionWidget(
+            missions = listOf(
+                HomeMissionWidgetData.Mission(),
+                HomeMissionWidgetData.Mission()
             )
         )
     } else {
