@@ -16,11 +16,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -92,17 +94,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         viewBinding?.btnContinue?.setOnClickListener {
-            when (viewModel.selectedShopType.value) {
-                TYPE_NORMAL_SHOP -> {
-                    viewModel.checkKycStatus()
-                }
-                TYPE_OFFICIAL_SHOP -> {
-                    showOfficialShopBottomSheet()
-                }
-                else -> {
-                    // Handle Error
-                }
-            }
+            viewModel.getShopStatus()
         }
 
         viewModel.projectInfo.observe(viewLifecycleOwner) {
@@ -121,6 +113,30 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         }
+
+        viewModel.shopStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShopStatus.NotRegistered -> {
+                    if (isNormalShopSelected()) {
+                        viewModel.checkKycStatus()
+                    } else {
+                        showOfficialShopBottomSheet()
+                    }
+                }
+
+                is ShopStatus.Pending -> {
+                    Toaster.build(viewBinding?.root!!, "Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+
+                is ShopStatus.Error -> {
+                    Toaster.build(viewBinding?.root!!, it.throwable.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
+    }
+
+    private fun isNormalShopSelected(): Boolean {
+        return viewModel.selectedShopType.value == TYPE_NORMAL_SHOP
     }
 
     private fun handleApiError() {
@@ -154,7 +170,10 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun showOfficialShopBottomSheet() {
-
+        OfficialShopLandingBottomSheet.createInstance().apply {
+            setOnStayClick {  }
+            setOnWebviewClick {  }
+        }.show(childFragmentManager)
     }
 
     private fun onKycFinished() {

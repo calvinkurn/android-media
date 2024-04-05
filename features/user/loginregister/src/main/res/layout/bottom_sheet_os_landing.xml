@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:background="@color/Unify_NN0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Daftar Official Store lebih nyaman jika diakses di desktop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Tampilannya lebih enak dilihat jika kamu buka di desktop, lho!"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography4"
+        app:typographyType="paragraph_2" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageUnify3"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography5" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="14dp"
+        android:text="Yuk, buka alamat ini dari browser desktop-mu:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageUnify3"
+        app:typographyType="paragraph_2" />
+
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/buttonWebview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="tokopedia.com/myshop/os"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography6"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:id="@+id/buttonStay"
+        android:text="Tetap Buka di Perangkat ini"
+        app:layout_constraintEnd_toEndOf="@+id/buttonWebview"
+        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintStart_toStartOf="@+id/buttonWebview"
+        app:layout_constraintTop_toBottomOf="@+id/buttonWebview"
+        android:textColor="@color/Unify_GN500"
+        app:unifyButtonVariant="text" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

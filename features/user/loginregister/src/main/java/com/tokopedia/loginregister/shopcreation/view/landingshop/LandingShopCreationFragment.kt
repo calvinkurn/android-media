@@ -166,16 +166,15 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initButtonListener() {
-        openKycBridgePage()
-//        viewBinding?.btnContinue?.setOnClickListener {
-//            shopCreationAnalytics.eventClickOpenShopLanding()
-//            if (userIsLoggedIn()) {
-//                goToShopAdminRedirection()
-//            } else {
-//                showLoading()
-//                goToPhoneShopCreation()
-//            }
-//        }
+        viewBinding?.btnContinue?.setOnClickListener {
+            shopCreationAnalytics.eventClickOpenShopLanding()
+            if (userIsLoggedIn()) {
+                goToShopAdminRedirection()
+            } else {
+                showLoading()
+                goToPhoneShopCreation()
+            }
+        }
     }
 
     private fun userIsLoggedIn(): Boolean {
