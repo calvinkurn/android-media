@@ -10,9 +10,8 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.di.DaggerFeedBrowseComponent
-import com.tokopedia.feedplus.databinding.ActivityFeedSearchResultBinding
+import com.tokopedia.feedplus.databinding.ActivityFragmentOnlyBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -20,7 +19,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class FeedSearchResultActivity: BaseActivity() {
     @Inject lateinit var fragmentFactory: FragmentFactory
 
-    private var binding: ActivityFeedSearchResultBinding? = null
+    private lateinit var binding: ActivityFragmentOnlyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -28,12 +27,12 @@ class FeedSearchResultActivity: BaseActivity() {
 
         super.onCreate(savedInstanceState)
         setupStatusBar()
-        binding = ActivityFeedSearchResultBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        binding = ActivityFragmentOnlyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportFragmentManager.commit {
             replace(
-                R.id.fragment_container_srp,
+                binding.root.id,
                 FeedSearchResultFragment.create(supportFragmentManager, classLoader, intent.extras),
                 TAG_SEARCH_RESULT_FRAGMENT
             )
