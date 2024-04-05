@@ -56,6 +56,13 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         initListener()
         initObserver()
         onRefreshStatus()
+        initToolbar()
+    }
+
+    private fun initToolbar() {
+        binding?.unifyToolbar?.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     private fun initObserver() {
@@ -89,6 +96,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         context?.getString(R.string.shop_creation_kyc_pending)?.let { loadImage(it) }
 
         binding?.apply {
+            unifyToolbar.show()
             tvHeader.text = context?.getString(R.string.shop_creation_title_pending)
             tvHeader.show()
             ivStatusSubmission.show()
@@ -103,6 +111,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         context?.getString(R.string.shop_creation_kyc_rejected)?.let { loadImage(it) }
 
         binding?.apply {
+            unifyToolbar.show()
             tvHeader.text = context?.getString(R.string.shop_creation_title_rejected)
             tvHeader.show()
             ivStatusSubmission.show()
@@ -159,8 +168,10 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             tvHeader.hide()
             ivStatusSubmission.hide()
             layoutStatusPending.root.hide()
+            layoutStatusRejected.root.hide()
             ivStatusSubmission.hide()
             globalError.show()
+            unifyToolbar.show()
         }
 
         if (throwable != null) {
@@ -181,6 +192,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
     private fun onRefreshStatus() {
         binding?.apply {
+            unifyToolbar.hide()
             loader.show()
             tvHeader.hide()
             layoutStatusPending.root.hide()

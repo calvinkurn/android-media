@@ -5,17 +5,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/unify_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
         android:gravity="center"
         tools:text="Kamu bisa lanjut buat toko setelah verifikasinya selesai, ya..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unify_toolbar"
         app:typographyType="heading_3"
         android:visibility="gone"
         tools:visibility="visible"/>
