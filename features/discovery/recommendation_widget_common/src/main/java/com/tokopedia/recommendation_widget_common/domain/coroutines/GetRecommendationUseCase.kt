@@ -24,7 +24,7 @@ open class GetRecommendationUseCase @Inject constructor(
 ) : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
 
     private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
-    private val byteIoUseCase by lazy { RecommendationByteIoUseCase() }
+    private val byteIoUseCase = RecommendationByteIoUseCase()
 
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)

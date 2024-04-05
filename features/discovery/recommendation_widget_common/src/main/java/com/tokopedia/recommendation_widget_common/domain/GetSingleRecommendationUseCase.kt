@@ -31,7 +31,7 @@ constructor(
     private val userSession: UserSessionInterface
 ) : UseCase<RecommendationEntity.RecommendationData>() {
 
-    private val byteIoUseCase by lazy { RecommendationByteIoUseCase() }
+    private val byteIoUseCase = RecommendationByteIoUseCase()
 
     override fun createObservable(requestParams: RequestParams): Observable<RecommendationEntity.RecommendationData> {
         val graphqlRequest = GraphqlRequest(recomRawString, SingleProductRecommendationEntity::class.java, requestParams.parameters)

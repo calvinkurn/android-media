@@ -23,7 +23,7 @@ open class GetSingleRecommendationUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
 ) : UseCase<GetRecommendationRequestParam, RecommendationWidget>() {
 
-    private val byteIoUseCase by lazy { RecommendationByteIoUseCase() }
+    private val byteIoUseCase = RecommendationByteIoUseCase()
 
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): RecommendationWidget {
         val graphqlUseCase: GraphqlUseCase<SingleProductRecommendationEntity> = GraphqlUseCase(graphqlRepository)

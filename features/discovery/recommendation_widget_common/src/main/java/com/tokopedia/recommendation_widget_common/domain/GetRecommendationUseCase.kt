@@ -32,7 +32,7 @@ constructor(
     private val userSession: UserSessionInterface
 ) : UseCase<List<RecommendationWidget>>() {
 
-    private val byteIoUseCase by lazy { RecommendationByteIoUseCase() }
+    private val byteIoUseCase = RecommendationByteIoUseCase()
 
     override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationWidget>> {
         val graphqlRequest = GraphqlRequest(recomRawString, RecommendationEntity::class.java, requestParams.parameters)
