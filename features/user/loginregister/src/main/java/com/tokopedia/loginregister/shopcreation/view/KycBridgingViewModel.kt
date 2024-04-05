@@ -3,7 +3,9 @@ package com.tokopedia.loginregister.shopcreation.view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoUseCase
@@ -50,7 +52,7 @@ class KycBridgingViewModel @Inject constructor(
     fun checkKycStatus() {
         launch {
             try {
-                val resp = projectInfoUseCase(10)
+                val resp = projectInfoUseCase(ShopCreationConstant.OPEN_SHOP_KYC_PROJECT_ID.toIntOrZero())
                 _projectInfo.value = resp
             } catch (e: Exception) {
                 _projectInfo.value = ProjectInfoResult.Failed(e)
