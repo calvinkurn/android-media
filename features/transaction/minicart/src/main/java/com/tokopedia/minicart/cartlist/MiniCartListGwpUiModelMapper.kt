@@ -14,7 +14,7 @@ object MiniCartListGwpUiModelMapper {
     ): MiniCartProgressiveInfoUiModel? {
         return response.getGroupProductTicker.data.multipleData.find { data -> data.bmgmData.offerId == uiModel.offerId }?.run {
             uiModel.copy(
-                message = bmgmData.offerMessage.firstOrNull().orEmpty(),
+                message = bmgmData.getOfferMessage(),
                 icon = bmgmData.offerIcon,
                 appLink = bmgmData.offerLandingPageLink,
                 state = MiniCartProgressiveInfoUiModel.State.LOADED

@@ -377,11 +377,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
         return MiniCartProgressiveInfoUiModel(
             offerId = bmgmData.offerId,
             offerTypeId = bmgmData.offerTypeId,
-            message = bmgmData.offerMessage.firstOrNull().orEmpty(),
+            message = bmgmData.getOfferMessage(),
             icon = bmgmData.offerIcon,
             appLink = bmgmData.offerLandingPageLink,
             state = MiniCartProgressiveInfoUiModel.State.LOADED,
-            progressiveInfoText = bmgmData.offerMessage.firstOrNull().orEmpty(),
+            progressiveInfoText = bmgmData.getOfferMessage(),
             position = cartIndex.inc()
         )
     }
@@ -407,7 +407,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         isUnlocked = bmgmData.isTierAchieved
                     )
                 },
-                progressiveInfoText = bmgmData.offerMessage.firstOrNull().orEmpty(),
+                progressiveInfoText = bmgmData.getOfferMessage(),
                 position = cartIndex.inc(),
                 warehouseId = tierProduct.listProduct.firstOrNull()?.warehouseId.orZero(),
                 shopId = shopId
