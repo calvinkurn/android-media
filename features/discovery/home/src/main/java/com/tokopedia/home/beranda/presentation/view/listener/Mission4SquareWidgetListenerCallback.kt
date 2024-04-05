@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.home.analytics.v2.Mission4SquareWidgetTracker
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -31,12 +33,7 @@ class Mission4SquareWidgetListenerCallback(
             )
 
             // ByteIO
-            AppLogRecommendation.sendProductClickAppLog(
-                model.asProductModel(
-                    isCache = model.isCache,
-                    enterMethod = "${model.data.pageName}_${model.cardPosition+1}"
-                )
-            )
+            AppLogRecommendation.sendProductClickAppLog(model.asProductModel(model.isCache))
         } else {
             // GTM
             Mission4SquareWidgetTracker.sendMissionWidgetClicked(
@@ -46,10 +43,13 @@ class Mission4SquareWidgetListenerCallback(
             )
 
             // ByteIO
-            AppLogRecommendation.sendCardClickAppLog(
-                model.asCardModel(model.isCache)
-            )
+            AppLogRecommendation.sendCardClickAppLog(model.asCardModel(model.isCache))
         }
+
+        AppLogAnalytics.putPageData(
+            key = AppLogParam.ENTER_METHOD,
+            value = "${model.data.pageName}_${model.cardPosition + 1}"
+        )
     }
 
     private fun shouldTrackImpressWidgetWhenRendered(model: Mission4SquareUiModel, position: Int) {
