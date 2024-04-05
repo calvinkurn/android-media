@@ -1,11 +1,14 @@
 package com.tokopedia.recommendation_widget_common.byteio
 
+import android.content.Context
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.CardName
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
@@ -54,6 +57,43 @@ object TrackRecommendationMapper {
             0,
             AdsLogShowModel.AdExtraData(
                 productId = productId.orZero().toString()
+            )
+        )
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(
+            refer,
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogRealtimeClickModel.AdExtraData(
+                productId = id
+            )
+        )
+    }
+    fun RecommendationCardModel.ProductItem.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogShowOverModel.AdExtraData(
+                productId = id,
+                sizePercent = visiblePercentage.toString()
+            )
+        )
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            0,
+            AdsLogShowModel.AdExtraData(
+                productId = id
             )
         )
     }

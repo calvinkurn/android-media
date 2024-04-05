@@ -1,12 +1,20 @@
 package com.tokopedia.recommendation_widget_common.infinite.foryou.recom
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ParentRecommendationListener
 
@@ -36,6 +44,31 @@ class RecommendationCardListViewHolder constructor(
         }
     }
 
+    override fun onViewAttachedToWindow(element: RecommendationCardModel?) {
+        element?.let {
+            if (it.recommendationProductItem.isTopAds) {
+                AppLogTopAds.sendEventShow(
+                    itemView.context,
+                    PageName.HOME,
+                    it.recommendationProductItem.asAdsLogShowModel()
+                )
+            }
+        }
+    }
+
+    override fun onViewDetachedFromWindow(element: RecommendationCardModel?, visiblePercentage: Int) {
+        element?.let {
+            if (it.recommendationProductItem.isTopAds) {
+                AppLogTopAds.sendEventShowOver(
+                    itemView.context,
+                    PageName.HOME,
+                    it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
+                )
+            }
+        }
+    }
+
+
     private fun setLayout(
         element: RecommendationCardModel
     ) {
@@ -57,11 +90,37 @@ class RecommendationCardListViewHolder constructor(
     }
 
     private fun setItemProductCardClickListener(element: RecommendationCardModel) {
-        productCardView?.setOnClickListener {
-            listener.onProductCardClicked(
-                element,
-                bindingAdapterPosition
-            )
+        productCardView?.setOnClickListener(object : ProductCardClickListener {
+            override fun onClick(v: View) {
+                listener.onProductCardClicked(
+                    element,
+                    bindingAdapterPosition
+                )
+            }
+
+            override fun onAreaClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationProductItem, AdsLogConst.Refer.AREA)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationProductItem, AdsLogConst.Refer.COVER)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationProductItem, AdsLogConst.Refer.SELLER_NAME)
+            }
+        })
+    }
+
+    internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: RecommendationCardModel.ProductItem?, refer: String) {
+        element?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventRealtimeClick(
+                    context,
+                    PageName.HOME,
+                    it.asAdsLogRealtimeClickModel(refer)
+                )
+            }
         }
     }
 

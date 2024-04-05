@@ -10,8 +10,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.listener.ImpressionRecommendationItemListener
-import com.tokopedia.home.util.asAsLogShowModel
-import com.tokopedia.home.util.asAsLogShowOverModel
+import com.tokopedia.home.util.asAdsLogShowModel
+import com.tokopedia.home.util.asAdsLogShowOverModel
 import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -102,7 +102,7 @@ class HomeRecommendationItemGridViewHolder(
                 AppLogTopAds.sendEventShow(
                     itemView.context,
                     PageName.HOME,
-                    it.recommendationProductItem.asAsLogShowModel()
+                    it.recommendationProductItem.asAdsLogShowModel()
                 )
             }
         }
@@ -114,7 +114,7 @@ class HomeRecommendationItemGridViewHolder(
                 AppLogTopAds.sendEventShowOver(
                     itemView.context,
                     PageName.HOME,
-                    it.recommendationProductItem.asAsLogShowOverModel(visibilityPercentage)
+                    it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
                 )
             }
         }

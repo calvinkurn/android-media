@@ -8,6 +8,7 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 
 internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: HomeRecommendationItemDataModel.HomeRecommendationProductItem?, refer: String) {
     element?.let {
@@ -15,13 +16,13 @@ internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: HomeReco
             AppLogTopAds.sendEventRealtimeClick(
                 context,
                 PageName.SEARCH_RESULT,
-                it.asAsLogRealtimeClickModel(refer)
+                it.asAdsLogRealtimeClickModel(refer)
             )
         }
     }
 }
 
-internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAsLogShowModel(): AdsLogShowModel {
+internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAdsLogShowModel(): AdsLogShowModel {
     return AdsLogShowModel(
         // todo this value from BE
         0,
@@ -33,7 +34,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAsL
     )
 }
 
-internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAsLogShowOverModel(sizePercent: Int): AdsLogShowOverModel {
+internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAdsLogShowOverModel(sizePercent: Int): AdsLogShowOverModel {
     return AdsLogShowOverModel(
         // todo this value from BE
         0,
@@ -46,7 +47,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAsL
     )
 }
 
-internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
     return AdsLogRealtimeClickModel(
         refer,
         // todo this value from BE
