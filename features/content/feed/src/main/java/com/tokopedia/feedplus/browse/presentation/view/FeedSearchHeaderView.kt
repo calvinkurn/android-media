@@ -30,14 +30,14 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(
 
     init {
         val styledAttribute = getContext().obtainStyledAttributes(attrs, feedplusR.styleable.FeedSearchHeaderView)
-        val isCleanable = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isCleanable, false)
+        val isClearable = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isClearable, false)
         val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isShowShadow, true)
         val withSearchbar = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_withSearchbar, false)
         styledAttribute.recycle()
 
         binding.headerUnify.isShowShadow = isShowShadow
 
-        if (withSearchbar) initSearchBar(isCleanable)
+        if (withSearchbar) initSearchBar(isClearable)
     }
 
     /**
@@ -71,10 +71,10 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(
         showSoftKeyboard()
     }
 
-    fun initSearchBar(isCleanable: Boolean, searchPlaceholder: String = "") {
+    fun initSearchBar(isClearable: Boolean, searchPlaceholder: String = "") {
         SearchBarUnify(context).also { searchbar ->
-            searchbar.isClearable = isCleanable
-            searchbar.showIcon = isCleanable
+            searchbar.isClearable = isClearable
+            searchbar.showIcon = isClearable
             searchbar.searchBarPlaceholder = searchPlaceholder
 
             this.searchBar = searchbar
