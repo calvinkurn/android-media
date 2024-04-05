@@ -6,13 +6,27 @@ import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 
 internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: HomeRecommendationItemDataModel.HomeRecommendationProductItem?, refer: String) {
     element?.let {
         if (it.isTopAds) {
+            AppLogTopAds.sendEventRealtimeClick(
+                context,
+                PageName.SEARCH_RESULT,
+                it.asAdsLogRealtimeClickModel(refer)
+            )
+        }
+    }
+}
+
+internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: DynamicHomeChannel.Grid?, refer: String) {
+    element?.let {
+        if (it.isTopads) {
             AppLogTopAds.sendEventRealtimeClick(
                 context,
                 PageName.SEARCH_RESULT,
@@ -48,6 +62,44 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
 }
 
 internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+    return AdsLogRealtimeClickModel(
+        refer,
+        // todo this value from BE
+        0,
+        // todo this value from BE
+        0,
+        AdsLogRealtimeClickModel.AdExtraData(
+            productId = id,
+        )
+    )
+}
+
+internal fun DynamicHomeChannel.Grid.asAdsLogShowModel(): AdsLogShowModel {
+    return AdsLogShowModel(
+        // todo this value from BE
+        0,
+        // todo this value from BE
+        0,
+        AdsLogShowModel.AdExtraData(
+            productId = id
+        )
+    )
+}
+
+internal fun DynamicHomeChannel.Grid.asAdsLogShowOverModel(sizePercent: Int): AdsLogShowOverModel {
+    return AdsLogShowOverModel(
+        // todo this value from BE
+        0,
+        // todo this value from BE
+        0,
+        AdsLogShowOverModel.AdExtraData(
+            productId = id,
+            sizePercent = sizePercent.toString()
+        )
+    )
+}
+
+internal fun DynamicHomeChannel.Grid.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
     return AdsLogRealtimeClickModel(
         refer,
         // todo this value from BE

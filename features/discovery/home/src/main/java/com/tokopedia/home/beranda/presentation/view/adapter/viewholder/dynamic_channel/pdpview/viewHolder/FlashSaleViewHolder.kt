@@ -3,11 +3,21 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
+import com.tokopedia.home.util.asAdsLogShowModel
+import com.tokopedia.home.util.asAdsLogShowOverModel
+import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class FlashSaleViewHolder (view: View,
@@ -24,6 +34,30 @@ class FlashSaleViewHolder (view: View,
         setLayout(itemView.context, element)
     }
 
+    override fun onViewAttachedToWindow(element: FlashSaleDataModel?) {
+        element?.let {
+            if (it.grid.isTopads) {
+                AppLogTopAds.sendEventShow(
+                    itemView.context,
+                    PageName.HOME,
+                    it.grid.asAdsLogShowModel()
+                )
+            }
+        }
+    }
+
+    override fun onViewDetachedFromWindow(element: FlashSaleDataModel?, visiblePercentage: Int) {
+        element?.let {
+            if (it.grid.isTopads) {
+                AppLogTopAds.sendEventShowOver(
+                    itemView.context,
+                    PageName.HOME,
+                    it.grid.asAdsLogShowOverModel(visibilityPercentage)
+                )
+            }
+        }
+    }
+
     private fun setLayout(context: Context, element: FlashSaleDataModel){
         productCardView?.run{
             applyCarousel()
@@ -37,15 +71,34 @@ class FlashSaleViewHolder (view: View,
                 }
                 element.listener.onFlashSaleCardImpressed(adapterPosition, channels, element.grid)
             }
-            setOnClickListener {
+
+            setProductCardViewClickListener(element)
+        }
+    }
+
+    private fun ProductCardGridView.setProductCardViewClickListener(element: FlashSaleDataModel) {
+        setOnClickListener(object : ProductCardClickListener {
+            override fun onClick(v: View) {
                 if(element.grid.isTopads){
                     TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
-                            element.grid.id,
-                            element.grid.name,
-                            element.grid.imageUrl)
+                        element.grid.id,
+                        element.grid.name,
+                        element.grid.imageUrl)
                 }
                 element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }
-        }
+
+            override fun onAreaClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.grid, AdsLogConst.Refer.AREA)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.grid, AdsLogConst.Refer.COVER)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.grid, AdsLogConst.Refer.SELLER_NAME)
+            }
+        })
     }
 }

@@ -68,7 +68,6 @@ class RecommendationCardListViewHolder constructor(
         }
     }
 
-
     private fun setLayout(
         element: RecommendationCardModel
     ) {
