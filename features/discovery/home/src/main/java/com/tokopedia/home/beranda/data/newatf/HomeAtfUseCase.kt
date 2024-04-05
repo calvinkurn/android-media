@@ -154,6 +154,7 @@ class HomeAtfUseCase @Inject constructor(
             AtfKey.TYPE_MISSION,
             AtfKey.TYPE_MISSION_V2,
             AtfKey.TYPE_MISSION_V3 -> launch { missionWidgetRepository.getData(metadata) }
+            AtfKey.TYPE_HORIZONTAL -> launch { atfChannelRepository.getData(metadata) }
             AtfKey.TYPE_TODO -> launch { todoWidgetRepository.getData(metadata) }
         }
     }
