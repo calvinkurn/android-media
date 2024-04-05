@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.loginregister.databinding.BottomSheetOsLandingBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -18,6 +19,7 @@ class OfficialShopLandingBottomSheet : BottomSheetUnify() {
 
     companion object {
         private val TAG: String = OfficialShopLandingBottomSheet::class.java.simpleName
+        private const val IMG_BANNER = "https://images.tokopedia.net/img/android/user/loginregister/img_os_web_onboard.png"
 
         fun createInstance(): OfficialShopLandingBottomSheet {
             return OfficialShopLandingBottomSheet()
@@ -59,6 +61,8 @@ class OfficialShopLandingBottomSheet : BottomSheetUnify() {
             onStayClick?.invoke()
             dismiss()
         }
+
+        binding?.imgBanner?.loadImage(IMG_BANNER)
     }
 
     fun setOnWebviewClick(onClickReset: () -> Unit) {

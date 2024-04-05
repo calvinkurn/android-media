@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
@@ -24,6 +25,7 @@ import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -184,7 +186,13 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun showOfficialShopBottomSheet() {
         OfficialShopLandingBottomSheet.createInstance().apply {
-            setOnStayClick {  }
+            setOnStayClick {
+                RouteManager.route(
+                    context,
+                    ApplinkConstInternalGlobal.WEBVIEW,
+                    TokopediaUrl.getInstance().WEB.plus(OS_PATH)
+                )
+            }
             setOnWebviewClick {  }
         }.show(childFragmentManager)
     }
@@ -198,6 +206,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     companion object {
+        private const val OS_PATH = "myshop/os"
         fun createInstance(bundle: Bundle): KycBridgingFragment {
             val fragment = KycBridgingFragment()
             fragment.arguments = bundle
