@@ -88,7 +88,6 @@ object GqlQueryConstant {
         "                phone\n" +
         "                fax\n" +
         "            }\n" +
-        "            shopHomeType\n" +
         "            isGoApotik\n" +
         "            epharmacyInfo{\n" +
         "                siaNumber\n" +

@@ -15,20 +15,21 @@ class SearchApplinkModifier @Inject constructor(
 ): ApplinkModifier,
     QueryKeyProvider by queryKeyProvider {
 
-    override fun modifyApplink(applink: String): String =
+    override fun modifyApplink(applink: String, enterMethod: String): String =
         if (applink.isSearchResult())
-            modifyApplinkToSearchResult(applink)
+            modifyApplinkToSearchResult(applink, enterMethod)
         else applink
 
     private fun String.isSearchResult() =
         startsWith(ApplinkConstInternalDiscovery.SEARCH_RESULT)
             || startsWith(ApplinkConst.DISCOVERY_SEARCH)
 
-    private fun modifyApplinkToSearchResult(applink: String): String {
+    private fun modifyApplinkToSearchResult(applink: String, enterMethod: String): String {
         val urlParser = URLParser(applink)
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.PREVIOUS_KEYWORD] = queryKey
+        params[SearchApiConst.ENTER_METHOD] = enterMethod
 
         return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" +
             UrlParamUtils.generateUrlParamString(params)

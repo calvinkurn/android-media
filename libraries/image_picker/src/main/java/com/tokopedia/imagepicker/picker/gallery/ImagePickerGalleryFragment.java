@@ -1,5 +1,10 @@
 package com.tokopedia.imagepicker.picker.gallery;
 
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.common.model.AlbumItem.ALBUM_ID_ALL;
+import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
+import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,6 +18,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -25,10 +31,8 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.GalleryType;
-import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter;
 import com.tokopedia.imagepicker.common.internal.entity.Album;
 import com.tokopedia.imagepicker.common.loader.AlbumLoader;
@@ -36,15 +40,12 @@ import com.tokopedia.imagepicker.common.loader.AlbumMediaLoader;
 import com.tokopedia.imagepicker.common.model.AlbumItem;
 import com.tokopedia.imagepicker.common.model.MediaItem;
 import com.tokopedia.imagepicker.common.widget.MediaGridInset;
+import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
-import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
-import static com.tokopedia.imagepicker.common.model.AlbumItem.ALBUM_ID_ALL;
 
 /**
  * Created by hendry on 19/04/18.
@@ -83,7 +84,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private String belowMinImageResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
 
-    private LabelView labelViewAlbum;
+    private Typography textAlbumName;
+    private LinearLayout imagePickerViewHeader;
 
     public interface OnImagePickerGalleryFragmentListener {
         void onAlbumItemClicked(MediaItem item, boolean isChecked);
@@ -162,8 +164,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (itemAnimator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) itemAnimator).setSupportsChangeAnimations(false);
         }
-        labelViewAlbum = view.findViewById(R.id.label_view_album);
-        labelViewAlbum.setOnClickListener(new View.OnClickListener() {
+        imagePickerViewHeader = view.findViewById(R.id.image_picker_view_header);
+        textAlbumName = view.findViewById(R.id.text_album_name);
+        imagePickerViewHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String albumItemId = selectedAlbumItem == null ? AlbumItem.ALBUM_ID_ALL : selectedAlbumItem.getmId();
@@ -297,7 +300,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
         selectedAlbumItem = albumItem;
 
-        labelViewAlbum.setContent(albumItem.isAll() ?
+        textAlbumName.setText(albumItem.isAll() ?
                 getString(R.string.default_all_album) :
                 albumItem.getDisplayName());
         if (albumItem.isAll() && albumItem.isEmpty()) {

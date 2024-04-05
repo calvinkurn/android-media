@@ -48,7 +48,8 @@ data class FestiveEligibilityPolicy(
             ComponentNames.ClaimCoupon.componentName,
             ComponentNames.TimerSprintSale.componentName,
             ComponentNames.MerchantVoucher.componentName,
-            ComponentNames.FlashSaleTokoTab.componentName
+            ComponentNames.FlashSaleTokoTab.componentName,
+            ComponentNames.AutomateCoupon.componentName,
         )
     }
 }

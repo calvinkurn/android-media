@@ -12,9 +12,6 @@ object RollenceKey {
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
-    const val HOME_COMPONENT_ATF = "test_atf"
-    const val HOME_COMPONENT_ATF_2 = "control_atf2"
-    const val HOME_COMPONENT_ATF_3 = "exp_atf3"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
@@ -24,6 +21,7 @@ object RollenceKey {
     const val HOME_MISSION_SIZE_KEY = "mission_px"
     const val HOME_MISSION_SIZE_CONTROL = "control_var"
     const val HOME_MISSION_SIZE_VARIANT = "exp_var"
+    const val HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom"
     // end of home rollence section
 
     // TBD
@@ -129,6 +127,13 @@ object RollenceKey {
     const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_1_ac"
     const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
     const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
+    const val SEARCH_ROLLOUT_UNIVERSE_V2 = "rollout_universe_v2"
+    const val REVERSE_PRODUCT_CARD = "reverse_productcard"
+    const val REVERSE_PRODUCT_CARD_CONTROL = "control_variant"
+    const val REVERSE_PRODUCT_CARD_V4 = "v4_productcard"
 
     const val ANDROID_INTERNAL_TEST = "android_internal"
+
+    const val PDP_ATC_ANIMATION_VARIANT = "variant_animation"
+    const val PDP_ATC_ANIMATION_KEY = "pdp_animation_atc"
 }

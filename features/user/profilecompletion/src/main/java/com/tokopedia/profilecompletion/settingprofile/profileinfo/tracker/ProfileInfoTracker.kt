@@ -460,6 +460,7 @@ class ProfileInfoTracker @Inject constructor() {
         const val LABEL_PERSONAL_INFO = "info pribadi"
         const val LABEL_BOTTOMSHEET = "bottomsheet"
         const val LABEL_POPUP = "popup"
+        const val LABEL_ENTRY_POINT_APPLOG_DEVICE_ID = "applogdeviceid"
 
         const val BUSSINESS_UNIT = "user platform"
         const val CURRENT_SITE = "tokopediamarketplace"

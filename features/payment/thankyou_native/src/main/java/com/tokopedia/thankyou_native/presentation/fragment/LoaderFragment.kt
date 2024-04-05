@@ -168,7 +168,7 @@ class LoaderFragment : BaseDaggerFragment() {
                 return
             }
 
-            if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
+            if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus) == InstantPaymentPage) {
                 val lottie = (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess)
                 lottie.visible()
                 context?.let {

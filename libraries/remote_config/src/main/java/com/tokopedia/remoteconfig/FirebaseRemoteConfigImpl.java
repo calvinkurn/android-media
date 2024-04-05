@@ -28,6 +28,8 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final long THIRTY_MINUTES = TimeUnit.MINUTES.toSeconds(30);
     private static final long CONFIG_CACHE_EXPIRATION = THIRTY_MINUTES;
 
+    private long configCacheExpiration = CONFIG_CACHE_EXPIRATION;
+
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
 
@@ -180,7 +182,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                 setRealtimeUpdate();
                 firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_default);
                 FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                        .setMinimumFetchIntervalInSeconds(CONFIG_CACHE_EXPIRATION)
+                        .setMinimumFetchIntervalInSeconds(configCacheExpiration)
                         .build();
                 firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
                 firebaseRemoteConfig.fetchAndActivate()
@@ -198,6 +200,10 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().recordException(e);
         }
+    }
+
+    public void setConfigCacheExpiration(Long configCacheExpiration) {
+        this.configCacheExpiration = configCacheExpiration;
     }
 
     private void setRealtimeUpdate() {

@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.Flow
 interface InspirationCarouselPresenter {
     fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
 
-    fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
+    fun onInspirationCarouselProductClick(
+        product: InspirationCarouselDataView.Option.Product,
+    )
 
     fun onInspirationCarouselChipsClick(
         adapterPosition: Int,
