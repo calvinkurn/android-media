@@ -64,7 +64,6 @@ import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
@@ -211,7 +210,6 @@ abstract class TokoNowHomeViewModelTestFixture {
             playWidgetTools,
             addressData,
             userSession,
-            abTestPlatform,
             coroutineTestRule.dispatchers,
             addToCartUseCase,
             updateCartUseCase,
@@ -273,12 +271,6 @@ abstract class TokoNowHomeViewModelTestFixture {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
-        val homeLayoutList = viewModel.homeLayoutList.value
-        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
-        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
     }
 
     protected fun verifyQuestWidgetVisitableItem(expectedVisitableItem: Visitable<*>?) {

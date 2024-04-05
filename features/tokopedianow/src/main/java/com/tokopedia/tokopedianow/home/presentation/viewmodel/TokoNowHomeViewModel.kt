@@ -24,11 +24,8 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -76,7 +73,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLay
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductBundleRecomData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestFinishedWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestReloadWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestWidget
@@ -130,7 +126,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcU
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
@@ -170,7 +165,6 @@ class TokoNowHomeViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
-    private val abTestPlatform: AbTestPlatform,
     private val dispatchers: CoroutineDispatchers,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
@@ -319,8 +313,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = hasBlockedAddToCart,
-                tickerList = tickerData?.tickerList.orEmpty(),
-                enableNewQuestWidget = getEnableNewQuestWidget()
+                tickerList = tickerData?.tickerList.orEmpty()
             )
 
             val data = HomeLayoutListUiModel(
@@ -364,8 +357,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     removeAbleWidgets = removeAbleWidgets,
                     miniCartData = miniCartData,
                     localCacheModel = localCacheModel,
-                    hasBlockedAddToCart = hasBlockedAddToCart,
-                    enableNewQuestWidget = getEnableNewQuestWidget()
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 )
 
                 getLayoutComponentData(localCacheModel)
@@ -610,23 +602,6 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun refreshQuestList() {
-        getQuestUiModel()?.let { item ->
-            launchCatchError(block = {
-                getQuestListData(item)
-
-                val data = HomeLayoutListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.UPDATE
-                )
-
-                _homeLayoutList.postValue(Success(data))
-            }) {
-                removeWidget(item.id)
-            }
-        }
-    }
-
     fun refreshQuestWidget() {
         homeLayoutItemList.getItem(HomeQuestReloadWidgetUiModel::class.java)?.let { uiModel ->
             launchCatchError(block = {
@@ -834,7 +809,6 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel).await()
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
             is HomeQuestShimmeringWidgetUiModel -> getQuestListAsync(item).await()
-            is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
             is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
             is HomeProductCarouselChipsUiModel -> getCarouselChipsProductListAsync(item).await()
@@ -952,14 +926,6 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getQuestListAsync(item: HomeQuestSequenceWidgetUiModel): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            getQuestListData(item)
-        }) {
-            homeLayoutItemList.removeItem(item.id)
-        }
-    }
-
     private suspend fun getQuestListAsync(item: HomeQuestShimmeringWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
             getQuestListData(
@@ -970,26 +936,6 @@ class TokoNowHomeViewModel @Inject constructor(
             )
         }) {
             homeLayoutItemList.removeItem(item.visitableId)
-        }
-    }
-
-    private suspend fun getQuestListData(item: HomeQuestSequenceWidgetUiModel) {
-        val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
-        val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
-        if (questListResponse.questWidgetList.isEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
-            homeLayoutItemList.removeItem(item.id)
-        } else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
-            homeLayoutItemList.mapQuestData(
-                item = item,
-                questList = emptyList(),
-                state = HomeLayoutItemState.NOT_LOADED
-            )
-        } else {
-            homeLayoutItemList.mapQuestData(
-                item = item,
-                questList = questData,
-                state = HomeLayoutItemState.LOADED
-            )
         }
     }
 
@@ -1445,10 +1391,6 @@ class TokoNowHomeViewModel @Inject constructor(
         return layoutItemsList.filterNotNull().mapNotNull { it.layout }
     }
 
-    private fun getQuestUiModel(): HomeQuestSequenceWidgetUiModel? {
-        return homeLayoutItemList.getItem(HomeQuestSequenceWidgetUiModel::class.java)
-    }
-
     private fun removeUnsupportedLayout(item: Visitable<*>?) {
         homeLayoutItemList.removeItem(item?.getVisitableId())
     }
@@ -1458,7 +1400,4 @@ class TokoNowHomeViewModel @Inject constructor(
             _atcQuantity.postValue(Success(data))
         }
     }
-
-    private fun getEnableNewQuestWidget() = abTestPlatform
-        .getString(RollenceKey.TOKOPEDIA_NOW_EXPERIMENT) == EXPERIMENT_ENABLED
 }

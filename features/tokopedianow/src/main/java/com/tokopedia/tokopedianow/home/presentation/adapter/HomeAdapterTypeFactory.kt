@@ -60,10 +60,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestAllClaimedWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemShimmeringUiModel
@@ -72,6 +68,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClai
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
@@ -87,11 +84,6 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCarous
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProgressBarViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestAllClaimedWidgetViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestTitleViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSwitcherViewHolder
@@ -107,6 +99,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestRe
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.HomeQuestWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestShimmeringWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -121,7 +114,6 @@ class HomeAdapterTypeFactory(
     private val homeEducationalInformationListener: HomeEducationalInformationListener? = null,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
     private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocListener? = null,
-    private val homeQuestSequenceWidgetListener: HomeQuestSequenceWidgetListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
     private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
     private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
@@ -171,10 +163,6 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
     override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeProgressBarUiModel): Int = HomeProgressBarViewHolder.LAYOUT
-    override fun type(uiModel: HomeQuestSequenceWidgetUiModel): Int = HomeQuestSequenceWidgetViewHolder.LAYOUT
-    override fun type(uiModel: HomeQuestWidgetUiModel): Int = HomeQuestWidgetViewHolder.LAYOUT
-    override fun type(uiModel: HomeQuestTitleUiModel): Int = HomeQuestTitleViewHolder.LAYOUT
-    override fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int = HomeQuestAllClaimedWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeSwitcherUiModel): Int = HomeSwitcherViewHolder.LAYOUT
     override fun type(uiModel: HomeLeftCarouselAtcUiModel): Int = HomeLeftCarouselAtcViewHolder.LAYOUT
     override fun type(uiModel: HomePlayWidgetUiModel): Int = HomePlayWidgetViewHolder.LAYOUT
@@ -183,7 +171,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int = HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT
     override fun type(uiModel: HomeProductCarouselChipsUiModel): Int = HomeProductCarouselChipsViewHolder.LAYOUT
     override fun type(uiModel: HomeHeaderUiModel): Int = HomeHeaderViewHolder.LAYOUT
-    override fun type(uiModel: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel): Int = com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeQuestWidgetUiModel): Int = HomeQuestWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestFinishedWidgetUiModel): Int = HomeQuestFinishedWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestShimmeringWidgetUiModel): Int = HomeQuestShimmeringWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestReloadWidgetUiModel): Int = HomeQuestReloadWidgetViewHolder.LAYOUT
@@ -226,10 +214,6 @@ class HomeAdapterTypeFactory(
             HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
             HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, homeEducationalInformationListener)
             HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
-            HomeQuestSequenceWidgetViewHolder.LAYOUT -> HomeQuestSequenceWidgetViewHolder(view, homeQuestSequenceWidgetListener)
-            HomeQuestWidgetViewHolder.LAYOUT -> HomeQuestWidgetViewHolder(view, homeQuestSequenceWidgetListener)
-            HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
-            HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
             HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(
                 itemView = view,
@@ -243,7 +227,7 @@ class HomeAdapterTypeFactory(
             HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT -> HomeClaimCouponWidgetItemShimmeringViewHolder(view)
             HomeProductCarouselChipsViewHolder.LAYOUT -> HomeProductCarouselChipsViewHolder(view, productCarouselChipListener)
             HomeHeaderViewHolder.LAYOUT -> HomeHeaderViewHolder(view, homeHeaderListener, tokoNowChooseAddressWidgetListener, tokoNowView)
-            com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.LAYOUT -> com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder(view, questWidgetListener)
+            HomeQuestWidgetViewHolder.LAYOUT -> HomeQuestWidgetViewHolder(view, questWidgetListener)
             HomeQuestFinishedWidgetViewHolder.LAYOUT -> HomeQuestFinishedWidgetViewHolder(view, questFinishedListener)
             HomeQuestShimmeringWidgetViewHolder.LAYOUT -> HomeQuestShimmeringWidgetViewHolder(view)
             HomeQuestReloadWidgetViewHolder.LAYOUT -> HomeQuestReloadWidgetViewHolder(view, questReloadWidgetListener)
