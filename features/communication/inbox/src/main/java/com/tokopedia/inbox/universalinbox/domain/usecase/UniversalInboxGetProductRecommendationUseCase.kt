@@ -22,9 +22,6 @@ class UniversalInboxGetProductRecommendationUseCase @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : GetRecommendationUseCase(context, graphqlRepository) {
 
-    var currentPage = 0
-        private set
-
     suspend fun fetchProductRecommendation(inputParameter: GetRecommendationRequestParam): Flow<Result<RecommendationWidget>> {
         return flow {
             val response = getData(inputParameter).first() // only need first
@@ -34,9 +31,5 @@ class UniversalInboxGetProductRecommendationUseCase @Inject constructor(
             .onStart { emit(Result.Loading) }
             .catch { emit(Result.Error(it)) }
             .flowOn(dispatchers.io)
-    }
-
-    fun updateCurrentPage(page: Int) {
-        currentPage = page
     }
 }
