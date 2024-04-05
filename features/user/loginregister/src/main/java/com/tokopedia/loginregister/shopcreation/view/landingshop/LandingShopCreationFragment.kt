@@ -166,15 +166,16 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initButtonListener() {
-        viewBinding?.btnContinue?.setOnClickListener {
-            shopCreationAnalytics.eventClickOpenShopLanding()
-            if (userIsLoggedIn()) {
-                goToShopAdminRedirection()
-            } else {
-                showLoading()
-                goToPhoneShopCreation()
-            }
-        }
+        openKycBridgePage()
+//        viewBinding?.btnContinue?.setOnClickListener {
+//            shopCreationAnalytics.eventClickOpenShopLanding()
+//            if (userIsLoggedIn()) {
+//                goToShopAdminRedirection()
+//            } else {
+//                showLoading()
+//                goToPhoneShopCreation()
+//            }
+//        }
     }
 
     private fun userIsLoggedIn(): Boolean {

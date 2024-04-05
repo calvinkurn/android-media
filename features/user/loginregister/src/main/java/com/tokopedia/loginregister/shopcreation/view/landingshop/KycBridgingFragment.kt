@@ -1,14 +1,18 @@
 package com.tokopedia.loginregister.shopcreation.view.landingshop
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
@@ -23,6 +27,12 @@ import javax.inject.Inject
 class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private var viewBinding by autoClearedNullable<FragmentKycBridgingBinding>()
+
+    private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            onKycFinished()
+        }
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,7 +95,6 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
             when (viewModel.selectedShopType.value) {
                 TYPE_NORMAL_SHOP -> {
                     viewModel.checkKycStatus()
-
                 }
                 TYPE_OFFICIAL_SHOP -> {
                     showOfficialShopBottomSheet()
@@ -102,7 +111,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     gotoCreateShop()
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    enterKycFlow()
+                    goToKycFlow()
                 }
                 is ProjectInfoResult.Failed -> {
                     handleApiError()
@@ -118,12 +127,12 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     }
 
-    private fun enterKycFlow() {
-
-    }
-
     private fun gotoStatusPage() {
-
+        activity?.let {
+            if (it is LandingShopCreationActivity) {
+                it.switchToKycStatusFragment()
+            }
+        }
     }
 
     private fun gotoCreateShop() {
@@ -136,7 +145,12 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToKycFlow() {
-
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, "")
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK, "")
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, "10")
+        }
+        startReVerifyKycForResult.launch(intent)
     }
 
     private fun showOfficialShopBottomSheet() {
@@ -144,7 +158,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun onKycFinished() {
-
+        viewModel.checkKycStatus()
     }
 
     override fun onBackPressed(): Boolean {

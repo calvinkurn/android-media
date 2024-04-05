@@ -34,4 +34,19 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
             )
             .commit()
     }
+
+    fun switchToKycStatusFragment() {
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(
+                com.tokopedia.loginregister.R.id.parent_view,
+                // TODO change this fragment to the Kyc Status Fragment.
+                KycBridgingFragment.createInstance(bundle),
+                "kyc_bridge_tag"
+            )
+            .commit()
+    }
 }
