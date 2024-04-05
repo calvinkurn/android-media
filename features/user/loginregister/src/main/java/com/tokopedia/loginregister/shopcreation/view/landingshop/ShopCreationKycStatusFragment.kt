@@ -183,8 +183,9 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         binding?.apply {
             loader.show()
             tvHeader.hide()
-            ivStatusSubmission.hide()
             layoutStatusPending.root.hide()
+            layoutStatusRejected.root.hide()
+            globalError.hide()
             ivStatusSubmission.hide()
         }
         viewModel.checkKycStatus()
