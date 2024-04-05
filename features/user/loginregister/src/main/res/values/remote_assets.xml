@@ -4,4 +4,8 @@
 
     <!--Redefine Register Email-->
     <string name="redefine_phone_init_image">"https://images.tokopedia.net/img/android/user/register/img_redefine_register_input_phone.png</string>
+
+    <!--Shop Creation-->
+    <string name="shop_creation_kyc_pending">https://images.tokopedia.net/img/android/user/loginregister/shop_creation_pending.png</string>
+    <string name="shop_creation_kyc_rejected">https://images.tokopedia.net/img/android/user/loginregister/shop_creation_kyc_rejected.png</string>
 </resources>
