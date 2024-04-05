@@ -41,7 +41,7 @@ class DynamicPositionRepository @Inject constructor(
     val flow: Flow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
         if (cache != null && remote != null) {
             if (remote.positionEquals(cache)) {
-                // if remote position same with cache, 
+                // if remote position same with cache,
                 // populate cache data to remote position
                 remote.copyAtfContentsFrom(cache)
             } else if (remote.isDataError()) {
@@ -58,6 +58,9 @@ class DynamicPositionRepository @Inject constructor(
                 // to re-fetch every ATF components data from remote
                 remote.copy(needToFetchComponents = true)
             }
+        } else if(remote != null) {
+            // if remote comes faster than cache, need to fetch each data
+            remote.copy(needToFetchComponents = true)
         } else {
             cache
         }
