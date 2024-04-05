@@ -1,16 +1,24 @@
 package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3
 
+import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -43,6 +51,30 @@ class RecommendationViewHolder constructor(
         bindProductCardThreeDotsClick(element)
     }
 
+    override fun onViewAttachedToWindow(element: RecommendationUiModel?) {
+        element?.recommendationItem?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventShow(
+                    itemView.context,
+                    PageName.NOTIFICATION,
+                    it.asAdsLogShowModel()
+                )
+            }
+        }
+    }
+
+    override fun onViewDetachedFromWindow(element: RecommendationUiModel?, visiblePercentage: Int) {
+        element?.recommendationItem?.let {
+            if (it.isTopAds) {
+                AppLogTopAds.sendEventShowOver(
+                    itemView.context,
+                    PageName.NOTIFICATION,
+                    it.asAdsLogShowOverModel(visiblePercentage)
+                )
+            }
+        }
+    }
+
     private fun setRecTriggerObject(model: RecommendationItem) {
         recTriggerObject = RecommendationTriggerObject(
             sessionId = model.appLog.sessionId,
@@ -73,12 +105,36 @@ class RecommendationViewHolder constructor(
     }
 
     private fun bindProductCardClick(element: RecommendationUiModel) {
-        productCard?.setOnClickListener {
-            AppLogRecommendation.sendProductClickAppLog(
-                element.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
-            )
-            recommendationListener?.onProductClick(
+        productCard?.setOnClickListener(object : ProductCardClickListener {
+            override fun onClick(v: View) {
+                AppLogRecommendation.sendProductClickAppLog(
+                    element.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
+                )
+                recommendationListener?.onProductClick(
                     element.recommendationItem, null
+                )
+            }
+
+            override fun onAreaClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationItem, AdsLogConst.Refer.AREA)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationItem, AdsLogConst.Refer.COVER)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationItem, AdsLogConst.Refer.SELLER_NAME)
+            }
+        })
+    }
+
+    private fun sendEventRealtimeClickAdsByteIo(context: Context, element: RecommendationItem, refer: String) {
+        if (element.isTopAds) {
+            AppLogTopAds.sendEventRealtimeClick(
+                context,
+                PageName.NOTIFICATION,
+                element.asAdsLogRealtimeClickModel(refer)
             )
         }
     }

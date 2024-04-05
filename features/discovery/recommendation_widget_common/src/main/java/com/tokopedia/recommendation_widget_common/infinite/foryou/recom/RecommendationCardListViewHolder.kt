@@ -111,7 +111,7 @@ class RecommendationCardListViewHolder constructor(
         })
     }
 
-    internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: RecommendationCardModel.ProductItem?, refer: String) {
+    private fun sendEventRealtimeClickAdsByteIo(context: Context, element: RecommendationCardModel.ProductItem?, refer: String) {
         element?.let {
             if (it.isTopAds) {
                 AppLogTopAds.sendEventRealtimeClick(
