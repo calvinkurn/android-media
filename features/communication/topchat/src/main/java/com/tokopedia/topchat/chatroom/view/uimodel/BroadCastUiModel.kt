@@ -4,13 +4,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 class BroadCastUiModel : BaseChatUiModel, Visitable<TopChatTypeFactory> {
 
     val items: Map<String, Visitable<*>>
     val banner: ImageAnnouncementUiModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementUiModel
-    val voucherUiModel: TopChatVoucherUiModel? get() = items[AttachmentType.Companion.TYPE_VOUCHER] as? TopChatVoucherUiModel
+    val voucherUiModel: TopChatRoomVoucherUiModel? get() = items[AttachmentType.Companion.TYPE_VOUCHER] as? TopChatRoomVoucherUiModel
     val productCarousel: ProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_CAROUSEL_ATTACHMENT] as? ProductCarouselUiModel
     val singleProduct: ProductAttachmentUiModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT] as? ProductAttachmentUiModel
     val productBundling: Visitable<*>? get() = items[AttachmentType.Companion.TYPE_PRODUCT_BUNDLING]

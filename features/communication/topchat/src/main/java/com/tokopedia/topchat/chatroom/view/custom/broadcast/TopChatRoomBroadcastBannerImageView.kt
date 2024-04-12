@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom
+package com.tokopedia.topchat.chatroom.view.custom.broadcast
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,13 +6,14 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import com.tokopedia.unifycomponents.toPx
 
-class BroadcastBannerImageView : AppCompatImageView {
+class TopChatRoomBroadcastBannerImageView : AppCompatImageView {
 
     private val path: Path = Path()
     private var rect: RectF = RectF()
-    private val topLeftRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-    private val topRightRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    private val topLeftRadius = 8.toPx().toFloat()
+    private val topRightRadius = 8.toPx().toFloat()
     private val outerRadius = floatArrayOf(
         topLeftRadius,
         topLeftRadius,

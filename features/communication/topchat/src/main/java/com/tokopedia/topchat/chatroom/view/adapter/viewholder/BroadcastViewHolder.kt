@@ -29,14 +29,14 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopC
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
-import com.tokopedia.topchat.chatroom.view.custom.BroadcastCampaignLabelView
+import com.tokopedia.topchat.chatroom.view.custom.broadcast.TopChatRoomBroadcastCountdownView
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatRoomFlexBoxLayout
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingRecyclerView
 import com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
-import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
@@ -47,7 +47,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class BroadcastViewHolder constructor(
     itemView: View?,
     private val imageAnnouncementListener: ImageAnnouncementListener,
-    private val voucherListener: TopChatVoucherListener,
+    private val voucherListener: TopChatRoomVoucherListener,
     private val productListener: TopchatProductAttachmentListener,
     private val productCarouselListener: ProductCarouselListAttachmentViewHolder.Listener,
     private val deferredAttachment: DeferredViewHolderAttachment,
@@ -63,7 +63,7 @@ class BroadcastViewHolder constructor(
         R.id.bubble_broadcast_container
     )
     private val bannerView: ImageView? = itemView?.findViewById(R.id.iv_banner)
-    private val broadcastLabel: BroadcastCampaignLabelView? = itemView?.findViewById(
+    private val broadcastLabel: TopChatRoomBroadcastCountdownView? = itemView?.findViewById(
         R.id.broadcast_campaign_label
     )
     private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(
@@ -237,7 +237,7 @@ class BroadcastViewHolder constructor(
                 voucherListener,
                 TopChatVoucherViewHolderBinder.SOURCE_BROADCAST
             )
-            voucherListener.onVoucherSeen(voucher, TopChatVoucherViewHolderBinder.SOURCE_BROADCAST)
+            voucherListener.onImpressionVoucher(voucher, TopChatVoucherViewHolderBinder.SOURCE_BROADCAST)
         } else {
             voucherView?.gone()
         }
@@ -360,7 +360,7 @@ class BroadcastViewHolder constructor(
                 paddingOpposite,
                 paddingOpposite
             )
-            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_receiver)
+            broadcastContainer?.setBackgroundResource(R.drawable.topchat_chatroom_broadcast_background_receiver)
         } else {
             broadcastContainer?.setPadding(
                 paddingSender,
@@ -368,7 +368,7 @@ class BroadcastViewHolder constructor(
                 paddingSender,
                 paddingSender
             )
-            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_sender)
+            broadcastContainer?.setBackgroundResource(R.drawable.topchat_chatroom_broadcast_background_sender)
         }
     }
 

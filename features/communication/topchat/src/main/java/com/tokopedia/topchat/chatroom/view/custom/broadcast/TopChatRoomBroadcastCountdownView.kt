@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom
+package com.tokopedia.topchat.chatroom.view.custom.broadcast
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,8 +14,9 @@ import com.tokopedia.topchat.R
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class BroadcastCampaignLabelView : LinearLayout {
+class TopChatRoomBroadcastCountdownView : LinearLayout {
 
     private var desc: Typography? = null
     private var countdown: TimerUnifySingle? = null
@@ -47,10 +48,10 @@ class BroadcastCampaignLabelView : LinearLayout {
     }
 
     private fun initViewBinding() {
-        desc = findViewById(R.id.tp_broadcast_campaign_status)
-        countdown = findViewById(R.id.tu_bc_countdown)
-        startDateIcon = findViewById(R.id.iu_broadcast_start_date)
-        startDateText = findViewById(R.id.tp_broadcast_start_date)
+        desc = findViewById(R.id.topchat_chatroom_broadcast_tv_countdown)
+        countdown = findViewById(R.id.topchat_chatroom_broadcasst_timer_countdown)
+        startDateIcon = findViewById(R.id.topchat_chatroom_broadcast_icon_start_date_countdown)
+        startDateText = findViewById(R.id.topchat_chatroom_broadcast_tv_start_date_countdown)
     }
 
     fun renderState(banner: ImageAnnouncementUiModel) {
@@ -92,8 +93,8 @@ class BroadcastCampaignLabelView : LinearLayout {
 
     private fun bindDescColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when (banner.statusCampaign) {
-            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN0
+            CampaignStatus.ENDED -> unifyprinciplesR.color.Unify_NN950_96
+            else -> unifyprinciplesR.color.Unify_NN0
         }
         val color = MethodChecker.getColor(context, colorRes)
         desc?.setTextColor(color)
@@ -101,9 +102,9 @@ class BroadcastCampaignLabelView : LinearLayout {
 
     private fun bindLabelBackgroundColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when {
-            banner.hasEndedCampaign() -> com.tokopedia.unifyprinciples.R.color.Unify_TN100
+            banner.hasEndedCampaign() -> unifyprinciplesR.color.Unify_TN100
             banner.isHideBanner -> R.drawable.bg_chat_broadcast_campaign_label_without_banner
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
+            else -> unifyprinciplesR.color.Unify_RN500
         }
         setBackgroundResource(colorRes)
     }
@@ -144,6 +145,6 @@ class BroadcastCampaignLabelView : LinearLayout {
     }
 
     companion object {
-        val LAYOUT = R.layout.partial_chat_broadcast_campaign_label
+        val LAYOUT = R.layout.topchat_chatroom_broadcast_countdown
     }
 }

@@ -181,7 +181,7 @@ import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
 import com.tokopedia.topchat.chatroom.view.listener.StoriesWidgetListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
-import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
@@ -196,7 +196,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoRepl
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -244,7 +244,7 @@ open class TopChatRoomFragment :
     ChatTemplateListener,
     HeaderMenuListener,
     DualAnnouncementListener,
-    TopChatVoucherListener,
+    TopChatRoomVoucherListener,
     InvoiceThumbnailListener,
     TransactionOrderProgressLayout.Listener,
     ChatMenuStickerView.StickerMenuListener,
@@ -2099,20 +2099,20 @@ open class TopChatRoomFragment :
         }
     }
 
-    override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
+    override fun onClickVoucher(data: TopChatRoomVoucherUiModel, source: String) {
         if (isFromBubble) {
             TopChatAnalyticsKt.clickVoucherFromBubble(session.shopId, data.voucher.voucherId)
         } else {
             TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
         }
         if (data.isLockToProduct()) {
-            goToMvcPage(data.applink)
+            goToMvcPage(data.appLink)
         } else {
             goToMerchantVoucherDetail(data)
         }
     }
 
-    override fun onVoucherSeen(data: TopChatVoucherUiModel, source: String) {
+    override fun onImpressionVoucher(data: TopChatRoomVoucherUiModel, source: String) {
         if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
             TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
         }
@@ -2138,7 +2138,7 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun goToMerchantVoucherDetail(data: TopChatVoucherUiModel) {
+    private fun goToMerchantVoucherDetail(data: TopChatRoomVoucherUiModel) {
         activity?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(
                 it,

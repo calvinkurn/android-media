@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder
+package com.tokopedia.topchat.chatroom.view.adapter.viewholder.voucher
 
 import android.view.Gravity
 import android.view.View
@@ -10,24 +10,25 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
-import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewHolder constructor(
+class TopChatOldVoucherViewHolder constructor(
         itemView: View,
-        private var voucherListener: TopChatVoucherListener
-) : BaseChatViewHolder<TopChatVoucherUiModel>(itemView) {
+        private var voucherListener: TopChatRoomVoucherListener
+) : BaseChatViewHolder<TopChatRoomVoucherUiModel>(itemView) {
 
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
     private var voucherContainer: LinearLayout? = itemView.findViewById(R.id.topchat_voucher_container)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             merchantVoucherView,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+            unifyprinciplesR.color.Unify_NN0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
@@ -36,12 +37,12 @@ class TopChatVoucherViewHolder constructor(
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+            unifyprinciplesR.color.Unify_NN0,
             getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             merchantVoucherView,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN50,
+            unifyprinciplesR.color.Unify_GN50,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
@@ -50,18 +51,18 @@ class TopChatVoucherViewHolder constructor(
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN50,
+            unifyprinciplesR.color.Unify_GN50,
             getStrokeWidthSenderDimenRes()
     )
 
-    override fun bind(element: TopChatVoucherUiModel, payloads: MutableList<Any>) {
+    override fun bind(element: TopChatRoomVoucherUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads.first()) {
             Payload.REBIND -> bind(element)
         }
     }
 
-    override fun bind(element: TopChatVoucherUiModel) {
+    override fun bind(element: TopChatRoomVoucherUiModel) {
         super.bind(element)
         TopChatVoucherViewHolderBinder.bindVoucherView(element, merchantVoucherView)
         TopChatVoucherViewHolderBinder.bindClick(
@@ -72,10 +73,10 @@ class TopChatVoucherViewHolder constructor(
         )
         bindChatBubbleAlignment(element)
         bindBackground(element)
-        voucherListener.onVoucherSeen(element, TopChatVoucherViewHolderBinder.SOURCE_MANUAL_ATTACHMENT)
+        voucherListener.onImpressionVoucher(element, TopChatVoucherViewHolderBinder.SOURCE_MANUAL_ATTACHMENT)
     }
 
-    private fun bindBackground(element: TopChatVoucherUiModel) {
+    private fun bindBackground(element: TopChatRoomVoucherUiModel) {
         if (element.isSender) {
             merchantVoucherView?.background = bgSender
         } else {
@@ -83,7 +84,7 @@ class TopChatVoucherViewHolder constructor(
         }
     }
 
-    private fun bindChatBubbleAlignment(element: TopChatVoucherUiModel) {
+    private fun bindChatBubbleAlignment(element: TopChatRoomVoucherUiModel) {
         if (element.isSender) {
             setChatRight(element)
         } else {
@@ -95,12 +96,12 @@ class TopChatVoucherViewHolder constructor(
         voucherContainer?.gravity = Gravity.START
     }
 
-    private fun setChatRight(element: TopChatVoucherUiModel) {
+    private fun setChatRight(element: TopChatRoomVoucherUiModel) {
         voucherContainer?.gravity = Gravity.END
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.voucher_item_topchat
+        val LAYOUT = R.layout.topchat_chatroom_old_voucher_item
     }
 }

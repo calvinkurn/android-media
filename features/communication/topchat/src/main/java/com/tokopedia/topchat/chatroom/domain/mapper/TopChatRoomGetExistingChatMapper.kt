@@ -23,15 +23,8 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.domain.pojo.roommetadata.User
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherAmount
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherBanner
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherStatus
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherType
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
-import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.voucher.TopChatRoomVoucherWrapperDto
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationWrapperPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
@@ -46,7 +39,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -289,38 +282,15 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
-        val pojo = gson.fromJson<TopChatVoucherPojo>(
+        val wrapperDto = gson.fromJson(
             item.attachment.attributes,
-            TopChatVoucherPojo::class.java
+            TopChatRoomVoucherWrapperDto::class.java
         )
-        val voucher = pojo.voucher
-        var voucherType = MerchantVoucherType(voucher.voucherType, "")
-        var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
-        var voucherOwner = MerchantVoucherOwner(
-            identifier = voucher.identifier,
-            ownerId = voucher.ownerId.toIntOrZero()
-        )
-        var voucherBanner = MerchantVoucherBanner(mobileUrl = voucher.mobileUrl)
-        var voucherModel = MerchantVoucherModel(
-            voucherId = voucher.voucherId.toIntOrZero(),
-            voucherName = voucher.voucherName,
-            voucherCode = voucher.voucherCode,
-            merchantVoucherType = voucherType,
-            merchantVoucherAmount = voucherAmount,
-            minimumSpend = voucher.minimumSpend.toIntOrZero(),
-            merchantVoucherOwner = voucherOwner,
-            validThru = voucher.validThru.toString(),
-            tnc = voucher.tnc,
-            merchantVoucherBanner = voucherBanner,
-            merchantVoucherStatus = MerchantVoucherStatus()
-        )
-
-        return TopChatVoucherUiModel.Builder()
+        return TopChatRoomVoucherUiModel.Builder()
             .withResponseFromGQL(item)
-            .withVoucherModel(voucherModel)
-            .withIsPublic(voucher.isPublic)
-            .withIsLockToProduct(voucher.isLockToProduct ?: 0)
-            .withApplink(voucher.applink ?: "")
+            .withVoucherData(wrapperDto.voucher)
+            .withVoucherUi(wrapperDto.voucher)
+            .withAppLink(wrapperDto.voucher.appLink.orEmpty())
             .build()
     }
 

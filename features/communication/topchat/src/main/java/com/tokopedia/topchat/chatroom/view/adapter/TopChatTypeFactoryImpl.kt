@@ -34,17 +34,18 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ordercancellation.
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.voucher.TopChatOldVoucherViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
-import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
 open class TopChatTypeFactoryImpl constructor(
@@ -53,7 +54,7 @@ open class TopChatTypeFactoryImpl constructor(
     private val imageUploadListener: ImageUploadListener,
     private val productAttachmentListener: TopchatProductAttachmentListener,
     private val imageDualAnnouncementListener: DualAnnouncementListener,
-    private val voucherListener: TopChatVoucherListener,
+    private val voucherListener: TopChatRoomVoucherListener,
     private val invoiceThumbnailListener: InvoiceThumbnailListener,
     private val deferredAttachment: DeferredViewHolderAttachment,
     private val commonListener: CommonViewHolderListener,
@@ -102,8 +103,8 @@ open class TopChatTypeFactoryImpl constructor(
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(voucherViewModel: TopChatVoucherUiModel): Int {
-        return TopChatVoucherViewHolder.LAYOUT
+    override fun type(voucherViewModel: TopChatRoomVoucherUiModel): Int {
+        return TopChatOldVoucherViewHolder.LAYOUT
     }
 
     override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
@@ -351,7 +352,7 @@ open class TopChatTypeFactoryImpl constructor(
                 parent,
                 imageDualAnnouncementListener
             )
-            TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
+            TopChatOldVoucherViewHolder.LAYOUT -> TopChatOldVoucherViewHolder(parent, voucherListener)
             AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(
                 parent,
                 invoiceThumbnailListener,

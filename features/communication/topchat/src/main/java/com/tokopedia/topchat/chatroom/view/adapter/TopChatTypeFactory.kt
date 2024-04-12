@@ -15,13 +15,13 @@ import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProd
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
 
 interface TopChatTypeFactory {
 
     fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int
 
-    fun type(voucherViewModel: TopChatVoucherUiModel): Int
+    fun type(voucherViewModel: TopChatRoomVoucherUiModel): Int
 
     fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int
 
