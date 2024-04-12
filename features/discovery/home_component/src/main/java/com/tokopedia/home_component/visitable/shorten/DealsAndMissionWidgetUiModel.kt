@@ -10,9 +10,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class DealsAndMissionWidgetUiModel(
     val id: String = "",
-    val name: String = "",
-    val header: ChannelHeader = ChannelHeader(),
-    val config: ChannelConfig = ChannelConfig(),
     val showShimmering: Boolean = true,
     val deals: DealsWidgetUiModel,
     val mission: MissionWidgetUiModel,
@@ -21,18 +18,13 @@ data class DealsAndMissionWidgetUiModel(
     ImpressHolder(),
     LoadableComponent by BlocksLoadableComponent(
         { status != Status.Loading },
-        "DealsAndMissionWidgetUiModel"
+        BLOCK_NAME
     ) {
 
     override fun visitableId() = id
-
     override fun equalsWith(b: Any?) = b == this
-
     override fun getChangePayloadFrom(b: Any?) = null
-
-    override fun type(typeFactory: HomeComponentTypeFactory): Int {
-        return typeFactory.type(this)
-    }
+    override fun type(typeFactory: HomeComponentTypeFactory) = typeFactory.type(this)
 
     sealed class Status {
         object Loading : Status()
@@ -43,5 +35,9 @@ data class DealsAndMissionWidgetUiModel(
     sealed class Type(val value: Int) {
         object Deals : Type(1)
         object Mission : Type(2)
+    }
+
+    companion object {
+        private const val BLOCK_NAME = "DealsAndMissionWidgetUiModel"
     }
 }
