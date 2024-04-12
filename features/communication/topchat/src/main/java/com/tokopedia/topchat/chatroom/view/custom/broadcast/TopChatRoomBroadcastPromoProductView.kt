@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -83,7 +84,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         bindSyncProduct(product)
         binding.topchatChatroomBroadcastPromoLoaderSingleProduct.showWithCondition(product.isLoading)
         binding.topchatChatroomBroadcastPromoSingleProduct.show()
-        binding.topchatChatroomBroadcastPromoSingleProduct.setProductModel(
+        binding.topchatChatroomBroadcastPromoSingleProduct.bind(
             TopChatRoomProductCardMapper.mapToProductCard(product)
         )
         binding.topchatChatroomBroadcastPromoSingleProduct.addOnImpressionListener(
@@ -155,6 +156,6 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
     }
 
     fun cleanUp() {
-        binding.topchatChatroomBroadcastPromoSingleProduct.recycle()
+        binding.topchatChatroomBroadcastPromoSingleProduct.cleanUp()
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_BLOCK
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_OVERLAY
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.topchat.common.Constant.BACKGROUND_COLOR_LABEL
@@ -15,6 +16,7 @@ import com.tokopedia.topchat.common.Constant.EMPTY_STOCK
 import com.tokopedia.topchat.common.Constant.PREORDER
 import com.tokopedia.topchat.common.Constant.STATUS
 import com.tokopedia.topchat.common.Constant.TEXT_COLOR_LABEL
+import com.tokopedia.topchat.common.Constant.TEXT_COLOR_SOLD
 
 object TopChatRoomProductCardMapper {
 
@@ -29,7 +31,7 @@ object TopChatRoomProductCardMapper {
             slashedPrice = productAttachment.priceBefore,
             discountPercentage = productAttachment.dropPercentage.toIntOrZero(),
             labelGroupList = getProductCardLabelList(productAttachment),
-            rating = productAttachment.rating.score.toString(),
+            rating = if (productAttachment.rating.score > 0) productAttachment.rating.score.toString() else "",
             shopBadge = ProductCardModel.ShopBadge(),
             hasAddToCart = false,
             videoUrl = "",
@@ -97,6 +99,15 @@ object TopChatRoomProductCardMapper {
                             value = TEXT_COLOR_LABEL
                         )
                     )
+                )
+            )
+        }
+        if (productAttachment.rating.count > 0) {
+            labelGroupList.add(
+                ProductCardModel.LabelGroup(
+                    position = LABEL_REIMAGINE_CREDIBILITY,
+                    title = "${productAttachment.rating.count} terjual",
+                    type = TEXT_COLOR_SOLD
                 )
             )
         }
