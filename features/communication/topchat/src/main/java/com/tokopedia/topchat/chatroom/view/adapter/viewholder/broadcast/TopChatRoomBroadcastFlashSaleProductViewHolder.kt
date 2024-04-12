@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomProductCardMapper
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastFlashsaleProductItemBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TopChatRoomBroadcastFlashSaleProductViewHolder(
     itemView: View,
@@ -51,7 +51,7 @@ class TopChatRoomBroadcastFlashSaleProductViewHolder(
                     campaignCountDown = banner.getCampaignCountDownString(),
                     productId = uiModel.productId,
                     position = layoutPosition,
-                    totalProduct = broadcastUiModel.productCarousel?.products?.size.orZero()
+                    totalProduct = getTotalProduct()
                 )
             }
         }
@@ -67,12 +67,22 @@ class TopChatRoomBroadcastFlashSaleProductViewHolder(
                     campaignCountDown = banner.getCampaignCountDownString(),
                     productId = uiModel?.productId.orEmpty(),
                     position = layoutPosition,
-                    totalProduct = broadcastUiModel.productCarousel?.products?.size.orZero(),
+                    totalProduct = getTotalProduct(),
                     androidUrl = uiModel?.androidUrl.orEmpty(),
                     productUrl = uiModel?.productUrl.orEmpty()
                 )
             }
         }
+    }
+
+    private fun getTotalProduct(): Int {
+        var totalProduct = broadcastUiModel.productCarousel?.products?.size.orZero()
+        broadcastUiModel.productCarousel?.products?.find {
+            it is ProductAttachmentUiModel && it.isProductDummySeeMore()
+        }.let {
+            totalProduct--
+        }
+        return totalProduct
     }
 
     override fun onViewRecycled() {

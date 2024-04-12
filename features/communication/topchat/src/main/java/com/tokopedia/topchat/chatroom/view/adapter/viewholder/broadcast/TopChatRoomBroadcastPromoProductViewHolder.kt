@@ -54,7 +54,7 @@ class TopChatRoomBroadcastPromoProductViewHolder(
                     campaignCountDown = banner.getCampaignCountDownString(),
                     productId = uiModel.productId,
                     position = layoutPosition,
-                    totalProduct = broadcastUiModel.productCarousel?.products?.size.orZero()
+                    totalProduct = getTotalProduct()
                 )
             }
         }
@@ -70,12 +70,22 @@ class TopChatRoomBroadcastPromoProductViewHolder(
                     campaignCountDown = banner.getCampaignCountDownString(),
                     productId = uiModel?.productId.orEmpty(),
                     position = layoutPosition,
-                    totalProduct = broadcastUiModel.productCarousel?.products?.size.orZero(),
+                    totalProduct = getTotalProduct(),
                     androidUrl = uiModel?.androidUrl.orEmpty(),
                     productUrl = uiModel?.productUrl.orEmpty()
                 )
             }
         }
+    }
+
+    private fun getTotalProduct(): Int {
+        var totalProduct = broadcastUiModel.productCarousel?.products?.size.orZero()
+        broadcastUiModel.productCarousel?.products?.find {
+            it is ProductAttachmentUiModel && it.isProductDummySeeMore()
+        }.let {
+            totalProduct--
+        }
+        return totalProduct
     }
 
     companion object {
