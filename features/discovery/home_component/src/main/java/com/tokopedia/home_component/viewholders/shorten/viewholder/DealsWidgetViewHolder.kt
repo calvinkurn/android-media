@@ -31,6 +31,7 @@ class DealsWidgetViewHolder(
     override fun bind(element: DealsWidgetUiModel?) {
         if (element == null) return
 
+        binding?.txtHeader?.text = element.header.name
         mAdapter?.submitList(element.data)
     }
 

@@ -21,7 +21,7 @@ class ItemMissionWidgetViewHolder(
         binding?.card?.setData(SmallProductModel(
             bannerImageUrl = "",
             title = Pair(element.title, SmallProductModel.TextStyle()),
-            subtitle = Pair("Deals #${bindingAdapterPosition}", SmallProductModel.TextStyle()),
+            subtitle = Pair("Mission #${bindingAdapterPosition}", SmallProductModel.TextStyle()),
         ))
     }
 

@@ -31,11 +31,12 @@ class MissionWidgetViewHolder(
     override fun bind(element: MissionWidgetUiModel?) {
         if (element == null) return
 
+        binding?.txtHeader?.text = element.header.name
         mAdapter?.submitList(element.data)
     }
 
     private fun setupRecyclerView() {
-        mAdapter = PartialItemWidgetAdapter(DealsAndMissionWidgetUiModel.Type.Deals)
+        mAdapter = PartialItemWidgetAdapter(DealsAndMissionWidgetUiModel.Type.Mission)
         binding?.lstCard?.layoutManager = GridLayoutManager(itemView.context, 2)
         binding?.lstCard?.adapter = mAdapter
     }
