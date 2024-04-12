@@ -8,8 +8,11 @@ import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastBannerListener
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastBaseBinding
@@ -21,6 +24,8 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var binding: TopchatChatroomBroadcastBaseBinding
+    private val paddingWithBanner = 1f.toPx()
+    private val paddingWithoutBanner = 6f.toPx()
 
     init {
         binding = TopchatChatroomBroadcastBaseBinding.inflate(
@@ -30,10 +35,15 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
     }
 
     private var bannerListener: TopChatRoomBroadcastBannerListener? = null
+    private var deferredAttachment: DeferredViewHolderAttachment? = null
     private var uiModel: TopChatRoomBroadcastUiModel? = null
 
-    fun setListener(bannerListener: TopChatRoomBroadcastBannerListener) {
+    fun setListener(
+        bannerListener: TopChatRoomBroadcastBannerListener,
+        deferredAttachment: DeferredViewHolderAttachment
+    ) {
         this.bannerListener = bannerListener
+        this.deferredAttachment = deferredAttachment
         setBannerListener()
     }
 
@@ -46,7 +56,8 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
 
     private fun bindBannerAttachment(uiModel: TopChatRoomBroadcastUiModel) {
         val bannerAttachment = uiModel.banner
-        if (bannerAttachment != null) {
+        if (bannerAttachment != null && !bannerAttachment.isHideBanner) {
+            bindSyncBanner(bannerAttachment)
             binding.topchatChatroomBroadcastIvBanner.show()
             binding.topchatChatroomBroadcastIvBanner.loadImageWithoutPlaceholder(bannerAttachment.imageUrl)
             binding.topchatChatroomBroadcastIvBanner.addOnImpressionListener(
@@ -56,6 +67,19 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
             }
         } else {
             binding.topchatChatroomBroadcastIvBanner.hide()
+        }
+    }
+
+    private fun bindSyncBanner(banner: ImageAnnouncementUiModel) {
+        if (!banner.isLoading) return
+        deferredAttachment?.let {
+            val chatAttachments = deferredAttachment?.getLoadedChatAttachments()
+            val attachment = chatAttachments?.get(banner.attachmentId) ?: return
+            if (attachment is ErrorAttachment) {
+                banner.syncError()
+            } else {
+                banner.updateData(attachment.parsedAttributes)
+            }
         }
     }
 

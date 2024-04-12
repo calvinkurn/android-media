@@ -266,6 +266,7 @@ open class TopChatRoomTypeFactoryImpl constructor(
             )
             TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT -> TopChatRoomBroadcastFlashSaleViewHolder(
                 parent,
+                deferredAttachment,
                 bannerBroadcastListener,
                 productBroadcastListener,
                 voucherListener
