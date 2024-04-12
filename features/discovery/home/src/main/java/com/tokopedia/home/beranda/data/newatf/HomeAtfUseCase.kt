@@ -163,11 +163,11 @@ class HomeAtfUseCase @Inject constructor(
             AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> launch { homepageBannerRepository.getData(metadata) }
             AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> launch { dynamicIconRepository.getData(metadata) }
             AtfKey.TYPE_TICKER -> launch { tickerRepository.getData(metadata) }
-            AtfKey.TYPE_CHANNEL -> launch { atfChannelRepository.getData(metadata) }
+            AtfKey.TYPE_CHANNEL,
+            AtfKey.TYPE_HORIZONTAL -> launch { atfChannelRepository.getData(metadata) }
             AtfKey.TYPE_MISSION,
             AtfKey.TYPE_MISSION_V2,
             AtfKey.TYPE_MISSION_V3 -> launch { missionWidgetRepository.getData(metadata) }
-            AtfKey.TYPE_HORIZONTAL -> launch { atfChannelRepository.getData(metadata) }
             AtfKey.TYPE_TODO -> launch { todoWidgetRepository.getData(metadata) }
         }
     }

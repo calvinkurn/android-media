@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelMapper
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper
 import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
+import com.tokopedia.home.beranda.data.newatf.shorten.ShortenWidgetMapper
 import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TargetedTickerMapper
 import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TickerMapper
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetMapper
@@ -93,6 +94,7 @@ class AtfMapper @Inject constructor(
             AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> content?.getAtfContent<BannerDataModel>()
             AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> content?.getAtfContent<DynamicHomeIcon>()
             AtfKey.TYPE_TICKER -> content?.getAtfContent<GetTargetedTicker>() ?: content?.getAtfContent<Ticker>()
+            AtfKey.TYPE_HORIZONTAL,
             AtfKey.TYPE_CHANNEL -> content?.getAtfContent<DynamicHomeChannel>()
             AtfKey.TYPE_MISSION,
             AtfKey.TYPE_MISSION_V2,
@@ -118,7 +120,12 @@ class AtfMapper @Inject constructor(
                     is GetTargetedTicker -> TargetedTickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
                     is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(missionWidgetMapper.asVisitable(this, index, value))
                     is HomeTodoWidgetData.GetHomeTodoWidget -> todoWidgetMapper.asVisitable(this, index, value)?.let { visitables.add(it) }
-                    is DynamicHomeChannel -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
+                    is DynamicHomeChannel -> {
+                        when (value.atfMetadata.component) {
+                            AtfKey.TYPE_CHANNEL -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
+                            AtfKey.TYPE_HORIZONTAL -> visitables.add(ShortenWidgetMapper.to2SquareUiModel(this, value))
+                        }
+                    }
                 }
             }
         }
