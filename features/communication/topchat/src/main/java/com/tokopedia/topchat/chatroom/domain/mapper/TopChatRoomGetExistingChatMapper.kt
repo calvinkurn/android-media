@@ -3,10 +3,10 @@ package com.tokopedia.topchat.chatroom.domain.mapper
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_MSG
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_ORDER_CANCELLATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_BUNDLING
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_CAROUSEL_ATTACHMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
@@ -179,7 +179,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             ) {
                 val products = mergeProduct(idx, replies, reply.isBroadCast(), attachmentIds)
                 val carouselProducts = createCarouselProduct(reply, products)
-                broadcast[TYPE_IMAGE_CAROUSEL] = carouselProducts
+                broadcast[TYPE_PRODUCT_CAROUSEL_ATTACHMENT] = carouselProducts
                 idx += products.size
             } else if (reply.isBroadCast() && reply.blastId == blastId) {
                 val messageItem = if (hasAttachment(reply)) {
