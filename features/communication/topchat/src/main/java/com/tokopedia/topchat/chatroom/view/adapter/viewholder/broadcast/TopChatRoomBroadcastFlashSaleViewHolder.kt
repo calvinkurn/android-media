@@ -31,7 +31,7 @@ class TopChatRoomBroadcastFlashSaleViewHolder(
 
     init {
         binding?.topchatChatroomBroadcastFlashsaleBase?.setListener(bannerListener, deferredAttachment)
-        binding?.topchatChatroomBroadcastFlashsaleProduct?.setListener(productListener)
+        binding?.topchatChatroomBroadcastFlashsaleProduct?.setListener(productListener, deferredAttachment)
         binding?.topchatChatroomBroadcastFlashsaleVoucher?.setListener(voucherListener)
         binding?.topchatChatroomBroadcastFlashsaleDim?.alpha = 0.5f
     }
@@ -102,6 +102,7 @@ class TopChatRoomBroadcastFlashSaleViewHolder(
     override fun onViewRecycled() {
         super.onViewRecycled()
         binding?.topchatChatroomBroadcastFlashsaleBase?.cleanUp()
+        binding?.topchatChatroomBroadcastFlashsaleProduct?.cleanUp()
         binding?.topchatChatroomBroadcastFlashsaleVoucher?.cleanUp()
         binding?.topchatChatroomBroadcastFlashsaleStatus?.cleanUp()
     }

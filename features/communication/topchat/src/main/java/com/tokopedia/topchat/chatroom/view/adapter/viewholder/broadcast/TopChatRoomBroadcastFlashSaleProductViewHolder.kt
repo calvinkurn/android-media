@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.topchat.R
@@ -32,6 +33,7 @@ class TopChatRoomBroadcastFlashSaleProductViewHolder(
     }
 
     private fun bindProduct(uiModel: ProductAttachmentUiModel) {
+        binding?.topchatChatroomBroadcastFlashsaleLoaderProductCard?.showWithCondition(uiModel.isLoading)
         binding?.topchatChatroomBroadcastFlashsaleProductCard?.setProductModel(
             TopChatRoomProductCardMapper.mapToProductCard(uiModel)
         )

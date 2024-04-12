@@ -8,8 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.reimagine.getMaxHeightForGridCarouselView
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomProductCardMapper
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
@@ -41,10 +44,15 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     }
 
     private var productListener: TopChatRoomBroadcastProductListener? = null
+    private var deferredAttachment: DeferredViewHolderAttachment? = null
     private var uiModel: TopChatRoomBroadcastUiModel? = null
 
-    fun setListener(productListener: TopChatRoomBroadcastProductListener) {
+    fun setListener(
+        productListener: TopChatRoomBroadcastProductListener,
+        deferredViewHolderAttachment: DeferredViewHolderAttachment
+    ) {
         this.productListener = productListener
+        this.deferredAttachment = deferredViewHolderAttachment
         setSingleProductListener()
     }
 
@@ -70,6 +78,7 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     }
 
     private fun bindProductCarousel(productCarousel: ProductCarouselUiModel) {
+        bindSyncProductCarousel(productCarousel)
         binding.topchatChatroomBroadcastFlashsaleRv.show()
         binding.topchatChatroomBroadcastFlashsaleRv.updateData(productCarousel.products)
         setRvHeight(productCarousel.products)
@@ -97,6 +106,8 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     }
 
     private fun bindSingleProduct(product: ProductAttachmentUiModel) {
+        bindSyncProduct(product)
+        binding.topchatChatroomBroadcastFlashsaleLoaderSingleProduct.showWithCondition(product.isLoading)
         binding.topchatChatroomBroadcastFlashsaleSingleProduct.show()
         binding.topchatChatroomBroadcastFlashsaleSingleProduct.setProductModel(
             TopChatRoomProductCardMapper.mapToProductCard(product)
@@ -105,6 +116,28 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
             product.impressHolder
         ) {
             impressTracker()
+        }
+    }
+
+    private fun bindSyncProductCarousel(productCarousel: ProductCarouselUiModel) {
+        if (!productCarousel.isLoading()) return
+        productCarousel.products.forEach {
+            if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {
+                bindSyncProduct(it)
+            }
+        }
+    }
+
+    private fun bindSyncProduct(product: ProductAttachmentUiModel) {
+        if (!product.isLoading) return
+        deferredAttachment?.let {
+            val chatAttachments = deferredAttachment?.getLoadedChatAttachments()
+            val attachment = chatAttachments?.get(product.attachmentId) ?: return
+            if (attachment is ErrorAttachment) {
+                product.syncError()
+            } else {
+                product.updateData(attachment.parsedAttributes)
+            }
         }
     }
 
@@ -139,8 +172,11 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     }
 
     private fun setProductCarouselListener() {
-        if (productListener != null && uiModel != null) {
-            binding.topchatChatroomBroadcastFlashsaleRv.setListener(productListener!!, uiModel!!)
+        val uiModel = uiModel
+        if (uiModel != null) {
+            productListener?.let {
+                binding.topchatChatroomBroadcastFlashsaleRv.setListener(it, uiModel)
+            }
         }
     }
 
