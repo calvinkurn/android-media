@@ -8,7 +8,6 @@ import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
@@ -24,8 +23,6 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var binding: TopchatChatroomBroadcastBaseBinding
-    private val paddingWithBanner = 1f.toPx()
-    private val paddingWithoutBanner = 6f.toPx()
 
     init {
         binding = TopchatChatroomBroadcastBaseBinding.inflate(

@@ -48,6 +48,7 @@ class TopChatRoomBroadcastFlashSaleViewHolder(
         if (payloads.isEmpty()) return
         if (payloads.first() == DeferredAttachment.PAYLOAD_DEFERRED) {
             bindBase(uiModel)
+            bindFlashSaleProduct(uiModel)
         }
     }
 
