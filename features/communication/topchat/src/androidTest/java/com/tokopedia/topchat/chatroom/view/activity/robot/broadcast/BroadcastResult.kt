@@ -77,7 +77,7 @@ object BroadcastResult {
         matcher: Matcher<View>
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.tp_broadcast_campaign_status, matcher)
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_tv_countdown, matcher)
         }
     }
 
@@ -86,7 +86,7 @@ object BroadcastResult {
         matcher: Matcher<View>
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.tu_bc_countdown, matcher)
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcasst_timer_countdown, matcher)
         }
     }
 
@@ -95,7 +95,7 @@ object BroadcastResult {
         matcher: Matcher<View>
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.iu_broadcast_start_date, matcher)
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_icon_start_date_countdown, matcher)
         }
     }
 
@@ -104,7 +104,7 @@ object BroadcastResult {
         matcher: Matcher<View>
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.tp_broadcast_start_date, matcher)
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_tv_start_date_countdown, matcher)
         }
     }
 
