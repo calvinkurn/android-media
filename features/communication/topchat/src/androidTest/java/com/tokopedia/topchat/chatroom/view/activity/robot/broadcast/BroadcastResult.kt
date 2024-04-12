@@ -14,8 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -25,7 +25,7 @@ object BroadcastResult {
 
     fun assertBroadcastShown() {
         onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(0, BroadCastUiModel::class.java)
+            atPositionIsInstanceOf(0, TopChatRoomBroadcastUiModel::class.java)
         )
     }
 
