@@ -24,7 +24,7 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.domain.pojo.roommetadata.User
-import com.tokopedia.topchat.chatroom.domain.TopChatRoomMessageTypeEnum
+import com.tokopedia.topchat.chatroom.domain.TopChatRoomUtils.isNewBroadcast
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationWrapperPojo
@@ -544,15 +544,5 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .withTitle(pojo.data.button.title)
             .withAppLink(pojo.data.button.appLink)
             .build()
-    }
-
-    private fun isNewBroadcast(
-        messageType: String
-    ): Boolean {
-        return when (TopChatRoomMessageTypeEnum.fromValue(messageType)) {
-            TopChatRoomMessageTypeEnum.PROMO_V2,
-            TopChatRoomMessageTypeEnum.FLASH_SALE_V2 -> true
-            else -> false
-        }
     }
 }
