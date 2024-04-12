@@ -23,8 +23,10 @@ class TopChatRoomBroadcastUiModel(
     attachmentType = reply.attachment.type.toString(),
     replyTime = reply.replyTime,
     message = reply.msg,
-    source = reply.source
-), Visitable<TopChatRoomTypeFactory> {
+    source = reply.source,
+    blastId = reply.blastId
+),
+    Visitable<TopChatRoomTypeFactory> {
 
     val banner: ImageAnnouncementUiModel? get() = items[TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementUiModel
     val singleVoucher: TopChatRoomVoucherUiModel? get() = items[TYPE_VOUCHER] as? TopChatRoomVoucherUiModel

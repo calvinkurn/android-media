@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -30,7 +29,10 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
 
     init {
         binding = TopchatChatroomBroadcastVoucherBinding.inflate(
-            LayoutInflater.from(context), this, true)
+            LayoutInflater.from(context),
+            this,
+            true
+        )
     }
 
     fun setListener(listener: TopChatRoomVoucherListener) {
@@ -40,6 +42,7 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
     }
 
     fun bind(broadcastUiModel: TopChatRoomBroadcastUiModel) {
+        this.broadcastUiModel = broadcastUiModel
         val voucherAttachment = broadcastUiModel.singleVoucher
         val voucherCarousel = broadcastUiModel.voucherCarousel
         if (voucherAttachment != null) {
@@ -53,6 +56,7 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
     }
 
     private fun bindSingleVoucher(uiModel: TopChatRoomVoucherUiModel) {
+        this.uiModel = uiModel
         val promoSimpleItem = uiModel.voucherUi
         if (promoSimpleItem != null) {
             binding.topchatBroadcastSingleVoucher.visible()
@@ -91,7 +95,6 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
             binding.topchatBroadcastRvVoucher.gone()
         }
         binding.topchatBroadcastSingleVoucher.gone()
-
     }
 
     private fun impressSingleVoucher() {
