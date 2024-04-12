@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.diffutil.TopChatRoomBroadcastFlashSaleProductCarouselItemCallback
-import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomBroadcastFlashSaleTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.diffutil.TopChatRoomBroadcastProductCarouselItemCallback
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomBroadcastTypeFactory
 
-class TopChatRoomBroadcastFlashSaleCarouselAdapter(
-    private val typeFactory: TopChatRoomBroadcastFlashSaleTypeFactory
+class TopChatRoomBroadcastProductCarouselAdapter(
+    private val typeFactory: TopChatRoomBroadcastTypeFactory
 ) : ListAdapter<Visitable<*>, AbstractViewHolder<Visitable<*>>>(
-    TopChatRoomBroadcastFlashSaleProductCarouselItemCallback()
+    TopChatRoomBroadcastProductCarouselItemCallback()
 ) {
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {

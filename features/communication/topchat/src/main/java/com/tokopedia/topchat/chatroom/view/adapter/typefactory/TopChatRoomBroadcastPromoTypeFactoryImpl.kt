@@ -5,12 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastFlashSaleProductViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastPromoProductViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastSeeMoreViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 
-class TopChatRoomBroadcastFlashSaleTypeFactoryImpl(
+class TopChatRoomBroadcastPromoTypeFactoryImpl(
     private val broadcastUiModel: TopChatRoomBroadcastUiModel,
     private val productListener: TopChatRoomBroadcastProductListener
 ) : TopChatRoomBroadcastTypeFactory {
@@ -23,7 +23,7 @@ class TopChatRoomBroadcastFlashSaleTypeFactoryImpl(
                 if (visitable.isProductDummySeeMore()) {
                     TopChatRoomBroadcastSeeMoreViewHolder.LAYOUT
                 } else {
-                    TopChatRoomBroadcastFlashSaleProductViewHolder.LAYOUT
+                    TopChatRoomBroadcastPromoProductViewHolder.LAYOUT
                 }
             }
             else -> {
@@ -37,7 +37,7 @@ class TopChatRoomBroadcastFlashSaleTypeFactoryImpl(
         type: Int
     ): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            TopChatRoomBroadcastFlashSaleProductViewHolder.LAYOUT -> TopChatRoomBroadcastFlashSaleProductViewHolder(
+            TopChatRoomBroadcastPromoProductViewHolder.LAYOUT -> TopChatRoomBroadcastPromoProductViewHolder(
                 itemView = view,
                 broadcastUiModel = broadcastUiModel,
                 productListener = productListener

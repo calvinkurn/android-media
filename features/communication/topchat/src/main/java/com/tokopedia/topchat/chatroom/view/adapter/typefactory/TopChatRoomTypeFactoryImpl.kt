@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastFlashSaleViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastPromoViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -159,14 +160,13 @@ open class TopChatRoomTypeFactoryImpl constructor(
     override fun type(broadCastUiModel: TopChatRoomBroadcastUiModel): Int {
         return when (TopChatRoomMessageTypeEnum.fromValue(broadCastUiModel.messageType)) {
             TopChatRoomMessageTypeEnum.PROMO_V2 -> {
-                0
+                TopChatRoomBroadcastPromoViewHolder.LAYOUT
             }
             TopChatRoomMessageTypeEnum.FLASH_SALE_V2 -> {
                 TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT
             }
             else -> {
-//                BroadcastViewHolder.LAYOUT
-                TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT
+                BroadcastViewHolder.LAYOUT
             }
         }
     }
@@ -265,6 +265,13 @@ open class TopChatRoomTypeFactoryImpl constructor(
                 productBundlingListener, productBundlingCarouselListener
             )
             TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT -> TopChatRoomBroadcastFlashSaleViewHolder(
+                parent,
+                deferredAttachment,
+                bannerBroadcastListener,
+                productBroadcastListener,
+                voucherListener
+            )
+            TopChatRoomBroadcastPromoViewHolder.LAYOUT -> TopChatRoomBroadcastPromoViewHolder(
                 parent,
                 deferredAttachment,
                 bannerBroadcastListener,

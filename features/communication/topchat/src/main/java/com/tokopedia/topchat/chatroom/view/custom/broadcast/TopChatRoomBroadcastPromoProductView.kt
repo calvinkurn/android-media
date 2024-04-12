@@ -4,27 +4,23 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.productcard.reimagine.getMaxHeightForGridCarouselView
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomProductCardMapper
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
-import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastFlashsaleProductBinding
+import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastPromoProductBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
+class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -34,10 +30,10 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.Main
 
-    private var binding: TopchatChatroomBroadcastFlashsaleProductBinding
+    private var binding: TopchatChatroomBroadcastPromoProductBinding
 
     init {
-        binding = TopchatChatroomBroadcastFlashsaleProductBinding.inflate(
+        binding = TopchatChatroomBroadcastPromoProductBinding.inflate(
             LayoutInflater.from(context),
             this
         )
@@ -65,54 +61,32 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
         val carouselProduct = uiModel.productCarousel
         val singleProduct = uiModel.singleProduct
         if (carouselProduct != null && carouselProduct.products.isNotEmpty()) {
-            binding.topchatChatroomBroadcastFlashsaleSingleProduct.hide()
+            binding.topchatChatroomBroadcastPromoSingleProduct.hide()
             setProductCarouselListener()
             bindProductCarousel(carouselProduct)
         } else if (singleProduct != null) {
-            binding.topchatChatroomBroadcastFlashsaleRv.hide()
+            binding.topchatChatroomBroadcastPromoRv.hide()
             bindSingleProduct(singleProduct)
         } else {
-            binding.topchatChatroomBroadcastFlashsaleSingleProduct.hide()
-            binding.topchatChatroomBroadcastFlashsaleRv.hide()
+            binding.topchatChatroomBroadcastPromoSingleProduct.hide()
+            binding.topchatChatroomBroadcastPromoRv.hide()
         }
     }
 
     private fun bindProductCarousel(productCarousel: ProductCarouselUiModel) {
         bindSyncProductCarousel(productCarousel)
-        binding.topchatChatroomBroadcastFlashsaleRv.show()
-        binding.topchatChatroomBroadcastFlashsaleRv.updateData(productCarousel.products)
-        setRvHeight(productCarousel.products)
-    }
-
-    private fun setRvHeight(productList: List<Visitable<*>>) {
-        launch {
-            val listProductCard = productList.mapNotNull {
-                if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {
-                    TopChatRoomProductCardMapper.mapToProductCard(it)
-                } else {
-                    null
-                }
-            }
-            try {
-                context?.let {
-                    val layoutParams = binding.topchatChatroomBroadcastFlashsaleRv.layoutParams
-                    layoutParams.height = listProductCard.getMaxHeightForGridCarouselView(context)
-                    binding.topchatChatroomBroadcastFlashsaleRv.layoutParams = layoutParams
-                }
-            } catch (throwable: Throwable) {
-                Timber.d(throwable)
-            }
-        }
+        binding.topchatChatroomBroadcastPromoRv.show()
+        binding.topchatChatroomBroadcastPromoRv.updateData(productCarousel.products)
     }
 
     private fun bindSingleProduct(product: ProductAttachmentUiModel) {
         bindSyncProduct(product)
-        binding.topchatChatroomBroadcastFlashsaleLoaderSingleProduct.showWithCondition(product.isLoading)
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.show()
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.setProductModel(
+        binding.topchatChatroomBroadcastPromoLoaderSingleProduct.showWithCondition(product.isLoading)
+        binding.topchatChatroomBroadcastPromoSingleProduct.show()
+        binding.topchatChatroomBroadcastPromoSingleProduct.setProductModel(
             TopChatRoomProductCardMapper.mapToProductCard(product)
         )
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.addOnImpressionListener(
+        binding.topchatChatroomBroadcastPromoSingleProduct.addOnImpressionListener(
             product.impressHolder
         ) {
             impressTracker()
@@ -155,7 +129,7 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     }
 
     private fun setSingleProductListener() {
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.setOnClickListener {
+        binding.topchatChatroomBroadcastPromoSingleProduct.setOnClickListener {
             val singleProduct = uiModel?.singleProduct
             val banner = uiModel?.banner
             if (singleProduct != null && banner != null) {
@@ -175,12 +149,12 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
         val uiModel = uiModel
         if (uiModel != null) {
             productListener?.let {
-                binding.topchatChatroomBroadcastFlashsaleRv.setListener(it, uiModel)
+                binding.topchatChatroomBroadcastPromoRv.setListener(it, uiModel)
             }
         }
     }
 
     fun cleanUp() {
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.recycle()
+        binding.topchatChatroomBroadcastPromoSingleProduct.recycle()
     }
 }

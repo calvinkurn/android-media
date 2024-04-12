@@ -103,7 +103,7 @@ object TopChatRoomProductCardMapper {
         return labelGroupList
     }
 
-    fun mapToProductCardCompactCarousel(
+    fun mapToProductCardCompact(
         productAttachment: ProductAttachmentUiModel
     ): ProductCardCompactUiModel {
         return ProductCardCompactUiModel(

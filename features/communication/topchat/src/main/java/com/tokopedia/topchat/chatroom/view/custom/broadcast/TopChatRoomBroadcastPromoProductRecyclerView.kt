@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomBroadcastProductCarouselAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.TopChatRoomHorizontalSpacingItemDecoration
-import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomBroadcastFlashSaleTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomBroadcastPromoTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 
-class TopChatRoomBroadcastFlashSaleProductRecyclerView @JvmOverloads constructor(
+class TopChatRoomBroadcastPromoProductRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -22,7 +22,7 @@ class TopChatRoomBroadcastFlashSaleProductRecyclerView @JvmOverloads constructor
     private val horizontalSpacingItemDecoration = TopChatRoomHorizontalSpacingItemDecoration(
         4.dpToPx(context.resources.displayMetrics)
     )
-    private var flashSaleProductAdapter: TopChatRoomBroadcastProductCarouselAdapter? = null
+    private var promoProductAdapter: TopChatRoomBroadcastProductCarouselAdapter? = null
 
     init {
         setHasFixedSize(true)
@@ -33,16 +33,16 @@ class TopChatRoomBroadcastFlashSaleProductRecyclerView @JvmOverloads constructor
     }
 
     fun updateData(newList: List<Visitable<*>>) {
-        flashSaleProductAdapter?.updateData(newList)
+        promoProductAdapter?.updateData(newList)
     }
 
     fun setListener(
         productListener: TopChatRoomBroadcastProductListener,
         broadcastUiModel: TopChatRoomBroadcastUiModel
     ) {
-        flashSaleProductAdapter = TopChatRoomBroadcastProductCarouselAdapter(
-            TopChatRoomBroadcastFlashSaleTypeFactoryImpl(broadcastUiModel, productListener)
+        promoProductAdapter = TopChatRoomBroadcastProductCarouselAdapter(
+            TopChatRoomBroadcastPromoTypeFactoryImpl(broadcastUiModel, productListener)
         )
-        adapter = flashSaleProductAdapter
+        adapter = promoProductAdapter
     }
 }

@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
-interface TopChatRoomBroadcastFlashSaleTypeFactory {
+interface TopChatRoomBroadcastTypeFactory {
 
     fun type(visitable: Visitable<*>): Int
 
