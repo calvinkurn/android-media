@@ -19,7 +19,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.voucher.TopChatRoomVoucherWrapperDto
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.websocket.WebSocketResponse

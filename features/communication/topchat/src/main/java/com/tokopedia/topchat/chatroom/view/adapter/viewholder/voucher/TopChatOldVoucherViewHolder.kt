@@ -11,7 +11,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 

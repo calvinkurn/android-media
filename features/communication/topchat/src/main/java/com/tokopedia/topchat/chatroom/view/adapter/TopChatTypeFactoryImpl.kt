@@ -15,11 +15,15 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHo
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.topchat.chatroom.domain.TopChatRoomMessageTypeEnum
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastFlashSaleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -45,7 +49,8 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
 open class TopChatTypeFactoryImpl constructor(
@@ -107,6 +112,10 @@ open class TopChatTypeFactoryImpl constructor(
         return TopChatOldVoucherViewHolder.LAYOUT
     }
 
+    override fun type(voucherCarouselUiModel: TopChatRoomVoucherCarouselUiModel): Int {
+        return 0 // No implementation yet
+    }
+
     override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
         return AttachedInvoiceViewHolder.LAYOUT
     }
@@ -143,8 +152,18 @@ open class TopChatTypeFactoryImpl constructor(
         return BroadcastSpamHandlerViewHolder.LAYOUT
     }
 
-    override fun type(broadCastUiModel: BroadCastUiModel): Int {
-        return BroadcastViewHolder.LAYOUT
+    override fun type(broadCastUiModel: TopChatRoomBroadcastUiModel): Int {
+        return when (TopChatRoomMessageTypeEnum.fromValue(broadCastUiModel.messageType)) {
+            TopChatRoomMessageTypeEnum.PROMO_V2 -> {
+                0
+            }
+            TopChatRoomMessageTypeEnum.FLASH_SALE_V2 -> {
+                TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT
+            }
+            else -> {
+                BroadcastViewHolder.LAYOUT
+            }
+        }
     }
 
     override fun type(reviewUiModel: ReviewUiModel): Int {
@@ -239,6 +258,9 @@ open class TopChatTypeFactoryImpl constructor(
                 productCarouselListListener, deferredAttachment, searchListener,
                 commonListener, adapterListener, chatLinkHandlerListener,
                 productBundlingListener, productBundlingCarouselListener
+            )
+            TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT -> TopChatRoomBroadcastFlashSaleViewHolder(
+                parent, voucherListener
             )
             TopChatRoomBubbleMessageViewHolder.LAYOUT -> TopChatRoomBubbleMessageViewHolder(
                 parent,

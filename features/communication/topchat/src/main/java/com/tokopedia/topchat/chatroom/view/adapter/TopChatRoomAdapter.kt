@@ -27,7 +27,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
@@ -36,7 +36,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.P
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
@@ -341,7 +341,7 @@ class TopChatRoomAdapter constructor(
                     notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
                 }
             }
-            if (item is ProductCarouselUiModel || item is BroadCastUiModel) {
+            if (item is ProductCarouselUiModel || item is TopChatRoomBroadcastUiModel) {
                 notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
             }
         }
@@ -426,7 +426,7 @@ class TopChatRoomAdapter constructor(
         val latestMessage = visitables.first()
         return (latestMessage is MessageUiModel && latestMessage.isFromBroadCast()) ||
             latestMessage is BroadcastSpamHandlerUiModel ||
-            latestMessage is BroadCastUiModel
+            latestMessage is TopChatRoomBroadcastUiModel
     }
 
     fun addBroadcastSpamHandler(): Int {
@@ -443,7 +443,7 @@ class TopChatRoomAdapter constructor(
     }
 
     private fun isFromUnifiedBroadcast(latestMessage: Visitable<*>?): Boolean {
-        return latestMessage is BroadCastUiModel && latestMessage.isOpposite
+        return latestMessage is TopChatRoomBroadcastUiModel && latestMessage.isOpposite
     }
 
     private fun isFromBroadcast(latestMessage: Visitable<*>?): Boolean {

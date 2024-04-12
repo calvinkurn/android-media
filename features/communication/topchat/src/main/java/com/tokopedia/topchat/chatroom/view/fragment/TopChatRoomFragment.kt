@@ -143,7 +143,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLa
 import com.tokopedia.topchat.chatroom.view.adapter.util.CenterSmoothScroller
 import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReminderTickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
@@ -196,7 +196,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoRepl
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter

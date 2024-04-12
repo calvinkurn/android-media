@@ -19,6 +19,7 @@ import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherStatus
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherType
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentData
 

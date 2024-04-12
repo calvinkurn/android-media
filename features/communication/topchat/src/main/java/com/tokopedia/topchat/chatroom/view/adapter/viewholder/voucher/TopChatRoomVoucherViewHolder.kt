@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomVoucherItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -28,7 +28,8 @@ class TopChatRoomVoucherItemViewHolder(
         this.uiModel = uiModel
         uiModel.voucherUi.let {
             binding?.topchatVoucher?.bind(
-                promo = it, isFullWidth = false
+                promo = it,
+                isFullWidth = false
             )
         }
         impressTracker(uiModel)

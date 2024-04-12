@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomVoucherCarouselAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.TopChatRoomHorizontalSpacingItemDecoration
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
 class TopChatRoomVoucherCarouselRecyclerView @JvmOverloads constructor(
     context: Context,
@@ -18,7 +18,7 @@ class TopChatRoomVoucherCarouselRecyclerView @JvmOverloads constructor(
 
     private val linearLayoutManager = LinearLayoutManager(context, HORIZONTAL, false)
     private val horizontalSpacingItemDecoration = TopChatRoomHorizontalSpacingItemDecoration(
-        8.dpToPx(context.resources.displayMetrics)
+        4.dpToPx(context.resources.displayMetrics)
     )
     private var voucherAdapter: TopChatRoomVoucherCarouselAdapter? = null
 

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.diffutil.TopChatRoomVoucherCarouselItemCallback
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.voucher.TopChatRoomVoucherItemViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomVoucherItemBinding
 
 class TopChatRoomVoucherCarouselAdapter(

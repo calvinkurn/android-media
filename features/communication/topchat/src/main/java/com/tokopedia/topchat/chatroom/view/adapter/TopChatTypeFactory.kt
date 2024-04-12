@@ -15,13 +15,15 @@ import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProd
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
 interface TopChatTypeFactory {
 
     fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int
 
     fun type(voucherViewModel: TopChatRoomVoucherUiModel): Int
+    fun type(voucherCarouselUiModel: TopChatRoomVoucherCarouselUiModel): Int
 
     fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int
 
@@ -45,7 +47,7 @@ interface TopChatTypeFactory {
 
     fun type(broadcastSpamHandlerUiModel: BroadcastSpamHandlerUiModel): Int
 
-    fun type(broadCastUiModel: BroadCastUiModel): Int
+    fun type(broadCastUiModel: TopChatRoomBroadcastUiModel): Int
 
     fun type(reviewUiModel: ReviewUiModel): Int
     fun type(srwBubbleUiModel: SrwBubbleUiModel): Int

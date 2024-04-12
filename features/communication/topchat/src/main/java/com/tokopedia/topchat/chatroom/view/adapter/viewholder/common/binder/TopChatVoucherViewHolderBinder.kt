@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
 object TopChatVoucherViewHolderBinder {
 

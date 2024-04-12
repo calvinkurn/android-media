@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder
+package com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast
 
 import android.view.View
 import android.widget.ImageView
@@ -18,6 +18,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -37,7 +38,7 @@ import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundli
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingRecyclerView
 import com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.unifycomponents.Label
@@ -57,7 +58,7 @@ class BroadcastViewHolder constructor(
     chatMessageListener: ChatLinkHandlerListener,
     private val productBundlingListener: ProductBundlingListener,
     private val productBundlingCarouselListener: ProductBundlingCarouselViewHolder.Listener
-) : AbstractViewHolder<BroadCastUiModel>(itemView) {
+) : AbstractViewHolder<TopChatRoomBroadcastUiModel>(itemView) {
 
     private val broadcastContainer: LinearLayout? = itemView?.findViewById(
         R.id.bubble_broadcast_container
@@ -128,7 +129,7 @@ class BroadcastViewHolder constructor(
         )
     }
 
-    override fun bind(element: BroadCastUiModel, payloads: MutableList<Any>) {
+    override fun bind(element: TopChatRoomBroadcastUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (val payload = payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> {
@@ -143,7 +144,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    override fun bind(element: BroadCastUiModel) {
+    override fun bind(element: TopChatRoomBroadcastUiModel) {
         bindBanner(element)
         bindVoucher(element)
         bindProductCarousel(element)
@@ -155,7 +156,7 @@ class BroadcastViewHolder constructor(
     }
 
     private fun updateProductStock(
-        element: BroadCastUiModel,
+        element: TopChatRoomBroadcastUiModel,
         payload: SingleProductAttachmentContainer.PayloadUpdateStock
     ) {
         if (element.isSingleProduct()) {
@@ -169,7 +170,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindBanner(element: BroadCastUiModel) {
+    private fun bindBanner(element: TopChatRoomBroadcastUiModel) {
         val banner = element.banner ?: return
         bindSyncBanner(banner)
         if (banner.isHideBanner) {
@@ -215,7 +216,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindBannerMargin(element: BroadCastUiModel) {
+    private fun bindBannerMargin(element: TopChatRoomBroadcastUiModel) {
         (bannerView?.layoutParams as? LinearLayout.LayoutParams)?.apply {
             val productMarginBottom = when {
                 element.hasCampaignLabel() -> PRODUCT_MARGIN_BOTTOM_CAMPAIGN_LABEL
@@ -226,8 +227,8 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindVoucher(element: BroadCastUiModel) {
-        val voucher = element.voucherUiModel
+    private fun bindVoucher(element: TopChatRoomBroadcastUiModel) {
+        val voucher = element.singleVoucher
         if (voucher != null) {
             voucherView?.show()
             TopChatVoucherViewHolderBinder.bindVoucherView(voucher, voucherView)
@@ -243,7 +244,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindProductCarousel(element: BroadCastUiModel) {
+    private fun bindProductCarousel(element: TopChatRoomBroadcastUiModel) {
         val productCarousel = element.productCarousel
         if (productCarousel != null) {
             rvProductCarousel?.show()
@@ -270,7 +271,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindSingleProduct(element: BroadCastUiModel) {
+    private fun bindSingleProduct(element: TopChatRoomBroadcastUiModel) {
         val product = element.singleProduct
         val metaData = SingleProductAttachmentContainer.ParentViewHolderMetaData(
             element,
@@ -288,7 +289,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindProductBundling(element: BroadCastUiModel) {
+    private fun bindProductBundling(element: TopChatRoomBroadcastUiModel) {
         val productBundling = element.productBundling
         if (productBundling != null) {
             when {
@@ -339,7 +340,7 @@ class BroadcastViewHolder constructor(
         )
     }
 
-    private fun bindMessage(element: BroadCastUiModel) {
+    private fun bindMessage(element: TopChatRoomBroadcastUiModel) {
         val message: MessageUiModel? = element.messageUiModel
         if (message != null) {
             fxChat?.show()
@@ -352,7 +353,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindBackground(element: BroadCastUiModel) {
+    private fun bindBackground(element: TopChatRoomBroadcastUiModel) {
         if (element.isOpposite) {
             broadcastContainer?.setPadding(
                 paddingOpposite,
@@ -372,7 +373,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindCta(element: BroadCastUiModel) {
+    private fun bindCta(element: TopChatRoomBroadcastUiModel) {
         val banner = element.banner ?: return
         ctaText?.let {
             var text: String? = getString(R.string.title_topchat_see_detail)

@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder
+package com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_CARO
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_CAROUSEL_ATTACHMENT
 import com.tokopedia.chat_common.data.AutoReplyMessageUiModel
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
@@ -23,23 +24,25 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.domain.pojo.roommetadata.User
+import com.tokopedia.topchat.chatroom.domain.TopChatRoomMessageTypeEnum
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
-import com.tokopedia.topchat.chatroom.domain.pojo.voucher.TopChatRoomVoucherWrapperDto
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationWrapperPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.voucher.TopChatRoomVoucherWrapperDto
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -71,18 +74,14 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         // Merge broadcast bubble
                         chatDateTime.isBroadCast() &&
                             chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
-                            val broadcast = mergeBroadcast(
-                                replyIndex,
-                                chatItemPojoByDate.replies,
-                                chatDateTime.blastId,
-                                getAttachmentIds(pojo.chatReplies.attachmentIds)
+                            val broadcastUiModel = mergeBroadcastBubble(
+                                replyIndex = replyIndex,
+                                replies = chatItemPojoByDate.replies,
+                                chatDateTime = chatDateTime,
+                                attachmentIds = pojo.chatReplies.attachmentIds
                             )
-                            val broadcastUiModel = createBroadCastUiModel(
-                                chatDateTime,
-                                broadcast.first
-                            )
-                            listChat.add(broadcastUiModel)
-                            replyIndex += broadcast.second
+                            listChat.add(broadcastUiModel.first)
+                            replyIndex += broadcastUiModel.second
                         }
                         // Merge product bubble
                         hasAttachment(chatDateTime) &&
@@ -146,13 +145,95 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return autoReplyMessage.build()
     }
 
+    private fun mergeBroadcastBubble(
+        replyIndex: Int,
+        replies: List<Reply>,
+        chatDateTime: Reply,
+        attachmentIds: String
+    ): Pair<Visitable<*>, Int> {
+        val isNew = isNewBroadcast(chatDateTime.messageType)
+        val attachmentList = getAttachmentIds(attachmentIds)
+
+        // Extracting the common logic into a separate function
+        val (modelList, totalSkip) = mergeBroadcastBasedOnType(
+            isNew,
+            replyIndex,
+            replies,
+            chatDateTime.blastId,
+            attachmentList
+        )
+
+        // Create UI Model
+        val broadcastUiModel = createBroadCastUiModel(chatDateTime, modelList)
+        return Pair(broadcastUiModel, totalSkip)
+    }
+
+    private fun mergeBroadcastBasedOnType(
+        isNew: Boolean,
+        replyIndex: Int,
+        replies: List<Reply>,
+        blastId: String,
+        attachmentList: List<String>
+    ): Pair<Map<String, Visitable<*>>, Int> {
+        val mergeFunction = if (isNew) ::mergeNewBroadcast else ::mergeBroadcast
+        val (models, skip) = mergeFunction(replyIndex, replies, blastId, attachmentList)
+        return Pair(models, skip)
+    }
+
     private fun createBroadCastUiModel(
         chatDateTime: Reply,
         model: Map<String, Visitable<*>>
-    ): BroadCastUiModel {
-        return BroadCastUiModel(chatDateTime, model, chatDateTime.isOpposite)
+    ): TopChatRoomBroadcastUiModel {
+        return TopChatRoomBroadcastUiModel(chatDateTime, model, chatDateTime.isOpposite)
     }
 
+    private fun mergeNewBroadcast(
+        index: Int,
+        replies: List<Reply>,
+        blastId: String,
+        attachmentIds: List<String>
+    ): Pair<Map<String, Visitable<*>>, Int> {
+        val broadcast = ArrayMap<String, Visitable<*>>()
+        var idx = index
+        while (idx < replies.size) {
+            val reply = replies[idx]
+            val replyType = reply.attachmentType.toString()
+            val nextReply = replies.getOrNull(idx + 1)
+            if (
+                reply.isProductAttachment() &&
+                reply.isAlsoProductAttachment(nextReply) &&
+                reply.blastId == blastId
+            ) {
+                val products = mergeProduct(idx, replies, reply.isBroadCast(), attachmentIds)
+                val carouselProducts = createCarouselProduct(reply, products)
+                broadcast[TYPE_PRODUCT_CAROUSEL_ATTACHMENT] = carouselProducts
+                idx += products.size
+            } else if (
+                reply.isVoucherAttachment() &&
+                reply.isAlsoVoucherAttachment(nextReply) &&
+                reply.blastId == blastId
+            ) {
+                val vouchers = mergeVoucher(idx, replies)
+                val carouselVouchers = createCarouselVoucher(reply, vouchers)
+                broadcast[TYPE_VOUCHER_CAROUSEL_ATTACHMENT] = carouselVouchers
+                idx += vouchers.size
+            } else if (reply.isBroadCast() && reply.blastId == blastId) {
+                val messageItem = if (hasAttachment(reply)) {
+                    mapAttachment(reply, attachmentIds)
+                } else {
+                    convertToMessageUiModel(reply)
+                }
+                broadcast[replyType] = messageItem
+                idx++
+            } else {
+                break
+            }
+        }
+        val totalToSkip = idx - index
+        return Pair(broadcast, totalToSkip)
+    }
+
+    @Deprecated("Expected to be almost identical with new merge broadcast as fallback, this function will be deleted later")
     private fun mergeBroadcast(
         index: Int,
         replies: List<Reply>,
@@ -202,8 +283,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             return ProductCarouselUiModel(
                 products = products,
                 isSender = !chatDateTime.isOpposite,
-                messageId = msgId.toString(),
-                fromUid = senderId.toString(),
+                messageId = msgId,
+                fromUid = senderId,
                 from = senderName,
                 fromRole = role,
                 attachmentId = attachment.id,
@@ -239,6 +320,49 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             }
         }
         return products
+    }
+
+    private fun createCarouselVoucher(
+        chatDateTime: Reply,
+        vouchers: List<TopChatRoomVoucherUiModel>
+    ): TopChatRoomVoucherCarouselUiModel {
+        with(chatDateTime) {
+            return TopChatRoomVoucherCarouselUiModel(
+                vouchers = vouchers,
+                isSender = !chatDateTime.isOpposite,
+                messageId = msgId,
+                fromUid = senderId,
+                from = senderName,
+                fromRole = role,
+                attachmentId = attachment.id,
+                attachmentType = attachment.type.toString(),
+                replyTime = replyTime,
+                message = msg,
+                source = chatDateTime.source
+            )
+        }
+    }
+
+    private fun mergeVoucher(
+        index: Int,
+        replies: List<Reply>
+    ): List<TopChatRoomVoucherUiModel> {
+        val vouchers = mutableListOf<TopChatRoomVoucherUiModel>()
+        var idx = index
+        while (idx < replies.size) {
+            val chat = replies[idx]
+            if (chat.isVoucherAttachment()) {
+                val voucher = convertToVoucher(chat)
+                if (voucher is TopChatRoomVoucherUiModel) {
+                    vouchers.add(voucher)
+                    vouchers.add(voucher)
+                }
+                idx++
+            } else {
+                break
+            }
+        }
+        return vouchers
     }
 
     override fun mapAttachment(
@@ -420,5 +544,15 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .withTitle(pojo.data.button.title)
             .withAppLink(pojo.data.button.appLink)
             .build()
+    }
+
+    private fun isNewBroadcast(
+        messageType: String
+    ): Boolean {
+        return when (TopChatRoomMessageTypeEnum.fromValue(messageType)) {
+            TopChatRoomMessageTypeEnum.PROMO_V2,
+            TopChatRoomMessageTypeEnum.FLASH_SALE_V2 -> true
+            else -> false
+        }
     }
 }
