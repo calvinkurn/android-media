@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.time.TimeHelper
 
 /**
@@ -60,6 +61,8 @@ constructor(
         get() {
             return TimeHelper.format(startDateMillis, startDateFormat, TimeHelper.localeID)
         }
+
+    val impressHolder = ImpressHolder()
 
     private var startDateFormat = "dd MMM yyyy"
 
@@ -158,9 +161,45 @@ constructor(
         }
     }
 
+    fun getCampaignStatusString(): String {
+        return when (statusCampaign) {
+            STARTED -> "upcoming"
+            ON_GOING -> "ongoing"
+            ENDED -> "ended"
+            else -> "none"
+        }
+    }
+
+    /**
+     * {campaign_countdown}: minutes until campaign start or end,
+     * if campaign has ended fill with minutes since campaign ended
+     */
+    fun getCampaignCountDownString(): String {
+        val countDown = when (statusCampaign) {
+            STARTED -> {
+                // minutes until start
+                (System.currentTimeMillis() - startDateMillis) / MINUTES_DIVIDER // convert to minutes
+            }
+            ON_GOING -> {
+                // minutes until end
+                (System.currentTimeMillis() - endDateMillis) / MINUTES_DIVIDER
+            }
+            ENDED -> {
+                // minutes since end
+                (endDateMillis - System.currentTimeMillis()) / MINUTES_DIVIDER
+            }
+            else -> 0
+        }
+        return countDown.toString()
+    }
+
     object CampaignStatus {
         const val STARTED = 2
         const val ON_GOING = 3
         const val ENDED = 4
+    }
+
+    companion object {
+        private const val MINUTES_DIVIDER = 60000
     }
 }

@@ -135,10 +135,11 @@ import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.util.TopChatRoomRedirectionUtil
 import com.tokopedia.topchat.chatroom.view.TopChatRoomAction
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.ROLE_SELLER
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.adapter.util.CenterSmoothScroller
 import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
@@ -180,6 +181,8 @@ import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
 import com.tokopedia.topchat.chatroom.view.listener.StoriesWidgetListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastBannerListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
@@ -190,6 +193,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
@@ -266,7 +270,9 @@ open class TopChatRoomFragment :
     ProductBundlingListener,
     BannedChatMessageViewHolder.TopChatMessageCensorListener,
     StoriesWidgetListener,
-    TopChatRoomOrderCancellationListener {
+    TopChatRoomOrderCancellationListener,
+    TopChatRoomBroadcastBannerListener,
+    TopChatRoomBroadcastProductListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -1030,7 +1036,7 @@ open class TopChatRoomFragment :
         viewModel.loadChatRoomSettings(messageId)
     }
 
-    private fun onSuccessLoadChatRoomSetting(widgets: List<Visitable<TopChatTypeFactory>>) {
+    private fun onSuccessLoadChatRoomSetting(widgets: List<Visitable<TopChatRoomTypeFactory>>) {
         adapter.addWidgetHeader(widgets)
     }
 
@@ -1066,6 +1072,31 @@ open class TopChatRoomFragment :
         super.onImageAnnouncementClicked(uiModel)
     }
 
+    override fun onImpressionBroadcastBanner(
+        uiModel: ImageAnnouncementUiModel,
+        broadcastUiModel: TopChatRoomBroadcastUiModel
+    ) {
+        TopChatAnalyticsKt.eventImpressionBroadcastBanner(
+            blastId = broadcastUiModel.blastId,
+            campaignStatus = uiModel.getCampaignStatusString(),
+            campaignCountDown = uiModel.getCampaignCountDownString()
+        )
+    }
+
+    override fun onClickBroadcastBanner(
+        uiModel: ImageAnnouncementUiModel,
+        broadcastUiModel: TopChatRoomBroadcastUiModel
+    ) {
+        TopChatAnalyticsKt.eventClickBroadcastBanner(
+            blastId = broadcastUiModel.blastId,
+            campaignStatus = uiModel.getCampaignStatusString(),
+            campaignCountDown = uiModel.getCampaignCountDownString()
+        )
+        if (!TextUtils.isEmpty(uiModel.redirectUrl)) {
+            onGoToWebView(uiModel.redirectUrl, uiModel.attachmentId)
+        }
+    }
+
     override fun onRetrySendImage(element: ImageUploadUiModel) {
         context?.let {
             val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(
@@ -1091,7 +1122,7 @@ open class TopChatRoomFragment :
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
         trackProductClicked(element)
-        handleProductApplink(element)
+        handleProductAppLink(element.androidUrl, element.productUrl)
     }
 
     private fun trackProductClicked(element: ProductAttachmentUiModel) {
@@ -1101,33 +1132,37 @@ open class TopChatRoomFragment :
         analytics.trackProductAttachmentClicked()
     }
 
-    private fun handleProductApplink(element: ProductAttachmentUiModel) {
-        if (!GlobalConfig.isSellerApp() || opponentRole != "shop") {
-            if (element.androidUrl.isNotBlank()) {
-                redirectToPdp(element)
+    private fun handleProductAppLink(
+        androidUrl: String,
+        productUrl: String
+    ) {
+        if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SELLER) {
+            if (androidUrl.isNotBlank()) {
+                redirectToPdp(androidUrl)
             }
         } else {
             // Necessary to do it this way to prevent PDP opened in seller app
             // otherwise someone other than the owner can access PDP with topads promote page
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(element.productUrl))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(productUrl))
             startActivity(browserIntent)
         }
     }
 
-    private fun redirectToPdp(element: ProductAttachmentUiModel) {
+    // This function will be only called in MA
+    private fun redirectToPdp(androidUrl: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 addFullPageGeneralLoading()
-                val applink = redirectionUtil.getRedirectionUrl(
-                    originalApplink = element.androidUrl
+                val appLink = redirectionUtil.getRedirectionUrl(
+                    originalApplink = androidUrl
                 )
                 removeFullPageGeneralLoading()
-                goToApplinkSafely(applink)
+                goToApplinkSafely(appLink)
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 // When fail, remove the loading & use old product click handler
                 removeFullPageGeneralLoading()
-                super.onProductClicked(element)
+                goToApplinkSafely(androidUrl)
             }
         }
     }
@@ -1292,13 +1327,13 @@ open class TopChatRoomFragment :
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return TopChatTypeFactoryImpl(
+        return TopChatRoomTypeFactoryImpl(
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            session
+            this, this, session
         )
     }
 
@@ -1391,10 +1426,10 @@ open class TopChatRoomFragment :
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        if (adapterTypeFactory !is TopChatTypeFactoryImpl) {
+        if (adapterTypeFactory !is TopChatRoomTypeFactoryImpl) {
             throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
         }
-        val typeFactory = adapterTypeFactory as TopChatTypeFactoryImpl
+        val typeFactory = adapterTypeFactory as TopChatRoomTypeFactoryImpl
         return TopChatRoomAdapter(context, typeFactory).also {
             adapter = it
         }
@@ -2112,10 +2147,47 @@ open class TopChatRoomFragment :
         }
     }
 
+    override fun onClickBroadcastVoucher(
+        broadcast: TopChatRoomBroadcastUiModel,
+        voucher: TopChatRoomVoucherUiModel,
+        position: Int,
+        total: Int
+    ) {
+        TopChatAnalyticsKt.eventClickBroadcastVoucher(
+            blastId = broadcast.blastId,
+            campaignStatus = broadcast.banner?.getCampaignStatusString().toString(),
+            campaignCountDown = broadcast.banner?.getCampaignCountDownString().toString(),
+            voucherId = voucher.voucher.voucherId.toString(),
+            voucherPosition = (position + 1).toString(),
+            totalVoucherAttach = total.toString()
+        )
+        if (voucher.isLockToProduct()) {
+            goToMvcPage(voucher.appLink)
+        } else {
+            goToMerchantVoucherDetail(voucher)
+        }
+    }
+
     override fun onImpressionVoucher(data: TopChatRoomVoucherUiModel, source: String) {
         if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
             TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
         }
+    }
+
+    override fun onImpressionBroadcastVoucher(
+        broadcast: TopChatRoomBroadcastUiModel,
+        voucher: TopChatRoomVoucherUiModel,
+        position: Int,
+        total: Int
+    ) {
+        TopChatAnalyticsKt.eventImpressionBroadcastVoucher(
+            blastId = broadcast.blastId,
+            campaignStatus = broadcast.banner?.getCampaignStatusString().toString(),
+            campaignCountDown = broadcast.banner?.getCampaignCountDownString().toString(),
+            voucherId = voucher.voucher.voucherId.toString(),
+            voucherPosition = (position + 1).toString(),
+            totalVoucherAttach = total.toString()
+        )
     }
 
     private fun goToMvcPage(applink: String) {
@@ -3502,8 +3574,8 @@ open class TopChatRoomFragment :
         }
     }
 
-    private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<TopChatTypeFactory>> {
-        val widgets = arrayListOf<Visitable<TopChatTypeFactory>>()
+    private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<TopChatRoomTypeFactory>> {
+        val widgets = arrayListOf<Visitable<TopChatRoomTypeFactory>>()
 
         if (result.showBanner) {
             widgets.add(result.roomBanner)
@@ -3731,6 +3803,71 @@ open class TopChatRoomFragment :
                 false -> showToasterError(message)
             }
         }
+    }
+
+    override fun onImpressionBroadcastSeeMoreProduct(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String
+    ) {
+        TopChatAnalyticsKt.eventImpressionBroadcastSeeMoreProductCard(
+            blastId = blastId,
+            campaignStatus = campaignStatus,
+            campaignCountDown = campaignCountDown
+        )
+    }
+
+    override fun onClickBroadcastSeeMoreProduct(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String,
+        appLink: String
+    ) {
+        TopChatAnalyticsKt.eventClickBroadcastSeeMoreProductCard(
+            blastId = blastId,
+            campaignStatus = campaignStatus,
+            campaignCountDown = campaignCountDown
+        )
+        goToApplinkSafely(appLink)
+    }
+
+    override fun onImpressionBroadcastProduct(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String,
+        productId: String,
+        position: Int,
+        totalProduct: Int
+    ) {
+        TopChatAnalyticsKt.eventImpressionBroadcastProductCard(
+            blastId = blastId,
+            campaignStatus = campaignStatus,
+            campaignCountDown = campaignCountDown,
+            productId = productId,
+            productPosition = (position + 1).toString(),
+            totalProductAttach = totalProduct.toString()
+        )
+    }
+
+    override fun onClickBroadcastProduct(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String,
+        productId: String,
+        position: Int,
+        totalProduct: Int,
+        androidUrl: String,
+        productUrl: String
+    ) {
+        TopChatAnalyticsKt.eventClickBroadcastProductCard(
+            blastId = blastId,
+            campaignStatus = campaignStatus,
+            campaignCountDown = campaignCountDown,
+            productId = productId,
+            productPosition = (position + 1).toString(),
+            totalProductAttach = totalProduct.toString()
+        )
+        handleProductAppLink(androidUrl, productUrl)
     }
 
     companion object {

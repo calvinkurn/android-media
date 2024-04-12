@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter
+package com.tokopedia.topchat.chatroom.view.adapter.typefactory
 
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -18,7 +18,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
-interface TopChatTypeFactory {
+interface TopChatRoomTypeFactory {
 
     fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int
 

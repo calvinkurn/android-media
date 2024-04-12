@@ -1,17 +1,18 @@
-package com.tokopedia.topchat.chatroom.view.custom.voucher
+package com.tokopedia.topchat.chatroom.view.custom.broadcast
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomVoucherCarouselAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomBroadcastFlashSaleCarouselAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.TopChatRoomHorizontalSpacingItemDecoration
-import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomBroadcastFlashSaleTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
-class TopChatRoomVoucherCarouselRecyclerView @JvmOverloads constructor(
+class TopChatRoomBroadcastFlashSaleProductRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -21,7 +22,7 @@ class TopChatRoomVoucherCarouselRecyclerView @JvmOverloads constructor(
     private val horizontalSpacingItemDecoration = TopChatRoomHorizontalSpacingItemDecoration(
         4.dpToPx(context.resources.displayMetrics)
     )
-    private var voucherAdapter: TopChatRoomVoucherCarouselAdapter? = null
+    private var flashSaleProductAdapter: TopChatRoomBroadcastFlashSaleCarouselAdapter? = null
 
     init {
         setHasFixedSize(true)
@@ -31,16 +32,17 @@ class TopChatRoomVoucherCarouselRecyclerView @JvmOverloads constructor(
         addItemDecoration(horizontalSpacingItemDecoration)
     }
 
-    fun initData(newList: List<TopChatRoomVoucherUiModel>) {
-        voucherAdapter?.updateData(newList)
-        scrollToPosition(0)
+    fun updateData(newList: List<Visitable<*>>) {
+        flashSaleProductAdapter?.updateData(newList)
     }
 
-    fun setVoucherListener(
-        listener: TopChatRoomVoucherListener,
+    fun setListener(
+        productListener: TopChatRoomBroadcastProductListener,
         broadcastUiModel: TopChatRoomBroadcastUiModel
     ) {
-        voucherAdapter = TopChatRoomVoucherCarouselAdapter(broadcastUiModel, listener)
-        adapter = voucherAdapter
+        flashSaleProductAdapter = TopChatRoomBroadcastFlashSaleCarouselAdapter(
+            TopChatRoomBroadcastFlashSaleTypeFactoryImpl(broadcastUiModel, productListener)
+        )
+        adapter = flashSaleProductAdapter
     }
 }

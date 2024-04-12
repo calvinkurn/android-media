@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter
+package com.tokopedia.topchat.chatroom.view.adapter.typefactory
 
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +42,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.voucher.TopChatOld
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastBannerListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
@@ -53,11 +55,13 @@ import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCar
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
-open class TopChatTypeFactoryImpl constructor(
+open class TopChatRoomTypeFactoryImpl constructor(
     private val imageAnnouncementListener: ImageAnnouncementListener,
+    private val bannerBroadcastListener: TopChatRoomBroadcastBannerListener,
     private val chatLinkHandlerListener: ChatLinkHandlerListener,
     private val imageUploadListener: ImageUploadListener,
     private val productAttachmentListener: TopchatProductAttachmentListener,
+    private val productBroadcastListener: TopChatRoomBroadcastProductListener,
     private val imageDualAnnouncementListener: DualAnnouncementListener,
     private val voucherListener: TopChatRoomVoucherListener,
     private val invoiceThumbnailListener: InvoiceThumbnailListener,
@@ -81,7 +85,7 @@ open class TopChatTypeFactoryImpl constructor(
     imageUploadListener,
     productAttachmentListener
 ),
-    TopChatTypeFactory {
+    TopChatRoomTypeFactory {
 
     // Check if chat bubble first, if not return default impl
     override fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int {
@@ -113,7 +117,7 @@ open class TopChatTypeFactoryImpl constructor(
     }
 
     override fun type(voucherCarouselUiModel: TopChatRoomVoucherCarouselUiModel): Int {
-        return 0 // No implementation yet
+        return 0 // No implementation yet, but used as new broadcast component
     }
 
     override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
@@ -161,7 +165,8 @@ open class TopChatTypeFactoryImpl constructor(
                 TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT
             }
             else -> {
-                BroadcastViewHolder.LAYOUT
+//                BroadcastViewHolder.LAYOUT
+                TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT
             }
         }
     }
@@ -260,7 +265,10 @@ open class TopChatTypeFactoryImpl constructor(
                 productBundlingListener, productBundlingCarouselListener
             )
             TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT -> TopChatRoomBroadcastFlashSaleViewHolder(
-                parent, voucherListener
+                parent,
+                bannerBroadcastListener,
+                productBroadcastListener,
+                voucherListener
             )
             TopChatRoomBubbleMessageViewHolder.LAYOUT -> TopChatRoomBubbleMessageViewHolder(
                 parent,

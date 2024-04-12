@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel.voucher
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 class TopChatRoomVoucherCarouselUiModel(
     val vouchers: List<TopChatRoomVoucherUiModel>,
@@ -20,8 +20,8 @@ class TopChatRoomVoucherCarouselUiModel(
     messageId, fromUid, from, fromRole,
     attachmentId, attachmentType, replyTime, message, source
 ),
-    Visitable<TopChatTypeFactory> {
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    Visitable<TopChatRoomTypeFactory> {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

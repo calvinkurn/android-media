@@ -6,7 +6,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUN
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_CAROUSEL_ATTACHMENT
 import com.tokopedia.chat_common.domain.pojo.Reply
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
@@ -24,7 +24,7 @@ class TopChatRoomBroadcastUiModel(
     replyTime = reply.replyTime,
     message = reply.msg,
     source = reply.source
-), Visitable<TopChatTypeFactory> {
+), Visitable<TopChatRoomTypeFactory> {
 
     val banner: ImageAnnouncementUiModel? get() = items[TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementUiModel
     val singleVoucher: TopChatRoomVoucherUiModel? get() = items[TYPE_VOUCHER] as? TopChatRoomVoucherUiModel
@@ -34,7 +34,7 @@ class TopChatRoomBroadcastUiModel(
     val productBundling: Visitable<*>? get() = items[AttachmentType.Companion.TYPE_PRODUCT_BUNDLING]
     val messageUiModel: MessageUiModel? get() = items[AttachmentType.Companion.TYPE_MESSAGE] as? MessageUiModel
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

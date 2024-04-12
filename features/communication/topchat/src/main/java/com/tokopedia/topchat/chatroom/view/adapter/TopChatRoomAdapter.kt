@@ -26,6 +26,8 @@ import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
@@ -48,7 +50,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
  */
 class TopChatRoomAdapter constructor(
     private val context: Context?,
-    private val adapterTypeFactory: TopChatTypeFactoryImpl
+    private val adapterTypeFactory: TopChatRoomTypeFactoryImpl
 ) : BaseChatAdapter(adapterTypeFactory),
     ProductCarouselListAttachmentViewHolder.Listener,
     ProductBundlingCarouselViewHolder.Listener,
@@ -270,7 +272,7 @@ class TopChatRoomAdapter constructor(
         }
     }
 
-    fun addWidgetHeader(widgets: List<Visitable<TopChatTypeFactory>>) {
+    fun addWidgetHeader(widgets: List<Visitable<TopChatRoomTypeFactory>>) {
         if (widgets.isEmpty()) return
         val currentLastPosition = visitables.lastIndex
         visitables.addAll(widgets)

@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 class ProductCarouselUiModel constructor(
     var products: List<Visitable<*>>,
@@ -21,8 +21,8 @@ class ProductCarouselUiModel constructor(
     messageId, fromUid, from, fromRole,
     attachmentId, attachmentType, replyTime, message, source
 ),
-    Visitable<TopChatTypeFactory> {
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    Visitable<TopChatRoomTypeFactory> {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

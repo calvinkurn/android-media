@@ -4,10 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastVoucherBinding
@@ -20,7 +24,9 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
 
     private var binding: TopchatChatroomBroadcastVoucherBinding
 
-    private var voucherListener: TopChatRoomVoucherListener? = null
+    private var listener: TopChatRoomVoucherListener? = null
+    private var uiModel: TopChatRoomVoucherUiModel? = null
+    private var broadcastUiModel: TopChatRoomBroadcastUiModel? = null
 
     init {
         binding = TopchatChatroomBroadcastVoucherBinding.inflate(
@@ -28,31 +34,48 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
     }
 
     fun setListener(listener: TopChatRoomVoucherListener) {
-        this.voucherListener = listener
+        this.listener = listener
+        setSingleVoucherListener()
+        setCarouselVoucherListener()
     }
 
-    fun bind(uiModel: TopChatRoomVoucherUiModel) {
-        // Set visibility
-        binding.topchatBroadcastSingleVoucher.visible()
+    fun bind(broadcastUiModel: TopChatRoomBroadcastUiModel) {
+        val voucherAttachment = broadcastUiModel.singleVoucher
+        val voucherCarousel = broadcastUiModel.voucherCarousel
+        if (voucherAttachment != null) {
+            bindSingleVoucher(voucherAttachment)
+        } else if (voucherCarousel != null) {
+            bindVoucherCarousel(voucherCarousel)
+        } else {
+            binding.topchatBroadcastSingleVoucher.gone()
+            binding.topchatBroadcastRvVoucher.gone()
+        }
+    }
+
+    private fun bindSingleVoucher(uiModel: TopChatRoomVoucherUiModel) {
+        val promoSimpleItem = uiModel.voucherUi
+        if (promoSimpleItem != null) {
+            binding.topchatBroadcastSingleVoucher.visible()
+            binding.topchatBroadcastSingleVoucher.bind(
+                promo = uiModel.voucherUi,
+                isFullWidth = true
+            )
+            binding.topchatBroadcastTvVoucherHeader.text = uiModel.header
+            binding.topchatBroadcastTvVoucherHeader.showWithCondition(uiModel.header.isNotBlank())
+            binding.topchatBroadcastTvDesc.text = uiModel.description
+            binding.topchatBroadcastTvDesc.showWithCondition(uiModel.description.isNotBlank())
+            binding.topchatBroadcastSingleVoucher.addOnImpressionListener(uiModel.impressHolder) {
+                impressSingleVoucher()
+            }
+        } else {
+            binding.topchatBroadcastSingleVoucher.gone()
+        }
         binding.topchatBroadcastRvVoucher.gone()
-
-        // Set data
-        binding.topchatBroadcastTvVoucherHeader.text = uiModel.header
-        binding.topchatBroadcastTvVoucherHeader.showWithCondition(uiModel.header.isNotBlank())
-        binding.topchatBroadcastTvDesc.text = uiModel.description
-        binding.topchatBroadcastTvDesc.showWithCondition(uiModel.description.isNotBlank())
-        binding.topchatBroadcastSingleVoucher.bind(
-            promo = uiModel.voucherUi,
-            isFullWidth = true
-        )
     }
 
-    fun bind(uiModel: TopChatRoomVoucherCarouselUiModel) {
-        // Set visibility
-        binding.topchatBroadcastSingleVoucher.gone()
-        binding.topchatBroadcastRvVoucher.showWithCondition(uiModel.vouchers.isNotEmpty())
-
-        // Set data
+    private fun bindVoucherCarousel(
+        uiModel: TopChatRoomVoucherCarouselUiModel
+    ) {
         if (uiModel.vouchers.isNotEmpty()) {
             binding.topchatBroadcastTvVoucherHeader.text = uiModel.vouchers.first().header
             binding.topchatBroadcastTvVoucherHeader.showWithCondition(
@@ -62,10 +85,49 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
             binding.topchatBroadcastTvDesc.showWithCondition(
                 uiModel.vouchers.first().description.isNotBlank()
             )
-            voucherListener?.let {
-                binding.topchatBroadcastRvVoucher.setVoucherListener(it)
-            }
             binding.topchatBroadcastRvVoucher.initData(uiModel.vouchers)
+            binding.topchatBroadcastRvVoucher.show()
+        } else {
+            binding.topchatBroadcastRvVoucher.gone()
+        }
+        binding.topchatBroadcastSingleVoucher.gone()
+
+    }
+
+    private fun impressSingleVoucher() {
+        val uiModel = this.uiModel
+        val broadcastUiModel = this.broadcastUiModel
+        if (uiModel != null && broadcastUiModel != null) {
+            listener?.onImpressionBroadcastVoucher(
+                broadcast = broadcastUiModel,
+                voucher = uiModel
+            )
+        }
+    }
+
+    private fun setSingleVoucherListener() {
+        binding.topchatBroadcastSingleVoucher.setOnClickListener {
+            val uiModel = this.uiModel
+            val broadcastUiModel = this.broadcastUiModel
+            if (uiModel != null && broadcastUiModel != null) {
+                listener?.onClickBroadcastVoucher(
+                    broadcast = broadcastUiModel,
+                    voucher = uiModel
+                )
+            }
+        }
+    }
+
+    private fun setCarouselVoucherListener() {
+        val uiModel = this.uiModel
+        val broadcastUiModel = this.broadcastUiModel
+        if (uiModel != null && broadcastUiModel != null) {
+            listener?.let {
+                binding.topchatBroadcastRvVoucher.setVoucherListener(
+                    it,
+                    broadcastUiModel
+                )
+            }
         }
     }
 

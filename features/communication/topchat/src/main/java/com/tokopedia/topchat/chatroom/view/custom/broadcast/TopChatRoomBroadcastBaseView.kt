@@ -4,10 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastBannerListener
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastBaseBinding
 
@@ -21,10 +24,21 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
 
     init {
         binding = TopchatChatroomBroadcastBaseBinding.inflate(
-            LayoutInflater.from(context), this)
+            LayoutInflater.from(context),
+            this
+        )
+    }
+
+    private var bannerListener: TopChatRoomBroadcastBannerListener? = null
+    private var uiModel: TopChatRoomBroadcastUiModel? = null
+
+    fun setListener(bannerListener: TopChatRoomBroadcastBannerListener) {
+        this.bannerListener = bannerListener
+        setBannerListener()
     }
 
     fun bind(uiModel: TopChatRoomBroadcastUiModel) {
+        this.uiModel = uiModel
         bindBannerAttachment(uiModel)
         bindCountdown(uiModel)
         bindMessageAttachment(uiModel)
@@ -35,8 +49,20 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
         if (bannerAttachment != null) {
             binding.topchatChatroomBroadcastIvBanner.show()
             binding.topchatChatroomBroadcastIvBanner.loadImageWithoutPlaceholder(bannerAttachment.imageUrl)
+            binding.topchatChatroomBroadcastIvBanner.addOnImpressionListener(
+                bannerAttachment.impressHolder
+            ) {
+                impressBanner(bannerAttachment)
+            }
         } else {
             binding.topchatChatroomBroadcastIvBanner.hide()
+        }
+    }
+
+    private fun impressBanner(bannerUiModel: ImageAnnouncementUiModel) {
+        uiModel?.let {
+            bannerUiModel.impressHolder
+            bannerListener?.onImpressionBroadcastBanner(bannerUiModel, it)
         }
     }
 
@@ -57,6 +83,15 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
             binding.topchatChatroomBroadcastTvMessage.text = messageAttachment.message
         } else {
             binding.topchatChatroomBroadcastTvMessage.hide()
+        }
+    }
+
+    private fun setBannerListener() {
+        binding.topchatChatroomBroadcastIvBanner.setOnClickListener { _ ->
+            val banner = uiModel?.banner
+            if (banner != null && uiModel != null) {
+                bannerListener?.onClickBroadcastBanner(banner, uiModel!!)
+            }
         }
     }
 

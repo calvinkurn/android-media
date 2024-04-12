@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Primary constructor, use [Builder] class to create this instance.
@@ -89,6 +90,8 @@ open class ProductAttachmentUiModel protected constructor(
     var locationStock: LocationStock = builder.locationStock
     var androidUrl: String = builder.androidUrl
     var iosUrl: String = builder.iosUrl
+
+    val impressHolder = ImpressHolder()
 
     init {
         if (variants.isNotEmpty()) {
@@ -208,8 +211,16 @@ open class ProductAttachmentUiModel protected constructor(
         return wishList
     }
 
+    fun isProductActive(): Boolean {
+        return status == statusActive
+    }
+
     fun isProductArchived(): Boolean {
         return status == statusArchived
+    }
+
+    fun isProductDummySeeMore(): Boolean {
+        return status == statusSeeMoreDummy
     }
 
     fun getStringProductId(): String {
@@ -326,6 +337,7 @@ open class ProductAttachmentUiModel protected constructor(
         const val statusActive = 1
         const val statusWarehouse = 3
         const val statusArchived = 99
+        const val statusSeeMoreDummy = -100
 
         const val NO_PRODUCT_ID = "0"
     }
