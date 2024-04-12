@@ -26,7 +26,8 @@ open class BaseChatUiModel constructor(
     val label: String = "",
     val parentReply: ParentReply? = null,
     val bubbleStatus: Int = STATUS_NORMAL,
-    val tickerReminder: TickerReminderPojo? = null
+    val tickerReminder: TickerReminderPojo? = null,
+    val messageType: String = ""
 ) {
 
     constructor(builder: Builder<*, *>) : this(
@@ -104,9 +105,9 @@ open class BaseChatUiModel constructor(
      * UI: the UiModel class that extend BaseChatViewModel
      */
     abstract class Builder<
-            out B : Builder<B, UI>,
-            out UI : BaseChatUiModel
-            > {
+        out B : Builder<B, UI>,
+        out UI : BaseChatUiModel
+        > {
 
         internal var messageId: String = ""
         internal var fromUid: String = ""
@@ -278,7 +279,9 @@ open class BaseChatUiModel constructor(
         fun withOrGenerateLocalId(localId: String): B {
             val finalLocalId = if (localId.isEmpty()) {
                 IdentifierUtil.generateLocalId()
-            } else localId
+            } else {
+                localId
+            }
             return withLocalId(finalLocalId)
         }
 
