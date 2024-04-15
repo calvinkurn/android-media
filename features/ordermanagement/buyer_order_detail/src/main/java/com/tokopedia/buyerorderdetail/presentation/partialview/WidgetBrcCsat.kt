@@ -78,8 +78,7 @@ class WidgetBrcCsat(
         when (uiState) {
             is WidgetBrcCsatUiState.HasData.Reloading -> onReloading(uiState.data)
             is WidgetBrcCsatUiState.HasData.Showing -> onShowing(uiState.data)
-            is WidgetBrcCsatUiState.Hidden -> onHidden()
-            is WidgetBrcCsatUiState.Loading -> onLoading()
+            is WidgetBrcCsatUiState.NoData -> onHidden()
         }
     }
 
@@ -104,10 +103,6 @@ class WidgetBrcCsat(
     }
 
     private fun onHidden() {
-        animateHide()
-    }
-
-    private fun onLoading() {
         animateHide()
     }
 

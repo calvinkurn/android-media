@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,7 +89,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.linker.model.LinkerData.PRODUCT_TYPE
 import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
@@ -795,7 +791,7 @@ open class BuyerOrderDetailFragment :
         toolbarMenuAnimator?.transitionToEmpty()
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stickyActionButton?.hideSavingWidget()
-        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.Hidden)
+        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.getDefaultState())
         stopLoadTimeMonitoring()
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_ERROR)
     }
@@ -803,7 +799,7 @@ open class BuyerOrderDetailFragment :
     private fun onFullscreenLoadingBuyerOrderDetail() {
         showLoader()
         toolbarMenuAnimator?.transitionToEmpty()
-        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.Hidden)
+        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.getDefaultState())
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_FULL_SCREEN_LOADING)
     }
 

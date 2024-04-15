@@ -41,7 +41,7 @@ object BuyerOrderDetailUiStateMapper {
             epharmacyInfoUiState is EpharmacyInfoUiState.HasData &&
             orderResolutionTicketStatusUiState !is OrderResolutionTicketStatusUiState.Loading &&
             scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData &&
-            brcCsatUiState !is WidgetBrcCsatUiState.Loading
+            brcCsatUiState !is WidgetBrcCsatUiState.NoData.Loading
         ) {
             if (
                 actionButtonsUiState is ActionButtonsUiState.HasData.Reloading ||
@@ -53,7 +53,8 @@ object BuyerOrderDetailUiStateMapper {
                 orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading ||
                 orderInsuranceUiState is OrderInsuranceUiState.HasData.Reloading ||
                 epharmacyInfoUiState is EpharmacyInfoUiState.HasData.Reloading ||
-                brcCsatUiState is WidgetBrcCsatUiState.HasData.Reloading
+                brcCsatUiState is WidgetBrcCsatUiState.HasData.Reloading ||
+                brcCsatUiState is WidgetBrcCsatUiState.NoData.Reloading
             ) {
                 BuyerOrderDetailUiState.HasData.PullRefreshLoading(
                     actionButtonsUiState,

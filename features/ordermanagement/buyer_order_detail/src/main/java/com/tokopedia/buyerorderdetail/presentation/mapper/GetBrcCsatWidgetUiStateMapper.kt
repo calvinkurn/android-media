@@ -40,10 +40,10 @@ object GetBrcCsatWidgetUiStateMapper {
     }
 
     private fun onRequesting(currentState: WidgetBrcCsatUiState): WidgetBrcCsatUiState {
-        return if (currentState is WidgetBrcCsatUiState.HasData) {
-            WidgetBrcCsatUiState.HasData.Reloading(currentState.data)
-        } else {
-            WidgetBrcCsatUiState.Loading
+        return when (currentState) {
+            is WidgetBrcCsatUiState.HasData -> WidgetBrcCsatUiState.HasData.Reloading(currentState.data)
+            is WidgetBrcCsatUiState.NoData.Hidden -> WidgetBrcCsatUiState.NoData.Reloading
+            else -> WidgetBrcCsatUiState.NoData.Loading
         }
     }
 
@@ -70,11 +70,11 @@ object GetBrcCsatWidgetUiStateMapper {
                 WidgetBrcCsatUiModel(orderID = orderID, helpUrl = helpPageUrl, expanded = expanded)
             )
         } else {
-            WidgetBrcCsatUiState.Hidden
+            WidgetBrcCsatUiState.NoData.Hidden
         }
     }
 
-    private fun onError(): WidgetBrcCsatUiState.Hidden {
-        return WidgetBrcCsatUiState.Hidden
+    private fun onError(): WidgetBrcCsatUiState.NoData.Hidden {
+        return WidgetBrcCsatUiState.NoData.Hidden
     }
 }

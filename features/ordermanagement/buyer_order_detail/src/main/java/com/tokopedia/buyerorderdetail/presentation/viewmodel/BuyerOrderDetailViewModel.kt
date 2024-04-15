@@ -166,7 +166,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     ).toStateFlow(SavingsWidgetUiState.Hide)
     private val brcCsatUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapWidgetBrcCsatUiState
-    ).toStateFlow(WidgetBrcCsatUiState.Hidden)
+    ).toStateFlow(WidgetBrcCsatUiState.getDefaultState())
 
     private val _oneTimeMethod = MutableStateFlow(OrderOneTimeEventUiState())
     val oneTimeMethodState: StateFlow<OrderOneTimeEventUiState> = _oneTimeMethod
