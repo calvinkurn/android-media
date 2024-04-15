@@ -1,6 +1,7 @@
 package com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
@@ -14,9 +15,13 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.clearCustomTarget
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
@@ -32,6 +37,7 @@ import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by fwidjaja on 1/28/21.
@@ -75,6 +81,8 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     val productBundlingNameText = itemView.findViewById<Typography>(R.id.snapshot_bundling_name)
     val productBundlingIconImage = itemView.findViewById<ImageUnify>(R.id.snapshot_bundling_icon)
 
+    private var productImageLoadTarget: MediaBitmapEmptyTarget<Bitmap>? = null
+
     init {
         measureScreenHeight()
     }
@@ -87,7 +95,11 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             renderShop(item.dataObject)
             renderDesc(item.dataObject)
         }
+    }
 
+    override fun onViewRecycled() {
+        ivHeader?.clearImage()
+        ivHeader?.clearCustomTarget(productImageLoadTarget)
     }
 
     private fun measureScreenHeight() = with(itemView) {
@@ -105,8 +117,8 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 indicator.apply {
                     visible()
                     setIndicator(productImages.size)
-                    activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-                    inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600_68)
+                    activeColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
+                    inactiveColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600_68)
                 }
                 val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 
@@ -139,11 +151,12 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     actionListener?.onSnapshotImgClicked(adapterPosition)
                 }
                 productImages.firstOrNull()?.imageUrl?.let {
-                    ivHeader.loadProductImage(
+                    productImageLoadTarget = ivHeader.loadProductImage(
                         url = it,
                         archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_LARGE,
                         cornerRadius = 0f,
                         onLoaded = { isArchived ->
+                            productImageLoadTarget = null
                             actionListener?.onProductImageLoaded(isArchived)
                         }
                     )
@@ -269,12 +282,11 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
 
         val minOrder = dataObject.orderDetail.minOrder
 
-        if (minOrder.toInt() > 0) {
+        if (minOrder.toIntOrZero() > 0) {
             minOrderLabel.visible()
             minOrderValue.visible()
             minOrderValue.text = "$minOrder pcs"
             dividerMinOrder.visible()
-
         } else {
             minOrderLabel.gone()
             minOrderValue.gone()

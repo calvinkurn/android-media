@@ -19,7 +19,6 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS_OS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -35,9 +34,8 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
 import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
-import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
-import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputMapper
 import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
@@ -251,14 +249,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return if (draftId.isBlank()) 0 else draftId.toLong()
     }
 
-    fun getMaxProductPhotos(): Int {
-        return if (userSession.isShopOfficialStore) {
-            MAX_PRODUCT_PHOTOS_OS
-        } else {
-            MAX_PRODUCT_PHOTOS
-        }
-    }
-
     fun setProductId(id: String) {
         productId.value = id
     }
@@ -431,7 +421,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
 
         // validate images already reached limit
-        if (detailInputModel.imageUrlOrPathList.size > getMaxProductPhotos()) {
+        if (detailInputModel.imageUrlOrPathList.size > MAX_PRODUCT_PHOTOS) {
             errorMessage = resourceProvider.getInvalidPhotoReachErrorMessage() ?: ""
         }
 
@@ -571,27 +561,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 val response = annotationCategoryUseCase.executeOnBackground()
                 response.drogonAnnotationCategoryV2.data
             }
-            updateSpecificationByAnnotationCategory(result)
+            productInputModel.getValueOrDefault().detailInputModel.specifications =
+                SpecificationInputMapper.mapToSpecificationInputModelList(result)
             mIsLoading.value = false
         }, onError = {
                 AddEditProductErrorHandler.logExceptionToCrashlytics(it)
                 mIsLoading.value = false
             })
-    }
-
-    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
-        val result: MutableList<SpecificationInputModel> = mutableListOf()
-        annotationCategoryList.forEach {
-            val selectedValue = it.data.firstOrNull { value -> value.selected }
-            selectedValue?.apply {
-                val specificationInputModel = SpecificationInputModel(id.toString(), name)
-                result.add(specificationInputModel)
-            }
-        }
-
-        productInputModel.value?.apply {
-            detailInputModel.specifications = result
-        }
     }
 
     private fun shouldLoadProductData(param: Result<Boolean>): Boolean {

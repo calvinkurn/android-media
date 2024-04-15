@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMapWithWareHouse
+import com.tokopedia.discovery2.analytics.TrackingMapper.updatePaginatedPosition
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
@@ -18,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.productcard.experiments.ProductCardExperiment
@@ -292,14 +294,19 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     }
 
     private fun updatePaginatedData(
-        voucherListData: ArrayList<ComponentsItem>,
+        products: ArrayList<ComponentsItem>,
         parentComponentsItem: ComponentsItem
     ) {
-        voucherListData.forEach {
-            it.parentComponentId = parentComponentsItem.id
-            it.pageEndPoint = parentComponentsItem.pageEndPoint
-            it.parentComponentPosition = parentComponentsItem.position
+        products.forEach {
+            it.apply {
+                parentComponentId = parentComponentsItem.id
+                pageEndPoint = parentComponentsItem.pageEndPoint
+                parentComponentPosition = parentComponentsItem.position
+            }
         }
+
+        val offsetPosition = parentComponentsItem.getComponentsItem()?.size.orZero()
+        products.updatePaginatedPosition(offsetPosition)
     }
 
     private fun ComponentsItem.getComponentId(): String {

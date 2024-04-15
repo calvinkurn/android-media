@@ -87,7 +87,10 @@ data class BasicInfo(
     val defaultMediaUrl: String = "",
     @SerializedName("shopMultilocation")
     @Expose
-    val productMultilocation: ProductMultilocation = ProductMultilocation()
+    val productMultilocation: ProductMultilocation = ProductMultilocation(),
+    @SerializedName("weightWording")
+    @Expose
+    val weightWording: String = ""
 ) {
     fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull()
         ?: DEFAULT_PRICE_MINIMUM_SHIPPING

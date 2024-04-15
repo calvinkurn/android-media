@@ -8,13 +8,19 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.os.Build
 import android.os.SystemClock
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -25,6 +31,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.R
 import timber.log.Timber
+import kotlin.math.ceil
 
 /**
  * @author by milhamj on 30/11/18.
@@ -43,12 +50,14 @@ fun View.show() {
 }
 
 fun View.showKeyboard() {
-    val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val imm =
+        context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
 fun View.hideKeyboard() {
-    val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val imm =
+        context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
@@ -470,16 +479,19 @@ fun View?.generateBackgroundWithShadow(
             shapeDrawablePadding.bottom = elevationValue
             DY = DY_CENTER
         }
+
         Gravity.TOP -> {
             shapeDrawablePadding.top = elevationValue * 2
             shapeDrawablePadding.bottom = elevationValue
             DY = DY_TOP * elevationValue / DY_ELEVATION_DIVIDER
         }
+
         Gravity.BOTTOM -> {
             shapeDrawablePadding.top = elevationValue
             shapeDrawablePadding.bottom = elevationValue * 2
             DY = elevationValue / DY_ELEVATION_DIVIDER
         }
+
         else -> {
             shapeDrawablePadding.top = elevationValue
             shapeDrawablePadding.bottom = elevationValue * 2
@@ -527,4 +539,13 @@ fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
         lastClickTime = SystemClock.elapsedRealtime()
         block()
     }
+}
+
+/**
+ * get location on screen from a view
+ */
+fun View.getLocationOnScreen(): Point {
+    val location = IntArray(2)
+    this.getLocationOnScreen(location)
+    return Point(location[0], location[1])
 }

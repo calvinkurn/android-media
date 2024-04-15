@@ -28,6 +28,7 @@ class AddToCartMultiUseCase @Inject constructor(
     companion object {
         private const val PARAM_ATC = "param"
         const val QUERY_ADD_TO_CART_MULTI = "AddToCartMultiQuery"
+        const val SUCCESS_STATUS = 1
     }
 
     override fun graphqlQuery(): String = ""
@@ -46,7 +47,7 @@ class AddToCartMultiUseCase @Inject constructor(
         return try {
             val response = graphqlRepository.response(listOf(request))
                 .getSuccessData<AtcMultiData>()
-            if (response.atcMulti.buyAgainData.success == 1) {
+            if (response.atcMulti.buyAgainData.success == SUCCESS_STATUS) {
                 for (param in params) {
                     AddToCartBaseAnalytics.sendAppsFlyerTracking(
                         param.productId,

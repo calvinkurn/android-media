@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/cardImage"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:layout_margin="12dp"
+        android:alpha="0"
+        app:card_corner_radius="24dp"
+        tools:alpha="1">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/productImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            tools:src="@tools:sample/avatars" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+</FrameLayout>

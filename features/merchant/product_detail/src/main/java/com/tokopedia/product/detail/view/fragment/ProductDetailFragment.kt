@@ -8,8 +8,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.graphics.Point
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,6 +20,7 @@ import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
+import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -96,6 +100,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
@@ -281,6 +286,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
+import com.tokopedia.product.detail.view.viewholder.media.tracker.MediaTracking
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
@@ -359,10 +365,12 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import kotlinx.coroutines.flow.collectLatest
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.ceil
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -815,6 +823,15 @@ open class ProductDetailFragment :
     }
 
     private fun observeOneTimeMethod() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.successAtcAndAnimation.collectLatest {
+                val atcData = viewModel.addToCartLiveData.value as? Success ?: return@collectLatest
+                showAddToCartDoneBottomSheet(
+                    atcData.data.data
+                )
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.oneTimeMethodState.collect {
                 when (it.event) {
@@ -2234,6 +2251,10 @@ open class ProductDetailFragment :
         return productVideoCoordinator
     }
 
+    override fun setImageUnify(imageView: ImageView?) {
+        atcAnimation.setSourceView(imageView)
+    }
+
     /**
      * ProductSnapshotViewHolder
      */
@@ -2453,15 +2474,35 @@ open class ProductDetailFragment :
         }
     }
 
-    override fun onShowProductMediaRecommendationClicked() {
-        val productMediaRecomBasicInfo =
-            viewModel.getProductInfoP1?.data?.productMediaRecomBasicInfo
-        val basicData = viewModel.getProductInfoP1?.basic
+    override fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val productMediaRecomBasicInfo = productInfo.data.productMediaRecomBasicInfo
+        val basicData = productInfo.basic
+        val title = productMediaRecomBasicInfo.bottomsheetTitle
+        val iconText = productMediaRecomBasicInfo.iconText
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+
         viewModel.showProductMediaRecomBottomSheet(
-            title = productMediaRecomBasicInfo?.bottomsheetTitle.orEmpty(),
-            pageName = productMediaRecomBasicInfo?.recommendation.orEmpty(),
-            productId = basicData?.productID.orEmpty(),
-            isTokoNow = basicData?.isTokoNow.orFalse()
+            title = title,
+            pageName = productMediaRecomBasicInfo.recommendation,
+            productId = basicData.productID,
+            isTokoNow = basicData.isTokoNow.orFalse()
+        )
+        MediaTracking.onOverlayRecommClicked(
+            title = iconText,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
+        )
+    }
+
+    override fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getProductInfoP1 ?: return
+        val title = productInfo.data.productMediaRecomBasicInfo.iconText
+        val commonTracker = CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+        MediaTracking.onOverlayRecommImpressed(
+            title = title,
+            componentTrackDataModel = componentTracker,
+            commonTracker = commonTracker
         )
     }
 
@@ -2614,7 +2655,7 @@ open class ProductDetailFragment :
 
     private fun observeDeleteCart() {
         viewModel.deleteCartLiveData.observe(viewLifecycleOwner) {
-            hideProgressDialog()
+            actionButtonView.hideLoading()
             it.doSuccessOrFail({ message ->
                 view?.showToasterSuccess(
                     message.data,
@@ -3000,7 +3041,8 @@ open class ProductDetailFragment :
 
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
-            hideProgressDialog()
+            actionButtonView.hideLoading()
+
             var cartId = ""
             var success = false
             var reason = ""
@@ -3022,6 +3064,7 @@ open class ProductDetailFragment :
                 }
                 cartId = it.data.data.cartId
             }, {
+                viewModel.onFinishAtc()
                 ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
                     it.message.orEmpty(),
                     viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
@@ -3252,7 +3295,11 @@ open class ProductDetailFragment :
                 affiliateSource = affiliateSource
             )
 
-            mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+            mStoriesWidgetManager.updateStories(
+                shopIds = listOf(p1.basic.shopID),
+                categoryIds = viewModel.getProductInfoP1?.basic?.category?.detail?.map { it.id }.orEmpty(),
+                productIds = listOf(viewModel.getProductInfoP1?.basic?.productID.orEmpty()),
+            )
 
             handleShareAdditionalCheck(p2Data.shopInfo)
 
@@ -3461,7 +3508,8 @@ open class ProductDetailFragment :
 
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data)
+                navToolbar?.updateNotification()
+                viewModel.onFinishAtc()
             }
 
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
@@ -3700,8 +3748,7 @@ open class ProductDetailFragment :
         }
 
         pdpUiUpdater?.removeComponentP2Data(
-            it,
-            viewModel.getProductInfoP1?.basic?.stats?.countReview ?: ""
+            it
         )
 
         renderRestrictionBottomSheet(it.restrictionInfo)
@@ -3933,13 +3980,19 @@ open class ProductDetailFragment :
                         restrictionData = p2Data?.restrictionInfo,
                         isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
                         uspImageUrl = p2Data?.uspImageUrl ?: "",
-                        saveAfterClose = saveAfterClose
+                        saveAfterClose = saveAfterClose,
+                        cartViewLocation = getCartIconLocation()
                     ) { data, code ->
                         startActivityForResult(data, code)
                     }
                 }
             }
         }
+    }
+
+    private fun getCartIconLocation(): Point? {
+        val icon = navToolbar?.getCartIconPosition()
+        return icon?.getLocationOnScreen()
     }
 
     private fun renderVariant(data: ProductVariant?) {
@@ -4090,7 +4143,8 @@ open class ProductDetailFragment :
                     productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
                         ?: "",
                     categoryId = it.basic.category.id,
-                    isScheduled = isScheduled
+                    isScheduled = isScheduled,
+                    weightWording = it.basic.weightWording
                 )
             )
             shouldRefreshShippingBottomSheet = false
@@ -4828,7 +4882,7 @@ open class ProductDetailFragment :
             doLoginWhenUserClickButton()
             return
         }
-        showProgressDialog()
+        actionButtonView.showLoading()
         viewModel.deleteProductInCart(viewModel.getProductInfoP1?.basic?.productID ?: "")
     }
 
@@ -4939,6 +4993,17 @@ open class ProductDetailFragment :
         }
     }
 
+    private fun getStatusBarHeight(context: Context): Int {
+        val resources = context.resources
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else {
+            ceil(((if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density).toDouble())
+                .toInt()
+        }
+    }
+
     private fun doAtc(buttonAction: Int) {
         buttonActionType = buttonAction
         context?.let {
@@ -5005,7 +5070,11 @@ open class ProductDetailFragment :
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->
-            showProgressDialog()
+            atcAnimation.runAtcAnimation(
+                binding,
+                actionButton == ProductDetailCommonConstant.ATC_BUTTON
+            )
+            actionButtonView.showLoading()
             when (actionButton) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
@@ -5321,11 +5390,6 @@ open class ProductDetailFragment :
         return context?.let {
             ProductDetailErrorHandler.getErrorMessage(it, throwable)
         }
-            ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
-    }
-
-    private fun getErrorMessage(errorMessage: String?): String {
-        return errorMessage
             ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
     }
 

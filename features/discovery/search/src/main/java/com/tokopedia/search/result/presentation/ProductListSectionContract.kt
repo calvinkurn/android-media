@@ -89,7 +89,7 @@ interface ProductListSectionContract {
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
         fun isDarkMode(): Boolean
-        fun sendTrackingByteIO()
+        fun sendTrackingByteIO(isSuccess: Boolean)
         fun cleanByteIOData()
     }
 

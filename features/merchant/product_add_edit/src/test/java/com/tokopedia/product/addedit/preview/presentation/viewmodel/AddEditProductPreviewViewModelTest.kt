@@ -313,17 +313,6 @@ class AddEditProductPreviewViewModelTest : AddEditProductPreviewViewModelTestFix
     }
 
     @Test
-    fun `when getMaxProductPhotos, expect correct max product picture`() {
-        every { userSession.isShopOfficialStore } returns true
-        var maxPicture = viewModel.getMaxProductPhotos()
-        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
-
-        every { userSession.isShopOfficialStore } returns false
-        maxPicture = viewModel.getMaxProductPhotos()
-        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
-    }
-
-    @Test
     fun `When update product photos Expect updated product photos`() {
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
@@ -849,29 +838,6 @@ class AddEditProductPreviewViewModelTest : AddEditProductPreviewViewModelTestFix
         coVerify { annotationCategoryUseCase.executeOnBackground() }
 
         coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
-    }
-
-    @Test
-    fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
-        val annotationCategoryData = listOf(
-            AnnotationCategoryData(
-                variant = "Merek",
-                data = listOf(
-                    Values("1", "Indomie", false, ""),
-                    Values("1", "Seedap", false, "")
-                )
-            )
-        )
-
-        viewModel.productInputModel.value = null
-        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
-        var result = viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(null, result?.detailInputModel?.specifications?.size)
-
-        viewModel.productInputModel.value = ProductInputModel()
-        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
-        result = viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(0, result?.detailInputModel?.specifications?.size)
     }
 
     @Test
