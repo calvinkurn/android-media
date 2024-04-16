@@ -315,6 +315,76 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun `GIVEN failed update cart WHEN get payment widget THEN should show error`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                    street = "jl jakarta"
+                    provinceName = "jakarta"
+                    cityName = "jakarta"
+                    countryName = "indonesia"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", quantity = 1, price = 1000.0),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(), enable = true),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            getPaymentWidgetUseCase(any())
+        } returns PaymentWidgetListData(
+            paymentWidgetData = listOf(PaymentWidgetData(
+                gatewayCode = "VA",
+                mandatoryHit = listOf("CreditCardTenorList")
+            ))
+        )
+
+        coEvery {
+            dynamicPaymentFeeUseCase(any())
+        } returns emptyList()
+
+        coEvery {
+            creditCardTenorListUseCase(any())
+        } returns CreditCardTenorListData(
+            tenorList = listOf(
+                TenorListData(),
+                TenorListData()
+            )
+        )
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } throws IOException()
+
+        // When
+        viewModel.calculateTotal()
+
+        // Then
+        assertEquals(CheckoutPaymentWidgetState.Error, viewModel.listData.value.payment()!!.widget.state)
+        coVerify(exactly = 1) {
+            dynamicPaymentFeeUseCase(any())
+        }
+        coVerify(exactly = 1) {
+            creditCardTenorListUseCase(any())
+        }
+    }
+
+    @Test
     fun `GIVEN failed get tenor WHEN get payment widget THEN should show error`() {
         // Given
         viewModel.listData.value = listOf(
