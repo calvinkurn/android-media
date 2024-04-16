@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
@@ -10,6 +12,11 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.databinding.ItemComparisonWidgetViewholderBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
+import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
+import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
@@ -19,7 +26,7 @@ class PdpComparisonWidgetViewHolder(
     private val view: View,
     private val listener: ProductDetailListener
 )
-: AbstractViewHolder<PdpComparisonWidgetDataModel>(view), ComparisonWidgetInterface {
+: AbstractViewHolder<PdpComparisonWidgetDataModel>(view), ComparisonWidgetInterface, AdsItemClickListener, AdsViewListener {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
 
@@ -31,9 +38,12 @@ class PdpComparisonWidgetViewHolder(
     }
 
     override fun bind(element: PdpComparisonWidgetDataModel) {
+
         binding.comparisonWidget.setComparisonWidgetData(
                 element.recommendationWidget,
-                this@PdpComparisonWidgetViewHolder,
+            this@PdpComparisonWidgetViewHolder,
+            this@PdpComparisonWidgetViewHolder,
+            this@PdpComparisonWidgetViewHolder,
                 RecommendationTrackingModel(
                         eventClick = ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                         androidPageName = PDP_PAGE_NAME,
@@ -63,14 +73,27 @@ class PdpComparisonWidgetViewHolder(
         }
     }
 
-    override fun onViewAttachedToWindow(element: PdpComparisonWidgetDataModel?) {
-        super.onViewAttachedToWindow(element)
+    override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.AREA)
     }
 
-    override fun onViewDetachedFromWindow(element: PdpComparisonWidgetDataModel?, visiblePercentage: Int) {
+    override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.COVER)
+    }
 
+    override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.SELLER_NAME)
+    }
+
+    override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendShowAdsByteIo(itemView.context, PageName.PDP)
+    }
+
+    override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
+        recomItem.sendShowOverAdsByteIo(itemView.context, PageName.PDP, visiblePercentage)
     }
 
     private fun getComponentTrackData(element: PdpComparisonWidgetDataModel?) = ComponentTrackDataModel(element?.type
             ?: "", element?.name ?: "", adapterPosition + 1)
+
 }

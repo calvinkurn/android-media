@@ -46,7 +46,6 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     private var firstCollectionItemView: View? = null
     private var carouselItems = arrayListOf<Any>()
 
-    private var recyclerView: RecyclerView? = null
     private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
         PercentageScrollListener()
     }
@@ -213,14 +212,12 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
-        this.recyclerView?.addOnScrollListener(percentageScrollListener)
+        recyclerView.addOnScrollListener(percentageScrollListener)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
-        this.recyclerView = null
+        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {

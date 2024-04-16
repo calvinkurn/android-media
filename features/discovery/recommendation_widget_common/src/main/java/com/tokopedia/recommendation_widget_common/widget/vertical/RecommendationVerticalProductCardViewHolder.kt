@@ -3,14 +3,19 @@ package com.tokopedia.recommendation_widget_common.widget.vertical
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalProductcardBinding
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -48,6 +53,14 @@ class RecommendationVerticalProductCardViewHolder(
         binding.productCardView.recycle()
     }
 
+    override fun onViewAttachedToWindow(element: RecommendationVerticalProductCardModel?) {
+
+    }
+
+    override fun onViewDetachedFromWindow(element: RecommendationVerticalProductCardModel?, visiblePercentage: Int) {
+
+    }
+
     private fun setupProductCardLayoutData(productModel: ProductCardModel) {
         binding.productCardView.setProductModel(productModel)
     }
@@ -56,7 +69,22 @@ class RecommendationVerticalProductCardViewHolder(
         with(binding.productCardView) {
             addOnImpressionListener(element.recomItem) { onProductCardImpressed(element) }
             addOnImpression1pxListener(element.recomItem.appLogImpressHolder) { onProductCardImpressed1px(element) }
-            setOnClickListener { onProductClicked(element) }
+            setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    onProductClicked(element)
+                }
+
+                override fun onAreaClicked(v: View) {
+
+                }
+
+                override fun onProductImageClicked(v: View) {
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+
+                }
+            })
         }
     }
 

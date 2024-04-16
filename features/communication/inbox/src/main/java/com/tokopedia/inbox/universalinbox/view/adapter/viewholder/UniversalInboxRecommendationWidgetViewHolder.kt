@@ -3,9 +3,16 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationWidgetItemBinding
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class UniversalInboxRecommendationWidgetViewHolder(
@@ -15,7 +22,30 @@ class UniversalInboxRecommendationWidgetViewHolder(
     private var binding: UniversalInboxRecommendationWidgetItemBinding? by viewBinding()
 
     override fun bind(uiModel: UniversalInboxRecommendationWidgetUiModel) {
-        binding?.inboxRecommendationWidget?.bind(uiModel.recommendationWidgetModel)
+        val recommendationWidgetModel = uiModel.recommendationWidgetModel.copy(
+            listener = object: RecommendationWidgetListener {
+                override fun onAreaClicked(position: Int, item: RecommendationItem) {
+                    item.sendRealtimeClickAdsByteIo(itemView.context, PageName.INBOX, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(position: Int, item: RecommendationItem) {
+                    item.sendRealtimeClickAdsByteIo(itemView.context, PageName.INBOX, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(position: Int, item: RecommendationItem) {
+                    item.sendRealtimeClickAdsByteIo(itemView.context, PageName.INBOX, AdsLogConst.Refer.SELLER_NAME)
+                }
+
+                override fun onViewAttachedToWindow(position: Int, item: RecommendationItem) {
+                    item.sendShowAdsByteIo(itemView.context, PageName.INBOX)
+                }
+
+                override fun onViewDetachedFromWindow(position: Int, item: RecommendationItem, visiblePercentage: Int) {
+                    item.sendShowOverAdsByteIo(itemView.context, PageName.INBOX, visiblePercentage)
+                }
+            }
+        )
+        binding?.inboxRecommendationWidget?.bind(recommendationWidgetModel)
     }
 
     override fun onViewRecycled() {

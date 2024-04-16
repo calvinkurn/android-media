@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -47,6 +47,10 @@ import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var listTypeData = mutableListOf<UohTypeData>()
     private var actionListener: ActionListener? = null
+
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
 
     companion object {
         const val LAYOUT_LOADER = 0
@@ -142,13 +146,25 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return listTypeData.size
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.addOnScrollListener(percentageScrollListener)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        recyclerView.removeOnScrollListener(percentageScrollListener)
+    }
+
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
         if (holder is UohRecommendationItemViewHolder) {
             holder.onViewAttachedToWindow()
         }
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
         if (holder is UohRecommendationItemViewHolder) {
             holder.onViewDetachedFromWindow(holder.visiblePercentage)
         }

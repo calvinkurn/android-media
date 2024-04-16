@@ -27,17 +27,15 @@ class ProductListAdapter(
     private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
         PercentageScrollListener()
     }
-    private var recyclerView: RecyclerView? = null
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
-        this.recyclerView = null
+        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
+        recyclerView.addOnScrollListener(percentageScrollListener)
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {

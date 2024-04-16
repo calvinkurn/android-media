@@ -27,8 +27,6 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
         PercentageScrollListener()
     }
 
-    private var recyclerView: RecyclerView? = null
-
     inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         IAdsViewHolderTrackListener {
 
@@ -110,14 +108,12 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
-        this.recyclerView?.addOnScrollListener(percentageScrollListener)
+        recyclerView.addOnScrollListener(percentageScrollListener)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
-        this.recyclerView = null
+        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun onViewAttachedToWindow(holder: ProductCardViewHolder) {
