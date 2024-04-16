@@ -54,4 +54,6 @@ buildscript {
 }
 
 apply from: 'buildproj.gradle'
+apply from: 'buildconfig/kotlin/repository.gradle'
+
 

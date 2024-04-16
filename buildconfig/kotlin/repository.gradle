@@ -15,7 +15,6 @@ gradle.allprojects { project ->
                     maven {
                         name "Bits-Production"
                         url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
-                        allowInsecureProtocol = true
                     }
 
                     maven {
@@ -30,7 +29,6 @@ gradle.allprojects { project ->
                     maven {
                         name "Bits-Production"
                         url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
-                        allowInsecureProtocol = true
                     }
 
                     maven {
@@ -42,7 +40,18 @@ gradle.allprojects { project ->
             }
         } else {
             replaceRepositoriesWith(project.repositories) {
-                // no-op just delete hansel on repositories
+                project.repositories {
+                    maven {
+                        name "Bits-Production"
+                        url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
+                    }
+
+                    maven {
+                        name "Bits-Sandbox"
+                        url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
+                        allowInsecureProtocol = true
+                    }
+                }
             }
         }
     }
@@ -50,11 +59,19 @@ gradle.allprojects { project ->
 
 def replaceRepositoriesWith(RepositoryHandler repos, Closure addBits) {
     def deletedRepos = []
-    repos.forEach {repo ->
-        if (repo.properties.size() == 0) return
-        def urlRepo = repo.properties.getOrDefault("repositoryUrls", [""])[0].toString()
+    repos.getCollectionSchema()
+    repos.configureEach { repo ->
+        String urlRepo = ""
+        String repoName = repo.name
+        PropertyValue property = repo.metaPropertyValues.find {
+            it.name == "repositoryUrls"
+        }
+        println "check if null or not ${property == null}"
+        if (property != null) {
+            urlRepo = property.getValue()[0]
+        }
         println "URL REPO: ${urlRepo}"
-        if (isContainsTokoRepos(urlRepo)) {
+        if (isContainsTokoOrGoogleRepos(urlRepo, repoName)) {
             println "replace url tokopedia with bits"
             // delete tokopedia maven
             deletedRepos.add(repo)
@@ -71,11 +88,11 @@ def replaceRepositoriesWith(RepositoryHandler repos, Closure addBits) {
     repos.addAll(newList)
 
     repos.forEach {repo ->
-        println "Final Repositories: ---- ${repo.name} ${repo.properties}"
+        println "Final Repositories: ---- ${repo.name}"
     }
 }
 
-def isContainsTokoRepos(String url) {
+def isContainsTokoOrGoogleRepos(String url, String name) {
     return url.contains(gcp_artifactory_url) || url.contains(artifactory_url) ||
             url.contains(urlCourierClient) || url.contains(urlGoto) || url.contains(urlLaku6) ||
             url.contains(urlHansel)
