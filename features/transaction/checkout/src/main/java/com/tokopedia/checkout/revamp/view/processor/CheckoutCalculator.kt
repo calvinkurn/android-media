@@ -483,9 +483,6 @@ class CheckoutCalculator @Inject constructor(
             }
         }
         val checkoutOrderModels = listData.filterIsInstance(CheckoutOrderModel::class.java)
-//        val priceTotal: Double = if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
-//
-//        val paymentFee: Double = shipmentCost.finalPaymentFee
 
         val finalPrice = shipmentCost.totalPriceString
 
@@ -500,11 +497,6 @@ class CheckoutCalculator @Inject constructor(
         )
 
         if ((cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) && payment.widget.isValidStateToContinue) {
-//            val priceTotalFormatted =
-//                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-//                    finalPrice,
-//                    false
-//                ).removeDecimalSuffix()
             shipmentCost = shipmentCost.copy(totalPriceString = finalPrice)
             buttonPaymentModel = buttonPaymentModel.copy(
                 useInsurance = shouldShowInsuranceTnc,
@@ -519,10 +511,6 @@ class CheckoutCalculator @Inject constructor(
                 totalPrice = "-"
             )
         }
-
-//        buttonPaymentModel = buttonPaymentModel.copy(
-//            totalPriceNum = finalPrice
-//        )
 
         return listData.toMutableList().apply {
             set(size - PAYMENT_INDEX_FROM_BOTTOM, payment)
@@ -669,11 +657,6 @@ class CheckoutCalculator @Inject constructor(
                     cartItemErrorCounter++
                 }
             }
-//            if (shipmentCartItemModel is CheckoutPaymentModel) {
-//                if (!hasLoadingItem) {
-//                    hasLoadingItem = shipmentCartItemModel.widget.state == CheckoutPaymentWidgetState.Loading
-//                }
-//            }
         }
         val checkoutOrderModels = listData.filterIsInstance(CheckoutOrderModel::class.java)
         val payment = listData.payment()!!

@@ -290,6 +290,7 @@ sealed interface PaymentValidationReport {
     object ServerError : PaymentValidationReport
 
     object MinimumAmountError : PaymentValidationReport
+
     object MaximumAmountError : PaymentValidationReport
 
     object UnavailableTenureError : PaymentValidationReport
