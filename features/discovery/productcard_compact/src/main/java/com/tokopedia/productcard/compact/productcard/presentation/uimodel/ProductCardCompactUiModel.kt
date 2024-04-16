@@ -17,6 +17,7 @@ data class ProductCardCompactUiModel(
     val slashPrice: String = "",
     val name: String = "",
     val rating: String = "",
+    val sold: String = "",
     val progressBarLabel: String = "",
     val progressBarPercentage: Int = 0,
     val hasBeenWishlist: Boolean = false,

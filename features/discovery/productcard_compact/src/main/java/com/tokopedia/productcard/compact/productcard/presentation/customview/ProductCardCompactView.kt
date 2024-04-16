@@ -57,6 +57,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         private const val NO_MARGIN = 0
         private const val NO_DISCOUNT_STRING = "0"
         private const val PERCENTAGE_CHAR = '%'
+        private const val SEPARATOR_STRING = "  • "
     }
 
     private var listener: ProductCardCompactViewListener? = null
@@ -111,6 +112,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         )
         initRatingTypography(
             rating = model.rating,
+            sold = model.sold,
             isFlashSale = model.isFlashSale(),
             isNormal = model.isNormal()
         )
@@ -268,13 +270,27 @@ class ProductCardCompactView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactViewBinding.initRatingTypography(
         rating: String,
+        sold: String,
         isFlashSale: Boolean,
         isNormal: Boolean
     ) {
         ratingIcon.hide()
-        ratingTypography.showIfWithBlock(rating.isNotBlank() && !isFlashSale) {
-            ratingIcon.show()
-            text = rating
+        ratingTypography.showIfWithBlock(
+            rating.isNotBlank() || sold.isNotBlank() &&
+                !isFlashSale
+        ) {
+            var ratingText = ""
+            if (rating.isNotBlank()) {
+                ratingIcon.show()
+                ratingText += rating
+            }
+            if (sold.isNotBlank()) {
+                if (ratingText.isNotBlank()) {
+                    ratingText += SEPARATOR_STRING
+                }
+                ratingText += " $sold"
+            }
+            text = ratingText
             adjustRatingPosition(isNormal)
         }
     }
