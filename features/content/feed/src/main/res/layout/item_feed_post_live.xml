@@ -157,7 +157,9 @@
         app:layout_constraintBottom_toTopOf="@id/layout_feed_caption"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/feed_live_wave_label" />
+        app:layout_constraintTop_toBottomOf="@id/feed_live_wave_label"
+        app:layout_goneMarginBottom="16dp"
+        />
 
     <com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout
         android:id="@+id/layout_feed_caption"
