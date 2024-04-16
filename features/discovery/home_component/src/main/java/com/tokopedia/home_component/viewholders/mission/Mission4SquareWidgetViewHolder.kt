@@ -65,7 +65,7 @@ class Mission4SquareWidgetViewHolder(
 
         val layoutManager = GridLayoutManager(itemView.context, 4)
 
-        binding?.lstCard?.addItemDecoration(StaticMissionWidgetItemDecoration())
+        binding?.lstCard?.addItemDecoration(StaticMissionWidgetItemDecoration.span4())
         binding?.lstCard?.layoutManager = layoutManager
         binding?.lstCard?.adapter = mAdapter
     }

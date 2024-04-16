@@ -8,6 +8,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponentContainerStatic2squareBinding
 import com.tokopedia.home_component.decoration.StaticMissionWidgetItemDecoration
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactoryImpl
+import com.tokopedia.home_component.viewholders.shorten.internal.MAX_LIMIT_CARD
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSquaresAdapter
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
@@ -53,9 +54,9 @@ class ContainerStaticSquaresViewHolder(
             binding?.lstComponent?.adapter as? ShortenStaticSquaresAdapter
         }
 
-        val layoutManager = GridLayoutManager(itemView.context, 2)
+        val layoutManager = GridLayoutManager(itemView.context, MAX_LIMIT_CARD)
 
-        binding?.lstComponent?.addItemDecoration(StaticMissionWidgetItemDecoration())
+        binding?.lstComponent?.addItemDecoration(StaticMissionWidgetItemDecoration.span2())
         binding?.lstComponent?.layoutManager = layoutManager
         binding?.lstComponent?.adapter = mAdapter
     }

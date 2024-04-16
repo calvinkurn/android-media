@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentItemSmallCardBinding
 import com.tokopedia.home_component.visitable.shorten.ItemDealsWidgetUiModel
-import com.tokopedia.home_component.widget.card.SmallProductModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemDealsWidgetViewHolder(
@@ -18,11 +17,7 @@ class ItemDealsWidgetViewHolder(
     private val binding: HomeComponentItemSmallCardBinding? by viewBinding()
 
     fun bind(element: ItemDealsWidgetUiModel) {
-        binding?.card?.setData(SmallProductModel(
-            bannerImageUrl = "",
-            title = Pair(element.title, SmallProductModel.TextStyle()),
-            subtitle = Pair("Deals #${bindingAdapterPosition}", SmallProductModel.TextStyle()),
-        ))
+        binding?.card?.setData(element.card)
     }
 
     companion object {

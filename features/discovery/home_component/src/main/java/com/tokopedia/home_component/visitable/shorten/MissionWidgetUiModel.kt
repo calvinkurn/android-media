@@ -1,9 +1,10 @@
 package com.tokopedia.home_component.visitable.shorten
 
-import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactory
+import com.tokopedia.home_component.widget.card.SmallProductModel
+import com.tokopedia.home_component_header.model.ChannelHeader
 
 data class MissionWidgetUiModel(
     val channelModel: ChannelModel,
@@ -17,7 +18,18 @@ data class MissionWidgetUiModel(
 }
 
 data class ItemMissionWidgetUiModel(
-    val title: String
+    val id: String,
+    val card: SmallProductModel,
+    val url: String,
+    val appLink: String,
+    val pageName: String,
+    val categoryId: String,
+    val productName: String,
+    val recommendationType: String,
+    val buType: String,
+    val shopId: String,
+    val isTopAds: Boolean,
+    val isCarousel: Boolean,
 ) : ShortenVisitable by ShortenVisitable.ItemShortenVisitable(
     DealsAndMissionWidgetUiModel.Type.Mission.value
 )
