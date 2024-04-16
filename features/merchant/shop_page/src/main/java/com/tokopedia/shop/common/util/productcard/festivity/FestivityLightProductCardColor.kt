@@ -30,4 +30,7 @@ data class FestivityLightProductCardColor(
         progressBarColorIsAvailable = R.color.dms_static_light_YN300,
         progressBarTrackColor = R.color.dms_static_light_N100
     )
+
+    override val showOutlineView: Boolean?
+        get() = false
 }

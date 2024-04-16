@@ -31,4 +31,6 @@ data class DarkThemedShopProductCard(
         progressBarColorIsAvailable = R.color.dms_static_dark_YN300,
         progressBarTrackColor = R.color.dms_static_dark_N300
     )
+    override val showOutlineView: Boolean
+        get() = false
 }

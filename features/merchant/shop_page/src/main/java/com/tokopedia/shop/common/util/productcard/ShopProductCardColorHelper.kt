@@ -26,6 +26,7 @@ class ShopProductCardColorHelper {
         override val shopBadgeTextColor: Int? = defaultProductCardColor
         override val quantityEditorColor = defaultProductCardColor
         override val stockBarColor = defaultProductCardColor
+        override val showOutlineView = defaultProductCardColor
     }
 
 

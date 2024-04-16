@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
@@ -89,7 +90,7 @@ internal class ProductCardRenderer(
         renderShopSection(productCardModel)
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
-        handleColorMode(productCardModel.colorMode)
+        handleColorMode(productCardModel)
     }
 
     private fun renderOutline(productCardModel: ProductCardModel) {
@@ -369,12 +370,15 @@ internal class ProductCardRenderer(
         safeGroup?.showWithCondition(productCardModel.isSafeProduct)
     }
 
-    private fun handleColorMode(colorMode: ProductCardColor?) {
-        if (colorMode == null) return
-        overrideColor(colorMode)
+    private fun handleColorMode(productCardModel: ProductCardModel) {
+        if (productCardModel.colorMode == null) return
+        overrideColor(
+            colorMode = productCardModel.colorMode,
+            isInBackground = productCardModel.isInBackground
+        )
     }
 
-    private fun overrideColor(colorMode: ProductCardColor) {
+    private fun overrideColor(colorMode: ProductCardColor, isInBackground: Boolean) {
         colorMode.cardBackgroundColor?.let { cardBackgroundColor ->
             cardContainer?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, cardBackgroundColor))
         }
@@ -420,5 +424,8 @@ internal class ProductCardRenderer(
                 labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
             }
         }
+
+        val hideOutlineView = colorMode.showOutlineView != null && colorMode.showOutlineView == false
+        if (hideOutlineView) outlineView?.gone()
     }
 }
