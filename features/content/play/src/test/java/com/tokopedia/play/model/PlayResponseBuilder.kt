@@ -1,7 +1,7 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.tokopedia.play.data.ReportSummaries
+import com.tokopedia.content.common.track.response.ReportSummaries
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 
@@ -340,7 +340,7 @@ class PlayResponseBuilder {
         return ReportSummaries(
                 listOf(
                         ReportSummaries.Data(
-                                ReportSummaries.Channel(
+                                ReportSummaries.Content(
                                         ReportSummaries.Metric(
                                                 totalLike = totalLike,
                                                 totalLikeFmt = totalLike,

@@ -1,9 +1,10 @@
 package com.tokopedia.play.robot.play
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.track.response.ReportSummaries
+import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.data.ReportSummaries
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
@@ -23,8 +24,6 @@ import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
@@ -120,8 +119,8 @@ class PlayViewModelRobot(
         viewModel.defocusPage(shouldPauseVideo)
     }
 
-    fun setMockResponseReportSummaries(response: ReportSummaries) {
-        coEvery { getReportSummariesUseCase.executeOnBackground() } returns response
+    fun setMockResponseReportSummaries(response: ReportSummaries.Response) {
+        coEvery { getReportSummariesUseCase(GetReportSummariesUseCase.Param("", "")) } returns response
     }
 
     fun setMockResponseIsLike(response: Boolean) {

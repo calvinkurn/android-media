@@ -16,6 +16,8 @@ import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
+import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -124,6 +126,7 @@ class FeedPostViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase,
+    private val getReportSummariesUseCase: GetReportSummariesUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -1248,6 +1251,17 @@ class FeedPostViewModel @Inject constructor(
             }.executeOnBackground()
         }) {
         }
+    }
+
+    fun getReportSummaries(model: FeedCardVideoContentModel) {
+        val playChannelId = model.playChannelId
+        if (playChannelId.isBlank()) return
+
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            getReportSummariesUseCase(
+                GetReportSummariesUseCase.Param(playChannelId, TrackContentType.Play.value)
+            )
+        }) {}
     }
 
     fun updateChannelStatus(playChannelId: String) {
