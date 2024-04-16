@@ -62,6 +62,7 @@ internal class ProductCardRenderer(
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val shopNameBadgeText by view.lazyView<Typography?>(R.id.productCardShopNameLocation)
     private val buttonAddToCart by view.lazyView<UnifyButton?>(R.id.productCardAddToCart)
+    private val buttonGenericCta by view.lazyView<UnifyButton?>(R.id.productCardGenericCta)
     private val labelBenefitView by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
@@ -380,6 +381,24 @@ internal class ProductCardRenderer(
 
         colorMode.productNameTextColor?.let { productNameTextColor ->
             nameText?.setTextColor(ContextCompat.getColor(context, productNameTextColor))
+        }
+
+        nameText?.setTextColor(productNameColor)
+        priceText?.setTextColor(productPriceTextColor)
+        slashedPriceText?.setTextColor(slashedPriceTextColor)
+        discountText?.setTextColor(discountTextColor)
+        credibilityText?.setTextColor(credibilityTextColor)
+        ratingText?.setTextColor(ratingTextColor)
+        shopNameBadgeText?.setTextColor(shopBadgeTextColor)
+        
+        buttonAddToCart?.applyColorMode(colorMode.buttonColorMode)
+        buttonGenericCta?.applyColorMode(colorMode.buttonColorMode)
+
+        val hasCustomCutoutFillColor = colorMode.labelBenefitViewColor.cutoutFillColor.isNotEmpty()
+        if (hasCustomCutoutFillColor) {
+            labelBenefitView?.setCutoutFillColor(colorMode.labelBenefitViewColor.cutoutFillColor)
+        } else {
+            labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
         }
 
         colorMode.priceTextColor?.let { priceTextColor ->

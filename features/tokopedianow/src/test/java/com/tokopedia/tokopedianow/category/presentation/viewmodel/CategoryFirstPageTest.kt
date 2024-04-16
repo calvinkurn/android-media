@@ -1,15 +1,14 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryHeader
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
@@ -35,27 +34,19 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
+
         val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -67,10 +58,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         val resultList = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )
@@ -122,27 +110,19 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
+
         val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -154,10 +134,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         val resultList = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )

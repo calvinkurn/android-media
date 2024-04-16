@@ -185,7 +185,8 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         setupRecyclerView()
         setupRefreshLayout()
         setupNavigationToolbar()
-        setNavToolbarHeight()
+
+        viewModel.onViewCreated()
     }
 
     override fun onResume() {
@@ -568,16 +569,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
                     name = model.name,
                     isLoggedInStatus = viewModel.isLoggedIn()
                 )
-            }
-        }
-    }
-
-    private fun setNavToolbarHeight() {
-        binding?.navToolbar?.let {
-            it.post {
-                val navToolbarHeight = getNavToolbarHeight(it)
-                viewModel.navToolbarHeight = navToolbarHeight
-                viewModel.onViewCreated()
             }
         }
     }

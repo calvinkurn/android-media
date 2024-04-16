@@ -118,7 +118,12 @@ data class FingerPrint(
 
     @SerializedName("installer")
     @Expose
-    private val installer: String) {
+    private val installer: String,
+
+    @SerializedName("access_type")
+    @Expose
+    private val accessType: Int
+) {
 
     fun hasUniqueId() = unique_id.isNotEmpty()
 }

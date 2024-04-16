@@ -35,8 +35,11 @@ class AnnotationCategoryUseCase @Inject constructor(
                         productID
                         vendorName
                         data {
+                            variantId
                             variant
                             sortOrder
+                            isMandatory
+                            isCustomAnnotType
                             values {
                                 id
                                 name

@@ -87,6 +87,8 @@ import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataActivity
 import com.tokopedia.travel.passenger.presentation.fragment.TravelContactDataFragment
@@ -663,9 +665,26 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getRollenceFlightInsuranceAutoTick(): String {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.FLIGHT_INSURANCE_AUTO_TICK,
+            ""
+        )
+    }
+
+    private fun isEnableInsuranceAutoTickRollence(): Boolean {
+        return when (getRollenceFlightInsuranceAutoTick()) {
+            RollenceKey.FLIGHT_INSURANCE_AUTO_TICK_CONTROL -> true
+            RollenceKey.FLIGHT_INSURANCE_AUTO_TICK_VARIANT -> false
+            else -> true
+        }
+    }
+
     private fun renderInsuranceData(insurances: List<FlightCart.Insurance>) {
         if (!::flightInsuranceAdapter.isInitialized) {
-            flightInsuranceAdapter = FlightInsuranceAdapter()
+            flightInsuranceAdapter = FlightInsuranceAdapter(
+                isEnableInsuranceAutoTickRollence()
+            )
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             binding?.rvInsuranceList?.layoutManager = layoutManager
             binding?.rvInsuranceList?.setHasFixedSize(true)

@@ -116,6 +116,7 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
         onClick {
             trackClickEvent()
             RouteManager.route(itemView.context, redirectAppLink)
+            discoMerchantVoucherViewModel?.trackTopAdsClick()
         }
     }
 

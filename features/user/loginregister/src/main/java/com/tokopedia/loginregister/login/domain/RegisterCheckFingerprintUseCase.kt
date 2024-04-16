@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
 import javax.inject.Inject
 
 class RegisterCheckFingerprintUseCase @Inject constructor(

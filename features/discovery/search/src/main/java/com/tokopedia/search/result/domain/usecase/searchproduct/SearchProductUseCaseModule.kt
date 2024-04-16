@@ -47,7 +47,9 @@ class SearchProductUseCaseModule {
             reimagineRollence,
         )
 
-        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
+        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase(
+            reimagineRollence
+        )
 
         return SearchProductTypoCorrectionUseCase(
             searchProductUseCase = firstPageGqlUseCase,
@@ -96,7 +98,9 @@ class SearchProductUseCaseModule {
             searchProductModelMapper,
             reimagineRollence,
         )
-        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
+        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase(
+            reimagineRollence
+        )
         return SearchProductTypoCorrectionUseCase(
             searchProductUseCase = loadMoreGqlUseCase,
             searchProductTopAdsUseCase = topAdsGqlUseCase,
@@ -119,7 +123,12 @@ class SearchProductUseCaseModule {
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_TOPADS_USE_CASE)
-    fun provideSearchProductTopAdsUseCase(): UseCase<TopAdsModel> {
-        return SearchProductTopAdsUseCase(GraphqlUseCase())
+    fun provideSearchProductTopAdsUseCase(
+        reimagineRollence: ReimagineRollence
+    ): UseCase<TopAdsModel> {
+        return SearchProductTopAdsUseCase(
+            GraphqlUseCase(),
+            reimagineRollence
+        )
     }
 }

@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicProductMediaBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
@@ -19,7 +18,11 @@ class ProductMediaViewHolder(
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
+
     private val binding = ItemDynamicProductMediaBinding.bind(view)
+
+    val mediaPosition
+        get() = binding.viewMediaPager.lastPositionIsSku
 
     override fun bind(element: ProductMediaDataModel) {
         setupViewpager(element)
@@ -55,15 +58,17 @@ class ProductMediaViewHolder(
     }
 
     private fun processPayload(payload: Int?, element: ProductMediaDataModel) = when (payload) {
-        ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
+        ProductMediaDataModel.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
             binding.viewMediaPager.scrollToPosition(
                 element.indexOfSelectedVariantOptionId(),
                 true
             )
         }
-        ProductDetailConstant.PAYLOAD_MEDIA_UPDATE -> {
+
+        ProductMediaDataModel.PAYLOAD_MEDIA_UPDATE -> {
             setupViewpager(element, true)
         }
+
         else -> {
             //NO-OP
         }

@@ -23,6 +23,9 @@ internal class SearchViewModel(
     override val stateFlow: StateFlow<SearchState>
         get() = _stateFlow.asStateFlow()
 
+    val activeTabPosition : Int
+        get() = stateFlow.value.activeTabPosition
+
     fun showAutoCompleteView() {
         _stateFlow.update { it.openAutoComplete() }
     }

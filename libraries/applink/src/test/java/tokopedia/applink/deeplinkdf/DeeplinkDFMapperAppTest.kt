@@ -274,6 +274,7 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_SEARCH, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.ALL_ANNOTATION, DF_TOKOPEDIA_NOW)
+        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.SHOPPING_LIST, DF_TOKOPEDIA_NOW)
     }
 
     @Test
@@ -335,6 +336,7 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkSA("tokopedia://product/2506450520/?warehouse_id=12345", DF_SELLER_PDP)
         assertEqualDeepLinkSA("tokopedia://product-edu/1", DF_SELLER_PDP)
         assertEqualDeepLinkSA("tokopedia://post-atc/2506450520", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product-webview-bs", DF_SELLER_PDP)
     }
 
     @Test

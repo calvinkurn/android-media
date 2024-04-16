@@ -17,3 +17,8 @@ fun Float.toDp(): Float = this / Resources.getSystem().displayMetrics.density
 fun Float.toPx(): Float = this * Resources.getSystem().displayMetrics.density
 
 val Float.Companion.ZERO get() = 0f
+val Float.Companion.ONE get() = 1f
+
+val Float.half get() = this.div(2)
+
+val Float.third get() = this.div(3)

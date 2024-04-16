@@ -9,7 +9,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/header_bottom_sheet_rounded_white"
+        android:background="@drawable/trade_in_header_bottom_sheet_rounded_white"
         android:fillViewport="true"
         android:orientation="vertical"
         android:scrollbars="none">

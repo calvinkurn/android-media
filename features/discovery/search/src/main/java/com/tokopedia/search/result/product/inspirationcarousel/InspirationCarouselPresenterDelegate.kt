@@ -12,9 +12,11 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchRedeemCouponModel
 import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
@@ -57,7 +59,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private val couponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchCouponModel>,
     @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_REDEEM_USE_CASE)
     private val redeemCouponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchRedeemCouponModel>,
-    private val iris: Iris
+    private val iris: Iris,
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory
 ) : InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 
@@ -119,7 +122,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     fun processInspirationCarouselPosition(
         totalProductItem: Int,
         externalReference: String,
-        action: (Int, List<Visitable<*>>) -> Unit
+        isFirstPage: Boolean,
+        action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         if (inspirationCarouselDataViewList.isEmpty()) return
 
@@ -134,7 +138,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
             if (data.position <= totalProductItem && shouldShowInspirationCarousel(data.layout)) {
                 val inspirationCarouselVisitableList =
-                    constructInspirationCarouselVisitableList(data, externalReference)
+                    constructInspirationCarouselVisitableList(data, externalReference, isFirstPage)
 
                 inspirationCarouselVisitableList?.let { action(data.position, it) }
 
@@ -176,10 +180,11 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun constructInspirationCarouselVisitableList(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
+        isFirstPage: Boolean,
     ) = when {
         data.isDynamicProductLayout() ->
-            convertInspirationCarouselToBroadMatch(data, externalReference)
+            convertInspirationCarouselToBroadMatch(data, externalReference, isFirstPage)
 
         data.isVideoLayout() ->
             convertInspirationCarouselToInspirationCarouselVideo(data)
@@ -223,7 +228,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun convertInspirationCarouselToBroadMatch(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
+        isFirstPage: Boolean,
     ): List<Visitable<*>>? {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
@@ -234,7 +240,13 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         }
 
         val optionList =
-            BroadMatchDataView.createList(data, externalReference, !hasTitle, deduplication)
+            BroadMatchDataView.createList(
+                data,
+                externalReference,
+                !hasTitle,
+                deduplication,
+                byteIOTrackingDataFactory.create(isFirstPage),
+            )
 
         if (optionList.isEmpty()) return null
 
@@ -433,16 +445,21 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         inspirationCarouselTitle: String
     ) {
         val mapper = InspirationCarouselProductDataViewMapper()
+        val inspirationCarouselProduct =
+            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product
+
         val productList = mapper.convertToInspirationCarouselProductDataView(
-            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
-            clickedInspirationCarouselOption.optionPosition,
-            clickedInspirationCarouselOption.inspirationCarouselType,
-            clickedInspirationCarouselOption.layout,
-            this::productLabelGroupToLabelGroupDataView,
-            clickedInspirationCarouselOption.title,
-            inspirationCarouselTitle,
-            clickedInspirationCarouselOption.dimension90,
-            clickedInspirationCarouselOption.externalReference
+            inspirationCarouselProduct = inspirationCarouselProduct,
+            productPosition = clickedInspirationCarouselOption.optionPosition,
+            inspirationCarouselType = clickedInspirationCarouselOption.inspirationCarouselType,
+            layout = clickedInspirationCarouselOption.layout,
+            mapLabelGroupDataViewList = this::productLabelGroupToLabelGroupDataView,
+            optionTitle = clickedInspirationCarouselOption.title,
+            carouselTitle = inspirationCarouselTitle,
+            dimension90 = clickedInspirationCarouselOption.dimension90,
+            externalReference = clickedInspirationCarouselOption.externalReference,
+            byteIOTrackingData = clickedInspirationCarouselOption.byteIOTrackingData,
+            trackingOption = clickedInspirationCarouselOption.trackingOption,
         )
 
         clickedInspirationCarouselOption.product = productList
@@ -458,7 +475,10 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 it.position,
                 it.type,
                 it.title,
-                it.url
+                it.url,
+                it.styleList.map { style ->
+                    StyleDataView.create(style)
+                },
             )
         }
     }

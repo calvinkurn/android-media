@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
@@ -23,6 +24,8 @@ class StickyHeadRecyclerView : ConstraintLayout {
     private val headerRecyclerView: FrameLayout
     private val recyclerView: RecyclerView
     private var headerItemDecoration: HeaderItemDecoration? = null
+
+    private var hasApplogScrollListener = false
 
     init {
         val view = View.inflate(context, R.layout.sticky_header_recycler_view, this)
@@ -105,5 +108,11 @@ class StickyHeadRecyclerView : ConstraintLayout {
 
     fun setPaddingToInnerRV(left: Int, top: Int, right: Int, bottom: Int) {
         recyclerView.setPadding(left, top, right, bottom)
+    }
+
+    fun trackVerticalScroll() {
+        if(hasApplogScrollListener) return
+        recyclerView.addVerticalTrackListener()
+        hasApplogScrollListener = true
     }
 }
