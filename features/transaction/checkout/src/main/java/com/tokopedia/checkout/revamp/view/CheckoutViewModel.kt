@@ -3247,8 +3247,8 @@ class CheckoutViewModel @Inject constructor(
 
         // get platform fee
         val paymentFeeCheckoutRequest = PaymentFeeRequest(
-            gatewayCode = "",
-            profileCode = shipmentPlatformFeeData.profileCode,
+            gatewayCode = payment.data?.paymentWidgetData?.firstOrNull()?.gatewayCode ?: "",
+            profileCode = payment.data?.paymentWidgetData?.firstOrNull()?.profileCode ?: shipmentPlatformFeeData.profileCode,
             additionalData = shipmentPlatformFeeData.additionalData,
             transactionAmount = cost.totalPrice,
             paymentRequest = paymentRequest
