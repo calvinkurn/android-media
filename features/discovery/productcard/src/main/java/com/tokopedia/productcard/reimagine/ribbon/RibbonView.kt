@@ -17,7 +17,7 @@ import com.tokopedia.productcard.utils.GOLD
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-internal class RibbonView: LinearLayout {
+class RibbonView: LinearLayout {
 
     private val text by lazyView<Typography?>(R.id.productCardRibbonText)
     private val slip by lazyView<ImageView?>(R.id.productCardRibbonSlip)

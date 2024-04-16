@@ -8,13 +8,12 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponentContainerStatic2squareBinding
 import com.tokopedia.home_component.decoration.StaticMissionWidgetItemDecoration
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactoryImpl
-import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSquaresAdapter
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
+import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-// A container to put a mini deals widget and mini mission widget.
 class ContainerStaticSquaresViewHolder(
     view: View,
     private val recyclerRecycledViewPool: RecycledViewPool?
@@ -59,6 +58,7 @@ class ContainerStaticSquaresViewHolder(
         binding?.lstComponent?.addItemDecoration(StaticMissionWidgetItemDecoration.span2())
         binding?.lstComponent?.layoutManager = layoutManager
         binding?.lstComponent?.adapter = mAdapter
+        binding?.lstComponent?.setHasFixedSize(true)
     }
 
     companion object {

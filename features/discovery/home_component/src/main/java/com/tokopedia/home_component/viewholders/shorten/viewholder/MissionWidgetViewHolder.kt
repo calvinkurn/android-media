@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponent2squareMissionWidgetBinding
-import com.tokopedia.home_component.decoration.StaticMissionWidgetItemDecoration
 import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.PartialItemWidgetAdapter
 import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
@@ -40,8 +39,8 @@ class MissionWidgetViewHolder(
     private fun setupRecyclerView() {
         mAdapter = PartialItemWidgetAdapter(DealsAndMissionWidgetUiModel.Type.Mission)
         binding?.lstCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
-        binding?.lstCard?.addItemDecoration(StaticMissionWidgetItemDecoration.span2())
         binding?.lstCard?.adapter = mAdapter
+        binding?.lstCard?.setHasFixedSize(true)
     }
 
     companion object {
