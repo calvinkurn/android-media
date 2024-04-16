@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -20,24 +20,26 @@ import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
-import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
-import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetTotalTokoMemberUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
 import com.tokopedia.sellerhomecommon.domain.model.AutoAdsResponse
+import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsAutoAdsUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsShopInfoUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.GetShopChargableUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,6 +55,7 @@ import javax.inject.Inject
 class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getTokoPlusBadgeUseCase: GetTokoPlusBadgeUseCase,
+    private val getShopChargableUseCase: GetShopChargableUseCase,
     private val getShopOperationalUseCase: GetShopOperationalUseCase,
     private val getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase,
     private val balanceInfoUseCase: BalanceInfoUseCase,
@@ -103,6 +106,10 @@ class OtherMenuViewModel @Inject constructor(
     private val _isTopAdsShopUsed = MutableLiveData<Boolean>()
     private val _topadsAutoAdsData = MutableLiveData< AutoAdsResponse.TopAdsGetAutoAds.Data>()
 
+    private val _totalTransactionData = MutableLiveData<SettingResponseState<RmTransactionData>>()
+
+    val totalTransactionData : LiveData<SettingResponseState<RmTransactionData>>
+        get() = _totalTransactionData
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
         get() = _shopBadgeLiveData
     val shopTotalFollowersLiveData: LiveData<SettingResponseState<String>>
@@ -451,6 +458,7 @@ class OtherMenuViewModel @Inject constructor(
                     TokoPlusBadgeUiModel()
                 } else {
                     getTokoPlusBadgeUseCase.execute(userSession.shopId)
+                    getShopChargableUseCase.execute(userSession.shopId, 1, 50)
                 }
             }
             _freeShippingLiveData.value = SettingResponseState.SettingSuccess(freeShippingPair)

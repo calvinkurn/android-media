@@ -7,6 +7,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.FreeShippingWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.RMTransactionWidgetUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ReputationBadgeWidgetUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopFollowersWidgetUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopOperationalWidgetUiModel
@@ -224,6 +225,7 @@ class ShopSecondaryInfoAdapter(
         return listOf(
             ShopOperationalWidgetUiModel(SettingResponseState.SettingLoading),
             ShopStatusWidgetUiModel(SettingResponseState.SettingLoading),
+            RMTransactionWidgetUiModel(SettingResponseState.SettingLoading),
             ReputationBadgeWidgetUiModel(SettingResponseState.SettingLoading),
             TokoMemberWidgetUiModel(SettingResponseState.SettingLoading),
             ShopFollowersWidgetUiModel(SettingResponseState.SettingLoading),
