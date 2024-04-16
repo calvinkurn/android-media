@@ -4,7 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 object GoldGetPMOSStatusQuery: GqlQueryInterface {
 
-    private const val OPERATION_NAME = "ShopInfoById"
+    private const val OPERATION_NAME = "GoldGetPMOSStatus"
 
     private const val SHOP_ID_KEY = "shopId"
 

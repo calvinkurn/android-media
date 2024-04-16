@@ -95,6 +95,9 @@ object SlardarInit {
             .build())
         initBuilder.maxValidPageLoadTimeMs(20 * 1000.toLong())
         initBuilder.enableDeviceInfoOnPerfData(true)
+        if (GlobalConfig.DEBUG) {
+            initBuilder.debugMode(true)
+        }
         Apm.getInstance().init(context.applicationContext, initBuilder.build())
     }
 
@@ -148,7 +151,7 @@ object SlardarInit {
         builder.useDefaultTTNetImpl(true)
         builder.dynamicParams(object : IDynamicParams {
             override fun getCommonParams(): Map<String, String> {
-                return mapOf()
+                return mutableMapOf()
             }
 
             override fun getSessionId(): String {

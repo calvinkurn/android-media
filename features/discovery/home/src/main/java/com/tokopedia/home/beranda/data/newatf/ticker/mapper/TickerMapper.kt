@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.newatf.ticker
+package com.tokopedia.home.beranda.data.newatf.ticker.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.newatf.AtfData

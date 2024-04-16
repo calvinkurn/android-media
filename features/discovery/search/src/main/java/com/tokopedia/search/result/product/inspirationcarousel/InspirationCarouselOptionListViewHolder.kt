@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -62,7 +63,7 @@ class InspirationCarouselOptionListViewHolder(
     private fun bindOnClickListener(item: InspirationCarouselDataView.Option) {
         val binding = binding ?: return
         binding.viewAllOption.setOnClickListener { _ ->
-            inspirationCarouselListener.onInspirationCarouselSeeAllClicked(item)
+            inspirationCarouselListener.onInspirationCarouselSeeAllClicked(item, CLICK_SEE_MORE)
         }
         binding.optionListCardView.setOnClickListener { _ ->
             val product = item.product.getOrNull(0) ?: return@setOnClickListener

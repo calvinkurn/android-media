@@ -523,7 +523,7 @@ object ProductDetailMapper {
                         GWPUiModel(type = component.type, name = component.componentName)
                     )
                 }
-                ProductDetailConstant.SDUI_VIEW -> {
+                ProductDetailConstant.SDUI -> {
                     val sduiData = component.componentData.firstOrNull() ?: return@forEachIndexed
                     listOfComponent.add(
                         SDUIDataModel(
@@ -534,6 +534,7 @@ object ProductDetailMapper {
                     )
                 }
             }
+
         }
         return listOfComponent
     }
