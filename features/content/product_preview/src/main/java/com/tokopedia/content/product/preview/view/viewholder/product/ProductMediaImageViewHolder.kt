@@ -32,7 +32,12 @@ class ProductMediaImageViewHolder(
     fun bind(content: ProductMediaUiModel) {
         binding.cvProductPreviewMediaImage.apply {
             setContent {
-                ItemImageProductPreview(imageUrl = content.url)
+                ItemImageProductPreview(
+                    imageUrl = content.url,
+                    stateListener = { isScalingMode ->
+                        mediaImageLister.onImageInteraction(isScalingMode)
+                    }
+                )
             }
         }
     }

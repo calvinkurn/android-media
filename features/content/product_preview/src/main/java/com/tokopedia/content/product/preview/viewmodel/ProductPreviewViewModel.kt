@@ -31,6 +31,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Navigate
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductImageInteraction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaVideoEnded
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentScrolling
@@ -74,9 +75,21 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(productPreviewSource: ProductPreviewSourceModel): ProductPreviewViewModel
     }
 
-    private val reviewSourceId = (productPreviewSource.source as? ReviewSourceData)?.reviewSourceId.orEmpty()
+    private val reviewSourceId : String get() {
+        return when (val source  =  productPreviewSource.source) {
+            is ReviewSourceData -> source.reviewSourceId
+            is ProductPreviewSourceModel.ShareSourceData -> source.reviewSourceId
+            else -> ""
+        }
+    }
 
-    private val attachmentSourceId = (productPreviewSource.source as? ReviewSourceData)?.attachmentSourceId.orEmpty()
+    private val attachmentSourceId : String get() {
+        return when (val source  =  productPreviewSource.source) {
+            is ReviewSourceData -> source.attachmentSourceId
+            is ProductPreviewSourceModel.ShareSourceData -> source.attachmentSourceId.orEmpty()
+            else -> ""
+        }
+    }
 
     private val _tabContentState = MutableStateFlow(ProductPreviewTabUiModel.Empty)
     private val _productMediaState = MutableStateFlow(ProductUiModel.Empty)
@@ -145,6 +158,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ToggleReviewWatchMode -> handleReviewWatchMode()
             HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
             ProductMediaVideoEnded -> handleProductMediaVideoEnded()
+            is ProductImageInteraction -> handleProductImageInteraction(action.isScalingMode)
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
@@ -163,7 +177,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when (val source = productPreviewSource.source) {
                 is ProductSourceData -> updateTabProductSource(source)
-                is ReviewSourceData -> updateTabReviewSource()
+                is ReviewSourceData, is ProductPreviewSourceModel.ShareSourceData -> updateTabReviewSource()
                 else -> error("Unknown Source Data")
             }
         }) {
@@ -202,8 +216,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when (productPreviewSource.source) {
                 is ProductSourceData -> handleFetchReview(isRefresh = true, page = 1)
-                is ReviewSourceData -> handleFetchReviewByIds()
+                is ReviewSourceData, is ProductPreviewSourceModel.ShareSourceData -> handleFetchReviewByIds()
                 UnknownSource -> error("Unknown Source Data")
+                else -> {}
             }
         }) { _uiEvent.emit(UnknownSourceData) }
     }
@@ -330,6 +345,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun handleProductImageInteraction(isScalingMode: Boolean) {
+        if (isScalingMode) {
+            autoScrollProductMedia?.cancel()
+        } else {
+            scheduleAutoScrollProductMedia()
         }
     }
 

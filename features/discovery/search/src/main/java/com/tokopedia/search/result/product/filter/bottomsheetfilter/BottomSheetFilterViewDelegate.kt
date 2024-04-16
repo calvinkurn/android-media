@@ -4,6 +4,12 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
+import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -16,14 +22,17 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.byteio.ecomSortName
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.manualFilterToggleMap
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -41,11 +50,13 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val screenNameProvider: ScreenNameProvider,
     private val userSessionInterface: UserSessionInterface,
     private val reimagineRollence: ReimagineRollence,
+    queryKeyProvider: QueryKeyProvider,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
     SearchParameterProvider by searchParameterProvider,
     ScreenNameProvider by screenNameProvider,
+    QueryKeyProvider by queryKeyProvider,
     SortFilterBottomSheet.Callback,
     LifecycleObserver {
 
@@ -58,6 +69,9 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val pageSource: String by lazy {
         Dimension90Utils.getDimension90(getSearchParameter()?.getSearchParameterMap().orEmpty())
     }
+
+    private val searchEntrance: String
+        get() = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty()
 
     override fun sendTrackingOpenFilterPage() {
         SearchSortFilterTracking.eventOpenFilterPage()
@@ -127,22 +141,36 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
             val sortParam = selectedSort.toMapParam()
 
-            trackEventApplySort(sortParam)
+            trackEventApplySort(sortParam, selectedSort)
 
             val parameter = filterController.getParameter() +
                 sortParam +
                 manualFilterToggleMap() +
-                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID)
+                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID) +
+                enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
             applyParameter(parameter)
         }
     }
 
-    private fun trackEventApplySort(sortParam: Map<String, String>) {
+    private fun trackEventApplySort(sortParam: Map<String, String>, selectedSort: Sort) {
         SearchSortFilterTracking.eventApplySort(
             keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
             pageSource = pageSource,
             selectedSort = sortParam,
+        )
+
+        AppLogSearch.eventChooseSearchFilter(
+            AppLogSearch.ChooseSearchFilter(
+                searchID = SearchId.value,
+                searchType = GOODS_SEARCH,
+                keyword = queryKey,
+                ecomSortName = ecomSortName(selectedSort.name),
+                ecomFilterName = "",
+                ecomFilterPosition = "",
+                buttonTypeClick = FILTER_PANEL,
+                searchEntrance = searchEntrance,
+            )
         )
     }
 
@@ -185,7 +213,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         val parameter = applySortFilterModel.mapParameter +
             manualFilterToggleMap() +
-            componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID)
+            componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID) +
+            enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
         applyParameter(parameter)
     }
@@ -197,6 +226,36 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             selectedSort = applySortFilterModel.selectedSortMapParameter,
             selectedFilter = applySortFilterModel.selectedFilterMapParameter,
             sortApplyFilter = applySortFilterModel.sortAutoFilterMapParameter,
+        )
+
+        trackByteIOApplyFilterAndSort(applySortFilterModel)
+    }
+
+    private fun trackByteIOApplyFilterAndSort(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        val selectedOptionWithIndex = applySortFilterModel.selectedOptionWithIndex
+
+        val ecomFilterName =
+            selectedOptionWithIndex.joinToString(separator = ",") { it.second.key }
+
+        val ecomFilterPosition =
+            selectedOptionWithIndex.joinToString(separator = ",") { it.first.toString() }
+
+        val ecomSortName =
+            if (applySortFilterModel.selectedSortName.isNotBlank())
+                ecomSortName(applySortFilterModel.selectedSortName)
+            else ""
+
+        AppLogSearch.eventChooseSearchFilter(
+            AppLogSearch.ChooseSearchFilter(
+                searchID = SearchId.value,
+                searchType = GOODS_SEARCH,
+                keyword = queryKey,
+                ecomSortName = ecomSortName,
+                ecomFilterName = ecomFilterName,
+                ecomFilterPosition = ecomFilterPosition,
+                buttonTypeClick = FILTER_PANEL,
+                searchEntrance = searchEntrance,
+            )
         )
     }
 

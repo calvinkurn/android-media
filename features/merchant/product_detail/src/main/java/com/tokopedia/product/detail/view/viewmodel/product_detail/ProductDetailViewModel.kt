@@ -1,11 +1,19 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.analytics.byteio.ProductType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
+import com.tokopedia.analytics.byteio.TrackConfirmSku
+import com.tokopedia.analytics.byteio.TrackProductDetail
+import com.tokopedia.analytics.byteio.TrackStayProductDetail
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -19,10 +27,13 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AdditionalParam
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper.Companion.PARAM_START_SUBID
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -166,7 +177,12 @@ class ProductDetailViewModel @Inject constructor(
     private val productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel,
     thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
-) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel, thumbnailVariantSubViewModel),
+) : ParentSubViewModel(
+    dispatcher.main,
+    productRecommSubViewModel,
+    playWidgetSubViewModel,
+    thumbnailVariantSubViewModel
+),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
@@ -275,6 +291,17 @@ class ProductDetailViewModel @Inject constructor(
     var tradeinDeviceId: String = ""
     val impressionHolders = mutableListOf<String>()
 
+    /**
+     * These variable are for storing appLog stay-analytics data
+     * */
+    private var isLoadData: Boolean = false
+    private var hasDoneAddToCart: Boolean = false
+    val mainPhotoViewed: MutableSet<Int> = mutableSetOf()
+    val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
+    private val isSingleSku: Boolean
+        get() = if (getProductInfoP1?.isProductVariant() == false) true
+        else variantData?.children?.size == 1
+
     // used only for bringing product id to edit product
     var parentProductId: String? = null
     var shippingMinimumPrice: Double = getProductInfoP1?.basic?.getDefaultOngkirDouble()
@@ -293,7 +320,8 @@ class ProductDetailViewModel @Inject constructor(
         get() = userSessionInterface.isLoggedIn
 
     private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
-    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    private val _productMediaRecomBottomSheetState =
+        MutableLiveData<ProductMediaRecomBottomSheetState>()
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
 
@@ -307,7 +335,8 @@ class ProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
-    private var aPlusContentExpanded: Boolean = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+    private var aPlusContentExpanded: Boolean =
+        ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
 
     override fun getP1(): ProductInfoP1? = getProductInfoP1
 
@@ -487,6 +516,54 @@ class ProductDetailViewModel @Inject constructor(
         return p2.bebasOngkir.boImages.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
     }
 
+    fun getProductDetailTrack(): TrackProductDetail? {
+        val p1 = getProductInfoP1 ?: return null
+        val p2 = p2Data.value ?: return null
+        Timber.d("Is single sku ${p1.isProductVariant()} ${p1.isProductVariant()}")
+        return TrackProductDetail(
+            productId = p1.parentProductId,
+            productCategory = p1.basic.category.detail.firstOrNull()?.name.orEmpty(),
+            productType = p1.productType,
+            originalPrice = p1.originalPriceFmt,
+            salePrice = p1.data.campaign.priceFmt,
+            isSingleSku = isSingleSku
+        )
+    }
+
+    fun getStayAnalyticsData(): TrackStayProductDetail {
+        val p1 = getProductInfoP1
+        val mainCount = mainPhotoViewed.count()
+        mainPhotoViewed.clear()
+        val skuCount = skuPhotoViewed.count()
+        skuPhotoViewed.clear()
+        return TrackStayProductDetail(
+            productId = p1?.parentProductId.orEmpty(),
+            productCategory = p1?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
+            productType = p1?.productType ?: ProductType.NOT_AVAILABLE,
+            originalPrice = p1?.originalPriceFmt.orEmpty(),
+            salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
+            isLoadData = isLoadData,
+            isSingleSku = isSingleSku,
+            mainPhotoViewCount = mainCount,
+            skuPhotoViewCount = skuCount,
+            isAddCartSelected = hasDoneAddToCart,
+            isSkuSelected = p1?.isProductVariant() == false
+        )
+    }
+
+    fun getConfirmCartResultData(): TrackConfirmCartResult {
+        val data = getProductInfoP1
+        return TrackConfirmCartResult(
+            productId = data?.parentProductId.orEmpty(),
+            productCategory = data?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
+            productType = data?.productType ?: ProductType.NOT_AVAILABLE,
+            originalPrice = data?.originalPrice.orZero(),
+            salePrice = data?.finalPrice.orZero(),
+            skuId = data?.basic?.productID.orEmpty(),
+            addSkuNum = data?.basic?.minOrder.orZero(),
+        )
+    }
+
     /**
      * If variant change, make sure this function is called after update product Id
      */
@@ -627,9 +704,11 @@ class ProductDetailViewModel @Inject constructor(
                 is AddToCartRequestParams -> {
                     getAddToCartUseCase(requestParams)
                 }
+
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
+
                 is AddToCartOccMultiRequestParams -> {
                     getAddToCartOccUseCase(atcParams)
                 }
@@ -639,12 +718,29 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun sendConfirmCartBytIoTracker() {
+        val data = getProductInfoP1 ?: return
+        AppLogPdp.sendConfirmCart(
+            TrackConfirmCart(
+                productId = data.parentProductId,
+                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
+                productType = data.productType,
+                originalPrice = data.originalPrice,
+                salePrice = data.finalPrice,
+                skuId = data.basic.productID,
+                addSkuNum = data.basic.minOrder,
+            )
+        )
+    }
+
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
+        sendConfirmCartBytIoTracker()
         val result = withContext(dispatcher.io) {
             addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
         }
 
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
+        hasDoneAddToCart = true
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
@@ -667,12 +763,12 @@ class ProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-
             _addToCartLiveData.value = result.asSuccess()
         }
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
+        sendConfirmCartBytIoTracker()
         val result = withContext(dispatcher.io) {
             addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
         }
@@ -694,6 +790,19 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
+        AppLogPdp.sendConfirmSku(
+            TrackConfirmSku(
+                productId = getProductInfoP1?.parentProductId.orEmpty(),
+                productCategory = getProductInfoP1?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
+                productType = getProductInfoP1?.productType ?: ProductType.NOT_AVAILABLE,
+                originalPrice = getProductInfoP1?.originalPrice.orZero(),
+                salePrice = getProductInfoP1?.finalPrice.orZero(),
+                skuId = getProductInfoP1?.basic?.productID.orEmpty(),
+                isSingleSku = isSingleSku,
+                qty = getProductInfoP1?.basic?.minOrder.orZero().toString(),
+                isHaveAddress = false
+            )
+        )
         val result = withContext(dispatcher.io) {
             addToCartOccUseCase.get().setParams(atcParams).executeOnBackground()
                 .mapToAddToCartDataModel()
@@ -767,6 +876,8 @@ class ProductDetailViewModel @Inject constructor(
         }
 
         this@ProductDetailViewModel._p2Other.postValue(p2OtherDeferred.await())
+
+        isLoadData = true
     }
 
     private fun getTopAdsImageViewData(productID: String) {
@@ -812,6 +923,7 @@ class ProductDetailViewModel @Inject constructor(
             val result =
                 withContext(dispatcher.io) { deleteWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
+                getP2()?.updateWishlistStatus(productId, false)
                 listener.onSuccessRemoveWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorRemoveWishlist(result.throwable, productId)
@@ -828,6 +940,7 @@ class ProductDetailViewModel @Inject constructor(
                 getProductInfoP1?.let {
                     getProductInfoP1 = it.copy(data = it.data.copy(isWishlist = true))
                 }
+                getP2()?.updateWishlistStatus(productId, true)
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorAddWishList(result.throwable, productId)
@@ -1121,21 +1234,39 @@ class ProductDetailViewModel @Inject constructor(
         productInfo: ProductInfoP1,
         affiliateUuid: String,
         uuid: String,
-        affiliateChannel: String
+        affiliateChannel: String,
+        affiliateSubIds: Map<String, String>?,
+        affiliateSource: String?
     ) {
         launchCatchError(block = {
             val affiliatePageDetail =
                 ProductDetailMapper.getAffiliatePageDetail(productInfo)
 
+            val subIds = affiliateSubIds?.mapNotNull {
+                val key = it.key.toIntOrNull()
+                    ?: if (it.key.length > PARAM_START_SUBID.length) it.key.substring(
+                        PARAM_START_SUBID.length
+                    ).toIntOrNull() else
+                        return@mapNotNull null
+
+                AdditionalParam(
+                    key = key.toString(),
+                    value = it.value.replace(" ", "+")
+                )
+            } ?: emptyList()
+
             affiliateCookieHelper.get().initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
-                uuid = uuid
+                uuid = uuid,
+                subIds = subIds,
+                source = affiliateSource ?: ""
             )
         }, onError = {
-                // no op, expect to be handled by Affiliate SDK
-            })
+            // no op, expect to be handled by Affiliate SDK
+
+        })
     }
 
     private fun updateRecomAtcStatusAndMiniCart(
@@ -1252,12 +1383,14 @@ class ProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+
             is OneTimeMethodEvent.ImpressGeneralEduBs -> {
                 if (_oneTimeMethod.value.impressGeneralEduBS) return
                 _oneTimeMethod.update {
                     it.copy(event = event, impressGeneralEduBS = true)
                 }
             }
+
             else -> {
                 // noop
             }
@@ -1272,17 +1405,18 @@ class ProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.main) {
             runCatching {
-                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                    if (
-                        productMediaRecomBottomSheetData?.pageName == pageName &&
-                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                    ) {
-                        productMediaRecomBottomSheetData
-                    } else {
-                        setProductMediaRecomBottomSheetLoading(title)
-                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                val data =
+                    _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                        if (
+                            productMediaRecomBottomSheetData?.pageName == pageName &&
+                            productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                        ) {
+                            productMediaRecomBottomSheetData
+                        } else {
+                            setProductMediaRecomBottomSheetLoading(title)
+                            loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                        }
                     }
-                }
                 setProductMediaRecomBottomSheetData(title, data)
             }.onFailure {
                 setProductMediaRecomBottomSheetError(title = title, error = it)

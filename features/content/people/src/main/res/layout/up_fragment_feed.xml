@@ -23,8 +23,6 @@
             android:paddingBottom="@dimen/content_common_space_1"
             tools:listitem="@layout/up_item_user_post_channel" />
 
-        <include layout="@layout/up_shimmer_user_feed" />
-
         <com.tokopedia.unifycomponents.LocalLoad
             android:id="@+id/global_error_feed"
             android:layout_width="match_parent"

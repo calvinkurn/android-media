@@ -69,7 +69,6 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.foldable.FoldableAndTabletSupportManager
 import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
@@ -137,6 +136,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
+import com.tokopedia.shop.common.ShopPageClipboardHandler
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -174,7 +174,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
-import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
+import com.tokopedia.shop.databinding.ShopPageWidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
@@ -469,7 +469,7 @@ class ShopPageHeaderFragment :
     private var viewOneTabSeparator: View? = null
     private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<NewShopPageMainBinding>()
-    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
+    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<ShopPageWidgetSellerMigrationBottomSheetHasPostBinding>()
     private var viewBindingShopContentLayout: ShopPageHeaderFragmentContentLayoutBinding? by viewBinding()
     private val isLogin: Boolean
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
@@ -672,7 +672,7 @@ class ShopPageHeaderFragment :
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
             BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
             viewBindingSellerMigrationBottomSheet =
-                WidgetSellerMigrationBottomSheetHasPostBinding.inflate(LayoutInflater.from(context))
+                ShopPageWidgetSellerMigrationBottomSheetHasPostBinding.inflate(LayoutInflater.from(context))
             viewTarget.addView(viewBindingSellerMigrationBottomSheet?.root)
 
             val ivTabFeedHasPost: ImageUnify? =
@@ -2573,7 +2573,7 @@ class ShopPageHeaderFragment :
                             when (shopShare) {
                                 is ShopShareModel.CopyLink -> {
                                     linkerShareData?.url?.let {
-                                        ClipboardHandler().copyToClipboard(
+                                        ShopPageClipboardHandler().copyToClipboard(
                                             (activity as Activity),
                                             it
                                         )

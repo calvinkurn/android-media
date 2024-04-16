@@ -149,6 +149,14 @@ open class BaseDiscoveryAnalytics(
     ) {
     }
 
+    open fun trackMerchantVoucherViewClickAll(
+        components: ComponentsItem,
+        userID: String?,
+        position: Int,
+        ctaText: String?
+    ) {
+    }
+
     open fun trackMerchantVoucherMultipleShopClicks(
         components: ComponentsItem,
         userID: String?,

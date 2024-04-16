@@ -14,33 +14,90 @@
 package com.tokopedia.translator.util
 
 import android.app.Activity
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import java.util.ArrayList
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.coroutineScope
+import java.util.*
+
 
 internal object ViewUtil {
-    fun getChildren(viewGroup: View?): List<View> {
-        val unTraversedViews = ArrayList<View>()
-        val traversedViews = ArrayList<View>()
-        unTraversedViews.add(viewGroup!!)
 
-        while (unTraversedViews.isNotEmpty()) {
-            val child = unTraversedViews.removeAt(0)
-            traversedViews.add(child)
-            if (child !is ViewGroup) {
-                continue
-            }
+    suspend fun getChildren(viewGroup: View?): List<TextView> = coroutineScope {
+        sequence {
+            val unTraversedViews = ArrayDeque<View>()
 
-            for (counter in 0 until child.childCount) {
-                unTraversedViews.add(child.getChildAt(counter))
+            viewGroup?.let {
+
+                unTraversedViews.add(it)
+                while (unTraversedViews.isNotEmpty()) {
+                    val child = unTraversedViews.poll()
+
+                    if (child is TextView) {
+                        yield(child)
+                    }
+
+                    if (child is ViewGroup) {
+                        for (counter in 0 until child.childCount) {
+                            unTraversedViews.add(child.getChildAt(counter))
+                        }
+                    }
+                }
             }
+        }.toList()
+    }
+
+    suspend fun getChildrenViews(viewGroup: View?): List<TextView> = coroutineScope {
+        val traversedViews = mutableSetOf<TextView>()
+
+        viewGroup?.let {
+            traverseChildrenViews(it, traversedViews)
         }
 
-        return traversedViews
+        traversedViews.toList()
+    }
+
+    private fun traverseChildrenViews(
+        viewGroup: View,
+        traversedViews: MutableSet<TextView>
+    ) {
+
+        if (viewGroup is Typography) {
+            traversedViews.add(viewGroup)
+        }
+
+        if (viewGroup is ViewGroup) {
+            with(viewGroup) {
+                for (i in 0 until childCount) {
+                    try {
+                        traverseChildrenViews(getChildAt(i), traversedViews)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun getViewGroupId(viewGroup: View, activity: Activity): String {
+        return try {
+            val className = activity.javaClass.simpleName
+            val layoutResourceId = viewGroup.id
+            val fileName = activity.resources.getResourceEntryName(layoutResourceId)
+            "$className@$fileName@$layoutResourceId"
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     fun getContentView(activity: Activity?): View? {
         return activity?.window?.decorView?.findViewById(android.R.id.content)
+    }
+
+    fun getContentView(fragment: Fragment?): View? {
+        return fragment?.view
     }
 }

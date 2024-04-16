@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.tokopedia.content.product.preview.utils.ATTACHMENT_ID_QUERY_PARAMS
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_ID_QUERY_PARAMS
+import com.tokopedia.content.product.preview.utils.SHARE_KEY
 import com.tokopedia.content.product.preview.utils.SOURCE_QUERY_PARAMS
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 
@@ -16,6 +17,10 @@ class ProductPreviewAppLinkMapper(val productId: String) {
         val attachmentId = intent.data?.getQueryParameter(ATTACHMENT_ID_QUERY_PARAMS)
         val source = when {
             reviewId == null -> return null
+            entryPoint == SHARE_KEY -> ProductPreviewSourceModel.ShareSourceData(
+                reviewSourceId = reviewId,
+                attachmentSourceId = attachmentId
+            )
             attachmentId == null -> {
                 ProductPreviewSourceModel.ReviewSourceData(reviewSourceId = reviewId)
             }

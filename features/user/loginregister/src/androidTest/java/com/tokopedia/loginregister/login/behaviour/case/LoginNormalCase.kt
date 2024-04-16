@@ -215,7 +215,7 @@ class LoginNormalCase : LoginBase() {
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "CHARACTER_NOT_ALLOWED")
         val profilePojo = ProfilePojo(profileInfo)
-        getProfileUseCaseStub.response = profilePojo
+        fakeRepo.profileConfig = Config.WithResponse(profilePojo)
 
         runTest {
             mockAddNameProfilePage()

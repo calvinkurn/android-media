@@ -15,17 +15,17 @@ import com.tokopedia.linter.detectors.xml.XMLDetector
 import org.w3c.dom.Attr
 
 class TkpdDesignAttributeDetector : Detector(), XmlScanner {
-
+    val EXCLUDED_MODULES = listOf(
+        "tkpddesign"
+    )
     val listLayout = listOf(
         "bottomsheetbuilder_list_divider",
-        "branding_layout",
         "closeable_bottom_sheet_dialog",
         "design_text_input_password_icon",
         "dialog_base",
         "dialog_calendar",
         "dialog_longprominance",
         "hint_text_input_layout",
-        "item_autocomplete_text_double_row",
         "item_custom_quick_filter_view",
         "item_custom_rounded_filter_view",
         "item_quick_filter_view",
@@ -33,8 +33,6 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "item_shimmering_grid",
         "item_shimmering_list",
         "partial_shimmering_grid",
-        "partial_shimmering_grid_list_horizontal",
-        "partial_shimmering_label_view",
         "partial_shimmering_list",
         "permission_fragment",
         "rounded_closeable_bottom_sheet",
@@ -57,8 +55,6 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
 
 
     val listDrawable = listOf(
-        "background_countdown",
-        "background_countdown_unify",
         "bg_button_counter_minus",
         "bg_button_counter_minus_disabled",
         "bg_button_counter_minus_enabled",
@@ -78,6 +74,8 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "bg_button_white_enabled_border",
         "bg_button_white_transparent",
         "bg_button_white_transparent_enabled",
+        "bg_checkbox_default",
+        "bg_checkbox_selected",
         "bg_green_border_rect",
         "bg_green_rounded_tradein",
         "bg_green_toolbar_drop_shadow",
@@ -85,7 +83,6 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "bg_line_separator_thin",
         "bg_list_separator",
         "bg_radio_button",
-        "bg_radio_button_tkpddesign",
         "bg_rect_white_round",
         "bg_round_corner",
         "bg_round_corner_solid_green",
@@ -95,7 +92,6 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "bg_rounded_corners_green_with_shadow",
         "bg_rounded_corners_red",
         "bg_rounder_black",
-        "bg_search_input_text_area",
         "bg_single_line",
         "bg_switch_thumb_selector",
         "bg_switch_track_off",
@@ -106,7 +102,6 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "bottom_sheet_shadow",
         "btn_bg_rounded_corners",
         "btn_cancel",
-        "button_border_green",
         "button_buy_from_cart",
         "button_curvy_green",
         "card_shadow_bottom",
@@ -124,6 +119,9 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "green_radio_selected",
         "green_radio_unselected",
         "header_bottom_sheet_rounded_white",
+        "ic_action_chech",
+        "ic_action_x",
+        "ic_add_photo",
         "ic_arrow_down_grey",
         "ic_arrow_drop_down_grey_checkout_module",
         "ic_arrow_right_default",
@@ -152,11 +150,14 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "ic_info",
         "ic_info_black",
         "ic_loading_image",
+        "ic_loading_toped_new",
         "ic_lock",
         "ic_ovo_logo_purple",
         "ic_plus_add",
         "ic_radiobutton_normal",
         "ic_radiobutton_selected",
+        "ic_rating",
+        "ic_rating_gold",
         "ic_search_grey",
         "ic_search_icon",
         "ic_send_black_24dp",
@@ -165,20 +166,21 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
         "ic_smiley_bad",
         "ic_smiley_good",
         "ic_smiley_neutral",
+        "ic_starts_active_xxl",
+        "ic_starts_disable_xxl",
+        "ic_stat_notify_white",
         "ic_switch_thumb_on",
         "ic_switch_tumb_off",
-        "ic_three_dots_more_menu",
         "ic_ticker_action_close_12dp",
-        "ic_wishlist_checked",
         "ic_wishlist_unchecked",
+        "info_icon",
         "loading_page",
-        "loading_page_tkpddesign",
         "order_filter_selector_chip",
         "price_input_seekbar_button_pressed",
         "rect_white_rounded_stroke_gray",
         "rect_white_stroke_gray",
-        "tkpd_rating_bar"
-
+        "tkpd_rating_bar",
+        "top_bar_shadow"
     )
 
     override fun appliesTo(folderType: ResourceFolderType): Boolean {
@@ -191,6 +193,9 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
         val attributeValue = attribute.nodeValue
+        if (isInExcludedModule(context)) {
+            return // Skip lint check for this module
+        }
         if (listLayout.contains(
                 attributeValue.substringAfter(
                     "@layout/"
@@ -205,6 +210,16 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
                 "Detected using tkpddesign or ambiguous with tkpddesign. Using component from the tkpddesign package is not allowed. Because TkpdDesign will be deleted soon. You can also consult @edwinnrw or @faisalramd"
             context.report(ISSUE, attribute, context.getLocation(attribute), message)
         }
+    }
+
+    private fun isInExcludedModule(context: XmlContext): Boolean {
+        val sourceFilePath = context.file.path
+        for (excludedModule in EXCLUDED_MODULES) {
+            if (sourceFilePath.contains(excludedModule.replace("/", java.io.File.separator))) {
+                return true
+            }
+        }
+        return false
     }
 
     companion object {

@@ -277,6 +277,10 @@ class ProductFragment @Inject constructor(
         analytics.onImpressImage(ProductPreviewTabUiModel.TAB_PRODUCT_KEY)
     }
 
+    override fun onImageInteraction(isScalingMode: Boolean) {
+        viewModel.onAction(ProductPreviewAction.ProductImageInteraction(isScalingMode))
+    }
+
     override fun onImpressedVideo() {
         analytics.onImpressVideo(TAB_PRODUCT_NAME)
     }

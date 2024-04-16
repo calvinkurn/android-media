@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.referral.view.bottomsheet.BottomSheetView;
 import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;

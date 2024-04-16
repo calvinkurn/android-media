@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
 import com.tokopedia.product.detail.common.data.model.pdplayout.PromoPriceResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
@@ -144,6 +145,9 @@ data class VariantChild(
 
     val isBuyable: Boolean
         get() = getVariantFinalStock() > 0 && stock?.isBuyable ?: false
+
+    val productType: ProductType
+        get() = if (isBuyable) ProductType.AVAILABLE else ProductType.NOT_AVAILABLE
 
     val isFlashSale: Boolean
         get() = campaign?.isActive == true

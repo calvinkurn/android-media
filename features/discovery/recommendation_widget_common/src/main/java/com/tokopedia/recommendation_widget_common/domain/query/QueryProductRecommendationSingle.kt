@@ -34,6 +34,11 @@ internal object QueryProductRecommendationSingle {
         "                          }\n" +
         "                        }\n" +
         "                       }\n" +
+        "                       appLog {\n" +
+        "                         sessionID\n" +
+        "                         requestID\n" +
+        "                         logID\n" +
+        "                       }\n" +
         "                       recommendation {\n" +
         "                           id\n" +
         "                           name\n" +
@@ -51,6 +56,8 @@ internal object QueryProductRecommendationSingle {
         "                           discountPercentage\n" +
         "                           slashedPrice\n" +
         "                           slashedPriceInt\n" +
+        "                           minOrder\n" +
+        "                           warehouseID\n" +
         "                           shop {\n" +
         "                               id\n" +
         "                               name\n" +
@@ -94,7 +101,9 @@ internal object QueryProductRecommendationSingle {
         "                          specificationLabels {\n" +
         "                            key\n" +
         "                            value\n" +
-        "                        }\n" +
+        "                          }\n" +
+        "                          recParam\n" +
+        "                          parentID\n" +
         "                       }\n" +
         "                   }\n" +
         "                 }\n" +

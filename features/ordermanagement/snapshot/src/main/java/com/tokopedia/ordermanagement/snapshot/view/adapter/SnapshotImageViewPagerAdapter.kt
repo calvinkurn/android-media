@@ -21,6 +21,7 @@ class SnapshotImageViewPagerAdapter : RecyclerView.Adapter<SnapshotImageViewPage
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T, position: Int)
+        abstract fun onViewRecycled()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnapshotImageViewPagerItemViewHolder {
@@ -31,6 +32,10 @@ class SnapshotImageViewPagerAdapter : RecyclerView.Adapter<SnapshotImageViewPage
     override fun onBindViewHolder(holder: SnapshotImageViewPagerItemViewHolder, position: Int) {
         val img = listImg[position]
         holder.bind(img, holder.adapterPosition)
+    }
+
+    override fun onViewRecycled(holder: SnapshotImageViewPagerItemViewHolder) {
+        holder.onViewRecycled()
     }
 
     override fun getItemCount(): Int = listImg.size
