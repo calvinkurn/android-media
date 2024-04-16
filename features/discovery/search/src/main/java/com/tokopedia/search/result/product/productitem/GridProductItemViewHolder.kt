@@ -62,7 +62,6 @@ class GridProductItemViewHolder(
 
                 override fun onProductImageClicked(v: View) {
                     sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.COVER)
-
                 }
 
                 override fun onSellerInfoClicked(v: View) {

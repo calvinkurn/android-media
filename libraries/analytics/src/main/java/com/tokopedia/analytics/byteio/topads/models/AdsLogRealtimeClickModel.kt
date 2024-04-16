@@ -10,6 +10,7 @@ data class AdsLogRealtimeClickModel(
 ) {
     data class AdExtraData(
         val mallCardType: String = AdsLogConst.AdCardStyle.PRODUCT_CARD,
-        val productId: String
+        val productId: String,
+        val productName: String
     )
 }

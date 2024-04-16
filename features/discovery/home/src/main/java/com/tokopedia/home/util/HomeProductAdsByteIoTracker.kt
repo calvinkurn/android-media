@@ -40,7 +40,8 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
         // todo this value from BE
         "",
         AdsLogShowModel.AdExtraData(
-            productId = id
+            productId = id,
+            productName = name
         )
     )
 }
@@ -53,7 +54,8 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
         "",
         AdsLogShowOverModel.AdExtraData(
             productId = id,
-            sizePercent = sizePercent.toString()
+            sizePercent = sizePercent.toString(),
+            productName = name
         )
     )
 }
@@ -67,6 +69,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
         "",
         AdsLogRealtimeClickModel.AdExtraData(
             productId = id,
+            productName = name
         )
     )
 }
@@ -78,7 +81,8 @@ internal fun DynamicHomeChannel.Grid.asAdsLogShowModel(): AdsLogShowModel {
         // todo this value from BE
         "",
         AdsLogShowModel.AdExtraData(
-            productId = id
+            productId = id,
+            productName = name
         )
     )
 }
@@ -91,6 +95,7 @@ internal fun DynamicHomeChannel.Grid.asAdsLogShowOverModel(sizePercent: Int): Ad
         "",
         AdsLogShowOverModel.AdExtraData(
             productId = id,
+            productName = name,
             sizePercent = sizePercent.toString()
         )
     )
@@ -105,6 +110,7 @@ internal fun DynamicHomeChannel.Grid.asAdsLogRealtimeClickModel(refer: String): 
         "",
         AdsLogRealtimeClickModel.AdExtraData(
             productId = id,
+            productName = name
         )
     )
 }

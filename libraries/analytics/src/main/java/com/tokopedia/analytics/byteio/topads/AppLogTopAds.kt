@@ -10,6 +10,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
+import com.tokopedia.config.GlobalConfig
 import org.json.JSONObject
 
 /**
@@ -42,6 +43,7 @@ object AppLogTopAds {
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
                         put(AdsLogConst.Param.SIZE_PERCENT, adsLogShowOverModel.adExtraData.sizePercent)
+                        putProductName(adsLogShowOverModel.adExtraData.productName)
                     }
                 )
 
@@ -84,6 +86,7 @@ object AppLogTopAds {
                         }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowModel.adExtraData.productId)
+                        putProductName(adsLogShowModel.adExtraData.productName)
                     }
                 )
 
@@ -126,6 +129,7 @@ object AppLogTopAds {
                         }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, adsLogRealtimeClickModel.adExtraData.mallCardType)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogRealtimeClickModel.adExtraData.productId)
+                        putProductName(adsLogRealtimeClickModel.adExtraData.productName)
                     }
                 )
 
@@ -154,12 +158,12 @@ object AppLogTopAds {
     }
 
 
-    fun getEnterFrom(): String {
+    private fun getEnterFrom(): String {
         val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
         return if (prevPageName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
     }
 
-    fun getChannel(): String {
+    private fun getChannel(): String {
         val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
         return when(prevPageName) {
             AppLogSearch.ParamValue.GOODS_SEARCH -> AdsLogConst.Channel.PRODUCT_SEARCH
@@ -174,9 +178,14 @@ object AppLogTopAds {
         put(AdsLogConst.Param.ENTER_FROM, enterFrom)
     }
 
-    // todo need to confirm for this value
     private fun JSONObject.putChannelName(channelName: String) {
         put(AdsLogConst.Param.CHANNEL, channelName)
+    }
+
+    private fun JSONObject.putProductName(productName: String) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            put(AdsLogConst.Param.PRODUCT_NAME, productName)
+        }
     }
 
     private fun JSONObject.putTag(currentPageName: String) {

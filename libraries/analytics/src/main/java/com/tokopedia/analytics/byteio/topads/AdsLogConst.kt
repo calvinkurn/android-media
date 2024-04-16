@@ -39,6 +39,7 @@ object AdsLogConst {
         // todo need to confirm, how to get the value of size_percent
         const val SIZE_PERCENT = "size_percent"
         const val CHANNEL = "channel"
+        const val PRODUCT_NAME = "product_name"
         const val ENTER_FROM = "enter_from"
         const val TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK = "time_interval_between_current_and_click"
 

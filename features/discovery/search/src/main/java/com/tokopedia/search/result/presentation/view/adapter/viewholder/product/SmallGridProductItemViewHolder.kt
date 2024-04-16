@@ -80,7 +80,6 @@ class SmallGridProductItemViewHolder(
 
             override fun onSellerInfoClicked(v: View) {
                 sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.SELLER_NAME)
-
             }
         })
 
