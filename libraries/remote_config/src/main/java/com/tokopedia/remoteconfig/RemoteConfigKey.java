@@ -341,6 +341,8 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
 
+    public static final String ANDROID_CONTENT_PRODUCT_PREVIEW = "android_enable_content_product_preview";
+
     public static final String ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER = "android_enable_auto_apply_promo_tracker";
 
     public static final String ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE = "android_disable_recipe_bookmark_compose";
@@ -353,5 +355,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM = "android_search_enable_fix_byteio_cpm";
   
     public static final String ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD = "android_main_app_enable_copy_crash_stack_trace_to_clipboard";
+    public static final String ANDROID_PDP_ENABLE_SDUI_TRACKING_QUEUE = "android_enable_sdui_tracking_queue";
 
 }

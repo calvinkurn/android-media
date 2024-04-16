@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -144,12 +145,16 @@ object AppLogAnalytics {
         put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
     }
 
-    internal fun JSONObject.addEntranceInfoCart() {
-        val data = JSONObject().also {
-            it.addEnterFromInfo()
+    private fun generateEntranceInfoCartJson(): JSONObject {
+        return JSONObject().also {
+            it.put(ENTER_FROM_INFO, getEnterFromBeforeCart())
             it.put(ENTRANCE_FORM, PageName.CART)
             it.put(SOURCE_PAGE_TYPE, PageName.CART)
-        }.toString()
+        }
+    }
+
+    internal fun JSONObject.addEntranceInfoCart() {
+        val data = generateEntranceInfoCartJson().toString()
         put(ENTRANCE_INFO, data)
     }
 
@@ -285,7 +290,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-            ?.get(IS_SHADOW) == true
+                ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -302,6 +307,18 @@ object AppLogAnalytics {
     fun putPageData(key: String, value: Any) {
         _pageDataList.lastOrNull()?.put(key, value)
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
+    }
+
+    /**
+     * To update the previous page data (current page index - 1)
+     * For example: if the current page data is a bottom sheet,
+     * then it will be useless to put any data there
+     * since the bottom sheet will be dismissed when navigating to the next page.
+     * Putting the data in the previous page data will fix the issue.
+     */
+    fun putPreviousPageData(key: String, value: Any) {
+        val secondToLastData = _pageDataList.getOrNull(_pageDataList.lastIndex - 1)
+        secondToLastData?.put(key, value)
     }
 
     fun removePageData(key: String) {
@@ -328,7 +345,7 @@ object AppLogAnalytics {
     fun getLastDataExactStep(key: String, step: Int = 1): Any? {
         val idx = _pageDataList.lastIndex - step
         val map = _pageDataList.getOrNull(idx)
-        return map?.getOrDefault(key, null)
+        return map?.get(key)
     }
 
     fun getLastDataBeforeCurrent(key: String): Any? {
@@ -338,6 +355,23 @@ object AppLogAnalytics {
             val map = _pageDataList[idx]
             map[key]?.let {
                 return it
+            }
+            idx--
+        }
+        return null
+    }
+
+    private fun getEnterFromBeforeCart(): Any? {
+        if (_pageDataList.isEmpty()) return null
+        var idx = _pageDataList.lastIndex
+        var start = false
+        while (idx >= 0) {
+            val map = _pageDataList[idx]
+            if (map.containsKey(ENTER_FROM) && start) {
+                return map[ENTER_FROM]
+            }
+            if (map[PAGE_NAME] == PageName.CART) {
+                start = true
             }
             idx--
         }
@@ -455,15 +489,28 @@ object AppLogAnalytics {
         return JSONObject().also {
             it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
             it.put("buy_type", buyType.code)
-            it.put("os_type", "android")
+            it.put("os_name", "android")
         }.toString()
     }
 
-    fun getEntranceInfoForCheckout(buyType: AtcBuyType): String {
+    fun getEntranceInfoForCheckout(buyType: AtcBuyType, cartIds: List<String>): String {
         return JSONObject().also {
-            it.addEntranceInfoCart()
-            it.put("buy_type", buyType.code)
-            it.put("os_type", "android")
+            it.put("funnel", if (buyType == AtcBuyType.ATC) "regular" else "occ")
+            it.put("buy_type", buyType.code.toString())
+            it.put("os_name", "android")
+            it.put("cart_item", JSONArray().also { item ->
+                cartIds.forEach { id ->
+                    item.put(JSONObject().also { j ->
+                        j.put("cart_id", id)
+                        if (buyType == AtcBuyType.ATC) {
+                            j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
+                        } else {
+                            j.put(ENTRANCE_INFO, generateEntranceInfoJson())
+                        }
+
+                    })
+                }
+            })
         }.toString()
     }
 

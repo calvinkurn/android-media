@@ -46,6 +46,7 @@ includeIfEnabled("features:content:stories_internal")
 includeIfEnabled("features:content:product_picker")
 includeIfEnabled("features:content:creation_common")
 includeIfEnabled("features:content:stories_creation")
+includeIfEnabled("features:content:product_preview")
 
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:category:tradein")

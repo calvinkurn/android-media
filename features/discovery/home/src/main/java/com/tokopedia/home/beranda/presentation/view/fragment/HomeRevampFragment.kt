@@ -104,7 +104,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.AccurateOffsetLinearLayoutManager
-import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
@@ -133,6 +132,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetC
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.Mission4SquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MissionWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MixLeftComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MixTopComponentCallback
@@ -379,8 +379,6 @@ open class HomeRevampFragment :
 
     var gamificationPopUpHandler: GamificationPopUpHandler? = null
 
-    @Inject
-    lateinit var homePrefController: HomePrefController
     private lateinit var root: FrameLayout
     private var refreshLayout: ParentIconSwipeRefreshLayout? = null
     private var refreshLayoutOld: ToggleableSwipeRefreshLayout? = null
@@ -1617,9 +1615,6 @@ open class HomeRevampFragment :
             }
 
     private fun initAdapter() {
-        if (!this::homePrefController.isInitialized) {
-            initInjectorHome()
-        }
         context?.let { layoutManager = AccurateOffsetLinearLayoutManager(it, adapter) }
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
@@ -1645,7 +1640,7 @@ open class HomeRevampFragment :
             this,
             RechargeBUWidgetCallback(context, this),
             bannerCarouselCallback,
-            DynamicIconComponentCallback(context, this, homePrefController),
+            DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
             this,
@@ -1666,6 +1661,7 @@ open class HomeRevampFragment :
             CouponWidgetCallback(this),
             getThematicUtil(),
             HomeOrigamiListenerDelegate(context, this),
+            Mission4SquareWidgetListenerCallback(this),
             getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())

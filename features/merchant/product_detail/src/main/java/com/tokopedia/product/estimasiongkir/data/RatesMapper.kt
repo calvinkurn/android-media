@@ -31,12 +31,11 @@ object RatesMapper {
     ): List<ProductShippingVisitable> {
         val address = ratesModel.address
         val shop = ratesModel.shop
-        val weightFormatted = request.getWeightTxt()
         val productShippingHeader = ProductShippingHeaderDataModel(
             id = 1,
             shippingTo = "${address.districtName}, ${address.provinceName}",
             shippingFrom = shop.cityName,
-            weight = weightFormatted,
+            weightWording = request.weightWording,
             boType = ratesModel.freeShipping.flag,
             freeOngkirEstimation = ratesModel.freeShipping.etaText,
             freeOngkirImageUrl = request.freeOngkirUrl,

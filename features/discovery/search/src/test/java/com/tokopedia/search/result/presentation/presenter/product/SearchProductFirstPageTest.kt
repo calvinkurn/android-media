@@ -173,6 +173,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             verifyShowError(productListView)
 
             productListView.logWarning(capture(slotSearchParameterErrorLog), exception)
+
+            productListView.sendTrackingByteIO(false)
         }
 
         confirmVerified(productListView)

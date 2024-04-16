@@ -203,7 +203,7 @@ class ProductMediaRecomBottomSheetManager(
             pdpListener = listener
             setOnDismissListener { listener.onProductMediaRecomBottomSheetDismissed() }
             binding?.globalErrorProductMedia?.setActionClickListener {
-                listener.onShowProductMediaRecommendationClicked()
+                listener.onShowProductMediaRecommendationClicked(null)
             }
         }
 

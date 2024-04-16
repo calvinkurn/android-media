@@ -122,6 +122,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.storiesWidget)
+    implementation projectOrAar(rootProject.ext.features.productPreview)
     implementation projectOrAar(rootProject.ext.features.shareexperience)
 
     implementation project(rootProject.ext.libraries.sdui)
@@ -169,6 +170,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
     testImplementation rootProject.ext.testDependencies.assertJ
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger

@@ -14,6 +14,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -143,7 +144,11 @@ class AtcVariantHeaderViewHolder(
         iconEnlarge.setBackgroundResource(productdetailcommonR.drawable.bg_circle_grey)
 
         productImage?.run {
-            setImageUrl(imgUrl)
+            loadImage(url = imgUrl, properties = {
+                this.listener(onSuccess = { _, _ ->
+                    listener.onProductImageChanged(this@run)
+                })
+            })
             setOnClickListener {
                 listener.onVariantImageClicked(imgUrl)
             }
