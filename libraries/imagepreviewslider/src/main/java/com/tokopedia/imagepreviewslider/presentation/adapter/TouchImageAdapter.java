@@ -9,7 +9,6 @@ import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
-
 import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 

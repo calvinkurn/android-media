@@ -193,6 +193,12 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is UohOrderListViewHolder) {
+            holder.onViewRecycled()
+        }
+    }
+
     fun showLoader() {
         listTypeData.clear()
         listTypeData.add(UohTypeData("", TYPE_LOADER_PMS_BUTTON))

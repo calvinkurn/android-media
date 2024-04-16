@@ -13,14 +13,15 @@
  */
 package com.tokopedia.translator.manager
 
+import android.widget.TextView
 import com.tokopedia.translator.repository.model.StringPoolItem
 
 class StringPoolManager {
 
     private val mPools: HashMap<String, StringPoolItem> = HashMap()
 
-    fun add(current: String, newStr: String) {
-        mPools.put(current.trim(), StringPoolItem(current, newStr))
+    fun add(textView: TextView, current: String, newStr: String, destinationLang: String) {
+        mPools.put(current.trim(), StringPoolItem(textView, current, newStr, destinationLang))
     }
 
     fun get(current: String?): StringPoolItem? {
@@ -31,37 +32,49 @@ class StringPoolManager {
         return mPools.get(current.trim())
     }
 
-    fun updateCache(old: Array<String>, new: Array<String>) {
+    fun clearPools() {
+        mPools.clear()
+    }
+
+    fun updateCache(textViews: List<TextView>, old: List<String>, new: Array<String>, destinationLang: String) {
         if (old.size != new.size)
             return
 
         for (i in 0 until old.size) {
-            add(old[i].trim(), new[i])
+            add(textViews[i], old[i].trim(), new[i], destinationLang)
         }
     }
 
 
-    fun getQueryString(): String {
-        val builder = StringBuilder()
+    fun getQueryStrList(): List<String> {
+        val queryStrList = ArrayList<String>()
 
-        for ((key, data) in mPools) {
+        for ((_, data) in mPools) {
 
-            if (data.demandedText.isEmpty()) {
-                builder.append(data.originalText)
-                    .append(TranslatorManager.DELIM)
+            if (data.demandedText.isBlank() || data.textView.text != data.demandedText) {
+                queryStrList.add(data.originalText)
             }
         }
 
-        val length = builder.length
-
-        if (length > 0) {
-            builder.deleteCharAt(length - 1)
-        }
-
-        return builder.toString()
+        return queryStrList.toList()
     }
 
     override fun toString(): String {
         return "StringPoolManager(mPools=$mPools)"
+    }
+
+    companion object {
+
+        private var LOCK = Any()
+
+        @JvmStatic
+        private var sInstance: StringPoolManager? = null
+        fun getInstance(): StringPoolManager {
+            return sInstance ?: synchronized(LOCK) {
+                StringPoolManager().also {
+                    sInstance = it
+                }
+            }
+        }
     }
 }

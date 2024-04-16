@@ -5,6 +5,7 @@ import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.Dy
 import com.tokopedia.product.detail.view.viewholder.promo_price.delegate.ProductPriceCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
+import com.tokopedia.product.detail.view.viewholder.sdui.SDUICallback
 
 @Suppress("LateinitUsage")
 class PdpCallbackDelegateImpl : PdpCallbackDelegate {
@@ -26,4 +27,7 @@ class PdpCallbackDelegateImpl : PdpCallbackDelegate {
     //Fragment Level
     override val productRecomm by lazy { PartialRecommendationManager(mediator = _mediator) }
 
+    override val atcAnimation by lazy { AtcAnimationManager(mediator = _mediator) }
+
+    override val sdui: SDUICallback by lazy { SDUICallback(mediator = _mediator) }
 }

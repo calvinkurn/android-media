@@ -4,22 +4,14 @@ import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
-import com.tokopedia.home.beranda.helper.DeviceScreenHelper
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class HomeAtfRepository @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<HomeAtfData>,
-    private val homeRoomDataSource: HomeRoomDataSource,
-    private val deviceScreenHelper: DeviceScreenHelper,
+    private val graphqlUseCase: GraphqlUseCase<HomeAtfData>
 ) : UseCase<HomeAtfData>(), HomeRepository<HomeAtfData> {
-    private val params = RequestParams.create()
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -28,12 +20,6 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
-        val listOfExpKey = listOf(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.HOME_LOAD_TIME_KEY).joinToString(EXP_SEPARATOR)
-        val expAtf = HomeRollenceController.getAtfRollence(deviceScreenHelper.isFoldableOrTablet())
-        val listOfExpValue = listOf(expAtf, HomeRollenceController.rollenceLoadTime).joinToString(EXP_SEPARATOR)
-        params.putString(EXPERIMENT, listOfExpKey)
-        params.putString(VARIANT, listOfExpValue)
-        graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
 
@@ -43,11 +29,5 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun getCachedData(bundle: Bundle): HomeAtfData {
         return HomeAtfData()
-    }
-
-    companion object {
-        private const val EXPERIMENT = "experiment"
-        private const val VARIANT = "variant"
-        private const val EXP_SEPARATOR = ";"
     }
 }

@@ -109,5 +109,42 @@ class HomeMissionWidgetData {
         @SerializedName("recParam")
         @Expose
         val recParam: String = "",
-    )
+        @SerializedName("labelGroup")
+        @Expose
+        val labelGroup: List<LabelGroup> = listOf(),
+    ) {
+
+        data class LabelGroup(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+
+            @SerializedName("type")
+            @Expose
+            val type: String = "",
+
+            @SerializedName("position")
+            @Expose
+            val position: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = "",
+
+            @SerializedName("styles")
+            @Expose
+            val styles: List<Styles> = listOf(),
+        ) {
+
+            data class Styles(
+                @SerializedName("key")
+                @Expose
+                val key: String = "",
+
+                @SerializedName("value")
+                @Expose
+                val value: String = "",
+            )
+        }
+    }
 }

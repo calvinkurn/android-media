@@ -36,18 +36,18 @@ import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.data.admin.AdminResult
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreferenceManager
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
+import com.tokopedia.sessioncommon.util.GetProfileUtils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
@@ -79,7 +79,6 @@ class LoginEmailPhoneViewModelTest {
     val discoverUseCase = mockk<DiscoverUseCase>(relaxed = true)
     val activateUserUseCase = mockk<ActivateUserUseCase>(relaxed = true)
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
-    val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -117,7 +116,7 @@ class LoginEmailPhoneViewModelTest {
     private var adminRedirection = mockk<Observer<Result<Boolean>>>(relaxed = true)
 
     private var loginTokenV2UseCase = mockk<LoginTokenV2UseCase>(relaxed = true)
-    private var getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
+    private var getAdminTypeUseCase = mockk<GetUserInfoAndAdminUseCase>(relaxed = true)
     private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
 
     private var getTemporaryKeyUseCase = mockk<GetTemporaryKeyUseCase>(relaxed = true)
@@ -125,6 +124,7 @@ class LoginEmailPhoneViewModelTest {
     private var gotoSeamlessHelper = mockk<GotoSeamlessHelper>(relaxed = true)
     private var gotoSeamlessPreference = mockk<GotoSeamlessPreference>(relaxed = true)
     private var fingerprintPreferenceManager = mockk<FingerprintPreferenceManager>(relaxed = true)
+    private var getProfileUtils = mockk<GetProfileUtils>(relaxed = true)
 
     private val messageException = MessageErrorException("error bro")
     private val timeOut: Long = 5000
@@ -140,7 +140,6 @@ class LoginEmailPhoneViewModelTest {
             discoverUseCase,
             activateUserUseCase,
             loginTokenUseCase,
-            getProfileUseCase,
             tickerInfoUseCase,
             getAdminTypeUseCase,
             loginTokenV2UseCase,
@@ -152,8 +151,8 @@ class LoginEmailPhoneViewModelTest {
             gotoSeamlessHelper,
             gotoSeamlessPreference,
             userSession,
-            CoroutineTestDispatchersProvider,
-            fingerprintPreferenceManager
+            fingerprintPreferenceManager,
+            CoroutineTestDispatchersProvider
         )
 
         viewModel.registerCheckResponse.observeForever(registerCheckObserver)
@@ -184,6 +183,7 @@ class LoginEmailPhoneViewModelTest {
     }
 
     private val throwable = Throwable("Error")
+    private val exception = Exception("error")
     private val email = "yoris.prayogo@tokopedia.com"
     private val password = "abc123456"
 
@@ -805,32 +805,44 @@ class LoginEmailPhoneViewModelTest {
     fun `on Success get user info`() {
         /* When */
         val profileInfo = ProfileInfo(firstName = "yoris")
-        val response = ProfilePojo(profileInfo = profileInfo)
+        val response = AdminResult.AdminResultOnSuccessGetProfile(ProfilePojo(profileInfo = profileInfo))
 
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
-        }
-
+        coEvery { getAdminTypeUseCase(Unit) } returns response
         viewModel.getUserInfo()
 
         /* Then */
-        verify {
-            getUserInfoObserver.onChanged(Success(response))
+        coVerify {
+            getAdminTypeUseCase(Unit)
+            getUserInfoObserver.onChanged(Success(response.profile))
         }
     }
 
     @Test
     fun `on Failed get user info`() {
         /* When */
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile(throwable)
-        }
+        val failedResponse = AdminResult.AdminResultOnErrorGetProfile(throwable)
+        coEvery { getAdminTypeUseCase(Unit) } returns failedResponse
 
         viewModel.getUserInfo()
 
         /* Then */
-        verify {
+        coVerify {
+            getAdminTypeUseCase(Unit)
             getUserInfoObserver.onChanged(Fail(throwable))
+        }
+    }
+
+    @Test
+    fun `on throws exception when get user info`() {
+        /* When */
+        coEvery { getAdminTypeUseCase(Unit) } throws exception
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        coVerify {
+            getAdminTypeUseCase(Unit)
+            getUserInfoObserver.onChanged(Fail(exception))
         }
     }
 
@@ -869,6 +881,27 @@ class LoginEmailPhoneViewModelTest {
         assertEquals(
             (viewModel.loginBiometricResponse.value as Fail).throwable.message,
             exception.message
+        )
+    }
+
+    @Test
+    fun `on error login token when login fingerprint`() {
+        // When
+        val response = LoginTokenPojo(LoginToken(errors = arrayListOf(Error("error", "error"))))
+        coEvery {
+            loginFingerprintUseCase(any())
+        } returns response
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        MatcherAssert.assertThat(
+            viewModel.loginBiometricResponse.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
+        assertEquals(
+            (viewModel.loginBiometricResponse.value as Fail).throwable.message,
+            response.loginToken.errors.firstOrNull()?.message ?: ""
         )
     }
 
@@ -934,23 +967,23 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Show Location Admin Popup`() {
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
-        }
+        // Given
+        val response = AdminResult.AdminResultShowLocationPopup
+        coEvery { getAdminTypeUseCase(Unit) } returns response
 
+        // When
         viewModel.getUserInfo()
 
         /* Then */
-        verify {
+        coVerify {
             showLocationAdminPopUp.onChanged(Success(true))
         }
     }
 
     @Test
     fun `on Admin Redirection`() {
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
-        }
+        val response = AdminResult.AdminResultOnLocationAdminRedirection
+        coEvery { getAdminTypeUseCase(Unit) } returns response
 
         viewModel.getUserInfo()
 
@@ -962,9 +995,8 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Show Location Admin Popup Error`() {
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
-        }
+        val response = AdminResult.AdminResultOnErrorGetAdmin(throwable)
+        coEvery { getAdminTypeUseCase(Unit) } returns response
 
         viewModel.getUserInfo()
 
@@ -1006,7 +1038,6 @@ class LoginEmailPhoneViewModelTest {
         viewModel.clearBackgroundTask()
         verify {
             loginTokenUseCase.unsubscribe()
-            getProfileUseCase.unsubscribe()
         }
     }
 
@@ -1281,7 +1312,6 @@ class LoginEmailPhoneViewModelTest {
 
         verify {
             loginTokenUseCase.unsubscribe()
-            getProfileUseCase.unsubscribe()
         }
     }
 }
