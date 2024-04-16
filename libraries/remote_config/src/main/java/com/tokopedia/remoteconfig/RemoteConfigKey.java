@@ -354,6 +354,7 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_PURCHASE_INFO = "android_enable_purchase_info";
     public static final String ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO = "android_enable_fix_search_product_impression_byteio";
 
+    public static final String ANDROID_ENABLE_DYNAMIC_SHOP_ADS_POSITION = "android_enable_dynamic_shop_ads_position";
     public static final String ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM = "android_search_enable_fix_byteio_cpm";
   
     public static final String ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD = "android_main_app_enable_copy_crash_stack_trace_to_clipboard";
