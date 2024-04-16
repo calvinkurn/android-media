@@ -114,7 +114,6 @@ class RecommendationCardListViewHolder constructor(
             if (it.isTopAds) {
                 AppLogTopAds.sendEventRealtimeClick(
                     context,
-                    PageName.HOME,
                     it.asAdsLogRealtimeClickModel(refer)
                 )
             }
