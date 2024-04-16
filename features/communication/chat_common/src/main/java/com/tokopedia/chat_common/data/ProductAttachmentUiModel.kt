@@ -73,6 +73,9 @@ open class ProductAttachmentUiModel protected constructor(
         }
     val stringBlastId: String get() = blastId
     var campaignId: String = builder.campaignId
+    var stockLabelPercentage: Int = builder.stockLabelPercentage
+    var stockLabelText: String = builder.stockLabelText
+    var stockLabelColor: String = builder.stockLabelColor
     var isFulfillment: Boolean = builder.isFulfillment
     var urlTokocabang: String = builder.urlTokoCabang
     var descTokoCabang: String = builder.descTokoCabang
@@ -130,6 +133,9 @@ open class ProductAttachmentUiModel protected constructor(
             rating = attribute.productProfile.rating
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
+            stockLabelPercentage = attribute.productProfile.stockLabelPercentage
+            stockLabelText = attribute.productProfile.stockLabelText
+            stockLabelColor = attribute.productProfile.stockLabelColor
             isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
             descTokoCabang = attribute.productProfile.descTokocabang
@@ -370,6 +376,9 @@ open class ProductAttachmentUiModel protected constructor(
         internal var needSync: Boolean = true
         internal var isSupportVariant: Boolean = false
         internal var campaignId: String = "0"
+        internal var stockLabelPercentage: Int = 0
+        internal var stockLabelText: String = ""
+        internal var stockLabelColor: String = ""
         internal var locationStock: LocationStock = LocationStock()
         internal var isUpcomingCampaign: Boolean = false
         internal var isFulfillment: Boolean = false
@@ -402,6 +411,11 @@ open class ProductAttachmentUiModel protected constructor(
             withRating(product.productProfile.rating)
             withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
+            withStockLabel(
+                product.productProfile.stockLabelPercentage,
+                product.productProfile.stockLabelText,
+                product.productProfile.stockLabelColor
+            )
             withIsPreOrder(product.productProfile.isPreOrder)
             withLocationStock(product.productProfile.locationStock)
             withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
@@ -576,6 +590,16 @@ open class ProductAttachmentUiModel protected constructor(
         fun withIOSUrl(iosUrl: String): Builder {
             this.iosUrl = iosUrl
             return self()
+        }
+
+        fun withStockLabel(
+            stockLabelPercentage: Int,
+            stockLabelText: String,
+            stockLabelColor: String
+        ) = apply {
+            this.stockLabelPercentage = stockLabelPercentage
+            this.stockLabelText = stockLabelText
+            this.stockLabelColor = stockLabelColor
         }
 
         override fun build(): ProductAttachmentUiModel {

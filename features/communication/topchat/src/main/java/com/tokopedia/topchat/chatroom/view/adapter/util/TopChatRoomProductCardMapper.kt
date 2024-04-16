@@ -36,14 +36,13 @@ object TopChatRoomProductCardMapper {
             hasAddToCart = false,
             videoUrl = "",
             hasThreeDots = false,
-            // TODO: get data from BE
             stockInfo = ProductCardModel.StockInfo(
-                percentage = 30,
-                label = "Segera Habis",
-                labelColor = ""
+                percentage = productAttachment.stockLabelPercentage,
+                label = productAttachment.stockLabelText,
+                labelColor = productAttachment.stockLabelColor
             ),
             isSafeProduct = false,
-            isInBackground = false,
+            isInBackground = true,
             nonVariant = null,
             colorMode = null
         )
@@ -102,11 +101,11 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.rating.count > 0) {
+        if (productAttachment.rating.sold.isNotBlank()) {
             labelGroupList.add(
                 ProductCardModel.LabelGroup(
                     position = LABEL_REIMAGINE_CREDIBILITY,
-                    title = "${productAttachment.rating.count} terjual",
+                    title = productAttachment.rating.sold,
                     type = TEXT_COLOR_SOLD
                 )
             )
@@ -131,6 +130,7 @@ object TopChatRoomProductCardMapper {
             } else {
                 productAttachment.rating.score.toString()
             },
+            sold = productAttachment.rating.sold,
             hasBeenWishlist = productAttachment.isWishListed(),
             isVariant = productAttachment.hasVariant(),
             labelGroupList = getProductCardCompactLabelList(productAttachment)
@@ -167,4 +167,3 @@ object TopChatRoomProductCardMapper {
         return labelGroupList
     }
 }
-
