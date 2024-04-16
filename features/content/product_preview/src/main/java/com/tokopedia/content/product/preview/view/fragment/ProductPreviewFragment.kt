@@ -114,7 +114,6 @@ class ProductPreviewFragment @Inject constructor(
     private var coachMark: CoachMark2? = null
 
     private var coachMarkJob: Job? = null
-
     private val hasCoachMark: Boolean get() =
         when (val source = viewModel.productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
@@ -266,6 +265,7 @@ class ProductPreviewFragment @Inject constructor(
                         requireContext(),
                         event.appLink
                     )
+
                     is ProductPreviewUiEvent.ShowSuccessToaster -> {
                         val isAtc = event.type == ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC
                         Toaster.build(
@@ -275,10 +275,16 @@ class ProductPreviewFragment @Inject constructor(
                                 getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
                                 )
-                            } else { "" },
+                            } else {
+                                ""
+                            },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
-                                if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                                if (isAtc) viewModel.onAction(
+                                    ProductPreviewAction.Navigate(
+                                        ApplinkConst.CART
+                                    )
+                                )
                             }
                         ).show()
                     }
@@ -296,9 +302,11 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
+
                     is ProductPreviewUiEvent.FailFetchMiniInfo -> {
                         binding.viewFooter.gone()
                     }
+
                     is ProductPreviewUiEvent.UnknownSourceData -> activity?.finish()
                     else -> return@collect
                 }
@@ -328,6 +336,13 @@ class ProductPreviewFragment @Inject constructor(
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
                     handleAtc(model)
+                }, onNavClicked = {
+                    analytics.onClickBottomNav(model)
+                    router.route(
+                        requireContext(),
+                        ApplinkConst.PRODUCT_INFO,
+                        viewModel.productPreviewSource.productId
+                    )
                 })
             }
         }
