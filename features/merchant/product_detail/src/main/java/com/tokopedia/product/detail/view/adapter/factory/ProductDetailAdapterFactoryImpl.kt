@@ -459,7 +459,7 @@ class ProductDetailAdapterFactoryImpl(
             TabletLeftSectionViewHolder.LAYOUT -> TabletLeftSectionViewHolder(view, listener, this)
             TabletRightSectionViewHolder.LAYOUT -> TabletRightSectionViewHolder(view, listener, this)
             GWPViewHolder.LAYOUT -> GWPViewHolder(view, pdpCallback.gwp)
-            SDUIViewHolder.LAYOUT -> SDUIViewHolder(view, pdpCallback.dynamicOneLiner)
+            SDUIViewHolder.LAYOUT -> SDUIViewHolder(view, pdpCallback.sdui)
             else -> super.createViewHolder(view, type)
         }
     }
