@@ -4,5 +4,4 @@
     android:id="@+id/couponView"
     android:layout_width="320dp"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
     tools:ignore="MissingDefaultResource" />

@@ -1,5 +1,5 @@
 package com.tokopedia.catalogcommon.listener
 
 interface PriceCtaSellerOfferingListener {
-    fun onSellerOfferingButtonRightClicked()
+    fun onSellerOfferingButtonRightClicked(productId:String, shopId:String)
 }

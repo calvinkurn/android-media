@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.performancemonitoring
 
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 
@@ -48,6 +49,8 @@ internal fun searchProductPerformanceMonitoring(): PageLoadTimePerformanceInterf
 internal fun stopPerformanceMonitoring(
     performanceMonitoring: PageLoadTimePerformanceInterface?,
     recyclerView: RecyclerView?,
+    enterMethod: String,
+    isLocalSearch: Boolean
 ) {
     performanceMonitoring ?: return
     recyclerView ?: return
@@ -60,7 +63,11 @@ internal fun stopPerformanceMonitoring(
                 performanceMonitoring.run {
                     stopCustomMetric(SEARCH_RESULT_PLT_RENDER_RECYCLER_VIEW)
                     stopRenderPerformanceMonitoring()
-                    stopMonitoring()
+                    stopMonitoring{
+                        if(!isLocalSearch) {
+                            AppLogSearch.eventPerformanceTracking(AppLogSearch.Performance(it, enterMethod))
+                        }
+                    }
                 }
 
                 recyclerView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
