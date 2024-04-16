@@ -37,7 +37,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ProductCardRenderer(
     private val view: View,
-    private val type: ProductCardType
+    private val type: ProductCardType,
 ) {
 
     private val context = view.context
@@ -68,7 +68,7 @@ internal class ProductCardRenderer(
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
     private val credibilityText by view.lazyView<Typography?>(R.id.productCardLabelCredibility)
     private val ratingText by view.lazyView<Typography?>(R.id.productCardRating)
-
+    
     fun setProductModel(productCardModel: ProductCardModel) {
         renderOutline(productCardModel)
         renderCardContainer(productCardModel)
@@ -107,16 +107,15 @@ internal class ProductCardRenderer(
         val cornerType = if (productCardModel.stockInfo() != null) TOP else ALL
 
         imageView?.apply {
-            if (productCardModel.isSafeProduct) {
+            if (productCardModel.isSafeProduct)
                 loadImage(ContextCompat.getDrawable(context, overlayProductImageSafe(cornerType)))
-            } else {
+            else
                 loadImage(productCardModel, cornerType)
-            }
 
             setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    R.color.dms_product_card_reimagine_image_overlay
+                    R.color.dms_product_card_reimagine_image_overlay,
                 ),
                 PorterDuff.Mode.SRC_OVER
             )
@@ -124,15 +123,14 @@ internal class ProductCardRenderer(
     }
 
     private fun overlayProductImageSafe(cornerType: RoundedCornersTransformation.CornerType): Int =
-        if (cornerType == TOP) {
+        if (cornerType == TOP)
             R.drawable.product_card_safe_background_top_rounded
-        } else {
+        else
             R.drawable.product_card_safe_background_full_rounded
-        }
 
     private fun ImageView.loadImage(
         productCardModel: ProductCardModel,
-        cornerType: RoundedCornersTransformation.CornerType
+        cornerType: RoundedCornersTransformation.CornerType,
     ) {
         imageRounded(
             productCardModel.imageUrl,
@@ -145,7 +143,7 @@ internal class ProductCardRenderer(
 
     private fun renderOverlay(productCardModel: ProductCardModel) {
         val isSafeProduct = productCardModel.isSafeProduct
-        if (isSafeProduct) {
+        if(isSafeProduct) {
             labelOverlay.hide()
             return
         }
@@ -159,7 +157,7 @@ internal class ProductCardRenderer(
 
     private fun renderLabelPreventiveOverlay(productCardModel: ProductCardModel) {
         val isSafeProduct = productCardModel.isSafeProduct
-        if (isSafeProduct) {
+        if(isSafeProduct) {
             labelPreventiveOverlay?.hide()
             return
         }
@@ -211,7 +209,7 @@ internal class ProductCardRenderer(
 
     private fun renderLabelAssignedValue(productCardModel: ProductCardModel) {
         val isSafeProduct = productCardModel.isSafeProduct
-        if (isSafeProduct) {
+        if(isSafeProduct) {
             labelAssignedValue?.hide()
             return
         }
@@ -225,11 +223,9 @@ internal class ProductCardRenderer(
     }
 
     private fun nameTextBackground(isSafeProduct: Boolean) =
-        if (isSafeProduct) {
+        if (isSafeProduct)
             ContextCompat.getDrawable(context, R.drawable.product_card_safe_background_title)
-        } else {
-            null
-        }
+        else null
 
     private fun renderPrice(productCardModel: ProductCardModel) {
         priceText?.shouldShowWithAction(productCardModel.showPrice()) {
@@ -311,9 +307,7 @@ internal class ProductCardRenderer(
             labelProductOffer.copy(
                 styles = labelProductOffer.styles + listOf(defaultTextColor)
             )
-        } else {
-            labelProductOffer
-        }
+        } else labelProductOffer
     }
 
     private fun renderCredibilitySection(productCardModel: ProductCardModel) {
@@ -355,7 +349,7 @@ internal class ProductCardRenderer(
 
     private fun renderRibbon(productCardModel: ProductCardModel) {
         val isSafeProduct = productCardModel.isSafeProduct
-        if (isSafeProduct) {
+        if(isSafeProduct) {
             ribbon?.hide()
             return
         }
@@ -367,7 +361,7 @@ internal class ProductCardRenderer(
             left = ribbonMargin.start,
             top = ribbonMargin.top,
             right = 0,
-            bottom = 0
+            bottom = 0,
         )
     }
 
