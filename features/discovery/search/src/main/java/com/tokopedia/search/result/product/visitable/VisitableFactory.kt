@@ -2,6 +2,8 @@ package com.tokopedia.search.result.product.visitable
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
@@ -50,6 +52,7 @@ class VisitableFactory @Inject constructor(
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     private val pagination: Pagination,
     private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
+    private val remoteConfig: RemoteConfig,
 ) {
 
     private var isGlobalNavWidgetAvailable = false
@@ -80,13 +83,6 @@ class VisitableFactory @Inject constructor(
             data.keyword,
             productDataView.seamlessCarouselDataViewList,
         )
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
-            processHeadlineAdsFirstPage(
-                data.searchProductModel,
-                visitableList,
-                data.isLocalSearch,
-            )
-        }
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             addInspirationCarousel(
                 productDataView.inspirationCarouselDataView,
@@ -112,9 +108,14 @@ class VisitableFactory @Inject constructor(
             processTopAdsImageViewModel(visitableList)
         }
         addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
-
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
+            processHeadlineAdsFirstPage(
+                data.searchProductModel,
+                visitableList,
+                data.isLocalSearch,
+            )
+        }
         determineByteIORank(visitableList, listOf())
-
         return visitableList
     }
 
@@ -235,10 +236,19 @@ class VisitableFactory @Inject constructor(
         visitableList: MutableList<Visitable<*>>,
         cpmDataView: CpmDataView,
     ) {
-        val firstProductIndex = visitableList.indexOfFirstProductItem()
+        val pos = cpmDataView.cpmModel.data.first().cpm.position
+        var firstProductIndex = if (dynamicHeadlineAdsPosition(cpmDataView)) visitableList.getIndexForWidgetPosition(pos) else visitableList.indexOfFirstProductItem()
         if (firstProductIndex !in visitableList.indices) return
 
         visitableList.add(firstProductIndex, cpmDataView)
+    }
+
+    private fun dynamicHeadlineAdsPosition(cpmDataView: CpmDataView): Boolean {
+        return cpmDataView.cpmModel.data.firstOrNull()?.cpm?.position?: 0 > 0 && dynamicHeadlineAdsConfig()
+    }
+
+    private fun dynamicHeadlineAdsConfig(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DYNAMIC_SHOP_ADS_POSITION, false)
     }
 
     private fun isHeadlineAdsAllowed(isLocalSearch: Boolean): Boolean {

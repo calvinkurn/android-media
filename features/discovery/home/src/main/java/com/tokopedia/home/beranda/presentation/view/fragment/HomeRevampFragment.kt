@@ -449,7 +449,6 @@ open class HomeRevampFragment :
     @Inject
     lateinit var homeThematicUtil: HomeThematicUtil
 
-    private var hasTrackEnterPage = false
     private var hasApplogScrollListener = false
 
     override fun onAttach(context: Context) {
@@ -553,6 +552,8 @@ open class HomeRevampFragment :
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }
+
+    override fun shouldTrackEnterPage(): Boolean = true
 
     override fun initInjector() {
     }
@@ -667,7 +668,7 @@ open class HomeRevampFragment :
                 IconBuilderFlag(pageSource = NavSource.HOME)
             )
             icons.addIcon(IconList.ID_MESSAGE) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
-            icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
+            icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_NOTIFICATION_HOMEPAGE) }
             icons.apply {
                 addIcon(IconList.ID_CART) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_CART_ICON_HOMEPAGE) }
                 addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -818,11 +819,11 @@ open class HomeRevampFragment :
             val balanceWidgetSubscriptionView =
                 getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && (
-                (
-                    balanceWidgetSubscriptionView?.y
-                        ?: VIEW_DEFAULT_HEIGHT
-                    ) > VIEW_DEFAULT_HEIGHT
-                )
+                    (
+                        balanceWidgetSubscriptionView?.y
+                            ?: VIEW_DEFAULT_HEIGHT
+                        ) > VIEW_DEFAULT_HEIGHT
+                    )
             ) {
                 return balanceWidgetSubscriptionView
             }
@@ -858,7 +859,7 @@ open class HomeRevampFragment :
     }
 
     private fun trackVerticalScroll() {
-        if(hasApplogScrollListener) return
+        if (hasApplogScrollListener) return
         homeRecyclerView?.addVerticalTrackListener {
             GlidePageTrackObject(
                 distanceToTop = scrollPositionY
@@ -1322,17 +1323,20 @@ open class HomeRevampFragment :
                     status === Result.Status.SUCCESS -> {
                         hideLoading()
                     }
+
                     status === Result.Status.ERROR -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
+
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
+
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
@@ -1340,6 +1344,7 @@ open class HomeRevampFragment :
                         adapter?.resetAtfErrorState()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
+
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
@@ -1351,6 +1356,7 @@ open class HomeRevampFragment :
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
+
                     status == Result.Status.ERROR_ATF_NEW -> {
                         if (getHomeViewModel().homeDataModel.list.size <= 1) {
                             val errorString = getErrorStringWithDefault(throwable)
@@ -1362,6 +1368,7 @@ open class HomeRevampFragment :
                             ) { onRefresh() }
                         }
                     }
+
                     else -> {
                         showLoading()
                     }
@@ -1488,26 +1495,16 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE) >= 0) {
+            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition()
+                    ?: DEFAULT_BLOCK_SIZE) >= 0) {
                 layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
             } else {
                 DEFAULT_BLOCK_SIZE
             }
 
             performanceTrace?.setBlock(data.take(takeLimit))
-
-            if(data.any { it is HomeRecommendationFeedDataModel }) {
-                trackEnterPage()
-            }
-
             adapter?.submitList(data)
         }
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
@@ -1860,6 +1857,7 @@ open class HomeRevampFragment :
                     NetworkErrorHelper.showSnackbar(activity, message)
                 }
             }
+
             REQUEST_CODE_REVIEW -> {
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
@@ -1867,14 +1865,17 @@ open class HomeRevampFragment :
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
+
             REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET -> if (data != null) {
                 notifyPlayWidgetTotalView(data)
                 notifyPlayWidgetReminder(data)
             }
+
             REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
                 val lastEvent = getHomeViewModel().playWidgetReminderEvent?.value
                 if (lastEvent != null) getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
             }
+
             PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
                 handleProductCardOptionsActivityResult(
                     requestCode,
@@ -1887,6 +1888,7 @@ open class HomeRevampFragment :
                     }
                 )
             }
+
             REQUEST_CODE_LOGIN -> {
                 activity?.let {
                     val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
@@ -1903,6 +1905,7 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
+
             REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
@@ -2151,12 +2154,12 @@ open class HomeRevampFragment :
         wordsSource: String,
         imprId: String,
     ) = HintData(
-            placeholder = placeholder.placeholder ?: "",
-            keyword = placeholder.keyword ?: "",
-            groupId = placeholder.groupId,
-            imprId = imprId,
-            wordsSource = wordsSource,
-        )
+        placeholder = placeholder.placeholder ?: "",
+        keyword = placeholder.keyword ?: "",
+        groupId = placeholder.groupId,
+        imprId = imprId,
+        wordsSource = wordsSource,
+    )
 
     private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
         var hints = arrayListOf(HintData(data.placeholder ?: "", data.keyword ?: ""))
@@ -2389,6 +2392,7 @@ open class HomeRevampFragment :
                     coachmarkSubscription?.hideCoachMark()
                 }
             }
+
             else -> {
                 // no-op
             }
@@ -2792,17 +2796,17 @@ open class HomeRevampFragment :
     private fun initEggDragListener() {
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.setOnDragListener(object :
-                FloatingEggButtonFragment.OnDragListener {
-                override fun onDragStart() {
-                    refreshLayout?.setCanChildScrollUp(true)
-                    refreshLayoutOld?.setCanChildScrollUp(true)
-                }
+            FloatingEggButtonFragment.OnDragListener {
+            override fun onDragStart() {
+                refreshLayout?.setCanChildScrollUp(true)
+                refreshLayoutOld?.setCanChildScrollUp(true)
+            }
 
-                override fun onDragEnd() {
-                    refreshLayout?.setCanChildScrollUp(false)
-                    refreshLayoutOld?.setCanChildScrollUp(false)
-                }
-            })
+            override fun onDragEnd() {
+                refreshLayout?.setCanChildScrollUp(false)
+                refreshLayoutOld?.setCanChildScrollUp(false)
+            }
+        })
     }
 
     override fun onPromoDragStart() {}

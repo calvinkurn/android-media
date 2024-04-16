@@ -505,7 +505,9 @@ class AtcVariantBottomSheet :
             loadingProgressDialog?.dismiss()
             val model = getConfirmCartAnalyticsModel(it)
             if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+                || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+//                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
+                ) {
                 AppLogPdp.sendConfirmCartResult(model)
             }
             if (it is Success) {
