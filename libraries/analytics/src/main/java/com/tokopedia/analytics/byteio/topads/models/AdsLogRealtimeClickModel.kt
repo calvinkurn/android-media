@@ -5,7 +5,7 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 data class AdsLogRealtimeClickModel(
     val refer: String,
     val adsValue: Long,
-    val rit: Long,
+    val logExtra: String,
     val adExtraData: AdExtraData
 ) {
     data class AdExtraData(

@@ -8,9 +8,6 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 
 internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: HomeRecommendationItemDataModel.HomeRecommendationProductItem?, refer: String) {
     element?.let {
@@ -41,7 +38,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
         // todo this value from BE
         0,
         // todo this value from BE
-        0,
+        "",
         AdsLogShowModel.AdExtraData(
             productId = id
         )
@@ -53,7 +50,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
         // todo this value from BE
         0,
         // todo this value from BE
-        0,
+        "",
         AdsLogShowOverModel.AdExtraData(
             productId = id,
             sizePercent = sizePercent.toString()
@@ -67,7 +64,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
         // todo this value from BE
         0,
         // todo this value from BE
-        0,
+        "",
         AdsLogRealtimeClickModel.AdExtraData(
             productId = id,
         )
@@ -79,7 +76,7 @@ internal fun DynamicHomeChannel.Grid.asAdsLogShowModel(): AdsLogShowModel {
         // todo this value from BE
         0,
         // todo this value from BE
-        0,
+        "",
         AdsLogShowModel.AdExtraData(
             productId = id
         )
@@ -91,7 +88,7 @@ internal fun DynamicHomeChannel.Grid.asAdsLogShowOverModel(sizePercent: Int): Ad
         // todo this value from BE
         0,
         // todo this value from BE
-        0,
+        "",
         AdsLogShowOverModel.AdExtraData(
             productId = id,
             sizePercent = sizePercent.toString()
@@ -105,7 +102,7 @@ internal fun DynamicHomeChannel.Grid.asAdsLogRealtimeClickModel(refer: String): 
         // todo this value from BE
         0,
         // todo this value from BE
-        0,
+        "",
         AdsLogRealtimeClickModel.AdExtraData(
             productId = id,
         )

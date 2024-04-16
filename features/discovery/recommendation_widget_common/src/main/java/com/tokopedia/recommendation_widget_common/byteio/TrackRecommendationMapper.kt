@@ -30,7 +30,7 @@ object TrackRecommendationMapper {
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
+            "",
             AdsLogRealtimeClickModel.AdExtraData(
                 productId = productId.orZero().toString()
             )
@@ -41,7 +41,7 @@ object TrackRecommendationMapper {
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
+            "",
             AdsLogShowOverModel.AdExtraData(
                 productId = productId.orZero().toString(),
                 sizePercent = visiblePercentage.toString()
@@ -54,7 +54,7 @@ object TrackRecommendationMapper {
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
+            "",
             AdsLogShowModel.AdExtraData(
                 productId = productId.orZero().toString()
             )
@@ -67,7 +67,7 @@ object TrackRecommendationMapper {
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
+            "",
             AdsLogRealtimeClickModel.AdExtraData(
                 productId = id
             )
@@ -78,7 +78,7 @@ object TrackRecommendationMapper {
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
+            "",
             AdsLogShowOverModel.AdExtraData(
                 productId = id,
                 sizePercent = visiblePercentage.toString()
@@ -91,7 +91,7 @@ object TrackRecommendationMapper {
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
+            "",
             AdsLogShowModel.AdExtraData(
                 productId = id
             )

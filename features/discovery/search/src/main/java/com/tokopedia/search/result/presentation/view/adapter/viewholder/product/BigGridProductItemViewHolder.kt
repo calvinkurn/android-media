@@ -5,9 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardClickListener

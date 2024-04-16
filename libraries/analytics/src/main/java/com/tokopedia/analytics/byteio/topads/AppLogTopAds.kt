@@ -51,9 +51,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.VALUE, adsLogShowOverModel.adsValue)
                 put(
                     AdsLogConst.Param.LOG_EXTRA,
-                    JSONObject().apply {
-                        put(AdsLogConst.RIT, adsLogShowOverModel.rit)
-                    }
+                    adsLogShowOverModel.logExtra
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
 
@@ -95,9 +93,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.VALUE, adsLogShowModel.adsValue)
                 put(
                     AdsLogConst.Param.LOG_EXTRA,
-                    JSONObject().apply {
-                        put(AdsLogConst.RIT, adsLogShowModel.rit)
-                    }
+                    adsLogShowModel.logExtra
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
@@ -139,9 +135,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.VALUE, adsLogRealtimeClickModel.adsValue)
                 put(
                     AdsLogConst.Param.LOG_EXTRA,
-                    JSONObject().apply {
-                        put(AdsLogConst.RIT, adsLogRealtimeClickModel.rit)
-                    }
+                    adsLogRealtimeClickModel.logExtra
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
