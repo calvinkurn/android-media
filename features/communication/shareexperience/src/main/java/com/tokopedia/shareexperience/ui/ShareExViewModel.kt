@@ -270,9 +270,14 @@ class ShareExViewModel @Inject constructor(
                     val finalLinkProperties = linkPropertiesWithCampaign.copy(
                         ogImageUrl = model.imageUrl
                     )
+                    val defaultUrlWithUtm = if (shareProperty.shareId != null) {
+                        generateUrlWithUTM(bottomSheetArgs.defaultUrl, channelEnum, campaign)
+                    } else {
+                        bottomSheetArgs.defaultUrl
+                    }
                     val shortLinkRequest = generateShortLinkRequest(
                         bottomSheetArgs.identifier,
-                        bottomSheetArgs.defaultUrl,
+                        defaultUrlWithUtm,
                         bottomSheetArgs.pageTypeEnum,
                         channelEnum,
                         finalLinkProperties,
@@ -343,7 +348,7 @@ class ShareExViewModel @Inject constructor(
 
     private fun generateShortLinkRequest(
         identifier: String,
-        defaultUrl: String,
+        defaultUrlWithUtm: String,
         pageTypeEnum: ShareExPageTypeEnum,
         channelEnum: ShareExChannelEnum,
         finalLinkProperties: ShareExLinkProperties,
@@ -354,7 +359,7 @@ class ShareExViewModel @Inject constructor(
             channelEnum = channelEnum,
             linkerPropertiesRequest = finalLinkProperties,
             fallbackPriorityEnumList = getFallbackPriorityEnumList(isAffiliate),
-            defaultUrl = defaultUrl,
+            defaultUrl = defaultUrlWithUtm,
             pageTypeEnum = pageTypeEnum
         )
     }
