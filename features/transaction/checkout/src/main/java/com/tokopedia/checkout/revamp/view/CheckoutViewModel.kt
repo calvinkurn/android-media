@@ -3275,7 +3275,7 @@ class CheckoutViewModel @Inject constructor(
             payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost)
 
             if (payment.tenorList == null) {
-                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, "Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi."))
+                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, INSTALLMENT_ERROR_MESSAGE))
             }
         }
 
@@ -3283,7 +3283,7 @@ class CheckoutViewModel @Inject constructor(
             payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost)
 
             if (payment.installmentData == null) {
-                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, "Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi."))
+                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, INSTALLMENT_ERROR_MESSAGE))
             }
         }
 
@@ -3547,6 +3547,7 @@ class CheckoutViewModel @Inject constructor(
         const val NO_PAYMENT_ERROR_MESSAGE = "Atur pembayaran dulu yuk sebelum lanjut bayar."
         const val INVALID_PAYMENT_ERROR_MESSAGE = "Oops, metode pembayaran pilihanmu tidak bisa dipakai di transaksi ini."
         const val INVALID_DROPSHIP_ERROR_MESSAGE = "Pastikan Anda telah melengkapi informasi tambahan."
+        const val INSTALLMENT_ERROR_MESSAGE = "Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi."
 
         const val SOURCE_LOCAL = "local"
 
