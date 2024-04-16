@@ -1357,34 +1357,30 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
-    private void handleAppLogEnterMethod(AppLogInterface appLogInterface) {
-        String pageName = appLogInterface.getPageName();
-        if(AppLogAnalytics.INSTANCE.getPageDataList().isEmpty()) return;
-        if (pageName.equals(PageName.HOME)) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
-        } else if (pageName.equals(PageName.WISHLIST)) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+    private void handleAppLogEnterMethod(AppLogInterface appLogInterface, boolean isFirstTimeInit) {
+        if (isFirstTimeInit) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+        } else {
+            String pageName = appLogInterface.getPageName();
+            if (AppLogAnalytics.INSTANCE.getPageDataList().isEmpty()) return;
+            if (pageName.equals(PageName.HOME)) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
+            } else if (pageName.equals(PageName.WISHLIST)) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+            }
         }
     }
 
     private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
         if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
-            if(!isFirstTimeInit) {
-                handleAppLogEnterMethod(applogInterface);
-            }
-
             Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
-            if (currentPageName != null
-                    && applogInterface.getPageName().equals(currentPageName.toString())) {
-                return;
+            if (currentPageName == null
+                    || !applogInterface.getPageName().equals(currentPageName.toString())) {
+                AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
+                AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
             }
-            AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
-            AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
-
-            if (isFirstTimeInit) {
-                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
-            }
+            handleAppLogEnterMethod(applogInterface, isFirstTimeInit);
         }
     }
 
