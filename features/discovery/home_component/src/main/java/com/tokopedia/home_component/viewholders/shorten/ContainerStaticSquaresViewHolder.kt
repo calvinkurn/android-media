@@ -8,7 +8,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponentContainerStatic2squareBinding
 import com.tokopedia.home_component.decoration.StaticMissionWidgetItemDecoration
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactoryImpl
-import com.tokopedia.home_component.viewholders.shorten.internal.MAX_LIMIT_CARD
+import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSquaresAdapter
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
@@ -43,8 +43,8 @@ class ContainerStaticSquaresViewHolder(
     private fun renderWidgets(element: DealsAndMissionWidgetUiModel) {
         visitableList.clear()
 
-        visitableList.add(element.mission)
-        visitableList.add(element.deals)
+        visitableList.add(element.mission.position, element.mission)
+        visitableList.add(element.deals.position, element.deals)
     }
 
     private fun setupRecyclerView() {
@@ -54,7 +54,7 @@ class ContainerStaticSquaresViewHolder(
             binding?.lstComponent?.adapter as? ShortenStaticSquaresAdapter
         }
 
-        val layoutManager = GridLayoutManager(itemView.context, MAX_LIMIT_CARD)
+        val layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
 
         binding?.lstComponent?.addItemDecoration(StaticMissionWidgetItemDecoration.span2())
         binding?.lstComponent?.layoutManager = layoutManager

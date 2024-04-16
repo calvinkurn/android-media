@@ -8,6 +8,7 @@ import com.tokopedia.home_component_header.model.ChannelHeader
 
 data class DealsWidgetUiModel(
     val channelModel: ChannelModel,
+    val position: Int,
     val header: ChannelHeader = ChannelHeader(),
     val data: List<ItemDealsWidgetUiModel>
 ) : ShortenVisitable {

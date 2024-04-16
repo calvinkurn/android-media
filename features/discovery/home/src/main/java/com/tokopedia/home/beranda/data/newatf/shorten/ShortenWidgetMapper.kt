@@ -31,10 +31,11 @@ object ShortenWidgetMapper {
         data: DynamicHomeChannel,
         channel: DynamicHomeChannel.Channels
     ): DealsWidgetUiModel {
-        val (model, header) = mapChannelToPartialWidget(data, channel)
+        val (index, model, header) = mapChannelToPartialWidget(data, channel)
 
         return DealsWidgetUiModel(
             channelModel = model,
+            position = index,
             header = header,
             data = channel.grids.map { grid ->
                 val labelGroup = grid.labelGroup.associateBy { it.position }
@@ -89,10 +90,11 @@ object ShortenWidgetMapper {
         data: DynamicHomeChannel,
         channel: DynamicHomeChannel.Channels
     ): MissionWidgetUiModel {
-        val (model, header) = mapChannelToPartialWidget(data, channel)
+        val (index, model, header) = mapChannelToPartialWidget(data, channel)
 
         return MissionWidgetUiModel(
             channelModel = model,
+            position = index,
             header = header,
             data = channel.grids.map { grid ->
                 val labelGroup = grid.labelGroup.associateBy { it.position }
@@ -142,12 +144,13 @@ object ShortenWidgetMapper {
     private fun mapChannelToPartialWidget(
         data: DynamicHomeChannel,
         channel: DynamicHomeChannel.Channels
-    ): Pair<ChannelModel, ChannelHeader> {
+    ): Triple<Int, ChannelModel, ChannelHeader> {
         val indexPosition = data.channels.indexOf(channel)
         val channelModel = DynamicChannelComponentMapper
             .mapHomeChannelToComponent(channel, indexPosition)
 
-        return Pair(
+        return Triple(
+            indexPosition,
             channelModel,
             channel.header.mapToHomeComponentHeader(),
         )
