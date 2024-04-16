@@ -204,7 +204,6 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     ApplinkConstInternalGlobal.WEBVIEW,
                     TokopediaUrl.getInstance().WEB.plus(OS_PATH)
                 )
-                shopCreationAnalytics.sendSellerClickCekTetapBukaDiPerangkatIniEvent(currentSite = "tokopediamarketplace", )
             }
             setOnWebviewClick {  }
             setCloseClickListener {
