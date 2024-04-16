@@ -5,6 +5,7 @@ import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
@@ -27,16 +28,16 @@ object AppLogTopAds {
      */
     fun sendEventShowOver(
         context: Context,
-        currentPageName: String,
         adsLogShowOverModel: AdsLogShowOverModel
     ) {
+        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(currentPageName == PageName.SEARCH_RESULT) {
+                        if(pageName == PageName.SEARCH_RESULT) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -59,28 +60,28 @@ object AppLogTopAds {
 
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
 
-                putTag(currentPageName)
+                putTag(pageName)
             }
         )
     }
 
     /**
      * @param context Context
-     * @param currentPageName String
      * @param adsLogShowModel AdsLogShowModel
      */
     fun sendEventShow(
         context: Context,
-        currentPageName: String,
         adsLogShowModel: AdsLogShowModel
     ) {
+        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
+
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(currentPageName == PageName.SEARCH_RESULT) {
+                        if(pageName == PageName.SEARCH_RESULT) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -101,29 +102,29 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
 
-                putTag(currentPageName)
+                putTag(pageName)
             }
         )
     }
 
     /**
      * @param context Context
-     * @param currentPageName String
      * @param adsLogRealtimeClickModel AdsLogRealtimeClickModel
      */
     fun sendEventRealtimeClick(
         context: Context,
-        currentPageName: String,
         adsLogRealtimeClickModel: AdsLogRealtimeClickModel
     ) {
         val timeStamp = System.currentTimeMillis()
+        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
+
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(currentPageName == PageName.SEARCH_RESULT) {
+                        if(pageName == PageName.SEARCH_RESULT) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -144,14 +145,14 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
-                if(currentPageName != PageName.SEARCH_RESULT) {
+                if(pageName != PageName.SEARCH_RESULT) {
                     put(
                         AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK,
                         (timeStamp - lastClickTimestamp).toString()
                     )
                 }
 
-                putTag(currentPageName)
+                putTag(pageName)
             }
         )
         lastClickTimestamp = timeStamp
@@ -188,7 +189,7 @@ object AppLogTopAds {
         }
     }
 
-    private fun JSONObject.putTag(currentPageName: String) {
+    private fun JSONObject.putTag(currentPageName: Any?) {
         val tagName = if (currentPageName == PageName.SEARCH_RESULT) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
         put(AdsLogConst.TAG, tagName)
     }

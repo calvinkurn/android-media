@@ -7,36 +7,33 @@ import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapp
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-fun RecommendationItem.sendShowAdsByteIo(context: Context?, pageName: String) {
+fun RecommendationItem.sendShowAdsByteIo(context: Context?) {
     context?.let {
         if (isTopAds) {
             AppLogTopAds.sendEventShow(
                 it,
-                pageName,
                 asAdsLogShowModel()
             )
         }
     }
 }
 
-fun RecommendationItem.sendShowOverAdsByteIo(context: Context?, pageName: String, visiblePercentage: Int) {
+fun RecommendationItem.sendShowOverAdsByteIo(context: Context?, visiblePercentage: Int) {
     context?.let {
         if (isTopAds) {
             AppLogTopAds.sendEventShowOver(
                 it,
-                pageName,
                 asAdsLogShowOverModel(visiblePercentage)
             )
         }
     }
 }
 
-fun RecommendationItem.sendRealtimeClickAdsByteIo(context: Context?, pageName: String, refer: String) {
+fun RecommendationItem.sendRealtimeClickAdsByteIo(context: Context?, refer: String) {
     context?.let {
         if (isTopAds) {
             AppLogTopAds.sendEventRealtimeClick(
                 it,
-                pageName,
                 asAdsLogRealtimeClickModel(refer)
             )
         }

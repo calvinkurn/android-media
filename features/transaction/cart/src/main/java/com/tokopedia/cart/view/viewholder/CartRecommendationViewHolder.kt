@@ -60,15 +60,15 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
                 }
 
                 override fun onAreaClicked(v: View) {
-                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.AREA)
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.COVER)
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.SELLER_NAME)
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
@@ -103,11 +103,11 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
     }
 
     override fun onViewAttachedToWindow() {
-        recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.CART)
+        recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.CART, visiblePercentage)
+        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

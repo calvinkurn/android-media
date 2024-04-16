@@ -179,23 +179,23 @@ class ProductMediaRecomBottomSheetManager(
         }
 
         override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-            recomItem.sendShowAdsByteIo(context, PageName.PDP)
+            recomItem.sendShowAdsByteIo(context)
         }
 
         override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
-            recomItem.sendShowOverAdsByteIo(context, PageName.PDP, visiblePercentage)
+            recomItem.sendShowOverAdsByteIo(context, visiblePercentage)
         }
 
         override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-            recomItem.sendRealtimeClickAdsByteIo(context, PageName.PDP, AdsLogConst.Refer.AREA)
+            recomItem.sendRealtimeClickAdsByteIo(context, AdsLogConst.Refer.AREA)
         }
 
         override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-            recomItem.sendRealtimeClickAdsByteIo(context, PageName.PDP, AdsLogConst.Refer.COVER)
+            recomItem.sendRealtimeClickAdsByteIo(context, AdsLogConst.Refer.COVER)
         }
 
         override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-            recomItem.sendRealtimeClickAdsByteIo(context, PageName.PDP, AdsLogConst.Refer.SELLER_NAME)
+            recomItem.sendRealtimeClickAdsByteIo(context, AdsLogConst.Refer.SELLER_NAME)
         }
 
         override fun onRecomBannerImpressed(

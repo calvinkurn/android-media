@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller.recommendat
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -32,15 +31,15 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
             }
 
             override fun onAreaClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.AREA)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.COVER)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.SELLER_NAME)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
             }
         })
 
@@ -50,11 +49,11 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
     }
 
     override fun onViewAttachedToWindow(element: RecommendationCarouselItemDataModel?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.HOME)
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationCarouselItemDataModel?, visiblePercentage: Int) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.HOME, visiblePercentage)
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     companion object {

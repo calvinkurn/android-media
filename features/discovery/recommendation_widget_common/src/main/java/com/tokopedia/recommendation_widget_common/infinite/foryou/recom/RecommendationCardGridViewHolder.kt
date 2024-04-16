@@ -49,7 +49,6 @@ class RecommendationCardGridViewHolder constructor(
             if (it.recommendationProductItem.isTopAds) {
                 AppLogTopAds.sendEventShow(
                     itemView.context,
-                    PageName.HOME,
                     it.recommendationProductItem.asAdsLogShowModel()
                 )
             }
@@ -61,7 +60,6 @@ class RecommendationCardGridViewHolder constructor(
             if (it.recommendationProductItem.isTopAds) {
                 AppLogTopAds.sendEventShowOver(
                     itemView.context,
-                    PageName.HOME,
                     it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
                 )
             }
@@ -114,7 +112,6 @@ class RecommendationCardGridViewHolder constructor(
             if (it.isTopAds) {
                 AppLogTopAds.sendEventRealtimeClick(
                     context,
-                    PageName.HOME,
                     it.asAdsLogRealtimeClickModel(refer)
                 )
             }

@@ -14,7 +14,6 @@ internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: HomeReco
         if (it.isTopAds) {
             AppLogTopAds.sendEventRealtimeClick(
                 context,
-                PageName.SEARCH_RESULT,
                 it.asAdsLogRealtimeClickModel(refer)
             )
         }
@@ -26,7 +25,6 @@ internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: DynamicH
         if (it.isTopads) {
             AppLogTopAds.sendEventRealtimeClick(
                 context,
-                PageName.SEARCH_RESULT,
                 it.asAdsLogRealtimeClickModel(refer)
             )
         }

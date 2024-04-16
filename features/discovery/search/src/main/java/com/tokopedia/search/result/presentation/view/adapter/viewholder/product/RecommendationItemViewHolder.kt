@@ -8,8 +8,6 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardClickListener
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
@@ -18,7 +16,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultRecommendationCardSmallGridBinding
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
-import com.tokopedia.search.utils.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecommendationItemViewHolder (
@@ -48,15 +45,15 @@ class RecommendationItemViewHolder (
             }
 
             override fun onAreaClicked(v: View) {
-                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SEARCH_RESULT, AdsLogConst.Refer.AREA)
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SEARCH_RESULT, AdsLogConst.Refer.COVER)
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SEARCH_RESULT, AdsLogConst.Refer.SELLER_NAME)
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
             }
         })
 
@@ -68,11 +65,11 @@ class RecommendationItemViewHolder (
     }
 
     override fun onViewAttachedToWindow(element: RecommendationItemDataView?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.SEARCH_RESULT)
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationItemDataView?, visiblePercentage: Int) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.SEARCH_RESULT, visiblePercentage)
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     private fun createImageProductViewHintListener(recommendationItemDataView: RecommendationItemDataView): ViewHintListener {

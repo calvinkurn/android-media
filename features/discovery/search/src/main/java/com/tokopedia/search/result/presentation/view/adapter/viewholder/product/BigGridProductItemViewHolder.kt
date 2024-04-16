@@ -93,7 +93,6 @@ class BigGridProductItemViewHolder(
         if (element?.isAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
-                PageName.SEARCH_RESULT,
                 element.asAdsLogShowModel()
             )
         }
@@ -103,7 +102,6 @@ class BigGridProductItemViewHolder(
         if (element?.isAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
-                PageName.SEARCH_RESULT,
                 element.asAdsLogShowOverModel(visiblePercentage)
             )
         }

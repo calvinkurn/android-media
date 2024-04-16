@@ -70,26 +70,26 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                 }
 
                 override fun onAreaClicked(v: View) {
-                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, PageName.REWARD, AdsLogConst.Refer.AREA)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, PageName.REWARD, AdsLogConst.Refer.COVER)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, PageName.REWARD, AdsLogConst.Refer.SELLER_NAME)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
         }
 
         override fun onViewAttachedToWindow() {
-            uiModel?.sendShowAdsByteIo(itemView.context, PageName.REWARD)
+            uiModel?.sendShowAdsByteIo(itemView.context)
         }
 
         override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-            uiModel?.sendShowOverAdsByteIo(itemView.context, PageName.REWARD, visiblePercentage)
+            uiModel?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
         }
 
         override fun setVisiblePercentage(visiblePercentage: Int) {

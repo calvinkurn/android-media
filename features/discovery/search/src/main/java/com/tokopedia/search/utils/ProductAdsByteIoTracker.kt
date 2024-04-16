@@ -10,7 +10,6 @@ internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: ProductI
         if (it.isAds) {
             AppLogTopAds.sendEventRealtimeClick(
                 context,
-                PageName.SEARCH_RESULT,
                 it.asAdsLogRealtimeClickModel(refer)
             )
         }

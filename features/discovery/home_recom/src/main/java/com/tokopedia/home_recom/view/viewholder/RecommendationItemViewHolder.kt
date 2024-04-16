@@ -93,15 +93,15 @@ class RecommendationItemViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-                    element.productItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.AREA)
+                    element.productItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    element.productItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.COVER)
+                    element.productItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    element.productItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.SELLER_NAME)
+                    element.productItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
@@ -138,11 +138,11 @@ class RecommendationItemViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: RecommendationItemDataModel?) {
-        element?.productItem?.sendShowAdsByteIo(itemView.context, PageName.HOME)
+        element?.productItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationItemDataModel?, visiblePercentage: Int) {
-        element?.productItem?.sendShowOverAdsByteIo(itemView.context, PageName.HOME, visiblePercentage)
+        element?.productItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     private fun setRecTriggerObject(model: RecommendationItemDataModel) {

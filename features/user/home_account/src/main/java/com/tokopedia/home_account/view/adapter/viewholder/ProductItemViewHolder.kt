@@ -45,15 +45,15 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
             }
 
             override fun onAreaClicked(v: View) {
-                element.sendRealtimeClickAdsByteIo(itemView.context, PageName.ACCOUNT, AdsLogConst.Refer.AREA)
+                element.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                element.sendRealtimeClickAdsByteIo(itemView.context, PageName.ACCOUNT, AdsLogConst.Refer.COVER)
+                element.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                element.sendRealtimeClickAdsByteIo(itemView.context, PageName.ACCOUNT, AdsLogConst.Refer.SELLER_NAME)
+                element.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
             }
         })
 
@@ -63,21 +63,11 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
     }
 
     override fun onViewAttachedToWindow() {
-        recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShow(
-                    itemView.context,
-                    PageName.ACCOUNT,
-                    it.asAdsLogShowModel()
-                )
-            }
-        }
-
-        recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.ACCOUNT)
+        recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.ACCOUNT, visiblePercentage)
+        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

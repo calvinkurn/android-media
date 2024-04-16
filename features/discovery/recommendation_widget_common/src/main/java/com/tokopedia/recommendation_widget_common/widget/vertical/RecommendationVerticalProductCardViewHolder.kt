@@ -15,6 +15,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalProductcardBinding
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -54,11 +55,11 @@ class RecommendationVerticalProductCardViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: RecommendationVerticalProductCardModel?) {
-
+        element?.recomItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationVerticalProductCardModel?, visiblePercentage: Int) {
-
+        element?.recomItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     private fun setupProductCardLayoutData(productModel: ProductCardModel) {
@@ -75,14 +76,15 @@ class RecommendationVerticalProductCardViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-
+                    element.recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
+                    element.recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-
+                    element.recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
         }

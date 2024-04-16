@@ -118,22 +118,22 @@ class ShopHomePersoProductComparisonViewHolder(
     }
 
     override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SHOP, AdsLogConst.Refer.AREA)
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
     }
 
     override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SHOP, AdsLogConst.Refer.COVER)
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
     }
 
     override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SHOP, AdsLogConst.Refer.SELLER_NAME)
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
     }
 
     override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendShowAdsByteIo(itemView.context, PageName.SHOP)
+        recomItem.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
-        recomItem.sendShowOverAdsByteIo(itemView.context, PageName.SHOP, visiblePercentage)
+        recomItem.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 }

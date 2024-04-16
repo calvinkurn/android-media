@@ -47,7 +47,7 @@ class CartRecentViewViewHolder(
                         position: Int,
                         item: RecommendationItem
                     ) {
-                        item.sendShowAdsByteIo(itemView.context, PageName.CART)
+                        item.sendShowAdsByteIo(itemView.context)
                     }
 
                     override fun onViewDetachedFromWindow(
@@ -55,7 +55,7 @@ class CartRecentViewViewHolder(
                         item: RecommendationItem,
                         visiblePercentage: Int
                     ) {
-                        item.sendShowOverAdsByteIo(itemView.context, PageName.CART, visiblePercentage)
+                        item.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
                     }
 
                     override fun onProductClick(
@@ -67,21 +67,21 @@ class CartRecentViewViewHolder(
                     }
 
                     override fun onAreaClicked(position: Int, item: RecommendationItem) {
-                        item.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.AREA)
+                        item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                     }
 
                     override fun onProductImageClicked(
                         position: Int,
                         item: RecommendationItem
                     ) {
-                        item.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.COVER)
+                        item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                     }
 
                     override fun onSellerInfoClicked(
                         position: Int,
                         item: RecommendationItem
                     ) {
-                        item.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.SELLER_NAME)
+                        item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                     }
 
                     override fun onProductImpress(

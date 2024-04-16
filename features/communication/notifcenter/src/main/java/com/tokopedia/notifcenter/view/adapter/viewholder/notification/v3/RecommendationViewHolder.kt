@@ -50,11 +50,11 @@ class RecommendationViewHolder constructor(
     }
 
     override fun onViewAttachedToWindow(element: RecommendationUiModel?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.NOTIFICATION)
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationUiModel?, visiblePercentage: Int) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.NOTIFICATION, visiblePercentage)
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     private fun setRecTriggerObject(model: RecommendationItem) {
@@ -98,15 +98,15 @@ class RecommendationViewHolder constructor(
             }
 
             override fun onAreaClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.NOTIFICATION, AdsLogConst.Refer.AREA)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.NOTIFICATION, AdsLogConst.Refer.COVER)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.NOTIFICATION, AdsLogConst.Refer.SELLER_NAME)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
             }
         })
     }

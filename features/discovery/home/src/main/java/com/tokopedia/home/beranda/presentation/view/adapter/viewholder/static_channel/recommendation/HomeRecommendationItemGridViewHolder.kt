@@ -101,7 +101,6 @@ class HomeRecommendationItemGridViewHolder(
             if (it.recommendationProductItem.isTopAds) {
                 AppLogTopAds.sendEventShow(
                     itemView.context,
-                    PageName.HOME,
                     it.recommendationProductItem.asAdsLogShowModel()
                 )
             }
@@ -113,7 +112,6 @@ class HomeRecommendationItemGridViewHolder(
             if (it.recommendationProductItem.isTopAds) {
                 AppLogTopAds.sendEventShowOver(
                     itemView.context,
-                    PageName.HOME,
                     it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
                 )
             }

@@ -39,7 +39,6 @@ class FlashSaleViewHolder (view: View,
             if (it.grid.isTopads) {
                 AppLogTopAds.sendEventShow(
                     itemView.context,
-                    PageName.HOME,
                     it.grid.asAdsLogShowModel()
                 )
             }
@@ -51,7 +50,6 @@ class FlashSaleViewHolder (view: View,
             if (it.grid.isTopads) {
                 AppLogTopAds.sendEventShowOver(
                     itemView.context,
-                    PageName.HOME,
                     it.grid.asAdsLogShowOverModel(visibilityPercentage)
                 )
             }

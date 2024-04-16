@@ -67,15 +67,15 @@ class UniversalInboxRecommendationProductViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.INBOX, AdsLogConst.Refer.AREA)
+                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.INBOX, AdsLogConst.Refer.COVER)
+                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.INBOX, AdsLogConst.Refer.SELLER_NAME)
+                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
@@ -89,14 +89,14 @@ class UniversalInboxRecommendationProductViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.INBOX)
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(
         element: UniversalInboxRecommendationUiModel?,
         visiblePercentage: Int
     ) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.INBOX, visiblePercentage)
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     fun bind(uiModel: RecommendationItem, payloads: Bundle) {

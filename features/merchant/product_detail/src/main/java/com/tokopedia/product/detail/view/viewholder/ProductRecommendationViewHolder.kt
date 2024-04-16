@@ -216,28 +216,28 @@ class ProductRecommendationViewHolder(
 
                 override fun onAreaClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
                     val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
-                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.AREA)
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
                     val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
-                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.COVER)
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
                     val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
-                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.SELLER_NAME)
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             },
             carouselProductCardOnItemViewListener = object: CarouselProductCardListener.OnViewListener {
                 override fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                     val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
-                    productRecommendation.sendShowAdsByteIo(itemView.context, PageName.PDP)
+                    productRecommendation.sendShowAdsByteIo(itemView.context)
                 }
 
                 override fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int) {
                     val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
-                    productRecommendation.sendShowOverAdsByteIo(itemView.context, PageName.PDP, visiblePercentage)
+                    productRecommendation.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
                 }
             },
             carouselProductCardOnItemImpressedListener = object :

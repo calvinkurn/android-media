@@ -50,15 +50,15 @@ class WishlistCollectionRecommendationItemViewHolder(
                     }
 
                     override fun onAreaClicked(v: View) {
-                        recommendationItem?.sendRealtimeClickAdsByteIo(itemView.context, PageName.WISHLIST, AdsLogConst.Refer.AREA)
+                        recommendationItem?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                     }
 
                     override fun onProductImageClicked(v: View) {
-                        recommendationItem?.sendRealtimeClickAdsByteIo(itemView.context, PageName.WISHLIST, AdsLogConst.Refer.COVER)
+                        recommendationItem?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                     }
 
                     override fun onSellerInfoClicked(v: View) {
-                        recommendationItem?.sendRealtimeClickAdsByteIo(itemView.context, PageName.WISHLIST, AdsLogConst.Refer.SELLER_NAME)
+                        recommendationItem?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                     }
                 })
 
@@ -84,11 +84,11 @@ class WishlistCollectionRecommendationItemViewHolder(
     }
 
     override fun onViewAttachedToWindow() {
-        recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.WISHLIST)
+        recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.WISHLIST, visiblePercentage)
+        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

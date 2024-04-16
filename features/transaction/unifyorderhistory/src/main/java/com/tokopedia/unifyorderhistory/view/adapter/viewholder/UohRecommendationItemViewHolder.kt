@@ -42,15 +42,15 @@ class UohRecommendationItemViewHolder(private val binding: UohRecommendationItem
                     }
 
                     override fun onAreaClicked(v: View) {
-                        item.dataObject.sendRealtimeClickAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, AdsLogConst.Refer.AREA)
+                        item.dataObject.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                     }
 
                     override fun onProductImageClicked(v: View) {
-                        item.dataObject.sendRealtimeClickAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, AdsLogConst.Refer.COVER)
+                        item.dataObject.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                     }
 
                     override fun onSellerInfoClicked(v: View) {
-                        item.dataObject.sendRealtimeClickAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, AdsLogConst.Refer.SELLER_NAME)
+                        item.dataObject.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                     }
                 })
 
@@ -67,11 +67,11 @@ class UohRecommendationItemViewHolder(private val binding: UohRecommendationItem
     }
 
     override fun onViewAttachedToWindow() {
-        recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT)
+        recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, visiblePercentage)
+        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

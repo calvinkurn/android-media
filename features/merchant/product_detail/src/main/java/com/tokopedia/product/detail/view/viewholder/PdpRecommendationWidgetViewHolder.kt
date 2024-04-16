@@ -39,23 +39,23 @@ class PdpRecommendationWidgetViewHolder(
         val recommendationWidgetModel = element.recommendationWidgetModel.copy(
             listener = object : RecommendationWidgetListener {
                 override fun onAreaClicked(position: Int, item: RecommendationItem) {
-                    item.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.AREA)
+                    item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(position: Int, item: RecommendationItem) {
-                    item.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.COVER)
+                    item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(position: Int, item: RecommendationItem) {
-                    item.sendRealtimeClickAdsByteIo(itemView.context, PageName.PDP, AdsLogConst.Refer.SELLER_NAME)
+                    item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
 
                 override fun onViewAttachedToWindow(position: Int, item: RecommendationItem) {
-                    item.sendShowAdsByteIo(itemView.context, PageName.PDP)
+                    item.sendShowAdsByteIo(itemView.context)
                 }
 
                 override fun onViewDetachedFromWindow(position: Int, item: RecommendationItem, visiblePercentage: Int) {
-                    item.sendShowOverAdsByteIo(itemView.context, PageName.PDP, visiblePercentage)
+                    item.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
                 }
             }
         )
