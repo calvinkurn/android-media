@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <View
+        android:id="@+id/view_top_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="20dp" />
+
+    <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+        android:id="@+id/layout_icon_pull_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:color_type="white"
+        app:layout_constraintTop_toBottomOf="@id/view_top_spacing"/>
+
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/choose_address_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="14dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        custom:tickerType="announcement"
+        custom:tickerShapeType="loose"
+        custom:closeButtonVisibility="visible"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        xmlns:custom="http://schemas.android.com/apk/res-auto" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/tp_cta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
+        app:layout_goneMarginEnd="16dp"
+        app:typographyType="heading_3"
+        tools:text="List Belanja Kesukaanmu Mau Pilih Yang Mana"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/vtp_title"
+        android:layout_width="50dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
+        app:layout_goneMarginEnd="16dp"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/siv_title"
+        android:layout_width="106dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/Unify_Background"
+        app:layout_constraintEnd_toStartOf="@id/tp_cta"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
+        app:layout_goneMarginEnd="16dp"
+        app:loader_corner_radius="16dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_cta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tp_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/choose_address_widget"
+        app:layout_constraintVertical_bias="1.0"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Beli Lagi"
+        tools:visibility="visible" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/siv_cta"
+        android:layout_width="74dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/Unify_Background"
+        app:layout_constraintBottom_toBottomOf="@id/siv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/siv_title"
+        app:layout_constraintVertical_bias="1.0"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Beli Lagi"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/aiv_super_graphic"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:srcCompat="@drawable/tokopedianow_bg_header_shopping_list"/>
+
+    <View
+        android:id="@+id/rounded_top_category_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/tokopedianow_bg_thematic_header_rounded_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_title"
+        app:shapeAppearanceOverlay="@style/roundedTopImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

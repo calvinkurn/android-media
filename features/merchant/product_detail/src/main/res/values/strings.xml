@@ -59,6 +59,7 @@
     <string name="product_refresh">Refresh</string>
     <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
     <string name="variant_choose_label">Pilih varian:</string>
+    <string name="variant_thumbnail_empty_state">Habis</string>
 
     //NotifyMe (UpComing Teaser) section
     <string name="notify_me_active">Pengingat Aktif</string>

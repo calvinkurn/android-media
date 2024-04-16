@@ -236,6 +236,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS, loadInitialData) {
             productSingleVariant?.run {
                 isRefreshing = false
+
+                val ongoingCampaign = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignUiModel
+                val ongoing = ongoingCampaign?.data?.hasOngoingCampaign ?: false
+                val thematic = ongoingCampaign?.data?.thematicCampaign?.campaignName?.isNotEmpty() ?: false
+                isCampaign = ongoing || thematic
             }
         }
 
@@ -699,6 +704,21 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateUpcoming(productId, upcomingData)
 
         updateOngoing()
+
+        updateVariantPadding()
+    }
+
+    private fun updateVariantPadding(){
+        val upcomingCampaign = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeUiModel
+        val ongoingCampaign = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignUiModel
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS){
+            productSingleVariant?.run {
+                val ongoing = ongoingCampaign?.data?.hasOngoingCampaign ?: false
+                val thematic = ongoingCampaign?.data?.thematicCampaign?.campaignName?.isNotEmpty() ?: false
+                val upcoming = upcomingCampaign?.shouldShow ?: false
+                isCampaign = ongoing || thematic || upcoming
+            }
+        }
     }
 
     private fun updateOngoing() {
@@ -722,17 +742,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     ) {
         updateData(ProductDetailConstant.UPCOMING_DEALS) {
             notifyMeMap?.run {
-                val selectedUpcoming = upcomingData?.get(productId)
+                val selectedUpcoming = upcomingData?.get(productId) ?: ProductUpcomingData()
                 data = UpcomingCampaignUiModel(
-                    campaignID = selectedUpcoming?.campaignId.orEmpty(),
-                    campaignType = selectedUpcoming?.campaignType.orEmpty(),
-                    campaignTypeName = selectedUpcoming?.campaignTypeName.orEmpty(),
-                    startDate = selectedUpcoming?.startDate.orEmpty(),
-                    notifyMe = selectedUpcoming?.notifyMe.orFalse(),
-                    bgColorUpcoming = selectedUpcoming?.bgColorUpcoming.orEmpty(),
-                    campaignLogo = selectedUpcoming?.campaignLogo.orEmpty(),
-                    upcomingType = selectedUpcoming?.upcomingType.orEmpty(),
-                    ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty()
+                    campaignID = selectedUpcoming.campaignId.orEmpty(),
+                    campaignType = selectedUpcoming.campaignType.orEmpty(),
+                    campaignTypeName = selectedUpcoming.campaignTypeName.orEmpty(),
+                    startDate = selectedUpcoming.startDate.orEmpty(),
+                    notifyMe = selectedUpcoming.notifyMe.orFalse(),
+                    bgColorUpcoming = selectedUpcoming.bgColorUpcoming.orEmpty(),
+                    campaignLogo = selectedUpcoming.campaignLogo.orEmpty(),
+                    upcomingType = selectedUpcoming.upcomingType.orEmpty(),
+                    ribbonCopy = selectedUpcoming.campaignTypeName.orEmpty(),
+                    showReminderButton = selectedUpcoming.showRemindMe.orFalse()
                 )
 
                 val hasOngoingCampaign = ongoingCampaignData?.data?.hasOngoingCampaign.orFalse()
@@ -867,7 +888,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         return dataModel?.recomWidgetData?.nextPage
     }
 
-    fun removeComponentP2Data(it: ProductInfoP2UiData, countReview: String) {
+    fun removeComponentP2Data(it: ProductInfoP2UiData) {
         if (it.ratesEstimate.isEmpty()) {
             removeComponent(ProductDetailConstant.SHIPMENT_V2)
             removeComponent(ProductDetailConstant.SHIPMENT)

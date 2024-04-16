@@ -29,12 +29,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
@@ -256,7 +259,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         val iconConfig = iconBuilder.build()
         viewModel?.setRegisteredIconList(iconConfig)
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
-        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, {navToolbarIconCustomLightColor}, {navToolbarIconCustomDarkColor})
+        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, { navToolbarIconCustomLightColor }, { navToolbarIconCustomDarkColor })
         navIconAdapter?.setHasStableIds(true)
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.itemAnimator = null
@@ -364,8 +367,11 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
      * Switch toolbar based on UI mode (light/dark mode)
      */
     fun switchToolbarBasedOnUiMode() {
-        if(context?.isDarkMode() == true) switchToDarkToolbar()
-        else switchToLightToolbar()
+        if (context?.isDarkMode() == true) {
+            switchToDarkToolbar()
+        } else {
+            switchToLightToolbar()
+        }
     }
 
     /**
@@ -408,8 +414,9 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                 after: Int
             ) -> Unit
         )? = null,
-        editorActionCallback: ((hint: String) -> Unit)? = null
-
+        editorActionCallback: ((hint: String) -> Unit)? = null,
+        hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
+        hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
     ) {
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
@@ -421,7 +428,9 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             topNavComponentListener = this,
             disableDefaultGtmTracker = disableDefaultGtmTracker,
             navSearchbarInterface = navSearchbarInterface,
-            editorActionCallback = editorActionCallback
+            editorActionCallback = editorActionCallback,
+            hintImpressionCallback = hintImpressionCallback,
+            hintClickCallback = hintClickCallback,
         )
         this.searchbarType = searchbarType
         searchbarTypeValidation(
@@ -568,6 +577,15 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     // this needed to enable coachmark on wishlist detail page & thankyou page
     fun getShareIconView(): View? {
         val shareIconPosition = navIconAdapter?.getShareIconPosition()
+        shareIconPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
+    fun getCartIconPosition(): View? {
+        val shareIconPosition = navIconAdapter?.getCartIconPosition()
         shareIconPosition?.let {
             val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
             return viewholder?.itemView
@@ -962,7 +980,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     fun setNavToolbarIconCustomColor(
         navToolbarIconCustomLightColor: Int,
         navToolbarIconCustomDarkColor: Int
-    ){
+    ) {
         this.navToolbarIconCustomLightColor = navToolbarIconCustomLightColor
         this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
     }

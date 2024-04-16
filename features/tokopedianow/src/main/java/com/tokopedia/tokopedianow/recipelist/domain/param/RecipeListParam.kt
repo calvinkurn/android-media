@@ -2,10 +2,11 @@ package com.tokopedia.tokopedianow.recipelist.domain.param
 
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_QUERY_PARAM
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_SOURCE_PAGE
-import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_WAREHOUSES
 import com.tokopedia.usecase.RequestParams
 import java.util.*
 
@@ -16,7 +17,7 @@ import java.util.*
 class RecipeListParam {
     var page: Int = DEFAULT_PAGE
     var perPage: Int = DEFAULT_PER_PAGE
-    var warehouseID: String? = null
+    var warehouses: List<WarehouseData>? = null
     var sourcePage: String = ""
     val queryParamsMap = mutableMapOf<String, String?>()
 
@@ -40,8 +41,8 @@ class RecipeListParam {
             putInt(GetRecipeList.PARAM_PAGE, page)
             putInt(GetRecipeList.PARAM_PER_PAGE, perPage)
 
-            warehouseID?.let {
-                putString(PARAM_WAREHOUSE_ID, it)
+            warehouses?.let {
+                putObject(PARAM_WAREHOUSES, it)
             }
 
             if (sourcePage.isNotEmpty()) {

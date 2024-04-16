@@ -49,8 +49,9 @@ import com.tokopedia.developer_options.tracker.DevOpsTracker
 import com.tokopedia.encryption.security.sha256
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfig.Listener
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl.Companion.deleteInstance
@@ -69,7 +70,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
 
-
 /**
  * @author Said Faisal on 24/11/2021
  */
@@ -84,6 +84,7 @@ class DeveloperOptionActivity :
         private const val RV_DEFAULT_POSITION = 0
         private const val RV_CACHE_SIZE = 20
         private const val LOGIN_HELPER_REQUEST_CODE = 789
+        private const val DEV_OPT_PASSWORD_CONFIG_EXPIRATION = 0L
 
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
@@ -128,7 +129,6 @@ class DeveloperOptionActivity :
     private var userSession: UserSession? = null
     private var rvDeveloperOption: RecyclerView? = null
     private var sbDeveloperOption: SearchBarUnify? = null
-    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(this) }
     private val loginSession by lazy { DevOptLoginSession(this) }
     private val gson by lazy { GsonBuilder().disableHtmlEscaping().create() }
 
@@ -488,18 +488,35 @@ class DeveloperOptionActivity :
 
     class DeveloperOptionException(message: String?) : RuntimeException(message)
 
-    override fun onSubmitDevOptsPassword(password: String, isAuto: Boolean) {
-        val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+    override fun onSubmitDevOptsPassword(password: String, isAuto: Boolean, retry: Boolean) {
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        remoteConfig.setConfigCacheExpiration(DEV_OPT_PASSWORD_CONFIG_EXPIRATION)
+
+        val serverPassword = remoteConfig
+            .getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+
         if (password == serverPassword) {
             loginSession.setLoginSession(password)
             adapter.setValueIsAuthorized(true)
             adapter.initializeList()
             adapter.setDefaultItem()
             showToaster("You are authorized !!")
+        } else if (retry) {
+            remoteConfig.fetch(object : Listener {
+                override fun onComplete(remoteConfig: RemoteConfig) {
+                    runOnUiThread {
+                        onSubmitDevOptsPassword(password, isAuto, false)
+                    }
+                }
+
+                override fun onError(e: java.lang.Exception?) {
+                    showToaster("Server Error. Please try again ...")
+                }
+            })
+        } else if (isAuto) {
+            showToaster("Auto login failed. Please check your network connection and try again.")
         } else {
-            if (!isAuto) {
-                showToaster("Wrong password !! Please ask Android representative")
-            }
+            showToaster("Wrong password !! Please ask Android representative")
         }
     }
 }

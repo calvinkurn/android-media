@@ -2,6 +2,8 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.recom
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -14,11 +16,14 @@ class RecommendationCardListViewHolder constructor(
 ) : BaseRecommendationViewHolder<RecommendationCardModel>(
     view,
     RecommendationCardModel::class.java
-) {
+), AppLogRecTriggerInterface {
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
+    private var recTriggerObject = RecommendationTriggerObject()
+
     override fun bind(element: RecommendationCardModel) {
+        setRecTriggerObject(element)
         setLayout(element)
         productCardImpressionListener(element)
         setItemProductCardClickListener(element)
@@ -69,8 +74,22 @@ class RecommendationCardListViewHolder constructor(
         }
     }
 
+    private fun setRecTriggerObject(model: RecommendationCardModel) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = model.appLog.sessionId,
+            requestId = model.appLog.requestId,
+            moduleName = model.pageName,
+            listName = model.tabName,
+            listNum = model.tabIndex,
+        )
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_for_you_recom_list
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
     }
 }

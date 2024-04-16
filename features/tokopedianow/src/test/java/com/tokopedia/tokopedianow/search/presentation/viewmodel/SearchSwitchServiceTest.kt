@@ -67,15 +67,6 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
     }
 
     @Test
-    fun `when address data is null should not show bottomsheet`() {
-        `Given address data null`()
-
-        val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
-
-        Assert.assertEquals(false, needToShowOnBoardBottomSheet)
-    }
-
-    @Test
     fun `switch service with current service type 2h`() {
         val currentServiceType = "2h"
         val userPreferenceResponse = "userpreference/set-user-preference-15m.json"
@@ -127,15 +118,6 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
 
         `Then verify user preference use case called`(localCacheModel, "2h")
         `Then verify the data`(userPreferenceResponse.data)
-    }
-
-    @Test
-    fun `switch service with null address data`() {
-        `Given address data null`()
-
-        `When switch service called`()
-
-        `Then verify user preference use case not called`()
     }
 
     @Test

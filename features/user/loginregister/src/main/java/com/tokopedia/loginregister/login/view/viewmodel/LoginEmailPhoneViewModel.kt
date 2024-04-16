@@ -32,18 +32,17 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import com.tokopedia.sessioncommon.data.model.FingerPrintGqlParam
-import com.tokopedia.sessioncommon.data.model.LoginTokenV2GqlParam
+import com.tokopedia.sessioncommon.data.admin.AdminResult
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.FingerPrintGqlParam
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2GqlParam
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
@@ -59,9 +58,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val discoverUseCase: DiscoverUseCase,
     private val activateUserUseCase: ActivateUserUseCase,
     private val loginTokenUseCase: LoginTokenUseCase,
-    private val getProfileUseCase: GetProfileUseCase,
     private val tickerInfoUseCase: TickerInfoUseCase,
-    private val getAdminTypeUseCase: GetAdminTypeUseCase,
+    private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val dynamicBannerUseCase: DynamicBannerUseCase,
@@ -71,8 +69,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val gotoSeamlessHelper: GotoSeamlessHelper,
     private val gotoSeamlessPreference: GotoSeamlessPreference,
     private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers,
-    private val fingerprintPreferenceManager: FingerprintPreference
+    private val fingerprintPreferenceManager: FingerprintPreference,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val mutableNavigateToGojekSeamless = SingleLiveEvent<Boolean>()
@@ -193,23 +191,29 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        getProfileUseCase.execute(
-            GetProfileSubscriber(
-                userSession,
-                { mutableProfileResponse.value = Success(it) },
-                { mutableProfileResponse.value = Fail(it) },
-                getAdminTypeUseCase = getAdminTypeUseCase,
-                showLocationAdminPopUp = {
-                    mutableShowLocationAdminPopUp.value = Success(true)
-                },
-                onLocationAdminRedirection = {
-                    mutableAdminRedirection.value = Success(true)
-                },
-                showErrorGetAdminType = {
-                    mutableShowLocationAdminPopUp.value = Fail(it)
+        launch {
+            try {
+                when (val admin = getProfileAndAdmin(Unit)) {
+                    is AdminResult.AdminResultOnSuccessGetProfile -> {
+                        mutableProfileResponse.value = Success(admin.profile)
+                    }
+                    is AdminResult.AdminResultOnLocationAdminRedirection -> {
+                        mutableAdminRedirection.value = Success(true)
+                    }
+                    is AdminResult.AdminResultShowLocationPopup -> {
+                        mutableShowLocationAdminPopUp.value = Success(true)
+                    }
+                    is AdminResult.AdminResultOnErrorGetProfile -> {
+                        mutableProfileResponse.value = Fail(admin.error)
+                    }
+                    is AdminResult.AdminResultOnErrorGetAdmin -> {
+                        mutableShowLocationAdminPopUp.value = Fail(admin.error)
+                    }
                 }
-            )
-        )
+            } catch (e: Exception) {
+                mutableProfileResponse.value = Fail(e)
+            }
+        }
     }
 
     fun loginGoogle(accessToken: String, email: String) {
@@ -412,7 +416,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun clearBackgroundTask() {
         loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
     }
 
     suspend fun isGojekProfileExist(): Boolean {

@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputMode
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.CPLData
 import com.tokopedia.product.addedit.preview.data.model.params.add.Category
+import com.tokopedia.product.addedit.preview.data.model.params.add.CustomAttribute
 import com.tokopedia.product.addedit.preview.data.model.params.add.Metadata
 import com.tokopedia.product.addedit.preview.data.model.params.add.Option
 import com.tokopedia.product.addedit.preview.data.model.params.add.Picture
@@ -29,6 +30,7 @@ import com.tokopedia.product.addedit.preview.data.model.params.add.Video
 import com.tokopedia.product.addedit.preview.data.model.params.add.Videos
 import com.tokopedia.product.addedit.preview.data.model.params.add.Wholesale
 import com.tokopedia.product.addedit.preview.data.model.params.add.Wholesales
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.PRICE_CURRENCY
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
@@ -83,7 +85,8 @@ class AddProductInputMapper @Inject constructor() {
             mapVariantParam(variantInputModel),
             mapCPLData(shipmentInputModel.cplModel),
             mapSpecificationParam(detailInputModel.specifications),
-            mapMetadataParam(detailInputModel.categoryMetadata)
+            mapMetadataParam(detailInputModel.categoryMetadata),
+            customAttributes = mapCustomAttributesParam(detailInputModel.specifications)
         )
     }
 
@@ -243,9 +246,6 @@ class AddProductInputMapper @Inject constructor() {
         return cpl.shipmentServicesIds?.let { CPLData(it) }
     }
 
-    private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?) =
-        specifications?.map { it.id }
-
     private fun mapMetadataParam(categoryMetadataInputModel: CategoryMetadataInputModel): Metadata {
         return Metadata(
             Metadata.Category(
@@ -260,5 +260,18 @@ class AddProductInputMapper @Inject constructor() {
                 }
             )
         )
+    }
+
+    private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?): List<String>? =
+        specifications?.filter { !it.isTextInput }?.map { it.id }
+
+    private fun mapCustomAttributesParam(specifications: List<SpecificationInputModel>?): List<CustomAttribute>? {
+        return specifications?.filter { it.isTextInput }?.map {
+            CustomAttribute(
+                key = it.variantId,
+                value = it.data,
+                source = ProductMapperConstants.CUSTOM_ANNOTATION_VALUE
+            )
+        }
     }
 }

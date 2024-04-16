@@ -18,9 +18,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.utils.enableRollenceContentProductPreview
+import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -57,8 +62,11 @@ import javax.inject.Inject
 
 class ReviewGalleryFragment :
     BaseListFragment<ReviewGalleryMediaThumbnailUiModel, ReviewGalleryAdapterTypeFactory>(),
-    HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
-    ReadReviewHeaderListener, ReviewGalleryHeaderListener, ReviewGalleryMediaThumbnailListener {
+    HasComponent<ReviewGalleryComponent>,
+    ReviewPerformanceMonitoringContract,
+    ReadReviewHeaderListener,
+    ReviewGalleryHeaderListener,
+    ReviewGalleryMediaThumbnailListener {
 
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
@@ -78,6 +86,12 @@ class ReviewGalleryFragment :
 
     @Inject
     lateinit var reviewGalleryTracker: ReviewGalleryTracking
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    private val enableContentProductPreview: Boolean
+        get() = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CONTENT_PRODUCT_PREVIEW, false)
 
     private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null
@@ -114,13 +128,13 @@ class ReviewGalleryFragment :
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
@@ -130,7 +144,6 @@ class ReviewGalleryFragment :
             null
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -319,7 +332,9 @@ class ReviewGalleryFragment :
     private fun onFailGetReviewImages(throwable: Throwable) {
         if (isFirstPage()) showFullPageError()
         showToasterError(throwable.getErrorMessage(context)) {
-            if (isFirstPage()) loadInitialData() else {
+            if (isFirstPage()) {
+                loadInitialData()
+            } else {
                 loadData(currentPage)
             }
         }
@@ -354,7 +369,9 @@ class ReviewGalleryFragment :
                     it.videoId,
                     it.mediaNumber
                 )
-            } else null
+            } else {
+                null
+            }
         }
     }
 
@@ -485,6 +502,40 @@ class ReviewGalleryFragment :
     }
 
     private fun goToMediaPreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
+            val reviewId = reviewGalleryMediaThumbnailUiModel.feedbackId
+            val attachmentId = reviewGalleryMediaThumbnailUiModel.attachmentId
+            goToProductPreviewActivityReviewSource(
+                reviewId = reviewId,
+                attachmentId = attachmentId
+            )
+        } else {
+            goToReviewMediaGallery(
+                reviewGalleryMediaThumbnailUiModel = reviewGalleryMediaThumbnailUiModel
+            )
+        }
+    }
+
+    private fun goToProductPreviewActivityReviewSource(
+        reviewId: String,
+        attachmentId: String
+    ) {
+        val productId = viewModel.getProductId()
+        val intent = ProductPreviewActivity.createIntent(
+            context = requireContext(),
+            productPreviewSourceModel = ProductPreviewSourceMapper(
+                productId = productId
+            ).mapReviewSourceModel(
+                reviewId = reviewId,
+                attachmentId = attachmentId
+            )
+        )
+        startActivity(intent)
+    }
+
+    private fun goToReviewMediaGallery(
+        reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel
+    ) {
         ReviewMediaGalleryRouter.routeToReviewMediaGallery(
             context = requireContext(),
             pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,

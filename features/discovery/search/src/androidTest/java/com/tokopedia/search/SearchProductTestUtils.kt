@@ -28,6 +28,7 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener
+import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -78,6 +79,10 @@ internal fun createProductItemListener(): ProductListener {
         override fun onAddToCartClick(item: ProductItemDataView) {}
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
             get() = null
+
+        override fun onProductImpressedByteIO(item: ProductItemDataView?) {
+
+        }
     }
 }
 
@@ -87,32 +92,11 @@ internal fun createInspirationCardListener(): InspirationCardListener {
     }
 }
 
-internal fun createBroadMatchListener(): BroadMatchListener {
-    return object: BroadMatchListener {
-        override fun onBroadMatchImpressed(broadMatchItemDataView: BroadMatchDataView) {}
-        override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
-        override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
-        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
-        override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
-
-        override val productCardLifecycleObserver: ProductCardLifecycleObserver?
-            get() = null
-    }
-}
-
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
         override fun onGlobalNavWidgetImpressed(globalNavDataView: GlobalNavDataView) {}
         override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {}
         override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {}
-    }
-}
-
-internal fun createBannerAdsListener(): BannerAdsListener {
-    return object: BannerAdsListener {
-        override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {}
-        override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {}
     }
 }
 

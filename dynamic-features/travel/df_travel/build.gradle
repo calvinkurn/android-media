@@ -53,6 +53,12 @@ android {
             dimension "client"
         }
     }
+
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
+    }
 }
 
 dependencies {

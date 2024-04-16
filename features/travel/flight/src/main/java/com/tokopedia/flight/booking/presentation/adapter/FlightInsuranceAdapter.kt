@@ -24,7 +24,9 @@ import com.tokopedia.kotlin.extensions.view.show
  * @author by jessica on 2019-11-01
  */
 
-class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHolder>() {
+class FlightInsuranceAdapter(
+    private val isEnableAutoTick: Boolean
+): RecyclerView.Adapter<FlightInsuranceAdapter.ViewHolder>() {
 
     var insuranceList: List<FlightCart.Insurance> = listOf()
     lateinit var listener: ViewHolder.ActionListener
@@ -35,7 +37,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
     override fun getItemCount(): Int = insuranceList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(insuranceList[position], listener)
+        holder.bind(insuranceList[position], isEnableAutoTick, listener)
     }
 
     fun updateList(list: List<FlightCart.Insurance>) {
@@ -45,16 +47,18 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
 
     class ViewHolder(val binding: ItemFlightBookingInsuranceBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(insurance: FlightCart.Insurance, listener: ActionListener?) {
+        fun bind(insurance: FlightCart.Insurance, isEnableAutoTick: Boolean, listener: ActionListener?) {
             with(binding) {
                 tvInsuranceTitle.text = insurance.name
                 tvInsuranceSubtitle.text = insurance.description
-                cbInsurance.isChecked = insurance.defaultChecked
+                if (isEnableAutoTick) {
+                    cbInsurance.isChecked = insurance.defaultChecked
+                }
 
                 if (insurance.benefits.isEmpty()) insuranceHighlightBenefitContainer.hide()
                 else renderHighlightBenefit(insurance.benefits, insurance.tncUrl, insurance.name, listener ?: null)
 
-                listener?.onInsuranceChecked(insurance, insurance.defaultChecked)
+                listener?.onInsuranceChecked(insurance, cbInsurance.isChecked)
                 cbInsurance.setOnCheckedChangeListener { _, checked -> listener?.onInsuranceChecked(insurance, checked) }
             }
         }
