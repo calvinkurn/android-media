@@ -6,11 +6,10 @@
     android:orientation="vertical"
     android:background="@color/Unify_Background">
     
-    <com.tokopedia.unifycomponents.LoaderUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/loaderAnimation"
         android:layout_width="62dp"
         android:layout_height="62dp"
-        app:loader_type="decorative"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

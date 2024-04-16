@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 
 import android.os.*
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -31,14 +34,20 @@ import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class LoaderFragment : BaseDaggerFragment() {
 
@@ -55,6 +64,7 @@ class LoaderFragment : BaseDaggerFragment() {
     private val handler = Handler()
 
     var callback: ThankYouPageDataLoadCallback? = null
+    var avd: AnimatedVectorDrawableCompat? = null
 
     override fun getScreenName(): String = ""
 
@@ -74,7 +84,27 @@ class LoaderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         showLoaderView()
-        handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
+        context?.let {
+            avd = AnimatedVectorDrawableCompat.create(it, unifycomponentsR.drawable.unify_loader_decorative)
+        }
+        loaderAnimation.setImageDrawable(avd)
+        avd?.start()
+        avd?.registerAnimationCallback(object: Animatable2Compat.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                super.onAnimationEnd(drawable)
+                avd?.start()
+            }
+        })
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(DELAY_MILLIS)
+            loadThankPageData()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        avd?.stop()
+        avd?.clearAnimationCallbacks()
     }
 
     override fun onDestroyView() {
