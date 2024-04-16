@@ -659,7 +659,13 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun getCartTypeString(): String {
-        return if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) CART_TYPE_OCC else CART_TYPE_ATC
+        return if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+            CART_TYPE_OCC
+        } else if (cartType == CartShipmentAddressFormData.CART_TYPE_NORMAL) {
+            CART_TYPE_ATC
+        } else {
+            ""
+        }
     }
 
     private fun getPaymentMethod(payment: CheckoutPaymentModel): String {
@@ -3222,8 +3228,16 @@ class CheckoutViewModel @Inject constructor(
                 return
             }
 
-            // validate promo after get payment
-            shouldRevalidatePromo = true
+            val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
+            if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
+                // validate promo after get tenor
+                shouldRevalidatePromo = true
+            } else {
+                updateTotalAndPayment(cost, payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading)), skipValidatePayment = true)
+                // validate promo after get payment
+                validatePromo(skipEE = true)
+                return
+            }
         } else {
             payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Normal))
         }
@@ -3288,9 +3302,16 @@ class CheckoutViewModel @Inject constructor(
                 return
             }
 
-            payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
-            updateTotalAndPayment(cost, payment, skipValidatePayment = true)
-            validatePromo(skipEE = true)
+            cost = cost.copy(
+                usePaymentFees = true
+            )
+            if (payment.tenorList != null) {
+                payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
+                updateTotalAndPayment(cost, payment, skipValidatePayment = true)
+                validatePromo(skipEE = true)
+            } else {
+                updateTotalAndPayment(cost, payment)
+            }
             mTrackerShipment.sendViewPaymentMethodEvent(getPaymentMethod(payment), getCartTypeString())
         } else {
             cost = cost.copy(

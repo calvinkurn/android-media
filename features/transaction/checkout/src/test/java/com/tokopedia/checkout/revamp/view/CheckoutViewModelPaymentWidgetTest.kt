@@ -306,10 +306,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
-        coVerify(exactly = 1) {
+        coVerify(exactly = 2) {
             dynamicPaymentFeeUseCase(any())
         }
-        coVerify(exactly = 1) {
+        coVerify(exactly = 2) {
             creditCardTenorListUseCase(any())
         }
     }
