@@ -1,5 +1,6 @@
 package com.tokopedia.stories.domain.usecase
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
@@ -93,5 +94,11 @@ class StoriesDetailsUseCase @Inject constructor(
         val sourceID: String,
         @SerializedName("entrypoint")
         val entryPoint: String,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("categoryIDs")
+        val categoryIds: List<String> = emptyList(),
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("productIDs")
+        val productIds: List<String> = emptyList()
     )
 }

@@ -62,7 +62,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         super.onCreate(savedInstanceState);
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
-        if (getIntent() != null && getIntent().getData()!= null) {
+        if (getIntent() != null && getIntent().getData() != null) {
             String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
             Uri applink = Uri.parse(applinkString);
             presenter.processUTM(this, applink);
@@ -179,9 +179,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
     }
 
-    private boolean uriHaveCampaignData(){
+    private boolean uriHaveCampaignData() {
         boolean uriHaveCampaignData = false;
-        if (getIntent() != null && getIntent().getData()!= null) {
+        if (getIntent() != null && getIntent().getData() != null) {
             String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
             Uri applink = Uri.parse(applinkString);
             uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
@@ -212,11 +212,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private void logWebViewApplink() {
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
-        if(uri.toString().contains(ApplinkConst.WEBVIEW)) {
+        if (uri.toString().contains(ApplinkConst.WEBVIEW)) {
             Uri urlToLoad = getUrlToLoad(uri);
-            if(urlToLoad != null) {
+            if (urlToLoad != null) {
                 String domain = urlToLoad.getHost();
-                if(domain != null) {
+                if (domain != null) {
                     if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
                         Map<String, String> messageMap = new HashMap<>();
                         messageMap.put("type", "applink");
@@ -230,7 +230,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     }
 
     private String getBaseDomain(String host) {
-        if(host == null) {
+        if (host == null) {
             return "";
         }
         String[] split = host.split("\\.");
@@ -257,7 +257,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     && uri.getPathSegments().size() == 1) {
                 AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     @NonNull
@@ -274,5 +275,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @Override
     public boolean isShadow() {
         return true;
+    }
+
+    @Override
+    public boolean shouldTrackEnterPage() {
+        return false;
     }
 }

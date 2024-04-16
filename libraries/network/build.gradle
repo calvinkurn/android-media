@@ -38,6 +38,10 @@ dependencies {
     implementation 'com.bytedance.ies.common:cpp_shared:21.1.4'
 
     implementation 'com.bytedance.applog:bdtracker-global:5.6.9-bugfix.6'
+
+//    // Tik tok Slardar
+    implementation rootProject.ext.slardarDependencies.commonMonitor
+    implementation rootProject.ext.slardarDependencies.npthCore
 }
 
 project.ext {

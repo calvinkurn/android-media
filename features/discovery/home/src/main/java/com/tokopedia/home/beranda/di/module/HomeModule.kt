@@ -63,7 +63,7 @@ class HomeModule {
 
     @Provides
     @HomeScope
-    fun provideHomeDynamicChannelVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface!!, remoteConfig, HomeDefaultDataSource())
+    fun provideHomeDynamicChannelVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface!!, remoteConfig)
 
     @HomeScope
     @Provides

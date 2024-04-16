@@ -86,7 +86,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
 
-    implementation rootProject.ext.playServicesDependencies.plus
+
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
