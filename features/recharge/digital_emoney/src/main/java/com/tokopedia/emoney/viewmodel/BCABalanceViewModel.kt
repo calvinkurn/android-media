@@ -42,6 +42,10 @@ class BCABalanceViewModel @Inject constructor(
     val errorCardMessage: LiveData<Pair<Throwable, RechargeEmoneyInquiryLogRequest>>
         get() = errorCardMessageMutable
 
+    private var errorTagLogMutable = SingleLiveEvent<RechargeEmoneyInquiryLogRequest>()
+    val errorTagLog: LiveData<RechargeEmoneyInquiryLogRequest>
+        get() = errorTagLogMutable
+
     fun processBCATagBalance(
         isoDep: IsoDep, merchantId: String, terminalId: String,
         rawPublicKeyString: String,
@@ -764,6 +768,19 @@ class BCABalanceViewModel @Inject constructor(
                     } else if (topUp2.strLogRsp.isNotEmpty()) {
                         // Ada kemungkinan saldo Flazz sudah bertambah walaupun output BCATopUp2 bukan SUCCESS.
                         // Tetap kirimkan output BCATopUp2 ke BCA melalui API /flazz/ack
+                        errorTagLogMutable.postValue(
+                            mapParamLogErrorNetworkFlazz(
+                                cardNumber,
+                                messageLogNR(
+                                    TAG_PROCESS_SDK_TOP_UP_2,
+                                    separateResponseCodeFromCardData(
+                                        topUp2.strLogRsp
+                                    )
+                                ),
+                                lastBalance
+                            )
+                        )
+
                         getACKProcess(
                             cardNumber,
                             rawPublicKeyString,
