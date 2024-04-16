@@ -264,9 +264,9 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
                     price = bottomNavUiModel.price.finalPrice,
                     index = "1",
                     customFields = mapOf(
-                        "category_id" to categoryId,
-                        "shop_id" to bottomNavUiModel.shop.id,
-                        "shop_name" to bottomNavUiModel.shop.name,
+                        Key.categoryId to categoryId,
+                        Key.itemShopId to bottomNavUiModel.shop.id,
+                        Key.itemShopName to bottomNavUiModel.shop.name,
                     )
                 )
             ),
@@ -310,9 +310,9 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
                     price = model.price.finalPrice,
                     index = "1",
                     customFields = mapOf(
-                        "category_id" to categoryId,
-                        "shop_id" to model.shop.id,
-                        "shop_name" to model.shop.name,
+                        Key.categoryId to categoryId,
+                        Key.itemShopId to model.shop.id,
+                        Key.itemShopName to model.shop.name,
                     )
                 )
             ),

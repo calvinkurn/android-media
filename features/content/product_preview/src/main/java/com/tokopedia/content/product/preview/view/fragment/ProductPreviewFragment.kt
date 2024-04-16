@@ -98,8 +98,9 @@ class ProductPreviewFragment @Inject constructor(
         pagerAdapter.getCurrentTabKey(binding.vpProductPreview.currentItem)
     }
 
-    private val currentTab: String get() =
-        pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
+    private val currentTab: String
+        get() =
+            pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
 
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
@@ -114,12 +115,13 @@ class ProductPreviewFragment @Inject constructor(
 
     private var coachMarkJob: Job? = null
 
-    private val hasCoachMark: Boolean get() =
-        when (val source = viewModel.productPreviewSource.source) {
-            is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
-            is ProductPreviewSourceModel.ReviewSourceData -> false
-            else -> false
-        }
+    private val hasCoachMark: Boolean
+        get() =
+            when (val source = viewModel.productPreviewSource.source) {
+                is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
+                is ProductPreviewSourceModel.ReviewSourceData -> false
+                else -> false
+            }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -256,6 +258,7 @@ class ProductPreviewFragment @Inject constructor(
                         requireContext(),
                         event.appLink
                     )
+
                     is ProductPreviewUiEvent.ShowSuccessToaster -> {
                         val isAtc = event.type == ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC
                         Toaster.build(
@@ -265,10 +268,16 @@ class ProductPreviewFragment @Inject constructor(
                                 getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
                                 )
-                            } else { "" },
+                            } else {
+                                ""
+                            },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
-                                if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                                if (isAtc) viewModel.onAction(
+                                    ProductPreviewAction.Navigate(
+                                        ApplinkConst.CART
+                                    )
+                                )
                             }
                         ).show()
                     }
@@ -286,9 +295,11 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
+
                     is ProductPreviewUiEvent.FailFetchMiniInfo -> {
                         binding.viewFooter.gone()
                     }
+
                     is ProductPreviewUiEvent.UnknownSourceData -> activity?.finish()
                     else -> return@collect
                 }
@@ -320,7 +331,11 @@ class ProductPreviewFragment @Inject constructor(
                     handleAtc(model)
                 }, onNavClicked = {
                     analytics.onClickBottomNav(model)
-                    router.route(requireContext(), ApplinkConst.PRODUCT_INFO, viewModel.productPreviewSource.productId)
+                    router.route(
+                        requireContext(),
+                        ApplinkConst.PRODUCT_INFO,
+                        viewModel.productPreviewSource.productId
+                    )
                 })
             }
         }
