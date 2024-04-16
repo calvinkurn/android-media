@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.usecase.getdynamicfilter
 import rx.functions.Func1
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.filter.common.helper.FilterSortProduct
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -16,7 +17,8 @@ import rx.Observable
 
 internal class GetDynamicFilterGqlUseCase(
         private val graphqlUseCase: GraphqlUseCase,
-        private val dynamicFilterModelGqlMapper: Func1<GraphqlResponse?, DynamicFilterModel?>
+        private val dynamicFilterModelGqlMapper: Func1<GraphqlResponse?, DynamicFilterModel?>,
+        private val reimagineRollence: ReimagineRollence
 ) : UseCase<DynamicFilterModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<DynamicFilterModel> {
@@ -39,6 +41,8 @@ internal class GetDynamicFilterGqlUseCase(
 
     private fun createParametersForQuery(parameters: Map<String?, Any?>): Map<String, Any> =
         mapOf(
-            GQL.KEY_PARAMS to UrlParamUtils.generateUrlParamString(parameters) + sreParams()
+            GQL.KEY_PARAMS to UrlParamUtils.generateUrlParamString(parameters)
+                + sreParams(reimagineRollence.search3ProductCard().isReimagineProductCard()
+            )
         )
 }

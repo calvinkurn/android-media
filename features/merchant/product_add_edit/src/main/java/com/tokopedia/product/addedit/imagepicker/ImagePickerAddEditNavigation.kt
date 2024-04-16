@@ -43,7 +43,6 @@ object ImagePickerAddEditNavigation {
                 autoCrop1to1()
                 createDefaultEditorTools()
                 withRemoveBackground()
-                withWatermark()
                 withAddLogo()
                 withAddText()
             }
@@ -62,7 +61,6 @@ object ImagePickerAddEditNavigation {
                 autoCrop1to1()
                 createDefaultEditorTools()
                 withRemoveBackground()
-                withWatermark()
                 withAddLogo()
                 withAddText()
             }
@@ -77,7 +75,6 @@ object ImagePickerAddEditNavigation {
                 autoCrop1to1()
                 createDefaultEditorTools()
                 withRemoveBackground()
-                withWatermark()
             })
         }.apply {
             putExtra(EXTRA_INTENT_EDITOR, editorImageSource)

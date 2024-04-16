@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextUtils
@@ -704,7 +705,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
+    private fun getLocation(looper: Looper? = Looper.myLooper() ) {
         binding?.loaderCurrentLocation?.visibility = View.VISIBLE
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
@@ -723,11 +724,13 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     )
                 }
             } else {
-                fusedLocationClient?.requestLocationUpdates(
-                    AddNewAddressUtils.getLocationRequest(),
-                    locationCallback,
-                    null
-                )
+                looper?.let {
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        locationCallback,
+                        it
+                    )
+                }
             }
         }
     }

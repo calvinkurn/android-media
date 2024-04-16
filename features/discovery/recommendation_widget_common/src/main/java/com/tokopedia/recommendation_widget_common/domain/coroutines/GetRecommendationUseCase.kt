@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.recommendation_widget_common.byteio.RecommendationByteIoUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
@@ -23,6 +24,7 @@ open class GetRecommendationUseCase @Inject constructor(
 ) : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
 
     private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
+    private val byteIoUseCase = RecommendationByteIoUseCase()
 
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)
@@ -37,10 +39,18 @@ open class GetRecommendationUseCase @Inject constructor(
             .getLocalizingAddressData(context)
             .toQueryParam(inputParameter.queryParam)
 
-        graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
+        val parameter = byteIoUseCase.getParameter(inputParameter).copy(queryParam = queryParam).toGqlRequest()
+
+        graphqlUseCase.setRequestParams(parameter)
 
         return graphqlUseCase.executeOnBackground()
             .productRecommendationWidget.data
             .mappingToRecommendationModel()
+            .also {
+                byteIoUseCase.updateSessionId(
+                    inputParameter.pageName,
+                    it.firstOrNull()?.appLog?.sessionId.orEmpty()
+                )
+            }
     }
 }

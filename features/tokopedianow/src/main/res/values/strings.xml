@@ -279,4 +279,41 @@
 
     <string name="tokopedianow_widget_local_load_title">Konten gagal ditampilkan</string>
     <string name="tokopedianow_widget_local_load_description">Klik ikon di samping buat coba lagi.</string>
+
+    <!-- Shopping List -->
+    <string name="tokopedianow_shopping_list_page_title">List Belanja</string>
+    <string name="tokopedianow_shopping_list_repurchase">Beli Lagi</string>
+    <string name="tokopedianow_shopping_list_horizontal_product_card_add_to_shopping_list">List Belanja</string>
+    <string name="tokopedianow_shopping_list_horizontal_product_card_product_available">Ada di list</string>
+    <string name="tokopedianow_shopping_list_another_option">Pilihan lain</string>
+    <string name="tokopedianow_shopping_list_another_option_bottom_sheet_empty_layout_title">Tidak ada produk serupa yang tersedia</string>
+    <string name="tokopedianow_shopping_list_another_option_bottom_sheet_empty_layout_description">Kamu bisa cek rekomendasi lain di halaman List Belanja.</string>
+    <string name="tokopedianow_shopping_list_top_check_all_title">Semua</string>
+    <string name="tokopedianow_shopping_list_empty_description">List masih kosong. Mulai masukkan produk dari rekomendasi di bawah, yuk.</string>
+    <string name="tokopedianow_shopping_list_empty_title">Isi produk yang rencana kamu beli</string>
+    <string name="tokopedianow_shopping_list_expand_text">Tampilkan %1$d Produk Lainnya</string>
+    <string name="tokopedianow_shopping_list_collapse_text">Tampilkan Lebih Sedikit</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_counter_text">%1$d produk terpilih</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_empty_price_text">Rp-</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_plus_cart">+ Keranjang</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_total">Total</string>
+    <string name="tokopedianow_shopping_list_cart_product_widget_see_detail">Lihat Detail</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_to_delete_product_from_shopping_list">Oops, barang gagal dihapus.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_to_add_product_to_shopping_list">Oops, barang gagal disimpan di List Belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart">Oops, barang gagal ditambahkan ke Keranjang.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_for_cta">Coba Lagi</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_delete_product_from_shopping_list">1 barang berhasil dihapus dari List Belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_shopping_list">1 barang berhasil ditambahkan ke List Belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_cart">%d barang berhasil ditambahkan ke keranjang.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_for_cta_cancel">Batalkan</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_for_cta_okay">Oke</string>
+    <string name="tokopedianow_shopping_list_coach_mark_step_button_last_child">Oke</string>
+    <string name="tokopedianow_shopping_list_first_page_coach_mark_title">Baru! Simpan daftar belanjaan rutinmu</string>
+    <string name="tokopedianow_shopping_list_first_page_coach_mark_description">Atur List Belanja sesuai kebutuhan, praktis lho~</string>
+    <string name="tokopedianow_shopping_list_second_page_coach_mark_description">Klik ini buat masukkan produk ke List Belanja kamu.</string>
+    <string name="tokopedianow_shopping_list_third_page_coach_mark_description">Buka halaman Beli Lagi buat cek produk-produk yang pernah kamu beli sebelumnya.</string>
+    <string name="tokopedianow_shopping_list_bottom_bulk_atc_coach_mark_description">Klik di sini buat masukkan produk yang kamu pilih ke keranjang.</string>
+    <string name="tokopedianow_shopping_list_cart_widget_title">produk ada di keranjang</string>
+    <string name="tokopedianow_shopping_list_unavailable_widget_title">Stok habis</string>
+    <string name="tokopedianow_shopping_list_retry_try_again_text">Coba Lagi</string>
 </resources>

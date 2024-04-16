@@ -21,6 +21,7 @@
     <string name="setting_verifikasi">Verifikasi</string>
     <string name="setting_balance">Saldo</string>
     <string name="setting_other_failed_to_load">Gagal Tampil</string>
+    <string name="setting_other_not_verified">Belum Verifikasi</string>
 
     <string name="official_store">Official Store</string>
     <string name="power_merchant_status">Power Merchant:&#160;</string>
