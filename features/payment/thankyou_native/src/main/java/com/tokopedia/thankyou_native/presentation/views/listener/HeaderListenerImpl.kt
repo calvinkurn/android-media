@@ -56,7 +56,7 @@ class HeaderListenerImpl(
     }
 
     override fun onPrimaryButtonClick() {
-        if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == WaitingPaymentPage) {
+        if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus) == WaitingPaymentPage) {
             onDialogRedirectListener.refreshThanksPageData()
             return
         }
@@ -72,7 +72,7 @@ class HeaderListenerImpl(
     }
 
     override fun onSecondaryButtonClick() {
-        if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
+        if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus) == InstantPaymentPage) {
             onDialogRedirectListener.gotoOrderList(thanksPageData.customDataAppLink?.order.orEmpty())
         } else if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == WaitingPaymentPage) {
             onDialogRedirectListener.openHowToPay()

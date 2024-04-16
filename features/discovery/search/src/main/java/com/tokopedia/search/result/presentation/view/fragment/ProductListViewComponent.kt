@@ -14,18 +14,19 @@ import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.domain.usecase.searchcoupon.SearchCouponModule
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getpostatccarousel.GetPostATCCarouselUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterUseCaseModule
+import com.tokopedia.search.result.domain.usecase.searchcoupon.SearchCouponModule
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendation.SearchSameSessionRecommendationUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactoryModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.cpm.TopAdsHeadlineModule
 import com.tokopedia.search.result.product.deduplication.DeduplicationModule
@@ -102,6 +103,7 @@ import dagger.Component
     GetPostATCCarouselUseCaseModule::class,
     SearchCouponModule::class,
     IrisModule::class,
+    ByteIOTrackingDataFactoryModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

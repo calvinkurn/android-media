@@ -57,7 +57,7 @@ object ChannelModelMapper {
             ),
             isOutOfStock = channelGrid.isOutOfStock,
             ratingCount = channelGrid.rating,
-            countSoldRating = channelGrid.ratingFloat,
+                countSoldRating = channelGrid.ratingFloat,
             reviewCount = channelGrid.countReview,
             animateOnPress = productCardAnimate,
             isTopStockBar = isTopStockbar,

@@ -35,5 +35,5 @@
         android:textColor="@color/Unify_NN600"
         android:visibility="gone"
         app:typographyType="display_3"
-        tools:text="Gratis ongkir, min. belanja Rp75.000" />
+        tools:text="Bebas ongkir, min. belanja Rp75.000" />
 </LinearLayout>

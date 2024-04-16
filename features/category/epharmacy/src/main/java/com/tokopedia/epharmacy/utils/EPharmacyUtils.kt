@@ -18,6 +18,7 @@ import com.tokopedia.epharmacy.network.params.CartGeneralAddToCartInstantParams
 import com.tokopedia.epharmacy.network.params.CheckoutCartGeneralParams
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.usecase.BuildConfig
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -168,7 +169,7 @@ object EPharmacyUtils {
             group?.consultationData?.consultationString,
             group?.consultationData?.prescription,
             group?.consultationData?.partnerConsultationId,
-            group?.consultationData?.tokoConsultationId.toString(),
+            group?.consultationData?.tokoConsultationId.toEmptyStringIfNull(),
             group?.prescriptionImages
         )
     }

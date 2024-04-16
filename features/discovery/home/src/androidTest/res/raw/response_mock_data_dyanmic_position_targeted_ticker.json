@@ -1,0 +1,24 @@
+[
+  {
+    "data": {
+      "GetTargetedTicker": {
+        "List": [
+          {
+            "ID": 547,
+            "Title": "Info",
+            "Content": "Status pengiriman berpotensi tidak sesuai, cek berkala di",
+            "Action": {
+              "Label": "sini.",
+              "Type": "link",
+              "AppURL": "https://www.tokopedia.com/help/article/pesanan-sudah-diterima-namun-status-pengiriman-tidak-update",
+              "WebURL": "https://www.tokopedia.com/help/article/pesanan-sudah-diterima-namun-status-pengiriman-tidak-update"
+            },
+            "Type": "info",
+            "Priority": 1,
+            "Metadata": []
+          }
+        ]
+      }
+    }
+  }
+]

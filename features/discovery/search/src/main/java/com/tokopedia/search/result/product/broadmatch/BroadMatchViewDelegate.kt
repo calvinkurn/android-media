@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iris.Iris
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
@@ -43,6 +44,14 @@ class BroadMatchViewDelegate @Inject constructor(
             broadMatchItemDataView.componentId,
             broadMatchItem,
         )
+
+        AppLogSearch.eventSearchResultClick(
+            broadMatchItemDataView.asByteIOSearchResult("")
+        )
+
+        AppLogSearch.eventProductClick(
+            broadMatchItemDataView.asByteIOProduct()
+        )
     }
 
     override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
@@ -57,6 +66,14 @@ class BroadMatchViewDelegate @Inject constructor(
             getUserId(userSession),
             broadMatchItemAsObjectDataLayer,
         )
+
+        AppLogSearch.eventSearchResultShow(
+            broadMatchItemDataView.asByteIOSearchResult(null)
+        )
+
+        AppLogSearch.eventProductShow(
+            broadMatchItemDataView.asByteIOProduct()
+        )
     }
 
     override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
@@ -64,14 +81,24 @@ class BroadMatchViewDelegate @Inject constructor(
             iris,
             broadMatchDataView,
         )
+
+        AppLogSearch.eventSearchResultShow(
+            broadMatchDataView.asByteIOSearchResult(null)
+        )
     }
 
-    override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
+    override fun trackEventClickSeeMoreBroadMatch(
+        broadMatchDataView: BroadMatchDataView,
+        aladdinButtonType: String,
+    ) {
         BroadMatchTracking.trackEventClickBroadMatchSeeMore(
             broadMatchDataView,
             queryKey,
             broadMatchDataView.keyword,
             broadMatchDataView.dimension90,
+        )
+        AppLogSearch.eventSearchResultClick(
+            broadMatchDataView.asByteIOSearchResult(aladdinButtonType),
         )
     }
 

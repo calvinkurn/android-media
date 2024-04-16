@@ -13,20 +13,22 @@
  */
 package com.tokopedia.translator.repository.model
 
+import android.widget.TextView
+
 data class StringPoolItem(
+    var textView: TextView,
     var originalText: String,
     var demandedText: String,
     var requestedLocale: String
 ) {
 
-    constructor(originalText: String, demandedText: String) : this(originalText, demandedText, "")
-
     override fun toString(): String {
         return "StringPoolItem{" +
-                "originalText='" + originalText + '\'' +
-                ", demandedText='" + demandedText + '\'' +
-                ", requestedLocale='" + requestedLocale + '\'' +
-                '}'
+            "textView='" + textView + '\'' +
+            ", originalText='" + originalText + '\'' +
+            ", demandedText='" + demandedText + '\'' +
+            ", requestedLocale='" + requestedLocale + '\'' +
+            '}'
     }
 
 }

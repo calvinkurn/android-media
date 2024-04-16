@@ -11,8 +11,8 @@ import com.tokopedia.recommendation_widget_common.domain.query.QueryProductRecom
 internal object QueryProductRecommendationSingle {
     const val PRODUCT_RECOMMENDATION_SINGLE_QUERY_NAME = "ProductRecommendationSingleQuery"
     const val PRODUCT_RECOMMENDATION_SINGLE_QUERY: String = "" +
-        "query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!, ${'$'}productCardVersion: Int) {\n" +
-        "                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam, productCardVersion : ${'$'}productCardVersion){\n" +
+        "query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!, ${'$'}productCardVersion: Int, ${'$'}currentSessionID: String!, ${'$'}refreshType: String!) {\n" +
+        "                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam, productCardVersion : ${'$'}productCardVersion, currentSessionID: ${'$'}currentSessionID, refreshType: ${'$'}refreshType){\n" +
         "                   data {\n" +
         "                       tID\n" +
         "                       source\n" +
@@ -34,6 +34,11 @@ internal object QueryProductRecommendationSingle {
         "                          }\n" +
         "                        }\n" +
         "                       }\n" +
+        "                       appLog {\n" +
+        "                         sessionID\n" +
+        "                         requestID\n" +
+        "                         logID\n" +
+        "                       }\n" +
         "                       recommendation {\n" +
         "                           id\n" +
         "                           name\n" +
@@ -51,6 +56,8 @@ internal object QueryProductRecommendationSingle {
         "                           discountPercentage\n" +
         "                           slashedPrice\n" +
         "                           slashedPriceInt\n" +
+        "                           minOrder\n" +
+        "                           warehouseID\n" +
         "                           shop {\n" +
         "                               id\n" +
         "                               name\n" +
@@ -94,7 +101,9 @@ internal object QueryProductRecommendationSingle {
         "                          specificationLabels {\n" +
         "                            key\n" +
         "                            value\n" +
-        "                        }\n" +
+        "                          }\n" +
+        "                          recParam\n" +
+        "                          parentID\n" +
         "                       }\n" +
         "                   }\n" +
         "                 }\n" +

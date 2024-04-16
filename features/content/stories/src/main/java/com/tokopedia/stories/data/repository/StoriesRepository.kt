@@ -15,7 +15,9 @@ interface StoriesRepository {
         authorType: String,
         source: String,
         sourceId: String,
-        entryPoint: String
+        entryPoint: String,
+        categoryIds: List<String>,
+        productIds: List<String>
     ): StoriesUiModel
 
     suspend fun getStoriesDetailData(
@@ -23,7 +25,9 @@ interface StoriesRepository {
         authorType: String,
         source: String,
         sourceId: String,
-        entryPoint: String
+        entryPoint: String,
+        categoryIds: List<String>,
+        productIds: List<String>
     ): StoriesDetail
 
     suspend fun setStoriesTrackActivity(data: StoriesTrackActivityRequestModel): Boolean

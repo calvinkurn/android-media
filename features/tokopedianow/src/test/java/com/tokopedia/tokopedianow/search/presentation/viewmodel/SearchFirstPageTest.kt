@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
@@ -21,11 +23,12 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataVie
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class SearchFirstPageTest: BaseSearchPageLoadTest() {
+class SearchFirstPageTest : BaseSearchPageLoadTest() {
 
     override fun setUp() {}
 
@@ -33,8 +36,24 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     fun `test first page is last page 2h`() {
         val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
 
+        val chooseAddressData = LocalCacheModel(
+            address_id = "12257",
+            city_id = "12345",
+            district_id = "2274",
+            lat = "1.1000",
+            long = "37.002",
+            postal_code = "15123",
+            shop_id = "549621",
+            warehouse_id = "11299001123",
+            warehouses = listOf(
+                LocalWarehouseModel(1, "2h"),
+                LocalWarehouseModel(2, "fc")
+            ),
+            service_type = "2h"
+        )
+
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
-        `Given choose address data`()
+        `Given choose address data`(chooseAddressData)
         `Given search view model`()
         `Given remote config`(
             defaultValue = EXPERIMENT_DISABLED,
@@ -53,6 +72,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
         `Then assert first page success trigger is Unit`()
+        `Then assert isEmptyResult false`()
+        `Then assert serviceType 2h`()
     }
 
     @Test
@@ -82,16 +103,16 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     }
 
     private fun `Then assert first page visitables`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
     }
 
     private fun `Then assert visitable list header`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel,
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         val mapParameter = tokoNowSearchViewModel.queryParam
 
@@ -112,8 +133,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     }
 
     private fun `Then assert visitable list contents`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel,
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         val expectedProductList = searchModel.searchProduct.data.productList
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
@@ -130,8 +151,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     }
 
     private fun `Then assert visitable list footer 2h`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         val lastProductIndex = visitableList.indexOfLast { it is ProductItemDataView }
         val footerStartIndex = lastProductIndex + 1
@@ -199,5 +220,13 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
     private fun `Then assert first page success trigger is Unit`() {
         assertThat(tokoNowSearchViewModel.firstPageSuccessTriggerLiveData.value, shouldBe(Unit))
+    }
+
+    private fun `Then assert isEmptyResult false`() {
+        MatcherAssert.assertThat(tokoNowSearchViewModel.isEmptyResult, shouldBe(false))
+    }
+
+    private fun `Then assert serviceType 2h`() {
+        MatcherAssert.assertThat(tokoNowSearchViewModel.serviceType, shouldBe("2h"))
     }
 }
