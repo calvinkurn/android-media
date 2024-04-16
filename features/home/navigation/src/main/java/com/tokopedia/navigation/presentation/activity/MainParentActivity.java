@@ -1352,12 +1352,13 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        updateAppLogPageData(position);
+        updateAppLogPageData(position, false);
         sendEnterPage(position);
         return true;
     }
 
-    private void handleAppLogEnterMethod(String pageName) {
+    private void handleAppLogEnterMethod(AppLogInterface appLogInterface) {
+        String pageName = appLogInterface.getPageName();
         if(AppLogAnalytics.INSTANCE.getPageDataList().isEmpty()) return;
         if (pageName.equals(PageName.HOME)) {
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
@@ -1366,10 +1367,12 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void updateAppLogPageData(int position) {
+    private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
-        if (fragment instanceof AppLogInterface applogInterface) {
-            handleAppLogEnterMethod(applogInterface.getPageName());
+        if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
+            if(!isFirstTimeInit) {
+                handleAppLogEnterMethod(applogInterface);
+            }
 
             Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
             if (currentPageName != null
@@ -1379,8 +1382,7 @@ public class MainParentActivity extends BaseActivity implements
             AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
             AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
 
-            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
-            if (currentEnterMethod == null) {
+            if (isFirstTimeInit) {
                 AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
             }
         }
@@ -1425,7 +1427,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            updateAppLogPageData(homePosition);
+            updateAppLogPageData(homePosition, true);
             sendEnterPage(homePosition);
             bottomNavigation.setInitialState(homePosition);
         }
