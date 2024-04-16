@@ -2431,7 +2431,7 @@ class CheckoutViewModel @Inject constructor(
             commonToaster.emit(
                 CheckoutPageToaster(
                     Toaster.TYPE_ERROR,
-                    "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.",
+                    NO_VALID_ORDER_ERROR_MESSAGE,
                     source = "checkout"
                 )
             )
@@ -2904,7 +2904,7 @@ class CheckoutViewModel @Inject constructor(
                     commonToaster.emit(
                         CheckoutPageToaster(
                             Toaster.TYPE_NORMAL,
-                            "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
+                            DISABLED_DROPSHIP_ERROR_MESSAGE
                         )
                     )
                 }
@@ -3015,7 +3015,7 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_NORMAL,
-                        "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
+                        DISABLED_DROPSHIP_ERROR_MESSAGE
                     )
                 )
             }
@@ -3547,6 +3547,7 @@ class CheckoutViewModel @Inject constructor(
         const val NO_PAYMENT_ERROR_MESSAGE = "Atur pembayaran dulu yuk sebelum lanjut bayar."
         const val INVALID_PAYMENT_ERROR_MESSAGE = "Oops, metode pembayaran pilihanmu tidak bisa dipakai di transaksi ini."
         const val INVALID_DROPSHIP_ERROR_MESSAGE = "Pastikan Anda telah melengkapi informasi tambahan."
+        const val DISABLED_DROPSHIP_ERROR_MESSAGE = "Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan"
         const val INSTALLMENT_ERROR_MESSAGE = "Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi."
 
         const val SOURCE_LOCAL = "local"
