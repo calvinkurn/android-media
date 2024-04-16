@@ -133,7 +133,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
         val localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(context ?: return)
         viewModel.processEvent(
-            ShopInfoUiEvent.Setup(
+            ShopInfoUiEvent.GetShopInfo(
                 shopId,
                 localCacheModel?.district_id.orEmpty(),
                 localCacheModel?.city_id.orEmpty()
@@ -143,8 +143,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         setupView()
         observeUiState()
         observeUiEffect()
-        
-        viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
     }
 
     private fun setupView() {

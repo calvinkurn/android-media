@@ -4,10 +4,8 @@ import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopReview
 
 sealed interface ShopInfoUiEvent {
-    data class Setup(val shopId: String, val districtId: String, val cityId: String) :
-        ShopInfoUiEvent
 
-    object GetShopInfo : ShopInfoUiEvent
+    data class GetShopInfo(val shopId: String, val districtId: String, val cityId: String) : ShopInfoUiEvent
     object TapShopRating : ShopInfoUiEvent
     data class TapReviewImage(
         val review: ShopReview.Review,
