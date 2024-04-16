@@ -10,6 +10,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_TDN_BANNER
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.usecase.RequestParams
 
@@ -34,5 +36,5 @@ internal fun RequestParams.isSkipGetLastFilterWidget()
 internal fun RequestParams.isSkipTdnBanner()
     = getBoolean(SEARCH_PRODUCT_SKIP_TDN_BANNER, false)
 
-internal fun sreParams(): String =
-    if (ProductCardExperiment.isReimagine()) "&$L_NAME=$SRE" else ""
+internal fun sreParams(isReimagine: Boolean): String =
+    if (isReimagine) "&$L_NAME=$SRE" else ""

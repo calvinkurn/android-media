@@ -25,7 +25,6 @@ data class CarouselMissionWidgetDataModel(
     val animateOnPress: Int,
     val isCache: Boolean,
     val type: MissionWidgetListDataModel.Type,
-    val appLogImpressHolder: ImpressHolder = ImpressHolder(),
     val appLog: RecommendationAppLog,
 ) : Visitable<MissionWidgetTypeFactory>, HomeComponentCarouselDiffUtil, ImpressHolder() {
 

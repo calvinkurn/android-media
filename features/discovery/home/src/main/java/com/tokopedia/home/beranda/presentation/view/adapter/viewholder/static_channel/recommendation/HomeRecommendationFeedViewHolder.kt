@@ -51,7 +51,6 @@ class HomeRecommendationFeedViewHolder(
             // 3rd dp8 comes from N0 divider in home recommendation feed viewholder
             layoutParams?.height = listener.windowHeight - listener.homeMainToolbarHeight +
                 HEIGHT_8.toDpInt() +
-                HEIGHT_8.toDpInt() +
                 HEIGHT_8.toDpInt()
             homeRecommendationFeedContainer.layoutParams = layoutParams
 

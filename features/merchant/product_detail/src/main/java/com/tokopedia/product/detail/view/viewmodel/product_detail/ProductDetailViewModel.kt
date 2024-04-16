@@ -1,12 +1,13 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
-import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -27,7 +28,9 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AdditionalParam
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper.Companion.PARAM_START_SUBID
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -53,6 +56,7 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -128,12 +132,17 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -270,6 +279,28 @@ class ProductDetailViewModel @Inject constructor(
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
+    private val _finishAnimationAtc = MutableStateFlow(false)
+    private val _finishAtc = MutableStateFlow(false)
+
+    val successAtcAndAnimation: Flow<Boolean> =
+        _finishAnimationAtc.combine(_finishAtc) { finishAtcAnimation, finishAtc ->
+            val finishAtcAnimationResult =
+                !ProductRollenceHelper.rollenceAtcAnimationActive() || finishAtcAnimation
+
+            finishAtcAnimationResult && finishAtc
+        }.map { bothSuccess ->
+            if (bothSuccess) {
+                _finishAnimationAtc.emit(false)
+                _finishAtc.emit(false)
+            }
+            bothSuccess
+        }.filter {
+            it
+        }.shareIn(
+            viewModelScope,
+            SharingStarted.Lazily
+        )
+
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
         val edu = it.bottomSheetEdu
         val showEdu = edu.isShow && edu.appLink.isNotBlank()
@@ -298,7 +329,7 @@ class ProductDetailViewModel @Inject constructor(
     val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
     private val isSingleSku: Boolean
         get() = if (getProductInfoP1?.isProductVariant() == false) true
-                    else variantData?.children?.size == 1
+        else variantData?.children?.size == 1
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -344,6 +375,14 @@ class ProductDetailViewModel @Inject constructor(
 
     init {
         iniQuantityFlow()
+    }
+
+    fun onFinishAnimation() {
+        _finishAnimationAtc.tryEmit(true)
+    }
+
+    fun onFinishAtc() {
+        _finishAtc.tryEmit(true)
     }
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
@@ -921,6 +960,7 @@ class ProductDetailViewModel @Inject constructor(
             val result =
                 withContext(dispatcher.io) { deleteWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
+                getP2()?.updateWishlistStatus(productId, false)
                 listener.onSuccessRemoveWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorRemoveWishlist(result.throwable, productId)
@@ -937,6 +977,7 @@ class ProductDetailViewModel @Inject constructor(
                 getProductInfoP1?.let {
                     getProductInfoP1 = it.copy(data = it.data.copy(isWishlist = true))
                 }
+                getP2()?.updateWishlistStatus(productId, true)
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorAddWishList(result.throwable, productId)
@@ -1230,20 +1271,38 @@ class ProductDetailViewModel @Inject constructor(
         productInfo: ProductInfoP1,
         affiliateUuid: String,
         uuid: String,
-        affiliateChannel: String
+        affiliateChannel: String,
+        affiliateSubIds: Map<String, String>?,
+        affiliateSource: String?
     ) {
         launchCatchError(block = {
             val affiliatePageDetail =
                 ProductDetailMapper.getAffiliatePageDetail(productInfo)
 
+            val subIds = affiliateSubIds?.mapNotNull {
+                val key = it.key.toIntOrNull()
+                    ?: if (it.key.length > PARAM_START_SUBID.length) it.key.substring(
+                        PARAM_START_SUBID.length
+                    ).toIntOrNull() else
+                        return@mapNotNull null
+
+                AdditionalParam(
+                    key = key.toString(),
+                    value = it.value.replace(" ", "+")
+                )
+            } ?: emptyList()
+
             affiliateCookieHelper.get().initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
-                uuid = uuid
+                uuid = uuid,
+                subIds = subIds,
+                source = affiliateSource ?: ""
             )
         }, onError = {
             // no op, expect to be handled by Affiliate SDK
+
         })
     }
 

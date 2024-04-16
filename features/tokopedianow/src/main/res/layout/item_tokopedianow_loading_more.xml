@@ -8,9 +8,10 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tokoNowSearchCategoryLoaderUnify"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_margin="10dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:layout_centerInParent="true"
         app:loader_type="decorative"/>
 

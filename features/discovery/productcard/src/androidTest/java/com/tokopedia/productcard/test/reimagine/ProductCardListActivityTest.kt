@@ -91,6 +91,20 @@ class ProductCardListActivityTest: AppCompatActivity() {
                         toast("Quantity editor $quantity")
                     }
                 })
+
+                setGenericCtaButtonOnClickListener {
+                    toast("Generic CTA Main button click position $bindingAdapterPosition")
+                    productCardView?.reRenderGenericCtaButton(
+                        productCardModel.copy(
+                            productCardGenericCta =  ProductCardModel.ProductCardGenericCta(
+                                "Re render CTA",
+                            )
+                        )
+                    )
+                }
+                setGenericCtaSecondaryButtonOnClickListener {
+                    toast("Generic CTA Secondary button click position $bindingAdapterPosition")
+                }
             }
         }
 

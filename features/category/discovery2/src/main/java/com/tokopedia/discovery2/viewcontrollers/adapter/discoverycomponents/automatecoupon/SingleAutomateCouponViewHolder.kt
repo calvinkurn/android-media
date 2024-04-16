@@ -11,7 +11,6 @@ import com.tokopedia.discovery2.analytics.CouponTrackingProperties
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.data.automatecoupon.ClaimFailure
-import com.tokopedia.discovery2.databinding.SingleAutomateCouponLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -22,15 +21,13 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
-import com.tokopedia.utils.view.binding.viewBinding
 
 class SingleAutomateCouponViewHolder(
     itemView: View,
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val binding: SingleAutomateCouponLayoutBinding?
-        by viewBinding()
+    private val couponView = itemView.findViewById<AutomateCouponListView>(R.id.couponView)
 
     private var viewModel: SingleAutomateCouponViewModel? = null
 
@@ -50,14 +47,14 @@ class SingleAutomateCouponViewHolder(
         lifecycleOwner?.let {
             viewModel?.getComponentList()?.observe(it) { items ->
                 items.firstOrNull()?.automateCoupons?.firstOrNull()?.let { model ->
-                    binding?.couponView?.show()
-                    binding?.renderCoupon(model)
+                    couponView.show()
+                    renderCoupon(model)
                     trackImpression()
                 }
             }
 
             viewModel?.getCTAState()?.observe(it) { ctaState ->
-                binding?.couponView?.setState(mapToCTAHandler(ctaState))
+                couponView.setState(mapToCTAHandler(ctaState))
             }
 
             viewModel?.shouldShowErrorClaimCouponToaster()?.observe(it) { reason ->
@@ -114,10 +111,10 @@ class SingleAutomateCouponViewHolder(
         if (properties.isNotEmpty()) analytics?.trackCouponImpression(properties)
     }
 
-    private fun SingleAutomateCouponLayoutBinding?.renderCoupon(model: AutomateCouponUiModel) {
+    private fun renderCoupon(model: AutomateCouponUiModel) {
         val handler = mapToCTAHandler(model.ctaState)
 
-        this?.couponView?.apply {
+        couponView?.apply {
             setModel(model.data)
             setState(handler)
             setClickAction(model.redirectAppLink)

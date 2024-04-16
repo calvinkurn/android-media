@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
@@ -11,11 +12,14 @@ import rx.Observable
 
 class SearchProductTopAdsUseCase(
     private val graphqlUseCase: GraphqlUseCase,
+    private val reimagineRollence: ReimagineRollence
 ): UseCase<TopAdsModel>() {
     override fun createObservable(
         requestParams: RequestParams
     ): Observable<TopAdsModel> {
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams()
+        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams(
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
+        )
 
         val graphqlRequestList = graphqlRequests {
             addProductAdsRequest(requestParams, params)
