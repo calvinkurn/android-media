@@ -13,6 +13,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
@@ -657,6 +658,14 @@ class CheckoutViewModel @Inject constructor(
         return listData.value.promo()?.promo?.additionalInfo?.pomlAutoApplied ?: false
     }
 
+    fun getCartTypeString(): String {
+        return if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) CART_TYPE_OCC else CART_TYPE_ATC
+    }
+
+    private fun getPaymentMethod(payment: CheckoutPaymentModel): String {
+        return payment.data?.paymentWidgetData?.firstOrNull()?.gatewayName ?: ""
+    }
+
     fun triggerSendEnhancedEcommerceCheckoutAnalytics(
         tradeInCustomDimension: Map<String, String>?,
         step: String,
@@ -676,7 +685,8 @@ class CheckoutViewModel @Inject constructor(
             eventCategory,
             eventAction,
             eventLabel,
-            step
+            step,
+            getCartTypeString()
         )
         mTrackerShipment.flushEnhancedECommerceCheckout()
     }
@@ -3182,6 +3192,7 @@ class CheckoutViewModel @Inject constructor(
 
         var cost = listData.value.cost()!!
         var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems, payment)
+        var shouldRevalidatePromo = false
 
         if (payment.data == null || payment.data?.paymentWidgetData.isNullOrEmpty()) {
             // get payment widget if not yet
@@ -3211,23 +3222,8 @@ class CheckoutViewModel @Inject constructor(
                 return
             }
 
-            val updateCartRequest = cartProcessor.generateUpdateCartRequest(listData.value)
-            val newPaymentRequest = cartProcessor.generateUpdateCartPaymentRequest(payment)
-            val updateCartResult = cartProcessor.updateCart(updateCartRequest, UPDATE_CART_SOURCE_PAYMENT, newPaymentRequest)
-            if (!updateCartResult.isSuccess) {
-                // show error
-                cost = cost.copy(
-                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
-                    usePaymentFees = true
-                )
-                updateTotalAndPayment(cost, payment)
-                return
-            }
-
-            updateTotalAndPayment(cost, payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading)), skipValidatePayment = true)
             // validate promo after get payment
-            validatePromo(skipEE = true)
-            return
+            shouldRevalidatePromo = true
         } else {
             payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Normal))
         }
@@ -3277,10 +3273,31 @@ class CheckoutViewModel @Inject constructor(
             }
         }
 
-        cost = cost.copy(
-            usePaymentFees = true
-        )
-        updateTotalAndPayment(cost, payment)
+        if (shouldRevalidatePromo) {
+            val updateCartRequest = cartProcessor.generateUpdateCartRequest(listData.value)
+            val newPaymentRequest = cartProcessor.generateUpdateCartPaymentRequest(payment)
+            val updateCartResult = cartProcessor.updateCart(updateCartRequest, UPDATE_CART_SOURCE_PAYMENT, newPaymentRequest)
+            if (!updateCartResult.isSuccess) {
+                // show error
+                cost = cost.copy(
+                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                    usePaymentFees = true
+                )
+                payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error))
+                updateTotalAndPayment(cost, payment)
+                return
+            }
+
+            payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
+            updateTotalAndPayment(cost, payment, skipValidatePayment = true)
+            validatePromo(skipEE = true)
+            mTrackerShipment.sendViewPaymentMethodEvent(getPaymentMethod(payment), getCartTypeString())
+        } else {
+            cost = cost.copy(
+                usePaymentFees = true
+            )
+            updateTotalAndPayment(cost, payment)
+        }
     }
 
     private fun updateTotalAndPayment(cost: CheckoutCostModel, payment: CheckoutPaymentModel, skipValidatePayment: Boolean = false) {
@@ -3511,6 +3528,9 @@ class CheckoutViewModel @Inject constructor(
         const val INVALID_DROPSHIP_ERROR_MESSAGE = "Pastikan Anda telah melengkapi informasi tambahan."
 
         const val SOURCE_LOCAL = "local"
+
+        const val CART_TYPE_OCC = "buy now"
+        const val CART_TYPE_ATC = "add to cart"
     }
 }
 

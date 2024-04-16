@@ -35,7 +35,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
@@ -147,21 +146,16 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
-import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
 import com.tokopedia.purchase_platform.common.constant.ARGS_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
 import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
-import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
-import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
@@ -2843,6 +2837,11 @@ class CheckoutFragment :
             putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
         }
         startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
+        checkoutAnalyticsCourierSelection.sendPaymentClickArrowToChangePaymentOptionEvent(getPaymentMethodName(payment), viewModel.getCartTypeString())
+    }
+
+    private fun getPaymentMethodName(payment: CheckoutPaymentModel): String {
+        return payment.data?.paymentWidgetData?.firstOrNull()?.gatewayName ?: ""
     }
 
     private fun onActivityResultFromPaymentListing(resultCode: Int, data: Intent?) {
@@ -2906,6 +2905,7 @@ class CheckoutFragment :
                 }
             }
         )
+        checkoutAnalyticsCourierSelection.sendPaymentClickTenureOptionsEvent(paymentData.installmentPaymentData.selectedTenure.toString(), viewModel.getCartTypeString())
     }
 
     private fun onChangeGoCicilInstallment(data: PaymentWidgetListData, payment: CheckoutPaymentModel) {
@@ -2927,6 +2927,7 @@ class CheckoutFragment :
                 }
             }
         )
+        checkoutAnalyticsCourierSelection.sendPaymentClickTenureOptionsEvent(paymentData.installmentPaymentData.selectedTenure.toString(), viewModel.getCartTypeString())
     }
 
     override fun onPaymentAction(payment: CheckoutPaymentModel) {
