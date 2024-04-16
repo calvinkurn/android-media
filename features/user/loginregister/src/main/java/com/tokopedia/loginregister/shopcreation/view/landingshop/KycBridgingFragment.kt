@@ -26,12 +26,19 @@ import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragme
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private var viewBinding by autoClearedNullable<FragmentKycBridgingBinding>()
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var shopCreationAnalytics: ShopCreationAnalytics
 
     private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -101,6 +108,11 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         viewBinding?.btnContinue?.setOnClickListener {
+            if (isNormalShopSelected()) {
+                shopCreationAnalytics.sendSellerClickKycEvent(shopId = userSession.shopId, userId = userSession.userId)
+            } else {
+                shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
+            }
             viewModel.getShopStatus()
         }
 
@@ -192,8 +204,12 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     ApplinkConstInternalGlobal.WEBVIEW,
                     TokopediaUrl.getInstance().WEB.plus(OS_PATH)
                 )
+                shopCreationAnalytics.sendSellerClickCekTetapBukaDiPerangkatIniEvent(currentSite = "tokopediamarketplace", )
             }
             setOnWebviewClick {  }
+            setCloseClickListener {
+                shopCreationAnalytics.sendSellerClickDismissTheKycPromptEvent(shopId = userSession.shopId, userId = userSession.userId)
+            }
         }.show(childFragmentManager)
     }
 

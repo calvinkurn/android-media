@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.LayoutShopCreationKycStatusBinding
 import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
@@ -34,6 +35,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -44,7 +46,13 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<LayoutShopCreationKycStatusBinding>()
 
     @Inject
+    lateinit var shopCreationAnalytics: ShopCreationAnalytics
+
+    @Inject
     lateinit var viewModel: KycBridgingViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
         onRefreshStatus()
@@ -81,6 +89,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             object : ClickableSpan() {
                 override fun onClick(view: View) {
                     goToGuidelineOpenShop()
+                    shopCreationAnalytics.sendSellerClickToSellerEducationMaterialsEvent(shopId = userSession.shopId, userId = userSession.userId)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -182,6 +191,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         }
 
         binding?.layoutStatusRejected?.btnPrimary?.setOnClickListener {
+            shopCreationAnalytics.sendSellerClickVerifikasiUlangEvent(shopId = userSession.shopId, userId = userSession.userId)
             launchKyc()
         }
 
@@ -240,6 +250,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     }
 
     private fun onRefreshStatus() {
+        shopCreationAnalytics.sendSellerClickRefreshStatusEvent(userId = userSession.userId, shopId = userSession.shopId)
         binding?.apply {
             unifyToolbar.hide()
             loader.show()
