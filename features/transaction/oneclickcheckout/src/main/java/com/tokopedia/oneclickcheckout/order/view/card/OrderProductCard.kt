@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -644,7 +644,12 @@ class OrderProductCard(
 
     interface OrderProductCardListener {
 
-        fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean = true)
+        fun onProductChange(
+            product: OrderProduct,
+            productIndex: Int,
+            shouldReloadRates: Boolean = true,
+            shouldUpdateActionMetadata: Boolean = true
+        )
 
         fun forceUpdateCart()
 

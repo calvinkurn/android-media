@@ -3295,7 +3295,11 @@ open class ProductDetailFragment :
                 affiliateSource = affiliateSource
             )
 
-            mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+            mStoriesWidgetManager.updateStories(
+                shopIds = listOf(p1.basic.shopID),
+                categoryIds = viewModel.getProductInfoP1?.basic?.category?.detail?.map { it.id }.orEmpty(),
+                productIds = listOf(viewModel.getProductInfoP1?.basic?.productID.orEmpty()),
+            )
 
             handleShareAdditionalCheck(p2Data.shopInfo)
 
@@ -3744,8 +3748,7 @@ open class ProductDetailFragment :
         }
 
         pdpUiUpdater?.removeComponentP2Data(
-            it,
-            viewModel.getProductInfoP1?.basic?.stats?.countReview ?: ""
+            it
         )
 
         renderRestrictionBottomSheet(it.restrictionInfo)
@@ -4140,7 +4143,8 @@ open class ProductDetailFragment :
                     productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
                         ?: "",
                     categoryId = it.basic.category.id,
-                    isScheduled = isScheduled
+                    isScheduled = isScheduled,
+                    weightWording = it.basic.weightWording
                 )
             )
             shouldRefreshShippingBottomSheet = false

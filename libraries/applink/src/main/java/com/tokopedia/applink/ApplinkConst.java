@@ -69,6 +69,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String POST_ATC = "tokopedia://post-atc/{productId}";
+    String PRODUCT_WEBVIEW_BS = "tokopedia://product-webview-bs";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String PRODUCT_REVIEW_GALLERY = "tokopedia://product/{id}/review/gallery";

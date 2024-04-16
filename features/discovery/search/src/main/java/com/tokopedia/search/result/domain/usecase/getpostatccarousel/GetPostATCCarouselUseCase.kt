@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.domain.usecase.getpostatccarousel
 
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
@@ -13,11 +14,14 @@ import rx.Observable
 
 class GetPostATCCarouselUseCase(
     private val graphqlUseCase: GraphqlUseCase,
+    private val reimagineRollence: ReimagineRollence,
 ): UseCase<SearchInspirationCarousel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchInspirationCarousel> =
         graphqlUseCase.run {
-            val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams()
+            val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams(
+                reimagineRollence.search3ProductCard().isReimagineProductCard()
+            )
             val graphqlRequest = createSearchInspirationCarouselRequest(params)
 
             clearRequest()

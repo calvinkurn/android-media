@@ -14,7 +14,7 @@ data class ProductShippingHeaderDataModel(
     val id: Long = 0L,
     val shippingTo: String = "",
     val shippingFrom: String = "",
-    val weight: String = "",
+    val weightWording: String = "",
     val boType: Int = 0,
     val freeOngkirEstimation: String = "",
     val freeOngkirPrice: String = "",
