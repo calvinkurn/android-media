@@ -70,6 +70,8 @@ if (hasProperty('buildScan')) {
 
 apply from: 'buildproj.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
+apply from: 'buildconfig/kotlin/repository.gradle'
+
 
 //Installing Git Hooks
 task installGitHooks {

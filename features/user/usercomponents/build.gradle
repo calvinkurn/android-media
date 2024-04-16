@@ -5,8 +5,8 @@ apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
-        google()
-        mavenCentral()
+//        google()
+//        mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
 
