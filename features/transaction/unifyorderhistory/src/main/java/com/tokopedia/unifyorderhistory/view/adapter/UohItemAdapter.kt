@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -139,6 +140,18 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return listTypeData.size
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        if (holder is UohRecommendationItemViewHolder) {
+            holder.onViewAttachedToWindow()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        if (holder is UohRecommendationItemViewHolder) {
+            holder.onViewDetachedFromWindow(holder.visiblePercentage)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

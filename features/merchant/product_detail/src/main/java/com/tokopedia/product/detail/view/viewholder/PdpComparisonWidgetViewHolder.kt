@@ -63,6 +63,14 @@ class PdpComparisonWidgetViewHolder(
         }
     }
 
+    override fun onViewAttachedToWindow(element: PdpComparisonWidgetDataModel?) {
+        super.onViewAttachedToWindow(element)
+    }
+
+    override fun onViewDetachedFromWindow(element: PdpComparisonWidgetDataModel?, visiblePercentage: Int) {
+
+    }
+
     private fun getComponentTrackData(element: PdpComparisonWidgetDataModel?) = ComponentTrackDataModel(element?.type
             ?: "", element?.name ?: "", adapterPosition + 1)
 }

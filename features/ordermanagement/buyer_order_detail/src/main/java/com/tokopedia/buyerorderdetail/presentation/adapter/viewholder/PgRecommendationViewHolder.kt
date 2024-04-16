@@ -51,23 +51,23 @@ open class PgRecommendationViewHolder(
     }
 
     override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendShowAdsByteIo(itemView.context, PageName.BOM_DETAIL)
+        recomItem.sendShowAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT)
     }
 
     override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
-        recomItem.sendShowOverAdsByteIo(itemView.context, PageName.BOM_DETAIL, visiblePercentage)
+        recomItem.sendShowOverAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, visiblePercentage)
     }
 
     override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.BOM_DETAIL, AdsLogConst.Refer.AREA)
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, AdsLogConst.Refer.AREA)
     }
 
     override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.BOM_DETAIL, AdsLogConst.Refer.COVER)
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, AdsLogConst.Refer.COVER)
     }
 
     override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
-        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.BOM_DETAIL, AdsLogConst.Refer.SELLER_NAME)
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.BUYER_ORDER_MANAGEMENT, AdsLogConst.Refer.SELLER_NAME)
     }
 
     override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) {
