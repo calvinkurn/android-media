@@ -1,34 +1,15 @@
 package com.tokopedia.shop.common.util.productcard
 
 import com.tokopedia.productcard.experiments.ProductCardColor
+import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.productcard.festivity.FestivityLightProductCardColor
 import com.tokopedia.shop.common.util.productcard.festivity.FestivityTransparentProductCardColor
-import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
-import com.tokopedia.unifyprinciples.ColorMode
-import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.productcard.reimagine.DarkThemedShopProductCard
 import com.tokopedia.shop.common.util.productcard.reimagine.LightThemedShopProductCard
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
+import com.tokopedia.unifyprinciples.ColorMode
 
 class ShopProductCardColorHelper {
-
-    private val defaultProductCardColor = null
-
-    val transparentProductCard = object : ProductCardColor {
-        override val cardBackgroundColor: Int? = android.R.color.transparent
-        override val productNameTextColor: Int? = defaultProductCardColor
-        override val priceTextColor: Int? = defaultProductCardColor
-        override val slashPriceTextColor: Int? = defaultProductCardColor
-        override val soldCountTextColor: Int? = defaultProductCardColor
-        override val discountTextColor: Int? = defaultProductCardColor
-        override val ratingTextColor: Int? = defaultProductCardColor
-        override val buttonColorMode: ColorMode? = defaultProductCardColor
-        override val labelBenefitViewColor = defaultProductCardColor
-        override val shopBadgeTextColor: Int? = defaultProductCardColor
-        override val quantityEditorColor = defaultProductCardColor
-        override val stockBarColor = defaultProductCardColor
-        override val showOutlineView = defaultProductCardColor
-    }
-
 
     fun determineProductCardColorMode(
         isFestivity: Boolean,
@@ -46,7 +27,7 @@ class ShopProductCardColorHelper {
 
     private fun overrideToFestivityColor(
         makeProductCardTransparent: Boolean,
-        shopPageBackgroundColor: String,
+        shopPageBackgroundColor: String
     ): ProductCardColor {
         return if (makeProductCardTransparent) {
             FestivityTransparentProductCardColor(labelBenefitCutoutFillColor = shopPageBackgroundColor)
@@ -85,6 +66,22 @@ class ShopProductCardColorHelper {
     }
 
     private fun followDeviceThemeColor(): ProductCardColor {
-        return transparentProductCard
+        val defaultProductCardColor = object : ProductCardColor {
+            override val cardBackgroundColor: Int? = null
+            override val productNameTextColor: Int? = null
+            override val priceTextColor: Int? = null
+            override val slashPriceTextColor: Int? = null
+            override val soldCountTextColor: Int? = null
+            override val discountTextColor: Int? = null
+            override val ratingTextColor: Int? = null
+            override val buttonColorMode: ColorMode? = null
+            override val labelBenefitViewColor = null
+            override val shopBadgeTextColor: Int? = null
+            override val quantityEditorColor = null
+            override val stockBarColor = null
+            override val showOutlineView = null
+        }
+
+        return defaultProductCardColor
     }
 }

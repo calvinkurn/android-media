@@ -25,7 +25,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
     private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
-    companion object{
+    companion object {
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
@@ -74,7 +74,8 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
             forceLightModeColor = listener.isOverrideTheme(),
             patternColorType = listener.getPatternColorType(),
             backgroundColor = listener.getBackgroundColor(),
-            isFestivity = fsUiModel?.isFestivity.orFalse()
+            isFestivity = fsUiModel?.isFestivity.orFalse(),
+            makeProductCardTransparent = false
         ).copy(
             stockBarLabelColor = stockBarLabelColor,
             isInBackground = true,
@@ -90,12 +91,12 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
         val viewTreeObserver: ViewTreeObserver? = productImageView?.viewTreeObserver
         if (viewTreeObserver?.isAlive.orFalse()) {
             viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    action(productImageView.height + paddingOffset.toInt())
-                }
-            })
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        action(productImageView.height + paddingOffset.toInt())
+                    }
+                })
         }
     }
 
