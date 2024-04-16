@@ -1148,7 +1148,7 @@ open class BuyerOrderDetailFragment :
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
         if (uiModel.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-            navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+            navigator.openProductDetailPage(uiModel.productId)
             BuyerOrderDetailTracker.eventClickProduct(uiModel.orderStatusId, uiModel.orderId)
         } else {
             showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))

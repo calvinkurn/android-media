@@ -122,10 +122,10 @@ class PartialProductItemViewHolder(
         }
     }
 
-    private fun goToProductSnapshotPage() {
+    private fun onProductCardClicked() {
         element.let {
             if (it.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-                navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
+                navigator.openProductDetailPage(it.productId)
                 BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
             } else {
                 showToaster(
@@ -216,7 +216,7 @@ class PartialProductItemViewHolder(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.itemBomDetailProductViewStub -> goToProductSnapshotPage()
+            R.id.itemBomDetailProductViewStub -> onProductCardClicked()
             R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
             R.id.btnShareProduct -> openShareBottomSheet()
         }

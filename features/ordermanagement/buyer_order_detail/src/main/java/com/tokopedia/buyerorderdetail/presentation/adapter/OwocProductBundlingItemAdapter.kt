@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductBundlingListItemBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.OwocProductBundlingItemDiffUtilCallback
@@ -73,7 +72,7 @@ class OwocProductBundlingItemAdapter(
                     setBundleItemProductPriceQuantity(it.quantity, it.priceText)
                     setBundleItemThumbnail(it.productThumbnailUrl)
                 }
-                setItemOnClickListener(it.orderId, it.orderDetailId)
+                setItemOnClickListener(it.productId)
             }
         }
 
@@ -94,14 +93,14 @@ class OwocProductBundlingItemAdapter(
             )
         }
 
-        private fun setItemOnClickListener(orderId: String, orderDetailId: String) {
+        private fun setItemOnClickListener(productId: String) {
             itemView.setOnClickListener {
-                listener.onBundleItemClicked(orderId, orderDetailId)
+                listener.onBundleItemClicked(productId)
             }
         }
 
         interface Listener {
-            fun onBundleItemClicked(orderId: String, orderDetailId: String)
+            fun onBundleItemClicked(productId: String)
         }
     }
 }

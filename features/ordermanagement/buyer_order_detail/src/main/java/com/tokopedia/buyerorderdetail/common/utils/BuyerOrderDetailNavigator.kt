@@ -231,4 +231,9 @@ class BuyerOrderDetailNavigator(
         fragment.startActivityForResult(intent, requestCode)
         applyTransition()
     }
+
+    fun openProductDetailPage(productID: String) {
+        val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productID)
+        openAppLink(appLink, true)
+    }
 }

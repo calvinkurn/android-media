@@ -84,10 +84,10 @@ class ProductBundlingViewHolder(
         }
     }
 
-    override fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String) {
-        if (orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-            navigator.goToProductSnapshotPage(orderId, orderDetailId)
-            BuyerOrderDetailTracker.eventClickProduct(orderStatusId, orderId)
+    override fun onBundleItemClicked(productID: String, orderStatusId: String) {
+        if (productID != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
+            navigator.openProductDetailPage(productID)
+            BuyerOrderDetailTracker.eventClickProduct(orderStatusId, productID)
         } else {
             showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
         }

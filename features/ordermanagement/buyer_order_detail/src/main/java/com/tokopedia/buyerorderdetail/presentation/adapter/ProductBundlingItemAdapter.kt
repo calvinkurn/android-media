@@ -87,7 +87,7 @@ class ProductBundlingItemAdapter(
                 setBundleItemProductName(it.productName)
                 setBundleItemProductPriceQuantity(it.quantity, it.priceText)
                 setupBundleItemProductNote(it.productNote)
-                setItemOnClickListener(it.orderId, it.orderDetailId, it.orderStatusId)
+                setItemOnClickListener(it.productId, it.orderStatusId)
                 setupBundleItemButton(model.button, model.isProcessing)
                 bindAddonSummary(it.addOnSummaryUiModel)
                 setupImpressListener(model)
@@ -121,14 +121,9 @@ class ProductBundlingItemAdapter(
                         }
                         if (
                             oldItem.orderId != newItem.orderId ||
-                            oldItem.orderDetailId != newItem.orderDetailId ||
                             oldItem.orderStatusId != newItem.orderStatusId
                         ) {
-                            setItemOnClickListener(
-                                newItem.orderId,
-                                newItem.orderDetailId,
-                                newItem.orderStatusId
-                            )
+                            setItemOnClickListener(newItem.productId, newItem.orderStatusId)
                         }
                         if (
                             oldItem.button != newItem.button ||
@@ -218,10 +213,8 @@ class ProductBundlingItemAdapter(
             }
         }
 
-        private fun setItemOnClickListener(orderId: String, orderDetailId: String, orderStatusId: String) {
-            itemView.setOnClickListener {
-                listener.onBundleItemClicked(orderId, orderDetailId, orderStatusId)
-            }
+        private fun setItemOnClickListener(productID: String, orderStatusId: String) {
+            itemView.setOnClickListener { listener.onBundleItemClicked(productID, orderStatusId) }
         }
 
         private fun onItemActionClicked(key: String) {
@@ -242,7 +235,7 @@ class ProductBundlingItemAdapter(
         }
 
         interface Listener {
-            fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String)
+            fun onBundleItemClicked(productID: String, orderStatusId: String)
             fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel)
