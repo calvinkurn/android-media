@@ -77,7 +77,7 @@ data class BroadMatchDataView(
         }
     }
 
-    fun asByteIOSearchResult() =
+    fun asByteIOSearchResult(aladdinButtonType: String?) =
         AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
@@ -93,7 +93,7 @@ data class BroadMatchDataView(
             isAd = false,
             isFirstPage = byteIOTrackingData.isFirstPage,
             shopId = null,
-            aladdinButtonType = null,
+            aladdinButtonType = aladdinButtonType,
         )
 
     companion object {
