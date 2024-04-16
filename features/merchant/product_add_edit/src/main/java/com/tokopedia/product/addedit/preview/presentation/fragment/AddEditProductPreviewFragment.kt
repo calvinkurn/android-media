@@ -88,6 +88,7 @@ import com.tokopedia.product.addedit.common.util.setDefaultMaxWidth
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductPreviewBinding
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
@@ -546,7 +547,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupPhotosViews() {
-        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, mutableListOf(), this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -1468,8 +1469,7 @@ class AddEditProductPreviewFragment :
         val adapter = productPhotoAdapter ?: return
         // show error message when maximum product image is reached
         val productPhotoCount = adapter.getProductPhotoPaths().size
-        val maxProductPhotoCount = viewModel.getMaxProductPhotos()
-        if (productPhotoCount == maxProductPhotoCount) {
+        if (productPhotoCount == MAX_PRODUCT_PHOTOS) {
             showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
         } else {
             val isAdding = viewModel.isAdding || !isEditing()
@@ -1487,7 +1487,7 @@ class AddEditProductPreviewFragment :
                 doTracking(isEditing())
                 val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
                     requireContext(),
-                    maxProductPhotoCount,
+                    MAX_PRODUCT_PHOTOS,
                     pageSource,
                     ArrayList(imageUrlOrPathList)
                 )
@@ -1496,7 +1496,7 @@ class AddEditProductPreviewFragment :
                 val intent = ImagePickerAddEditNavigation.getIntent(
                     requireContext(),
                     ArrayList(imageUrlOrPathList),
-                    maxProductPhotoCount,
+                    MAX_PRODUCT_PHOTOS,
                     isAdding
                 )
                 startActivityForResult(intent, REQUEST_CODE_IMAGE)

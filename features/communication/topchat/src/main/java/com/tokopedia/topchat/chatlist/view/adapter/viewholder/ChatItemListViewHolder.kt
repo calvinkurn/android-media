@@ -401,5 +401,7 @@ class ChatItemListViewHolder constructor(
         const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"
         const val OFFICIAL_TAG = "Official"
+
+        const val SELLER_ROLE = "shop"
     }
 }

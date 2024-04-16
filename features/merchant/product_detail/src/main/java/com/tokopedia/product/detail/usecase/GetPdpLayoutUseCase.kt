@@ -114,6 +114,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     countTalk
                     rating
                   }
+                  weightWording
                 }
                 components {
                   name
@@ -552,6 +553,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                                 appLink
                             }
                         }
+                    }
+                    ... on pdpDataComponentSDUIDivKit {
+                        template 
                     }
                   }
                 }

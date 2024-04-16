@@ -597,7 +597,8 @@ object DeeplinkDFApp {
             "/recipe/similar-product-bottomsheet"
         ),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication"),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/all-annotation")
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/all-annotation"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/list-belanja")
     )
 
     private fun getDfTravel() = mutableListOf(
@@ -735,7 +736,8 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/.*/"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-edu/.*/"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/post-atc/.*/")
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/post-atc/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-webview-bs"),
     )
 
     private fun getDfStoriesCreationMainApp() = mutableListOf(

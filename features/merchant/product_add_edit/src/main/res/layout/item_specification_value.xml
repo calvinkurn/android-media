@@ -8,11 +8,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.TextAreaUnify
+    <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/tfSpecification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text_area_clearable="true" />
+        app:unify_text_field_clearable="true" />
 
     <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
         android:id="@+id/tooltipRequired"

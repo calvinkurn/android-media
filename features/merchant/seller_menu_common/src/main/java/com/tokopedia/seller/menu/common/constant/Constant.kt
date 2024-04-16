@@ -21,5 +21,4 @@ object Constant {
         const val ROUNDED_RADIUS = 16f
 
     }
-
 }

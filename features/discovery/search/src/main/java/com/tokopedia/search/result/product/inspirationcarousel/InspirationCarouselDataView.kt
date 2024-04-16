@@ -122,7 +122,7 @@ data class InspirationCarouselDataView(
 
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
 
-        fun asByteIOSearchResult() =
+        fun asByteIOSearchResult(aladdinButtonType: String?) =
             AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
@@ -138,7 +138,7 @@ data class InspirationCarouselDataView(
                 isAd = false,
                 isFirstPage = byteIOTrackingData.isFirstPage,
                 shopId = null,
-                aladdinButtonType = null,
+                aladdinButtonType = aladdinButtonType,
             )
 
         override fun setRank(value: Int) {
@@ -342,7 +342,7 @@ data class InspirationCarouselDataView(
                 searchKeyword = byteIOTrackingData.keyword,
                 tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
                 rank = getRank(),
-                shopID = null,
+                shopID = shopId,
                 searchEntrance = byteIOTrackingData.searchEntrance,
                 sourcePageType = if (customVideoURL.isBlank()) PRODUCT_CARD else VIDEO,
             )

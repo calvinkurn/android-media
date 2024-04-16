@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play_common.view.loadImage
@@ -36,7 +38,12 @@ class PlayWidgetCardMediumBannerView : FrameLayout {
     }
 
     fun setData(data: PlayWidgetBannerUiModel) {
-        background.loadImage(data.imageUrl)
+        background.scaleType = ImageView.ScaleType.CENTER
+        background.loadImage(data.imageUrl) {
+            listener(
+                onSuccess = { _, _ -> background.scaleType = ImageView.ScaleType.CENTER_CROP }
+            )
+        }
 
         card.setOnClickListener {
             mListener?.onBannerClicked(it, data)
