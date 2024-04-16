@@ -9,7 +9,6 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.view.ActionListener
@@ -17,10 +16,10 @@ import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.UnifyButton
@@ -61,27 +60,15 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
                 }
 
                 override fun onAreaClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.CART,
-                        element.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
-                    )
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.CART,
-                        element.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
-                    )
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.CART,
-                        element.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
-                    )
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
@@ -116,15 +103,11 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
     }
 
     override fun onViewAttachedToWindow() {
-        recommendationItem?.let { item ->
-            if(item.isTopAds) AppLogTopAds.sendEventShow(itemView.context, PageName.CART, item.asAdsLogShowModel())
-        }
+        recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.CART)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.let { item ->
-            if(item.isTopAds) AppLogTopAds.sendEventShowOver(itemView.context, PageName.CART, item.asAdsLogShowOverModel(visiblePercentage))
-        }
+        recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.CART, visiblePercentage)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

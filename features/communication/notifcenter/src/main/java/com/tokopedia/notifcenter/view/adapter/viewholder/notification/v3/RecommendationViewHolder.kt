@@ -1,6 +1,5 @@
 package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3
 
-import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
@@ -9,28 +8,27 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class RecommendationViewHolder constructor(
-        itemView: View?,
-        private val recommendationListener: RecommendationListener?
+    itemView: View?,
+    private val recommendationListener: RecommendationListener?
 ) : AbstractViewHolder<RecommendationUiModel>(itemView), AppLogRecTriggerInterface {
 
     private val productCard: ProductCardGridView? = itemView?.findViewById(
-            R.id.notification_product_card
+        R.id.notification_product_card
     )
 
     private var recTriggerObject = RecommendationTriggerObject()
@@ -52,27 +50,11 @@ class RecommendationViewHolder constructor(
     }
 
     override fun onViewAttachedToWindow(element: RecommendationUiModel?) {
-        element?.recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShow(
-                    itemView.context,
-                    PageName.NOTIFICATION,
-                    it.asAdsLogShowModel()
-                )
-            }
-        }
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.NOTIFICATION)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationUiModel?, visiblePercentage: Int) {
-        element?.recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShowOver(
-                    itemView.context,
-                    PageName.NOTIFICATION,
-                    it.asAdsLogShowOverModel(visiblePercentage)
-                )
-            }
-        }
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.NOTIFICATION, visiblePercentage)
     }
 
     private fun setRecTriggerObject(model: RecommendationItem) {
@@ -89,12 +71,12 @@ class RecommendationViewHolder constructor(
 
     private fun bindProductCardImpression(element: RecommendationUiModel) {
         productCard?.setImageProductViewHintListener(
-                element.recommendationItem,
-                object : ViewHintListener {
-                    override fun onViewHint() {
-                        recommendationListener?.onProductImpression(element.recommendationItem)
-                    }
+            element.recommendationItem,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    recommendationListener?.onProductImpression(element.recommendationItem)
                 }
+            }
         )
 
         productCard?.addOnImpression1pxListener(element.recommendationItem.appLogImpressHolder) {
@@ -116,33 +98,23 @@ class RecommendationViewHolder constructor(
             }
 
             override fun onAreaClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationItem, AdsLogConst.Refer.AREA)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.NOTIFICATION, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationItem, AdsLogConst.Refer.COVER)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.NOTIFICATION, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationItem, AdsLogConst.Refer.SELLER_NAME)
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.NOTIFICATION, AdsLogConst.Refer.SELLER_NAME)
             }
         })
-    }
-
-    private fun sendEventRealtimeClickAdsByteIo(context: Context, element: RecommendationItem, refer: String) {
-        if (element.isTopAds) {
-            AppLogTopAds.sendEventRealtimeClick(
-                context,
-                PageName.NOTIFICATION,
-                element.asAdsLogRealtimeClickModel(refer)
-            )
-        }
     }
 
     private fun bindProductCardThreeDotsClick(element: RecommendationUiModel) {
         productCard?.setThreeDotsOnClickListener {
             recommendationListener?.onThreeDotsClick(
-                    element.recommendationItem, adapterPosition
+                element.recommendationItem, adapterPosition
             )
         }
     }

@@ -8,13 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListe
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
@@ -73,53 +72,26 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                 }
 
                 override fun onAreaClicked(v: View) {
-                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.AREA)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, PageName.REWARD, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.COVER)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, PageName.REWARD, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.SELLER_NAME)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, PageName.REWARD, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
         }
 
-        private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
-            if (recommendationItem?.isTopAds == true) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.REWARD,
-                    recommendationItem.asAdsLogRealtimeClickModel(refer)
-                )
-            }
-        }
-
-
         override fun onViewAttachedToWindow() {
-            uiModel?.let {
-                if (it.isTopAds) {
-                    AppLogTopAds.sendEventShow(
-                        itemView.context,
-                        PageName.REWARD,
-                        it.asAdsLogShowModel()
-                    )
-                }
-            }
+            uiModel?.sendShowAdsByteIo(itemView.context, PageName.REWARD)
         }
 
         override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-            uiModel?.let {
-                if (it.isTopAds) {
-                    AppLogTopAds.sendEventShowOver(
-                        itemView.context,
-                        PageName.REWARD,
-                        it.asAdsLogShowOverModel(visiblePercentage)
-                    )
-                }
-            }
+            uiModel?.sendShowOverAdsByteIo(itemView.context, PageName.REWARD, visiblePercentage)
         }
 
         override fun setVisiblePercentage(visiblePercentage: Int) {

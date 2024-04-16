@@ -54,7 +54,9 @@ class TokoNowProductRecommendationOocViewHolder(
                     isTokonow = element.isTokoNow,
                     categoryIds = element.categoryId,
                     keyword = element.keywords,
-                    miniCartSource = element.miniCartSource
+                    miniCartSource = element.miniCartSource,
+                    adsViewListener = null,
+                    adsItemClickListener = null
                 )
                 element.isFirstLoad = false
             }
@@ -65,7 +67,9 @@ class TokoNowProductRecommendationOocViewHolder(
                     adapterPosition = adapterPosition,
                     basicListener = this,
                     tokonowListener = this,
-                    scrollToPosition = scrollToPosition.orZero()
+                    scrollToPosition = scrollToPosition.orZero(),
+                    adsViewListener = null,
+                    adsItemClickListener = null
                 )
             }
             recommendationCarouselListener?.onBindRecommendationCarousel(

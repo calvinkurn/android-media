@@ -7,10 +7,6 @@ import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asAdsLog
 import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asAdsLogShowModel
 import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 internal fun ChannelGrid?.sendEventRealtimeClickAdsByteIo(context: Context, refer: String) {
     this?.let {

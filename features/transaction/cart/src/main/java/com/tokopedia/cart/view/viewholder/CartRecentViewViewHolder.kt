@@ -3,7 +3,6 @@ package com.tokopedia.cart.view.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
@@ -12,9 +11,9 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
@@ -48,8 +47,7 @@ class CartRecentViewViewHolder(
                         position: Int,
                         item: RecommendationItem
                     ) {
-                        if(item.isTopAds) AppLogTopAds.sendEventShow(itemView.context,
-                            PageName.CART, item.asAdsLogShowModel())
+                        item.sendShowAdsByteIo(itemView.context, PageName.CART)
                     }
 
                     override fun onViewDetachedFromWindow(
@@ -57,8 +55,7 @@ class CartRecentViewViewHolder(
                         item: RecommendationItem,
                         visiblePercentage: Int
                     ) {
-                        if(item.isTopAds) AppLogTopAds.sendEventShowOver(itemView.context,
-                            PageName.CART, item.asAdsLogShowOverModel(visiblePercentage))
+                        item.sendShowOverAdsByteIo(itemView.context, PageName.CART, visiblePercentage)
                     }
 
                     override fun onProductClick(
@@ -70,33 +67,21 @@ class CartRecentViewViewHolder(
                     }
 
                     override fun onAreaClicked(position: Int, item: RecommendationItem) {
-                        AppLogTopAds.sendEventRealtimeClick(
-                            itemView.context,
-                            PageName.CART,
-                            item.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
-                        )
+                        item.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.AREA)
                     }
 
                     override fun onProductImageClicked(
                         position: Int,
                         item: RecommendationItem
                     ) {
-                        AppLogTopAds.sendEventRealtimeClick(
-                            itemView.context,
-                            PageName.CART,
-                            item.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
-                        )
+                        item.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.COVER)
                     }
 
                     override fun onSellerInfoClicked(
                         position: Int,
                         item: RecommendationItem
                     ) {
-                        AppLogTopAds.sendEventRealtimeClick(
-                            itemView.context,
-                            PageName.CART,
-                            item.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
-                        )
+                        item.sendRealtimeClickAdsByteIo(itemView.context, PageName.CART, AdsLogConst.Refer.SELLER_NAME)
                     }
 
                     override fun onProductImpress(

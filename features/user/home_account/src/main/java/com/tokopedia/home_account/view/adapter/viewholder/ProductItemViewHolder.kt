@@ -11,9 +11,10 @@ import com.tokopedia.home_account.databinding.HomeAccountRecommendationItemProdu
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardClickListener
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,32 +45,20 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
             }
 
             override fun onAreaClicked(v: View) {
-                sendClickAdsByteIO(element, AdsLogConst.Refer.AREA)
+                element.sendRealtimeClickAdsByteIo(itemView.context, PageName.ACCOUNT, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                sendClickAdsByteIO(element, AdsLogConst.Refer.COVER)
+                element.sendRealtimeClickAdsByteIo(itemView.context, PageName.ACCOUNT, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                sendClickAdsByteIO(element, AdsLogConst.Refer.SELLER_NAME)
+                element.sendRealtimeClickAdsByteIo(itemView.context, PageName.ACCOUNT, AdsLogConst.Refer.SELLER_NAME)
             }
         })
 
         binding?.productCardView?.setThreeDotsOnClickListener {
             listener.onProductRecommendationThreeDotsClicked(element, adapterPosition)
-        }
-    }
-
-    private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
-        recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.ACCOUNT,
-                    it.asAdsLogRealtimeClickModel(refer)
-                )
-            }
         }
     }
 
@@ -83,18 +72,12 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
                 )
             }
         }
+
+        recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.ACCOUNT)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShowOver(
-                    itemView.context,
-                    PageName.ACCOUNT,
-                    it.asAdsLogShowOverModel(visiblePercentage)
-                )
-            }
-        }
+        recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.ACCOUNT, visiblePercentage)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

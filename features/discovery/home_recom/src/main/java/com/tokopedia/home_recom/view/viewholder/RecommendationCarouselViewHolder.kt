@@ -6,7 +6,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
@@ -14,12 +13,11 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
@@ -70,18 +68,18 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                 }
 
                 override fun onAreaClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
-                    val productRecommendation = products.getOrNull(bindingAdapterPosition) ?: return
-                    sendEventRealtimeClickAdsByteIo(itemView.context, productRecommendation.productItem, AdsLogConst.Refer.AREA)
+                    val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
-                    val productRecommendation = products.getOrNull(bindingAdapterPosition) ?: return
-                    sendEventRealtimeClickAdsByteIo(itemView.context, productRecommendation.productItem, AdsLogConst.Refer.COVER)
+                    val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
-                    val productRecommendation = products.getOrNull(bindingAdapterPosition) ?: return
-                    sendEventRealtimeClickAdsByteIo(itemView.context, productRecommendation.productItem, AdsLogConst.Refer.SELLER_NAME)
+                    val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, PageName.HOME, AdsLogConst.Refer.SELLER_NAME)
                 }
             },
 
@@ -89,25 +87,13 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                 override fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                     val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem
                         ?: return
-                    if (productRecommendation.isTopAds) {
-                        AppLogTopAds.sendEventShow(
-                            itemView.context,
-                            PageName.HOME,
-                            productRecommendation.asAdsLogShowModel()
-                        )
-                    }
+                    productRecommendation.sendShowAdsByteIo(itemView.context, PageName.HOME)
                 }
 
                 override fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int) {
                     val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem
                         ?: return
-                    if (productRecommendation.isTopAds) {
-                        AppLogTopAds.sendEventShowOver(
-                            itemView.context,
-                            PageName.HOME,
-                            productRecommendation.asAdsLogShowOverModel(visiblePercentage)
-                        )
-                    }
+                    productRecommendation.sendShowOverAdsByteIo(itemView.context, PageName.HOME, visiblePercentage)
                 }
             },
 
@@ -135,17 +121,5 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                 it.productItem.toProductCardModel()
             }
         )
-    }
-
-    internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: RecommendationItem?, refer: String) {
-        element?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    context,
-                    PageName.HOME,
-                    it.asAdsLogRealtimeClickModel(refer)
-                )
-            }
-        }
     }
 }

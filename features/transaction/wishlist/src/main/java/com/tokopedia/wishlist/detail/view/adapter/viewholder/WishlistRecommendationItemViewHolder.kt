@@ -9,16 +9,15 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.detail.data.model.WishlistTypeLayoutData
 import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
@@ -55,15 +54,15 @@ class WishlistRecommendationItemViewHolder(
                     }
 
                     override fun onAreaClicked(v: View) {
-                        sendClickAdsByteIO(item.recommItem, AdsLogConst.Refer.AREA)
+                        item.recommItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.WISHLIST, AdsLogConst.Refer.AREA)
                     }
 
                     override fun onProductImageClicked(v: View) {
-                        sendClickAdsByteIO(item.recommItem, AdsLogConst.Refer.COVER)
+                        item.recommItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.WISHLIST, AdsLogConst.Refer.COVER)
                     }
 
                     override fun onSellerInfoClicked(v: View) {
-                        sendClickAdsByteIO(item.recommItem, AdsLogConst.Refer.SELLER_NAME)
+                        item.recommItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.WISHLIST, AdsLogConst.Refer.SELLER_NAME)
                     }
                 })
 
@@ -88,40 +87,12 @@ class WishlistRecommendationItemViewHolder(
         }
     }
 
-    private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
-        recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.WISHLIST,
-                    it.asAdsLogRealtimeClickModel(refer)
-                )
-            }
-        }
-    }
-
     override fun onViewAttachedToWindow() {
-        recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShow(
-                    itemView.context,
-                    PageName.WISHLIST,
-                    it.asAdsLogShowModel()
-                )
-            }
-        }
+        recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.WISHLIST)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShowOver(
-                    itemView.context,
-                    PageName.WISHLIST,
-                    it.asAdsLogShowOverModel(visiblePercentage)
-                )
-            }
-        }
+        recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.WISHLIST, visiblePercentage)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

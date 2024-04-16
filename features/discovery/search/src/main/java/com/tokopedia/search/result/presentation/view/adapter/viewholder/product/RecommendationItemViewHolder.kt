@@ -10,6 +10,9 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.R
@@ -45,15 +48,15 @@ class RecommendationItemViewHolder (
             }
 
             override fun onAreaClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, recommendationItem, AdsLogConst.Refer.AREA)
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SEARCH_RESULT, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, recommendationItem, AdsLogConst.Refer.COVER)
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SEARCH_RESULT, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, recommendationItem, AdsLogConst.Refer.SELLER_NAME)
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, PageName.SEARCH_RESULT, AdsLogConst.Refer.SELLER_NAME)
             }
         })
 
@@ -65,27 +68,11 @@ class RecommendationItemViewHolder (
     }
 
     override fun onViewAttachedToWindow(element: RecommendationItemDataView?) {
-        element?.recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShow(
-                    itemView.context,
-                    PageName.SEARCH_RESULT,
-                    it.asAdsLogShowModel()
-                )
-            }
-        }
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context, PageName.SEARCH_RESULT)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationItemDataView?, visiblePercentage: Int) {
-        element?.recommendationItem?.let {
-            if (it.isTopAds) {
-                AppLogTopAds.sendEventShowOver(
-                    itemView.context,
-                    PageName.SEARCH_RESULT,
-                    it.asAdsLogShowOverModel(visibilityPercentage)
-                )
-            }
-        }
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, PageName.SEARCH_RESULT, visiblePercentage)
     }
 
     private fun createImageProductViewHintListener(recommendationItemDataView: RecommendationItemDataView): ViewHintListener {
