@@ -147,4 +147,20 @@
 
     </LinearLayout>
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/topchat_chatroom_tv_product_compact_horizontal_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/topchat_chatroom_iv_product_compact_horizontal"
+        app:layout_constraintLeft_toLeftOf="@id/topchat_chatroom_iv_product_compact_horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/topchat_chatroom_iv_product_compact_horizontal"
+        app:layout_constraintRight_toRightOf="@id/topchat_chatroom_iv_product_compact_horizontal"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Stok Habis"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

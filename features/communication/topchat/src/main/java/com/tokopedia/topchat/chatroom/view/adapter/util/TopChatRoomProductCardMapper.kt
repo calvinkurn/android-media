@@ -74,7 +74,7 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (!productAttachment.isProductActive() &&
+        if (productAttachment.isProductActive() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
             !productAttachment.isUpcomingCampaign &&
@@ -150,7 +150,7 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (!productAttachment.isProductActive() &&
+        if (productAttachment.isProductActive() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
             !productAttachment.isUpcomingCampaign &&

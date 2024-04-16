@@ -12,8 +12,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomProductCardCompactHorizontalBinding
+import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_DARK_GREY
 
 class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
     context: Context,
@@ -29,15 +30,16 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
         )
     }
 
-    fun bind(product: ProductCardModel) {
+    fun bind(product: ProductCardCompactUiModel) {
         bindImage(product)
         bindTitle(product)
         bindPrice(product)
         bindDiscount(product)
         bindRating(product)
+        bindLabel(product)
     }
 
-    private fun bindImage(product: ProductCardModel) {
+    private fun bindImage(product: ProductCardCompactUiModel) {
         binding.topchatChatroomIvProductCompactHorizontal.loadImage(
             product.imageUrl
         ) {
@@ -45,19 +47,19 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
         }
     }
 
-    private fun bindTitle(product: ProductCardModel) {
+    private fun bindTitle(product: ProductCardCompactUiModel) {
         binding.topchatChatroomTvProductCompactHorizontalTitle.text = product.name
     }
 
-    private fun bindPrice(product: ProductCardModel) {
+    private fun bindPrice(product: ProductCardCompactUiModel) {
         binding.topchatChatroomTvProductCompactHorizontalPrice.text = product.price
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bindDiscount(product: ProductCardModel) {
-        val slashPrice = product.slashedPrice
-        val discount = product.discountPercentage
-        if (slashPrice.isNotBlank() && discount > 0) {
+    private fun bindDiscount(product: ProductCardCompactUiModel) {
+        val slashPrice = product.slashPrice
+        val discount = product.discount
+        if (slashPrice.isNotBlank() && discount.isNotBlank()) {
             bindSlashPrice(slashPrice)
             bindDiscountText(discount)
             binding.topchatChatroomClProductCompactHorizontalDiscount.visible()
@@ -73,14 +75,14 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
         binding.topchatChatroomTvProductCompactHorizontalSlashPrice.showWithCondition(slashPrice.isNotBlank())
     }
 
-    private fun bindDiscountText(discount: Int) {
+    private fun bindDiscountText(discount: String) {
         binding.topchatChatroomTvProductCompactHorizontalDiscount.text = "$discount%"
-        binding.topchatChatroomTvProductCompactHorizontalDiscount.showWithCondition(discount > 0)
+        binding.topchatChatroomTvProductCompactHorizontalDiscount.showWithCondition(discount.isNotBlank())
     }
 
-    private fun bindRating(product: ProductCardModel) {
+    private fun bindRating(product: ProductCardCompactUiModel) {
         val rating = product.rating
-        val sold = product.labelCredibility()?.title.orEmpty()
+        val sold = product.sold
         if (rating.isNotBlank() || sold.isNotBlank()) {
             bindRatingText(rating)
             bindSold(sold)
@@ -110,6 +112,17 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
         } else {
             binding.topchatChatroomProductCompactHorizontalSeparator.gone()
             binding.topchatChatroomTvProductCompactHorizontalSold.gone()
+        }
+    }
+
+    private fun bindLabel(product: ProductCardCompactUiModel) {
+        val oosLabelGroup = product.getOosLabelGroup()
+        if (oosLabelGroup != null) {
+            binding.topchatChatroomTvProductCompactHorizontalLabel.setLabelType(HIGHLIGHT_DARK_GREY)
+            binding.topchatChatroomTvProductCompactHorizontalLabel.text = oosLabelGroup.title
+            binding.topchatChatroomTvProductCompactHorizontalLabel.show()
+        } else {
+            binding.topchatChatroomTvProductCompactHorizontalLabel.gone()
         }
     }
 
