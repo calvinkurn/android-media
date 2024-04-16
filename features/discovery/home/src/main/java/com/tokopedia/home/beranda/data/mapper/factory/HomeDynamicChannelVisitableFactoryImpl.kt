@@ -38,7 +38,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class HomeDynamicChannelVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
     val remoteConfig: RemoteConfig,
-    private val homeDefaultDataSource: HomeDefaultDataSource
 ) : HomeDynamicChannelVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
@@ -92,21 +91,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         useDefaultWhenEmpty: Boolean,
         startPosition: Int
     ): HomeDynamicChannelVisitableFactory {
-        var dynamicChannelList = mutableListOf<DynamicHomeChannel.Channels>()
-        if ((
-                homeChannelData?.dynamicHomeChannel == null ||
-                    homeChannelData?.dynamicHomeChannel?.channels == null ||
-                    homeChannelData?.dynamicHomeChannel?.channels?.isEmpty() == true
-                ) && useDefaultWhenEmpty
-        ) {
-            homeDefaultDataSource
-            dynamicChannelList =
-                homeDefaultDataSource.createDefaultHomeDynamicChannel().channels as MutableList<DynamicHomeChannel.Channels>
-        } else if (homeChannelData?.dynamicHomeChannel?.channels?.isNotEmpty() == true) {
-            dynamicChannelList =
-                homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
-        }
-        dynamicChannelList.forEachIndexed { index, channel ->
+        homeChannelData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index + startPosition
             setDynamicChannelPromoName(position, channel)
             if (channel.origami.isNotEmpty() && remoteConfig.getBoolean(

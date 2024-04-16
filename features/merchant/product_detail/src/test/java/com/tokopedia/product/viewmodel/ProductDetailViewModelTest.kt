@@ -66,6 +66,8 @@ import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -96,7 +98,10 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -3217,6 +3222,62 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         assertTrue(viewModel.productLayout.value == null)
     }
+
+    //region atc animation
+    @Test
+    fun `success atc and animation`() = runTest {
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.PDP_ATC_ANIMATION_KEY,
+                ""
+            )
+        } returns RollenceKey.PDP_ATC_ANIMATION_VARIANT
+
+        val successAtcAndAnimation = mutableListOf<Boolean>()
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
+        }
+
+        assertEquals(successAtcAndAnimation.size, 0)
+
+        viewModel.onFinishAnimation()
+        viewModel.onFinishAtc()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 1)
+        assertEquals(successAtcAndAnimation.first(), true)
+
+        viewModel.onFinishAtc()
+        viewModel.onFinishAnimation()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 2)
+        assertEquals(successAtcAndAnimation[1], true)
+    }
+
+    @Test
+    fun `success atc and animation when rollence false`() = runTest {
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.PDP_ATC_ANIMATION_KEY,
+                ""
+            )
+        } returns ""
+
+        val successAtcAndAnimation = mutableListOf<Boolean>()
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
+        }
+
+        assertEquals(successAtcAndAnimation.size, 0)
+
+        viewModel.onFinishAtc()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 1)
+        assertEquals(successAtcAndAnimation.first(), true)
+    }
+    //endregion
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"

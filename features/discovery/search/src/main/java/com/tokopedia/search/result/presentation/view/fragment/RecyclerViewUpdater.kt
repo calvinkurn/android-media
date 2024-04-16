@@ -122,7 +122,7 @@ class RecyclerViewUpdater @Inject constructor(
     }
 
     override fun setItems(list: List<Visitable<*>>) {
-        productListAdapter?.clearData()
+        clearData()
 
         stopPerformanceMonitoring(performanceMonitoring, recyclerView, enterMethod, isLocalSearch)
         appendItems(list)
@@ -181,6 +181,11 @@ class RecyclerViewUpdater @Inject constructor(
                 Toaster.TYPE_NORMAL
             ).show()
         }
+    }
+
+    fun clearData() {
+        productListAdapter?.clearData()
+        recyclerView?.adapter = productListAdapter
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

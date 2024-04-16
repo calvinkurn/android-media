@@ -10,10 +10,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
@@ -38,7 +40,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val thumbnail: ImageUnify
+    private val thumbnail: AppCompatImageView
     private val pvVideo: PlayerView
     private val reminderBadge: View
     private val ivReminder: IconUnify
@@ -104,7 +106,12 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
     fun setData(data: PlayWidgetChannelUiModel) {
         mModel = data
 
-        thumbnail.setImageUrl(data.video.coverUrl)
+        thumbnail.scaleType = ImageView.ScaleType.CENTER
+        thumbnail.loadImage(data.video.coverUrl) {
+            listener(
+                onSuccess = { _, _ -> thumbnail.scaleType = ImageView.ScaleType.CENTER_CROP }
+            )
+        }
 
         when (data.channelType) {
             PlayWidgetChannelType.Deleting -> setDeletingModel(data)

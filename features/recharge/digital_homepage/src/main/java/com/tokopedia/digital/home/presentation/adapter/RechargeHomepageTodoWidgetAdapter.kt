@@ -118,6 +118,7 @@ class RechargeHomepageTodoWidgetAdapter(
 
         fun bind(item: RechargeHomepageSections.Item) {
             renderTitle(item)
+            renderSubTitle(item)
             renderStickyLayout(item)
             renderRecycleView(item)
         }
@@ -129,6 +130,17 @@ class RechargeHomepageTodoWidgetAdapter(
                 } else {
                     titleTodoWidget.show()
                     titleTodoWidget.text = item.title
+                }
+            }
+        }
+
+        private fun renderSubTitle(item: RechargeHomepageSections.Item) {
+            with(binding) {
+                if (item.subtitle.isEmpty()) {
+                    subTitleTodoWidget.hide()
+                } else {
+                    subTitleTodoWidget.show()
+                    subTitleTodoWidget.text = item.subtitle
                 }
             }
         }

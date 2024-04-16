@@ -138,6 +138,19 @@
         <item name="android:textColorHint">@color/Unify_N100</item>
     </style>
 
+    <style name="TextInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutColorLine</item>
+    </style>
+
+    <style name="HintTextInputLayout" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/Unify_NN700_44</item>
+        <item name="focusedTextColorLabel">@color/Unify_NN700_44</item>
+        <item name="disabledTextColorLabel">@color/Unify_NN700_44</item>
+        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
+    </style>
+
     <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:textSize">@dimen/sp_16</item>
         <item name="android:textColor">@color/Unify_N700_68</item>

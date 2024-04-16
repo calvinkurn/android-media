@@ -51,6 +51,7 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T, position: Int)
+        abstract fun onViewRecycled()
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
@@ -63,6 +64,10 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
                 holder.bind(element, holder.adapterPosition)
             }
         }
+    }
+
+    override fun onViewRecycled(holder: BaseViewHolder<*>) {
+        holder.onViewRecycled()
     }
 
     override fun getItemCount(): Int {
