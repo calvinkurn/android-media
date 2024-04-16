@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/productCardGenericCta"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/product_card_reimagine_button_atc_height"
+    android:orientation="horizontal"
+    app:layout_constraintVertical_bias="1.0">
+
+    <com.tokopedia.unifycomponents.UnifyImageButton
+        android:id="@+id/productCardGenericCtaSecondary"
+        android:layout_width="@dimen/product_card_reimagine_button_atc_height"
+        android:layout_height="@dimen/product_card_reimagine_button_atc_height"
+        android:clickable="true"
+        android:layout_marginEnd="8dp"
+        app:srcCompat="@drawable/product_card_ic_three_dots"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/productCardGenericCtaMain"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="@dimen/product_card_reimagine_button_atc_height"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:unifyButtonSize="micro"
+        app:unifyButtonVariant="ghost" />
+</LinearLayout>

@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestReloadBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowLocalLoadBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -14,10 +14,10 @@ class HomeQuestReloadWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestReloadWidgetUiModel>(itemView) {
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_quest_reload
+        val LAYOUT = R.layout.item_tokopedianow_local_load
     }
 
-    private val binding: ItemTokopedianowQuestReloadBinding? by viewBinding()
+    private val binding: ItemTokopedianowLocalLoadBinding? by viewBinding()
 
     override fun bind(element: HomeQuestReloadWidgetUiModel) {
         binding?.apply {

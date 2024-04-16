@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="max_product_name_length">70</integer>
+    <integer name="max_product_name_length">255</integer>
+    <integer name="max_product_desc_length">5000</integer>
     <integer name="max_custom_variant_type_name_length">30</integer>
     <integer name="max_custom_variant_unit_value_length">15</integer>
 </resources>

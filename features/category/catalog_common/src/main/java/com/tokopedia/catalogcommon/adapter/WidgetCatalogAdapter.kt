@@ -14,6 +14,8 @@ import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
@@ -25,6 +27,7 @@ class WidgetCatalogAdapter(
     private var recyclerView: RecyclerView? = null
     private val differ = CatalogDifferImpl()
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
+    var currentIndexWidgetAfterNavigation = -1
 
     fun addWidget(itemList: List<Visitable<*>>) {
         val diffUtilCallback = differ.create(visitables, itemList)
@@ -105,61 +108,85 @@ class WidgetCatalogAdapter(
         super.onDetachedFromRecyclerView(recyclerView)
     }
 
-    fun autoSelectNavigation(position: Int) {
+    fun autoSelectNavigation(position: Pair<Int,Int>) {
         val indexNavigation = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }
 
         val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
 
-        val currentWidget = visitables.getOrNull(position) as? BaseCatalogUiModel
+        val currentWidget = visitables.getOrNull(position.first) as? BaseCatalogUiModel
 
         navigation?.let { stickyNav ->
-            val indexPartOfNavigation = stickyNav.content.indexOfFirst {
+            var indexPartOfNavigation = stickyNav.content.indexOfFirst {
                 it.anchorWidgets.contains(currentWidget?.widgetName.orEmpty())
             }
-
-            changeNavigationTabActive(indexPartOfNavigation)
-        }
-    }
-
-    fun autoSelectNavigation(currentWidgetName: String) {
-        val indexNavigation = visitables.indexOfFirst {
-            it is StickyNavigationUiModel
-        }
-
-        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
-
-        navigation?.let { stickyNav ->
-            val indexPartOfNavigation = stickyNav.content.indexOfFirst {
-                it.anchorWidgets.contains(currentWidgetName)
+            if (indexPartOfNavigation == -1 && Int.ONE in position.first..position.second){
+                indexPartOfNavigation = 0
             }
 
-            changeNavigationTabActive(indexPartOfNavigation)
+
+            if (indexPartOfNavigation == -1 && visitables.size-1 in position.second..position.first){
+                indexPartOfNavigation = stickyNav.content.size-1
+            }
+            changeNavigationTabActive(indexPartOfNavigation,position)
         }
     }
 
-    fun changeNavigationTabActive(
-        tabPosition: Int
+    private fun changeNavigationTabActive(
+        tabPosition: Int,
+        position: Pair<Int, Int>
     ) {
         val indexNavigation = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }
 
         val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
-
-        if (tabPosition != navigation?.currentSelectTab) {
-            navigation?.currentSelectTab = tabPosition
-            visitables[indexNavigation] = navigation
-            if (!onStickySingleHeaderViewListener?.isStickyShowed.orFalse()) {
-                notifyItemChanged(indexNavigation)
-            } else {
-                Handler().post {
-                    notifyItemChanged(indexNavigation)
-                }
-                refreshSticky()
+        if (tabPosition != navigation?.currentSelectTab && tabPosition != -1) {
+            if (currentIndexWidgetAfterNavigation == -1){
+                selectTab(navigation, indexNavigation, tabPosition, position.first)
+            }else if (!widgetStillShowing(position)){
+                    selectTab(navigation, indexNavigation, tabPosition, position.first)
             }
         }
+
+    }
+    private fun selectTab(
+        navigation: StickyNavigationUiModel?,
+        indexNavigation: Int,
+        tabPosition: Int,
+        indexWidget: Int
+    ) {
+        navigation?.currentSelectTab = tabPosition
+        visitables[indexNavigation] = navigation
+        currentIndexWidgetAfterNavigation = indexWidget
+        if (!onStickySingleHeaderViewListener?.isStickyShowed.orFalse()) {
+            notifyItemChanged(indexNavigation)
+        } else {
+            Handler().post {
+                notifyItemChanged(indexNavigation)
+            }
+            refreshSticky()
+        }
+    }
+    private fun widgetStillShowing(position: Pair<Int, Int>): Boolean {
+        val range = if (position.first > position.second){
+            position.first..position.second
+        }else{
+            position.second..position.first
+        }
+        return currentIndexWidgetAfterNavigation in range
+            && position.first !=0 && position.second != visitables.size-1
+            && position.first != visitables.size-1
+    }
+
+    fun getCurrentTabNav(): Int {
+        val indexNavigation = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
+        }
+
+        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
+        return navigation?.currentSelectTab.orZero()
     }
 
     fun findPositionWidget(widgetName: String): Int {
@@ -187,8 +214,4 @@ class WidgetCatalogAdapter(
         return index
     }
 
-    fun findNavigationCurrentTab(): Int {
-        return (visitables.getOrNull(findPositionNavigation()) as? StickyNavigationUiModel)?.currentSelectTab
-            ?: -1
-    }
 }

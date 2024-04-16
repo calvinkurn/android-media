@@ -142,7 +142,6 @@ subprojects {
                 substitute module('com.google.android.material:material') using module("com.google.android.material:material:${materialVersion}")
                 substitute module('androidx.constraintlayout:constraintlayout') using module("androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}")
                 substitute module('org.apache.commons:commons-lang3') using module('org.apache.commons:commons-lang3:3.5')
-                substitute module('com.google.android.gms:play-services-base') using module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') using module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
                 substitute module('com.google.android.gms:play-services-base') using module("com.google.android.gms:play-services-base:${playServiceBase}")
                 substitute module('com.google.firebase:firebase-config') using module("com.google.firebase:firebase-config:${firebaseRemoteConfigVersion}")

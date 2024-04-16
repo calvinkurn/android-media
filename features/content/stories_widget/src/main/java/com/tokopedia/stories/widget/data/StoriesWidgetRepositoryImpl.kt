@@ -52,7 +52,9 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
 
     override suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntryPoint,
-        shopIds: List<String>
+        shopIds: List<String>,
+        categoryIds: List<String>,
+        productIds: List<String>,
     ): StoriesWidgetInfo = withContext(dispatchers.io) {
         val isEntryPointAllowed = isEntryPointAllowed(entryPoint)
         if (!isEntryPointAllowed) return@withContext StoriesWidgetInfo.Default
@@ -65,7 +67,9 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
                         it,
                         GetShopStoriesStatusUseCase.Request.Author.Type.Shop
                     )
-                }
+                },
+                categoryIds,
+                productIds,
             )
         )
 

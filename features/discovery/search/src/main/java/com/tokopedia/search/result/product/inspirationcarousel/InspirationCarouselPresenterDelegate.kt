@@ -12,6 +12,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchRedeemCouponModel
 import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
@@ -474,7 +475,10 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 it.position,
                 it.type,
                 it.title,
-                it.url
+                it.url,
+                it.styleList.map { style ->
+                    StyleDataView.create(style)
+                },
             )
         }
     }

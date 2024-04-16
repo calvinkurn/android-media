@@ -12,7 +12,7 @@
         android:id="@+id/image"
         android:alpha="0.5"
         android:layout_width="@dimen/dp_64"
-        android:background="@drawable/bg_rect_white_round"
+        android:background="@drawable/catalog_bg_rect_white_round"
         android:layout_height="@dimen/dp_64"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

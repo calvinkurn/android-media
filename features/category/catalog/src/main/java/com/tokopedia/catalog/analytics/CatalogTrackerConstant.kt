@@ -42,6 +42,9 @@ object CatalogTrackerConstant {
     const val EVENT_ACTION_IMPRESSION_NAVIGATION = "impress navigation"
     const val EVENT_ACTION_CLICK_NAVIGATION = "click navigation"
     const val EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION = "click lihat semua on specification"
+    const val EVENT_ACTION_CLICK_SELLER_RECOMMENDATION = "click seller recommendation"
+    const val EVENT_ACTION_CLICK_ATC_SELLER_RECOMMENDATION = "click atc on seller recommendation"
+    const val EVENT_ACTION_CLICK_OTHER_OPTION_SELLER_RECOMMENDATION = "click pilihan lain on seller recommendation"
 
     const val EVENT_ACTION_IMPRESSION_BANNER = "impress banner"
     const val EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION = "impress text description"
@@ -77,6 +80,7 @@ object CatalogTrackerConstant {
     const val EVENT_CLICK_ON_IMAGE_REVIEW = "click image on review"
     const val EVENT_CLICK_ON_SELENGKAPNYA_REVIEW = "click selengkapnya on review"
     const val EVENT_IMPRESSION_REVIEW_WIDGET = "impression review widget"
+    const val EVENT_IMPRESSION_TOP_SELLER = "impress seller recommendation"
 
     const val EVENT_CATEGORY_CATALOG_PAGE = "catalog page"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE = "catalog page reimagined - main page"
@@ -111,6 +115,10 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_IMPRESSION_PRODUCT = "46994"
     const val TRACKER_ID_IMPRESSION_VIDEO = "30119"
     const val TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO = "46983"
+    const val TRACKER_ID_IMPRESSION_CARD_TOP_SELLER = "50138"
+    const val TRACKER_ID_CLICK_PRODUCT_CARD_TOP_SELLER = "50139"
+    const val TRACKER_ID_CLICK_ATC_TOP_SELLER = "50140"
+    const val TRACKER_ID_CLICK_OTHER_OPTION_TOP_SELLER = "50141"
 
     const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "46981"
 

@@ -11,7 +11,7 @@ class PlayWidgetCarouselLayoutManager(
     context: Context
 ) : FocusedCarouselLayoutManager(context) {
 
-    override val maxWidth: Int = 168.dpToPx(context.resources.displayMetrics)
+    override val maxWidth: Int = 158.dpToPx(context.resources.displayMetrics)
     override val itemWidthToScreenWidthPercentage: Double = 0.52
-    override val heightRatio: Double = 1 / 0.566
+    override val heightRatio: Double = 1 / 0.545
 }

@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_QUICK_FIL
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_SOURCE
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.PAGE_SOURCE_SEARCH_SHOP
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.SOURCE_QUICK_FILTER
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -21,7 +22,8 @@ import java.util.HashMap
 
 internal class SearchShopFirstPageUseCase(
         private val graphqlCacheStrategy: GraphqlCacheStrategy,
-        private val graphqlRepository: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository,
+        private val reimagineRollence: ReimagineRollence
 ): UseCase<SearchShopModel>() {
 
     @GqlQuery("SearchShopFirstPageQuery", GQL_QUERY)
@@ -61,7 +63,9 @@ internal class SearchShopFirstPageUseCase(
         headlineParams[TopAdsParams.KEY_SRC] = SearchConstant.SearchShop.ADS_SOURCE
         headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.SearchShop.HEADLINE_PRODUCT_COUNT
 
-        return UrlParamUtils.generateUrlParamString(headlineParams) + sreParams()
+        return UrlParamUtils.generateUrlParamString(headlineParams) + sreParams(
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
+        )
     }
 
     private fun createQuickFilterParams(requestParams: Map<String, Any>): String {

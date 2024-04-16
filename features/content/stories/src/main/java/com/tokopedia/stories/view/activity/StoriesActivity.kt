@@ -12,7 +12,9 @@ import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.utils.ARGS_CATEGORY_IDS
 import com.tokopedia.stories.view.utils.ARGS_ENTRY_POINT
+import com.tokopedia.stories.view.utils.ARGS_PRODUCT_IDS
 import com.tokopedia.stories.view.utils.ARGS_SOURCE
 import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
 import com.tokopedia.stories.view.utils.KEY_ARGS
@@ -50,6 +52,14 @@ class StoriesActivity : BaseActivity() {
                 },
                 sourceId = intent.data?.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
                 entryPoint = intent.data?.getQueryParameter(ARGS_ENTRY_POINT).orEmpty(),
+                categoryIds = intent.data?.getQueryParameter(ARGS_CATEGORY_IDS)
+                    ?.split(",")
+                    ?.mapNotNull { it.trim().ifBlank { null } }
+                    .orEmpty(),
+                productIds = intent.data?.getQueryParameter(ARGS_PRODUCT_IDS)
+                    ?.split(",")
+                    ?.mapNotNull { it.trim().ifBlank { null } }
+                    .orEmpty()
             )
         }
 
@@ -92,8 +102,9 @@ class StoriesActivity : BaseActivity() {
         setContentView(binding.root)
         if (isEnableStoriesRoom()) {
             openFragment()
+        } else {
+            finish()
         }
-        else finish()
     }
 
     private fun isEnableStoriesRoom(): Boolean {
@@ -109,7 +120,7 @@ class StoriesActivity : BaseActivity() {
                 replace(
                     binding.fragmentContainer.id,
                     getStoriesFragment(),
-                    TAG_FRAGMENT_STORIES_GROUP,
+                    TAG_FRAGMENT_STORIES_GROUP
                 )
             }.commit()
         }
@@ -119,7 +130,7 @@ class StoriesActivity : BaseActivity() {
         return StoriesGroupFragment.getFragment(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = bundle ?: Bundle(),
+            bundle = bundle ?: Bundle()
         )
     }
 
