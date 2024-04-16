@@ -344,10 +344,9 @@ open class HomeRevampViewModel @Inject constructor(
         homeFlowStarted = true
         getThematicBackground()
         if (homeRemoteConfigController.get().isUsingNewAtf()) {
-            launch(homeDispatcher.get().io) {
-                homeAtfUseCase.get().fetchAtfDataList()
-            }
+            homeAtfUseCase.get().fetchAtfDataList()
         }
+
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
                 validateAtfError(homeNewDataModel)

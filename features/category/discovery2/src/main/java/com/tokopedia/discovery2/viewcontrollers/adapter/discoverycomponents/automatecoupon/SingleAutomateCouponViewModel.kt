@@ -75,11 +75,9 @@ class SingleAutomateCouponViewModel(
 
     fun fetch(isDarkMode: Boolean) {
         launchCatchError(block = {
-            val state = useCase?.execute(component.id, component.pageEndPoint, isDarkMode)
-            if (state == GetAutomateCouponUseCase.State.LOADED) {
-                if (component.getComponentsItem()?.isNotEmpty() == true) {
-                    componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
-                }
+            useCase?.execute(component.id, component.pageEndPoint, isDarkMode)
+            if (component.getComponentsItem()?.isNotEmpty() == true) {
+                componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
             }
         }, onError = {
             Timber.e(it)

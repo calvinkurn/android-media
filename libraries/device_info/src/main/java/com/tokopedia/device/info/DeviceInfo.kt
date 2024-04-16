@@ -213,7 +213,9 @@ object DeviceInfo {
                     val adIdTemp = if (adInfo == null) {
                         ""
                     } else {
-                        val trimAdId = trimGoogleAdId(adInfo.id)
+                        val trimAdId = trimGoogleAdId(
+                            adInfo.id ?: ""
+                        )
                         setCacheAdsId(appContext, trimAdId)
                         trimAdId
                     }

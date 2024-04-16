@@ -215,7 +215,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             }
             if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-                getRatesSuspend()
+                getRatesSuspend(false)
                 sendPaymentTracker()
                 getEntryPointInfo(result.orderPromo.lastApply)
             } else {
@@ -404,23 +404,28 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
-    fun updateProduct(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean = true) {
+    fun updateProduct(
+        product: OrderProduct,
+        productIndex: Int,
+        shouldReloadRates: Boolean = true,
+        shouldUpdateActionMetadata: Boolean = true
+    ) {
         orderCart.products[productIndex] = product
         if (shouldReloadRates) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderShipment.value = orderShipment.value.copy(isLoading = true)
-            debounce()
+            debounce(shouldUpdateActionMetadata)
         }
     }
 
-    private fun debounce() {
+    private fun debounce(shouldUpdateActionMetadata: Boolean) {
         debounceJob?.cancel()
         debounceJob = launch(executorDispatchers.immediate) {
             delay(debounceTime)
             if (isActive) {
                 updateCart()
                 if (orderProfile.value.isValidProfile) {
-                    getRates()
+                    getRates(shouldUpdateActionMetadata)
                 }
             }
         }
@@ -435,15 +440,15 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
-    fun getRates() {
+    fun getRates(shouldUpdateActionMetadata: Boolean = true) {
         launch(executorDispatchers.immediate) {
             orderShipment.value = orderShipment.value.copy(isLoading = true)
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-            getRatesSuspend()
+            getRatesSuspend(shouldUpdateActionMetadata)
         }
     }
 
-    private suspend fun getRatesSuspend() {
+    private suspend fun getRatesSuspend(shouldUpdateActionMetadata: Boolean) {
         val result = if (!cartProcessor.isOrderNormal(orderCart)) {
             logisticProcessor.generateOrderErrorResultRates(orderProfile.value)
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
@@ -461,7 +466,8 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderProfile.value,
                 orderShipment.value,
                 orderCost,
-                orderShop.value.shopShipment
+                orderShop.value.shopShipment,
+                shouldUpdateActionMetadata
             )
         }
 
@@ -1707,7 +1713,8 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderProfile.value,
                 orderCost,
                 orderShop.value.shopShipment,
-                orderShipment.value
+                orderShipment.value,
+                true
             ).first
         }
     }

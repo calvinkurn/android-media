@@ -8,23 +8,34 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking.sendEventClickShopStatus
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
-import com.tokopedia.seller.menu.common.view.uimodel.base.*
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopStatusWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ShopStatusViewHolder(itemView: View?,
-                           private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
-                           private val onErrorClicked: () -> Unit,
-                           private val onShopStatusImpression: (ShopType) -> Unit) : AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
+class ShopStatusViewHolder(
+    itemView: View?,
+    private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
+    private val onErrorClicked: () -> Unit,
+    private val onShopStatusImpression: (ShopType) -> Unit,
+    private val navigate: (String) -> Unit
+) : AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -42,8 +53,8 @@ class ShopStatusViewHolder(itemView: View?,
         itemView?.findViewById(R.id.ic_sah_new_other_shop_status_pm_pro)
     private val shopStatusTitleTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_status_title)
-    private val warningIcon: IconUnify? =
-        itemView?.findViewById(R.id.ic_sah_new_other_shop_status_warning)
+    private val icKycNotVerified: IconUnify? =
+        itemView?.findViewById(R.id.icKycNotVerified)
     private val shopStatusDescTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_status_desc)
     private val shopStatusEligiblePmIcon: IconUnify? =
@@ -56,13 +67,14 @@ class ShopStatusViewHolder(itemView: View?,
     private var onItemViewClicked: () -> Unit = {}
 
     override fun bind(element: ShopStatusWidgetUiModel) {
-        when(val state = element.state) {
+        when (val state = element.state) {
             is SettingResponseState.SettingSuccess -> {
                 itemView.addOnImpressionListener(element.impressHolder) {
                     onShopStatusImpression(state.data)
                 }
                 setShopStatusSuccessLayout(state.data, element.userShopInfoUiModel)
             }
+
             is SettingResponseState.SettingError -> setShopStatusErrorLayout()
             is SettingResponseState.SettingLoading -> setShopStatusLoadingLayout()
         }
@@ -70,16 +82,18 @@ class ShopStatusViewHolder(itemView: View?,
 
     private fun setShopStatusSuccessLayout(
         shopType: ShopType,
-        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
+        userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
+    ) {
 
         shopStatusDescTextView?.run {
             setOnClickListener(null)
             isClickable = false
         }
+        icKycNotVerified?.gone()
 
         when (shopType) {
             is RegularMerchant -> setRegularMerchantLayout(shopType, userShopInfoUiModel)
-            is PowerMerchantStatus -> setPowerMerchantLayout(shopType)
+            is PowerMerchantStatus -> setPowerMerchantLayout(userShopInfoUiModel?.isKyc.orFalse())
             is PowerMerchantProStatus -> setPowerMerchantProLayout(shopType)
             is ShopType.OfficialStore -> setOfficialStoreLayout()
         }
@@ -98,7 +112,7 @@ class ShopStatusViewHolder(itemView: View?,
         userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?
     ) {
 
-        setTitle(com.tokopedia.seller.menu.common.R.string.regular_merchant)
+        setTitle(sellermenucommonR.string.regular_merchant)
 
         val pmProEligibleIcon = userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val pmEligibleIcon = userShopInfoUiModel?.getPowerMerchantEligibleIcon()
@@ -111,17 +125,18 @@ class ShopStatusViewHolder(itemView: View?,
                     else -> setRegularMerchantVerification()
                 }
             }
+
             is RegularMerchant.Pending -> setRegularMerchantPending()
             else -> setRegularMerchantNeedUpgrade()
         }
 
         pmIcon?.gone()
         pmProIcon?.gone()
-        warningIcon?.gone()
         successOsLayout?.gone()
 
         onItemViewClicked = if (regularMerchant is RegularMerchant.Verified &&
-            pmProEligibleIcon != null) {
+            pmProEligibleIcon != null
+        ) {
             {
                 onGoToPowerMerchant(TAB_PM_PRO, false)
             }
@@ -139,8 +154,8 @@ class ShopStatusViewHolder(itemView: View?,
         }
 
         setDescription(
-            com.tokopedia.seller.menu.common.R.string.setting_verifikasi,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            sellermenucommonR.string.setting_verifikasi,
+            unifyprinciplesR.color.Unify_GN500
         )
     }
 
@@ -149,8 +164,8 @@ class ShopStatusViewHolder(itemView: View?,
 
         shopStatusDescTextView?.isClickable = false
         setDescription(
-            com.tokopedia.seller.menu.common.R.string.setting_verified,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            sellermenucommonR.string.setting_verified,
+            unifyprinciplesR.color.Unify_NN600
         )
     }
 
@@ -159,28 +174,26 @@ class ShopStatusViewHolder(itemView: View?,
 
         setDescription(
             R.string.sah_new_other_status_upgrade,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_GN500
         )
     }
 
-    private fun setPowerMerchantLayout(powerMerchantStatus: PowerMerchantStatus) {
-        setTitle(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
-        when (powerMerchantStatus) {
-            is PowerMerchantStatus.Active -> {
-                warningIcon?.gone()
-                shopStatusDescTextView?.run {
-                    isClickable = true
-                    setOnClickListener {
-                        onGoToPowerMerchant(TAB_PM_PRO, true)
-                    }
+    private fun setPowerMerchantLayout(isKyc: Boolean) {
+        setTitle(sellermenucommonR.string.power_merchant_upgrade)
+        if (isKyc) {
+            icKycNotVerified?.gone()
+            shopStatusDescTextView?.gone()
+        } else {
+            icKycNotVerified?.visible()
+            setDescription(
+                sellermenucommonR.string.setting_other_not_verified,
+                unifyprinciplesR.color.Unify_NN950
+            )
+            shopStatusDescTextView?.run {
+                isClickable = true
+                setOnClickListener {
+                    navigate(ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
                 }
-            }
-            is PowerMerchantStatus.NotActive -> {
-                setDescription(
-                    com.tokopedia.seller.menu.common.R.string.setting_not_active,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                )
-                warningIcon?.show()
             }
         }
         pmIcon?.show()
@@ -196,27 +209,24 @@ class ShopStatusViewHolder(itemView: View?,
         setTitle(R.string.sah_new_other_status_pm_pro_title)
         val statusStringRes: Int
         val statusColorRes: Int
-        val isStatusActive: Boolean
         when (powerMerchantProStatus) {
             is PowerMerchantProStatus.Advanced -> {
                 statusStringRes = R.string.sah_new_other_status_pm_pro_advanced
-                statusColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                isStatusActive = true
+                statusColorRes = unifyprinciplesR.color.Unify_NN600
             }
+
             is PowerMerchantProStatus.Expert -> {
                 statusStringRes = R.string.sah_new_other_status_pm_pro_expert
-                statusColorRes = com.tokopedia.unifyprinciples.R.color.Unify_TN500
-                isStatusActive = true
+                statusColorRes = unifyprinciplesR.color.Unify_TN500
             }
+
             is PowerMerchantProStatus.Ultimate -> {
                 statusStringRes = R.string.sah_new_other_status_pm_pro_ultimate
-                statusColorRes = com.tokopedia.unifyprinciples.R.color.Unify_YN500
-                isStatusActive = true
+                statusColorRes = unifyprinciplesR.color.Unify_YN500
             }
         }
         setDescription(statusStringRes, statusColorRes)
 
-        warningIcon?.showWithCondition(!isStatusActive)
         pmIcon?.gone()
         pmProIcon?.show()
         successOsLayout?.gone()
@@ -291,7 +301,5 @@ class ShopStatusViewHolder(itemView: View?,
         shopStatusDescTextView?.gone()
         pmIcon?.gone()
         pmProIcon?.gone()
-        warningIcon?.gone()
     }
-
 }

@@ -806,6 +806,11 @@ object DeeplinkMainApp {
                 ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW
             }
         ),
+        "product-webview-bs" to mutableListOf(
+            DLP.matchPattern("") { _:String ->
+                ApplinkConstInternalMarketplace.PRODUCT_WEBVIEW_BS
+            }
+        ),
         "productar" to mutableListOf(
             DLP.matchPattern("{product_id}") { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_AR, idList?.getOrNull(0))

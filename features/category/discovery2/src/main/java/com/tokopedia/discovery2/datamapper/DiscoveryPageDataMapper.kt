@@ -769,7 +769,7 @@ class DiscoveryPageDataMapper(
                 )
             }
         } else {
-            val updatedComponents = parseFestiveFlashSaleTab(componentsItem?.filter { !it.isTargetedTabComponent })
+            val updatedComponents = parseSectionChildren(componentsItem)
 
             if (updatedComponents.isNotEmpty()) {
                 listComponents.first().setComponentsItem(updatedComponents)
@@ -814,6 +814,37 @@ class DiscoveryPageDataMapper(
         }
     }
 
+    private fun parseSectionChildren(components: List<ComponentsItem>?): List<ComponentsItem> {
+        val nonTargetedTabComponent = components?.filter { !it.isTargetedTabComponent }
+        val parsedChildrenComponent = nonTargetedTabComponent.orEmpty().toMutableList()
+
+        if (parsedChildrenComponent.hasFlashSaleTab()) {
+            val parsedComponent = parseFestiveFlashSaleTab(parsedChildrenComponent)
+            parsedChildrenComponent.clear()
+            parsedChildrenComponent.addAll(parsedComponent)
+        }
+
+        if (parsedChildrenComponent.hasAutomateCoupon()) {
+            val parsedComponent = parseFestiveAutomateCoupon(parsedChildrenComponent)
+            parsedChildrenComponent.clear()
+            parsedChildrenComponent.addAll(parsedComponent)
+        }
+
+        return parsedChildrenComponent
+    }
+
+    private fun List<ComponentsItem>?.hasFlashSaleTab(): Boolean {
+        return this?.find {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            } != null
+    }
+
+    private fun List<ComponentsItem>?.hasAutomateCoupon(): Boolean {
+        return this?.find {
+            it.name == ComponentNames.AutomateCoupon.componentName
+        } != null
+    }
+
     private fun parseFestiveFlashSaleTab(componentsItem: List<ComponentsItem>?): List<ComponentsItem> {
         val flashSaleTab = componentsItem
             ?.find {
@@ -836,6 +867,22 @@ class DiscoveryPageDataMapper(
                         updatedComponentItems.add(component)
                     }
                 }
+            }
+        } ?: run {
+            updatedComponentItems.addAll(componentsItem.orEmpty())
+        }
+
+        return updatedComponentItems
+    }
+
+    private fun parseFestiveAutomateCoupon(componentsItem: List<ComponentsItem>?): List<ComponentsItem> {
+        val updatedComponentItems = arrayListOf<ComponentsItem>()
+
+        componentsItem?.forEach {
+            if (it.name == ComponentNames.AutomateCoupon.componentName) {
+                parseAutomateCoupon(it, updatedComponentItems)
+            } else {
+                updatedComponentItems.add(it)
             }
         }
 
