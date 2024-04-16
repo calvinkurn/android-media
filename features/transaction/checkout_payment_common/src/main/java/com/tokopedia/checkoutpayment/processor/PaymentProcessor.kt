@@ -209,6 +209,7 @@ class PaymentProcessor @Inject constructor(
 //                    actionButtonText = currentData.walletData.activation.buttonTitle
 //                )
                 latestWidget.copy(
+                    subtitle = "",
                     description = currentData.walletData.activation.errorMessage,
                     isDescriptionRed = true,
                     actionButtonText = currentData.walletData.activation.buttonTitle
