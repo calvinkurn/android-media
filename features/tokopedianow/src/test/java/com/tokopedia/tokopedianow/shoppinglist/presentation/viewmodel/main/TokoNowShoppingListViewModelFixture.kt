@@ -23,7 +23,9 @@ import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.util.AddressMapper.mapToWarehousesData
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.data.ShoppingListDataFactory
+import com.tokopedia.tokopedianow.data.ShoppingListDataFactory.Main.createMiniCart
+import com.tokopedia.tokopedianow.data.ShoppingListDataFactory.Main.createRecommendationWidget
+import com.tokopedia.tokopedianow.data.ShoppingListDataFactory.Main.createShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.addProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.countSelectedItems
 import com.tokopedia.tokopedianow.shoppinglist.domain.extension.CommonVisitableExtension.doIf
@@ -75,6 +77,7 @@ import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 abstract class TokoNowShoppingListViewModelFixture {
@@ -85,16 +88,18 @@ abstract class TokoNowShoppingListViewModelFixture {
 
     protected val filteredAvailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
     protected val filteredUnavailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
-    protected val filteredRecommendedProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
 
     protected val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     protected val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     protected val recommendedProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
-    protected val cartProducts = mutableListOf<ShoppingListCartProductItemUiModel>()
 
     protected var mMiniCartData: MiniCartSimplifiedData? = null
-    private var isFirstPageProductRecommendationError = false
-    private var recommendationModel: RecommendationModel = RecommendationModel()
+
+    private val filteredRecommendedProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
+    private val cartProducts = mutableListOf<ShoppingListCartProductItemUiModel>()
+
+    protected var isFirstPageProductRecommendationError = false
+    protected var recommendationModel: RecommendationModel = RecommendationModel()
 
     @RelaxedMockK
     lateinit var addressData: TokoNowLocalAddress
@@ -153,6 +158,8 @@ abstract class TokoNowShoppingListViewModelFixture {
 
     @After
     fun tearDown() {
+        viewModel.clear()
+
         mutableLayout.clear()
 
         availableProducts.clear()
@@ -169,6 +176,27 @@ abstract class TokoNowShoppingListViewModelFixture {
         recommendationModel = RecommendationModel()
     }
 
+    @Test
+    fun `Test some return functions`() {
+        val isLoggedIn = true
+        val shopId = 122314L
+
+        stubLoggedIn(isLoggedIn)
+        stubShopId(shopId)
+
+        viewModel
+            .getAvailableProducts()
+            .verify(availableProducts)
+
+        viewModel
+            .isLoggedIn()
+            .verify(isLoggedIn)
+
+        viewModel
+            .getShopId()
+            .verify(shopId)
+    }
+
     protected fun StateFlow<UiState<*>>.verifySuccess(expectedResult: Any) {
         Assert.assertEquals(expectedResult, (value as UiState.Success).data)
     }
@@ -177,8 +205,7 @@ abstract class TokoNowShoppingListViewModelFixture {
         Assert.assertEquals(expectedResult, (value as UiState.Loading).data)
     }
 
-    protected fun StateFlow<UiState<*>>.verifyError(throwable: Throwable, expectedResult: Any) {
-        Assert.assertEquals(throwable, (value as UiState.Error).throwable)
+    protected fun StateFlow<UiState<*>>.verifyError(expectedResult: Any) {
         Assert.assertEquals(expectedResult, (value as UiState.Error).data)
     }
 
@@ -190,23 +217,12 @@ abstract class TokoNowShoppingListViewModelFixture {
         Assert.assertEquals(expectedResult, value)
     }
 
+    protected fun Any.verify(expectedResult: Any) {
+        Assert.assertEquals(expectedResult, this)
+    }
+
     protected fun verifyIsTrue(expectedResult: Boolean) {
         Assert.assertTrue(expectedResult)
-    }
-
-    protected fun verifyProductRecommendationUseCase(
-        param: GetRecommendationRequestParam
-    ) {
-        coVerify {
-            productRecommendationUseCase.getData(param)
-        }
-    }
-
-    protected fun verifyGetShoppingListUseCase() {
-        coVerify {
-            val warehouses = mapToWarehousesData(addressData.getAddressData())
-            getShoppingListUseCase.execute(warehouses)
-        }
     }
 
     protected fun stubOutOfCoverage(
@@ -661,18 +677,19 @@ abstract class TokoNowShoppingListViewModelFixture {
     }
 
     protected fun loadLayout(
-        needExpandCollapse: Boolean = true
+        needExpandCollapse: Boolean = true,
+        hasNext: Boolean = false
     ) {
         // create fake variables for stub
         val shopId = 222121L
-        val miniCartData = ShoppingListDataFactory.Main.createMiniCart()
-        val shoppingList = ShoppingListDataFactory.Main.createShoppingList()
+        val miniCartData = createMiniCart()
+        val shoppingList = createShoppingList()
         val newShoppingList = shoppingList.copy(
             listAvailableItem = if (needExpandCollapse) shoppingList.listAvailableItem + shoppingList.listAvailableItem else shoppingList.listAvailableItem,
             listUnavailableItem = if (needExpandCollapse) shoppingList.listUnavailableItem + shoppingList.listUnavailableItem else shoppingList.listUnavailableItem
         )
-        val recommendationWidget = ShoppingListDataFactory.Main.createRecommendationWidget(
-            hasNext = false,
+        val recommendationWidget = createRecommendationWidget(
+            hasNext = hasNext,
             title = "Rekomendasi Untuk Anda"
         )
 
@@ -767,7 +784,7 @@ abstract class TokoNowShoppingListViewModelFixture {
         viewModel
             .isOnScrollNotNeeded
             .verifyValue(
-                true
+                !hasNext
             )
 
         viewModel

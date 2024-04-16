@@ -1187,6 +1187,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
             onError = {
                 recommendedProducts.clear()
 
+                isFirstPageProductRecommendationError = true
+
                 updateLayout()
             }
         )
