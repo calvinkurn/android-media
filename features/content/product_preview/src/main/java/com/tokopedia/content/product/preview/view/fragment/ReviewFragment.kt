@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
@@ -410,7 +411,13 @@ class ReviewFragment @Inject constructor(
         attachmentId: String,
         source: String
     ): String {
-        return "tokopedia://product-review/$productId?review_id=$reviewId&attachment_id=$attachmentId&source=$source"
+        return String.format(
+            ApplinkConstInternalContent.SHARE_PRODUCT_PREVIEW,
+            productId,
+            reviewId,
+            attachmentId,
+            source
+        )
     }
 
     /**

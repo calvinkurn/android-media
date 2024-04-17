@@ -9,7 +9,7 @@ import com.tokopedia.content.product.preview.utils.SHARE_KEY
 import com.tokopedia.content.product.preview.utils.SOURCE_QUERY_PARAMS
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 
-class ProductPreviewAppLinkMapper(val productId: String) {
+class ProductPreviewAppLinkMapper(private val productId: String) {
 
     fun mapSourceAppLink(intent: Intent): Bundle? {
         val entryPoint = intent.data?.getQueryParameter(SOURCE_QUERY_PARAMS).orEmpty()
@@ -40,5 +40,4 @@ class ProductPreviewAppLinkMapper(val productId: String) {
             putParcelable(PRODUCT_PREVIEW_SOURCE, sourceModel)
         }
     }
-
 }
