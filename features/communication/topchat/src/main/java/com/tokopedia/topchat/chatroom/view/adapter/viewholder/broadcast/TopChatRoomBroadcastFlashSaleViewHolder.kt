@@ -102,7 +102,6 @@ class TopChatRoomBroadcastFlashSaleViewHolder(
     override fun onViewRecycled() {
         super.onViewRecycled()
         binding?.topchatChatroomBroadcastFlashsaleBase?.cleanUp()
-        binding?.topchatChatroomBroadcastFlashsaleProduct?.cleanUp()
         binding?.topchatChatroomBroadcastFlashsaleVoucher?.cleanUp()
         binding?.topchatChatroomBroadcastFlashsaleStatus?.cleanUp()
     }
