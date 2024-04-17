@@ -220,7 +220,8 @@ class ProductItemDataView:
             // todo this value from BE
             "",
             AdsLogShowModel.AdExtraData(
-                productId = productID
+                productId = productID,
+                productName = productName
             )
         )
     }
@@ -233,6 +234,7 @@ class ProductItemDataView:
             "",
             AdsLogShowOverModel.AdExtraData(
                 productId = productID,
+                productName = productName,
                 sizePercent = visiblePercentage.toString()
             )
         )
@@ -246,7 +248,8 @@ class ProductItemDataView:
             // todo this value from BE
             "",
             AdsLogRealtimeClickModel.AdExtraData(
-                productId = productID
+                productId = productID,
+                productName = productName
             )
         )
     }
