@@ -59,8 +59,8 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
     }
 
     private fun bindProduct(uiModel: TopChatRoomBroadcastUiModel) {
-        val carouselProduct: TopChatRoomProductCarouselUiModel? = null
-        val singleProduct = uiModel.productCarousel?.products?.firstOrNull() as? ProductAttachmentUiModel
+        val carouselProduct = uiModel.productCarousel
+        val singleProduct = uiModel.singleProduct
         if (carouselProduct != null && carouselProduct.products.isNotEmpty()) {
             binding.topchatChatroomBroadcastPromoSingleProduct.hide()
             setProductCarouselListener()
