@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +38,7 @@ fun LiveStatsCardView(
     ) {
         Column(
             modifier = Modifier
+                .testTag(stringResource(liveStatsCardModel.liveStats.label))
                 .noRippleClickable {
                     if (liveStatsCardModel is LiveStatsCardModel.Clickable &&
                         liveStatsCardModel.clickArea == LiveStatsCardModel.Clickable.ClickArea.Full
@@ -73,9 +75,12 @@ fun LiveStatsCardView(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     NestIcon(
-                        modifier = Modifier.size(16.dp).noRippleClickable {
-                            liveStatsCardModel.onClick()
-                        },
+                        modifier = Modifier
+                            .testTag("${stringResource(liveStatsCardModel.liveStats.label)}_icon")
+                            .size(16.dp)
+                            .noRippleClickable {
+                                liveStatsCardModel.onClick()
+                            },
                         iconId = liveStatsCardModel.clickableIcon,
                         colorNightEnable = NestTheme.colors.NN._600,
                         colorNightDisable = NestTheme.colors.NN._600,
