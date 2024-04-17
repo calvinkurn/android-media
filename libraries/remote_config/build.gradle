@@ -40,9 +40,9 @@ dependencies {
 
     implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
     // libra
-    api "com.bytedance.dataplatform:abtest:0.10.1"
+    api rootProject.ext.libra.abTest
     //如果使用非APT方式，可以不用加abtest_apt,直接使用非APT方式定义
-    kapt "com.bytedance.dataplatform:abtest_apt:0.5.1"
+    kapt rootProject.ext.libra.abTestApt
 }
 
 project.ext {

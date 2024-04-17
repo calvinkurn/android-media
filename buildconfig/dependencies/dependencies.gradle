@@ -557,4 +557,9 @@ ext {
         baseLibsUtility   : "com.bytedance.frameworks.baselib:utility:$baseLibsUtilityVersion",
         bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
     ]
+
+    libra = [
+            abTest                  : "com.bytedance.dataplatform:abtest:0.10.1",
+            abTestApt               : "com.bytedance.dataplatform:abtest_apt:0.5.1"
+    ]
 }
