@@ -97,9 +97,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private val currentTab: String get() {
         val index = binding.vpProductPreview.currentItem
-        return if (index > 0 ) {
-            pagerAdapter.getCurrentTabKey(index)
-        } else TAB_REVIEW_KEY
+        return pagerAdapter.getCurrentTabKey(index)
     }
 
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
