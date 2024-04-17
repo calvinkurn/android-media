@@ -506,7 +506,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 val updatedValue = awaitItem()
                 assert(updatedValue.intent != null)
                 assertEquals("defaultUrl", updatedValue.message)
-                assertEquals("defaultUrl", updatedValue.shortLink)
+                assertEquals("defaultUrl", updatedValue.shortLink) // without UTM
                 assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
                 assertTrue(updatedValue.errorHistory.contains(ShareExIntentErrorEnum.DEFAULT_URL_ERROR))
