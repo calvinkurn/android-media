@@ -51,7 +51,7 @@ data class AccountHeaderDataModel(
         const val ERROR_TEXT_SHOP_TRY = "Coba Lagi"
 
         const val DEFAULT_SHOP_ID_NOT_OPEN = "-1"
-        const val DEFAULT_SHOP_ID_NOT_OPEN_TEXT = "Buka Toko Gratis"
+        const val DEFAULT_SHOP_ID_NOT_OPEN_TEXT = "Buka Toko"
 
         private const val WALLET_CODE_PEMUDA = "PEMUDA"
         private const val WALLET_CODE_PEMUDA_POINTS = "PEMUDAPOINTS"
