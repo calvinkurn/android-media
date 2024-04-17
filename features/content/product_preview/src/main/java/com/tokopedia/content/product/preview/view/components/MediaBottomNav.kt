@@ -37,6 +37,7 @@ import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.noRippleClickable
 
 /**
  * @author by astidhiyaa on 23/11/23
@@ -125,7 +126,7 @@ private fun RenderContent(
                 vertical = 8.dp,
                 horizontal = 16.dp
             )
-            .clickable {
+            .noRippleClickable {
                 onNavClicked()
             }
     ) {
