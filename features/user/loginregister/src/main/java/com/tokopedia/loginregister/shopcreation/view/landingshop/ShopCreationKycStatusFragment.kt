@@ -142,9 +142,9 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
             unifyToolbar.show()
             layoutStatusPending.ivStatusSubmission.loadImageWithoutPlaceholder(getString(R.string.shop_creation_kyc_pending))
             layoutStatusPending.btnPrimary.isLoading = false
-            layoutStatusPending.layoutBenefit.iconBenefit1.loadImage(getString(R.string.shop_creation_icon_benefit))
-            layoutStatusPending.layoutBenefit.iconBenefit2.loadImage(getString(R.string.shop_creation_icon_benefit))
-            layoutStatusPending.layoutBenefit.iconBenefit3.loadImage(getString(R.string.shop_creation_icon_benefit))
+            layoutStatusPending.layoutBenefit.iconBenefit1.loadImage(getString(R.string.shop_creation_icon_benefit_1))
+            layoutStatusPending.layoutBenefit.iconBenefit2.loadImage(getString(R.string.shop_creation_icon_benefit_2))
+            layoutStatusPending.layoutBenefit.iconBenefit3.loadImage(getString(R.string.shop_creation_icon_benefit_3))
             layoutStatusPending.root.show()
             layoutStatusRejected.root.hide()
             layoutStatusBlacklisted.root.hide()

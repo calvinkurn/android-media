@@ -9,5 +9,9 @@
     <string name="shop_creation_kyc_pending">https://images.tokopedia.net/img/android/user/loginregister/shop_creation_pending.png</string>
     <string name="shop_creation_kyc_rejected">https://images.tokopedia.net/img/android/user/loginregister/shop_creation_kyc_rejected.png</string>
     <string name="shop_creation_icon_benefit">https://images.tokopedia.net/img/android/user/loginregister/shop_creation_icon_benefit.png</string>
+    <string name="shop_creation_icon_benefit_1">https://images.tokopedia.net/img/android/user/loginregister/ic_shop_creation_benefit_1.png</string>
+    <string name="shop_creation_icon_benefit_2">https://images.tokopedia.net/img/android/user/loginregister/ic_shop_creation_benefit_2.png</string>
+    <string name="shop_creation_icon_benefit_3">https://images.tokopedia.net/img/android/user/loginregister/ic_shop_creation_benefit_3.png</string>
+
     <string name="shop_creation_guideline_open_shop">https://assets.tokopedia.net/asts/Edukasi/Panduan_Memulai_Usaha_di_Tokopedia_2024_(012024).pdf</string>
 </resources>

@@ -223,7 +223,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     companion object {
-        private const val OS_PATH = "myshop/os"
+        private const val OS_PATH = "open-shop-v2/welcome-os"
         fun createInstance(bundle: Bundle): KycBridgingFragment {
             val fragment = KycBridgingFragment()
             fragment.arguments = bundle

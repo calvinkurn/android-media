@@ -32,6 +32,7 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
                 KycBridgingFragment.createInstance(bundle),
                 "kyc_bridge_tag"
             )
+            .addToBackStack(null)
             .commit()
     }
 
@@ -47,5 +48,13 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
                 "kyc_bridge_tag"
             )
             .commit()
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.fragments.first() is ShopCreationKycStatusFragment) {
+            supportFragmentManager.popBackStack()
+        } else {
+            finish()
+        }
     }
 }

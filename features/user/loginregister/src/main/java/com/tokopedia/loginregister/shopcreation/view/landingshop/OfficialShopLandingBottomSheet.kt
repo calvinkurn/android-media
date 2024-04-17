@@ -52,11 +52,6 @@ class OfficialShopLandingBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
-        binding?.buttonWebview?.setOnClickListener {
-            onWebviewClick?.invoke()
-            dismiss()
-        }
-
         binding?.buttonStay?.setOnClickListener {
             onStayClick?.invoke()
             dismiss()
