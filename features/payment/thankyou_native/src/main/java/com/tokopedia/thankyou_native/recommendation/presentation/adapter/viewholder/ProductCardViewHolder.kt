@@ -53,21 +53,24 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
                     }
 
                     override fun onAreaClicked(v: View) {
-                        thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
-                            v.context, AdsLogConst.Refer.AREA
-                        )
+                        if (::thankYouProductCardModel.isInitialized)
+                            thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
+                                v.context, AdsLogConst.Refer.AREA
+                            )
                     }
 
                     override fun onProductImageClicked(v: View) {
-                        thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
-                            v.context, AdsLogConst.Refer.COVER
-                        )
+                        if (::thankYouProductCardModel.isInitialized)
+                            thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
+                                v.context, AdsLogConst.Refer.COVER
+                            )
                     }
 
                     override fun onSellerInfoClicked(v: View) {
-                        thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
-                            v.context, AdsLogConst.Refer.SELLER_NAME
-                        )
+                        if (::thankYouProductCardModel.isInitialized)
+                            thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
+                                v.context, AdsLogConst.Refer.SELLER_NAME
+                            )
                     }
                 })
 
@@ -98,14 +101,17 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
         get() = visibleViewPercentage
 
     override fun onViewAttachedToWindow() {
-        thankYouProductCardModel.recommendationItem.sendShowAdsByteIo(view.context)
+        if (::thankYouProductCardModel.isInitialized)
+            thankYouProductCardModel.recommendationItem.sendShowAdsByteIo(view.context)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        thankYouProductCardModel.recommendationItem.sendShowOverAdsByteIo(
-            view.context,
-            visiblePercentage
-        )
-        this.visibleViewPercentage = Int.ZERO
+        if (::thankYouProductCardModel.isInitialized) {
+            thankYouProductCardModel.recommendationItem.sendShowOverAdsByteIo(
+                view.context,
+                visiblePercentage
+            )
+            this.visibleViewPercentage = Int.ZERO
+        }
     }
 }
