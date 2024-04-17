@@ -10,20 +10,16 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.di.DaggerFeedBrowseComponent
-import com.tokopedia.feedplus.databinding.ActivityFeedLocalBrowseBinding
-import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.feedplus.R
 
-class FeedLocalBrowseActivity: BaseActivity() {
+class FeedLocalSearchActivity: BaseActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
-
-    var binding: ActivityFeedLocalBrowseBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -31,14 +27,13 @@ class FeedLocalBrowseActivity: BaseActivity() {
 
         super.onCreate(savedInstanceState)
         setupStatusBar()
-        binding = ActivityFeedLocalBrowseBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        setContentView(R.layout.activity_fragment_only)
 
         supportFragmentManager.commit {
                 replace(
-                    R.id.local_browse_fragment_container,
-                    FeedLocalBrowseFragment.create(supportFragmentManager, classLoader, intent.extras),
-                    TAG_BROWSE_FRAGMENT
+                    R.id.fragment_container,
+                    FeedLocalSearchFragment.create(supportFragmentManager, classLoader, intent.extras),
+                    TAG_FEED_LOCAL_SEARCH_FRAGMENT
                 )
             }
     }
@@ -64,8 +59,8 @@ class FeedLocalBrowseActivity: BaseActivity() {
     }
 
     companion object {
-        private const val TAG_BROWSE_FRAGMENT = "feed_local_browse"
+        private const val TAG_FEED_LOCAL_SEARCH_FRAGMENT = "feed_local_search_fragment"
         const val TAG_PLACEHOLDER_PARAM = "search_placeholder_param"
+        const val TAG_KEYWORD = "keyword"
     }
-
 }

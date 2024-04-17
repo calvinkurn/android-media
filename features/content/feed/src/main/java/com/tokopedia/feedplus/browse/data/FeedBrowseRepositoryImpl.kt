@@ -97,7 +97,8 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     cursor = extraParam.cursor,
                     sourceId = extraParam.sourceId,
                     sourceType = extraParam.sourceType,
-                    isWifi = isWifi
+                    isWifi = isWifi,
+                    searchKeyword = extraParam.searchKeyword,
                 )
             )
         )

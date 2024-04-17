@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.CategoryInspirationFragment
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseFragment
+import com.tokopedia.feedplus.browse.presentation.FeedLocalSearchFragment
 import com.tokopedia.feedplus.browse.presentation.FeedSearchResultFragment
 import dagger.Binds
 import dagger.Module
@@ -41,6 +42,11 @@ internal abstract class FeedBrowseBindModule {
     @IntoMap
     @FragmentKey(CategoryInspirationFragment::class)
     abstract fun getFeedCategoryInspirationFragment(fragment: CategoryInspirationFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(FeedLocalSearchFragment::class)
+    abstract fun getFeedLocalSearchFragment(fragment: FeedLocalSearchFragment): Fragment
 
     @Binds
     @IntoMap

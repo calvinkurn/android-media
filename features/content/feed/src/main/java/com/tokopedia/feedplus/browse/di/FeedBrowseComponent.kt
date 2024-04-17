@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
 import com.tokopedia.feedplus.browse.presentation.CategoryInspirationActivity
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity
-import com.tokopedia.feedplus.browse.presentation.FeedLocalBrowseActivity
+import com.tokopedia.feedplus.browse.presentation.FeedLocalSearchActivity
 import com.tokopedia.feedplus.browse.presentation.FeedSearchResultActivity
 import com.tokopedia.stories.internal.di.StoriesSeenStorageModule
 import dagger.Component
@@ -30,7 +30,7 @@ interface FeedBrowseComponent {
 
     fun inject(activity: CategoryInspirationActivity)
 
-    fun inject(activity: FeedLocalBrowseActivity)
+    fun inject(activity: FeedLocalSearchActivity)
 
     fun inject(activity: FeedSearchResultActivity)
 }

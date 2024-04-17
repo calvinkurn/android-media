@@ -6,189 +6,275 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
-import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedSearchItemDecoration
-import com.tokopedia.feedplus.browse.presentation.model.FeedSearchResultUiState
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
+import com.tokopedia.feedplus.browse.presentation.factory.FeedSearchResultViewModelFactory
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
+import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultAction
+import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
+import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
 import com.tokopedia.feedplus.databinding.FragmentFeedSearchResultBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedplusR
+import com.tokopedia.content.common.R as contentcommonR
 
-class FeedSearchResultFragment @Inject constructor(
-    viewModelFactory: ViewModelProvider.Factory
-) : BaseDaggerFragment() {
-    private var binding: FragmentFeedSearchResultBinding? = null
+internal class FeedSearchResultFragment @Inject constructor(
+    private val viewModelFactoryCreator: FeedSearchResultViewModelFactory.Creator,
+    private val router: Router,
+) : TkpdBaseV4Fragment() {
 
-    private val viewModel: FeedSearchResultViewModel by viewModels { viewModelFactory }
-    private var rvAdapter: FeedSearchResultAdapter? = null
+    private var _binding: FragmentFeedSearchResultBinding? = null
+    private val binding: FragmentFeedSearchResultBinding get() = _binding!!
+
+    private val viewModel: FeedSearchResultViewModel by viewModels {
+        viewModelFactoryCreator.create(
+            this,
+            arguments?.getString(FeedSearchResultActivity.KEYWORD_PARAM).orEmpty()
+        )
+    }
+
+    private val adapter: FeedSearchResultAdapter by lazyThreadSafetyNone {
+        FeedSearchResultAdapter(
+            this.viewLifecycleOwner.lifecycleScope,
+            inspirationCardListener
+        )
+    }
+
+    private val loadMoreListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+
+            val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+            if (lastVisibleItemPosition >= adapter.itemCount - LOAD_PAGE_THRESHOLD) {
+                viewModel.submitAction(FeedSearchResultAction.LoadResult)
+            }
+        }
+    }
+
+    private val inspirationCardListener = object : InspirationCardViewHolder.Item.Listener {
+        override fun onImpressed(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+
+        }
+
+        override fun onClicked(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+            router.route(context, model.item.appLink)
+        }
+
+        override fun onAuthorClicked(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+            router.route(context, model.item.partner.appLink)
+        }
+    }
+
+    override fun getScreenName(): String = "Search Result Fragment"
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFeedSearchResultBinding.inflate(inflater)
-
-        setupHeader()
-        setupParam()
-        initObserver()
-        initRecyclerView()
-
-        return binding?.root
+        _binding = FragmentFeedSearchResultBinding.inflate(inflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.fetchData()
+
+        setupView()
+        setupObserver()
+
+        viewModel.submitAction(FeedSearchResultAction.LoadResult)
     }
 
-    override fun getScreenName(): String = "Search Result Fragment"
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.resultRv.removeOnScrollListener(loadMoreListener)
 
-    override fun initInjector() {}
+        _binding = null
+    }
 
-    private fun setupHeader() {
-        binding?.srpHeader?.onBackClicked{
+    private fun setupView() {
+        binding.srpHeader.onBackClicked {
             activity?.finish()
         }
-    }
 
-    private fun setupParam() {
-        val keyword = arguments?.getString(FeedSearchResultActivity.KEYWORD_PARAM)
-        viewModel.setKeyword(keyword ?: "")
-    }
+        binding.srpHeader.setSearchbarFocusListener { view, focusState ->
+            view.clearFocus()
 
-    private fun initObserver() {
-        viewModel.resultState.observe(viewLifecycleOwner) {
-            when(it) {
-                is FeedSearchResultUiState.Success -> showResult()
-                else -> showError(it)
-            }
-        }
-
-        viewModel.keyword.observe(viewLifecycleOwner) {
-            binding?.srpHeader?.setSearchbarText(it)
-        }
-
-        viewModel.resultData.observe(viewLifecycleOwner) {
-            updateResultRv(it)
-        }
-    }
-
-    private fun initRecyclerView() {
-        binding?.resultRv?.let {
-            showResult()
-            FeedSearchResultAdapter(this.viewLifecycleOwner.lifecycleScope).also { adapter ->
-                rvAdapter = adapter
-
-                val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
-                    spanSizeLookup = adapter.getSpanSizeLookup()
+            if (focusState) {
+                val intent = router.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE).apply {
+                    putExtra(FeedLocalSearchActivity.TAG_KEYWORD, viewModel.searchKeyword)
                 }
-                it.layoutManager = layoutManager
-                it.itemAnimator = null
-                it.addItemDecoration(
-                    CategoryInspirationItemDecoration(
-                        it.resources,
-                        layoutManager.spanCount
-                    )
-                )
-                it.addItemDecoration(FeedSearchItemDecoration(
+
+                startActivity(intent)
+            }
+        }
+
+        binding.resultRv.let {
+            val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
+                spanSizeLookup = adapter.getSpanSizeLookup()
+            }
+            it.layoutManager = layoutManager
+            it.itemAnimator = null
+            it.addOnScrollListener(loadMoreListener)
+            it.addItemDecoration(
+                CategoryInspirationItemDecoration(
+                    it.resources,
                     layoutManager.spanCount
-                ))
+                )
+            )
+            it.adapter = adapter
+        }
+    }
 
-                it.adapter = adapter
+    private fun setupObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.withCache().collectLatest {
+                    val (prev, curr) = it
 
-                adapter.setLoadingState()
+                    renderSearchBar(prev?.searchKeyword, curr.searchKeyword)
+                    renderContents(prev?.pageState, curr.pageState, curr.contents, curr.hasNextPage)
+                }
             }
         }
     }
 
-    private fun updateResultRv(data: SearchTempDataModel) {
-        if (data.uiState == FeedSearchResultUiState.Success) {
-            showResult()
-            rvAdapter?.setList(data)
+    private fun renderSearchBar(
+        prevKeyword: String?,
+        keyword: String
+    ) {
+        if (prevKeyword == keyword) return
+
+        binding.srpHeader.setSearchbarText(keyword)
+    }
+
+    private fun renderContents(
+        prevPageState: FeedSearchResultPageState?,
+        pageState: FeedSearchResultPageState,
+        contents: List<FeedSearchResultContent>,
+        hasNextPage: Boolean,
+    ) {
+        if (prevPageState == pageState) return
+
+        when(pageState) {
+            FeedSearchResultPageState.LOADING -> {
+                if (contents.isEmpty()) {
+                    adapter.setShimmer()
+                }
+            }
+            FeedSearchResultPageState.SUCCESS -> {
+                val finalContents = contents + if (hasNextPage) {
+                    listOf(FeedSearchResultContent.Loading)
+                } else {
+                    emptyList()
+                }
+
+                adapter.setItems(finalContents)
+            }
+            FeedSearchResultPageState.RESTRICTED -> {
+                binding.errorView.apply {
+                    errorTitle.text = getString(feedplusR.string.feed_local_search_restricted_title)
+                    errorDescription.text = getString(feedplusR.string.feed_local_search_restricted_desc)
+                    errorSecondaryAction.text = getString(feedplusR.string.feed_local_search_restricted_cta)
+
+                    errorAction.hide()
+                    errorSecondaryAction.show()
+                    errorIllustration.loadImage(getString(feedplusR.string.feed_search_restricted_illustration))
+
+                    setSecondaryActionClickListener {
+                        val template = getString(contentcommonR.string.feed_webview_template)
+                        val link = getString(feedplusR.string.feed_content_tnc_link)
+
+                        router.route(requireContext(), template.format(ApplinkConst.WEBVIEW, link))
+                    }
+                }
+            }
+            FeedSearchResultPageState.NOT_FOUND -> {
+                binding.errorView.apply {
+                    errorTitle.text = getString(feedplusR.string.feed_local_search_not_found_title)
+                    errorDescription.text = getString(feedplusR.string.feed_local_search_not_found_desc)
+                    errorAction.text = getString(feedplusR.string.feed_local_search_not_found_cta)
+
+                    errorAction.show()
+                    errorSecondaryAction.hide()
+                    errorIllustration.loadImage(getString(feedplusR.string.feed_search_not_found_illustration))
+
+                    setActionClickListener {
+                        val intent = router.getIntent(requireContext(), ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
+                        intent.putExtra(FeedLocalSearchActivity.TAG_KEYWORD, viewModel.searchKeyword)
+                        startActivity(intent)
+
+                        activity?.finish()
+                    }
+                }
+            }
+            FeedSearchResultPageState.INTERNAL_ERROR -> {
+                binding.errorView.apply {
+                    setType(GlobalError.SERVER_ERROR)
+
+                    setActionClickListener {
+                        viewModel.submitAction(FeedSearchResultAction.LoadResult)
+                    }
+                }
+            }
+            else -> {
+                binding.errorView.setType(GlobalError.NO_CONNECTION)
+            }
         }
+
+        if (shouldShowResult(pageState)) {
+            showResult()
+        } else {
+            showError()
+        }
+    }
+
+    private fun shouldShowResult(pageState: FeedSearchResultPageState): Boolean {
+        return pageState == FeedSearchResultPageState.LOADING || pageState == FeedSearchResultPageState.SUCCESS
     }
 
     private fun showResult() {
-        binding?.resultRv?.show()
-        binding?.errorView?.hide()
+        binding.resultRv.show()
+        binding.errorView.hide()
     }
 
-    private fun showError(uiState: FeedSearchResultUiState) {
-        binding?.resultRv?.hide()
-
-        var title: String? = null
-        var desc: String? = null
-        var ctaText: String? = null
-        var customIllustration: String? = null
-
-        when(uiState) {
-            is FeedSearchResultUiState.Restricted -> {
-                title = getString(feedplusR.string.feed_local_search_restricted_title)
-                desc = getString(feedplusR.string.feed_local_search_restricted_desc)
-                ctaText = getString(feedplusR.string.feed_local_search_restricted_cta)
-                customIllustration = getString(feedplusR.string.feed_search_restricted_illustration)
-            }
-            is FeedSearchResultUiState.NotFound -> {
-                title = getString(feedplusR.string.feed_local_search_not_found_title)
-                desc = getString(feedplusR.string.feed_local_search_not_found_desc)
-                ctaText = getString(feedplusR.string.feed_local_search_not_found_cta)
-                customIllustration = getString(feedplusR.string.feed_search_not_found_illustration)
-            }
-            is FeedSearchResultUiState.InternalError -> {
-                binding?.errorView?.setType(GlobalError.SERVER_ERROR)
-            }
-            else -> {
-                binding?.errorView?.setType(GlobalError.NO_CONNECTION)
-            }
-        }
-
-        binding?.errorView?.let { globalError ->
-            title?.let { globalError.errorTitle.text = it }
-            desc?.let { globalError.errorDescription.text = it }
-            ctaText?.let {
-                if (uiState is FeedSearchResultUiState.Restricted) {
-                    globalError.errorSecondaryAction.text = it
-
-                    globalError.errorAction.hide()
-                    globalError.errorSecondaryAction.show()
-                } else {
-                    globalError.errorAction.text = it
-
-                    globalError.errorAction.show()
-                    globalError.errorSecondaryAction.hide()
-                }
-            }
-
-            customIllustration?.let {
-                globalError.errorIllustration.loadImage(it)
-            }
-
-
-            // Todo: Will be adjust later
-            globalError.setActionClickListener {
-                showResult()
-                viewModel.getDataResult()
-            }
-
-            globalError.setSecondaryActionClickListener {
-                showResult()
-                viewModel.getDataResult()
-            }
-
-            globalError.show()
-        }
+    private fun showError() {
+        binding.resultRv.hide()
+        binding.errorView.show()
     }
 
     companion object {
+
+        private const val LOAD_PAGE_THRESHOLD = 2
+
         fun create(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,

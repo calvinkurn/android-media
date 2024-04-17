@@ -58,7 +58,7 @@
         </activity>
         <activity
             android:screenOrientation="portrait"
-            android:name="com.tokopedia.feedplus.browse.presentation.FeedLocalBrowseActivity"
+            android:name="com.tokopedia.feedplus.browse.presentation.FeedLocalSearchActivity"
             android:exported="false"
             android:theme="@style/Theme.White">
             <intent-filter>

@@ -6,29 +6,36 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.tokopedia.feedplus.databinding.ViewFeedSearchHeaderLayoutBinding
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.feedplus.R as feedplusR
 
-class FeedHeaderView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
-    private var searchbar: SearchBarUnify? = null
-    var header: HeaderUnify? = null
+class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
+
+    val header: HeaderUnify
+        get() = binding.headerUnify
+
+    private var searchBar: SearchBarUnify? = null
 
     private var searchAction: (keyword: String) -> Unit = {}
-    private var handler: Handler? = null
+
+    private val binding = ViewFeedSearchHeaderLayoutBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+    )
 
     init {
-        val styledAttribute = getContext().obtainStyledAttributes(attrs, feedplusR.styleable.FeedHeaderView)
-        val isClearable = styledAttribute.getBoolean(feedplusR.styleable.FeedHeaderView_isCleanable, false)
-        val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedHeaderView_isShowShadow, true)
-        val withSearchbar = styledAttribute.getBoolean(feedplusR.styleable.FeedHeaderView_withSearchbar, false)
+        val styledAttribute = getContext().obtainStyledAttributes(attrs, feedplusR.styleable.FeedSearchHeaderView)
+        val isClearable = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isClearable, false)
+        val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isShowShadow, true)
+        val withSearchbar = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_withSearchbar, false)
         styledAttribute.recycle()
 
-        LayoutInflater.from(context).inflate(feedplusR.layout.view_feed_header_layout, this, true)
-        header = findViewById<HeaderUnify>(feedplusR.id.header_unify).also {
-            it.isShowShadow = isShowShadow
-        }
+        binding.headerUnify.isShowShadow = isShowShadow
+
         if (withSearchbar) initSearchBar(isClearable)
     }
 
@@ -36,24 +43,22 @@ class FeedHeaderView(context: Context, attrs: AttributeSet) : LinearLayout(conte
      * True -> Listener bind success
      */
     fun onBackClicked(onClick: () -> Unit = {}): Boolean {
-        return header?.let {
-            it.setNavigationOnClickListener {
-                onClick()
-            }
-            true
-        } ?: false
+        binding.headerUnify.setNavigationOnClickListener {
+            onClick()
+        }
+        return true
     }
 
     fun setSearchPlaceholder(placeholder: String) {
-        searchbar?.searchBarPlaceholder = placeholder
+        searchBar?.searchBarPlaceholder = placeholder
     }
 
     fun setSearchbarFocusListener(listener: OnFocusChangeListener) {
-        searchbar?.searchBarTextField?.onFocusChangeListener = listener
+        searchBar?.searchBarTextField?.onFocusChangeListener = listener
     }
 
     fun setSearchbarText(text: String) {
-        searchbar?.searchBarTextField?.setText(text)
+        searchBar?.searchBarTextField?.setText(text)
     }
 
     fun setSearchDoneListener(listener: (keyword: String) -> Unit) {
@@ -61,7 +66,7 @@ class FeedHeaderView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     fun setSearchFocus() {
-        searchbar?.searchBarTextField?.requestFocus()
+        searchBar?.searchBarTextField?.requestFocus()
         showSoftKeyboard()
     }
 
@@ -71,8 +76,8 @@ class FeedHeaderView(context: Context, attrs: AttributeSet) : LinearLayout(conte
             searchbar.showIcon = isClearable
             searchbar.searchBarPlaceholder = searchPlaceholder
 
-            this.searchbar = searchbar
-            header?.customView(searchbar)
+            this.searchBar = searchbar
+            binding.headerUnify.customView(searchbar)
 
             searchbar.searchBarTextField.setOnEditorActionListener { textView, keyIndex, _ ->
                 if (keyIndex == EditorInfo.IME_ACTION_SEARCH) {
@@ -84,8 +89,7 @@ class FeedHeaderView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     private fun showSoftKeyboard() {
-        handler = Handler()
-        handler?.postDelayed({
+        Handler().postDelayed({
             context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
                 (it as InputMethodManager).toggleSoftInput(
                     InputMethodManager.SHOW_IMPLICIT,
