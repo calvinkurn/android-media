@@ -465,10 +465,11 @@ class CheckoutCartProcessor @Inject constructor(
     fun generateUpdateCartPaymentRequest(payment: CheckoutPaymentModel?): UpdateCartPaymentRequest? {
         val paymentData = payment?.data?.paymentWidgetData?.firstOrNull()
         if (paymentData != null) {
+            val selectedTenure = paymentData.installmentPaymentData.selectedTenure
             return UpdateCartPaymentRequest(
                 paymentData.gatewayCode,
-                paymentData.installmentPaymentData.selectedTenure,
-                payment.installmentData?.installmentOptions?.firstOrNull()?.optionId ?: "",
+                selectedTenure,
+                payment.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.optionId ?: "",
                 paymentData.metadata
             )
         }
