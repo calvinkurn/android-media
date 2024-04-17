@@ -68,7 +68,7 @@ open class DiscoveryAnalytics(
                 banner.let {
                     val bannerID = if (it.id.isNullOrEmpty()) 0 else it.id
                     hashMap[KEY_ID] = "${bannerID}_0"
-                    hashMap[KEY_NAME] = it.gtmItemName?.replace("#POSITION", (banner.positionForParentItem + 1).toString()).toString()
+                    hashMap[KEY_NAME] = it.gtmItemName.replace("#POSITION", (banner.positionForParentItem + 1).toString())
                     hashMap[KEY_CREATIVE] = it.creativeName ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = componentPosition?.plus(1) ?: (index + 1)
                 }
@@ -169,9 +169,7 @@ open class DiscoveryAnalytics(
                 list.add(
                     mapOf(
                         KEY_ID to "${banner.offerId}_${banner.shopId}",
-                        KEY_NAME to banner.gtmItemName
-                            ?.replace("#POSITION", (getParentPosition(component) + 1).toString())
-                            ?.replace("#MEGA_TAB_VALUE", banner.tabName.orEmpty()).toString(),
+                        KEY_NAME to banner.gtmItemName.replace("#POSITION", (getParentPosition(component) + 1).toString()),
                         KEY_CREATIVE to component.creativeName.orEmpty(),
                         KEY_POSITION to index + 1
                     )
@@ -209,9 +207,7 @@ open class DiscoveryAnalytics(
             list.add(
                 mapOf(
                     KEY_ID to "${banner.offerId}_${banner.shopId}",
-                    KEY_NAME to banner.gtmItemName
-                        ?.replace("#POSITION", (getParentPosition(component) + 1).toString())
-                        ?.replace("#MEGA_TAB_VALUE", banner.tabName.orEmpty()).toString(),
+                    KEY_NAME to banner.gtmItemName.replace("#POSITION", (getParentPosition(component) + 1).toString()),
                     KEY_CREATIVE to component.creativeName.orEmpty(),
                     KEY_POSITION to component.position + 1
                 )
@@ -810,7 +806,7 @@ open class DiscoveryAnalytics(
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = componentsItems.position + 1
-            productMap[LIST] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            productMap[LIST] = it.gtmItemName.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION90] = sourceIdentifier
             productMap[DIMENSION96] = getValueForDimension96(it, componentsItems.parentComponentId)
@@ -952,7 +948,8 @@ open class DiscoveryAnalytics(
             productMap[KEY_ATC_SHOP_ID] = it.shopId ?: ""
             productMap[KEY_SHOP_NAME] = it.shopName ?: ""
             productMap[KEY_SHOP_TYPE] = ""
-            productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            productMap[DIMENSION40] = it.gtmItemName.replace("#POSITION", ((getParentPosition(componentsItems) + 1).toString()
+                ?: ""))
             productMap[DIMENSION45] = cartID
         }
         list.add(productMap)
@@ -984,7 +981,7 @@ open class DiscoveryAnalytics(
         val productMap = HashMap<String, Any>()
         componentsItems.data?.firstOrNull()?.let {
             productMap[KEY_ATC_CATEGORY_ID] = String.EMPTY
-            productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            productMap[DIMENSION40] = it.gtmItemName.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())
             productMap[DIMENSION45] = cartID
             productMap[DIMENSION90] = sourceIdentifier
             productMap[KEY_ITEM_BRAND] = NONE_OTHER
@@ -1097,7 +1094,7 @@ open class DiscoveryAnalytics(
             var productItemList = ""
             componentsItems.data?.get(0)?.let {
                 val productTypeName = getProductName(it.typeProductCard)
-                productItemList = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                productItemList = it.gtmItemName.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())
                 productCardImpressionLabel = "$login - $productTypeName"
                 listMap[KEY_NAME] = it.name.toString()
                 listMap[KEY_ID] = it.productId.toString()
@@ -1418,7 +1415,7 @@ open class DiscoveryAnalytics(
         list.add(
             mapOf(
                 KEY_ID to if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID,
-                KEY_NAME to banner.gtmItemName?.replace("#POSITION", (banner.positionForParentItem + 1).toString()).toString(),
+                KEY_NAME to banner.gtmItemName.replace("#POSITION", (banner.positionForParentItem + 1).toString()),
                 KEY_CREATIVE to (banner.creativeName ?: EMPTY_STRING),
                 KEY_POSITION to bannerPosition + 1,
                 KEY_PROMO_ID to (banner.trackingFields?.promoId ?: EMPTY_STRING),
@@ -2873,14 +2870,14 @@ open class DiscoveryAnalytics(
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = (components?.position ?: 0) + 1
-            productMap[LIST] = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            productMap[LIST] = it.gtmItemName.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION90] = sourceIdentifier
             productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
                 "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME"
             productMap[DIMENSION38] = ""
             productMap[DIMENSION84] = ""
-            val gtmItemName = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            val gtmItemName = it.gtmItemName.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())
             productMap[DIMENSION40] = processGtmItemName(gtmItemName, it)
         }
         list.add(productMap)
@@ -2913,7 +2910,7 @@ open class DiscoveryAnalytics(
             val listMap = HashMap<String, Any>()
             var productItemList = ""
             productHighlightData.let {
-                productItemList = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                productItemList = it.gtmItemName.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())
                 productCardImpressionLabel = EMPTY_STRING
                 listMap[KEY_NAME] = it.productName.toString()
                 listMap[KEY_ID] = it.productId.toString()

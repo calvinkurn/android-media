@@ -556,7 +556,7 @@ data class DataItem(
     val widgetHomeBanner: String? = "",
 
     @SerializedName("gtm_item_name")
-    var gtmItemName: String? = "",
+    private var _gtmItemName: String? = "",
 
     @SerializedName("department_id")
     var categoryDeptId: String? = "",
@@ -669,6 +669,10 @@ data class DataItem(
 
     var topLevelTab: TopLevelTab = UnknownTab
 ) {
+
+    var gtmItemName:String = ""
+        get() = getGtmItemNameReplaceTab()
+
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0
@@ -709,5 +713,9 @@ data class DataItem(
 
     private fun findLabelGroup(position: String): LabelsGroup? {
         return labelsGroupList?.find { it.position == position }
+    }
+
+    private fun getGtmItemNameReplaceTab():String{
+        return _gtmItemName?.replace("#MEGA_TAB_VALUE", tabName.orEmpty()) ?: ""
     }
 }
