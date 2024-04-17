@@ -4,13 +4,12 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendation.data.ThankYouProductCardModel
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.ProductCardViewListener
@@ -25,8 +24,10 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
 
     private var visibleViewPercentage: Int = 0
 
-    fun bind(thankYouProductCardModel: ThankYouProductCardModel,
-             listener: ProductCardViewListener?) {
+    fun bind(
+        thankYouProductCardModel: ThankYouProductCardModel,
+        listener: ProductCardViewListener?
+    ) {
         this.thankYouProductCardModel = thankYouProductCardModel
         thankYouProductCardModel.productCardModel.let { productCardModel ->
             itemView.tag = thankYouProductCardModel
@@ -34,34 +35,38 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
                 applyCarousel()
                 setProductModel(productCardModel)
                 setImageProductViewHintListener(thankYouProductCardModel
-                        .recommendationItem, object : ViewHintListener {
+                    .recommendationItem, object : ViewHintListener {
                     override fun onViewHint() {
-                        listener?.onProductImpression(thankYouProductCardModel
-                                .recommendationItem, adapterPosition)
+                        listener?.onProductImpression(
+                            thankYouProductCardModel
+                                .recommendationItem, adapterPosition
+                        )
                     }
                 })
                 setOnClickListener(object : ProductCardClickListener {
                     override fun onClick(v: View) {
-                        listener?.onProductClick(thankYouProductCardModel
-                            .recommendationItem, null, adapterPosition)
+                        listener?.onProductClick(
+                            thankYouProductCardModel
+                                .recommendationItem, null, adapterPosition
+                        )
                     }
 
                     override fun onAreaClicked(v: View) {
-                        AppLogTopAds.sendEventRealtimeClick(v.context,
-                            thankYouProductCardModel.recommendationItem
-                                .asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA))
+                        thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
+                            v.context, AdsLogConst.Refer.AREA
+                        )
                     }
 
                     override fun onProductImageClicked(v: View) {
-                        AppLogTopAds.sendEventRealtimeClick(v.context,
-                            thankYouProductCardModel.recommendationItem
-                                .asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER))
+                        thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
+                            v.context, AdsLogConst.Refer.COVER
+                        )
                     }
 
                     override fun onSellerInfoClicked(v: View) {
-                        AppLogTopAds.sendEventRealtimeClick(v.context,
-                            thankYouProductCardModel.recommendationItem
-                                .asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME))
+                        thankYouProductCardModel.recommendationItem.sendRealtimeClickAdsByteIo(
+                            v.context, AdsLogConst.Refer.SELLER_NAME
+                        )
                     }
                 })
 
@@ -92,16 +97,16 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
         get() = visibleViewPercentage
 
     override fun onViewAttachedToWindow() {
-        if (thankYouProductCardModel.recommendationItem.isTopAds){
-            AppLogTopAds.sendEventShow(view.context,
-                thankYouProductCardModel.recommendationItem.asAdsLogShowModel())
-        }
+        if (thankYouProductCardModel.recommendationItem.isTopAds)
+            thankYouProductCardModel.recommendationItem.sendShowAdsByteIo(view.context)
+
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        if (thankYouProductCardModel.recommendationItem.isTopAds){
-            AppLogTopAds.sendEventShowOver(view.context,
-                thankYouProductCardModel.recommendationItem.asAdsLogShowOverModel(visiblePercentage))
-        }
+        if (thankYouProductCardModel.recommendationItem.isTopAds)
+            thankYouProductCardModel.recommendationItem.sendShowOverAdsByteIo(
+                view.context,
+                visiblePercentage
+            )
     }
 }
