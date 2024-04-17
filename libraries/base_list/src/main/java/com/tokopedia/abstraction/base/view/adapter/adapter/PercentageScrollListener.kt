@@ -63,7 +63,10 @@ open class PercentageScrollListener : OnScrollListener() {
 
                     val viewHolder = recyclerView.findViewHolderForAdapterPosition(pos) as? IAdsViewHolderTrackListener
                         ?: continue
-                    viewHolder.setVisiblePercentage(visibleAreaPercentage)
+
+                    val prevValue = viewHolder.visiblePercentage
+
+                    viewHolder.setVisiblePercentage(max(prevValue, visibleAreaPercentage))
                 }
             }
         }
