@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -22,7 +23,7 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
 
     private lateinit var thankYouProductCardModel: ThankYouProductCardModel
 
-    private var visibleViewPercentage: Int = 0
+    private var visibleViewPercentage: Int = Int.ZERO
 
     fun bind(
         thankYouProductCardModel: ThankYouProductCardModel,
@@ -97,16 +98,14 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
         get() = visibleViewPercentage
 
     override fun onViewAttachedToWindow() {
-        if (thankYouProductCardModel.recommendationItem.isTopAds)
-            thankYouProductCardModel.recommendationItem.sendShowAdsByteIo(view.context)
-
+        thankYouProductCardModel.recommendationItem.sendShowAdsByteIo(view.context)
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        if (thankYouProductCardModel.recommendationItem.isTopAds)
-            thankYouProductCardModel.recommendationItem.sendShowOverAdsByteIo(
-                view.context,
-                visiblePercentage
-            )
+        thankYouProductCardModel.recommendationItem.sendShowOverAdsByteIo(
+            view.context,
+            visiblePercentage
+        )
+        this.visibleViewPercentage = Int.ZERO
     }
 }
