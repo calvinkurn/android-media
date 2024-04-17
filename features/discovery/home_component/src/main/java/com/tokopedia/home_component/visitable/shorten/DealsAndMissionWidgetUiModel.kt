@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class DealsAndMissionWidgetUiModel(
     val id: String = "",
     val showShimmering: Boolean = true,
-    val deals: DealsWidgetUiModel,
-    val mission: MissionWidgetUiModel,
+    val deals: DealsWidgetUiModel? = null,
+    val mission: MissionWidgetUiModel? = null,
     val status: Status = Status.Loading
 ) : HomeComponentVisitable,
     ImpressHolder(),

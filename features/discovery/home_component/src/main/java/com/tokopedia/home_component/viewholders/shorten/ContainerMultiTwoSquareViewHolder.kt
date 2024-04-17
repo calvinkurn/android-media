@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.databinding.GlobalComponentContainerStatic2squareBinding
+import com.tokopedia.home_component.databinding.GlobalComponentContainerMulti2squareBinding
 import com.tokopedia.home_component.decoration.StaticMissionWidgetItemDecoration
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactoryImpl
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSquaresAdapter
@@ -14,12 +14,13 @@ import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMI
 import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ContainerStaticSquaresViewHolder(
+class ContainerMultiTwoSquareViewHolder(
     view: View,
+    private val listener: ContainerMultiTwoSquareListener,
     private val recyclerRecycledViewPool: RecycledViewPool?
 ) : AbstractViewHolder<DealsAndMissionWidgetUiModel>(view) {
 
-    private val binding: GlobalComponentContainerStatic2squareBinding? by viewBinding()
+    private val binding: GlobalComponentContainerMulti2squareBinding? by viewBinding()
 
     private var mAdapter: ShortenStaticSquaresAdapter? = null
     private val visitableList = mutableListOf<ShortenVisitable>()
@@ -42,13 +43,13 @@ class ContainerStaticSquaresViewHolder(
     private fun renderWidgets(element: DealsAndMissionWidgetUiModel) {
         visitableList.clear()
 
-        visitableList.add(element.mission.position, element.mission)
-        visitableList.add(element.deals.position, element.deals)
+        element.addMissionWidget()
+        element.addDealWidget()
     }
 
     private fun setupRecyclerView() {
         mAdapter = if (binding?.lstComponent?.adapter == null) {
-            ShortenStaticSquaresAdapter(ShortenViewFactoryImpl(recyclerRecycledViewPool))
+            ShortenStaticSquaresAdapter(ShortenViewFactoryImpl(recyclerRecycledViewPool, listener))
         } else {
             binding?.lstComponent?.adapter as? ShortenStaticSquaresAdapter
         }
@@ -61,7 +62,13 @@ class ContainerStaticSquaresViewHolder(
         binding?.lstComponent?.setHasFixedSize(true)
     }
 
+    private fun DealsAndMissionWidgetUiModel.addMissionWidget() =
+        mission?.let { visitableList.add(it.position, it) }
+
+    private fun DealsAndMissionWidgetUiModel.addDealWidget() =
+        deals?.let { visitableList.add(it.position, it) }
+
     companion object {
-        val LAYOUT = R.layout.global_component_container_static_2square
+        val LAYOUT = R.layout.global_component_container_multi_2square
     }
 }

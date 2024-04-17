@@ -12,17 +12,18 @@ object TwoSquareDealWidgetMapper : BaseShortenWidgetMapper<DealsWidgetUiModel>()
         channel: DynamicHomeChannel.Channels
     ): DealsWidgetUiModel {
         val (index, model, header) = mapChannelToPartialWidget(data, channel)
+        val limitTopTwoGrids = channel.grids.take(2)
 
         return DealsWidgetUiModel(
             channelModel = model,
             position = index,
             header = header,
-            data = channel.grids.map { grid ->
+            data = limitTopTwoGrids.map { grid ->
                 val labelGroup = grid.labelGroup.associateBy { it.position }
-                val ribbon = labelGroup[Keys.ribbon]
+                val ribbon = labelGroup[Keys.RIBBON]
 
                 fun ribbon(): SmallProductModel.Ribbon.Type {
-                    return if (ribbon?.type == Default.ribbonRed) {
+                    return if (ribbon?.type == Default.RIBBON_RED) {
                         SmallProductModel.Ribbon.Type.Red
                     } else {
                         SmallProductModel.Ribbon.Type.Yellow
@@ -36,11 +37,11 @@ object TwoSquareDealWidgetMapper : BaseShortenWidgetMapper<DealsWidgetUiModel>()
                             type = ribbon()
                         )
                     ),
-                    pageName = labelGroup[Keys.pageName]?.title.orEmpty(),
-                    gridId = labelGroup[Keys.gridId]?.title.orEmpty(),
-                    url = labelGroup[Keys.url]?.imageUrl.orEmpty(), // this shouldn't be imageUrl
-                    appLink = labelGroup[Keys.appLink]?.imageUrl.orEmpty(),
-                    campaignCode = labelGroup[Keys.campaignCode]?.title.orEmpty(),
+                    pageName = labelGroup[Keys.PAGE_NAME]?.title.orEmpty(),
+                    gridId = labelGroup[Keys.GRID_ID]?.title.orEmpty(),
+                    url = labelGroup[Keys.URL]?.imageUrl.orEmpty(), // this shouldn't be imageUrl
+                    appLink = labelGroup[Keys.APP_LINK]?.imageUrl.orEmpty(),
+                    campaignCode = labelGroup[Keys.CAMPAIGN_CODE]?.title.orEmpty(),
                 )
             }
         )

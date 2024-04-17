@@ -15,28 +15,28 @@ abstract class BaseShortenWidgetMapper<T> {
     protected fun createSmallProductCardModel(groups: List<LabelGroup>): SmallProductModel {
         val labelGroup = groups.associateBy { it.position }
 
-        val title = labelGroup[Keys.title]
+        val title = labelGroup[Keys.TITLE]
         val titleStyle = title?.styles.orEmpty().associate { it.key to it.value }
 
-        val subtitle = labelGroup[Keys.subtitle]
+        val subtitle = labelGroup[Keys.SUBTITLE]
         val subtitleStyle = subtitle?.styles.orEmpty().associate { it.key to it.value }
 
         return SmallProductModel(
-            bannerImageUrl = labelGroup[Keys.imageUrl]?.title.orEmpty(),
+            bannerImageUrl = labelGroup[Keys.IMAGE_URL]?.title.orEmpty(),
             title = Pair(
                 title?.title.orEmpty(),
                 SmallProductModel.TextStyle(
-                    isBold = titleStyle[Keys.textFormat] == Default.textBold,
-                    textColor = titleStyle[Keys.textColor].orEmpty(),
-                    shouldRenderHtmlFormat = titleStyle[Keys.textFormat] == null
+                    isBold = titleStyle[Keys.TEXT_FORMAT] == Default.TEXT_BOLD,
+                    textColor = titleStyle[Keys.TEXT_COLOR].orEmpty(),
+                    shouldRenderHtmlFormat = titleStyle[Keys.TEXT_FORMAT] == null
                 )
             ),
             subtitle = Pair(
                 subtitle?.title.orEmpty(),
                 SmallProductModel.TextStyle(
-                    isBold = subtitleStyle[Keys.textFormat] == Default.textBold,
-                    textColor = subtitleStyle[Keys.textColor].orEmpty(),
-                    shouldRenderHtmlFormat = subtitleStyle[Keys.textFormat] == null
+                    isBold = subtitleStyle[Keys.TEXT_FORMAT] == Default.TEXT_BOLD,
+                    textColor = subtitleStyle[Keys.TEXT_COLOR].orEmpty(),
+                    shouldRenderHtmlFormat = subtitleStyle[Keys.TEXT_FORMAT] == null
                 )
             )
         )
@@ -58,29 +58,29 @@ abstract class BaseShortenWidgetMapper<T> {
     }
 
     protected object Keys {
-        val title = "home-title"
-        val subtitle = "home-subtitle"
-        val ribbon = "ri_ribbon"
-        val imageUrl = "home-image-url"
-        val textFormat = "text-format"
-        val textColor = "text-color"
-        val pageName = "home-pagename"
-        val gridId = "home-grid-id"
-        val url = "home-url"
-        val appLink = "home-applink"
-        val campaignCode = "home-campaign-code"
-        val id = "home-id"
-        val categoryId = "ome-category-id"
-        val productName = "home-product-name"
-        val recommendationType = "home-recommendation-type"
-        val buType = "home-bu-type"
-        val shopId = "home-shop-id"
-        val isTopAds = "home-is-topads"
-        val isCarousel = "home-is-carousel"
+        const val TITLE = "home-title"
+        const val SUBTITLE = "home-subtitle"
+        const val RIBBON = "ri_ribbon"
+        const val IMAGE_URL = "home-image-url"
+        const val TEXT_FORMAT = "text-format"
+        const val TEXT_COLOR = "text-color"
+        const val PAGE_NAME = "home-pagename"
+        const val GRID_ID = "home-grid-id"
+        const val URL = "home-url"
+        const val APP_LINK = "home-applink"
+        const val CAMPAIGN_CODE = "home-campaign-code"
+        const val ID = "home-id"
+        const val CATEGORY_ID = "ome-category-id"
+        const val PRODUCT_NAME = "home-product-name"
+        const val RECOMMENDATION_TYPE = "home-recommendation-type"
+        const val BU_TYPE = "home-bu-type"
+        const val SHOP_ID = "home-shop-id"
+        const val IS_TOPADS = "home-is-topads"
+        const val IS_CAROUSEL = "home-is-carousel"
     }
 
     protected object Default {
-        val textBold = "bold"
-        val ribbonRed = "red"
+        const val TEXT_BOLD = "bold"
+        const val RIBBON_RED = "red"
     }
 }

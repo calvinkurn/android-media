@@ -145,6 +145,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.ShopFlashSaleWidget
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.TwoSquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -1662,6 +1663,7 @@ open class HomeRevampFragment :
             getThematicUtil(),
             HomeOrigamiListenerDelegate(context, this),
             Mission4SquareWidgetListenerCallback(this),
+            TwoSquareWidgetListenerCallback(this),
             getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())

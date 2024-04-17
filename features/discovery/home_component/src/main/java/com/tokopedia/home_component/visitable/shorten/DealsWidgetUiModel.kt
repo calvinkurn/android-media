@@ -5,6 +5,7 @@ import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitabl
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactory
 import com.tokopedia.home_component.widget.card.SmallProductModel
 import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class DealsWidgetUiModel(
     val channelModel: ChannelModel,
@@ -27,4 +28,7 @@ data class ItemDealsWidgetUiModel(
     val campaignCode: String
 ) : ShortenVisitable by ShortenVisitable.ItemShortenVisitable(
     DealsAndMissionWidgetUiModel.Type.Deals.value
-)
+) {
+
+    val impression = ImpressHolder()
+}

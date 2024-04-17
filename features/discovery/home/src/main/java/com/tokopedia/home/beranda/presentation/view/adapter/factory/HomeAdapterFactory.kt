@@ -73,6 +73,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
+import com.tokopedia.home.beranda.presentation.view.listener.TwoSquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
@@ -129,7 +130,7 @@ import com.tokopedia.home_component.viewholders.V2OrigamiSDUIViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.viewholders.mission.v3.Mission4SquareWidgetListener
-import com.tokopedia.home_component.viewholders.shorten.ContainerStaticSquaresViewHolder
+import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
@@ -222,6 +223,7 @@ class HomeAdapterFactory(
     private val homeThematicUtil: HomeThematicUtil,
     private val origamiListenerDelegate: OrigamiListenerDelegate,
     private val mission4SquareWidgetListener: Mission4SquareWidgetListener,
+    private val multiTwoSquareWidgetListener: TwoSquareWidgetListenerCallback,
     private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -495,7 +497,7 @@ class HomeAdapterFactory(
     }
 
     override fun type(model: DealsAndMissionWidgetUiModel): Int {
-        return ContainerStaticSquaresViewHolder.LAYOUT
+        return ContainerMultiTwoSquareViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -678,7 +680,7 @@ class HomeAdapterFactory(
             V2OrigamiSDUIViewHolder.LAYOUT -> viewHolder = V2OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
-            ContainerStaticSquaresViewHolder.LAYOUT -> viewHolder = ContainerStaticSquaresViewHolder(view, parentRecycledViewPool)
+            ContainerMultiTwoSquareViewHolder.LAYOUT -> viewHolder = ContainerMultiTwoSquareViewHolder(view, multiTwoSquareWidgetListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

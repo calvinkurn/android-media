@@ -7,8 +7,12 @@ import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiMod
 object ShortenWidgetMapper {
 
     fun to2SquareUiModel(data: DynamicHomeChannel, atfData: AtfData): DealsAndMissionWidgetUiModel {
-        val mission = data.channels.first()
-        val deals = data.channels.last()
+        val top2ChannelList = data.channels
+            .takeIf { it.size <= 2 } ?: return DealsAndMissionWidgetUiModel()
+
+        // TODO: have been over-comm to BE team to provide the variable for this determination.
+        val mission = top2ChannelList.first()
+        val deals = top2ChannelList.last()
 
         return DealsAndMissionWidgetUiModel(
             id = atfData.atfMetadata.id.toString(),
