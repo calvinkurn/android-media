@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -29,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
@@ -66,6 +69,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         initView()
     }
 
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
+        dataItem?.let { AppLogTopAds.sendEventShowOver(itemView.context, it.asAdsLogShowOverModel(visiblePercentage)) }
+    }
+
+    override fun onViewDetachedToWindow() {
+        dataItem?.let { AppLogTopAds.sendEventShow(itemView.context, it.asAdsLogShowModel()) }
+    }
+
     private fun initView() {
         if (masterProductCardItemViewModel?.getTemplateType() == LIST) {
             masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
@@ -95,9 +106,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
                 )
             }
-            masterProductCardListView?.setOnClickListener {
-                handleUIClick(it)
-            }
+            masterProductCardListView?.setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    handleUIClick(v)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.SELLER_NAME)
+                }
+
+                override fun onAreaClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.COVER)
+                }
+            })
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -125,8 +150,30 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     )
                 }
             }
-            masterProductCardGridView?.setOnClickListener {
-                handleUIClick(it)
+            masterProductCardGridView?.setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    handleUIClick(v)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.SELLER_NAME)
+                }
+
+                override fun onAreaClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.COVER)
+                }
+            })
+        }
+    }
+
+    private fun sendAdsRealtimeClickByteIo(refer: String) {
+        dataItem?.let {
+            if (it.isTopads == true) {
+                AppLogTopAds.sendEventRealtimeClick(itemView.context, it.asAdsLogRealtimeClickModel(refer))
             }
         }
     }

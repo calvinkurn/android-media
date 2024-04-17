@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
@@ -93,7 +95,8 @@ class ProductCardColumnListViewHolder(
             }
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .viewProductsList(
-                    componentsItems = componentsItem.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    componentsItems = componentsItem.getComponentItem(itemPosition)
+                        ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
                     isFulFillment = componentsItem.isFulfillment(product),
                     warehouseId = componentsItem.getWarehouseId(product)
@@ -106,7 +109,7 @@ class ProductCardColumnListViewHolder(
     override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
         viewModel?.apply {
             val product = getProduct(itemPosition)?.also {
-                if(it.isEligibleToTrack()) {
+                if (it.isEligibleToTrack()) {
                     AppLogRecommendation.sendProductClickAppLog(
                         it.asProductTrackModel(
                             it.parentComponentName.orEmpty()
@@ -114,9 +117,11 @@ class ProductCardColumnListViewHolder(
                     )
                 }
             }
+
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(
-                    componentsItems = componentsItem.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    componentsItems = componentsItem.getComponentItem(itemPosition)
+                        ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
                     isFulFillment = componentsItem.isFulfillment(product),
                     warehouseId = componentsItem.getWarehouseId(product)
@@ -125,6 +130,48 @@ class ProductCardColumnListViewHolder(
             trackTopAdsClick(itemPosition)
 
             RouteManager.route(itemView.context, product?.applinks)
+        }
+    }
+
+    override fun onAreaClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
+        sendAdsRealtimeClickByteIo(AdsLogConst.Refer.AREA, itemPosition)
+    }
+
+    override fun onProductImageClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
+        sendAdsRealtimeClickByteIo(AdsLogConst.Refer.COVER, itemPosition)
+    }
+
+    override fun onSellerInfoClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
+        sendAdsRealtimeClickByteIo(AdsLogConst.Refer.SELLER_NAME, itemPosition)
+    }
+
+    override fun onViewAttachedToWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
+        viewModel?.run {
+            val product = getProduct(itemPosition)
+
+            if (product?.isTopads == true) {
+                AppLogTopAds.sendEventShow(itemView.context, product.asAdsLogShowModel())
+            }
+        }
+    }
+
+    override fun onViewDetachedFromWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int, visiblePercentage: Int) {
+        viewModel?.run {
+            val product = getProduct(itemPosition)
+
+            if (product?.isTopads == true) {
+                AppLogTopAds.sendEventShowOver(itemView.context, product.asAdsLogShowOverModel(visiblePercentage))
+            }
+        }
+    }
+
+    private fun sendAdsRealtimeClickByteIo(refer: String, itemPosition: Int) {
+        viewModel?.run {
+            val product = getProduct(itemPosition)
+
+            if (product?.isTopads == true) {
+                AppLogTopAds.sendEventRealtimeClick(itemView.context, product.asAdsLogRealtimeClickModel(refer))
+            }
         }
     }
 

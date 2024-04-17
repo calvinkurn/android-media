@@ -2,6 +2,9 @@ package com.tokopedia.discovery2.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
@@ -705,6 +708,41 @@ data class DataItem(
 
     fun getAppLog(): RecommendationAppLog? {
         return appLog
+    }
+
+    fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(refer,
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            "", AdsLogRealtimeClickModel.AdExtraData(
+            productId = productId.orEmpty(),
+            productName = productName.orEmpty(),
+        ))
+    }
+
+    fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            "",
+            AdsLogShowOverModel.AdExtraData(
+                productId = productId.orEmpty(),
+                productName = productName.orEmpty(),
+                sizePercent = visiblePercentage.toString())
+        )
+    }
+
+    fun asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            "", AdsLogShowModel.AdExtraData(
+            productId = productId.orEmpty(),
+            productName = productName.orEmpty(),
+        ))
     }
 
     private fun findLabelGroup(position: String): LabelsGroup? {
