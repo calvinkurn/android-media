@@ -18,6 +18,7 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
+import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant.KYC_SHOP_CREATION_SOURCE
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
@@ -187,7 +188,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun goToKycFlow() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
-            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, "")
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, KYC_SHOP_CREATION_SOURCE)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK, "")
             putExtra(ShopCreationConstant.IS_RE_VERIFY, true)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, ShopCreationConstant.OPEN_SHOP_KYC_PROJECT_ID)
@@ -205,7 +206,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     TokopediaUrl.getInstance().WEB.plus(OS_PATH)
                 )
             }
-            setOnWebviewClick {  }
+            setOnWebviewClick { }
             setCloseClickListener {
                 shopCreationAnalytics.sendSellerClickDismissTheKycPromptEvent(shopId = userSession.shopId, userId = userSession.userId)
             }
