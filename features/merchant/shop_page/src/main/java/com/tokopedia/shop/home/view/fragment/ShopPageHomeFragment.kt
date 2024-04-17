@@ -222,9 +222,8 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
-import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
+import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -5114,7 +5113,7 @@ open class ShopPageHomeFragment :
             }
 
             override fun onProductCardThematicWidgetImpressListener(
-                products: List<ProductCardUiModel>,
+                products: List<ShopHomeProductUiModel>,
                 position: Int,
                 thematicWidgetUiModel: ThematicWidgetUiModel?
             ) {
@@ -5129,7 +5128,7 @@ open class ShopPageHomeFragment :
             }
 
             override fun onProductCardThematicWidgetClickListener(
-                product: ProductCardUiModel,
+                product: ShopHomeProductUiModel,
                 thematicWidgetUiModel: ThematicWidgetUiModel?,
                 position: Int
             ) {

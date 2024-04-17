@@ -18,7 +18,10 @@ import dagger.Provides
 @Module
 class RecommendationCoroutineModule {
     @Provides
-    fun provideGetCoroutineRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
+    fun provideGetCoroutineRecommendationUseCase(
+        @ApplicationContext context: Context,
+        coroutineGqlRepository: GraphqlRepository,
+    ): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
 
     @Provides
     fun provideGetCoroutineSingleRecommendationUseCase(

@@ -12,7 +12,6 @@ import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.component.shipment.ShipmentViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
@@ -55,7 +54,7 @@ import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShop
 import com.tokopedia.product.detail.view.fragment.delegate.PdpCallbackDelegate
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
-import com.tokopedia.product.detail.view.viewholder.DynamicOneLinerViewHolder
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetV2ViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.GlobalBundlingViewHolder
@@ -98,6 +97,7 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.OngoingCampaignV
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPViewHolder
 import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
@@ -282,7 +282,7 @@ class ProductDetailAdapterFactoryImpl(
         return OngoingCampaignViewHolder.LAYOUT
     }
 
-    override fun type(data: DynamicOneLinerDataModel): Int {
+    override fun type(data: DynamicOneLinerUiModel): Int {
         return DynamicOneLinerViewHolder.LAYOUT
     }
 
@@ -449,14 +449,17 @@ class ProductDetailAdapterFactoryImpl(
             )
 
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
-            DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
+            DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(
+                view,
+                pdpCallback.dynamicOneLiner
+            )
             APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
             ProductPriceViewHolder.LAYOUT -> ProductPriceViewHolder(view, pdpCallback.productPrice)
             TabletLeftSectionViewHolder.LAYOUT -> TabletLeftSectionViewHolder(view, listener, this)
             TabletRightSectionViewHolder.LAYOUT -> TabletRightSectionViewHolder(view, listener, this)
             GWPViewHolder.LAYOUT -> GWPViewHolder(view, pdpCallback.gwp)
-            SDUIViewHolder.LAYOUT -> SDUIViewHolder(view, listener)
+            SDUIViewHolder.LAYOUT -> SDUIViewHolder(view, pdpCallback.sdui)
             else -> super.createViewHolder(view, type)
         }
     }

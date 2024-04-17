@@ -38,7 +38,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
@@ -98,6 +97,7 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 import com.tokopedia.product.share.ProductData
@@ -324,8 +324,9 @@ object ProductDetailMapper {
                     }
                 }
 
-                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER -> {
-                    val dataModel = DynamicOneLinerDataModel(
+                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER,
+                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_VARIANT -> {
+                    val dataModel = DynamicOneLinerUiModel(
                         name = component.componentName,
                         type = component.type,
                         data = generateDynamicInfoData(component.componentData)
@@ -522,7 +523,7 @@ object ProductDetailMapper {
                         GWPUiModel(type = component.type, name = component.componentName)
                     )
                 }
-                ProductDetailConstant.SDUI_VIEW -> {
+                ProductDetailConstant.SDUI -> {
                     val sduiData = component.componentData.firstOrNull() ?: return@forEachIndexed
                     listOfComponent.add(
                         SDUIDataModel(
@@ -533,6 +534,7 @@ object ProductDetailMapper {
                     )
                 }
             }
+
         }
         return listOfComponent
     }
@@ -647,7 +649,10 @@ object ProductDetailMapper {
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
             promoPrice = promoPriceData.promoPrice,
-            liveIndicator = mediaData.liveIndicator
+            liveIndicator = mediaData.liveIndicator,
+            socialProof = data.components.find {
+                it.type == ProductDetailConstant.MINI_SOCIAL_PROOF
+            }?.componentData?.firstOrNull()?.socialProof ?: emptyList()
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
@@ -806,9 +811,9 @@ object ProductDetailMapper {
         )
     }
 
-    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerDataModel.Data {
-        val componentData = data.firstOrNull() ?: return DynamicOneLinerDataModel.Data()
-        return DynamicOneLinerDataModel.Data(
+    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerUiModel.Data {
+        val componentData = data.firstOrNull() ?: return DynamicOneLinerUiModel.Data()
+        return DynamicOneLinerUiModel.Data(
             text = componentData.text,
             applink = componentData.applink,
             separator = componentData.separator,
@@ -1092,8 +1097,8 @@ object ProductDetailMapper {
                 labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionClickChannel = "${ShareExTrackerArg.CHANNEL_KEY} - ${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId - ${ShareExTrackerArg.IMAGE_TYPE_KEY}",
-                labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
-                labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
+                labelImpressionAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId",
+                labelActionClickAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId"
             )
         )
     }

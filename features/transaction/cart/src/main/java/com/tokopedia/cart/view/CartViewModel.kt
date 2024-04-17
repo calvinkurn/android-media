@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -31,6 +34,7 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.mapper.CartShopGroupTickerGroupMetadataRequestMapper
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.processor.CartCalculator
@@ -40,6 +44,11 @@ import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainFloatingButtonData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItem
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainViewAllData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cart.view.uimodel.CartDeleteItemData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
@@ -51,6 +60,7 @@ import com.tokopedia.cart.view.uimodel.CartModel
 import com.tokopedia.cart.view.uimodel.CartMutableLiveData
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderActionType
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectedAmountHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
@@ -89,6 +99,7 @@ import com.tokopedia.cartcommon.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -122,6 +133,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
@@ -206,6 +219,9 @@ class CartViewModel @Inject constructor(
         MutableLiveData()
     val cartCheckoutButtonState: LiveData<CartCheckoutButtonState> = _cartCheckoutButtonState
 
+    private val _buyAgainFloatingButtonData: MutableLiveData<CartBuyAgainFloatingButtonData> = MutableLiveData()
+    val buyAgainFloatingButtonData: LiveData<CartBuyAgainFloatingButtonData> = _buyAgainFloatingButtonData
+
     private val _wishlistV2State: MutableLiveData<LoadWishlistV2State> = MutableLiveData()
     val wishlistV2State: LiveData<LoadWishlistV2State> = _wishlistV2State
 
@@ -276,6 +292,8 @@ class CartViewModel @Inject constructor(
         const val GET_CART_STATE_DEFAULT = 0
         const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1
 
+        private const val BUY_AGAIN_PRODUCTS_LIMIT = 6
+
         const val RECOMMENDATION_START_PAGE = 1
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
         const val ITEM_CHECKED_ALL_WITH_CHANGES = 1
@@ -284,10 +302,10 @@ class CartViewModel @Inject constructor(
         const val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
         const val RECENT_VIEW_XSOURCE = "recentview"
         const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
-        const val PAGE_NAME_RECENT_VIEW_TEST = "cart_recent_view_test" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val PAGE_NAME_RECOMMENDATION = "cart"
-        const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val RECOMMENDATION_XSOURCE = "recom_widget"
+        const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
+        const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
@@ -402,7 +420,8 @@ class CartViewModel @Inject constructor(
                 item is ShipmentSellerCashbackModel ||
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
-                item is DisabledAccordionHolderData
+                item is DisabledAccordionHolderData ||
+                item is CartBuyAgainHolderData
             ) {
                 wishlistIndex = index
             }
@@ -509,6 +528,7 @@ class CartViewModel @Inject constructor(
         isLoadingTypeRefresh: Boolean,
         getCartState: Int = GET_CART_STATE_DEFAULT
     ) {
+        updateBuyAgainFloatingButtonVisibility(false)
         CartIdlingResource.increment()
         if (initialLoad) {
             _globalEvent.value = CartGlobalEvent.LoadGetCartData
@@ -677,6 +697,7 @@ class CartViewModel @Inject constructor(
 
         _subTotalState.value = SubTotalState(
             subtotalCashback,
+            subtotalBeforeSlashedPrice,
             totalItemQty.toString(),
             finalSubtotal,
             dataList.isEmpty()
@@ -938,6 +959,104 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    fun processGetBuyAgainData() {
+        _globalEvent.value = CartGlobalEvent.ItemLoading(true)
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
+                val recommendationWidgets = getRecommendationUseCase.getData(
+                    GetRecommendationRequestParam(
+                        pageNumber = 1,
+                        xSource = RECENT_VIEW_XSOURCE,
+                        pageName = PAGE_NAME_BUY_AGAIN,
+                        queryParam = "",
+                        hasNewProductCardEnabled = true
+                    )
+                )
+                withContext(dispatchers.main) {
+                    _globalEvent.value = CartGlobalEvent.ItemLoading(false)
+                    if (recommendationWidgets.firstOrNull()?.recommendationItemList?.isNotEmpty() == true) {
+                        renderBuyAgain(recommendationWidgets[0])
+                    }
+                }
+            },
+            onError = { throwable ->
+                Timber.d(throwable)
+                withContext(dispatchers.main) {
+                    _globalEvent.value = CartGlobalEvent.ItemLoading(false)
+                }
+            }
+        )
+    }
+
+    private fun renderBuyAgain(recommendationWidget: RecommendationWidget) {
+        val buyAgainList = mutableListOf<CartBuyAgainItem>()
+        val mappedBuyAgainList = recommendationWidget.recommendationItemList.map {
+            CartBuyAgainItemHolderData(it)
+        }
+        buyAgainList.addAll(mappedBuyAgainList)
+
+        val cartBuyAgainHolderData = CartBuyAgainHolderData()
+        val isSeeMoreAppLinkExist = recommendationWidget.seeMoreAppLink?.isNotBlank() == true
+
+        val resultList = if (isSeeMoreAppLinkExist) {
+            val maxIndex = min(BUY_AGAIN_PRODUCTS_LIMIT, buyAgainList.size)
+            buyAgainList.subList(0, maxIndex).toMutableList()
+        } else {
+            buyAgainList
+        }
+        if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT && isSeeMoreAppLinkExist) {
+            resultList.add(CartBuyAgainViewAllData(recommendationWidget.seeMoreAppLink))
+        }
+        cartBuyAgainHolderData.buyAgainList = resultList
+
+        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
+        cartSectionHeaderHolderData.title = recommendationWidget.title.ifEmpty { "Waktunya beli lagi, nih!" }
+        cartSectionHeaderHolderData.showAllAppLink = if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT) {
+            recommendationWidget.seeMoreAppLink
+        } else {
+            String.EMPTY
+        }
+        cartSectionHeaderHolderData.type = CartSectionHeaderActionType.ICON_BUTTON
+
+        addCartBuyAgainData(cartSectionHeaderHolderData, cartBuyAgainHolderData)
+
+        _buyAgainFloatingButtonData.value = CartBuyAgainFloatingButtonData(
+            title = BUY_AGAIN_WORDING,
+            isVisible = buyAgainList.isNotEmpty()
+        )
+    }
+
+    private fun addCartBuyAgainData(
+        cartSectionHeaderHolderData: CartSectionHeaderHolderData,
+        cartBuyAgainHolderData: CartBuyAgainHolderData
+    ) {
+        var buyAgainIndex = 0
+        for ((index, item) in cartDataList.value.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                item is CartGroupHolderData ||
+                item is CartItemHolderData ||
+                item is CartShopBottomHolderData ||
+                item is ShipmentSellerCashbackModel ||
+                item is DisabledItemHeaderHolderData ||
+                item is DisabledReasonHolderData ||
+                item is DisabledAccordionHolderData
+            ) {
+                buyAgainIndex = index
+            }
+        }
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++buyAgainIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> buyAgainIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, buyAgainIndex)
+            }
+            cartDataList.value.add(++buyAgainIndex, cartBuyAgainHolderData)
+            cartDataList.notifyObserver()
+        }
+    }
+
     fun addCartRecentViewData() {
         var recentViewIndex = 0
         for ((index, item) in cartDataList.value.withIndex()) {
@@ -946,10 +1065,11 @@ class CartViewModel @Inject constructor(
                 item is CartItemHolderData ||
                 item is CartShopBottomHolderData ||
                 item is ShipmentSellerCashbackModel ||
-                item is CartWishlistHolderData ||
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
-                item is DisabledAccordionHolderData
+                item is DisabledAccordionHolderData ||
+                item is CartBuyAgainHolderData ||
+                item is CartWishlistHolderData
             ) {
                 recentViewIndex = index
             }
@@ -964,7 +1084,7 @@ class CartViewModel @Inject constructor(
             val cartRecentViewHolderData = CartRecentViewHolderData(
                 recommendationWidgetMetadata = RecommendationWidgetMetadata(
                     pageNumber = 1,
-                    pageName = PAGE_NAME_RECENT_VIEW_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
+                    pageName = PAGE_NAME_RECENT_VIEW,
                     xSource = RECENT_VIEW_XSOURCE,
                     productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
@@ -1027,7 +1147,7 @@ class CartViewModel @Inject constructor(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
                         xSource = RECOMMENDATION_XSOURCE,
-                        pageName = PAGE_NAME_RECOMMENDATION_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
+                        pageName = PAGE_NAME_RECOMMENDATION,
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true
@@ -1062,6 +1182,7 @@ class CartViewModel @Inject constructor(
                 item is DisabledItemHeaderHolderData ||
                 item is DisabledReasonHolderData ||
                 item is DisabledAccordionHolderData ||
+                item is CartBuyAgainHolderData ||
                 item is CartRecentViewHolderData ||
                 item is CartWishlistHolderData ||
                 item is CartTopAdsHeadlineData ||
@@ -1124,6 +1245,7 @@ class CartViewModel @Inject constructor(
                     item is DisabledItemHeaderHolderData ||
                     item is DisabledReasonHolderData ||
                     item is DisabledAccordionHolderData ||
+                    item is CartBuyAgainHolderData ||
                     item is CartRecentViewHolderData ||
                     item is CartWishlistHolderData
                 ) {
@@ -1523,6 +1645,13 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    fun sendAtcButtonTracker() {
+        val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
+            cartDataList.value, subTotalState.value
+        )
+        AppLogPdp.sendCartButtonClick(buttonClickTracker)
+    }
+
     fun processAddToCart(productModel: Any) {
         _cartProgressLoading.value = true
 
@@ -1570,6 +1699,12 @@ class CartViewModel @Inject constructor(
             if (clickUrl.isNotEmpty()) {
                 _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLBanner(productModel)
             }
+        } else if (productModel is CartBuyAgainItemHolderData) {
+            productId = productModel.recommendationItem.productId
+            shopId = productModel.recommendationItem.shopId
+            productName = productModel.recommendationItem.name
+            productPrice = productModel.recommendationItem.price
+            quantity = productModel.recommendationItem.minOrder
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
@@ -1913,7 +2048,10 @@ class CartViewModel @Inject constructor(
                 if (result is Success) {
                     if (isFromCart) {
                         _removeFromWishlistEvent.value =
-                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(position)
+                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(
+                                position = position,
+                                message = result.data.message
+                            )
                     } else {
                         _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Success(
                             result.data,
@@ -2285,7 +2423,8 @@ class CartViewModel @Inject constructor(
                         .build(),
                     enableBoAffordability = cartGroupHolderData.cartShopGroupTicker.enableBoAffordability,
                     enableBundleCrossSell = cartGroupHolderData.cartShopGroupTicker.enableBundleCrossSell,
-                    isTokoNow = cartGroupHolderData.isTokoNow
+                    isTokoNow = cartGroupHolderData.isTokoNow,
+                    groupMetadata = CartShopGroupTickerGroupMetadataRequestMapper.generateGroupMetadata(cartGroupHolderData)
                 )
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
                     .cartShopGroupTickerAggregator.data
@@ -2863,5 +3002,11 @@ class CartViewModel @Inject constructor(
                 Timber.d(t)
             }
         }
+    }
+
+    fun updateBuyAgainFloatingButtonVisibility(isVisible: Boolean) {
+        _buyAgainFloatingButtonData.value = _buyAgainFloatingButtonData.value?.copy(
+            isVisible = isVisible
+        )
     }
 }

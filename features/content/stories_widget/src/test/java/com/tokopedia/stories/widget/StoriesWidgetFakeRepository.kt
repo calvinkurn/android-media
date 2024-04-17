@@ -29,13 +29,19 @@ class StoriesWidgetFakeRepository(
         return mHasSeenCoachMark
     }
 
-    override suspend fun getUpdatedSeenStatus(shopId: String, lastUpdated: TimeMillis): Boolean {
+    override suspend fun getUpdatedSeenStatus(
+        shopId: String,
+        currentHasSeenAll: Boolean,
+        lastUpdated: TimeMillis
+    ): Boolean {
         return seenStatusMap[shopId].orFalse()
     }
 
     override suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntryPoint,
-        shopIds: List<String>
+        shopIds: List<String>,
+        categoryIds: List<String>,
+        productIds: List<String>
     ): StoriesWidgetInfo {
         if (forbiddenEntryPoints.contains(entryPoint)) return StoriesWidgetInfo.Default
         return StoriesWidgetInfo(stateMap, coachMarkText)

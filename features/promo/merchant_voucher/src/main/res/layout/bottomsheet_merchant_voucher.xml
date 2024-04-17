@@ -22,7 +22,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp">
 
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
+            <com.tokopedia.merchantvoucher.common.widget.TkpdHintTextInputLayout
                 android:id="@+id/textInputLayoutCoupon"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                     android:inputType="text"
                     android:textColor="@color/Unify_NN950_68" />
 
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            </com.tokopedia.merchantvoucher.common.widget.TkpdHintTextInputLayout>
 
             <TextView
                 android:id="@+id/buttonUse"

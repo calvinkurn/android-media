@@ -50,7 +50,8 @@ object ShopInfoByIdQuery: GqlQueryInterface {
                     statusMessage
                     tickerType
                     shopStatus
-                  }                  
+                  }
+                  isKyc
                 }
               }
             }

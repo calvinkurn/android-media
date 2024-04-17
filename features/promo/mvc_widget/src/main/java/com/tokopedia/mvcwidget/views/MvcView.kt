@@ -146,18 +146,11 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         imgIconChevron?.setColorFilter(
             ContextCompat.getColor(context, R.color.mvc_dms_static_nn900)
         )
-        imgIconChevron?.setColorFilter(
-            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900),
-            PorterDuff.Mode.SRC_IN
-        )
-        imgIconChevron?.setBackgroundColor(
+        mvcBgImg?.setColorFilter(
             ContextCompat.getColor(
                 context,
                 unifyprinciplesR.color.Unify_Static_White
-            )
-        )
-        mvcBgImg?.setColorFilter(
-            Color.parseColor("#FFFFFF"),
+            ),
             PorterDuff.Mode.SRC_IN
         )
 

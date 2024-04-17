@@ -10,4 +10,6 @@ data class StoriesArgsModel(
     val source: String = "",
     val sourceId: String = "",
     val entryPoint: String = "",
+    val categoryIds: List<String> = emptyList(),
+    val productIds: List<String> = emptyList()
 ) : Parcelable

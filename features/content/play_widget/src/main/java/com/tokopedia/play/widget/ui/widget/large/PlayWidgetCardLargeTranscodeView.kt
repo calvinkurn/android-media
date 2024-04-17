@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetRatio
 import com.tokopedia.play.widget.ui.model.getWidthAndHeight
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
@@ -27,19 +28,25 @@ import com.tokopedia.play_common.R as play_commonR
 class PlayWidgetCardLargeTranscodeView : FrameLayout {
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initAttrs(attrs)
+    }
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        initAttrs(attrs)
+    }
 
     constructor(
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int,
         defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
+    ) : super(context, attrs, defStyleAttr, defStyleRes) {
+        initAttrs(attrs)
+    }
 
     private val thumbnail: ImageView
     private val totalViewBadge: View
@@ -60,6 +67,8 @@ class PlayWidgetCardLargeTranscodeView : FrameLayout {
     private val imageBlurUtil = ImageBlurUtil(context)
 
     private val transcodingCoverTarget: MediaBitmapEmptyTarget<Bitmap>
+
+    private var mRatio = PlayWidgetRatio.Unknown
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_large_transcode, this)
@@ -83,6 +92,24 @@ class PlayWidgetCardLargeTranscodeView : FrameLayout {
             },
             onFailed = {}
         )
+    }
+
+    private fun initAttrs(attrs: AttributeSet?) {
+        if (attrs == null) return
+
+        val attributeArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.PlayWidgetCardLargeView
+        )
+        val rawDimensionRatio = attributeArray.getString(R.styleable.PlayWidgetCardLargeView_dimensionRatio).orEmpty()
+        mRatio = PlayWidgetRatio.parse(rawDimensionRatio)
+
+        attributeArray.recycle()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val (newWidthMeasureSpec, newHeightMeasureSpec) = mRatio.getMeasureSpec(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(newWidthMeasureSpec, newHeightMeasureSpec)
     }
 
     fun setListener(listener: Listener?) {

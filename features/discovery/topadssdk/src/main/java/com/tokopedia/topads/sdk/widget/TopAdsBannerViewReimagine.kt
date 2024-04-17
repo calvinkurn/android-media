@@ -25,6 +25,7 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductReimagineViewHolder
@@ -153,7 +154,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
                     val items = ArrayList<Item<*>>()
                     if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
-                        val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
+                        val productCardModelList: ArrayList<ProductCardModel> = MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
                         for (i in 0 until productCardModelList.size) {
                             if (i < ITEM_3) {
                                 val model = BannerShopProductUiModel(

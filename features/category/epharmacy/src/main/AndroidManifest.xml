@@ -68,6 +68,104 @@
                     android:pathPattern="@string/applink_epharmacy_chooser"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.activity.EPharmacyCheckoutActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_epharmacy"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_epharmacy_checkout"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.EPharmacyReminderActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_epharmacy"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_epharmacy_reminder"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.EPharmacyChatLoadingActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_epharmacy"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_epharmacy_chat_loading"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.EPharmacyCommonBsActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent"
+            android:launchMode="singleTop"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_epharmacy"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_epharmacy_common_bs"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.EPharmacyOrderDetailActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_epharmacy"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_epharmacy_order_detail"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.EPharmacyViewPrescriptionActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent"
+            android:launchMode="singleTop"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_epharmacy"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/applink_epharmacy_view_prescription"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

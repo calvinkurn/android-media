@@ -292,7 +292,7 @@ class StoriesDetailFragment @Inject constructor(
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.storiesState.withCache().collectLatest { (prevState, currState) ->
-                renderStoriesGroupHeader(prevState?.storiesMainData, currState.storiesMainData)
+                renderStoriesGroupHeader(prevState?.storiesMainData, currState.storiesMainData, currState.canShowGroup)
                 handleReportState(prevState?.reportState, currState.reportState)
 
                 if (prevState?.storiesMainData != null && prevState.storiesMainData != StoriesUiModel()) {
@@ -305,7 +305,7 @@ class StoriesDetailFragment @Inject constructor(
 
                     curr?.let {
                         it.detailItems.getOrNull(it.selectedDetailPosition)?.let { item ->
-                            handleVideoPlayState(item, currState.timerStatus)
+                            handleVideoPlayState(item, currState.timerStatus, it.selectedGroupId)
                         }
                     }
                 }
@@ -408,7 +408,7 @@ class StoriesDetailFragment @Inject constructor(
                     context,
                     state.report.submitStatus.throwable
                 ),
-                type = Toaster.TYPE_ERROR,
+                type = Toaster.TYPE_ERROR
             )
         }
         viewModel.submitAction(StoriesUiAction.ResetReportState)
@@ -416,7 +416,8 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesGroupHeader(
         prevState: StoriesUiModel?,
-        state: StoriesUiModel
+        state: StoriesUiModel,
+        canShowGroup: Boolean
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
@@ -424,10 +425,19 @@ class StoriesDetailFragment @Inject constructor(
             return
         }
 
-        mAdapter.clearAllItems()
-        mAdapter.setItems(state.groupHeader)
-        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
-        binding.rvStoriesCategory.scrollToPosition(state.selectedGroupPosition)
+        if (canShowGroup) {
+            mAdapter.clearAllItems()
+            mAdapter.setItems(state.groupHeader)
+            mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
+            binding.rvStoriesCategory.scrollToPosition(state.selectedGroupPosition)
+            binding.tvTitle.text = ""
+        } else {
+            mAdapter.clearAllItems()
+            mAdapter.notifyItemRangeRemoved(0, state.groupHeader.size)
+            val selectedGroup = state.groupItems[state.selectedGroupPosition]
+            binding.tvTitle.text = selectedGroup.detail.detailItems[selectedGroup.detail.selectedDetailPosition].categoryName
+        }
+
         binding.layoutDetailLoading.categoriesLoader.hide()
     }
 
@@ -441,7 +451,9 @@ class StoriesDetailFragment @Inject constructor(
             state.selectedGroupId != groupId ||
             state.selectedDetailPosition < 0 ||
             state.detailItems.isEmpty()
-        ) return
+        ) {
+            return
+        }
 
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
@@ -450,7 +462,7 @@ class StoriesDetailFragment @Inject constructor(
 
         renderAuthor(currentItem)
         renderNudge(prevItem, currentItem)
-        renderMedia(currentItem.content, currentItem.status)
+        renderMedia(currentItem.content, currentItem.status, state.selectedGroupId)
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
@@ -460,6 +472,7 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderMedia(
         content: StoriesItemContent,
         status: StoryStatus,
+        selectedGroupId: String
     ) {
         when (content.type) {
             Image -> {
@@ -487,7 +500,7 @@ class StoriesDetailFragment @Inject constructor(
                 renderStoryBasedOnStatus(status) {
                     showVideoContent()
                     showVideoLoading()
-                    renderVideoMedia(content)
+                    renderVideoMedia(content, selectedGroupId)
                     hideError()
                 }
             }
@@ -509,7 +522,7 @@ class StoriesDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        timerInfo = timerState,
+                        timerInfo = timerState
                     ) {
                         if (isEligiblePage) {
                             mCoachMark?.dismissCoachMark()
@@ -522,7 +535,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${viewModel.mDetail.storyType} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${viewModel.validAuthorId} - ${viewModel.mDetail.storyType} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -697,6 +710,8 @@ class StoriesDetailFragment @Inject constructor(
         binding.storiesComponent.showWithCondition(isShow)
         binding.clSideIcons.showWithCondition(isShow)
         binding.vStoriesPartner.root.showWithCondition(isShow)
+
+        binding.tvTitle.showWithCondition(isShow && !viewModel.storiesState.value.canShowGroup)
     }
 
     private fun showStoriesActionView(isShow: Boolean) {
@@ -724,7 +739,7 @@ class StoriesDetailFragment @Inject constructor(
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = position.plus(1).toString(),
-                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
+                    itemId = "${data.groupId} - ${data.groupName} - ${viewModel.validAuthorId}",
                     itemName = "/ - stories"
                 )
             )
@@ -766,7 +781,7 @@ class StoriesDetailFragment @Inject constructor(
             ProductVariantBottomSheetParams(
                 pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
                 productId = product.id,
-                shopId = mParentPage.args.authorId,
+                shopId = viewModel.validAuthorId,
                 dismissAfterTransaction = false,
                 trackerCdListName = viewModel.storyId
             )
@@ -776,7 +791,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) =
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) {
         with(binding.vStoriesError) {
             show()
             type = errorType
@@ -785,6 +800,9 @@ class StoriesDetailFragment @Inject constructor(
             translationZ =
                 if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
         }
+
+        binding.vStoriesPartner.root.hide()
+    }
 
     private fun hideError() = binding.vStoriesError.gone()
 
@@ -822,18 +840,22 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(
-            eventLabel,
-            listOf(product),
-            position,
-            viewModel.mDetail.author.name
-        ) else analytic?.sendClickBuyButtonEvent(
-            eventLabel,
-            listOf(product),
-            position,
-            viewModel.mDetail.author.name
-        )
+            "${viewModel.storyId} - ${viewModel.validAuthorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        if (action == StoriesProductAction.Atc) {
+            analytic?.sendClickAtcButtonEvent(
+                eventLabel,
+                listOf(product),
+                position,
+                viewModel.mDetail.author.name
+            )
+        } else {
+            analytic?.sendClickBuyButtonEvent(
+                eventLabel,
+                listOf(product),
+                position,
+                viewModel.mDetail.author.name
+            )
+        }
     }
 
     override fun onClickedProduct(
@@ -842,7 +864,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+            "${viewModel.storyId} - ${viewModel.validAuthorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
         analytic?.sendClickProductCardEvent(
             eventLabel,
             "/stories-room - ${viewModel.storyId} - product card",
@@ -856,7 +878,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+            "${viewModel.storyId} - ${viewModel.validAuthorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
         analytic?.sendViewProductCardEvent(eventLabel, product)
     }
 
@@ -876,7 +898,7 @@ class StoriesDetailFragment @Inject constructor(
         binding.layoutStoriesContent.containerVideoStoriesContent.show()
     }
 
-    private fun renderVideoMedia(content: StoriesItemContent) {
+    private fun renderVideoMedia(content: StoriesItemContent, selectedGroupId: String) {
         context?.let {
             if (_videoPlayer == null) {
                 _videoPlayer = StoriesExoPlayer(it)
@@ -918,10 +940,10 @@ class StoriesDetailFragment @Inject constructor(
             binding.layoutStoriesContent.playerStoriesDetailContent.player = videoPlayer.exoPlayer
 
             if (currentPlayingVideoUrl != content.data) {
-                videoPlayer.start(content.data)
+                videoPlayer.start(content.data, selectedGroupId)
                 currentPlayingVideoUrl = content.data
             } else if (!videoPlayer.exoPlayer.isPlaying) {
-                videoPlayer.resume(shouldReset = true)
+                videoPlayer.resume(shouldReset = true, selectedGroupId)
             }
         }
     }
@@ -934,7 +956,6 @@ class StoriesDetailFragment @Inject constructor(
     private fun hideVideoLoading() {
         binding.layoutStoriesContent.loaderStoriesDetailContent.hide()
         binding.layoutStoriesContent.playerStoriesDetailContent.show()
-
     }
 
     private fun renderStoryBasedOnStatus(
@@ -953,11 +974,13 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo) {
+    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo, selectedGroupId: String) {
         if (_videoPlayer == null) return
 
         when {
-            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> videoPlayer.resume()
+            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> {
+                videoPlayer.resume(activeGroupId = selectedGroupId)
+            }
             state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
         }
     }
@@ -1045,7 +1068,6 @@ class StoriesDetailFragment @Inject constructor(
         private const val TWENTY_THREE = 23
         private const val FIFTY_NINE = 59
         private const val ONE = 1
-
 
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
 

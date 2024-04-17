@@ -26,6 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -156,6 +157,39 @@ class TopAdsAutoTopUpViewModelTest {
         viewModel.saveSelection(true, mockk())
         val data = viewModel.statusSaveSelection.value as ResponseSaving
         Assert.assertTrue(!data.isSuccess && data.throwable == actual)
+    }
+
+    @Test
+    fun `activateAutoTopUp on success - response not null and error is empty test, livedata should have isSuccess as true`() {
+        val mockObject = spyk(AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus())))
+
+        coEvery { saveSelectionUseCase.executeOnBackground() } returns mockObject
+
+        viewModel.activateAutoTopUp(true, anyString())
+        val data = viewModel.statusSaveSelection.value as ResponseSaving
+        Assert.assertTrue(data.isSuccess)
+    }
+
+    @Test
+    fun `activateAutoTopUp on exception occurred test and error is empty test, livedata should have isSuccess as false`() {
+        val mockObject = spyk(AutoTopUpData.Response(null))
+
+        coEvery { saveSelectionUseCase.executeOnBackground() } returns mockObject
+
+        viewModel.activateAutoTopUp(true, anyString())
+        val data = viewModel.statusSaveSelection.value as ResponseSaving
+        Assert.assertTrue(!data.isSuccess)
+    }
+
+    @Test
+    fun `activateAutoTopUp on exception occurred test and error is non empty, livedata should have isSuccess as false`() {
+        val mockObject = AutoTopUpData.Response(AutoTopUpData(errors = listOf(Error())))
+
+        coEvery { saveSelectionUseCase.executeOnBackground() } returns mockObject
+
+        viewModel.activateAutoTopUp(true, anyString())
+        val data = viewModel.statusSaveSelection.value as ResponseSaving
+        Assert.assertTrue(!data.isSuccess)
     }
 
     @Test

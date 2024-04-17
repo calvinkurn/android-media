@@ -8,14 +8,22 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-            mutation $OPERATION_NAME() {
-              prepareProductsGroup() 
+           mutation $OPERATION_NAME(${'$'}input: prepareProductGroupParam!) {
+              prepareProductsGroup(input: ${'$'}input)
               {
                 header {
                   process_time
                   error_code
                 }
                 data {
+                  checkout_flow {
+                      error_message
+                  }
+                  user_cart_content {
+                    cart_id
+                    product_id
+                    current_qty
+                  }
                   attachment_page_ticker_text
                   attachment_page_ticker_logo_url
                   toaster {
@@ -31,19 +39,28 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                   epharmacy_groups {
                     epharmacy_group_id
                     prescription_source
+                    ticker {
+                      type_int
+                      message
+                    }
                     consultation_source {
                       id
                       enabler_name
                       enabler_logo_url
                       pwa_link
+                      price
+                      price_str
                       operating_schedule {
                         daily {
                           open_time
                           close_time
                         }
                         close_days
+                        duration
+                        is_closing_hour
                       }
                       status
+                      note
                     }
                     number_prescription_images
                     prescription_images {
@@ -84,13 +101,19 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                       partner_logo_url
                       products {
                         product_id
+                        cart_id
                         product_id_str
                         name
                         quantity
                         is_ethical_drug
                         product_image
                         item_weight
+                        price
                         product_total_weight_fmt
+                        qty_comparison {
+                          initial_qty
+                          recommend_qty
+                        }
                       }
                     }
                     prescription_cta {
