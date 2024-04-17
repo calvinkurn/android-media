@@ -14,7 +14,8 @@ data class SDUIDataModel(
     var shouldRefreshUI: Boolean = true
 ) : DynamicPdpDataModel {
 
-    var jsonObject: JSONObject? = null
+    var jsonObject: JSONObject? = jsonString.toJSONObject()
+
     fun updateJson(value: String) {
         if (jsonString == value) return
         jsonObject = value.toJSONObject()
