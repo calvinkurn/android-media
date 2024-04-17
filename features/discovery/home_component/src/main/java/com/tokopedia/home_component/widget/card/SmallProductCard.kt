@@ -10,8 +10,6 @@ import com.tokopedia.home_component.databinding.WidgetSmallProductCardBinding
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.productcard.reimagine.ribbon.RibbonView
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
@@ -79,17 +77,7 @@ class SmallProductCard @JvmOverloads constructor(
 
         val ribbonMargin = RibbonView.Margin(start = 0, top = 4.toPx())
 
-        // temporary
-        val model = ProductCardModel.LabelGroup(
-            title = ribbon.text,
-            type = when(ribbon.type) {
-                is SmallProductModel.Ribbon.Type.Red -> "red"
-                is SmallProductModel.Ribbon.Type.Yellow -> "gold"
-            }
-        )
-
-        binding.ribbon.render(model)
-
+        binding.ribbon.render(ribbon)
         binding.ribbon.setMargin(
             left = ribbonMargin.start,
             top = ribbonMargin.top,

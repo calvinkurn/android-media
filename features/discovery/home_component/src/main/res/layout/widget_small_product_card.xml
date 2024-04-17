@@ -67,7 +67,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.productcard.reimagine.ribbon.RibbonView
+    <com.tokopedia.home_component.widget.card.RibbonView
         android:id="@+id/ribbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

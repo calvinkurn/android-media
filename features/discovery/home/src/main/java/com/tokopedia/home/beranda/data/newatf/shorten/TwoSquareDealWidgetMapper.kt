@@ -26,7 +26,7 @@ object TwoSquareDealWidgetMapper : BaseShortenWidgetMapper<DealsWidgetUiModel>()
                     return if (ribbon?.type == Default.RIBBON_RED) {
                         SmallProductModel.Ribbon.Type.Red
                     } else {
-                        SmallProductModel.Ribbon.Type.Yellow
+                        SmallProductModel.Ribbon.Type.Gold
                     }
                 }
 

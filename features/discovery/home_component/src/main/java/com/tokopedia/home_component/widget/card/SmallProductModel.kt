@@ -14,7 +14,7 @@ data class SmallProductModel(
 
         sealed class Type {
             object Red : Type()
-            object Yellow : Type()
+            object Gold : Type()
         }
     }
 
