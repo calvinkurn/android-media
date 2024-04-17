@@ -70,10 +70,10 @@ dependencies {
     implementation rootProject.ext.appLogDependencies.monitor
     implementation rootProject.ext.appLogDependencies.encrypt
     implementation rootProject.ext.appLogDependencies.baseLibsUtility
-    implementation 'com.bytedance.common_business:alog:2.0.0-rc.10'
-    implementation 'com.bytedance.android:alog:1.0.0-rc.6@aar'
+    implementation rootProject.ext.appLogDependencies.businessALog
+    implementation rootProject.ext.appLogDependencies.androidALog
     implementation rootProject.ext.appLogDependencies.bdNetworkTag
-    debugImplementation 'com.bytedance.applog:bdtracker-et_verify:5.6.9-bugfix.6' // debugOnly
+    debugImplementation rootProject.ext.appLogDependencies.bdTrackerEtVerify // debugOnly
 
     // ttnet
     implementation rootProject.ext.ttnetDependencies.chromiumCronet
