@@ -13,8 +13,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomProductCardMapper
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastPromoProductBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,8 +59,8 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
     }
 
     private fun bindProduct(uiModel: TopChatRoomBroadcastUiModel) {
-        val carouselProduct = uiModel.productCarousel
-        val singleProduct = uiModel.singleProduct
+        val carouselProduct: TopChatRoomProductCarouselUiModel? = null
+        val singleProduct = uiModel.productCarousel?.products?.firstOrNull() as? ProductAttachmentUiModel
         if (carouselProduct != null && carouselProduct.products.isNotEmpty()) {
             binding.topchatChatroomBroadcastPromoSingleProduct.hide()
             setProductCarouselListener()
@@ -74,7 +74,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         }
     }
 
-    private fun bindProductCarousel(productCarousel: ProductCarouselUiModel) {
+    private fun bindProductCarousel(productCarousel: TopChatRoomProductCarouselUiModel) {
         bindSyncProductCarousel(productCarousel)
         binding.topchatChatroomBroadcastPromoRv.show()
         binding.topchatChatroomBroadcastPromoRv.updateData(productCarousel.products)
@@ -94,7 +94,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         }
     }
 
-    private fun bindSyncProductCarousel(productCarousel: ProductCarouselUiModel) {
+    private fun bindSyncProductCarousel(productCarousel: TopChatRoomProductCarouselUiModel) {
         if (!productCarousel.isLoading()) return
         productCarousel.products.forEach {
             if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {

@@ -13,8 +13,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomProductCardMapper
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastFlashsaleProductBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -106,7 +106,7 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
         }
     }
 
-    private fun bindSyncProductCarousel(productCarousel: ProductCarouselUiModel) {
+    private fun bindSyncProductCarousel(productCarousel: TopChatRoomProductCarouselUiModel) {
         if (!productCarousel.isLoading()) return
         productCarousel.products.forEach {
             if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {
