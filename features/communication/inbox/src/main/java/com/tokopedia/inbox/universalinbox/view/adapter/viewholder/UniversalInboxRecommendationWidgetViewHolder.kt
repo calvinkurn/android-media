@@ -8,6 +8,7 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationWidgetItemBinding
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
@@ -42,6 +43,7 @@ class UniversalInboxRecommendationWidgetViewHolder(
 
                 override fun onViewDetachedFromWindow(position: Int, item: RecommendationItem, visiblePercentage: Int) {
                     item.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+                    setVisiblePercentage(Int.ZERO)
                 }
             }
         )
