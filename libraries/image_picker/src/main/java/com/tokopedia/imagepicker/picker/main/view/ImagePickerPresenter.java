@@ -6,20 +6,16 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.media.loader.JvmMediaLoader;
-import com.tokopedia.media.loader.data.Resize;
 import com.tokopedia.utils.file.FileUtil;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
 import rx.Subscriber;
