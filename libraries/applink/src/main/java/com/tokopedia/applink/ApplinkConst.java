@@ -899,7 +899,7 @@ public interface ApplinkConst {
 
     interface ProductPreview {
         String SHARE_PRODUCT_PREVIEW = "tokopedia://product-preview" +
-                "/%1s" +
+                "/%1s" + // productId
                 "?review_id=%2s" +
                 "&attachment_id=%3s" +
                 "&source=%4s";
