@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.content.Context
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
@@ -39,12 +40,17 @@ class InspirationCarouselListenerDelegate(
 
     override fun onInspirationCarouselSeeAllClicked(
         inspirationCarouselDataViewOption: InspirationCarouselDataView.Option,
+        aladdinButtonType: String,
     ) {
         openApplink(context, inspirationCarouselDataViewOption.applink)
 
         InspirationCarouselTracking.trackCarouselClickSeeAll(
             queryKey,
             inspirationCarouselDataViewOption,
+        )
+
+        AppLogSearch.eventSearchResultClick(
+            inspirationCarouselDataViewOption.asByteIOSearchResult(CLICK_SEE_MORE)
         )
     }
 
@@ -77,7 +83,7 @@ class InspirationCarouselListenerDelegate(
     }
 
     override fun onInspirationCarouselOptionImpressed1Px(option: InspirationCarouselDataView.Option) {
-        AppLogSearch.eventSearchResultShow(option.asByteIOSearchResult())
+        AppLogSearch.eventSearchResultShow(option.asByteIOSearchResult(null))
     }
 
     override fun onInspirationCarouselListProductClicked(

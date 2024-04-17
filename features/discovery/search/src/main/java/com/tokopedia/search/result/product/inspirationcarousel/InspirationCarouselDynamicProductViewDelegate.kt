@@ -22,7 +22,7 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
 
     override fun trackDynamicCarouselImpression(dynamicProductCarousel: BroadMatchDataView) {
         AppLogSearch.eventSearchResultShow(
-            dynamicProductCarousel.asByteIOSearchResult(),
+            dynamicProductCarousel.asByteIOSearchResult(null),
         )
     }
 
@@ -70,11 +70,16 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
     override fun trackEventClickSeeMoreDynamicProductCarousel(
         dynamicProductCarousel: BroadMatchDataView,
         type: String,
-        inspirationCarouselOption: InspirationCarouselDataView.Option
+        inspirationCarouselOption: InspirationCarouselDataView.Option,
+        aladdinButtonType: String,
     ) {
         InspirationCarouselTracking.trackCarouselClickSeeAll(
             queryKey,
             inspirationCarouselOption,
+        )
+
+        AppLogSearch.eventSearchResultClick(
+            dynamicProductCarousel.asByteIOSearchResult(aladdinButtonType),
         )
     }
 }
