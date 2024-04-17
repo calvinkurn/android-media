@@ -78,8 +78,6 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initViews() {
-        viewBinding?.btnContinue?.isEnabled = false
-
         viewBinding?.normalShopCard?.run {
             setOnClickListener {
                 viewModel.setSelectedShopType(TYPE_NORMAL_SHOP)
@@ -110,10 +108,13 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         viewBinding?.btnContinue?.setOnClickListener {
             if (isNormalShopSelected()) {
                 shopCreationAnalytics.sendSellerClickKycEvent(shopId = userSession.shopId, userId = userSession.userId)
-            } else {
+                viewModel.getShopStatus()
+            } else if (isOfficialStoreSelected()){
                 shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
+                viewModel.getShopStatus()
+            } else {
+                Toaster.build(viewBinding?.root!!, "Pilih salah satu jenis toko dulu, ya.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
-            viewModel.getShopStatus()
         }
 
         viewModel.projectInfo.observe(viewLifecycleOwner) {
@@ -155,14 +156,14 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
             viewBinding?.btnContinue?.isLoading = it
             viewBinding?.btnContinue?.isClickable = !it
         }
-
-        viewModel.selectedShopType.observe(viewLifecycleOwner) {
-            viewBinding?.btnContinue?.isEnabled = it > 0
-        }
     }
 
     private fun isNormalShopSelected(): Boolean {
         return viewModel.selectedShopType.value == TYPE_NORMAL_SHOP
+    }
+
+    private fun isOfficialStoreSelected(): Boolean {
+        return viewModel.selectedShopType.value == TYPE_OFFICIAL_SHOP
     }
 
     private fun handleApiError() {
@@ -208,6 +209,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
             setOnWebviewClick {  }
             setCloseClickListener {
                 shopCreationAnalytics.sendSellerClickDismissTheKycPromptEvent(shopId = userSession.shopId, userId = userSession.userId)
+                dismiss()
             }
         }.show(childFragmentManager)
     }
