@@ -12,7 +12,7 @@ object SearchId {
         private set
 
     fun update(searchId: String) {
-        this.previousValue = this.value
+        this.previousValue = this.value.ifEmpty { this.previousValue }
         this.value = searchId
 
         AppLogAnalytics.putPageData(SEARCH_ID, searchId)

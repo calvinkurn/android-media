@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 
 import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -20,8 +21,10 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearCustomTarget
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -71,6 +74,8 @@ open class SomListOrderViewHolder(
     }
 
     protected val binding by viewBinding<ItemSomListOrderBinding>()
+
+    private var productImageLoadTarget: MediaBitmapEmptyTarget<Bitmap>? = null
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
@@ -156,6 +161,8 @@ open class SomListOrderViewHolder(
 
     override fun onViewRecycled() {
         binding?.icSomListOrderPlusRibbon?.clearImage()
+        binding?.ivSomListProduct.clearImage()
+        binding?.ivSomListProduct.clearCustomTarget(productImageLoadTarget)
         super.onViewRecycled()
     }
 
@@ -219,10 +226,10 @@ open class SomListOrderViewHolder(
     private fun setupProductList(element: SomListOrderUiModel) {
         binding?.run {
             ivSomListProduct.apply {
-                loadProductImage(
+                productImageLoadTarget = loadProductImage(
                     url = element.orderProduct.firstOrNull()?.picture.orEmpty(),
                     archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
-                )
+                ) { productImageLoadTarget = null }
                 if (element.tickerInfo.text.isNotBlank()) {
                     setMargin(12.toPx(), 6.5f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 } else {
