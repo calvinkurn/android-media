@@ -5,9 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardClickListener
@@ -16,6 +13,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardBigGridBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.search.utils.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BigGridProductItemViewHolder(
@@ -65,27 +63,15 @@ class BigGridProductItemViewHolder(
             }
 
             override fun onAreaClicked(v: View) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.SEARCH_RESULT,
-                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
-                )
+                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.AREA)
             }
 
             override fun onProductImageClicked(v: View) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.SEARCH_RESULT,
-                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
-                )
+                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.COVER)
             }
 
             override fun onSellerInfoClicked(v: View) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.SEARCH_RESULT,
-                    productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
-                )
+                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.SELLER_NAME)
             }
         })
 
@@ -107,7 +93,6 @@ class BigGridProductItemViewHolder(
         if (element?.isAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
-                PageName.SEARCH_RESULT,
                 element.asAdsLogShowModel()
             )
         }
@@ -117,7 +102,6 @@ class BigGridProductItemViewHolder(
         if (element?.isAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
-                PageName.SEARCH_RESULT,
                 element.asAdsLogShowOverModel(visiblePercentage)
             )
         }

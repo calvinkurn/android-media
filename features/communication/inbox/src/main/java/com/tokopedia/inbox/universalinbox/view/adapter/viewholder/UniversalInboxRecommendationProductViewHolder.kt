@@ -10,7 +10,6 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationProductItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
@@ -18,10 +17,10 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -68,27 +67,15 @@ class UniversalInboxRecommendationProductViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.INBOX,
-                        uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
-                    )
+                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.INBOX,
-                        uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
-                    )
+                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.INBOX,
-                        uiModel.recommendationItem.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
-                    )
+                    uiModel.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
@@ -102,20 +89,14 @@ class UniversalInboxRecommendationProductViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
-        element?.recommendationItem?.let { item ->
-            if (item.isTopAds) AppLogTopAds.sendEventShow(itemView.context, PageName.INBOX,
-                item.asAdsLogShowModel())
-        }
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
     override fun onViewDetachedFromWindow(
         element: UniversalInboxRecommendationUiModel?,
         visiblePercentage: Int
     ) {
-        element?.recommendationItem?.let { item ->
-            if (item.isTopAds) AppLogTopAds.sendEventShowOver(itemView.context, PageName.INBOX,
-                item.asAdsLogShowOverModel(visiblePercentage))
-        }
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     fun bind(uiModel: RecommendationItem, payloads: Bundle) {

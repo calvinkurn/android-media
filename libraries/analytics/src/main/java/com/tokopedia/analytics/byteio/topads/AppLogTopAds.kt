@@ -5,11 +5,13 @@ import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
+import com.tokopedia.config.GlobalConfig
 import org.json.JSONObject
 
 /**
@@ -26,22 +28,23 @@ object AppLogTopAds {
      */
     fun sendEventShowOver(
         context: Context,
-        currentPageName: String,
         adsLogShowOverModel: AdsLogShowOverModel
     ) {
+        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(currentPageName == PageName.SEARCH_RESULT) {
+                        if(pageName == PageName.SEARCH_RESULT) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowOverModel.adExtraData.productId)
                         put(AdsLogConst.Param.SIZE_PERCENT, adsLogShowOverModel.adExtraData.sizePercent)
+                        putProductName(adsLogShowOverModel.adExtraData.productName)
                     }
                 )
 
@@ -51,41 +54,40 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.VALUE, adsLogShowOverModel.adsValue)
                 put(
                     AdsLogConst.Param.LOG_EXTRA,
-                    JSONObject().apply {
-                        put(AdsLogConst.RIT, adsLogShowOverModel.rit)
-                    }
+                    adsLogShowOverModel.logExtra
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
 
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
 
-                putTag(currentPageName)
+                putTag(pageName)
             }
         )
     }
 
     /**
      * @param context Context
-     * @param currentPageName String
      * @param adsLogShowModel AdsLogShowModel
      */
     fun sendEventShow(
         context: Context,
-        currentPageName: String,
         adsLogShowModel: AdsLogShowModel
     ) {
+        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
+
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(currentPageName == PageName.SEARCH_RESULT) {
+                        if(pageName == PageName.SEARCH_RESULT) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, AdsLogConst.AdCardStyle.PRODUCT_CARD)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogShowModel.adExtraData.productId)
+                        putProductName(adsLogShowModel.adExtraData.productName)
                     }
                 )
 
@@ -95,41 +97,40 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.VALUE, adsLogShowModel.adsValue)
                 put(
                     AdsLogConst.Param.LOG_EXTRA,
-                    JSONObject().apply {
-                        put(AdsLogConst.RIT, adsLogShowModel.rit)
-                    }
+                    adsLogShowModel.logExtra
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
 
-                putTag(currentPageName)
+                putTag(pageName)
             }
         )
     }
 
     /**
      * @param context Context
-     * @param currentPageName String
      * @param adsLogRealtimeClickModel AdsLogRealtimeClickModel
      */
     fun sendEventRealtimeClick(
         context: Context,
-        currentPageName: String,
         adsLogRealtimeClickModel: AdsLogRealtimeClickModel
     ) {
         val timeStamp = System.currentTimeMillis()
+        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
+
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(currentPageName == PageName.SEARCH_RESULT) {
+                        if(pageName == PageName.SEARCH_RESULT) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
                         put(AdsLogConst.Param.MALL_CARD_TYPE, adsLogRealtimeClickModel.adExtraData.mallCardType)
                         put(AdsLogConst.Param.PRODUCT_ID, adsLogRealtimeClickModel.adExtraData.productId)
+                        putProductName(adsLogRealtimeClickModel.adExtraData.productName)
                     }
                 )
 
@@ -139,33 +140,31 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.VALUE, adsLogRealtimeClickModel.adsValue)
                 put(
                     AdsLogConst.Param.LOG_EXTRA,
-                    JSONObject().apply {
-                        put(AdsLogConst.RIT, adsLogRealtimeClickModel.rit)
-                    }
+                    adsLogRealtimeClickModel.logExtra
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
-                if(currentPageName != PageName.SEARCH_RESULT) {
+                if(pageName != PageName.SEARCH_RESULT) {
                     put(
                         AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK,
                         (timeStamp - lastClickTimestamp).toString()
                     )
                 }
 
-                putTag(currentPageName)
+                putTag(pageName)
             }
         )
         lastClickTimestamp = timeStamp
     }
 
 
-    fun getEnterFrom(): String {
+    private fun getEnterFrom(): String {
         val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
         return if (prevPageName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
     }
 
-    fun getChannel(): String {
+    private fun getChannel(): String {
         val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
         return when(prevPageName) {
             AppLogSearch.ParamValue.GOODS_SEARCH -> AdsLogConst.Channel.PRODUCT_SEARCH
@@ -180,12 +179,17 @@ object AppLogTopAds {
         put(AdsLogConst.Param.ENTER_FROM, enterFrom)
     }
 
-    // todo need to confirm for this value
     private fun JSONObject.putChannelName(channelName: String) {
         put(AdsLogConst.Param.CHANNEL, channelName)
     }
 
-    private fun JSONObject.putTag(currentPageName: String) {
+    private fun JSONObject.putProductName(productName: String) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            put(AdsLogConst.Param.PRODUCT_NAME, productName)
+        }
+    }
+
+    private fun JSONObject.putTag(currentPageName: Any?) {
         val tagName = if (currentPageName == PageName.SEARCH_RESULT) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
         put(AdsLogConst.TAG, tagName)
     }

@@ -8,14 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListe
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
-import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
@@ -28,8 +26,6 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
     private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
         PercentageScrollListener()
     }
-
-    private var recyclerView: RecyclerView? = null
 
     inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         IAdsViewHolderTrackListener {
@@ -74,75 +70,26 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                 }
 
                 override fun onAreaClicked(v: View) {
-                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.AREA)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.COVER)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    sendClickAdsByteIO(impressItem, AdsLogConst.Refer.SELLER_NAME)
+                    uiModel?.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
         }
 
-        private fun sendClickAdsByteIO(recommendationItem: RecommendationItem?, refer: String) {
-            if (recommendationItem?.isTopAds == true) {
-                AppLogTopAds.sendEventRealtimeClick(
-                    itemView.context,
-                    PageName.REWARD,
-                    AdsLogRealtimeClickModel(
-                        refer,
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        AdsLogRealtimeClickModel.AdExtraData(
-                            productId = recommendationItem.productId.orZero().toString()
-                        )
-                    )
-                )
-            }
-        }
-
-
         override fun onViewAttachedToWindow() {
-            if (uiModel?.isTopAds == true) {
-                AppLogTopAds.sendEventShow(
-                    itemView.context,
-                    PageName.REWARD,
-                    AdsLogShowModel(
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        AdsLogShowModel.AdExtraData(
-                            productId = uiModel?.productId.orZero().toString(),
-                        )
-                    )
-                )
-            }
+            uiModel?.sendShowAdsByteIo(itemView.context)
         }
 
         override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-            if (uiModel?.isTopAds == true) {
-                AppLogTopAds.sendEventShowOver(
-                    itemView.context,
-                    PageName.REWARD,
-                    AdsLogShowOverModel(
-                        // todo this value from BE
-                        0,
-                        // todo this value from BE
-                        0,
-                        AdsLogShowOverModel.AdExtraData(
-                            productId = uiModel?.productId.orZero().toString(),
-                            sizePercent = visiblePercentage.toString()
-                        )
-                    )
-                )
-            }
+            uiModel?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
         }
 
         override fun setVisiblePercentage(visiblePercentage: Int) {
@@ -161,14 +108,12 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
-        this.recyclerView?.addOnScrollListener(percentageScrollListener)
+        recyclerView.addOnScrollListener(percentageScrollListener)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
-        this.recyclerView = null
+        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun onViewAttachedToWindow(holder: ProductCardViewHolder) {

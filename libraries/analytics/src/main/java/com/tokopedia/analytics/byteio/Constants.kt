@@ -155,6 +155,7 @@ object PageName {
     const val RECOMMENDATION = "recommendation"
     const val REWARD = "reward"
     const val ACCOUNT = "account"
+    const val BUYER_ORDER_MANAGEMENT = "buyer_order_management"
 }
 
 object QuitType {

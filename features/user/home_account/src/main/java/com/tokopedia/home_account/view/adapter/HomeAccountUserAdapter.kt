@@ -36,8 +36,6 @@ class HomeAccountUserAdapter(
 
     private var memberTitle: Typography? = null
 
-    private var recyclerView: RecyclerView? = null
-
     init {
         delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener, tokopediaPlusListener, balanceAndPointAdapter, memberAdapter))
         delegatesManager.addDelegate(HomeAccountUserSettingDelegate(listener))
@@ -60,13 +58,12 @@ class HomeAccountUserAdapter(
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        this.recyclerView?.removeOnScrollListener(percentageScrollListener)
-        this.recyclerView = null
+        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
+        recyclerView.addOnScrollListener(percentageScrollListener)
     }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {

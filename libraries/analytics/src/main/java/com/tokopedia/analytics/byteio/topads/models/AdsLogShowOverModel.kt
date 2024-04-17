@@ -4,12 +4,13 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 
 data class AdsLogShowOverModel(
     val adsValue: Long,
-    val rit: Long,
+    val logExtra: String,
     val adExtraData: AdExtraData
 ) {
     data class AdExtraData(
         val mallCardType: String = AdsLogConst.AdCardStyle.PRODUCT_CARD,
         val productId: String,
+        val productName: String,
         // todo need to confirm
         val sizePercent: String
     )

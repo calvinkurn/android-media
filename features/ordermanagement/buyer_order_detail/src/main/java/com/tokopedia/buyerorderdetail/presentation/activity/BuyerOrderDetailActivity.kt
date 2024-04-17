@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
@@ -18,7 +20,7 @@ import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 import com.tokopedia.tokochat.config.util.TokoChatConnection
 
-open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
+open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent>, AppLogInterface {
 
     var buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring? = null
 
@@ -88,5 +90,9 @@ open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOr
     private fun initLoadMonitoring() {
         buyerOrderDetailLoadMonitoring = BuyerOrderDetailLoadMonitoring()
         buyerOrderDetailLoadMonitoring?.initPerformanceMonitoring()
+    }
+
+    override fun getPageName(): String {
+        return PageName.BUYER_ORDER_MANAGEMENT
     }
 }

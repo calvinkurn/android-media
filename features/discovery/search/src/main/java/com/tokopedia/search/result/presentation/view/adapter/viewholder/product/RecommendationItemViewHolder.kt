@@ -3,7 +3,14 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.R
@@ -32,15 +39,37 @@ class RecommendationItemViewHolder (
         )
         view.setProductModel(productModel)
 
-        view.setOnClickListener {
-            listener.onProductClick(recommendationItem, "", adapterPosition)
-        }
+        view.setOnClickListener(object: ProductCardClickListener {
+            override fun onClick(v: View) {
+                listener.onProductClick(recommendationItem, "", adapterPosition)
+            }
+
+            override fun onAreaClicked(v: View) {
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+            }
+        })
 
         view.setImageProductViewHintListener(recommendationItemDataView, createImageProductViewHintListener(recommendationItemDataView))
 
         view.setThreeDotsOnClickListener {
             listener.onThreeDotsClick(recommendationItemDataView.recommendationItem, adapterPosition)
         }
+    }
+
+    override fun onViewAttachedToWindow(element: RecommendationItemDataView?) {
+        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
+    }
+
+    override fun onViewDetachedFromWindow(element: RecommendationItemDataView?, visiblePercentage: Int) {
+        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 
     private fun createImageProductViewHintListener(recommendationItemDataView: RecommendationItemDataView): ViewHintListener {

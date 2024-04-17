@@ -21,28 +21,22 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 object TrackRecommendationMapper {
 
     fun RecommendationItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
-        return AdsLogRealtimeClickModel(
-            refer,
+        return AdsLogRealtimeClickModel(refer,
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
-            AdsLogRealtimeClickModel.AdExtraData(
-                productId = productId.orZero().toString()
-            )
-        )
+            "", AdsLogRealtimeClickModel.AdExtraData(
+            productId = productId.orZero().toString(),
+            productName = name,
+        ))
     }
+
     fun RecommendationItem.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
         return AdsLogShowOverModel(
             // todo this value from BE
             0,
             // todo this value from BE
-            0,
-            AdsLogShowOverModel.AdExtraData(
-                productId = productId.orZero().toString(),
-                sizePercent = visiblePercentage.toString()
-            )
-        )
+            "", AdsLogShowOverModel.AdExtraData(productId = productId.orZero().toString(), productName = name, sizePercent = visiblePercentage.toString()))
     }
 
     fun RecommendationItem.asAdsLogShowModel(): AdsLogShowModel {
@@ -50,10 +44,42 @@ object TrackRecommendationMapper {
             // todo this value from BE
             0,
             // todo this value from BE
+            "", AdsLogShowModel.AdExtraData(
+            productId = productId.orZero().toString(),
+            productName = name,
+        ))
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(refer,
+            // todo this value from BE
             0,
-            AdsLogShowModel.AdExtraData(
-                productId = productId.orZero().toString()
-            )
+            // todo this value from BE
+            "", AdsLogRealtimeClickModel.AdExtraData(
+            productId = id,
+            productName = name,
+        ))
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            "", AdsLogShowOverModel.AdExtraData(
+            productId = id,
+            sizePercent = visiblePercentage.toString(),
+            productName = name,
+        ))
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            // todo this value from BE
+            0,
+            // todo this value from BE
+            "",
+            AdsLogShowModel.AdExtraData(productId = id, productName = name)
         )
     }
 
@@ -81,7 +107,7 @@ object TrackRecommendationMapper {
             rate = ratingAverage.toFloatOrZero(),
             enterMethod = enterMethod?.str,
             volume = countSold,
-            originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
+            originalPrice = (if (slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
             salesPrice = priceInt.toFloat(),
         )
     }
@@ -103,13 +129,11 @@ object TrackRecommendationMapper {
             recSessionId = appLog.sessionId,
             shopId = recommendationProductItem.shop.id,
             entranceForm = getEntranceForm(),
-            originalPrice = (
-                if (recommendationProductItem.slashedPriceInt > 0) {
-                    recommendationProductItem.slashedPriceInt
-                } else {
-                    recommendationProductItem.priceInt
-                }
-                ).toFloat(),
+            originalPrice = (if (recommendationProductItem.slashedPriceInt > 0) {
+                recommendationProductItem.slashedPriceInt
+            } else {
+                recommendationProductItem.priceInt
+            }).toFloat(),
             salesPrice = recommendationProductItem.priceInt.toFloat(),
             position = position,
             volume = recommendationProductItem.countSold,

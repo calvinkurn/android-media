@@ -23,6 +23,14 @@ class Lego4ProductAdapter(
         )
     }
 
+    override fun onViewAttachedToWindow(holder: LegoProductCardViewHolder) {
+        holder.onViewAttachedToWindow()
+    }
+
+    override fun onViewDetachedFromWindow(holder: LegoProductCardViewHolder) {
+        holder.onViewDetachedFromWindow(holder.visiblePercentage)
+    }
+
     override fun getItemCount(): Int {
         return itemList.size
     }

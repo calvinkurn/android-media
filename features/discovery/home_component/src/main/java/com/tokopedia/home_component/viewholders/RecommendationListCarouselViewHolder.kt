@@ -11,8 +11,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.analytics.sendEventRealtimeClickAdsByteIo
+import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
+import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentRecommendationListCarouselBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
@@ -28,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
@@ -207,12 +213,16 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val listCarouselListener: RecommendationListCarouselListener?,
             val isCacheData: Boolean,
             private val cardInteraction: Boolean = false
-    ): RecommendationListCarouselItem(itemView) {
+    ): RecommendationListCarouselItem(itemView), IAdsViewHolderTrackListener {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
+
+        private var viewVisiblePercentage = 0
+        private var channelGrid: ChannelGrid? = null
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
+                channelGrid = recommendation.grid
                 if (!isCacheData) {
                     itemView.addOnImpressionListener(recommendation) {
                         listCarouselListener?.onRecommendationCarouselGridImpression(
@@ -234,17 +244,46 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 recommendationCard.setAddToCartOnClickListener {
                     recommendation.listener?.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
                 }
-                itemView.setOnClickListener {
-                    listCarouselListener?.onRecommendationProductClick(
+                recommendationCard.setOnClickListener(object: ProductCardClickListener {
+                    override fun onClick(v: View) {
+                        listCarouselListener?.onRecommendationProductClick(
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
                             recommendation.recommendationApplink,
                             recommendation.parentPosition
-                    )
-                }
+                        )
+                    }
+
+                    override fun onAreaClicked(v: View) {
+                        recommendation.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                    }
+
+                    override fun onProductImageClicked(v: View) {
+                        recommendation.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                    }
+
+                    override fun onSellerInfoClicked(v: View) {
+                        recommendation.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                    }
+                })
             }
         }
+
+        override fun onViewAttachedToWindow() {
+            channelGrid.sendEventShowAdsByteIo(itemView.context)
+        }
+
+        override fun onViewDetachedFromWindow(visiblePercentage: Int) {
+            channelGrid.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
+        }
+
+        override fun setVisiblePercentage(visiblePercentage: Int) {
+            this.viewVisiblePercentage = visiblePercentage
+        }
+
+        override val visiblePercentage: Int
+            get() = viewVisiblePercentage
     }
 
     class HomeRecommendationSeeMoreViewHolder(
@@ -326,6 +365,18 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         override fun onBindViewHolder(holder: RecommendationListCarouselItem, position: Int) {
             holder.bind(recommendationList[position])
+        }
+
+        override fun onViewAttachedToWindow(holder: RecommendationListCarouselItem) {
+            if (holder is HomeRecommendationListViewHolder) {
+                holder.onViewAttachedToWindow()
+            }
+        }
+
+        override fun onViewDetachedFromWindow(holder: RecommendationListCarouselItem) {
+            if (holder is HomeRecommendationListViewHolder) {
+                holder.onViewDetachedFromWindow(holder.visiblePercentage)
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.search.utils.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
 import com.tokopedia.video_widget.VideoPlayerProvider
@@ -55,27 +56,15 @@ class GridProductItemViewHolder(
                 }
 
                 override fun onAreaClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.SEARCH_RESULT,
-                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.AREA)
-                    )
+                    sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.AREA)
                 }
 
                 override fun onProductImageClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.SEARCH_RESULT,
-                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.COVER)
-                    )
+                    sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.COVER)
                 }
 
                 override fun onSellerInfoClicked(v: View) {
-                    AppLogTopAds.sendEventRealtimeClick(
-                        itemView.context,
-                        PageName.SEARCH_RESULT,
-                        productItemData.asAdsLogRealtimeClickModel(AdsLogConst.Refer.SELLER_NAME)
-                    )
+                    sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
 
@@ -89,7 +78,6 @@ class GridProductItemViewHolder(
         if (element?.isAds == true) {
             AppLogTopAds.sendEventShow(
                 itemView.context,
-                PageName.SEARCH_RESULT,
                 element.asAdsLogShowModel()
             )
         }
@@ -99,7 +87,6 @@ class GridProductItemViewHolder(
         if (element?.isAds == true) {
             AppLogTopAds.sendEventShowOver(
                 itemView.context,
-                PageName.SEARCH_RESULT,
                 element.asAdsLogShowOverModel(visiblePercentage)
             )
         }

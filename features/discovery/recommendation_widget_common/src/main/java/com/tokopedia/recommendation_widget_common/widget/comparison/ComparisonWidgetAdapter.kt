@@ -6,28 +6,44 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
+import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 
 class ComparisonWidgetAdapter(
     var comparisonListModel: ComparisonListModel,
     val comparisonWidgetInterface: ComparisonWidgetInterface,
+    val adsViewListener: AdsViewListener?,
+    val adsItemClickListener: AdsItemClickListener?,
     val trackingQueue: TrackingQueue?,
     val recommendationTrackingModel: RecommendationTrackingModel,
     val userSessionInterface: UserSessionInterface,
     val shouldUseReimagineCard: Boolean
 ) : RecyclerView.Adapter<ViewHolder>() {
 
+    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) { PercentageScrollListener() }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return if (shouldUseReimagineCard) {
             val view = onCreateView(parent, R.layout.item_comparison_reimagine_widget)
-            ComparisonReimagineWidgetItemViewHolder(view)
+            ComparisonReimagineWidgetItemViewHolder(view, adsViewListener, adsItemClickListener)
         } else {
             val view = onCreateView(parent, R.layout.item_comparison_widget)
-            ComparisonWidgetItemViewHolder(view)
+            ComparisonWidgetItemViewHolder(view, adsViewListener, adsItemClickListener,)
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.addOnScrollListener(percentageScrollListener)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun getItemCount(): Int {
@@ -47,6 +63,18 @@ class ComparisonWidgetAdapter(
             } else {
                 bind(holder as ComparisonWidgetItemViewHolder, position)
             }
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewAttachedToWindow()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        if (holder is IAdsViewHolderTrackListener) {
+            holder.onViewDetachedFromWindow(holder.visiblePercentage)
         }
     }
 
