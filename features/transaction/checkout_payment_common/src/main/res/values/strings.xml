@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="checkout_payment_method_label">Metode Pembayaran</string>
+    <string name="checkout_payment_method_label">Metode pembayaran</string>
     <string name="checkout_payment_fee_title_info">Tentang %s</string>
 
     <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
