@@ -823,6 +823,10 @@ class StoriesDetailFragment @Inject constructor(
         analytic?.sendClickRemoveStoryEvent(buildEventLabel())
     }
 
+    override fun onSeePerformance(view: StoriesThreeDotsBottomSheet) {
+        router.route(requireContext(), viewModel.mDetail.performanceLink)
+    }
+
     override fun onReportStoryClicked(view: StoriesThreeDotsBottomSheet) {
         view.dismiss()
 
