@@ -32,11 +32,10 @@ data class AtfDataList(
      * @param atfDataList model of ATF list with the contents to be copied
      * @return model of ATF list with original position but content from the passed model.
      */
-    fun copyAtfContentsFrom(atfDataList: AtfDataList): AtfDataList {
-        val atfContents = atfDataList.listAtfData.map { it.atfContent }
-        if (atfContents.size != listAtfData.size) return this
-        val newDynamicPosition = listAtfData.zip(atfContents) { data, atfContent ->
-            data.copy(atfContent = atfContent)
+    fun copyAtfContentsFromCache(atfDataList: AtfDataList): AtfDataList {
+        if (atfDataList.listAtfData.size != listAtfData.size) return this
+        val newDynamicPosition = listAtfData.zip(atfDataList.listAtfData) { remotePosition, cachedAtf ->
+            remotePosition.copy(atfContent = cachedAtf.atfContent, isCache = cachedAtf.isCache)
         }
         return this.copy(listAtfData = newDynamicPosition)
     }
