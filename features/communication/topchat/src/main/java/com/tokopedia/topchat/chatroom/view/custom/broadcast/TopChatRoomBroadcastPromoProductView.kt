@@ -85,7 +85,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         binding.topchatChatroomBroadcastPromoLoaderSingleProduct.showWithCondition(product.isLoading)
         binding.topchatChatroomBroadcastPromoSingleProduct.show()
         binding.topchatChatroomBroadcastPromoSingleProduct.bind(
-            TopChatRoomProductCardMapper.mapToProductCard(product)
+            TopChatRoomProductCardMapper.mapToProductCardCompact(product)
         )
         binding.topchatChatroomBroadcastPromoSingleProduct.addOnImpressionListener(
             product.impressHolder
