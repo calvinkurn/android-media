@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
@@ -412,7 +412,7 @@ class ReviewFragment @Inject constructor(
         source: String
     ): String {
         return String.format(
-            ApplinkConstInternalContent.SHARE_PRODUCT_PREVIEW,
+            ApplinkConst.ProductPreview.SHARE_PRODUCT_PREVIEW,
             productId,
             reviewId,
             attachmentId,

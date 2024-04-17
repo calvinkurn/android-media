@@ -62,12 +62,6 @@ object ApplinkConstInternalContent {
     const val EXTRA_FEED_TAB_POSITION = "FEED_TAB_POSITION"
     const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
 
-    const val SHARE_PRODUCT_PREVIEW = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_PRODUCT_PREVIEW" +
-        "/%1s" +
-        "?review_id=%2s" +
-        "&attachment_id=%3s" +
-        "&source=%4s"
-
     /**
      * Query
      */
