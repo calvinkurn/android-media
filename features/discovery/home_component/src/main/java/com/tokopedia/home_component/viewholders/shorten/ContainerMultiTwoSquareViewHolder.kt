@@ -11,14 +11,14 @@ import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFacto
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSquaresAdapter
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
-import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ContainerMultiTwoSquareViewHolder(
     view: View,
     private val listener: ContainerMultiTwoSquareListener,
     private val recyclerRecycledViewPool: RecycledViewPool?
-) : AbstractViewHolder<DealsAndMissionWidgetUiModel>(view) {
+) : AbstractViewHolder<MultiTwoSquareWidgetUiModel>(view) {
 
     private val binding: GlobalComponentContainerMulti2squareBinding? by viewBinding()
 
@@ -33,14 +33,14 @@ class ContainerMultiTwoSquareViewHolder(
         setupRecyclerView()
     }
 
-    override fun bind(element: DealsAndMissionWidgetUiModel?) {
+    override fun bind(element: MultiTwoSquareWidgetUiModel?) {
         if (element == null) return
 
         renderWidgets(element)
         mAdapter?.submitList(visitableList)
     }
 
-    private fun renderWidgets(element: DealsAndMissionWidgetUiModel) {
+    private fun renderWidgets(element: MultiTwoSquareWidgetUiModel) {
         visitableList.clear()
 
         element.addMissionWidget()
@@ -62,11 +62,11 @@ class ContainerMultiTwoSquareViewHolder(
         binding?.lstComponent?.setHasFixedSize(true)
     }
 
-    private fun DealsAndMissionWidgetUiModel.addMissionWidget() =
+    private fun MultiTwoSquareWidgetUiModel.addMissionWidget() =
         mission?.let { visitableList.add(it.position, it) }
 
-    private fun DealsAndMissionWidgetUiModel.addDealWidget() =
-        deals?.let { visitableList.add(it.position, it) }
+    private fun MultiTwoSquareWidgetUiModel.addDealWidget() =
+        thumbnail?.let { visitableList.add(it.position, it) }
 
     companion object {
         val LAYOUT = R.layout.global_component_container_multi_2square

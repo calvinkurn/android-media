@@ -7,26 +7,26 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentItemSmallCardBinding
-import com.tokopedia.home_component.viewholders.shorten.viewholder.listener.DealsWidgetListener
-import com.tokopedia.home_component.visitable.shorten.ItemDealsWidgetUiModel
+import com.tokopedia.home_component.viewholders.shorten.viewholder.listener.ThumbnailWidgetListener
+import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ItemDealsWidgetViewHolder(
+class ItemThumbnailWidgetViewHolder(
     view: View,
-    private val dealsWidgetListener: DealsWidgetListener
+    private val thumbnailWidgetListener: ThumbnailWidgetListener
 ) : RecyclerView.ViewHolder(view) {
 
     private val binding: HomeComponentItemSmallCardBinding? by viewBinding()
 
-    fun bind(element: ItemDealsWidgetUiModel) {
+    fun bind(element: ItemThumbnailWidgetUiModel) {
         binding?.card?.setData(element.card)
         binding?.card?.setOnClickListener {
-            dealsWidgetListener.dealsClicked(element, bindingAdapterPosition)
+            thumbnailWidgetListener.thumbnailClicked(element, bindingAdapterPosition)
         }
 
         binding?.root?.addOnImpression1pxListener(element.impression) {
-            dealsWidgetListener.dealsImpressed(element, bindingAdapterPosition)
+            thumbnailWidgetListener.thumbnailImpressed(element, bindingAdapterPosition)
         }
     }
 
@@ -35,10 +35,10 @@ class ItemDealsWidgetViewHolder(
         @LayoutRes
         private val LAYOUT = R.layout.home_component_item_small_card
 
-        fun create(parent: ViewGroup, dealsWidgetListener: DealsWidgetListener) =
-            ItemDealsWidgetViewHolder(
+        fun create(parent: ViewGroup, thumbnailWidgetListener: ThumbnailWidgetListener) =
+            ItemThumbnailWidgetViewHolder(
                 LayoutInflater.from(parent.context).inflate(LAYOUT, parent, false),
-                dealsWidgetListener
+                thumbnailWidgetListener
             )
     }
 }

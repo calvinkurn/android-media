@@ -7,11 +7,11 @@ import com.tokopedia.home_component.widget.card.SmallProductModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class DealsWidgetUiModel(
+data class ThumbnailWidgetUiModel(
     val channelModel: ChannelModel,
     val position: Int,
     val header: ChannelHeader = ChannelHeader(),
-    val data: List<ItemDealsWidgetUiModel>
+    val data: List<ItemThumbnailWidgetUiModel>
 ) : ShortenVisitable {
 
     override fun type(typeFactory: ShortenViewFactory) = typeFactory.type(this)
@@ -19,7 +19,7 @@ data class DealsWidgetUiModel(
     override fun equalsWith(o: Any?) = o == this
 }
 
-data class ItemDealsWidgetUiModel(
+data class ItemThumbnailWidgetUiModel(
     val card: SmallProductModel,
     val pageName: String,
     val gridId: String,
@@ -27,7 +27,7 @@ data class ItemDealsWidgetUiModel(
     val appLink: String,
     val campaignCode: String
 ) : ShortenVisitable by ShortenVisitable.ItemShortenVisitable(
-    DealsAndMissionWidgetUiModel.Type.Deals.value
+    MultiTwoSquareWidgetUiModel.Type.Thumbnail.value
 ) {
 
     val impression = ImpressHolder()

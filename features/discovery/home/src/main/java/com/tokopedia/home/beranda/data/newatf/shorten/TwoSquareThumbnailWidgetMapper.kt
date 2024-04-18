@@ -1,20 +1,20 @@
 package com.tokopedia.home.beranda.data.newatf.shorten
 
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home_component.visitable.shorten.DealsWidgetUiModel
-import com.tokopedia.home_component.visitable.shorten.ItemDealsWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 import com.tokopedia.home_component.widget.card.SmallProductModel
 
-object TwoSquareDealWidgetMapper : BaseShortenWidgetMapper<DealsWidgetUiModel>() {
+object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetUiModel>() {
 
     override fun map(
         data: DynamicHomeChannel,
         channel: DynamicHomeChannel.Channels
-    ): DealsWidgetUiModel {
+    ): ThumbnailWidgetUiModel {
         val (index, model, header) = mapChannelToPartialWidget(data, channel)
         val limitTopTwoGrids = channel.grids.take(2)
 
-        return DealsWidgetUiModel(
+        return ThumbnailWidgetUiModel(
             channelModel = model,
             position = index,
             header = header,
@@ -30,7 +30,7 @@ object TwoSquareDealWidgetMapper : BaseShortenWidgetMapper<DealsWidgetUiModel>()
                     }
                 }
 
-                ItemDealsWidgetUiModel(
+                ItemThumbnailWidgetUiModel(
                     card = createSmallProductCardModel(grid.labelGroup.toList()).copy(
                         ribbon = SmallProductModel.Ribbon(
                             text = ribbon?.title.orEmpty(),

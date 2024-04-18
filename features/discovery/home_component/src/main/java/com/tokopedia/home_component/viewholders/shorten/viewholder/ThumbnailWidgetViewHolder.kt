@@ -5,21 +5,21 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.databinding.GlobalComponent2squareDealsWidgetBinding
+import com.tokopedia.home_component.databinding.GlobalComponent2squareThumbnailWidgetBinding
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.PartialItemWidgetAdapter
-import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
-import com.tokopedia.home_component.visitable.shorten.DealsWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class DealsWidgetViewHolder(
+class ThumbnailWidgetViewHolder(
     view: View,
     pool: RecyclerView.RecycledViewPool?,
     private val listener: ContainerMultiTwoSquareListener
-) : AbstractViewHolder<DealsWidgetUiModel>(view) {
+) : AbstractViewHolder<ThumbnailWidgetUiModel>(view) {
 
-    private val binding: GlobalComponent2squareDealsWidgetBinding? by viewBinding()
+    private val binding: GlobalComponent2squareThumbnailWidgetBinding? by viewBinding()
     private var mAdapter: PartialItemWidgetAdapter? = null
 
     init {
@@ -30,7 +30,7 @@ class DealsWidgetViewHolder(
         setupRecyclerView()
     }
 
-    override fun bind(element: DealsWidgetUiModel?) {
+    override fun bind(element: ThumbnailWidgetUiModel?) {
         if (element == null) return
 
         binding?.txtHeader?.text = element.header.name
@@ -38,13 +38,13 @@ class DealsWidgetViewHolder(
     }
 
     private fun setupRecyclerView() {
-        mAdapter = PartialItemWidgetAdapter(DealsAndMissionWidgetUiModel.Type.Deals, listener)
+        mAdapter = PartialItemWidgetAdapter(MultiTwoSquareWidgetUiModel.Type.Thumbnail, listener)
         binding?.lstCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
         binding?.lstCard?.adapter = mAdapter
         binding?.lstCard?.setHasFixedSize(true)
     }
 
     companion object {
-        val LAYOUT = R.layout.global_component_2square_deals_widget
+        val LAYOUT = R.layout.global_component_2square_thumbnail_widget
     }
 }

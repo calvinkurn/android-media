@@ -157,7 +157,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
-import com.tokopedia.home_component.visitable.shorten.DealsAndMissionWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
@@ -496,7 +496,7 @@ class HomeAdapterFactory(
         return OrigamiSDUIViewHolder.LAYOUT
     }
 
-    override fun type(model: DealsAndMissionWidgetUiModel): Int {
+    override fun type(model: MultiTwoSquareWidgetUiModel): Int {
         return ContainerMultiTwoSquareViewHolder.LAYOUT
     }
 

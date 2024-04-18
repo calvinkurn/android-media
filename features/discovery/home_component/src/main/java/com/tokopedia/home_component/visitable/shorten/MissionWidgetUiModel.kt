@@ -33,7 +33,7 @@ data class ItemMissionWidgetUiModel(
     val isTopAds: Boolean,
     val isCarousel: Boolean,
 ) : ShortenVisitable by ShortenVisitable.ItemShortenVisitable(
-    DealsAndMissionWidgetUiModel.Type.Mission.value
+    MultiTwoSquareWidgetUiModel.Type.Mission.value
 ) {
 
     val impression = ImpressHolder()

@@ -3,16 +3,14 @@ package com.tokopedia.home_component.visitable.shorten
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class DealsAndMissionWidgetUiModel(
+data class MultiTwoSquareWidgetUiModel(
     val id: String = "",
     val showShimmering: Boolean = true,
-    val deals: DealsWidgetUiModel? = null,
     val mission: MissionWidgetUiModel? = null,
+    val thumbnail: ThumbnailWidgetUiModel? = null,
     val status: Status = Status.Loading
 ) : HomeComponentVisitable,
     ImpressHolder(),
@@ -33,11 +31,11 @@ data class DealsAndMissionWidgetUiModel(
     }
 
     sealed class Type(val value: Int) {
-        object Deals : Type(1)
-        object Mission : Type(2)
+        object Mission : Type(1)
+        object Thumbnail : Type(2)
     }
 
     companion object {
-        private const val BLOCK_NAME = "DealsAndMissionWidgetUiModel"
+        private const val BLOCK_NAME = "MultiTwoSquareWidgetUiModel"
     }
 }
