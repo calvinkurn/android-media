@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_CARD_SEE_MORE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ClassNameProvider
@@ -136,7 +138,9 @@ class BroadMatchPresenterDelegate @Inject constructor(
         relatedDataView = null
     }
 
-    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun onBroadMatchItemImpressed(
+        broadMatchItemDataView: BroadMatchItemDataView,
+    ) {
         if (broadMatchItemDataView.isOrganicAds)
             sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
 
@@ -163,7 +167,9 @@ class BroadMatchPresenterDelegate @Inject constructor(
         )
     }
 
-    override fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun onBroadMatchItemClick(
+        broadMatchItemDataView: BroadMatchItemDataView,
+    ) {
         when (val carouselProductType = broadMatchItemDataView.carouselProductType) {
             is BroadMatchProduct ->
                 broadMatchView.trackEventClickBroadMatchItem(broadMatchItemDataView)
@@ -193,38 +199,45 @@ class BroadMatchPresenterDelegate @Inject constructor(
     }
 
     override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
-        if (broadMatchDataView.carouselOptionType == BroadMatch)
+        if (broadMatchDataView.carouselOptionType is BroadMatch)
             broadMatchView.trackEventImpressionBroadMatch(broadMatchDataView)
+        else if (broadMatchDataView.carouselOptionType is DynamicCarouselOption)
+            dynamicProductView.trackDynamicCarouselImpression(broadMatchDataView)
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
         val applink = applinkModifier.modifyApplink(broadMatchDataView.applink)
-        handleBroadMatchSeeMoreClick(broadMatchDataView, applink)
+        handleBroadMatchSeeMoreClick(broadMatchDataView, applink, CLICK_SEE_MORE)
     }
 
     override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
         val applink = applinkModifier.modifyApplink(broadMatchDataView.cardButton.applink)
-        handleBroadMatchSeeMoreClick(broadMatchDataView, applink)
+        handleBroadMatchSeeMoreClick(broadMatchDataView, applink, CLICK_CARD_SEE_MORE)
     }
 
     private fun handleBroadMatchSeeMoreClick(
         broadMatchDataView: BroadMatchDataView,
         applink: String,
+        aladdinButtonType: String,
     ) {
-        trackBroadMatchSeeMoreClick(broadMatchDataView)
+        trackBroadMatchSeeMoreClick(broadMatchDataView, aladdinButtonType)
 
         broadMatchView.openLink(applink, broadMatchDataView.url)
     }
 
-    private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
+    private fun trackBroadMatchSeeMoreClick(
+        broadMatchDataView: BroadMatchDataView,
+        aladdinButtonType: String,
+    ) {
         when (val carouselOptionType = broadMatchDataView.carouselOptionType) {
             is BroadMatch ->
-                broadMatchView.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
+                broadMatchView.trackEventClickSeeMoreBroadMatch(broadMatchDataView, aladdinButtonType)
             is DynamicCarouselOption ->
                 dynamicProductView.trackEventClickSeeMoreDynamicProductCarousel(
                     broadMatchDataView,
                     carouselOptionType.option.inspirationCarouselType,
                     carouselOptionType.option,
+                    aladdinButtonType,
                 )
         }
     }

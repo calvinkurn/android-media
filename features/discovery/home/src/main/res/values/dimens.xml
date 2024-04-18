@@ -30,12 +30,10 @@
     <dimen name="balance_item_max_width">182dp</dimen>
     <dimen name="balance_outer_margin">4dp</dimen>
     <dimen name="balance_divider_width">1dp</dimen>
-    <dimen name="balance_atf2_image_size">32dp</dimen>
     <dimen name="balance_atf3_image_size">22dp</dimen>
     <dimen name="balance_vertical_padding">8dp</dimen>
     <dimen name="balance_inner_content_padding">8dp</dimen>
     <dimen name="balance_inner_left_padding">12dp</dimen>
-    <dimen name="balance_atf2_inner_right_padding">20dp</dimen>
     <dimen name="balance_atf3_inner_right_padding">12dp</dimen>
 
     <!--Paddings-->

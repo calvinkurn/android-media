@@ -49,6 +49,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -181,6 +182,7 @@ open class HomeRevampViewModel @Inject constructor(
     var homeDataModel = HomeDynamicChannelModel()
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
+    var refreshType: HomeRefreshType = HomeRefreshType.FIRST_OPEN
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
         return if (homeRemoteConfigController.get().isUsingNewAtf()) {
@@ -342,10 +344,9 @@ open class HomeRevampViewModel @Inject constructor(
         homeFlowStarted = true
         getThematicBackground()
         if (homeRemoteConfigController.get().isUsingNewAtf()) {
-            launch(homeDispatcher.get().io) {
-                homeAtfUseCase.get().fetchAtfDataList()
-            }
+            homeAtfUseCase.get().fetchAtfDataList()
         }
+
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
                 validateAtfError(homeNewDataModel)
@@ -392,8 +393,9 @@ open class HomeRevampViewModel @Inject constructor(
         homeNewDataModel?.isAtfError == true && homeNewDataModel.list.size <= 1 && !homeNewDataModel.isCache
 
     @FlowPreview
-    fun refreshHomeData() {
+    fun refreshHomeData(_refreshType: HomeRefreshType) {
         val isFirstLoad = this.isFirstLoad
+        refreshType = if(isFirstLoad) HomeRefreshType.FIRST_OPEN else _refreshType
         if (getHomeDataJob?.isActive == true) {
             _hideShowLoadingLiveData.postValue(Event(true))
             return
@@ -414,7 +416,7 @@ open class HomeRevampViewModel @Inject constructor(
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             homeUseCase.get().updateHomeData(
                 homeRemoteConfigController.get().isUsingNewAtf(),
-                isFirstLoad
+                isFirstLoad,
             ).collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
@@ -437,9 +439,10 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRemoteConfig() = remoteConfig.get()
 
-    fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false) {
+    fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false, refreshType: HomeRefreshType) {
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
-            refreshHomeData()
+            this.refreshType = refreshType
+            refreshHomeData(refreshType)
             _isNeedRefresh.value = Event(true)
         } else {
             getBalanceWidgetData()

@@ -11,6 +11,10 @@ import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAppLogActivity
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
@@ -22,7 +26,7 @@ import timber.log.Timber
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class AtcVariantActivity : BaseSimpleActivity() {
+class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface {
     companion object {
         const val TOKO_NOW_EXTRA = "isTokoNow"
         const val PAGE_SOURCE_EXTRA = "pageSource"
@@ -41,7 +45,6 @@ class AtcVariantActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         val uri = intent.data
         val bundle = intent.extras
         val productId = if (uri != null) {
@@ -66,13 +69,13 @@ class AtcVariantActivity : BaseSimpleActivity() {
             paramsData.shopId = shopId
             paramsData.cacheId = bundle.getString(ATC_VARIANT_CACHE_ID, "") ?: ""
             paramsData.dismissAfterTransaction = intent
-                    .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
+                .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
             paramsData.saveAfterClose = intent
-                    .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
+                .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
             paramsData.extParams = intent
-                    .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
+                .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
             paramsData.showQtyEditor = intent
-                    .getBooleanExtra(AtcVariantHelper.KEY_SHOW_QTY_EDITOR, false)
+                .getBooleanExtra(AtcVariantHelper.KEY_SHOW_QTY_EDITOR, false)
         }
 
         super.onCreate(savedInstanceState)
@@ -94,7 +97,7 @@ class AtcVariantActivity : BaseSimpleActivity() {
 
     private fun observeData() {
         sharedViewModel.activityResult.observe(this) {
-            val cacheManager = SaveInstanceCacheManager(this, true)
+            val cacheManager = SaveInstanceCacheManager(applicationContext, true)
             val resultIntent = Intent().apply {
                 putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
             }
@@ -108,5 +111,9 @@ class AtcVariantActivity : BaseSimpleActivity() {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+    }
+
+    override fun getPageName(): String {
+        return PageName.SKU
     }
 }

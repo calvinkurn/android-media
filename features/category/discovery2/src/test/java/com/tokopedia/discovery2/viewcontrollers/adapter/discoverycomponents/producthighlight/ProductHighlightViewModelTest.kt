@@ -3,9 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOcsUseCase
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
@@ -14,7 +15,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlightUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase
@@ -256,7 +256,7 @@ class ProductHighlightViewModelTest {
         viewModel.atcUseCase = atcUseCase
         viewModel.dispatcher = testDispatchers
 
-        val slot = slot<RequestParams>()
+        val slot = slot<AddToCartOcsRequestParams>()
 
         val atcResponseSuccess = AddToCartDataModel(
             data = DataModel(success = 1, productId = "2147818593"),
@@ -272,7 +272,7 @@ class ProductHighlightViewModelTest {
         every { dataItem.shopName } returns ""
 
         coEvery {
-            atcUseCase.createObservable(capture(slot)).toBlocking().single()
+            atcUseCase.invoke(capture(slot))
         } returns atcResponseSuccess
 
         viewModel.onOCSClicked(context, dataItem)
@@ -304,7 +304,7 @@ class ProductHighlightViewModelTest {
         every { dataItem.shopName } returns ""
 
         coEvery {
-            atcUseCase.createObservable(any()).toBlocking().single()
+            atcUseCase.invoke(any())
         } returns atcResponseError
 
         viewModel.onOCSClicked(context, dataItem)
@@ -315,7 +315,7 @@ class ProductHighlightViewModelTest {
 
     @Test
     fun `test for click on OCS button when result is null`() {
-        viewModel.atcUseCase = atcUseCase
+        viewModel.atcUseCase = null
         viewModel.dispatcher = testDispatchers
 
         every { dataItem.productId } returns "2147818593"
@@ -325,10 +325,6 @@ class ProductHighlightViewModelTest {
         every { dataItem.category } returns ""
         every { dataItem.price } returns "Rp15.000"
         every { dataItem.shopName } returns ""
-
-        coEvery {
-            atcUseCase.createObservable(any()).toBlocking().single()
-        } returns null
 
         viewModel.onOCSClicked(context, dataItem)
 

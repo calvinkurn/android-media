@@ -13,7 +13,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
-import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
@@ -23,6 +22,7 @@ import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_MISSION
 import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V2
+import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V3
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.home.constant.AtfKey.TYPE_TODO
 import com.tokopedia.home_component.model.ChannelGrid
@@ -50,7 +50,6 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class HomeVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
-    private val homePrefController: HomePrefController,
     val remoteConfig: RemoteConfig,
     private val homeDefaultDataSource: HomeDefaultDataSource
 ) : HomeVisitableFactory {
@@ -142,7 +141,6 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun addDynamicIconData(defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false) {
-        if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
         var isDynamicIconWrapType = false
         var iconList = defaultIconList
         if (iconList.isEmpty()) {
@@ -169,7 +167,6 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false, componentName: String) {
-        if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
         val iconType = if(componentName == TYPE_ICON_V2) DynamicIconComponentDataModel.Type.SMALL else DynamicIconComponentDataModel.Type.BIG
         val numOfRows = if(componentName == TYPE_ICON_V2) 2 else 1
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
@@ -370,6 +367,29 @@ class HomeVisitableFactoryImpl(
                                 )
                             }
 
+                            TYPE_MISSION_V3 -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(
+                                            MissionWidgetListDataModel(
+                                                status = MissionWidgetListDataModel.STATUS_LOADING,
+                                                showShimmering = data.isShimmer,
+                                                source = MissionWidgetListDataModel.SOURCE_ATF,
+                                                widgetParam = data.param,
+                                            )
+                                        )
+                                    },
+                                    onSuccess = {
+                                        addMission4SquareWidgetData(
+                                            data,
+                                            data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
+                                            index,
+                                            isCache,
+                                        )
+                                    }
+                                )
+                            }
+
                             TYPE_CHANNEL -> {
                                 data.atfStatusCondition(
                                     onLoading = {
@@ -485,7 +505,39 @@ class HomeVisitableFactoryImpl(
             val mission = MissionWidgetListDataModel(
                 id = atfData.id.toString(),
                 name = atfData.name,
-                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache),
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache, it.appLog),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
+                verticalPosition = index,
+                status = MissionWidgetListDataModel.STATUS_SUCCESS,
+                showShimmering = atfData.isShimmer,
+                source = MissionWidgetListDataModel.SOURCE_ATF,
+                type = MissionWidgetMapper.getMissionWidgetType(atfData.component),
+                widgetParam = atfData.param
+            )
+            visitableList.add(mission)
+        }
+    }
+
+    private fun addMission4SquareWidgetData(
+        atfData: AtfData,
+        data: HomeMissionWidgetData.GetHomeMissionWidget?,
+        index: Int,
+        isCache: Boolean,
+    ) {
+        data?.let {
+            val mission = MissionWidgetListDataModel(
+                id = atfData.id.toString(),
+                name = atfData.name,
+                mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
+                    missionWidgetList = it.missions,
+                    isCache = isCache,
+                    appLog = it.appLog,
+                    channelId = atfData.id.toString(),
+                    channelName = atfData.name,
+                    header = data.header.getAsHomeComponentHeader(),
+                    verticalPosition = index
+                ),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),
                 verticalPosition = index,
