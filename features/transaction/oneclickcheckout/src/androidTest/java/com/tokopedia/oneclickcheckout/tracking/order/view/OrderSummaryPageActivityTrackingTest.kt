@@ -99,11 +99,13 @@ class OrderSummaryPageActivityTrackingTest {
             // wait for bottom sheet to fully close
             waitForBottomSheet()
             clickButtonPromo()
+            closeBottomSheet()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickApplyShipmentPromoRevamp()
 
             clickButtonPromo()
+            closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_PRICE_CHANGE_RESPONSE_PATH
             pay()

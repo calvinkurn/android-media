@@ -18,6 +18,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_WITH_SOME_ERROR_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
+import com.tokopedia.oneclickcheckout.common.robot.waitForBottomSheet
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
@@ -409,6 +410,7 @@ class OrderSummaryPageActivityMultiProductTest {
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
 
+            waitForBottomSheet()
             assertPaymentButtonEnable(false)
         }
     }

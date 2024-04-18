@@ -39,6 +39,7 @@ import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 import com.tokopedia.dialog.R as dialogR
 import com.tokopedia.logisticcart.R as logisticcartR
+import com.tokopedia.promousage.R as promousageR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -473,7 +474,8 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click button promo"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        click().perform(uiController, view.findViewById(R.id.btn_promo_checkout))
+//                        click().perform(uiController, view.findViewById(R.id.btn_promo_checkout))
+                        click().perform(uiController, view.findViewById(promousageR.id.active_promo_checkout_view))
                     }
                 }
             )
