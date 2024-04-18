@@ -3233,6 +3233,19 @@ class CheckoutViewModel @Inject constructor(
                 // validate promo after get tenor
                 shouldRevalidatePromo = true
             } else {
+                val updateCartRequest = cartProcessor.generateUpdateCartRequest(listData.value)
+                val newPaymentRequest = cartProcessor.generateUpdateCartPaymentRequest(payment)
+                val updateCartResult = cartProcessor.updateCart(updateCartRequest, UPDATE_CART_SOURCE_PAYMENT, newPaymentRequest)
+                if (!updateCartResult.isSuccess) {
+                    // show error
+                    cost = cost.copy(
+                        dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                        usePaymentFees = true
+                    )
+                    payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error))
+                    updateTotalAndPayment(cost, payment)
+                    return
+                }
                 updateTotalAndPayment(cost, payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading)), skipValidatePayment = true)
                 // validate promo after get payment
                 validatePromo(skipEE = true)
