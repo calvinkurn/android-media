@@ -9,7 +9,7 @@ import com.tokopedia.home_component.databinding.GlobalComponent2squareThumbnailW
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.PartialItemWidgetAdapter
-import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -38,7 +38,7 @@ class ThumbnailWidgetViewHolder(
     }
 
     private fun setupRecyclerView() {
-        mAdapter = PartialItemWidgetAdapter(MultiTwoSquareWidgetUiModel.Type.Thumbnail, listener)
+        mAdapter = PartialItemWidgetAdapter(ItemTwoSquareType.Thumbnail, listener)
         binding?.lstCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
         binding?.lstCard?.adapter = mAdapter
         binding?.lstCard?.setHasFixedSize(true)

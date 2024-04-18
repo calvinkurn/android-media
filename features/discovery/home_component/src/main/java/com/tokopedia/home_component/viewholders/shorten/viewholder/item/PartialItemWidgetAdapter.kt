@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSquaresDiffUtil
-import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ItemMissionWidgetUiModel
 
 class PartialItemWidgetAdapter(
-    private val type: MultiTwoSquareWidgetUiModel.Type,
+    private val type: ItemTwoSquareType,
     private val listener: ContainerMultiTwoSquareListener
 ) : ListAdapter<ShortenVisitable, RecyclerView.ViewHolder>(
     ShortenStaticSquaresDiffUtil()
@@ -19,8 +19,8 @@ class PartialItemWidgetAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            MultiTwoSquareWidgetUiModel.Type.Mission.value -> ItemMissionWidgetViewHolder.create(parent, listener)
-            MultiTwoSquareWidgetUiModel.Type.Thumbnail.value -> ItemThumbnailWidgetViewHolder.create(parent, listener)
+            ItemTwoSquareType.Mission.value -> ItemMissionWidgetViewHolder.create(parent, listener)
+            ItemTwoSquareType.Thumbnail.value -> ItemThumbnailWidgetViewHolder.create(parent, listener)
             else -> super.createViewHolder(parent, viewType)
         }
     }
