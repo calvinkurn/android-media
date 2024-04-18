@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -253,6 +254,24 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
+    private fun showVerifyPhoneNoDialog(phoneNo: String) {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.verify_phone_dialog_title))
+                setDescription(it.getString(R.string.verify_phone_dialog_subtitle))
+                setPrimaryCTAText(it.getString(R.string.verify_phone_dialog_primary_btn))
+                setSecondaryCTAText(it.getString(R.string.verify_phone_dialog_secondary_btn))
+                setPrimaryCTAClickListener {
+                    goToPhoneShopCreation(phoneNo)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
+        }
+    }
+
     private fun onSuccessGetProfileInfo(userProfileCompletionData: UserProfileCompletionData) {
         if (userProfileCompletionData.phone.isNotEmpty()) {
             if (userProfileCompletionData.isPhoneVerified) {
@@ -268,7 +287,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
             } else {
-                goToPhoneShopCreation(userProfileCompletionData.phone)
+                showVerifyPhoneNoDialog(userProfileCompletionData.phone)
             }
         } else {
             goToPhoneShopCreation()

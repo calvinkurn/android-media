@@ -234,4 +234,9 @@
 
     <string name="goto_seamless_general_error">Oops, lagi ada gangguan. Coba cek koneksi kamu atau masuk beberapa saat lagi, ya.</string>
 
+    <string name="verify_phone_dialog_title">Verifikasi nomor HP-mu</string>
+    <string name="verify_phone_dialog_subtitle">Verifikasi nomor HP-mu dulu ya sebelum lanjut buka toko</string>
+    <string name="verify_phone_dialog_primary_btn">Verifikasi Nomor HP</string>
+    <string name="verify_phone_dialog_secondary_btn">Batal</string>
+
 </resources>
