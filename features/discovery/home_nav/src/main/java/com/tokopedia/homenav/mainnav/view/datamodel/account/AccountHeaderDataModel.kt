@@ -90,7 +90,7 @@ data class AccountHeaderDataModel(
         isError: Boolean = false,
         isLoading: Boolean = false
     ) {
-        this.profileSellerDataModel.hasShop = shopId != DEFAULT_SHOP_ID_NOT_OPEN
+        this.profileSellerDataModel.hasShop = (shopId != DEFAULT_SHOP_ID_NOT_OPEN || shopName.isNotEmpty())
         this.profileSellerDataModel.isGetShopError = isError
         this.profileSellerDataModel.isGetShopLoading = isLoading
         if (profileSellerDataModel.hasShop) {
