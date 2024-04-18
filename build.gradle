@@ -12,6 +12,7 @@ apply from: "buildconfig/aar/local-aar.gradle"
 
 buildscript {
     apply from: 'buildconfig/dependencies/dependencies.gradle'
+    apply from: 'buildconfig/kotlin/repository.gradle'
 
     repositories {
         maven {
@@ -69,6 +70,7 @@ if (hasProperty('buildScan')) {
 }
 
 apply from: 'buildproj.gradle'
+apply from: 'buildconfig/kotlin/repository.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
 
 
@@ -88,7 +90,6 @@ apply plugin: "org.jetbrains.dokka"
 // --- Codebase reader ---
 // to read df module in applink unit test
 apply plugin: 'com.tokopedia.codebasereader'
-apply from: 'buildconfig/kotlin/repository.gradle'
 
 
 /**
