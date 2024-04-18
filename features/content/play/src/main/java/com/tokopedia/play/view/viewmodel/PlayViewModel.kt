@@ -1342,9 +1342,14 @@ class PlayViewModel @AssistedInject constructor(
      * by getting the product ids of the given products
      * @param productList the product list which tracker will be sent to bro
      */
+    private val productIds = mutableListOf<String>()
     private fun sendProductTrackerToBro(productList: List<PlayProductUiModel.Product>) {
+        val hasChanged = productList.filterNot { productIds.contains(it.id) }.isNotEmpty()
+        if (hasChanged) {
+            productIds.clear()
+            productList.map { productIds.add(it.id) }
+        } else { return }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val productIds = productList.map(PlayProductUiModel.Product::id)
             repo.trackProducts(channelId, productIds)
         }) {}
     }
@@ -1861,6 +1866,12 @@ class PlayViewModel @AssistedInject constructor(
                         resultState = mappedData.resultState
                     )
                 }
+
+                sendProductTrackerToBro(
+                    productList = newProduct.productSectionList
+                        .filterIsInstance<ProductSectionUiModel.Section>()
+                        .flatMap { it.productList }
+                )
             }
             is MerchantVoucher -> {
                 val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result, _partnerInfo.value.name)
@@ -2266,7 +2277,6 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
-            REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             REQUEST_CODE_LOGIN_CART -> openPage(ApplinkConstInternalMarketplace.CART)
             else -> {}
         }

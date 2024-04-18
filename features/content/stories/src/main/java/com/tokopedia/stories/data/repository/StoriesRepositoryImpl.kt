@@ -9,6 +9,7 @@ import com.tokopedia.content.common.track.response.ReportSummaries
 import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.types.TrackContentType
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -51,6 +52,7 @@ class StoriesRepositoryImpl @Inject constructor(
     private val getReportUseCase: GetUserReportListUseCase,
     private val postReportUseCase: PostUserReportUseCase,
     private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    private val broadcasterReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase
 ) : StoriesRepository {
 
     override suspend fun getStoriesInitialData(
@@ -241,5 +243,18 @@ class StoriesRepositoryImpl @Inject constructor(
                 contentType = TrackContentType.Stories.value
             )
         )
+    }
+
+    override suspend fun trackContent(storyId: String, productIds: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
+        withContext(dispatchers.io) {
+            broadcasterReportTrackViewerUseCase.apply {
+                params = BroadcasterReportTrackViewerUseCase.createParams(
+                    channelId = storyId,
+                    productIds = productIds,
+                    event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit,
+                    type = TrackContentType.Play
+                )
+            }.executeOnBackground()
+        }
     }
 }

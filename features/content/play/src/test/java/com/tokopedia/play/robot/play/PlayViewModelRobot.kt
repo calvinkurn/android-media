@@ -3,7 +3,6 @@ package com.tokopedia.play.robot.play
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.track.response.ReportSummaries
 import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
@@ -59,7 +58,6 @@ class PlayViewModelRobot(
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
     private val getReportSummariesUseCase: GetReportSummariesUseCase,
-    trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     playSocketToModelMapper: PlaySocketToModelMapper,
     playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -253,7 +251,6 @@ fun givenPlayViewModelRobot(
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
-    trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
     playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -281,7 +278,6 @@ fun givenPlayViewModelRobot(
         videoBufferGovernorFactory = videoBufferGovernorFactory,
         getSocketCredentialUseCase = getSocketCredentialUseCase,
         getReportSummariesUseCase = getReportSummariesUseCase,
-        trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
         playSocketToModelMapper = playSocketToModelMapper,
         playUiModelMapper = playUiModelMapper,
         userSession = userSession,

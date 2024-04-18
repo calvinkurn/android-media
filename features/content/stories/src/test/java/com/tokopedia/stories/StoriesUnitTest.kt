@@ -429,6 +429,7 @@ class StoriesUnitTest {
             actualDetail.isContentLoaded.assertTrue()
 
             coVerify { mockRepository.getReportSummary(any()) }
+            coVerify { mockRepository.trackVisitContent(any()) }
         }
     }
 
@@ -451,6 +452,7 @@ class StoriesUnitTest {
             }
             event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
             coVerify { mockRepository.getReportSummary(any()) }
+            coVerify { mockRepository.trackVisitContent(any()) }
         }
     }
 
@@ -471,6 +473,7 @@ class StoriesUnitTest {
             actualDetail.isContentLoaded.assertTrue()
 
             coVerify { mockRepository.getReportSummary(any()) }
+            coVerify { mockRepository.trackVisitContent(any()) }
         }
     }
 
@@ -490,6 +493,7 @@ class StoriesUnitTest {
             actualDetail.isContentLoaded.assertFalse()
 
             coVerify { mockRepository.getReportSummary(any()) }
+            coVerify { mockRepository.trackVisitContent(any()) }
         }
     }
 
@@ -514,6 +518,7 @@ class StoriesUnitTest {
             event.last().assertEqualTo(StoriesUiEvent.ErrorSetTracking(expectedThrowable))
 
             coVerify { mockRepository.getReportSummary(any()) }
+            coVerify { mockRepository.trackVisitContent(any()) }
         }
     }
 

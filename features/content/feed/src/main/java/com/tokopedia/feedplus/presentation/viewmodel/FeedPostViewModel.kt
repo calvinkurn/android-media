@@ -22,7 +22,6 @@ import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
@@ -36,6 +35,7 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_MEDIA_VIDEO
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
@@ -117,7 +117,6 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val affiliateCookieHelper: AffiliateCookieHelper,
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
@@ -1216,41 +1215,30 @@ class FeedPostViewModel @Inject constructor(
     }
 
     /**
-     * Track Visit Channel
+     * Track
      */
-    fun trackVisitChannel(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
+    private val productIds = mutableListOf<String>()
+    fun trackPerformance(playChannelId: String, ids: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         if (playChannelId.isBlank()) return
 
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            trackVisitChannelUseCase.apply {
-                setRequestParams(
-                    TrackVisitChannelBroadcasterUseCase.createParams(
-                        playChannelId,
-                        TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
-                    )
-                )
-            }.executeOnBackground()
-        }) {
-        }
-    }
+        val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
+        if (hasChanged) {
+            productIds.clear()
+            ids.map { productIds.add(it) }
+        } else { return }
 
-    fun trackChannelPerformance(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
-        if (playChannelId.isBlank()) return
-
-        val productIds = model.products.map { it.id }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             trackReportTrackViewerUseCase.apply {
                 setRequestParams(
                     BroadcasterReportTrackViewerUseCase.createParams(
-                        playChannelId,
-                        productIds
+                        channelId = playChannelId,
+                        productIds = productIds,
+                        event = event,
+                        type = TrackContentType.Play
                     )
                 )
             }.executeOnBackground()
-        }) {
-        }
+        }) {}
     }
 
     fun getReportSummaries(model: FeedCardVideoContentModel) {
@@ -1301,7 +1289,8 @@ class FeedPostViewModel @Inject constructor(
     fun fetchFeedProduct(
         activityId: String,
         products: List<ContentTaggedProductUiModel>,
-        sourceType: ContentTaggedProductUiModel.SourceType
+        sourceType: ContentTaggedProductUiModel.SourceType,
+        mediaType: String,
     ) {
         viewModelScope.launch {
             try {
@@ -1328,6 +1317,8 @@ class FeedPostViewModel @Inject constructor(
                     it.id
                 }
                 _feedTagProductList.value = Success(distinctData)
+                if (mediaType == TYPE_MEDIA_VIDEO)
+                    trackPerformance(activityId, distinctData.map(ContentTaggedProductUiModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
             } catch (t: Throwable) {
                 _feedTagProductList.value = Fail(t)
             }

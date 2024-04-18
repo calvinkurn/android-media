@@ -2,7 +2,6 @@ package com.tokopedia.play.robot.play
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
@@ -48,7 +47,6 @@ class PlayViewModelRobot2(
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
     getReportSummariesUseCase: GetReportSummariesUseCase,
-    trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineTestDispatchers,
     remoteConfig: RemoteConfig,
@@ -201,7 +199,6 @@ fun createPlayViewModelRobot(
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
-    trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     remoteConfig: RemoteConfig = mockk(relaxed = true),
     playPreference: PlayPreference = mockk(relaxed = true),
@@ -226,7 +223,6 @@ fun createPlayViewModelRobot(
         videoBufferGovernorFactory = videoBufferGovernorFactory,
         getSocketCredentialUseCase = getSocketCredentialUseCase,
         getReportSummariesUseCase = getReportSummariesUseCase,
-        trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
         userSession = userSession,
         dispatchers = dispatchers,
         remoteConfig = remoteConfig,
