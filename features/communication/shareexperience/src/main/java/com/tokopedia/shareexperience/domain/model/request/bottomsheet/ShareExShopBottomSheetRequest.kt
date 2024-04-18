@@ -6,5 +6,5 @@ data class ShareExShopBottomSheetRequest(
     @SerializedName("pageType")
     val pageType: Int,
     @SerializedName("shopId")
-    val id: String
+    val shopId: String
 ) : ShareExBottomSheetRequest
