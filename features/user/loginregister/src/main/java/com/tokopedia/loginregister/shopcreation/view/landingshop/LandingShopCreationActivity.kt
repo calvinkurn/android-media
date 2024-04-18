@@ -54,7 +54,7 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
         if (supportFragmentManager.fragments.first() is ShopCreationKycStatusFragment) {
             supportFragmentManager.popBackStack()
         } else {
-            finish()
+            super.onBackPressed()
         }
     }
 }

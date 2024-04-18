@@ -266,7 +266,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     dismiss()
                 }
                 setSecondaryCTAClickListener {
+                    hideLoading()
                     dismiss()
+                }
+                setOnDismissListener {
+                    hideLoading()
                 }
             }.show()
         }
