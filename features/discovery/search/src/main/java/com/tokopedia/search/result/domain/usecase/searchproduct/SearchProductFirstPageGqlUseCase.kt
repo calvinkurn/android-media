@@ -60,12 +60,16 @@ class SearchProductFirstPageGqlUseCase(
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
-        val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams()
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams(
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
+        )
         val headlineAdsParams = createHeadlineParams(
             requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
             HEADLINE_ITEM_VALUE_FIRST_PAGE,
             HEADLINE_IMPRESSION_COUNT_FIRST_PAGE
-        ) + sreParams()
+        ) + sreParams(
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
+        )
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(reimagineRollence, params)

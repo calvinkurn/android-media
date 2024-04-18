@@ -4,6 +4,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.uimodel.AddToCartEvent
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartTrackerEvent
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
@@ -464,5 +465,100 @@ class AddToCartTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(null, cartViewModel.cartTrackerEvent.value)
+    }
+
+    @Test
+    fun `WHEN add buy again item item success THEN should render success`() {
+        // GIVEN
+        val productModel = CartBuyAgainItemHolderData(
+            recommendationItem = RecommendationItem(
+                productId = 0,
+                shopId = 0,
+                name = "a",
+                price = "1",
+                minOrder = 1
+            )
+        )
+        val successMessage = "Success message add to cart"
+        val addToCartDataModel = AddToCartDataModel().apply {
+            status = AddToCartDataModel.STATUS_OK
+            data = DataModel().apply {
+                message = arrayListOf<String>().apply {
+                    add(successMessage)
+                }
+                success = 1
+            }
+        }
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartViewModel.processAddToCart(productModel)
+
+        // THEN
+        assertEquals(
+            AddToCartEvent.Success(addToCartDataModel, productModel),
+            cartViewModel.addToCartEvent.value
+        )
+    }
+
+    @Test
+    fun `WHEN add buy again item failed THEN should render error`() {
+        // GIVEN
+        val errorMessage = "Add to cart error"
+        val addToCartDataModel = AddToCartDataModel().apply {
+            this.status = AddToCartDataModel.STATUS_ERROR
+            this.data = DataModel()
+            this.errorMessage = arrayListOf<String>().apply {
+                add(errorMessage)
+            }
+        }
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartViewModel.processAddToCart(
+            CartBuyAgainItemHolderData(
+                recommendationItem = RecommendationItem(
+                    productId = 0,
+                    shopId = 0
+                )
+            )
+        )
+
+        // THEN
+        MatcherAssert.assertThat(
+            cartViewModel.addToCartEvent.value,
+            CoreMatchers.instanceOf<Any>(AddToCartEvent.Failed::class.java)
+        )
+    }
+
+    @Test
+    fun `WHEN add buy again item failed with exception THEN should render error`() {
+        // GIVEN
+        val exception = IllegalStateException("Add to cart error with exception")
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } throws exception
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartViewModel.processAddToCart(
+            CartBuyAgainItemHolderData(
+                recommendationItem = RecommendationItem(
+                    productId = 0,
+                    shopId = 0
+                )
+            )
+        )
+
+        // THEN
+        assertEquals(
+            AddToCartEvent.Failed(exception),
+            cartViewModel.addToCartEvent.value
+        )
     }
 }

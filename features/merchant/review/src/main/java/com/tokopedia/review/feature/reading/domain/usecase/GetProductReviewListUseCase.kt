@@ -16,11 +16,12 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
         const val PARAM_LIMIT = "limit"
         const val PARAM_SORT = "sortBy"
         const val PARAM_FILTER = "filterBy"
+        const val PARAM_OPT = "opt"
         const val DEFAULT_LIMIT = 10
         const val GET_PRODUCT_REVIEW_LIST_USE_CASE_CLASS_NAME = "ProductReviewListQuery"
         const val GET_PRODUCT_REVIEW_LIST_QUERY = """
-            query productrevGetProductReviewList(${'$'}productID: String!, ${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}sortBy: String, ${'$'}filterBy: String) {
-              productrevGetProductReviewList(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit, sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy) {
+            query productrevGetProductReviewList(${'$'}productID: String!, ${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}sortBy: String, ${'$'}filterBy: String, ${'$'}opt: String) {
+              productrevGetProductReviewList(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit, sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, opt: ${'$'}opt) {
                 list {
                   feedbackID
                   variantName
@@ -67,6 +68,10 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                   url
                   image
                 }
+                variantFilter {
+                  isUnavailable
+                  ticker
+                }
                 hasNext
               }
             }
@@ -80,13 +85,14 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
 
     private val requestParams = RequestParams.create()
 
-    fun setParams(productId: String, page: Int, sort: String, filter: String) {
+    fun setParams(productId: String, page: Int, sort: String, filter: String, opt: String) {
         requestParams.apply {
             putString(PARAM_PRODUCT_ID, productId)
             putInt(PARAM_PAGE, page)
             putInt(PARAM_LIMIT, DEFAULT_LIMIT)
             putString(PARAM_SORT, sort)
             putString(PARAM_FILTER, filter)
+            putString(PARAM_OPT, opt)
         }
         setRequestParams(requestParams.parameters)
     }

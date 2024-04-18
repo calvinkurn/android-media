@@ -10,6 +10,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.onKeyboardVisibleListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -67,13 +68,18 @@ class PartialButtonActionView private constructor(
 
     private val containerTokonowVar =
         view.findViewById<ConstraintLayout>(productdetailR.id.tokonow_button_container)
-    private val btnTokonowVar = view.findViewById<UnifyButton>(productdetailR.id.btn_atc_tokonow_variant)
-    private val txtTotalStockTokonowVar = view.findViewById<Typography>(productdetailR.id.txt_total_quantity)
+    private val btnTokonowVar =
+        view.findViewById<UnifyButton>(productdetailR.id.btn_atc_tokonow_variant)
+    private val txtTotalStockTokonowVar =
+        view.findViewById<Typography>(productdetailR.id.txt_total_quantity)
     private val dividerTokonow = view.findViewById<View>(productdetailR.id.divider_button_quantity)
-    private val txtProductNameTokonowVar = view.findViewById<Typography>(productdetailR.id.txt_product_name)
+    private val txtProductNameTokonowVar =
+        view.findViewById<Typography>(productdetailR.id.txt_product_name)
 
-    private val icDeleteNonVar = view.findViewById<IconUnify>(productdetailR.id.btn_delete_tokonow_non_var)
-    private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(productdetailR.id.qty_tokonow_non_var)
+    private val icDeleteNonVar =
+        view.findViewById<IconUnify>(productdetailR.id.btn_delete_tokonow_non_var)
+    private val qtyButtonPdp =
+        view.findViewById<QuantityEditorUnify>(productdetailR.id.qty_tokonow_non_var)
     private val btnChat = view.findViewById<UnifyButton>(productdetailR.id.btn_topchat)
 
     companion object {
@@ -490,6 +496,28 @@ class PartialButtonActionView private constructor(
                 showWithCondition(!isShopOwner)
                 setOnClickListener { buttonListener.topChatButtonClicked() }
             }
+        }
+    }
+
+    fun showLoading() {
+        setButtonToLoading(isLoading = true)
+    }
+
+    fun hideLoading() {
+        setButtonToLoading(isLoading = false)
+    }
+
+    private fun setButtonToLoading(isLoading: Boolean) = with(binding) {
+        btnBuyNow.setLoading(isLoading = isLoading)
+        btnAddToCart.setLoading(isLoading = isLoading)
+        btnTokonowVar.setLoading(isLoading = isLoading)
+    }
+
+    private fun UnifyButton.setLoading(isLoading: Boolean) {
+        postOnAnimation {
+            if (!isVisible) return@postOnAnimation
+            this.isClickable = !isLoading
+            this.isLoading = isLoading
         }
     }
 

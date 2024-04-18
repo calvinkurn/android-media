@@ -56,8 +56,8 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.EnterMethod;
-import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -1241,7 +1241,7 @@ public class MainParentActivity extends BaseActivity implements
                         PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getPageLoadTimePerformanceInterface().stopMonitoring();
+            getPageLoadTimePerformanceInterface().stopMonitoring(null);
         }
     }
 
@@ -1362,14 +1362,15 @@ public class MainParentActivity extends BaseActivity implements
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         updateAppLogPageData(position);
-        handleAppLogEnterMethod(pageTitle);
+        sendEnterPage(position);
         return true;
     }
 
-    private void handleAppLogEnterMethod(String pageTitle) {
-        if (pageTitle.equals(getResources().getString(R.string.home))) {
+    private void handleAppLogEnterMethod(String pageName) {
+        if(AppLogAnalytics.INSTANCE.getPageDataList().isEmpty()) return;
+        if (pageName.equals(PageName.HOME)) {
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
-        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
+        } else if (pageName.equals(PageName.WISHLIST)) {
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
         }
     }
@@ -1377,6 +1378,8 @@ public class MainParentActivity extends BaseActivity implements
     private void updateAppLogPageData(int position) {
         Fragment fragment = fragmentList.get(position);
         if (fragment instanceof AppLogInterface applogInterface) {
+            handleAppLogEnterMethod(applogInterface.getPageName());
+
             Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
             if (currentPageName != null
                     && applogInterface.getPageName().equals(currentPageName.toString())) {
@@ -1389,6 +1392,14 @@ public class MainParentActivity extends BaseActivity implements
             if (currentEnterMethod == null) {
                 AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
             }
+        }
+    }
+
+    private void sendEnterPage(int position) {
+        Fragment fragment = fragmentList.get(position);
+        if (!isFirstTimeUser() && fragment instanceof AppLogInterface appLogInterface &&
+                appLogInterface.shouldTrackEnterPage()) {
+            AppLogRecommendation.INSTANCE.sendEnterPageAppLog();
         }
     }
 
@@ -1424,6 +1435,7 @@ public class MainParentActivity extends BaseActivity implements
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
             updateAppLogPageData(homePosition);
+            sendEnterPage(homePosition);
             bottomNavigation.setInitialState(homePosition);
         }
     }

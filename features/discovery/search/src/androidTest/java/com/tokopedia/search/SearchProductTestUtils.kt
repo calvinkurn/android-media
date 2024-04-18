@@ -23,10 +23,6 @@ import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
-import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
-import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
-import com.tokopedia.search.result.product.cpm.BannerAdsListener
-import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -35,8 +31,6 @@ import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCar
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.Product
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
 
@@ -92,47 +86,11 @@ internal fun createInspirationCardListener(): InspirationCardListener {
     }
 }
 
-internal fun createBroadMatchListener(): BroadMatchListener {
-    return object : BroadMatchListener {
-        override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {}
-
-        override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
-
-        override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
-
-        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
-
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
-        override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
-
-        override val productCardLifecycleObserver: ProductCardLifecycleObserver?
-            get() = null
-    }
-}
-
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object : GlobalNavListener {
         override fun onGlobalNavWidgetImpressed(globalNavDataView: GlobalNavDataView) {}
         override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {}
         override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {}
-    }
-}
-
-internal fun createBannerAdsListener(): BannerAdsListener {
-    return object : BannerAdsListener {
-        override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?, dataView: CpmDataView) {}
-
-        override fun onBannerAdsImpressionListener(position: Int, data: CpmData?, dataView: CpmDataView, adapterPosition: Int) {}
-
-        override fun onBannerAdsProductImpressionListener(position: Int, product: Product?, dataView: CpmDataView) {}
-
-        override fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {}
-
-        override fun onBannerAdsImpression1PxListener(data: CpmDataView) {}
-
-        override fun onImpressionSeeMoreItem(data: CpmDataView, position: Int) {}
-
-        override fun isEnableFixByteIOCPM(): Boolean { return true }
     }
 }
 

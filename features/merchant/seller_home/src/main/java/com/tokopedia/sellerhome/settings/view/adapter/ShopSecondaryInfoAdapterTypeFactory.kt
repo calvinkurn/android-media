@@ -41,7 +41,8 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
                 parent,
                 listener::onGoToPowerMerchantSubscribe,
                 listener::onRefreshShopInfo,
-                listener::onShopStatusImpression
+                listener::onShopStatusImpression,
+                listener::navigate
             )
             RMTransactionViewHolder.LAYOUT_RES -> RMTransactionViewHolder(
                 parent,

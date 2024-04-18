@@ -11,9 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
-        android:background="@drawable/ic_close_white"
+        android:background="@drawable/catalog_ic_close_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="VectorDrawable" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/image_recycler_view"

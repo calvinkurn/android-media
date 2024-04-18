@@ -25,15 +25,12 @@ import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAnnotationWidgetU
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryHeader
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryMenu
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryShowcase
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryTitle
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addHeaderSpace
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProductRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProgressBar
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.findCategoryShowcaseItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
@@ -64,10 +61,14 @@ import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.category.constant.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeHeaderTicker
+import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
@@ -76,6 +77,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private val getAnnotationWidgetUseCase: GetAnnotationWidgetUseCase,
     private val aceSearchParamMapper: AceSearchParamMapper,
     private val addressData: TokoNowLocalAddress,
+    private val resourceProvider: ResourceProvider,
     getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
@@ -142,7 +144,6 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     override suspend fun loadFirstPage(tickerData: GetTickerData) {
         val warehouses = addressData.getWarehousesData()
-        val localCacheModel = addressData.getAddressData()
         val detailResponse = getCategoryDetailUseCase.execute(
             categoryIdL1 = categoryIdL1,
             warehouses = warehouses
@@ -155,20 +156,11 @@ class TokoNowCategoryViewModel @Inject constructor(
 
         visitableList.clear()
 
-        visitableList.addHeaderSpace(
-            space = navToolbarHeight,
-            detailResponse = detailResponse
-        )
-        visitableList.addChooseAddress(
+        visitableList.addCategoryHeader(
             detailResponse = detailResponse,
-            localCacheModel = localCacheModel
-        )
-        visitableList.addTicker(
-            detailResponse = detailResponse,
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
             tickerList = tickerData.tickerList
-        )
-        visitableList.addCategoryTitle(
-            detailResponse = detailResponse
         )
         visitableList.addCategoryNavigation(
             categoryNavigationUiModel = categoryNavigationUiModel
@@ -366,6 +358,16 @@ class TokoNowCategoryViewModel @Inject constructor(
         launchCatchError(
             block = {
                 removeVisitableItem(PRODUCT_RECOMMENDATION.name)
+                updateVisitableListLiveData()
+            },
+            onError = { /* nothing to do */ }
+        )
+    }
+
+    fun removeTicker() {
+        launchCatchError(
+            block = {
+                visitableList.removeHeaderTicker()
                 updateVisitableListLiveData()
             },
             onError = { /* nothing to do */ }

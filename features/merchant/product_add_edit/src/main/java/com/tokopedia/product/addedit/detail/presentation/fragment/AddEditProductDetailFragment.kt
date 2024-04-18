@@ -78,7 +78,9 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
@@ -112,6 +114,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputMapper
 import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
@@ -139,6 +142,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
+import com.tokopedia.product.addedit.R as productaddeditR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @FlowPreview
 class AddEditProductDetailFragment :
@@ -211,7 +216,6 @@ class AddEditProductDetailFragment :
     private var addProductSpecificationButton: Typography? = null
     private var productSpecificationReloadLayout: View? = null
     private var productSpecificationReloadButton: Typography? = null
-    private var tooltipSpecificationRequired: View? = null
 
     // product price
     private var productPriceField: TextFieldUnify2? = null
@@ -641,7 +645,9 @@ class AddEditProductDetailFragment :
                     productCategoryRecListView?.setToDisplayText(categoryName.orEmpty(), requireContext())
 
                     // clear specification, get new annotation spec
-                    getAnnotationCategory()
+                    if (productCategoryId.isNotEmpty()) {
+                        viewModel.getAnnotationCategory(productCategoryId, "")
+                    }
 
                     // only need set category, no need to get category list
                     needToSetCategoryName = true
@@ -1034,7 +1040,7 @@ class AddEditProductDetailFragment :
     }
 
     private fun subscribeToProductNameInputStatus() {
-        viewModel.isProductNameInputError.observe(viewLifecycleOwner, {
+        viewModel.isProductNameInputError.observe(viewLifecycleOwner) {
             val productNameInput = productNameField?.getEditableValue().toString()
             val validationResult = viewModel.productNameValidationResult
             productNameField?.isInputError = it
@@ -1057,11 +1063,15 @@ class AddEditProductDetailFragment :
                     validationResult.isNegativeKeyword -> {
                         showProductNameIconNegative()
                     }
+
                     validationResult.isTypoDetected -> {
                         showProductNameIconTypo()
                         typoCorrection?.setKeywords(validationResult.typoCorrections)
                     }
-                    else -> { showProductNameIconSuccess() }
+
+                    else -> {
+                        showProductNameIconSuccess()
+                    }
                 }
             } else {
                 // keep the category
@@ -1081,11 +1091,11 @@ class AddEditProductDetailFragment :
                 }
                 productCategoryRecListView?.setToDisplayText(productCategoryName, requireContext())
             }
-        })
+        }
     }
 
     private fun subscribeToProductPriceInputStatus() {
-        viewModel.isProductPriceInputError.observe(viewLifecycleOwner, {
+        viewModel.isProductPriceInputError.observe(viewLifecycleOwner) {
             if (priceSuggestionBottomSheet?.isAdded == true) {
                 priceSuggestionBottomSheet?.setPriceValidationResult(
                     isError = it,
@@ -1095,60 +1105,60 @@ class AddEditProductDetailFragment :
                 productPriceField?.isInputError = it
                 productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
             }
-        })
+        }
     }
 
     private fun subscribeToWholeSaleSwitchStatus() {
-        viewModel.isWholeSalePriceActivated.observe(viewLifecycleOwner, {
+        viewModel.isWholeSalePriceActivated.observe(viewLifecycleOwner) {
             if (it) {
                 productWholeSaleInputLayout?.visible()
             } else {
                 productWholeSaleInputLayout?.hide()
             }
-        })
+        }
     }
 
     private fun subscribeToProductStockInputStatus() {
-        viewModel.isProductStockInputError.observe(viewLifecycleOwner, {
+        viewModel.isProductStockInputError.observe(viewLifecycleOwner) {
             productStockField?.setError(it)
             productStockField?.setMessage(viewModel.productStockMessage)
-        })
+        }
     }
 
     private fun subscribeToOrderQuantityInputStatus() {
-        viewModel.isOrderQuantityInputError.observe(viewLifecycleOwner, {
+        viewModel.isOrderQuantityInputError.observe(viewLifecycleOwner) {
             productMinOrderField?.setError(it)
             productMinOrderField?.setMessage(viewModel.orderQuantityMessage)
-        })
+        }
     }
 
     private fun subscribeToPreOrderSwitchStatus() {
-        viewModel.isPreOrderActivated.observe(viewLifecycleOwner, {
+        viewModel.isPreOrderActivated.observe(viewLifecycleOwner) {
             isPreOrderFirstTime = false
             if (it) {
                 preOrderInputLayout?.visible()
             } else {
                 preOrderInputLayout?.hide()
             }
-        })
+        }
     }
 
     private fun subscribeToPreOrderDurationInputStatus() {
-        viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner, {
+        viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner) {
             preOrderDurationField?.setError(it)
             preOrderDurationField?.setMessage(viewModel.preOrderDurationMessage)
-        })
+        }
     }
 
     private fun subscribeToProductSkuInputStatus() {
-        viewModel.isProductSkuInputError.observe(viewLifecycleOwner, {
+        viewModel.isProductSkuInputError.observe(viewLifecycleOwner) {
             productSkuField?.setError(it)
             productSkuField?.setMessage(viewModel.productSkuMessage)
-        })
+        }
     }
 
     private fun subscribeToShopShowCases() {
-        viewModel.shopShowCases.observe(viewLifecycleOwner, { result ->
+        viewModel.shopShowCases.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     // shop show cases; the source of truth
@@ -1160,7 +1170,10 @@ class AddEditProductDetailFragment :
                     }
                     // convert ShowCaseItems to ShowCaseItemPicker collections
                     val selectedProductShowCases = selectedShowCases.map { showCaseItem ->
-                        ShowcaseItemPicker(showcaseId = showCaseItem.id, showcaseName = showCaseItem.name)
+                        ShowcaseItemPicker(
+                            showcaseId = showCaseItem.id,
+                            showcaseName = showCaseItem.name
+                        )
                     }
                     // update the show case item picker collections in view model
                     viewModel.updateProductShowCases(ArrayList(selectedProductShowCases))
@@ -1180,6 +1193,7 @@ class AddEditProductDetailFragment :
                         }
                     }
                 }
+
                 is Fail -> {
                     // hide the tips and show the reload button
                     productShowCasesView?.hide()
@@ -1188,7 +1202,7 @@ class AddEditProductDetailFragment :
                     viewModel.isReloadingShowCase = false
                 }
             }
-        })
+        }
     }
 
     private fun subscribeToShopInfo() {
@@ -1222,37 +1236,45 @@ class AddEditProductDetailFragment :
     }
 
     private fun subscribeToCommissionInfo() {
-        viewModel.commissionInfo.observe(viewLifecycleOwner, { commissionInfo ->
+        viewModel.commissionInfo.observe(viewLifecycleOwner) { commissionInfo ->
             val categoryRate = commissionInfo.getDefaultCommissionRules.categoryRate.firstOrNull()
             categoryRate?.run {
                 if (commissionRules.isNotEmpty()) {
                     // select commission rate based on shop type
-                    val commissionRate = viewModel.getCommissionRate(commissionRules, viewModel.shopTier)
+                    val commissionRate =
+                        viewModel.getCommissionRate(commissionRules, viewModel.shopTier)
                     // setup commission rate tips if rate is not zero
                     if (commissionRate != DOUBLE_ZERO) {
                         val strCommissionRate = commissionRate.toString()
-                        setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee, strCommissionRate)
+                        setupCommissionInfoTips(
+                            commissionInfoTipsView,
+                            viewModel.isFreeOfServiceFee,
+                            strCommissionRate
+                        )
                         commissionInfoTipsView?.show()
                     }
                 }
             }
-        })
-        viewModel.commissionInfoError.observe(viewLifecycleOwner, {
+        }
+        viewModel.commissionInfoError.observe(viewLifecycleOwner) {
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-        })
+        }
     }
 
     private fun subscribeToAnnotationCategoryData() {
-        viewModel.annotationCategoryData.observe(viewLifecycleOwner, { result ->
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     productSpecificationLayout?.isVisible = result.data.isNotEmpty()
                     productSpecificationTextView?.show()
                     addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
-                    viewModel.updateSpecificationByAnnotationCategory(result.data)
+                    val selectedSpecificationList =
+                        SpecificationInputMapper.mapToSpecificationInputModelList(result.data)
+                    viewModel.updateSelectedSpecification(selectedSpecificationList)
                     viewModel.updateHasRequiredSpecification(result.data)
                 }
+
                 is Fail -> {
                     productSpecificationLayout?.show()
                     productSpecificationTextView?.hide()
@@ -1260,21 +1282,19 @@ class AddEditProductDetailFragment :
                     productSpecificationReloadLayout?.show()
                 }
             }
-        })
+        }
     }
 
     private fun subscribeToSpecificationText() {
-        viewModel.specificationText.observe(viewLifecycleOwner, {
+        viewModel.specificationText.observe(viewLifecycleOwner) {
             productSpecificationTextView?.text = it
-        })
+        }
     }
 
     private fun subscribeToHasRequiredSpecification() {
-        viewModel.hasRequiredSpecification.observe(viewLifecycleOwner, {
+        viewModel.hasRequiredSpecification.observe(viewLifecycleOwner) {
             productSpecificationHeaderTextView.displayRequiredAsterisk(it)
-            val specificationList = viewModel.selectedSpecificationList.value.orEmpty()
-            tooltipSpecificationRequired?.isVisible = it && specificationList.isEmpty()
-        })
+        }
     }
 
     private fun subscribeToSelectedSpecificationList() {
@@ -1284,19 +1304,17 @@ class AddEditProductDetailFragment :
             } else {
                 getString(R.string.action_specification_change)
             }
-            val hasRequiredSpecification = viewModel.hasRequiredSpecification.value.orFalse()
-            tooltipSpecificationRequired?.isVisible = it.isEmpty() && hasRequiredSpecification
         }
     }
 
     private fun subscribeToInputStatus() {
-        viewModel.isInputValid.observe(viewLifecycleOwner, {
+        viewModel.isInputValid.observe(viewLifecycleOwner) {
             submitButton?.isEnabled = it
-        })
+        }
     }
 
     private fun subscribeToCategoryRecommendation() {
-        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner, {
+        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
                 is Fail -> {
@@ -1304,7 +1322,7 @@ class AddEditProductDetailFragment :
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun subscribeToAddProductPriceSuggestion() {
@@ -1330,10 +1348,10 @@ class AddEditProductDetailFragment :
                 val isCompetitive = viewModel.isProductPriceCompetitive(productPriceInput.toDoubleOrZero(), priceSuggestionRange)
                 if (isCompetitive) {
                     priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
-                    priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+                    priceSuggestionLabelView?.setText(productaddeditR.string.label_is_competitive)
                 } else {
                     priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
-                    priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
+                    priceSuggestionLabelView?.setText(productaddeditR.string.label_price_suggestion_range)
                 }
             }
         }
@@ -1365,10 +1383,10 @@ class AddEditProductDetailFragment :
             val isCompetitive = viewModel.isProductPriceCompetitive(productPriceInput.toDoubleOrZero(), priceSuggestionRange)
             if (isCompetitive) {
                 priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
-                priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+                priceSuggestionLabelView?.setText(productaddeditR.string.label_is_competitive)
             } else {
                 priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
-                priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
+                priceSuggestionLabelView?.setText(productaddeditR.string.label_price_suggestion_range)
             }
         }
         viewModel.productPriceRecommendationError.observe(viewLifecycleOwner) {
@@ -1394,7 +1412,7 @@ class AddEditProductDetailFragment :
     }
 
     private fun subscribeToProductNameValidationFromNetwork() {
-        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, {
+        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner) {
             submitButton?.isLoading = false
             when (it) {
                 is Success -> {
@@ -1410,12 +1428,14 @@ class AddEditProductDetailFragment :
                         submitInputData()
                     }
                 }
+
                 is Fail -> {
-                    viewModel.productNameMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    viewModel.productNameMessage =
+                        ErrorHandler.getErrorMessage(context, it.throwable)
                     viewModel.setIsProductNameInputError(true)
                 }
             }
-        })
+        }
     }
 
     private fun subscribeToMaxStockThreshold() {
@@ -1435,12 +1455,12 @@ class AddEditProductDetailFragment :
             viewModel.validateProductNameInputFromNetwork(productNameField.getText())
         } else {
             submitButton?.isLoading = false
-            view?.post {
+            view?.postDelayed({
                 scrollViewParent?.smoothScrollTo(Int.ZERO, productSpecificationLayout?.top.orZero())
                 productSpecificationTextView?.text = MethodChecker.fromHtml(
                     getString(R.string.error_specification_signal_status_empty_red)
                 )
-            }
+            }, DEBOUNCE_DELAY_MILLIS)
         }
     }
 
@@ -1450,7 +1470,7 @@ class AddEditProductDetailFragment :
 
             // show error message when maximum product image is reached
             val productPhotoCount = adapter.getProductPhotoPaths().size
-            if (productPhotoCount == viewModel.getMaxProductPhotos()) {
+            if (productPhotoCount == MAX_PRODUCT_PHOTOS) {
                 showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
             } else {
                 val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
@@ -1472,14 +1492,13 @@ class AddEditProductDetailFragment :
         val ctx = context ?: return
         val isEditing = viewModel.isEditing
         val isAdding = viewModel.isAdding || !isEditing
-        val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
         if (RemoteConfig.getImagePickerRemoteConfig(ctx)) {
             val pageSource = if (!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
                 ctx,
-                maxProductPhotoCount,
+                MAX_PRODUCT_PHOTOS,
                 pageSource,
                 ArrayList(imageUrlOrPathList)
             )
@@ -1493,7 +1512,7 @@ class AddEditProductDetailFragment :
             val intent = ImagePickerAddEditNavigation.getIntent(
                 ctx,
                 ArrayList(imageUrlOrPathList),
-                maxProductPhotoCount,
+                MAX_PRODUCT_PHOTOS,
                 isAdding
             )
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -1787,10 +1806,10 @@ class AddEditProductDetailFragment :
                     val isCompetitive = viewModel.isProductPriceCompetitive(it.toDoubleOrZero(), priceSuggestionRange, isError)
                     if (isCompetitive) {
                         priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
-                        priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+                        priceSuggestionLabelView?.setText(productaddeditR.string.label_is_competitive)
                     } else {
                         priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
-                        priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
+                        priceSuggestionLabelView?.setText(productaddeditR.string.label_price_suggestion_range)
                     }
                 }
             }
@@ -1879,7 +1898,6 @@ class AddEditProductDetailFragment :
         addProductSpecificationButton = binding?.addEditProductSpecificationLayout?.tvAddProductSpecification
         productSpecificationReloadLayout = binding?.addEditProductSpecificationLayout?.reloadProductSpecificationLayout
         productSpecificationReloadButton = binding?.addEditProductSpecificationLayout?.tvReloadSpecificationButton
-        tooltipSpecificationRequired = binding?.addEditProductSpecificationLayout?.tooltipSpecificationRequired
     }
 
     private fun setupProductCategoryViews() {
@@ -1973,7 +1991,7 @@ class AddEditProductDetailFragment :
     private fun setupProductPhotoViews() {
         addProductPhotoButton = binding?.addEditProductPhotoLayout?.tvAddProductPhoto
         productPhotosView = binding?.addEditProductPhotoLayout?.rvProductPhotos
-        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, viewModel.productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, viewModel.productPhotoPaths, this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -1994,7 +2012,7 @@ class AddEditProductDetailFragment :
     private fun setupSpecificationField() {
         // get annotation category, if not already obtained from the server (specifications == null)
         val specifications = viewModel.productInputModel.detailInputModel.specifications
-        if (specifications != null) {
+        if (!specifications.isNullOrEmpty()) {
             viewModel.updateSelectedSpecification(specifications)
         } else {
             getAnnotationCategory()
@@ -2244,22 +2262,22 @@ class AddEditProductDetailFragment :
     }
 
     private fun showProductNameIconSuccess() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_GN500, IconUnify.CHECK_CIRCLE)
+        showProductNameIconIndicator(unifyprinciplesR.color.Unify_GN500, IconUnify.CHECK_CIRCLE)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconTypo() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_NN950, IconUnify.INFORMATION)
+        showProductNameIconIndicator(unifyprinciplesR.color.Unify_NN950, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconNegative() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_YN300, IconUnify.INFORMATION)
+        showProductNameIconIndicator(unifyprinciplesR.color.Unify_YN300, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconError() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_RN500, IconUnify.INFORMATION)
+        showProductNameIconIndicator(unifyprinciplesR.color.Unify_RN500, IconUnify.INFORMATION)
         productNameField?.isInputError = true
     }
 
@@ -2351,7 +2369,10 @@ class AddEditProductDetailFragment :
             setSelected(items, position) {
                 productCategoryId = it.getCategoryId().toString()
                 productCategoryName = it.getCategoryName()
-                getAnnotationCategory() // update annotation specification
+                // update annotation specification
+                if (productCategoryId.isNotEmpty()) {
+                    viewModel.getAnnotationCategory(productCategoryId, "")
+                }
                 true
             }
         }

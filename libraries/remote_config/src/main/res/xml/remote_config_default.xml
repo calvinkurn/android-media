@@ -686,4 +686,9 @@
         <key>android_pdp_debounce_time</key>
         <value>150L</value>
     </entry>
+    <entry>
+        <key>android_enable_sdui_tracking_queue</key>
+        <value>false</value>
+    </entry>
+
 </defaultsMap>

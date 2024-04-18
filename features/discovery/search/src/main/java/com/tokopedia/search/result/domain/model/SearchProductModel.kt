@@ -62,6 +62,9 @@ data class SearchProductModel(
     val requestId: String
         get() = searchProductV5.header.meta.dynamicFields.requestId
 
+    val searchId: String
+        get() = searchProductV5.header.meta.dynamicFields.searchId
+
     fun hasProducts(isV5: Boolean): Boolean =
         if (isV5) searchProductV5.data.productList.isNotEmpty()
         else searchProduct.data.productList.isNotEmpty()
@@ -231,7 +234,10 @@ data class SearchProductModel(
 
         data class DynamicFields(
             @SerializedName("request_id")
-            val requestId: String = ""
+            val requestId: String = "",
+
+            @SerializedName("search_id")
+            val searchId: String = ""
         )
     }
 
