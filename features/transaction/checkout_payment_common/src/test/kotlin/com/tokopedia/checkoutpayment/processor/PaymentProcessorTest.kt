@@ -195,7 +195,7 @@ class PaymentProcessorTest {
             )
         )
 
-        val currentWidget = CheckoutPaymentWidgetData()
+        val currentWidget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal)
 
         val result = processor.generateCheckoutPaymentWidgetData(
             paymentWidgetListData,
@@ -206,11 +206,10 @@ class PaymentProcessorTest {
             "")
 
         assertEquals(CheckoutPaymentWidgetData(
-            state = CheckoutPaymentWidgetState.Error,
+            state = CheckoutPaymentWidgetState.Normal,
             logoUrl = "imageUrl",
             title = "name",
-            errorMessage = "error",
-            installmentText = "Bayar Penuh"
+            installmentText = "Pilih periode pembayaran"
         ), result)
     }
 
@@ -358,9 +357,9 @@ class PaymentProcessorTest {
         assertEquals(CheckoutPaymentWidgetData(
             state = CheckoutPaymentWidgetState.Normal,
             logoUrl = "imageUrl",
-            title = "error",
-            isTitleRed = true,
-            description = "desc",
+            title = "name",
+            description = "error",
+            isDescriptionRed = true,
             actionButtonText = "button"
         ), result)
     }
