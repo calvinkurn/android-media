@@ -148,7 +148,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
             runCatching {
                 val result = rechargeSetFailUseCase(orderId)
                 result.isNeedRefresh = true
-                delay(500)
+                delay(CANCEL_ORDER_DELAY)
                 _rechargeSetFailResult.postValue(Success(result))
             }.onFailure {
                 _rechargeSetFailResult.postValue(Fail(it))
@@ -163,5 +163,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
 
         private const val TOPADS_PAGE_NAME = "dg_order_details"
         private const val TOPADS_SOURCE = "digital"
+
+        private const val CANCEL_ORDER_DELAY = 500L
     }
 }
