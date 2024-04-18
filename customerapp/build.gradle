@@ -113,6 +113,7 @@ apply plugin: "org.gradle.test-retry"
 SigningConfiguration {
     applicationId = "com.tokopedia.tkpd"
     overwriteOriginalFile = false
+    enableDynamicFeature = true
 }
 
 android {
