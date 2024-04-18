@@ -49,12 +49,14 @@ fun CheckoutPaymentWidget(
                 NestDivider(size = NestDividerSize.Large, modifier = Modifier.fillMaxWidth())
                 when (data.state) {
                     is CheckoutPaymentWidgetState.Loading -> {
-                        NestLoader(
-                            variant = NestLoaderType.Shimmer(NestShimmerType.Line),
+                        NestTypography(
+                            text = stringResource(id = R.string.checkout_payment_method_label),
+                            textStyle = NestTheme.typography.display3.copy(
+                                color = NestTheme.colors.NN._950,
+                                fontWeight = FontWeight.W800
+                            ),
                             modifier = Modifier
-                                .padding(top = 16.dp, start = 16.dp, bottom = 12.dp)
-                                .height(12.dp)
-                                .width(142.dp)
+                                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp)
                         )
                         Row(
                             modifier = Modifier.padding(start = 16.dp, bottom = 12.dp),
