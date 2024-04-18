@@ -269,7 +269,7 @@ open class ShopPageHomeFragment :
     ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener,
     ShopHomeReimagineShowcaseNavigationListener,
     ShopHomeReimagineShowcaseNavigationDependencyProvider,
-    ShopHomeReimagineTerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    ShopHomeReimagineTerlarisViewHolder.Listener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
