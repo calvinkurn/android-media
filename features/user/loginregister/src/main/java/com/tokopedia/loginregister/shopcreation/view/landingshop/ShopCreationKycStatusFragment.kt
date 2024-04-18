@@ -78,7 +78,9 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
     private fun initToolbar() {
         binding?.unifyToolbar?.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
+            if(activity is LandingShopCreationActivity) {
+                (activity as LandingShopCreationActivity).switchToKycBridgeFragment()
+            }
         }
     }
 

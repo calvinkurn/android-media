@@ -10,10 +10,13 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
@@ -108,13 +111,13 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         viewBinding?.btnContinue?.setOnClickListener {
             if (isNormalShopSelected()) {
-                shopCreationAnalytics.sendSellerClickKycEvent(shopId = userSession.shopId, userId = userSession.userId)
+                shopCreationAnalytics.sendSellerClickIndividualEvent(shopId = userSession.shopId, userId = userSession.userId)
                 viewModel.getShopStatus()
             } else if (isOfficialStoreSelected()){
                 shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
                 viewModel.getShopStatus()
             } else {
-                Toaster.build(viewBinding?.root!!, "Pilih salah satu jenis toko dulu, ya.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(viewBinding?.btnContinue!!, "Pilih salah satu jenis toko dulu, ya.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
 
@@ -206,6 +209,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     ApplinkConstInternalGlobal.WEBVIEW,
                     TokopediaUrl.getInstance().WEB.plus(OS_PATH)
                 )
+                shopCreationAnalytics.sendSellerClickTetapBukaDiPerangkatIniEvent(shopId = userSession.shopId, userId = userSession.userId)
             }
             setOnWebviewClick { }
             setCloseClickListener {
@@ -220,6 +224,22 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
+        if (GlobalConfig.isSellerApp()) {
+            activity?.let {
+                if (userSession.isLoggedIn) {
+                    RouteManager.route(it, ApplinkConstInternalUserPlatform.LOGOUT)
+                    it.finish()
+                } else if (it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+                    RouteManager.route(it, ApplinkConst.LOGIN)
+                    it.finish()
+                } else {
+                    RouteManager.route(it, ApplinkConstInternalSellerapp.WELCOME)
+                    it.finish()
+                }
+            }
+        } else {
+            activity?.finish()
+        }
         return true
     }
 
