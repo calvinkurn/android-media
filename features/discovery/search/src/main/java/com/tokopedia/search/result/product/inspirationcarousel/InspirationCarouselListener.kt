@@ -8,7 +8,10 @@ interface InspirationCarouselListener {
 
     fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product)
 
-    fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)
+    fun onInspirationCarouselSeeAllClicked(
+        inspirationCarouselDataViewOption: InspirationCarouselDataView.Option,
+        aladdinButtonType: String,
+    )
 
     fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product)
 

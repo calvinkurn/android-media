@@ -7,18 +7,21 @@ import com.tokopedia.shareexperience.base.ShareExViewModelTestFixture
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMessagePlaceholderEnum
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPageModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkMessagePropertiesModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkPropertiesModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkFallbackPriorityEnum
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.ShareExAction
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import io.mockk.coEvery
@@ -36,11 +39,12 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
     fun `generate short link with image channel and error image generator, get short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -51,7 +55,11 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                                 affiliate = ShareExAffiliateModel(
                                     eligibility = ShareExAffiliateEligibilityModel(true)
                                 ),
-                                linkProperties = ShareExLinkProperties(
+                                linkProperties = ShareExLinkPropertiesModel(
+                                    messageObject = ShareExLinkMessagePropertiesModel(
+                                        message = ShareExMessagePlaceholderEnum.BRANCH_LINK.placeholder,
+                                        replacementMap = mutableMapOf(ShareExMessagePlaceholderEnum.BRANCH_LINK to "")
+                                    ),
                                     androidUrl = dummyUrl,
                                     iosUrl = dummyUrl,
                                     desktopUrl = dummyUrl
@@ -122,12 +130,13 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
     fun `generate short link with text channel and error image generator, get short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
-                bottomSheetModel = ShareExBottomSheetModel(
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
+                ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
                     bottomSheetPage = ShareExBottomSheetPageModel(
@@ -137,7 +146,11 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                                 affiliate = ShareExAffiliateModel(
                                     eligibility = ShareExAffiliateEligibilityModel(true)
                                 ),
-                                linkProperties = ShareExLinkProperties(
+                                linkProperties = ShareExLinkPropertiesModel(
+                                    messageObject = ShareExLinkMessagePropertiesModel(
+                                        message = ShareExMessagePlaceholderEnum.BRANCH_LINK.placeholder,
+                                        replacementMap = mutableMapOf(ShareExMessagePlaceholderEnum.BRANCH_LINK to "")
+                                    ),
                                     androidUrl = dummyUrl,
                                     iosUrl = dummyUrl,
                                     desktopUrl = dummyUrl
@@ -199,12 +212,13 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
     fun `generate short link and error generate image flow, get short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
-                bottomSheetModel = ShareExBottomSheetModel(
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
+                ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
                     bottomSheetPage = ShareExBottomSheetPageModel(
@@ -214,7 +228,11 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                                 affiliate = ShareExAffiliateModel(
                                     eligibility = ShareExAffiliateEligibilityModel(true)
                                 ),
-                                linkProperties = ShareExLinkProperties(
+                                linkProperties = ShareExLinkPropertiesModel(
+                                    messageObject = ShareExLinkMessagePropertiesModel(
+                                        message = ShareExMessagePlaceholderEnum.BRANCH_LINK.placeholder,
+                                        replacementMap = mutableMapOf(ShareExMessagePlaceholderEnum.BRANCH_LINK to "")
+                                    ),
                                     androidUrl = dummyUrl,
                                     iosUrl = dummyUrl,
                                     desktopUrl = dummyUrl
@@ -281,11 +299,12 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
     fun `generate short link and error affiliate, get affiliate flag`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -296,7 +315,11 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                                 affiliate = ShareExAffiliateModel(
                                     eligibility = ShareExAffiliateEligibilityModel(true)
                                 ),
-                                linkProperties = ShareExLinkProperties(
+                                linkProperties = ShareExLinkPropertiesModel(
+                                    messageObject = ShareExLinkMessagePropertiesModel(
+                                        message = ShareExMessagePlaceholderEnum.BRANCH_LINK.placeholder,
+                                        replacementMap = mutableMapOf(ShareExMessagePlaceholderEnum.BRANCH_LINK to "")
+                                    ),
                                     androidUrl = dummyUrl,
                                     iosUrl = dummyUrl,
                                     desktopUrl = dummyUrl
@@ -372,11 +395,12 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
     fun `generate short link and error non affiliate, get affiliate flag`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -387,7 +411,11 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                                 affiliate = ShareExAffiliateModel(
                                     eligibility = ShareExAffiliateEligibilityModel(false)
                                 ),
-                                linkProperties = ShareExLinkProperties(
+                                linkProperties = ShareExLinkPropertiesModel(
+                                    messageObject = ShareExLinkMessagePropertiesModel(
+                                        message = ShareExMessagePlaceholderEnum.BRANCH_LINK.placeholder,
+                                        replacementMap = mutableMapOf(ShareExMessagePlaceholderEnum.BRANCH_LINK to "")
+                                    ),
                                     androidUrl = dummyUrl,
                                     iosUrl = dummyUrl,
                                     desktopUrl = dummyUrl
@@ -465,11 +493,12 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
     fun `generate short link and error download image, still get intent and short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -480,7 +509,11 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                                 affiliate = ShareExAffiliateModel(
                                     eligibility = ShareExAffiliateEligibilityModel(false)
                                 ),
-                                linkProperties = ShareExLinkProperties(
+                                linkProperties = ShareExLinkPropertiesModel(
+                                    messageObject = ShareExLinkMessagePropertiesModel(
+                                        message = ShareExMessagePlaceholderEnum.BRANCH_LINK.placeholder,
+                                        replacementMap = mutableMapOf(ShareExMessagePlaceholderEnum.BRANCH_LINK to "")
+                                    ),
                                     androidUrl = dummyUrl,
                                     iosUrl = dummyUrl,
                                     desktopUrl = dummyUrl

@@ -2,6 +2,7 @@ package com.tokopedia.content.product.preview.view.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,7 @@ import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.noRippleClickable
 
 /**
  * @author by astidhiyaa on 23/11/23
@@ -43,13 +45,14 @@ import com.tokopedia.nest.principles.utils.ImageSource
 @Composable
 internal fun MediaBottomNav(
     product: BottomNavUiModel,
-    onAtcClicked: () -> Unit = {}
+    onAtcClicked: () -> Unit = {},
+    onNavClicked: () -> Unit = {},
 ) {
     NestTheme(darkTheme = true, isOverrideStatusBarColor = false) {
         if (product == BottomNavUiModel.Empty) {
             RenderLoading()
         } else {
-            RenderContent(product = product, onAtcClicked)
+            RenderContent(product = product, onAtcClicked, onNavClicked)
         }
     }
 }
@@ -109,7 +112,8 @@ private fun RenderLoading() {
 @Composable
 private fun RenderContent(
     product: BottomNavUiModel,
-    onAtcClicked: () -> Unit = {}
+    onAtcClicked: () -> Unit = {},
+    onNavClicked: () -> Unit = {},
 ) {
     val ctx = LocalContext.current
 
@@ -122,6 +126,9 @@ private fun RenderContent(
                 vertical = 8.dp,
                 horizontal = 16.dp
             )
+            .noRippleClickable {
+                onNavClicked()
+            }
     ) {
         val (title, ogPrice, slashedPrice, discountTag, atcBtn) = createRefs()
 
