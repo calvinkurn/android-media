@@ -68,43 +68,13 @@ class ShopGradeWidget(
 
             when {
                 isPm || element.pmStatus == PMStatusConst.IDLE -> {
-                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
-                    stepInActive(badgePmProExpert, textPmProExpert)
-                    stepInActive(badgePmProUltimate, textPmProUltimate)
-                    separator2.stepSeparatorInActive()
-                    separator3.stepSeparatorInActive()
+                    stepInActive(badgePmPro, textPmPro)
                 }
-                isPmProAdvance -> {
-                    stepInActive(badgePm)
-                    stepInActive(badgePmProExpert, textPmProExpert)
-                    stepInActive(badgePmProUltimate, textPmProUltimate)
-                    separator.stepSeparatorInActive()
-                    separator3.stepSeparatorInActive()
-                    textPmProAdvanced.setWeight(Typography.BOLD)
+                isPmProAdvance || isPmProExpert || isPmProUltimate -> {
+                    stepInActive(badgePmNew)
+                    separatorNew.stepSeparatorInActive()
+                    textPmPro.setWeight(Typography.BOLD)
                 }
-                isPmProExpert -> {
-                    stepInActive(badgePm)
-                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
-                    stepInActive(badgePmProUltimate, textPmProUltimate)
-                    separator.stepSeparatorInActive()
-                    separator2.stepSeparatorInActive()
-                    textPmProExpert.setWeight(Typography.BOLD)
-                }
-                isPmProUltimate -> {
-                    stepInActive(badgePm)
-                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
-                    stepInActive(badgePmProExpert, textPmProExpert)
-                    separator.stepSeparatorInActive()
-                    separator2.stepSeparatorInActive()
-                    separator3.stepSeparatorInActive()
-                    textPmProUltimate.setWeight(Typography.BOLD)
-                }
-            }
-
-            chevronPmGrade.isVisible = element.pmStatus == PMStatusConst.ACTIVE
-            chevronPmGrade.setOnClickListener {
-                listener.goToMembershipDetail()
-                powerMerchantTracking.sendEventClickProgressBar(element.shopGrade)
             }
         }
     }
@@ -219,15 +189,16 @@ class ShopGradeWidget(
                     root.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                 tvPmShopGradeThreshold.layoutParams = layoutParams
             }
+            tvPmShopGradeThreshold.gone()
         } else {
             pmProStatusInfoView.gone()
-            tvPmShopGradeThreshold.visible()
+            tvPmShopGradeThreshold.gone()
             tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
         }
 
         when {
             isPmProActive -> {
-                pmProStatusInfoView.visible()
+                pmProStatusInfoView.gone()
                 pmProStatusInfoView.showIcon()
                 pmProStatusInfoView.setText(R.string.pm_check_pm_pro_status_info)
                 pmProStatusInfoView.setOnClickListener {
@@ -235,7 +206,7 @@ class ShopGradeWidget(
                 }
             }
             isPmActive && !element.isNewSeller -> {
-                pmProStatusInfoView.visible()
+                pmProStatusInfoView.gone()
                 pmProStatusInfoView.hideIcon()
                 pmProStatusInfoView.setText(R.string.pm_active_cta_if_pm_not_active)
                 pmProStatusInfoView.setOnClickListener {

@@ -27,9 +27,8 @@
         app:layout_constraintEnd_toEndOf="@+id/containerPmShopGrade"
         app:layout_constraintStart_toStartOf="@+id/containerPmShopGrade"
         app:layout_constraintTop_toTopOf="parent">
-
         <HorizontalScrollView
-            android:id="@+id/svGrade"
+            android:id="@+id/svGradeNew"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:scrollbars="none"
@@ -38,12 +37,12 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clGrade"
+                android:id="@+id/clGradeNew"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/badge_pm"
+                    android:id="@+id/badge_pm_new"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     app:icon_enable_state="false"
@@ -52,108 +51,50 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:id="@+id/separator"
-                    android:layout_width="16dp"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@color/Unify_GN500"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/badge_pm"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/badge_pm_pro_advanced"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="4dp"
-                    app:icon_enable_state="true"
-                    app:icon_name="BADGE_PMPRO_FILLED"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/separator"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/text_pm_pro_advanced"
+                    android:id="@+id/text_pm_pro_new"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:text="@string/label_power_merchant"
                     android:layout_marginStart="4dp"
-                    android:text="@string/pm_power_merchant_step_pro_advanced"
                     android:textColor="@color/Unify_NN600"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/badge_pm_pro_advanced"
+                    app:layout_constraintStart_toEndOf="@+id/badge_pm_new"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3" />
 
                 <View
-                    android:id="@+id/separator2"
+                    android:id="@+id/separator_new"
                     android:layout_width="16dp"
                     android:layout_height="1dp"
                     android:layout_marginStart="4dp"
                     android:background="@color/Unify_GN500"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/text_pm_pro_advanced"
+                    app:layout_constraintStart_toEndOf="@+id/text_pm_pro_new"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/badge_pm_pro_expert"
+                    android:id="@+id/badge_pm_pro"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="4dp"
                     app:icon_enable_state="true"
                     app:icon_name="BADGE_PMPRO_FILLED"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/separator2"
+                    app:layout_constraintStart_toEndOf="@id/separator_new"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/text_pm_pro_expert"
+                    android:id="@+id/text_pm_pro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="4dp"
-                    android:text="@string/pm_power_merchant_step_pro_expert"
+                    android:text="@string/pm_power_merchant_pro"
                     android:textColor="@color/Unify_NN600"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/badge_pm_pro_expert"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="body_3" />
-
-                <View
-                    android:id="@+id/separator3"
-                    android:layout_width="16dp"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@color/Unify_GN500"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/text_pm_pro_expert"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/badge_pm_pro_ultimate"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="4dp"
-                    app:icon_enable_state="true"
-                    app:icon_name="BADGE_PMPRO_FILLED"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/separator3"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/text_pm_pro_ultimate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="4dp"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="@string/pm_power_merchant_step_pro_ultimate"
-                    android:textColor="@color/Unify_NN600"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/badge_pm_pro_ultimate"
+                    app:layout_constraintStart_toEndOf="@+id/badge_pm_pro"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3" />
 
@@ -163,15 +104,16 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevronPmGrade"
+            android:visibility="gone"
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:icon_color_light_disabled="@color/Unify_NN900"
             app:icon_color_light_enable="@color/Unify_NN900"
             app:icon_enable_state="true"
             app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintBottom_toBottomOf="@id/svGrade"
+            app:layout_constraintBottom_toBottomOf="@id/svGradeNew"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/svGrade" />
+            app:layout_constraintTop_toTopOf="@id/svGradeNew" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -219,6 +161,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="2dp"
             android:text="@string/pm_active"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvPmShopGrade"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvPmShopGrade"
@@ -256,6 +199,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="@id/guidelinePmShopGradeLeft"
         app:layout_constraintTop_toBottomOf="@+id/containerPmShopGrade">
