@@ -3,7 +3,6 @@ package com.tokopedia.analytics.byteio.topads
 import android.content.Context
 import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.PageName
@@ -171,7 +170,8 @@ object AppLogTopAds {
             PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
             PageName.SHOP -> AdsLogConst.Channel.STORE_SEARCH
             PageName.EXTERNAL_PROMO -> AdsLogConst.Channel.FIND_SEARCH
-            else -> AdsLogConst.Channel.DISCOVERY_SEARCH
+            PageName.DISCOVERY -> AdsLogConst.Channel.DISCOVERY_SEARCH
+            else -> ""
         }
     }
 
