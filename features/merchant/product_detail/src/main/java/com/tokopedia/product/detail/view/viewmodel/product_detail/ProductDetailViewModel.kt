@@ -805,7 +805,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
-        sendConfirmCartBytIoTracker()
+//        sendConfirmCartBytIoTracker() // disabled on this phase
         val result = withContext(dispatcher.io) {
             addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
         }

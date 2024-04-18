@@ -3,7 +3,9 @@ package com.tokopedia.cart.journey.topads
 import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Context
 import android.view.View
+import androidx.core.content.edit
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -15,6 +17,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.R
@@ -41,6 +44,13 @@ class CartTopAdsVerificationTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupTopAdsDetector()
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext.getSharedPreferences(
+                "show_case_pref",
+                Context.MODE_PRIVATE
+            ).edit {
+                putBoolean("cart_page_multiple_bo", true)
+                commit()
+            }
             // Should do login before activity launched to prevent racing condition with get cart
             login()
         }

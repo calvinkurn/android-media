@@ -79,7 +79,10 @@
             "sourceId": "wmVUzt"
           },
           "generateLinkProperties": {
-            "message": "Halo ada barang bagus loh",
+            "messageObject": {
+              "message": "Halo ada barang bagus loh {{.branch_link}}",
+              "placeholders": ["{{.branch_link}}"]
+            },
             "ogTitle": "Full Update Product KVI",
             "ogDescription": "Mantap bro",
             "ogType": "product",
