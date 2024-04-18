@@ -83,6 +83,9 @@ class OrderSummaryPageActivityTrackingTest {
 
         orderSummaryPage {
             clickButtonPromo()
+            waitForBottomSheet()
+            Espresso.pressBack()
+            waitForBottomSheet()
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_REVAMP_RESPONSE_PATH
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
@@ -99,13 +102,18 @@ class OrderSummaryPageActivityTrackingTest {
             // wait for bottom sheet to fully close
             waitForBottomSheet()
             clickButtonPromo()
-            closeBottomSheet()
+            clickButtonPromoExpanded()
+            waitForBottomSheet()
+            Espresso.pressBack()
+            waitForBottomSheet()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickApplyShipmentPromoRevamp()
 
+            waitForBottomSheet()
             clickButtonPromo()
-            closeBottomSheet()
+            Espresso.pressBack()
+            waitForBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_PRICE_CHANGE_RESPONSE_PATH
             pay()
