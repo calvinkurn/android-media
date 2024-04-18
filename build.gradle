@@ -69,7 +69,6 @@ if (hasProperty('buildScan')) {
 }
 
 apply from: 'buildproj.gradle'
-apply from: 'buildconfig/kotlin/repository.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
 
 
@@ -89,6 +88,8 @@ apply plugin: "org.jetbrains.dokka"
 // --- Codebase reader ---
 // to read df module in applink unit test
 apply plugin: 'com.tokopedia.codebasereader'
+apply from: 'buildconfig/kotlin/repository.gradle'
+
 
 /**
  * Override the default value of Dokka styles.
