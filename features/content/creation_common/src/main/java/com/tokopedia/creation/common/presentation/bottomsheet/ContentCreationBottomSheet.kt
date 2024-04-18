@@ -1,6 +1,7 @@
 package com.tokopedia.creation.common.presentation.bottomsheet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationConfigMod
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
+import com.tokopedia.stories.widget.settings.StoriesSettingsFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 
@@ -37,6 +39,27 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
+
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelProvider.Factory
+//
+//    @Inject
+//    lateinit var factory: StoriesSettingsFactory.Creator
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        childFragmentManager.fragmentFactory = object : FragmentFactory() {
+//            override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
+//                return when (className) {
+//                    StoriesSettingsFragment::class.java.name -> StoriesSettingsFragment(
+//                        factory,
+//                    )
+//
+//                    else -> super.instantiate(classLoader, className)
+//                }
+//            }
+//        }
+//        super.onCreate(savedInstanceState)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,15 +91,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                         viewModel.selectCreationItem(it)
                     },
                     onNextClicked = {
-                        selectedCreation.value?.let {
-                            analytics?.eventClickNextButton(
-                                viewModel.authorType,
-                                viewModel.selectedItemTitle,
-                                widgetSource
-                            )
-                            listener?.onCreationNextClicked(it)
-                            dismiss()
-                        }
+                        StoriesSettingsFragment.getOrCreateFragment(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
                     },
                     onRetryClicked = {
                         viewModel.fetchConfig(widgetSource)
@@ -95,6 +110,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderHeaderView() {
+        // TODO: custom header
         context?.let {
             setTitle(it.getString(R.string.content_creation_bottom_sheet_title))
 
@@ -109,6 +125,9 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                         viewModel.getPerformanceDashboardApplink()
                     )
                 }
+            }
+            setAction(it.getDrawable(com.tokopedia.resources.common.R.drawable.bg_animated_action_counter_plus_24)) { _ ->
+                Log.d("hello", "helo")
             }
 
             viewModel.fetchConfig(widgetSource, creationConfig)

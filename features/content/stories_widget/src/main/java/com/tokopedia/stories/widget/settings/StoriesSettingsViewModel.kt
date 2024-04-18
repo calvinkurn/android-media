@@ -3,18 +3,25 @@ package com.tokopedia.stories.widget.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 3/22/24
  */
-class StoriesSettingsViewModel @Inject constructor( //Todo(): parsing author Id & type
+class StoriesSettingsViewModel @AssistedInject constructor(
+    @Assisted entryPoint: StoriesSettingsEntryPoint,
     private val repository: StoriesSettingsRepository
 ) : ViewModel() {
 
+    @AssistedFactory
+    interface Factory {
+        fun create(@Assisted entryPoint: StoriesSettingsEntryPoint): StoriesSettingsViewModel
+    }
 
     private val _options = MutableStateFlow<List<StoriesSettingOpt>>(emptyList<StoriesSettingOpt>())
     val options: Flow<List<StoriesSettingOpt>>
