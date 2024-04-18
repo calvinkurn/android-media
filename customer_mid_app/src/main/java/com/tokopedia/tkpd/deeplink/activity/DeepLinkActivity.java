@@ -232,6 +232,12 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
         return "";
     }
 
+    @NonNull
+    @Override
+    public String getEnterFrom() {
+        return getPageName();
+    }
+
     @Override
     public boolean isEnterFromWhitelisted() {
         return false;
