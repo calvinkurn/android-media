@@ -159,7 +159,7 @@
     },
     {
       "event": "clickHomepage",
-      "eventAction": "click - back exit category inspiration",
+      "eventAction": "click - back exit page",
       "eventCategory": "feed browse page",
       "eventLabel": ".*",
       "trackerId": "45755",
