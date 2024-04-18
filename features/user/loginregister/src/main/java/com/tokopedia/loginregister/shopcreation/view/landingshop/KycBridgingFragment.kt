@@ -113,11 +113,11 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
             if (isNormalShopSelected()) {
                 shopCreationAnalytics.sendSellerClickIndividualEvent(shopId = userSession.shopId, userId = userSession.userId)
                 viewModel.getShopStatus()
-            } else if (isOfficialStoreSelected()){
+            } else if (isOfficialStoreSelected()) {
                 shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
                 viewModel.getShopStatus()
             } else {
-                Toaster.build(viewBinding?.btnContinue!!, "Pilih salah satu jenis toko dulu, ya.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                showToaster("Pilih salah satu jenis toko dulu, ya.")
             }
         }
 
@@ -148,10 +148,10 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
                 is ShopStatus.Pending -> {
-                    Toaster.build(viewBinding?.root!!, "Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    showToaster("Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.")
                 }
                 is ShopStatus.Error -> {
-                    Toaster.build(viewBinding?.root!!, it.throwable.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    showToaster(it.throwable.message ?: "")
                 }
             }
         }
@@ -241,6 +241,12 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
             activity?.finish()
         }
         return true
+    }
+
+    private fun showToaster(message: String) {
+        val height = viewBinding?.btnContinue?.height ?: 144
+        Toaster.toasterCustomBottomHeight = height
+        Toaster.build(viewBinding?.root!!, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     companion object {

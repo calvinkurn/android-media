@@ -60,7 +60,7 @@ class ProjectInfoUseCase @Inject constructor(
                     }
                     REJECTED -> {
                         ProjectInfoResult.Rejected(
-                            rejectionReason = reason.joinToString()
+                            rejectionReason = reason
                         )
                     }
                     VERIFIED -> {
@@ -120,7 +120,7 @@ sealed class ProjectInfoResult {
     ) : ProjectInfoResult()
     object Blacklisted : ProjectInfoResult()
     data class Rejected(
-        val rejectionReason: String
+        val rejectionReason: List<String>
     ) : ProjectInfoResult()
     object NotVerified : ProjectInfoResult()
     data class Failed(val throwable: Throwable) : ProjectInfoResult()
