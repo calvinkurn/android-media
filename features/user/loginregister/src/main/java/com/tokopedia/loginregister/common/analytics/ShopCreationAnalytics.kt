@@ -81,12 +81,13 @@ class ShopCreationAnalytics {
         ))
     }
 
+
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
     // Tracker ID: 50566
-    fun sendSellerClickKycEvent (shopId: String, userId: String) {
+    fun sendSellerClickIndividualEvent (shopId: String, userId: String) {
         Tracker.Builder()
             .setEvent("clickPG")
-            .setEventAction("seller click kyc")
+            .setEventAction("seller click individual")
             .setEventCategory("kyc onboard")
             .setEventLabel("")
             .setCustomProperty("trackerId", "50566")
@@ -108,15 +109,17 @@ class ShopCreationAnalytics {
             .setCustomProperty("trackerId", "50567")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
+            .setShopId("")
+            .setUserId("")
             .build()
             .send()
     }
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
     // Tracker ID: 50568
-    fun sendSellerClickPelajariSelengkapnyaEvent (shopId: String, userId: String) {
+    fun sendSellerClickTetapBukaDiPerangkatIniEvent (shopId: String, userId: String) {
         Tracker.Builder()
             .setEvent("clickPG")
-            .setEventAction("seller click pelajari selengkapnya")
+            .setEventAction("seller click tetap buka di perangkat Ini")
             .setEventCategory("kyc onboard")
             .setEventLabel("")
             .setCustomProperty("trackerId", "50568")
@@ -209,10 +212,10 @@ class ShopCreationAnalytics {
     }
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
     // Tracker ID: 50703
-    fun sendSellerClickLanjutBukaTokoEvent (shopId: String, userId: String) {
+    fun sendImpressionOnToasterKycSuccessEvent (shopId: String, userId: String) {
         Tracker.Builder()
-            .setEvent("clickPG")
-            .setEventAction("seller click lanjut buka toko")
+            .setEvent("viewPGIris")
+            .setEventAction("impression on toaster kyc success")
             .setEventCategory("kyc waiting state")
             .setEventLabel("")
             .setCustomProperty("trackerId", "50703")
@@ -269,7 +272,6 @@ class ShopCreationAnalytics {
             .build()
             .send()
     }
-
 
     companion object {
         const val SCREEN_LANDING_SHOP_CREATION = "/buka toko"
