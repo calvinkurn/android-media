@@ -54,30 +54,31 @@ fun CheckoutPaymentWidget(
                             modifier = Modifier
                                 .padding(top = 16.dp, start = 16.dp, bottom = 12.dp)
                                 .height(12.dp)
-                                .width(143.dp)
+                                .width(142.dp)
                         )
                         Row(
-                            modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
+                            modifier = Modifier.padding(start = 16.dp, bottom = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             NestLoader(
                                 variant = NestLoaderType.Shimmer(NestShimmerType.Circle),
                                 modifier = Modifier.size(28.dp)
                             )
-                            Column(modifier = Modifier.padding(start = 8.dp)) {
+//                            Column(modifier = Modifier.padding(start = 8.dp)) {
+//                                NestLoader(
+//                                    variant = NestLoaderType.Shimmer(NestShimmerType.Line),
+//                                    modifier = Modifier
+//                                        .height(12.dp)
+//                                        .width(48.dp)
+//                                )
                                 NestLoader(
                                     variant = NestLoaderType.Shimmer(NestShimmerType.Line),
                                     modifier = Modifier
+                                        .padding(start = 8.dp)
                                         .height(12.dp)
-                                        .width(48.dp)
+                                        .width(142.dp)
                                 )
-                                NestLoader(
-                                    variant = NestLoaderType.Shimmer(NestShimmerType.Line),
-                                    modifier = Modifier
-                                        .padding(top = 4.dp)
-                                        .height(12.dp)
-                                        .width(143.dp)
-                                )
-                            }
+//                            }
                         }
                     }
 
