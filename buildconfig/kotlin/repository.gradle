@@ -40,7 +40,7 @@ gradle.allprojects { project ->
             }
         } else {
             replaceRepositoriesWith(project.buildscript.repositories) {
-                project.repositories {
+                project.buildscript.repositories {
                     maven {
                         name "Bits-Production"
                         url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
@@ -59,7 +59,7 @@ gradle.allprojects { project ->
 
 def replaceRepositoriesWith(RepositoryHandler repos, Closure addBits) {
     def deletedRepos = []
-    repos.getCollectionSchema()
+    println "get all repositories ${repos.properties}"
     repos.configureEach { repo ->
         String urlRepo = ""
         String repoName = repo.name
