@@ -66,13 +66,10 @@ def replaceRepositoriesWith(RepositoryHandler repos, Closure addBits) {
         PropertyValue property = repo.metaPropertyValues.find {
             it.name == "repositoryUrls"
         }
-        println "check if null or not ${property == null}"
         if (property != null) {
             urlRepo = property.getValue()[0]
         }
-        println "URL REPO: ${urlRepo}"
         if (isContainsTokoOrGoogleRepos(urlRepo, repoName)) {
-            println "replace url tokopedia with bits"
             // delete tokopedia maven
             deletedRepos.add(repo)
         }
