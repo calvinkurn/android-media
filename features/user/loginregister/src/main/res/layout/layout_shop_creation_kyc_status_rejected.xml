@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_header"
@@ -55,47 +54,16 @@
         app:layout_constraintStart_toEndOf="@+id/tv_header_benefit"
         app:layout_constraintTop_toTopOf="@+id/tv_header_benefit" />
 
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/card_reason"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/list_reason"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="12dp"
-        app:card_type="clear"
-        app:card_background_color="@color/Unify_NN50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_header_benefit">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp">
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_reason"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon_name="INFORMATION"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_reason"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:text="Setelah ditinjau lagi, selfie yang kamu upload berbeda dengan foto e-KTP di Dukcapil. Untuk bantuan, hubungi Tokopedia Care."
-                android:layout_marginStart="8dp"
-                app:typographyType="paragraph_2"
-                app:layout_constraintStart_toEndOf="@id/ic_reason"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.tokopedia.unifycomponents.CardUnify>
+        app:layout_constraintTop_toBottomOf="@id/tv_header_benefit"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_primary"
@@ -106,7 +74,7 @@
         android:text="@string/shop_creation_retry_verification"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_reason" />
+        app:layout_constraintTop_toBottomOf="@+id/list_reason" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_secondary"
