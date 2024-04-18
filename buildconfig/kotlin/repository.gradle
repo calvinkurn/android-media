@@ -9,48 +9,31 @@ gradle.allprojects { project ->
     println "Resource Repository --------- ${resRepo})"
     println "Print project --------- ${project.path})"
     if (resRepo == "bits") {
-        if (project.path == ':') {
-            replaceRepositoriesWith(project.buildscript.repositories) {
-                project.buildscript.repositories {
-                    maven {
-                        name "Bits-Production"
-                        url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
-                    }
+        replaceRepositoriesWith(project.buildscript.repositories) {
+            project.buildscript.repositories {
+                maven {
+                    name "Bits-Production"
+                    url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
+                }
 
-                    maven {
-                        name "Bits-Sandbox"
-                        url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
-                        allowInsecureProtocol = true
-                    }
+                maven {
+                    name "Bits-Sandbox"
+                    url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
+                    allowInsecureProtocol = true
                 }
             }
-            replaceRepositoriesWith(project.repositories) {
-                project.repositories {
-                    maven {
-                        name "Bits-Production"
-                        url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
-                    }
-
-                    maven {
-                        name "Bits-Sandbox"
-                        url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
-                        allowInsecureProtocol = true
-                    }
+        }
+        replaceRepositoriesWith(project.repositories) {
+            project.repositories {
+                maven {
+                    name "Bits-Production"
+                    url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
                 }
-            }
-        } else {
-            replaceRepositoriesWith(project.buildscript.repositories) {
-                project.buildscript.repositories {
-                    maven {
-                        name "Bits-Production"
-                        url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
-                    }
 
-                    maven {
-                        name "Bits-Sandbox"
-                        url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
-                        allowInsecureProtocol = true
-                    }
+                maven {
+                    name "Bits-Sandbox"
+                    url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
+                    allowInsecureProtocol = true
                 }
             }
         }
@@ -59,7 +42,6 @@ gradle.allprojects { project ->
 
 def replaceRepositoriesWith(RepositoryHandler repos, Closure addBits) {
     def deletedRepos = []
-    println "get all repositories ${repos.properties}"
     repos.configureEach { repo ->
         String urlRepo = ""
         String repoName = repo.name
