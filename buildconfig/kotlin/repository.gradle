@@ -39,7 +39,7 @@ gradle.allprojects { project ->
                 }
             }
         } else {
-            replaceRepositoriesWith(project.repositories) {
+            replaceRepositoriesWith(project.buildscript.repositories) {
                 project.repositories {
                     maven {
                         name "Bits-Production"
