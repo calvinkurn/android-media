@@ -11,6 +11,8 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPoin
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,8 +28,14 @@ import javax.inject.Inject
 class ContentCreationViewModel @Inject constructor(
     private val contentCreationConfigUseCase: ContentCreationConfigUseCase,
     private val contentCreationConfigManager: ContentCreationRemoteConfigManager,
+    private val storiesChecker: StoriesSettingsChecker,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
+
+    init {
+        //Todo:move
+        checkStories()
+    }
 
     private val _selectedCreationType = MutableStateFlow<ContentCreationItemModel?>(null)
     val selectedCreationType = _selectedCreationType.asStateFlow()
@@ -120,4 +128,12 @@ class ContentCreationViewModel @Inject constructor(
             ContentCreationEntryPointSource.Feed -> contentCreationConfigManager.isShowingFeedEntryPoint()
             else -> contentCreationConfigManager.isShowingCreation()
         }
+
+    private fun checkStories() {
+        viewModelScope.launchCatchError(block = {
+            val  response = storiesChecker.isEligible()
+        }) {
+
+        }
+    }
 }
