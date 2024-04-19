@@ -37,7 +37,7 @@ class Mission4SquareWidgetViewHolder(
     }
 
     override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
-        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(MissionWidgetListDataModel.PAYLOAD_IS_REFRESH, false) == true) return
+        if (payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(MissionWidgetListDataModel.PAYLOAD_IS_REFRESH, false) == true) return
         bind(element)
     }
 

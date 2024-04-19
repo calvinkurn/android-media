@@ -72,7 +72,7 @@ class Mission4SquareWidgetListenerCallback(
         }
     }
 
-    override fun onMissionImpressedByteIo(model: Mission4SquareUiModel, position: Int) {
+    override fun onMissionAppLogImpressed(model: Mission4SquareUiModel, position: Int) {
         // ByteIO
         if (model.isProduct()) {
             AppLogRecommendation.sendProductShowAppLog(model.asProductModel(model.isCache))

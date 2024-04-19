@@ -34,7 +34,7 @@ class GetMissionWidget @Inject constructor(
         return graphqlUseCase.executeOnBackground()
     }
 
-    suspend fun generateParam(bundle: Bundle): HomeMissionWidgetData.HomeMissionWidget {
+    suspend fun execute(bundle: Bundle): HomeMissionWidgetData.HomeMissionWidget {
         val params = RequestParams.create()
         bundle.getString(BANNER_LOCATION_PARAM, "")?.let {
             params.putString(BANNER_LOCATION_PARAM, it)

@@ -26,14 +26,14 @@ class MissionWidgetCardViewHolder(
             listener?.onMissionClicked(item, bindingAdapterPosition)
         }
 
-        if(!item.isCache) {
+        if (!item.isCache) {
             binding?.root?.addOnImpressionListener(item) {
                 listener?.onMissionImpressed(item, bindingAdapterPosition)
             }
         }
 
         binding?.root?.addOnImpression1pxListener(item.data.appLogImpressHolder) {
-            listener?.onMissionImpressedByteIo(item, bindingAdapterPosition)
+            listener?.onMissionAppLogImpressed(item, bindingAdapterPosition)
         }
     }
 
