@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unify_header_title="@string/stories_settings_page_header"
-        app:unify_header_is_show_back_button="true"
-        app:unify_header_transparent_mode="true" />
+        app:unify_header_is_show_back_button="true" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@id/container"
