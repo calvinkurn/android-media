@@ -3438,6 +3438,7 @@ class CheckoutViewModel @Inject constructor(
             )
             paymentWidgetData[0] = newPaymentData
             checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
+                widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading),
                 data = payment.data.copy(
                     paymentWidgetData = paymentWidgetData
                 ),
@@ -3486,6 +3487,7 @@ class CheckoutViewModel @Inject constructor(
             )
             paymentWidgetData[0] = newPaymentData
             checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
+                widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading),
                 data = payment.data.copy(
                     paymentWidgetData = paymentWidgetData
                 ),

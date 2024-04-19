@@ -81,16 +81,10 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: PaymentP
             getAdminFeeJob = launch {
                 val result = paymentProcessor.getGocicilInstallmentOption(goCicilInstallmentRequest)
                 if (result != null) {
-                    listener.onSelectInstallment(
-                        result.installmentOptions.first(),
-                        result.installmentOptions,
-                        result.tickerMessage,
-                        isSilent = true
-                    )
                     setupInstallments(
                         fragment,
                         result,
-                        selectedTenure
+                        -1
                     )
                 } else {
                     dismiss()

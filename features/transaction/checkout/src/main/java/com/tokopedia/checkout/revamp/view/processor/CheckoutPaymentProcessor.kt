@@ -549,7 +549,7 @@ class CheckoutPaymentProcessor @Inject constructor(
             val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
             val widgetData = paymentWidgetData.first()
             val selectedTenure = widgetData.installmentPaymentData.selectedTenure
-            if (installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.isActive != false) {
+            if (installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.isActive != true) {
                 // reset selected tenure if current tenure is disabled
                 return payment.copy(installmentData = null)
             }
