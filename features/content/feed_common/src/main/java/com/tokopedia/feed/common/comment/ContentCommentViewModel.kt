@@ -168,7 +168,10 @@ class ContentCommentViewModel @AssistedInject constructor(
     fun submitAction(action: CommentAction) {
         when (action) {
             is CommentAction.ExpandComment -> handleExpand(action.comment)
-            is CommentAction.LoadNextPage -> updateQuery(action.commentType)
+            is CommentAction.LoadNextPage -> {
+                if (_query.value.lastParentCursor.isBlank()) return
+                updateQuery(action.commentType)
+            }
             CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
             is CommentAction.DeleteComment -> deleteComment(isFromToaster = action.isFromToaster)

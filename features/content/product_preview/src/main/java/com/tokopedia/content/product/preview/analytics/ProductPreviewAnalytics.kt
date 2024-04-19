@@ -120,4 +120,11 @@ interface ProductPreviewAnalytics {
      * 50428
      */
     fun onAtcVariant(bottomNavUiModel: BottomNavUiModel, currentTab: String)
+
+    /**
+     * 19. click bottom nav
+     * 50664
+     */
+
+    fun onClickBottomNav(model: BottomNavUiModel)
 }

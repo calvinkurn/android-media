@@ -717,7 +717,7 @@ class CommentViewModelTest {
                     helper.buildItemComment(id = "2"),
                     helper.buildItemComment(id = "3")
                 )
-            )
+            ), cursor = "KO8andb"
         )
 
         val new = helper.buildCommentWidget(

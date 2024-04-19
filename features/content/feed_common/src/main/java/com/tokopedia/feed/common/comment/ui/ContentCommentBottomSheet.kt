@@ -100,7 +100,10 @@ class ContentCommentBottomSheet @Inject constructor(
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvComment.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+                val currentSize = commentAdapter.getItems().filterIsInstance<CommentUiModel.Item>().filter { it.commentType == CommentType.Parent }.size
+                if (currentSize >= totalItemsCount - PAGE_THRESHOLD) {
+                    viewModel.submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+                }
             }
         }
     }
@@ -629,6 +632,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
+        private const val PAGE_THRESHOLD = 20
 
         fun getOrCreate(
             fragmentManager: FragmentManager,

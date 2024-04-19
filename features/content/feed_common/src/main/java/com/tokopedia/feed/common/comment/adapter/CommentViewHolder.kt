@@ -139,7 +139,7 @@ class CommentViewHolder {
                     getString(feedcommonR.string.content_comment_expand_visible, item.repliesCount)
             }
 
-            binding.root.setOnClickListener {
+            binding.root.setSafeOnClickListener {
                 listener.onClicked(item, absoluteAdapterPosition)
             }
 

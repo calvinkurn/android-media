@@ -15,6 +15,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchCouponModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -272,7 +273,12 @@ internal open class ProductListPresenterTestFixtures {
             broadMatchDelegate = broadMatchPresenterDelegate,
             topAdsImageViewPresenterDelegate = TopAdsImageViewPresenterDelegate(),
             pagination = pagination,
-            byteIOTrackingDataFactory = byteIOTrackingDataFactoryImpl
+            byteIOTrackingDataFactory = byteIOTrackingDataFactoryImpl,
+            remoteConfig = mockk {
+                every {
+                    getBoolean(RemoteConfigKey.ANDROID_ENABLE_DYNAMIC_SHOP_ADS_POSITION, false)
+                } returns false
+             },
         )
 
         val similarSearchOnBoardingPresenterDelegate = SimilarSearchOnBoardingPresenterDelegate(

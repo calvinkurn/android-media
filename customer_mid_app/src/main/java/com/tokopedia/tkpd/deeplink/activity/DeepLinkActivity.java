@@ -241,4 +241,9 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
     public boolean isShadow() {
         return true;
     }
+
+    @Override
+    public boolean shouldTrackEnterPage() {
+        return false;
+    }
 }
