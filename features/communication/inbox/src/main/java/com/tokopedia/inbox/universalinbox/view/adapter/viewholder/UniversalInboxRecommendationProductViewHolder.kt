@@ -3,10 +3,10 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.adapter.getViewAreaPercentage
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
@@ -36,6 +36,7 @@ class UniversalInboxRecommendationProductViewHolder(
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
+        setVisiblePercentage(getViewAreaPercentage(recyclerView, itemView))
         setRecTriggerObject(uiModel.recommendationItem)
         binding?.inboxProductRecommendation?.run {
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))

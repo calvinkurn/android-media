@@ -28,6 +28,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     protected LoadingModel loadingModel = new LoadingModel();
     protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
+    private RecyclerView recyclerView;
 
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
@@ -44,6 +45,16 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         return adapterTypeFactory.createViewHolder(view, viewType);
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.recyclerView = null;
+    }
+
     protected View onCreateViewItem(ViewGroup parent, int viewType) {
         return LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
     }
@@ -51,6 +62,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        holder.setRecyclerView(recyclerView);
         holder.bind(visitables.get(position));
     }
 
@@ -58,6 +70,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
                                  @NonNull List<Object> payloads) {
+        holder.setRecyclerView(recyclerView);
         if (!payloads.isEmpty()) {
             holder.bind(visitables.get(position), payloads);
         } else {
