@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.compose.NestCheckbox
@@ -30,6 +29,7 @@ import com.tokopedia.stories.widget.R
 @Composable
 internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
     val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
+    val isStoryEnable = pageInfo.options.any { it.isSelected }
     NestTheme(isOverrideStatusBarColor = false) {
         Column(
             modifier = Modifier
@@ -61,13 +61,13 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
                     )
 
                     LazyColumn {
-                        items(pageInfo.options) { item ->
+                        items(pageInfo.options.drop(1)) { item ->
                             SettingOptItem(item)
                         }
                     }
                 }
                 NestSwitch(
-                    isChecked = pageInfo.options.firstOrNull()?.isSelected.orTrue(),
+                    isChecked = isStoryEnable,
                     onCheckedChanged = {})
             }
         }
