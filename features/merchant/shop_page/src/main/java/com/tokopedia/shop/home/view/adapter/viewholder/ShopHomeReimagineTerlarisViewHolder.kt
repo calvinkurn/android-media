@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
-import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
+import com.tokopedia.shop.databinding.ItemShopHomeReimagineTerlarisWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeReimagineTerlarisAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
@@ -22,13 +22,13 @@ class ShopHomeReimagineTerlarisViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_shop_home_v4_terlaris_widget
+        val LAYOUT = R.layout.item_shop_home_reimagine_terlaris_widget
 
         const val PRODUCT_THREE = 3
         private const val THREE_COLUMN = 3
     }
 
-    private val viewBinding: LayoutShopHomeV4TerlarisWidgetBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeReimagineTerlarisWidgetBinding? by viewBinding()
 
     override fun bind(element: ShopHomeCarousellProductUiModel) {
         setHeaderSection(element)

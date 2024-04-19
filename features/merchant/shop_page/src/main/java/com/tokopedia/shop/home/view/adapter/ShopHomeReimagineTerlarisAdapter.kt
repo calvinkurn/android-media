@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
-import com.tokopedia.shop.databinding.ItemShopReimagineTerlarisWidgetScrollableBinding
+import com.tokopedia.shop.databinding.ItemShopHomeReimagineTerlarisProductRankBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder.Companion.PRODUCT_THREE
@@ -31,7 +31,7 @@ class ShopHomeReimagineTerlarisAdapter(
     private val leftPeekProductCardWidth by lazy { getScreenWidth() - LEFT_PEEK_MARGIN.toPx() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemShopReimagineTerlarisWidgetScrollableBinding.inflate(
+        val binding = ItemShopHomeReimagineTerlarisProductRankBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -46,7 +46,7 @@ class ShopHomeReimagineTerlarisAdapter(
     override fun getItemCount() = element.productList.size
 
     inner class ViewHolder(
-        private val binding: ItemShopReimagineTerlarisWidgetScrollableBinding
+        private val binding: ItemShopHomeReimagineTerlarisProductRankBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: ShopHomeProductUiModel) {
