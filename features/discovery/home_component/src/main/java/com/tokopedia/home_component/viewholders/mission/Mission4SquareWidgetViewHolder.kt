@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders.mission
 
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
@@ -33,6 +34,11 @@ class Mission4SquareWidgetViewHolder(
 
         setupHeaderView(element.header)
         setupMissionWidgetList(element)
+    }
+
+    override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(MissionWidgetListDataModel.PAYLOAD_IS_REFRESH, false) == true) return
+        bind(element)
     }
 
     private fun setupHeaderView(header: ChannelHeader?) {
