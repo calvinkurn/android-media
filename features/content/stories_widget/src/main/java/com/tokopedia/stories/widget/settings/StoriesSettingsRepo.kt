@@ -13,7 +13,7 @@ class StoriesSettingsRepo @Inject constructor(
     private val checkEligibilityUseCase: StoriesEligibilityUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : StoriesSettingsRepository {
-    override suspend fun getOptions(entryPoint: StoriesSettingsEntryPoint): List<StoriesSettingOpt> =
+    override suspend fun getOptions(entryPoint: StoriesSettingsEntryPoint): StoriesSettingsPageUiModel =
         withContext(dispatchers.io) {
             val response = storiesSettingOptionsUseCase(
                 StoriesSettingOptionsUseCase.Param(
@@ -23,10 +23,20 @@ class StoriesSettingsRepo @Inject constructor(
                     )
                 )
             )
-            //TODO(): no need to split its array
-            return@withContext response.data.options.optionType.split(",").map {
-                StoriesSettingOpt(text = it, isSelected = response.data.options.isDisabled)
-            }
+            return@withContext StoriesSettingsPageUiModel(
+                options = response.data.options.map {
+                    StoriesSettingOpt(
+                        text = it.copy,
+                        isSelected = it.isDisabled,
+                        optionType = it.optionType
+                    )
+                },
+                config = StoriesSettingConfig(
+                    articleCopy = response.data.config.copy,
+                    articleAppLink = response.data.config.appLink,
+                    articleWebLink = response.data.config.webLink
+                )
+            )
         }
 
     override suspend fun updateOption(

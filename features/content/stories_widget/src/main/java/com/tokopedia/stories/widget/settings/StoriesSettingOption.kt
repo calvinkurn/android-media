@@ -11,7 +11,7 @@ data class StoriesSettingOption(
 ) {
     data class Response(
         @SerializedName("options")
-        val options: Options = Options(),
+        val options: List<Options> = emptyList(),
         @SerializedName("config")
         val config: Config = Config(),
     )
@@ -32,5 +32,5 @@ data class StoriesSettingOption(
         val webLink: String = "",
         @SerializedName("applink")
         val appLink: String = "",
-        )
+    )
 }

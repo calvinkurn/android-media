@@ -8,23 +8,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.compose.NestCheckbox
 import com.tokopedia.unifycomponents.compose.NestSwitch
+import com.tokopedia.stories.widget.R
 
 /**
  * @author by astidhiyaa on 3/22/24
  */
 @Composable
-internal fun StoriesSettingsScreen() {
+internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
+    val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
     NestTheme(isOverrideStatusBarColor = false) {
         Column(
             modifier = Modifier
@@ -33,7 +38,7 @@ internal fun StoriesSettingsScreen() {
         ) {
             NestTypography(
                 modifier = Modifier.padding(bottom = 16.dp),
-                text = "Story",
+                text = stringResource(id = R.string.stories_settings_header),
                 textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold),
             )
             Row {
@@ -41,27 +46,29 @@ internal fun StoriesSettingsScreen() {
                 Column {
                     NestTypography(
                         modifier = Modifier.padding(bottom = 16.dp),
-                        text = "Buat Story Otomatis",
+                        text = pageInfo.options.firstOrNull()?.text.orEmpty(),
                         textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold),
                     )
                     NestTypography(
                         modifier = Modifier.padding(bottom = 16.dp),
-                        text = "Story akan otomatis dibuat setiap ada update produk di tokomu. Selengkapnya",
+                        text = pageInfo.config.articleCopy,
                         textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
                     )
                     NestTypography(
                         modifier = Modifier.padding(bottom = 16.dp),
-                        text = "Kategori update produk yang akan jadi Story:",
+                        text = stringResource(id = R.string.stories_settings_body),
                         textStyle = NestTheme.typography.paragraph3,
                     )
 
                     LazyColumn {
-                        items(settingOpts) { item ->
+                        items(pageInfo.options) { item ->
                             SettingOptItem(item)
                         }
                     }
                 }
-                NestSwitch(isChecked = false, onCheckedChanged = {})
+                NestSwitch(
+                    isChecked = pageInfo.options.firstOrNull()?.isSelected.orTrue(),
+                    onCheckedChanged = {})
             }
         }
     }
@@ -84,21 +91,27 @@ private fun SettingOptItem(item: StoriesSettingOpt) {
     }
 }
 
-@Preview
-@Composable
-internal fun SettingScreen() {
-    StoriesSettingsScreen()
-}
-
 data class StoriesSettingOpt(
     val text: String,
+    val optionType: String,
     val isSelected: Boolean,
-) //TODO: need to wait for BE for contract
+)
 
-val settingOpts = buildList<StoriesSettingOpt> {
-    add(StoriesSettingOpt("Flash Sale", false))
-    add(StoriesSettingOpt("Rilisan Spesial", false))
-    add(StoriesSettingOpt("Restok", false))
-    add(StoriesSettingOpt("Diskon", false))
-    add(StoriesSettingOpt("Produk Baru", false))
+data class StoriesSettingConfig(
+    val articleCopy: String,
+    val articleAppLink: String,
+    val articleWebLink: String,
+)
+
+data class StoriesSettingsPageUiModel(
+    val options: List<StoriesSettingOpt>,
+    val config: StoriesSettingConfig
+) {
+    companion object {
+        val Empty
+            get() = StoriesSettingsPageUiModel(
+                options = emptyList(),
+                config = StoriesSettingConfig("", "", "")
+            )
+    }
 }

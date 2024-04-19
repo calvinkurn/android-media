@@ -12,11 +12,6 @@ import androidx.fragment.app.viewModels
 import javax.inject.Inject
 import com.tokopedia.stories.widget.R
 
-/**
- * Flow: 1) check if shop available (contentCreatorStoryGetAuthorConfig)
- * 2) get list of options (contentCreatorStoryGetAuthorOptions)
- * 3) update toggle (contentCreatorStoryUpdateAuthorOptions)
- */
 class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator) :
     Fragment() {
 
@@ -33,7 +28,7 @@ class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSe
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                StoriesSettingsScreen()
+                StoriesSettingsScreen(viewModel)
             }
         }
         return view

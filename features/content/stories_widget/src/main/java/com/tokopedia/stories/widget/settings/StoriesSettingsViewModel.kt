@@ -1,5 +1,6 @@
 package com.tokopedia.stories.widget.settings
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -23,29 +24,28 @@ class StoriesSettingsViewModel @AssistedInject constructor(
         fun create(@Assisted entryPoint: StoriesSettingsEntryPoint): StoriesSettingsViewModel
     }
 
-    private val _options = MutableStateFlow<List<StoriesSettingOpt>>(emptyList<StoriesSettingOpt>())
-    val options: Flow<List<StoriesSettingOpt>>
-        get() = _options
+    private val _pageInfo = MutableStateFlow(StoriesSettingsPageUiModel.Empty)
+
+    val pageInfo: Flow<StoriesSettingsPageUiModel>
+        get() = _pageInfo
 
     fun getList() {
         viewModelScope.launchCatchError(block = {
             val data = repository.getOptions(entryPoint = entryPoint)
-            _options.update { data }
+            _pageInfo.update { data }
         }) {}
-
-        check()
-        updateOption(StoriesSettingOpt("", true))
     }
 
     fun updateOption(option: StoriesSettingOpt) {
         viewModelScope.launchCatchError(block = {
-            repository.updateOption(entryPoint = entryPoint, option)
+            val response = repository.updateOption(entryPoint = entryPoint, option)
+
         }) {}
     }
 
     fun check() {
         viewModelScope.launchCatchError(block = {
-            repository.checkEligibility(entryPoint = entryPoint)
+            val response = repository.checkEligibility(entryPoint = entryPoint)
         }) {}
     }
 }
