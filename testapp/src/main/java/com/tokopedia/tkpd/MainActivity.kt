@@ -164,7 +164,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConst.INBOX
+        return ""
     }
 
     data class Model(
