@@ -41,7 +41,7 @@ class BuyerOrderDetailNavigator(
 
         private const val BRC_CSAT_ORDER_ID_PARAM = "${'$'}orderID"
         private const val BRC_CSAT_FEEDBACK_PARAM = "${'$'}feedback"
-        private const val BRC_CSAT_FORM_URL = "https://313-beta-feature.tokopedia.com/order-details/marketplace/$BRC_CSAT_ORDER_ID_PARAM/csat?feedback=$BRC_CSAT_FEEDBACK_PARAM"
+        private val BRC_CSAT_FORM_URL = "${TokopediaUrl.getInstance().WEB}/order-details/marketplace/$BRC_CSAT_ORDER_ID_PARAM/csat?feedback=$BRC_CSAT_FEEDBACK_PARAM"
     }
 
     private fun applyTransition() {
