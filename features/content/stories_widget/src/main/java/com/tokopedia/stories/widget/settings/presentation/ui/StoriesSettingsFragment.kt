@@ -18,12 +18,13 @@ import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSetti
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
+import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTracking
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator) :
+class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator, private val analytic: StoriesSettingsTracking) :
     Fragment() {
 
     val entryPoint = StoriesSettingsEntryPoint(
@@ -53,6 +54,7 @@ class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSe
         observeEvent()
 
         viewModel.onEvent(StoriesSettingsAction.FetchPageInfo)
+        analytic.openScreen()
     }
 
     private fun observeEvent() {
@@ -68,6 +70,13 @@ class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSe
                             text = event.message.message.orEmpty(),
                             type = Toaster.TYPE_ERROR
                         ).show()
+                    }
+                    is StoriesSettingEvent.ClickTrack -> {
+                        if (event.option.optionType == "all") {
+                            analytic.clickToggle(event.option)
+                        } else {
+                            analytic.clickCheck(event.option)
+                        }
                     }
                     else -> {}
                 }

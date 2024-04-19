@@ -10,6 +10,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.di.DaggerStoriesSettingsComponent
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
+import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTracking
 import javax.inject.Inject
 
 class StoriesSettingsActivity : AppCompatActivity() {
@@ -20,6 +21,9 @@ class StoriesSettingsActivity : AppCompatActivity() {
     @Inject
     lateinit var factory: StoriesSettingsFactory.Creator
 
+    @Inject
+    lateinit var analytics: StoriesSettingsTracking
+
     private lateinit var backHeader: HeaderUnify
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +33,7 @@ class StoriesSettingsActivity : AppCompatActivity() {
             override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
                 return when (className) {
                     StoriesSettingsFragment::class.java.name -> StoriesSettingsFragment(
-                        factory,
+                        factory, analytics
                     )
 
                     else -> super.instantiate(classLoader, className)

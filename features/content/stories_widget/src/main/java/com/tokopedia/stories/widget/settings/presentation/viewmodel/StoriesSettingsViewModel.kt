@@ -61,6 +61,7 @@ class StoriesSettingsViewModel @AssistedInject constructor(
                         if (option == opt) opt.copy(isSelected = !opt.isSelected) else opt
                     })
                 }
+                _event.emit(StoriesSettingEvent.ClickTrack(option)) //need to update latest
             } else throw Exception()
         }) {
             _event.emit(StoriesSettingEvent.ShowErrorToaster(it) {

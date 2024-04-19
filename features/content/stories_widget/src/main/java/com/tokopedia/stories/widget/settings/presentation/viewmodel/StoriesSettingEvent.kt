@@ -14,6 +14,8 @@ sealed interface StoriesSettingEvent {
         val message: Throwable,
         val onClick: () -> Unit
     ) : StoriesSettingEvent
+
+    data class ClickTrack(val option: StoriesSettingOpt) : StoriesSettingEvent
 }
 
 sealed class StoriesSettingsAction {
