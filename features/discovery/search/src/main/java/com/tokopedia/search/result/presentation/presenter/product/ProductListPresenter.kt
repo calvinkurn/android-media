@@ -51,6 +51,7 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactoryImpl
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
@@ -110,17 +111,12 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
@@ -186,7 +182,8 @@ class ProductListPresenter @Inject constructor(
     private val reimagineRollence: ReimagineRollence,
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
     private val deduplication: Deduplication,
-    private val coroutineDispatchers: CoroutineDispatchers
+    private val coroutineDispatchers: CoroutineDispatchers,
+    private val byteIOTrackingDataFactoryImpl: ByteIOTrackingDataFactoryImpl,
 ) : BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -237,7 +234,8 @@ class ProductListPresenter @Inject constructor(
     private var keywordIntention = -1
 
     override val quickFilterList = mutableListOf<Filter>()
-    private var threeDotsProductItem: ProductItemDataView? = null
+    override var threeDotsProductItem: ProductItemDataView? = null
+        private set
     private var firstProductPositionWithBOELabel = -1
     private var suggestionKeyword = ""
     private var relatedKeyword = ""
@@ -261,6 +259,9 @@ class ProductListPresenter @Inject constructor(
         super.attachView(view)
         chooseAddressDelegate.updateChooseAddress()
     }
+
+    override val searchId: String
+        get() = byteIOTrackingDataFactoryImpl.searchId
 
     override val userId: String
         get() = getUserId(userSession)
@@ -317,6 +318,10 @@ class ProductListPresenter @Inject constructor(
         } else {
             searchProductLoadMore(searchParameter)
         }
+    }
+
+    override fun getIsLocalSearch(): Boolean {
+        return isLocalSearch()
     }
 
     private fun searchProductLoadMore(searchParameter: Map<String, Any>) {
@@ -384,7 +389,9 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (isViewNotAttached) return
 
-        val productDataView = createProductDataView(searchProductModel)
+        byteIOTrackingDataFactoryImpl.update(searchProductModel.requestId)
+
+        val productDataView = createProductDataView(searchProductModel, false)
 
         additionalParams = productDataView.additionalParams
 
@@ -404,7 +411,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createProductDataView(
-        searchProductModel: SearchProductModel
+        searchProductModel: SearchProductModel,
+        isFirstPage: Boolean,
     ): ProductDataView {
         deduplication.appendProductId(searchProductModel)
 
@@ -421,7 +429,8 @@ class ProductListPresenter @Inject constructor(
             isShowLocalSearchRecommendation(),
             externalReference,
             newCardType,
-            safeSearchPresenter.isShowAdultEnableAndProfileVerify()
+            safeSearchPresenter.isShowAdultEnableAndProfileVerify(),
+            byteIOTrackingDataFactoryImpl.create(isFirstPage),
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -492,7 +501,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun createProductItemVisitableList(
         productDataView: ProductDataView,
-        searchParameter: Map<String, Any>
+        searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView)) {
             productDataView.productList
@@ -506,7 +515,9 @@ class ProductListPresenter @Inject constructor(
                 productDataView.productListType,
                 externalReference,
                 productDataView.keywordIntention,
-                productDataView.isShowButtonAtc
+                productDataView.isShowButtonAtc,
+                productDataView.isFirstPage,
+                byteIOTrackingDataFactoryImpl,
             )
         }
     }
@@ -630,6 +641,13 @@ class ProductListPresenter @Inject constructor(
             UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>),
             throwable
         )
+        performanceMonitoring?.run {
+            stopPreparePagePerformanceMonitoring()
+            stopNetworkRequestPerformanceMonitoring()
+            stopRenderPerformanceMonitoring()
+        }
+        byteIOTrackingDataFactoryImpl.renew("", "")
+        view.sendTrackingByteIO(false)
     }
 
     private fun loadDataSubscriberOnNext(
@@ -650,6 +668,12 @@ class ProductListPresenter @Inject constructor(
         if (isViewNotAttached) return
 
         safeSearchPresenter.setUserProfileDob(searchProductModel.userDOB)
+
+        byteIOTrackingDataFactoryImpl.renew(
+            searchProductModel.requestId,
+            searchProductModel.searchId,
+        )
+
         val productDataView = createFirstProductDataView(searchProductModel)
 
         if (isSearchRedirected(productDataView)) {
@@ -734,7 +758,7 @@ class ProductListPresenter @Inject constructor(
         ) {
             view.clearLastProductItemPositionFromCache()
 
-            createProductDataView(searchProductModel)
+            createProductDataView(searchProductModel, true)
         }
     }
 
@@ -938,7 +962,7 @@ class ProductListPresenter @Inject constructor(
     private fun createProductViewModelMapperLocalSearchRecommendation(searchProductModel: SearchProductModel): ProductDataView {
         if (isFirstPage()) view.clearLastProductItemPositionFromCache()
 
-        return createProductDataView(searchProductModel)
+        return createProductDataView(searchProductModel, false)
     }
 
     private fun isShowGlobalSearchRecommendation() =
@@ -1094,10 +1118,10 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun <T> DataValue.mapFilter(transform: (Filter) -> T): List<T> =
-        filter.map(transform)
+    private fun <T> DataValue.mapFilter(transform: (Int, Filter) -> T): List<T> =
+        filter.mapIndexed(transform)
 
-    private fun sortFilterItemReimagine(filter: Filter): SortFilterItemReimagine {
+    private fun sortFilterItemReimagine(index: Int, filter: Filter): SortFilterItemReimagine {
         val (isChipSelected, title, isSingleFilter) = quickFilterData(filter)
         val imageUrlActive = filter.getImageUrlActive(title)
         val imageUrlInactive = filter.getImageUrlInActive(title)
@@ -1133,14 +1157,14 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun sortFilterItem(filter: Filter): SortFilterItem {
+    private fun sortFilterItem(index:Int, filter: Filter): SortFilterItem {
         val (isChipSelected, title, hasChevron) = quickFilterData(filter)
         val item = SortFilterItem(
             title = title,
             iconUrl = filter.getIconImage(title)
         )
 
-        setSortFilterItemListener(item, filter, hasChevron)
+        setSortFilterItemListener(item, filter, hasChevron, index)
         setSortFilterItemState(item, isChipSelected)
 
         return item
@@ -1171,24 +1195,25 @@ class ProductListPresenter @Inject constructor(
     private fun setSortFilterItemListener(
         item: SortFilterItem,
         filter: Filter,
-        isSingleFilter: Boolean
+        isSingleFilter: Boolean,
+        position: Int
     ) {
         if (isSingleFilter) {
             item.listener = {
-                view.onQuickFilterSelected(filter, filter.options.first(), dimension90)
+                view.onQuickFilterSelected(filter, filter.options.first(), dimension90, position)
             }
         } else {
             item.listener = {
-                onDropDownQuickFilterClick(filter)
+                onDropDownQuickFilterClick(filter, position)
             }
             item.chevronListener = {
-                onDropDownQuickFilterClick(filter)
+                onDropDownQuickFilterClick(filter, position)
             }
         }
     }
 
-    private fun onDropDownQuickFilterClick(filter: Filter) {
-        view.openBottomsheetMultipleOptionsQuickFilter(filter)
+    private fun onDropDownQuickFilterClick(filter: Filter, position: Int) {
+        view.openBottomsheetMultipleOptionsQuickFilter(filter, position)
     }
 
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
@@ -1267,6 +1292,9 @@ class ProductListPresenter @Inject constructor(
                 externalReference = externalReference
             )
         )
+
+        if (productDataView.redirectApplink.isBlank())
+            view.sendTrackingByteIO(true)
     }
 
     private fun createGeneralSearchTrackingEventCategory() =
@@ -1506,6 +1534,8 @@ class ProductListPresenter @Inject constructor(
         } else {
             view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
         }
+
+        view.sendByteIOTrackingProductClick(item)
     }
 
     private fun trackProductTopAdsClick(item: ProductItemDataView) {
@@ -1582,6 +1612,7 @@ class ProductListPresenter @Inject constructor(
         threeDotsProductItem = item
 
         view.trackEventLongPress(item.productID)
+        view.trackEventThreeDotsClickByteIO(item)
         view.showProductCardOptions(createProductCardOptionsModel(item))
     }
 
@@ -1620,6 +1651,7 @@ class ProductListPresenter @Inject constructor(
 
     override fun onViewResumed() {
         chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
+        view?.cleanByteIOData()
     }
 
     override fun onLocalizingAddressSelected() {

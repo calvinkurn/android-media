@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryShowcaseAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryShowcaseDiffer

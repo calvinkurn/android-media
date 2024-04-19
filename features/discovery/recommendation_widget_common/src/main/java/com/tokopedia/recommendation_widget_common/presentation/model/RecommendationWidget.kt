@@ -29,6 +29,7 @@ data class RecommendationWidget(
     val recommendationConfig: RecommendationConfig = RecommendationConfig(),
     var recommendationBanner: RecommendationBanner? = null,
     val endDate: String = "",
+    val appLog: RecommendationAppLog = RecommendationAppLog(),
     // for recom PDP since there is possibility gql return empty page name and recom list
     var recomUiPageName: String = pageName,
     var isTokonow: Boolean = false,

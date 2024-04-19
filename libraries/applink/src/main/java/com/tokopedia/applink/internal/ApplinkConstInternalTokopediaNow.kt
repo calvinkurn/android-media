@@ -8,84 +8,83 @@ object ApplinkConstInternalTokopediaNow {
     val HOST_TOKOPEDIA_NOW = "now"
 
     @JvmField
-    val INTERNAL_TOKOPEDIA_NOW = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TOKOPEDIA_NOW}"
+    val INTERNAL_TOKOPEDIA_NOW = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TOKOPEDIA_NOW"
 
-    //TokoNowHomeActivity
+    // TokoNowHomeActivity
     @JvmField
     val HOME = "$INTERNAL_TOKOPEDIA_NOW/home"
 
-    //TokoNowCategoryListActivity
+    // TokoNowCategoryListActivity
     @JvmField
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
 
     @JvmField
     val SEE_ALL_CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/see-all-category"
 
-    //TokoNowSortFilterActivity
+    // TokoNowSortFilterActivity
     val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter"
 
-    //TokoNowDateFilterActivity
+    // TokoNowDateFilterActivity
     val DATE_FILTER = "$INTERNAL_TOKOPEDIA_NOW/date-filter"
 
-    //TokoNowEducationalInfoActivity
+    // TokoNowEducationalInfoActivity
     val EDUCATIONAL_INFO = "$INTERNAL_TOKOPEDIA_NOW/educational-info"
 
-    //TokoNowAllAnnotationActivity
+    // TokoNowAllAnnotationActivity
     @JvmField
     val ALL_ANNOTATION = "$INTERNAL_TOKOPEDIA_NOW/all-annotation"
 
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
 
-    /* old category applink - TokoNowCategoryActivity */
-    @JvmField
-    val OLD_CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
-
     /* new category applink - TokoNowCategoryActivity */
     @JvmField
-    val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category/l1"
+    val CATEGORY_L1 = "$INTERNAL_TOKOPEDIA_NOW/category/l1"
 
     /* TokoNowCategoryL2Activity */
     @JvmField
     val CATEGORY_L2 = "$INTERNAL_TOKOPEDIA_NOW/category/l2"
 
-    //TokoNowRepurchaseActivity
+    // TokoNowRepurchaseActivity
     @JvmField
     val REPURCHASE = "$INTERNAL_TOKOPEDIA_NOW/repurchase-page"
 
-    //TokoNowCategoryFilterActivity
+    // TokoNowCategoryFilterActivity
     @JvmField
     val CATEGORY_FILTER = "$INTERNAL_TOKOPEDIA_NOW/category-filter?warehouse_id={warehouse_id}"
 
-    //TokoNowRecipeDetailActivity
+    // TokoNowRecipeDetailActivity
     @JvmField
     val RECIPE_DETAIL = "$INTERNAL_TOKOPEDIA_NOW/recipe/detail"
 
-    //TokoNowRecipeBookmarkActivity
+    // TokoNowRecipeBookmarkActivity
     @JvmField
     val RECIPE_BOOKMARK = "$INTERNAL_TOKOPEDIA_NOW/recipe/bookmark"
 
-    //TokoNowRecipeHomeActivity
+    // TokoNowRecipeHomeActivity
     @JvmField
     val RECIPE_HOME = "$INTERNAL_TOKOPEDIA_NOW/recipe/home"
 
-    //TokoNowRecipeSearchActivity
+    // TokoNowRecipeSearchActivity
     @JvmField
     val RECIPE_SEARCH = "$INTERNAL_TOKOPEDIA_NOW/recipe/search"
 
-    //TokoNowRecipeAutoCompleteActivity
+    // TokoNowRecipeAutoCompleteActivity
     @JvmField
     val RECIPE_AUTO_COMPLETE = "$INTERNAL_TOKOPEDIA_NOW/recipe/auto-complete"
 
-    //TokoNowRecipeSimilarProductActivity
+    // TokoNowRecipeSimilarProductActivity
     @JvmField
     val RECIPE_SIMILAR_PRODUCT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/similar-product-bottomsheet"
 
-    //TokoNowRecipeSearchIngredientActivity
+    // TokoNowRecipeSearchIngredientActivity
     @JvmField
     val RECIPE_INGREDIENT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/ingredient-bottomsheet"
 
-    //TokoNowBuyerCommunicationActivity
+    // TokoNowBuyerCommunicationActivity
     @JvmField
     val BUYER_COMMUNICATION_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/buyer-communication"
+
+    @JvmField
+    val SHOPPING_LIST = "$INTERNAL_TOKOPEDIA_NOW/list-belanja"
 }

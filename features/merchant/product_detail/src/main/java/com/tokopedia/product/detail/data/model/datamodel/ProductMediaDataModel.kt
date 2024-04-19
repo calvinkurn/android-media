@@ -31,6 +31,9 @@ data class ProductMediaDataModel(
     companion object {
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
+
+        const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
+        const val PAYLOAD_MEDIA_UPDATE = 6
     }
 
     override val tabletSectionPosition: TabletPosition
@@ -93,7 +96,7 @@ data class ProductMediaDataModel(
             if (listOfMedia.hashCode() != newData.listOfMedia.hashCode()) {
                 bundle.putInt(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
-                    ProductDetailConstant.PAYLOAD_MEDIA_UPDATE
+                    PAYLOAD_MEDIA_UPDATE
                 )
             } else if (newData.variantOptionIdScrollAnchor.isEmpty()) {
                 bundle.putInt(
@@ -103,14 +106,16 @@ data class ProductMediaDataModel(
             } else if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
                 bundle.putInt(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
-                    ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT
+                    PAYLOAD_SCROLL_IMAGE_VARIANT
                 )
             }
+
             return bundle.takeIf { !it.isEmpty }
         } else {
             null
         }
     }
+
 }
 
 data class MediaDataModel(

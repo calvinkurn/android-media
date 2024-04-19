@@ -30,7 +30,7 @@ ext {
     androidxCoreVersion = '1.9.0'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
-    playServiceWearableVersion = '18.0.0'
+    playServiceWearableVersion = '18.1.0'
     coroutineVersion = '1.6.4'
     coroutinePlayServiceVersion = '1.3.9'
     retrofitVersion = '2.6.0'
@@ -59,26 +59,20 @@ ext {
     stfalconVersion = '1.0.10'
 
     playServiceFirebaseConfig = '16.1.3'
-    playServiceBaseVersion = '17.3.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
-    playCoreVersion = '1.8.0'
-    playServiceGms = '16.0.0'
+    playCoreVersion = '1.10.3'
     playServiceBase = '18.0.1'
-    playServiceAnalytics = '17.0.0'
-    playServiceLocation = '17.0.0'
-    playServiceMaps = '18.2.0'
-    playServiceAuth = '17.0.0'
+    playServiceLocation = '19.0.1'
+    playServiceAuth = '20.0.1'
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
-    playServiceMapsUtil = '1.0.2'
     playServiceFirebaseFirestore = '17.1.2'
-    playServiceAds = '17.1.0'
-    playServiceTagManager = '17.0.0'
-    playServiceMeasurementBase = '18.0.0'
-    playServiceMeasurementApi = '18.0.0'
+    playServiceAds = '18.0.1'
+    playServiceMeasurementBase = '20.0.1'
+    playServiceMeasurementApi = '20.0.1'
     playCastVersion = '21.0.1'
-    bomVersion = '26.2.0'
+    bomVersion = '29.0.3'
     firebasePerfVersion = '20.3.3'
     firebaseRemoteConfigVersion = '21.4.0'
 
@@ -139,7 +133,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.35'
     unifyPrinciplesVersion = '1.4.18'
-    unifyComponentsVersion = '1.2.55-rc01'
+    unifyComponentsVersion = '1.2.58-rc01'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.9'
@@ -150,8 +144,8 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.16'
     unifyGlobalErrorVersion = '1.0.22'
-    unifyHeaderVersion = '1.2.5'
-    unifySortFilterVersion = '1.3.8'
+    unifyHeaderVersion = '1.2.6'
+    unifySortFilterVersion = '1.3.9'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.11'
     unifyListVersion = '1.0.12'
@@ -216,17 +210,16 @@ ext {
 
     playServicesDependencies = [
             core          : "com.google.android.play:core:${playCoreVersion}",
-            plus          : "com.google.android.gms:play-services-plus:${playServiceGms}",
             base          : "com.google.android.gms:play-services-base:${playServiceBase}",
-            analytics     : "com.google.android.gms:play-services-analytics:${playServiceAnalytics}",
+            analytics     : "com.google.android.gms:play-services-analytics:${playServiceBase}",
             location      : "com.google.android.gms:play-services-location:${playServiceLocation}",
-            maps          : "com.google.android.gms:play-services-maps:${playServiceMaps}",
+            maps          : "com.google.android.gms:play-services-maps:${playServiceBase}",
             auth          : "com.google.android.gms:play-services-auth:${playServiceAuth}",
             places        : "com.google.android.gms:play-services-places:${playServicePlace}",
-            phone         : "com.google.android.gms:play-services-auth-api-phone:${playServiceAuthApiPhone}",
+            phone         : "com.google.android.gms:play-services-auth-api-phone:${playServiceBase}",
             ads           : "com.google.android.gms:play-services-ads-identifier:${playServiceAds}",
-            tagManagerImpl: "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
-            tagManager    : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
+            tagManagerImpl: "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceBase}",
+            tagManager    : "com.google.android.gms:play-services-tagmanager:${playServiceBase}",
             measurementApi: "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}",
             playServiceWearable: "com.google.android.gms:play-services-wearable:${playServiceWearableVersion}",
             cast          :"com.google.android.gms:play-services-cast-framework:${playCastVersion}"
@@ -365,7 +358,7 @@ ext {
             mp4parser             : "com.googlecode.mp4parser:isoparser:$mp4parserVersion",
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
-            ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
+            ffmpeg                : "com.arthenica:mobileffmpeg:4.4-bd-modified@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
             rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
     ]
@@ -373,7 +366,8 @@ ext {
     sduiDependencies = [
             divcore               : "com.yandex.div:div-core:$divKitVersion",
             div                   : "com.yandex.div:div:$divKitVersion",
-            divjson               : "com.yandex.div:div-json:$divKitVersion-tkpd",
+            divjson               : "com.yandex.div:div-json:$divKitVersion",
+            divEvaluable          : "com.yandex.div:div-evaluable:28.4.1-tkpd",
             divlottie             : "com.yandex.div:div-lottie:$divKitLottieVersion",
             divutils              : "com.yandex.div:utils:$divKitVersion",
     ]
@@ -521,5 +515,43 @@ ext {
             ktorSerializationJson       : "io.ktor:ktor-serialization-kotlinx-json:$ktorVersion",
             ktorLogging                 : "io.ktor:ktor-client-logging:$ktorVersion",
             kermitLogging               : "co.touchlab:kermit:$kermitVersion"
+    ]
+
+    commonMonitorVersion = "5.0.20.4.overseas"
+    npthVersion = "3.1.7.oversea-rc.67"
+    npthCoreVersion = "3.1.7.oversea-rc.67"
+
+    slardarDependencies = [
+            commonMonitor : "com.bytedance.frameworks.core:commonmonitor:$commonMonitorVersion",
+            npth          : "com.bytedance.frameworks.core:npth:$npthVersion",
+            npthCore      : "com.bytedance.frameworks.core:npth_core:$npthCoreVersion"
+    ]
+
+    chromiumCronetVersion = "4.2.137.43-tiktok"
+    baseLibsTtnetVersion = "4.2.137.43-tiktok"
+    boringSslVersion = "1.3.6-ttp"
+    cppSharedVersion = "21.1.4"
+
+    ttnetDependencies = [
+        chromiumCronet   : "org.chromium.net:cronet:$chromiumCronetVersion",
+        baseLibsTtnet    : "com.bytedance.frameworks.baselib:ttnet:$baseLibsTtnetVersion",
+        boringSsl        : "com.bytedance.boringssl.so:boringssl-so:$boringSslVersion",
+        cppShared        : "com.bytedance.ies.common:cpp_shared:$cppSharedVersion"
+    ]
+
+    appLogVersion = "5.6.9-bugfix.6"
+    frameworkCoreEncryptVersion = "1.2.2"
+    baseLibsUtilityVersion = "2.0.11"
+    bdNetworkTagVersion = "0.0.1-alpha.2-support"
+
+    appLogDependencies = [
+        bdTrackerGlobal   : "com.bytedance.applog:bdtracker-global:$appLogVersion",
+        sampling          : "com.bytedance.applog:sampling:$appLogVersion",
+        compress          : "com.bytedance.applog:compress:$appLogVersion",
+        monitor           : "com.bytedance.applog:monitor:$appLogVersion",
+        bdTrackerEtGlobal : "com.bytedance.applog:bdtracker-et_verify:$appLogVersion",
+        encrypt           : "com.bytedance.frameworks.core:encrypt:$frameworkCoreEncryptVersion",
+        baseLibsUtility   : "com.bytedance.frameworks.baselib:utility:$baseLibsUtilityVersion",
+        bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
     ]
 }
