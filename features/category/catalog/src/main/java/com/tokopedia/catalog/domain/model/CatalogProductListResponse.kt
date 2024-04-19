@@ -7,17 +7,17 @@ import com.google.gson.annotations.SerializedName
 
 data class CatalogProductListResponse(
     @SerializedName("catalogGetProductList")
-    val catalogGetProductList: CatalogGetProductList
+    val catalogGetProductList: CatalogGetProductList = CatalogGetProductList()
 ) {
     data class CatalogGetProductList(
         @SerializedName("header")
-        val header: Header,
+        val header: Header = Header(),
         @SerializedName("products")
-        val products: List<CatalogProduct>
+        val products: List<CatalogProduct> = listOf()
     ) {
         data class Header(
             @SerializedName("totalData")
-            val totalData: Int
+            val totalData: Int = 0
         )
 
         data class CatalogProduct(

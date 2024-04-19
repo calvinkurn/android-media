@@ -4,25 +4,43 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.data.response.FinalAdResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.response.SingleAdInFo
+import com.tokopedia.topads.common.data.response.TopAdsGetBidSuggestionResponse
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetBidSuggestionByProductIDsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
 import com.tokopedia.topads.edit.data.response.EditSingleAdResponse
 import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
 import com.tokopedia.topads.edit.usecase.GetAdsUseCase
 import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetBidSuggestionByProductIDsUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.invoke
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,8 +61,10 @@ class EditFormDefaultViewModelTest {
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val testDispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
     private val singleAdInfoUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
-    private val topAdsGetBidSuggestionByProductIDsUseCase: TopAdsGetBidSuggestionByProductIDsUseCase = mockk(relaxed = true)
-    private val topAdsImpressionPredictionUseCase: TopAdsImpressionPredictionSearchUseCase = mockk(relaxed = true)
+    private val topAdsGetBidSuggestionByProductIDsUseCase: TopAdsGetBidSuggestionByProductIDsUseCase =
+        mockk(relaxed = true)
+    private val topAdsImpressionPredictionUseCase: TopAdsImpressionPredictionSearchUseCase =
+        mockk(relaxed = true)
     private lateinit var viewModel: EditFormDefaultViewModel
     private val userSession: UserSession = mockk()
     private var groupId = 123
@@ -70,7 +90,7 @@ class EditFormDefaultViewModelTest {
 
     @Test
     fun validateGroup() {
-        var actual : ResponseGroupValidateName.TopAdsGroupValidateNameV2 ?= null
+        var actual: ResponseGroupValidateName.TopAdsGroupValidateNameV2? = null
         val data = ResponseGroupValidateName()
         every { userSession.shopId } returns "123"
         every {
@@ -80,7 +100,7 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.validateGroup("name") {actual = it}
+        viewModel.validateGroup("name") { actual = it }
 
         verify {
             validGroupUseCase.execute(any(), any())
@@ -97,14 +117,14 @@ class EditFormDefaultViewModelTest {
         }
 
         var successCalled = false
-        viewModel.validateGroup("name") {successCalled = true}
+        viewModel.validateGroup("name") { successCalled = true }
 
         assert(!successCalled)
     }
 
     @Test
     fun getBidInfoDefault() {
-        var actual : List<TopadsBidInfo.DataItem> ?= null
+        var actual: List<TopadsBidInfo.DataItem>? = null
         val data = ResponseBidInfo.Result()
         val suggestion: List<DataSuggestions> = mockk()
         every {
@@ -114,7 +134,7 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getBidInfoDefault(suggestion) {actual = it}
+        viewModel.getBidInfoDefault(suggestion) { actual = it }
 
         verify {
             bidInfoDefaultUseCase.executeQuerySafeMode(any(), any())
@@ -131,7 +151,7 @@ class EditFormDefaultViewModelTest {
         }
 
         var successCalled = false
-        viewModel.getBidInfoDefault(listOf()) {successCalled = true}
+        viewModel.getBidInfoDefault(listOf()) { successCalled = true }
 
         assert(!successCalled)
     }
@@ -178,7 +198,8 @@ class EditFormDefaultViewModelTest {
 
         viewModel.getAds(
             1,
-            groupId.toString(), "") { _: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _: Int, _: Int -> }
+            groupId.toString(), ""
+        ) { _: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _: Int, _: Int -> }
 
         verify {
             getAdsUseCase.executeQuerySafeMode(any(), any())
@@ -244,7 +265,7 @@ class EditFormDefaultViewModelTest {
         viewModel.getAdKeyword(
             groupId,
             ""
-        ) { list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
+        ) { _: List<GetKeywordResponse.KeywordsItem>, _: String -> }
 
 
         verify {
@@ -262,7 +283,7 @@ class EditFormDefaultViewModelTest {
         }
 
         var successCalled = false
-        viewModel.getAdKeyword(1, "") { _,_-> successCalled = true }
+        viewModel.getAdKeyword(1, "") { _, _ -> successCalled = true }
 
         assert(!successCalled)
     }
@@ -313,50 +334,68 @@ class EditFormDefaultViewModelTest {
 
     @Test
     fun `topadscreated success check`() {
-        every { topAdsCreateUseCase.setParam(any(),any(),any(),any()) } returns mockk(relaxed = true)
+        every {
+            topAdsCreateUseCase.setParam(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
         coEvery { topAdsCreateUseCase.execute(any<RequestParams>()) } returns FinalAdResponse()
 
         var successCalled = false
-        viewModel.topAdsCreated(mockk(), mockk(), mockk(), {successCalled = true}, {})
-        Assert.assertTrue(successCalled)
+        viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
+        assertTrue(successCalled)
     }
 
     @Test
     fun `topadscreated error check`() {
-        every { topAdsCreateUseCase.setParam(any(),any(),any(),any()) } returns mockk(relaxed = true)
+        every {
+            topAdsCreateUseCase.setParam(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
         coEvery { topAdsCreateUseCase.execute(any<RequestParams>()) } returns FinalAdResponse(
-            FinalAdResponse.TopadsManageGroupAds(FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors = listOf(
-                FinalAdResponse.TopadsManageGroupAds.ErrorsItem())),
-                FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem()))))
+            FinalAdResponse.TopadsManageGroupAds(
+                FinalAdResponse.TopadsManageGroupAds.KeywordResponse(
+                    errors = listOf(
+                        FinalAdResponse.TopadsManageGroupAds.ErrorsItem()
+                    )
+                ),
+                FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem()))
+            )
+        )
 
         var successCalled = false
-        viewModel.topAdsCreated(mockk(), mockk(), mockk(), {successCalled = true}, {})
-        Assert.assertTrue(!successCalled)
+        viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
+        assertTrue(!successCalled)
     }
 
     @Test
     fun `topadscreated exception check`() {
-        every { topAdsCreateUseCase.setParam(any(),any(),any(),any()) } throws Throwable()
+        every { topAdsCreateUseCase.setParam(any(), any(), any(), any()) } throws Throwable()
 
         var successCalled = false
-        viewModel.topAdsCreated(mockk(), mockk(), mockk(), {successCalled = true}, {})
-        Assert.assertTrue(!successCalled)
+        viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
+        assertTrue(!successCalled)
     }
 
     @Test
     fun getSingleAdInfo() {
         val adId = "121"
-        val mockThrowable = mockk<Throwable>(relaxed = true)
         every { userSession.shopId } returns "123"
         every {
-            singleAdInfoUseCase.execute(any(), any())
+            singleAdInfoUseCase.execute(captureLambda(), any())
         } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+            val onSuccess = lambda<(SingleAdInFo) -> Unit>()
+            onSuccess.invoke(SingleAdInFo())
         }
         viewModel.getSingleAdInfo(adId) {}
-
         verify { singleAdInfoUseCase.execute(any(), any()) }
-
     }
 
     @Test
@@ -372,6 +411,71 @@ class EditFormDefaultViewModelTest {
         viewModel.getSingleAdInfo("") { successCalled = true }
 
         assert(!successCalled)
+    }
+
+    @Test
+    fun `getSuggestedBid error`() {
+        val throwable = spyk(Throwable())
+        coEvery {
+            topAdsGetBidSuggestionByProductIDsUseCase.invoke(any(), any())
+        } answers {
+            throw throwable
+        }
+        viewModel.getSuggestedBid(listOf()) {}
+        coVerify {
+            topAdsGetBidSuggestionByProductIDsUseCase.invoke(any(), any())
+        }
+    }
+
+    @Test
+    fun `getSuggestedBid success`() {
+        val data: Result<TopAdsGetBidSuggestionResponse> = Success(
+            TopAdsGetBidSuggestionResponse(
+                topAdsGetBidSuggestionByProductIDs = TopAdsGetBidSuggestionResponse.TopAdsGetBidSuggestionByProductIDs(
+                    bidData = TopAdsGetBidSuggestionResponse.TopAdsGetBidSuggestionByProductIDs.BidData(
+                        bidSuggestion = 0
+                    ),
+                    error = TopAdsGetBidSuggestionResponse.TopAdsGetBidSuggestionByProductIDs.Error(
+                        code = "",
+                        detail = "",
+                        title = ""
+                    )
+                )
+            )
+        )
+        coEvery {
+            topAdsGetBidSuggestionByProductIDsUseCase.invoke(any(), any())
+        } answers {
+            data
+        }
+        viewModel.getSuggestedBid(listOf()) {}
+        coVerify {
+            topAdsGetBidSuggestionByProductIDsUseCase.invoke(any(), any())
+        }
+    }
+
+    @Test
+    fun `getPerformanceData error`() {
+        val throwable = spyk(Throwable())
+        coEvery {
+            topAdsImpressionPredictionUseCase.invoke(any(), any(), any(), any(), any())
+        } answers {
+            throw throwable
+        }
+        viewModel.getPerformanceData(listOf(), 0F, 0F, 0F)
+        assertTrue(viewModel.performanceData.value is Fail)
+    }
+
+    @Test
+    fun `getPerformanceData success`() {
+        val data = mockk<Result<ImpressionPredictionResponse>>()
+        coEvery {
+            topAdsImpressionPredictionUseCase.invoke(any(), any(), any(), any(), any())
+        } answers {
+            data
+        }
+        viewModel.getPerformanceData(listOf(), 0F, 0F, 0F)
+        assertTrue(viewModel.performanceData.value == data)
     }
 
     @Test

@@ -15,6 +15,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -27,6 +29,7 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -284,6 +287,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
             }
+            handleAppLogEnterMethod(homeNavMenuDataModel)
+        }
+    }
+
+    private fun handleAppLogEnterMethod(homeNavMenuDataModel: HomeNavMenuDataModel) {
+        if (homeNavMenuDataModel.id == ID_WISHLIST_MENU) {
+            AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICONACCOUNT)
         }
     }
 

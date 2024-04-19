@@ -3,6 +3,7 @@ package com.tokopedia.home.viewModel.homeRecommendation
 import com.tokopedia.home.beranda.domain.interactor.GetHomeGlobalRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 import io.mockk.coEvery
 import java.util.concurrent.TimeoutException
 
@@ -34,7 +35,7 @@ fun GetGlobalHomeRecommendationCardUseCase.givenDataReturn(
     productPage: Int
 ) {
     coEvery {
-        execute(productPage, "", "", "")
+        execute(productPage, any(), any(), any(), any(), any(), any(), any())
     } coAnswers { model }
 }
 
@@ -43,10 +44,10 @@ fun GetGlobalHomeRecommendationCardUseCase.givenDataReturnMatch(
     productPage: Int
 ) {
     coEvery {
-        execute(match { it == productPage }, "", "", "")
+        execute(match { it == productPage }, any(), any(), any(), any(), any(), any(), any())
     } coAnswers { model }
 }
 
 fun GetGlobalHomeRecommendationCardUseCase.givenThrows(exception: Throwable, productPage: Int) {
-    coEvery { execute(productPage, "", "", "") } throws exception
+    coEvery { execute(productPage, any(), any(), any(), any(), any(), any(), any()) } throws exception
 }

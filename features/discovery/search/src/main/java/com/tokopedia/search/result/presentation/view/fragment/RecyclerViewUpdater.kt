@@ -38,6 +38,8 @@ class RecyclerViewUpdater @Inject constructor(
     LifecycleObserver,
     ContextProvider by WeakReferenceContextProvider(context) {
 
+    var enterMethod: String = ""
+    var isLocalSearch: Boolean = false
     var recyclerView: RecyclerView? = null
         private set
     var productListAdapter: ProductListAdapter? = null
@@ -120,9 +122,9 @@ class RecyclerViewUpdater @Inject constructor(
     }
 
     override fun setItems(list: List<Visitable<*>>) {
-        productListAdapter?.clearData()
+        clearData()
 
-        stopPerformanceMonitoring(performanceMonitoring, recyclerView)
+        stopPerformanceMonitoring(performanceMonitoring, recyclerView, enterMethod, isLocalSearch)
         appendItems(list)
     }
 
@@ -179,6 +181,11 @@ class RecyclerViewUpdater @Inject constructor(
                 Toaster.TYPE_NORMAL
             ).show()
         }
+    }
+
+    fun clearData() {
+        productListAdapter?.clearData()
+        recyclerView?.adapter = productListAdapter
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

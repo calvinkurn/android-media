@@ -15,7 +15,7 @@ object StealTheLookMapper {
     ): StealTheLookWidgetModel {
         val tracking = getTracking(data, source, userId)
         return StealTheLookWidgetModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel, userId),
+            visitable = RecommendationVisitable.create(metadata, trackingModel, userId, data.appLog),
             widget = data,
             itemList = mapStealTheLookItem(data, tracking),
         )

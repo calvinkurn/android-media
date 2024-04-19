@@ -8,6 +8,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -56,6 +57,13 @@ open class TokoNowRecipeDetailViewModelTestFixture {
 
     protected lateinit var viewModel: TokoNowRecipeDetailViewModel
 
+    protected val warehouses = listOf(
+        WarehouseData(
+            warehouseId = "155111",
+            serviceType = "2h"
+        )
+    )
+
     @Before
     fun setUp() {
         getRecipeUseCase = mockk(relaxed = true)
@@ -98,6 +106,10 @@ open class TokoNowRecipeDetailViewModelTestFixture {
 
     protected fun onGetWarehouseId_thenReturn(warehouseId: String) {
         coEvery { addressData.getWarehouseId() } returns warehouseId.toLong()
+    }
+
+    protected fun onGetWarehouses_thenReturn(warehouses: List<WarehouseData>) {
+        coEvery { addressData.getWarehousesData() } returns warehouses
     }
 
     protected fun onGetIsOutOfCoverage_thenReturn(outOfCoverage: Boolean) {
@@ -159,9 +171,9 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     protected fun verifyGetRecipeUseCaseCalled(
         recipeId: String = "",
         slug: String = "",
-        warehouseId: String = "0"
+        warehouses: List<WarehouseData> = emptyList()
     ) {
-        coVerify { getRecipeUseCase.execute(eq(recipeId), eq(slug), eq(warehouseId)) }
+        coVerify { getRecipeUseCase.execute(eq(recipeId), eq(slug), eq(warehouses)) }
     }
 
     protected fun verifyAddBookmarkUseCaseCalled(recipeId: String = "") {
