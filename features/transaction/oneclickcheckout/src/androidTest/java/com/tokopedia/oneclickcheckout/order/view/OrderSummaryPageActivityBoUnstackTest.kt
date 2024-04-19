@@ -26,7 +26,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
 //Disabled because no longer relevant
 //@UiTest
@@ -59,7 +58,7 @@ class OrderSummaryPageActivityBoUnstackTest {
         activityRule.finishActivity()
     }
 
-    @Test
+//    @Test
     fun usePromoBoClashing_dontShowTickerBo() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
         logisticInterceptor.customRatesResponsePath = RATES_ETA_RESPONSE_PATH
