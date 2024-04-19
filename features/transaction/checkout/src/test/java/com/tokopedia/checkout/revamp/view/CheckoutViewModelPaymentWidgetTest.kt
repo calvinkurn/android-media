@@ -1012,7 +1012,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
                 GoCicilInstallmentOption(installmentTerm = 0),
                 GoCicilInstallmentOption(installmentTerm = 3),
                 GoCicilInstallmentOption(installmentTerm = 6),
-                GoCicilInstallmentOption(installmentTerm = 12),
+                GoCicilInstallmentOption(installmentTerm = 12, isActive = true),
             )
         )
 
