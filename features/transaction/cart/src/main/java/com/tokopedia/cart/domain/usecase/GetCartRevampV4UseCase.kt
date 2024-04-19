@@ -61,7 +61,7 @@ class GetCartRevampV4UseCase @Inject constructor(
 
         private const val PARAM_VALUE_ID = "id"
         internal const val PARAM_VALUE_TOASTER_DEFAULT = ""
-        internal const val PARAM_VALUE_TOASTER_CART_VARIANT = "cart_variant"
+        internal const val PARAM_VALUE_TOASTER_CART_VARIANT = "variant_changed"
 
         private const val QUERY_CART_REVAMP_V4 = "CartRevampV4Query"
     }
