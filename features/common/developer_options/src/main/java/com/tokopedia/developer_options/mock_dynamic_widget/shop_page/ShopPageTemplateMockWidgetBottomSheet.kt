@@ -8,7 +8,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.mock_dynamic_widget.shop_page.ShopPageMockWidgetModel.*
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -24,7 +26,7 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
-    private var onAddSelectedWidget: (List<ShopPageMockWidgetModel>) -> Unit = {}
+    private var onAddSelectedWidget: (List<ShopPageMockWidgetModel>, String) -> Unit = { _, _ -> }
     private val childLayoutRes = R.layout.shop_page_template_widget_bottom_sheet_layout
     private val adapterListShopWidget by lazy {
         ShopPageMockWidgetAdapter(this)
@@ -33,6 +35,12 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
     private val adapterSelectedListShopWidget by lazy {
         ShopPageMockWidgetAdapter()
     }
+
+    private val isMockLottieUrlChecked: Boolean
+        get() = view?.findViewById<CheckboxUnify>(R.id.toggle_mock_lottie_animation)?.isChecked.orFalse()
+    private val lottieUrl: String
+        get() = view?.findViewById<TextFieldUnify>(R.id.text_field_lottie_url)?.textFieldInput?.text?.toString().orEmpty()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +78,11 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
             val listSelectedData = adapterSelectedListShopWidget.getData()
             if (listSelectedData.isEmpty()) {
                 Toaster.build(it.rootView, "Selected shop widget is empty").show()
+            } else if (isMockLottieUrlChecked && lottieUrl.isEmpty()) {
+                Toaster.build(it.rootView, "Please enter the lottie url").show()
+                return@setOnClickListener
             } else {
-                onAddSelectedWidget.invoke(listSelectedData)
+                onAddSelectedWidget.invoke(listSelectedData, lottieUrl)
                 dismiss()
             }
         }
@@ -114,6 +125,19 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
     private fun configToggleFestivity() {
         view?.findViewById<CheckboxUnify>(R.id.toggle_is_festivity)?.setOnCheckedChangeListener { _, isChecked ->
             adapterListShopWidget.updateIsFestivity(isChecked)
+            configToggleLottieAnimation(isChecked)
+        }
+    }
+
+    private fun configToggleLottieAnimation(isOptionShown: Boolean) {
+        val toggleMockLottieAnimation = view?.findViewById<CheckboxUnify>(R.id.toggle_mock_lottie_animation)
+        val textFieldLottieUrl = view?.findViewById<TextFieldUnify>(R.id.text_field_lottie_url)
+
+        toggleMockLottieAnimation?.apply {
+            isVisible = isOptionShown
+            setOnCheckedChangeListener { _, isChecked ->
+                textFieldLottieUrl?.isVisible = isChecked
+            }
         }
     }
 
@@ -152,7 +176,7 @@ class ShopPageTemplateMockWidgetBottomSheet : BottomSheetUnify(), ShopPageMockWi
 
     override fun onClearMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) {}
 
-    fun setOnAddSelectedShopWidget(onAddSelectedWidget: (List<ShopPageMockWidgetModel>) -> Unit) {
+    fun setOnAddSelectedShopWidget(onAddSelectedWidget: (List<ShopPageMockWidgetModel>, String) -> Unit) {
         this.onAddSelectedWidget = onAddSelectedWidget
     }
 

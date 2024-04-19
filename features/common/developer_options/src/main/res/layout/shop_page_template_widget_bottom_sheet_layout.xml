@@ -22,6 +22,23 @@
         android:layout_marginBottom="8dp"
         android:text="Festivity" />
 
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/toggle_mock_lottie_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:text="Mock lottie animation" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_lottie_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_input_type="text"
+        android:visibility="gone"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Enter lottie url" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

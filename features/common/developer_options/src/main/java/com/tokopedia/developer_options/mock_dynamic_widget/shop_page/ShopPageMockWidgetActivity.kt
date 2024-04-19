@@ -19,6 +19,7 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
         private const val SHARED_PREF_NAME = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
         private const val SHARED_PREF_MOCK_WIDGET_DATA = "SHARED_PREF_MOCK_WIDGET_DATA"
         private const val SHARED_PREF_MOCK_BMSM_WIDGET_DATA = "SHARED_PREF_MOCK_BMSM_WIDGET_DATA"
+        private const val SHARED_PREF_MOCK_LOTTIE_URL_DATA = "SHARED_PREF_MOCK_LOTTIE_URL_DATA"
     }
 
     private val sharedPref by lazy {
@@ -98,9 +99,10 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
 
     private fun showBottomSheetChooseTemplateMockShopWidget() {
         val bottomSheet = ShopPageTemplateMockWidgetBottomSheet.createInstance()
-        bottomSheet.setOnAddSelectedShopWidget {
-            addShopWidgetMockData(it)
+        bottomSheet.setOnAddSelectedShopWidget { listShopPageMockWidgetModel, lottieUrl ->
+            addShopWidgetMockData(listShopPageMockWidgetModel)
             updateShopWidgetMockDataSharedPref()
+            saveLottieUrl(lottieUrl)
         }
         bottomSheet.show(supportFragmentManager, "")
     }
@@ -145,6 +147,10 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
                 }
             }
         }
+    }
+
+    private fun saveLottieUrl(url: String) {
+        sharedPref.edit().putString(SHARED_PREF_MOCK_LOTTIE_URL_DATA, url).apply()
     }
 
     override fun onMockWidgetItemClick(shopPageMockWidgetModel: ShopPageMockWidgetModel) { }
