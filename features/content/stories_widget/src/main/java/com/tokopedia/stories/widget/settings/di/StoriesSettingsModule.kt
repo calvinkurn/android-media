@@ -1,7 +1,10 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.di
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsFragment
+import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepo
+import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

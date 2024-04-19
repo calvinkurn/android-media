@@ -1,4 +1,4 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.presentation.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.widget.R
+import com.tokopedia.stories.widget.settings.di.DaggerStoriesSettingsComponent
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
 import javax.inject.Inject
 
 class StoriesSettingsActivity : AppCompatActivity() {

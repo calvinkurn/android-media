@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".settings.StoriesSettingsActivity"
+            android:name=".settings.presentation.ui.StoriesSettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>

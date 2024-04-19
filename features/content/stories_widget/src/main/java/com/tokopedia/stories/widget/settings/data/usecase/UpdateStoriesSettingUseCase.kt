@@ -1,4 +1,4 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.data.usecase
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.stories.widget.settings.data.model.StoriesSetupOpt
 import javax.inject.Inject
 
 /**

@@ -23,8 +23,8 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationConfigMod
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
-import com.tokopedia.stories.widget.settings.StoriesSettingsFactory
-import com.tokopedia.stories.widget.settings.StoriesSettingsFragment
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
+import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import javax.inject.Inject

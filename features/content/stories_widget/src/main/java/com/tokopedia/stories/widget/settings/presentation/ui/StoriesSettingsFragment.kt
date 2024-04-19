@@ -1,4 +1,4 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.presentation.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import javax.inject.Inject
 import com.tokopedia.stories.widget.R
+import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 
 class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator) :
     Fragment() {

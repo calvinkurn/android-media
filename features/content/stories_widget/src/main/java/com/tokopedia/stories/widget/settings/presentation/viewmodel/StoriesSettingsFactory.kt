@@ -1,7 +1,8 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

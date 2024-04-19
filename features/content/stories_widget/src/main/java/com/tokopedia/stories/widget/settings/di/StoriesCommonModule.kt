@@ -1,4 +1,4 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

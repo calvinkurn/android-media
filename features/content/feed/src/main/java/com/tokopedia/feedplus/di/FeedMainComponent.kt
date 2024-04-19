@@ -6,7 +6,6 @@ import com.tokopedia.content.common.comment.di.ContentCommentModule
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
-import com.tokopedia.stories.widget.settings.StoriesSettingsModule
 import dagger.BindsInstance
 import dagger.Component
 

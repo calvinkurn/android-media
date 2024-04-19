@@ -1,4 +1,4 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +22,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.compose.NestCheckbox
 import com.tokopedia.unifycomponents.compose.NestSwitch
 import com.tokopedia.stories.widget.R
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 
 /**
  * @author by astidhiyaa on 3/22/24

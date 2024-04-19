@@ -1,9 +1,12 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
+import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
+import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
+import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsPageUiModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -25,9 +28,10 @@ class StoriesSettingsViewModel @AssistedInject constructor(
     }
 
     private val _pageInfo = MutableStateFlow(StoriesSettingsPageUiModel.Empty)
-
     val pageInfo: Flow<StoriesSettingsPageUiModel>
         get() = _pageInfo
+
+//    private val _event = MutableSharedFlow<>()
 
     fun getList() {
         viewModelScope.launchCatchError(block = {
@@ -39,7 +43,7 @@ class StoriesSettingsViewModel @AssistedInject constructor(
     fun updateOption(option: StoriesSettingOpt) {
         viewModelScope.launchCatchError(block = {
             val response = repository.updateOption(entryPoint = entryPoint, option)
-
+            //Update pageInfo
         }) {}
     }
 

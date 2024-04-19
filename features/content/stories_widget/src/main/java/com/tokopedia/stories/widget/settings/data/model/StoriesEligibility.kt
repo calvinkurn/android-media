@@ -1,4 +1,4 @@
-package com.tokopedia.stories.widget.settings
+package com.tokopedia.stories.widget.settings.data.model
 
 import com.google.gson.annotations.SerializedName
 
