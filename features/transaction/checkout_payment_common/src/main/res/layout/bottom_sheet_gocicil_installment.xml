@@ -26,6 +26,7 @@
             android:layout_marginBottom="16dp"
             app:closeButtonVisibility="gone"
             app:tickerShapeType="loose"
+            android:visibility="gone"
             app:tickerType="announcement" />
 
         <com.tokopedia.unifyprinciples.Typography

@@ -48,6 +48,7 @@ import com.tokopedia.checkoutpayment.data.PromoDetail
 import com.tokopedia.checkoutpayment.data.SummariesItemData
 import com.tokopedia.checkoutpayment.data.UsageSummariesData
 import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
@@ -549,15 +550,32 @@ class CheckoutPaymentProcessor @Inject constructor(
             val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
             val widgetData = paymentWidgetData.first()
             val selectedTenure = widgetData.installmentPaymentData.selectedTenure
-            if (installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.isActive != true) {
-                // reset selected tenure if current tenure is disabled
-                return payment.copy(installmentData = null)
-            }
-            return payment.copy(installmentData = installmentData)
+            val result = autoSelectGoCicilTerm(selectedTenure, installmentData?.installmentOptions) ?: return payment.copy(installmentData = null)
+            paymentWidgetData[0] = widgetData.copy(installmentPaymentData = widgetData.installmentPaymentData.copy(selectedTenure = result.installmentTerm))
+            return payment.copy(installmentData = installmentData, data = payment.data.copy(paymentWidgetData))
         } catch (e: Exception) {
             Timber.d(e)
             return payment.copy(installmentData = null)
         }
+    }
+
+    private fun autoSelectGoCicilTerm(
+        selectedTenure: Int,
+        installmentTerms: List<GoCicilInstallmentOption>?
+    ): GoCicilInstallmentOption? {
+        if (installmentTerms == null) {
+            return null
+        }
+        var selectedTerm: GoCicilInstallmentOption?
+        if (selectedTenure > 0) {
+            selectedTerm = installmentTerms.firstOrNull { it.installmentTerm == selectedTenure && it.isActive }
+            return selectedTerm
+        }
+        selectedTerm = installmentTerms.lastOrNull { it.isRecommended && it.isActive }
+        if (selectedTerm == null) {
+            selectedTerm = installmentTerms.lastOrNull { it.isActive }
+        }
+        return selectedTerm
     }
 
     fun validatePayment(

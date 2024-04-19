@@ -502,8 +502,8 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             goCicilInstallmentOptionUseCase(any())
         } returns GoCicilInstallmentData(
             installmentOptions = listOf(
-                GoCicilInstallmentOption(),
-                GoCicilInstallmentOption()
+                GoCicilInstallmentOption(installmentTerm = 1, isActive = true),
+                GoCicilInstallmentOption(installmentTerm = 2, isActive = true, isRecommended = true)
             )
         )
 
@@ -516,6 +516,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
+        assertEquals(2, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
         coVerify(exactly = 1) {
             dynamicPaymentFeeUseCase(any())
         }

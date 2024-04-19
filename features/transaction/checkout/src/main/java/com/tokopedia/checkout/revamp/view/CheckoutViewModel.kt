@@ -3229,7 +3229,7 @@ class CheckoutViewModel @Inject constructor(
             }
 
             val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
-            if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
+            if (paymentData?.mandatoryHit?.isNotEmpty() == true) {
                 // validate promo after get tenor
                 shouldRevalidatePromo = true
             } else {
