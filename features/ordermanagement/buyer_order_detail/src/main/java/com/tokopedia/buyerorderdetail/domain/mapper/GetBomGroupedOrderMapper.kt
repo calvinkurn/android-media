@@ -11,6 +11,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -310,6 +311,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                 quantity = addon.quantity,
                 addonsId = addon.id,
                 addOnsName = addon.name,
+                addOnsUrl = String.EMPTY,
                 type = addon.type,
                 addOnsThumbnailUrl = addon.imageUrl,
                 toStr = "",
