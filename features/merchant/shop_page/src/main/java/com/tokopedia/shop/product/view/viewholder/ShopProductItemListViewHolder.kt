@@ -53,7 +53,8 @@ class ShopProductItemListViewHolder(
             isShowThreeDots = isShowTripleDot,
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
             patternType = productTabInterface?.getPatternColorType().orEmpty(),
-            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
+            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty(),
+            makeProductCardTransparent = true
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
@@ -103,5 +104,4 @@ class ShopProductItemListViewHolder(
             )
         }
     }
-    
 }

@@ -14,8 +14,8 @@ import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
-import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -47,14 +47,13 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingDetail
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
-import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
-import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
-import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
@@ -63,7 +62,7 @@ object ShopPageHomeMapper {
     private const val ZERO_PRODUCT_DISCOUNT = "0"
 
     private val productCardColorHelper = ShopProductCardColorHelper()
-    
+
     fun mapToHomeProductViewModelForAllProduct(
         shopProduct: ShopProduct,
         isMyOwnProduct: Boolean,
@@ -222,7 +221,8 @@ object ShopPageHomeMapper {
         forceLightModeColor: Boolean,
         patternColorType: String,
         backgroundColor: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        makeProductCardTransparent: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -238,7 +238,7 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
-        
+
         val badges = shopHomeProductViewModel.shopBadgeList.map {
             ProductCardModel.ShopBadge(
                 isShown = true,
@@ -251,7 +251,8 @@ object ShopPageHomeMapper {
             isFestivity = isFestivity,
             shouldOverrideTheme = forceLightModeColor,
             patternColorType = patternColorType,
-            backgroundColor = backgroundColor
+            backgroundColor = backgroundColor,
+            makeProductCardTransparent = makeProductCardTransparent
         )
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -692,7 +693,7 @@ object ShopPageHomeMapper {
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema,
-        shopId: String,
+        shopId: String
     ) = ShopHomeCarousellProductUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
@@ -701,7 +702,7 @@ object ShopPageHomeMapper {
         header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = mapToWidgetProductListPersonalization(widgetResponse, isMyProduct, isEnableDirectPurchase, shopId, widgetResponse.name),
-        shopId = shopId,
+        shopId = shopId
     )
 
     private fun mapToPersoProductComparisonUiModel(
@@ -1067,7 +1068,7 @@ object ShopPageHomeMapper {
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
             firstBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.firstColor.orEmpty(),
             secondBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.secondColor.orEmpty(),
-            campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty(),
+            campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty()
         )
     }
 
@@ -1195,7 +1196,7 @@ object ShopPageHomeMapper {
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
-        widgetName: String,
+        widgetName: String
     ): List<ShopHomeProductUiModel> {
         return widgets.let {
             val appLog = it.tracker.appLog
@@ -1613,7 +1614,8 @@ object ShopPageHomeMapper {
                 isFestivity = isFestivity,
                 shouldOverrideTheme = isOverrideTheme,
                 patternColorType = patternColorType,
-                backgroundColor = backgroundColor
+                backgroundColor = backgroundColor,
+                makeProductCardTransparent = true
             )
         )
     }

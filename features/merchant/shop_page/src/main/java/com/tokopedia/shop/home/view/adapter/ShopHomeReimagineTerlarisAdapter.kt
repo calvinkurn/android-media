@@ -65,13 +65,6 @@ class ShopHomeReimagineTerlarisAdapter(
         }
 
         private fun renderProductCard(product: ShopHomeProductUiModel) {
-            val productCardColorMode = productCardColorHelper.determineProductCardColorMode(
-                isFestivity = isFestivity,
-                shouldOverrideTheme = isOverrideTheme,
-                patternColorType = patternColorType,
-                backgroundColor = backgroundColor
-            )
-
             val productCardModel = ShopPageHomeMapper.mapToProductCardModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
@@ -81,9 +74,8 @@ class ShopHomeReimagineTerlarisAdapter(
                 forceLightModeColor = false,
                 patternColorType = patternColorType,
                 backgroundColor = backgroundColor,
-                isFestivity = isFestivity
-            ).copy(
-                colorMode = productCardColorMode
+                isFestivity = isFestivity,
+                makeProductCardTransparent = true
             )
 
             binding.productCard.setProductModel(productCardModel)

@@ -38,7 +38,7 @@ class ShopProductViewHolder(
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val viewBinding: ItemShopNewproductSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
-    
+
     init {
         findViews()
     }
@@ -69,7 +69,8 @@ class ShopProductViewHolder(
             isShowThreeDots = isShowTripleDot,
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
             patternType = productTabInterface?.getPatternColorType().orEmpty(),
-            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
+            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty(),
+            makeProductCardTransparent = true
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )

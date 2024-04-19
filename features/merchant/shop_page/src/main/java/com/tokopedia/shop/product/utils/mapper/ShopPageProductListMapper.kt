@@ -29,7 +29,7 @@ object ShopPageProductListMapper {
     private const val POSTFIX_VIEW_COUNT = "%1s orang"
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
-    
+
     private val productCardColorHelper = ShopProductCardColorHelper()
 
     fun mapToShopProductEtalaseListDataModel(
@@ -221,7 +221,8 @@ object ShopPageProductListMapper {
         isShowThreeDots: Boolean = true,
         isForceLightMode: Boolean = false,
         patternType: String = "",
-        backgroundColor: String = ""
+        backgroundColor: String = "",
+        makeProductCardTransparent: Boolean
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -243,7 +244,7 @@ object ShopPageProductListMapper {
                 title = it.title
             )
         }
-        
+
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopProductUiModel.imageUrl ?: "",
             productName = shopProductUiModel.name ?: "",
@@ -267,7 +268,8 @@ object ShopPageProductListMapper {
                 isFestivity = false,
                 shouldOverrideTheme = isForceLightMode,
                 patternColorType = patternType,
-                backgroundColor = backgroundColor
+                backgroundColor = backgroundColor,
+                makeProductCardTransparent = makeProductCardTransparent
             )
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {

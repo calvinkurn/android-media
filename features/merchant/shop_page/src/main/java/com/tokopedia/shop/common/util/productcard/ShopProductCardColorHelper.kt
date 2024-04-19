@@ -14,7 +14,7 @@ class ShopProductCardColorHelper {
         shouldOverrideTheme: Boolean,
         patternColorType: String,
         backgroundColor: String,
-        makeProductCardTransparent: Boolean = true
+        makeProductCardTransparent: Boolean
     ): ProductCardColor {
         return when {
             isFestivity -> overrideToFestivityColor(makeProductCardTransparent, backgroundColor)
