@@ -9,17 +9,27 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import javax.inject.Inject
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingEvent
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator) :
     Fragment() {
 
-    val entryPoint = StoriesSettingsEntryPoint(authorType = "shop", authorId = "479541") //TODO: get from Intent/appLink path/ userInterface
+    val entryPoint = StoriesSettingsEntryPoint(
+        authorType = "shop",
+        authorId = "479541"
+    ) //TODO: get from Intent/appLink path/ userInterface
 
     private val viewModel by viewModels<StoriesSettingsViewModel> { factory.create(entryPoint) }
     override fun onCreateView(
@@ -40,7 +50,29 @@ class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeEvent()
+
         viewModel.onEvent(StoriesSettingsAction.FetchPageInfo)
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiEvent.flowWithLifecycle(
+                viewLifecycleOwner.lifecycle,
+                Lifecycle.State.RESUMED
+            ).collectLatest {
+                when (val event = it) {
+                    is StoriesSettingEvent.ShowErrorToaster -> {
+                        Toaster.build(
+                            requireView(),
+                            text = event.message.message.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     companion object {

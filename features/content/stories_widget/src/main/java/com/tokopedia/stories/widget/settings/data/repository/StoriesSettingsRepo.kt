@@ -20,6 +20,14 @@ class StoriesSettingsRepo @Inject constructor(
     private val checkEligibilityUseCase: StoriesEligibilityUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : StoriesSettingsRepository {
+
+    private var lastRequestTime: Long = 0L
+    private val isAvailable: Boolean
+        get() {
+            val diff = System.currentTimeMillis() - lastRequestTime
+            return diff >= DELAY_MS
+        }
+
     override suspend fun getOptions(entryPoint: StoriesSettingsEntryPoint): StoriesSettingsPageUiModel =
         withContext(dispatchers.io) {
             val response = storiesSettingOptionsUseCase(
@@ -51,18 +59,23 @@ class StoriesSettingsRepo @Inject constructor(
         option: StoriesSettingOpt
     ): Boolean =
         withContext(dispatchers.io) {
-            val response =
-                updateStoriesSettingUseCase(
-                    UpdateStoriesSettingUseCase.Param(
-                        req = UpdateStoriesSettingUseCase.Param.Author(
-                            authorId = entryPoint.authorId,
-                            authorType = entryPoint.authorType,
-                            optionType = option.optionType,
-                            isDisabled = option.isSelected
+            return@withContext if (isAvailable) {
+                lastRequestTime = System.currentTimeMillis()
+                val response =
+                    updateStoriesSettingUseCase(
+                        UpdateStoriesSettingUseCase.Param(
+                            req = UpdateStoriesSettingUseCase.Param.Author(
+                                authorId = entryPoint.authorId,
+                                authorType = entryPoint.authorType,
+                                optionType = option.optionType,
+                                isDisabled = option.isSelected
+                            )
                         )
                     )
-                )
-            return@withContext response.response.success
+                response.response.success
+            } else {
+                throw Exception(ERROR_MESSAGE)
+            }
         }
 
     override suspend fun checkEligibility(entryPoint: StoriesSettingsEntryPoint): Boolean =
@@ -77,5 +90,10 @@ class StoriesSettingsRepo @Inject constructor(
             )
             return@withContext response.data.isEligibleForAuto || response.data.isEligibleForManual
         }
+
+    companion object {
+        private const val DELAY_MS = 5000L
+        private const val ERROR_MESSAGE = "Tunggu 5 detik dulu ya"
+    }
 }
 
