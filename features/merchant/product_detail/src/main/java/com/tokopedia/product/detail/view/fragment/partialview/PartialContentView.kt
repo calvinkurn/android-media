@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
@@ -33,7 +34,8 @@ class PartialContentView(
         data: ProductContentMainData,
         isUpcomingNplType: Boolean,
         freeOngkirImgUrl: String,
-        listener: ProductDetailListener
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
     ) = with(binding) {
         txtMainPrice.contentDescription =
             context.getString(R.string.content_desc_txt_main_price, data.price.value)
@@ -42,7 +44,7 @@ class PartialContentView(
             MethodChecker.fromHtml(data.productName)
         )
 
-        renderProductName(data = data, listener = listener)
+        renderProductName(data = data, listener = listener, componentTrackData = componentTrackData)
 
         renderPriceCampaignSection(
             data = data,
@@ -67,12 +69,17 @@ class PartialContentView(
         }
     }
 
-    private fun renderProductName(data: ProductContentMainData, listener: ProductDetailListener) = with(binding) {
+    private fun renderProductName(
+        data: ProductContentMainData,
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
+    ) = with(binding) {
         productNameDelegate.setTitle(
             title = data.productName,
             labelIcons = data.labelIcons,
             collapse = data.productNameCollapsed,
-            listener = listener
+            listener = listener,
+            componentTrackData = componentTrackData
         )
 
         if (productName.lineCount == 2) {

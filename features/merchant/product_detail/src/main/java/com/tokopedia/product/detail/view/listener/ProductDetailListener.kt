@@ -86,7 +86,7 @@ interface ProductDetailListener {
 
     fun shouldShowWishlist(): Boolean
 
-    fun onExpandProductName()
+    fun onExpandProductName(componentTrackData: ComponentTrackDataModel)
 
     /**
      * ProductInfoViewHolder

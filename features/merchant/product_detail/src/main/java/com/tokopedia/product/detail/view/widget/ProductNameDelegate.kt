@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifycomponents.toPx
@@ -52,9 +53,10 @@ internal class ProductNameDelegate(
         title: String,
         labelIcons: List<LabelIcons> = emptyList(),
         collapse: Boolean,
-        listener: ProductDetailListener
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
     ) {
-        setExpandCollapse(collapse, listener)
+        setExpandCollapse(collapse, listener, componentTrackData)
         if (!hasChanged(title = title, labelIcons = labelIcons)) return
 
         if (labelIcons.isEmpty()) {
@@ -75,8 +77,12 @@ internal class ProductNameDelegate(
         return hasChanged
     }
 
-    private fun setExpandCollapse(collapse: Boolean, listener: ProductDetailListener) {
-        setupExpandable(listener)
+    private fun setExpandCollapse(
+        collapse: Boolean,
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
+    ) {
+        setupExpandable(listener, componentTrackData)
         if (!collapse) return
         typography?.run {
             if (maxLines == Int.MAX_VALUE) {
@@ -193,13 +199,16 @@ internal class ProductNameDelegate(
         typography?.text = text
     }
 
-    private fun setupExpandable(listener: ProductDetailListener) {
+    private fun setupExpandable(
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
+    ) {
         typography?.doOnPreDraw {
             val layout = typography.layout
             if (layout != null && layout.getEllipsisCount(layout.lineCount.dec()).isMoreThanZero()) {
                 typography.setOnClickListener {
                     typography.maxLines = Int.MAX_VALUE
-                    listener.onExpandProductName()
+                    listener.onExpandProductName(componentTrackData)
                 }
             } else {
                 typography.setOnClickListener(null)
