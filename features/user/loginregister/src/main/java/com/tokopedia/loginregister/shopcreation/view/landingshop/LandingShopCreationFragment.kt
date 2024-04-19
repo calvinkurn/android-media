@@ -31,8 +31,10 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.media.loader.loadImage
@@ -90,16 +92,12 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initView()
+        shopCreationViewModel.getShopStatus()
     }
 
     override fun onStart() {
         super.onStart()
         shopCreationAnalytics.trackScreen(screenName)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initButtonListener()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -169,11 +167,17 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun initButtonListener() {
         viewBinding?.btnContinue?.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
-            if (userIsLoggedIn()) {
-                goToShopAdminRedirection()
+            if (!ShopCreationUtils.isShopPending(requireContext())) {
+                if (userIsLoggedIn()) {
+                    goToShopAdminRedirection()
+                } else {
+                    showLoading()
+                    goToPhoneShopCreation()
+                }
             } else {
-                showLoading()
-                goToPhoneShopCreation()
+                if (isForceKycEnabkled()) {
+                    openKycBridgePage()
+                }
             }
         }
     }
@@ -251,6 +255,18 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     onFailedGetShopInfo(it.throwable)
                 }
             }
+        }
+
+        shopCreationViewModel.shopStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShopStatus.NotRegistered -> {
+                    ShopCreationUtils.storeShopStatus(requireContext(), isShopPending = false)
+                }
+                is ShopStatus.Pending -> {
+                    ShopCreationUtils.storeShopStatus(requireContext(), isShopPending = true)
+                } else -> {}
+            }
+            initButtonListener()
         }
     }
 

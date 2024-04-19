@@ -88,9 +88,10 @@ data class AccountHeaderDataModel(
         shopId: String = "",
         shopOrderCount: Int,
         isError: Boolean = false,
-        isLoading: Boolean = false
+        isLoading: Boolean = false,
+        isShopPending: Boolean
     ) {
-        this.profileSellerDataModel.hasShop = shopId != DEFAULT_SHOP_ID_NOT_OPEN
+        this.profileSellerDataModel.hasShop = !isShopPending
         this.profileSellerDataModel.isGetShopError = isError
         this.profileSellerDataModel.isGetShopLoading = isLoading
         if (profileSellerDataModel.hasShop) {

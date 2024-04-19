@@ -25,6 +25,7 @@ import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant.KYC_
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
+import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.unifycomponents.CardUnify2
@@ -110,14 +111,22 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         viewBinding?.btnContinue?.setOnClickListener {
-            if (isNormalShopSelected()) {
-                shopCreationAnalytics.sendSellerClickIndividualEvent(shopId = userSession.shopId, userId = userSession.userId)
-                viewModel.getShopStatus()
-            } else if (isOfficialStoreSelected()) {
-                shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
-                viewModel.getShopStatus()
+            if (ShopCreationUtils.isShopPending(requireContext())) {
+                showToaster("Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.")
             } else {
-                showToaster("Pilih salah satu jenis toko dulu, ya.")
+                if (isNormalShopSelected()) {
+                    shopCreationAnalytics.sendSellerClickIndividualEvent(
+                        shopId = userSession.shopId,
+                        userId = userSession.userId
+                    )
+                    viewModel.checkKycStatus()
+                    viewModel.showLoader(true)
+                } else if (isOfficialStoreSelected()) {
+                    shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
+                    showOfficialShopBottomSheet()
+                } else {
+                    showToaster("Pilih salah satu jenis toko dulu, ya.")
+                }
             }
         }
 
@@ -139,6 +148,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         viewModel.shopStatus.observe(viewLifecycleOwner) {
+            viewModel.showLoader(false)
             when (it) {
                 is ShopStatus.NotRegistered -> {
                     if (isNormalShopSelected()) {
