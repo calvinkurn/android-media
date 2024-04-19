@@ -5,4 +5,5 @@ import com.tokopedia.home_component.visitable.Mission4SquareUiModel
 interface Mission4SquareWidgetListener {
     fun onMissionClicked(model: Mission4SquareUiModel, position: Int)
     fun onMissionImpressed(model: Mission4SquareUiModel, position: Int)
+    fun onMissionImpressedByteIo(model: Mission4SquareUiModel, position: Int)
 }
