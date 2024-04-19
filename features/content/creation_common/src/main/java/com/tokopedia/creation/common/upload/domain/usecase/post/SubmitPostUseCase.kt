@@ -1,18 +1,15 @@
-package com.tokopedia.createpost.common.domain.usecase
+package com.tokopedia.creation.common.upload.domain.usecase.post
 
 import android.content.ContentResolver
 import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
+import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
-import com.tokopedia.createpost.common.domain.entity.SubmitPostData
-import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
-import com.tokopedia.createpost.common.view.viewmodel.MediaModel
-import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
+import com.tokopedia.createpost.common.domain.usecase.UploadMultipleMediaUseCase
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
-import com.tokopedia.createpost.common.domain.usecase.cache.SaveMediaPostCacheUseCase
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -20,7 +17,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Revamped By : Jonathan Darwin on October 13, 2022
@@ -29,11 +25,8 @@ import kotlin.collections.ArrayList
 open class SubmitPostUseCase @Inject constructor(
     private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
     @ApplicationContext graphqlRepository: GraphqlRepository,
-    private val saveMediaPostCacheUseCase: SaveMediaPostCacheUseCase,
     private val deleteMediaPostCacheUseCase: DeleteMediaPostCacheUseCase,
 ) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
-
-    var postUpdateProgressManager: PostUpdateProgressManager? = null
 
     init {
         setGraphqlQuery(SubmitPostUseCaseQuery())
@@ -48,45 +41,38 @@ open class SubmitPostUseCase @Inject constructor(
         get() = _state
 
     suspend fun execute(
-        id: String?,
-        type: String,
-        token: String,
-        authorId: String,
-        caption: String,
-        mediaList: List<MediaModel>,
-        mediaWidth: Int,
-        mediaHeight: Int,
+        data: CreationUploadData.Post,
         onSuccessUploadPerMedia: suspend () -> Unit,
     ): SubmitPostData {
 
-        /** Map Media Data to Request */
-        val mediaRequest = mapMediaToRequest(mediaList)
+        val uploadedMedia = if (data.creationId.isEmpty()) {
+            /** Map Media Data to Request */
+            val mediaRequest = mapMediaToRequest(data.mediaList)
 
-        /** Save Media Post Cache Reference */
-        val setMediaUrl = mediaRequest.map { it.mediaURL }.toSet()
-        saveMediaPostCacheUseCase(setMediaUrl)
+            /** Upload Media to Uploadpedia */
+            val newMediumList = uploadMultipleMediaUseCase.execute(mediaRequest, onSuccessUploadPerMedia)
 
-        /** Upload Async */
-        val newMediumList = uploadMultipleMediaUseCase.execute(mediaRequest, onSuccessUploadPerMedia)
-
-        /** Rearrange Media */
-        val arrangedMedia = rearrangeMedia(newMediumList)
+            /** Rearrange Media Order */
+            rearrangeMedia(newMediumList)
+        } else {
+            emptyList()
+        }
 
         /** Submit Post */
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
-                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
+                    PARAM_ACTION to if (data.creationId.isEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to data.creationId.ifEmpty { null },
                     PARAM_AD_ID to null,
                     PARAM_TYPE to INPUT_TYPE_CONTENT,
-                    PARAM_TOKEN to token,
-                    PARAM_AUTHOR_ID to authorId,
-                    PARAM_AUTHOR_TYPE to type,
-                    PARAM_CAPTION to caption,
-                    PARAM_MEDIA_WIDTH to mediaWidth,
-                    PARAM_MEDIA_HEIGHT to mediaHeight,
-                    PARAM_MEDIA to arrangedMedia,
+                    PARAM_TOKEN to data.token,
+                    PARAM_AUTHOR_ID to data.authorId,
+                    PARAM_AUTHOR_TYPE to data.authorType,
+                    PARAM_CAPTION to data.caption,
+                    PARAM_MEDIA_WIDTH to data.mediaWidth,
+                    PARAM_MEDIA_HEIGHT to data.mediaHeight,
+                    PARAM_MEDIA to uploadedMedia,
                 )
             )
         )
@@ -98,80 +84,25 @@ open class SubmitPostUseCase @Inject constructor(
         }
 
         /** Delete Media Cache */
-        deleteMediaPostCacheUseCase(Unit)
+        deleteMediaPostCacheUseCase(uploadedMedia.map { it.mediaURL }.toSet())
 
         return result
     }
 
-    /**
-     * The code below will be used when we have migrated
-     * both image & video uploader to uploadpedia
-     */
-    suspend fun executeOnBackground(
-        id: String?,
-        type: String,
-        token: String,
-        authorId: String,
-        caption: String,
-        mediaList: List<MediaModel>,
-        mediaWidth: Int,
-        mediaHeight: Int
-    ): SubmitPostData {
-        uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
-
-        /** Upload All Media */
-        val newMediumList = uploadMultipleMediaUseCase.executeOnBackground(mapMediaToRequest(mediaList))
-
-        /** Rearrange Media */
-        val arrangedMedia = rearrangeMedia(newMediumList)
-
-        /** Submit Post */
-        postUpdateProgressManager?.onSubmitPost()
-
-        setRequestParams(
-            mapOf(
-                PARAM_INPUT to mapOf(
-                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
-                    PARAM_AD_ID to null,
-                    PARAM_TYPE to INPUT_TYPE_CONTENT,
-                    PARAM_TOKEN to token,
-                    PARAM_AUTHOR_ID to authorId,
-                    PARAM_AUTHOR_TYPE to type,
-                    PARAM_CAPTION to caption,
-                    PARAM_MEDIA_WIDTH to mediaWidth,
-                    PARAM_MEDIA_HEIGHT to mediaHeight,
-                    PARAM_MEDIA to arrangedMedia,
-                )
-            )
-        )
-
-        return super.executeOnBackground()
-    }
-
-    private fun mapMediaToRequest(mediaList: List<MediaModel>): List<SubmitPostMedium> {
+    private fun mapMediaToRequest(mediaList: List<CreationUploadData.Post.Media>): List<SubmitPostMedium> {
         return mediaList.mapIndexed { index, media ->
             SubmitPostMedium(
-                mediaURL = getFileAbsolutePath(media.path).orEmpty(),
                 order = index,
-                tags = mapTagList(mediaList[index].tags, mediaList[index].products),
+                mediaURL = getFileAbsolutePath(media.path).orEmpty(),
                 type = media.type,
+                tags = media.productIds.map { productId ->
+                    MediaTag(
+                        type = TAGS_TYPE_PRODUCT,
+                        content = productId,
+                        position = listOf(0.0, 0.0)
+                    )
+                },
             )
-        }
-    }
-
-    private fun mapTagList(tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
-        return tags.mapIndexedNotNull { index, tag ->
-            val id = productItem.getOrNull(tag.tagIndex)?.id
-            if (id != null) {
-                MediaTag(
-                    type = TAGS_TYPE_PRODUCT,
-                    content = id,
-                    position = listOf(tag.posX.toDouble(), tag.posY.toDouble())
-                )
-            } else {
-                null
-            }
         }
     }
 

@@ -161,14 +161,6 @@ class UploadMultipleMediaUseCase @Inject constructor(
         return tempFilePath
     }
 
-    fun deleteCacheFile() {
-        mapTempFilePath.forEach { tempFilePath ->
-            if (File(tempFilePath).exists()) {
-                File(tempFilePath).delete()
-            }
-        }
-    }
-
     companion object {
         private const val UPLOAD_IMAGE_SOURCE_ID = "ZiLyCt"
         private const val UPLOAD_VIDEO_SOURCE_ID = "jbPRuq"

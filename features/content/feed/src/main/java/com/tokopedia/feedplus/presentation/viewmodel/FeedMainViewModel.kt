@@ -194,7 +194,8 @@ class FeedMainViewModel @AssistedInject constructor(
 
     fun deletePostCache() {
         viewModelScope.launch {
-            deletePostCacheUseCase(Unit)
+            /** JOE TODO: delete post cache from parameter */
+//            deletePostCacheUseCase(Unit)
         }
     }
 
