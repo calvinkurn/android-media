@@ -57,9 +57,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.components
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation rootProject.ext.unifyDependencies.header
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 

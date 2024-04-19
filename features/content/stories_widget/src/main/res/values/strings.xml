@@ -1,4 +1,5 @@
 <resources>
     <string name="stories_settings_header">Story</string>
     <string name="stories_settings_body">Kategori update produk yang akan jadi Story:</string>
+    <string name="stories_settings_page_header">Atur Konten Toko</string>
 </resources>
