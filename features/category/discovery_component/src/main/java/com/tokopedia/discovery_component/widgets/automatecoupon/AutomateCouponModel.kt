@@ -9,7 +9,9 @@ sealed class AutomateCouponModel {
         val timeLimit: TimeLimit? = null,
         val iconUrl: String,
         val shopName: DynamicColorText? = null,
-        val badgeText: String? = null
+        val badgeText: String? = null,
+        val isTopads: Boolean = false,
+        val topAdsClickUrl: String? = null
     ) : AutomateCouponModel()
 
     data class Grid(
@@ -19,6 +21,8 @@ sealed class AutomateCouponModel {
         val backgroundUrl: String,
         val iconUrl: String?,
         val shopName: DynamicColorText?,
-        val badgeText: String?
+        val badgeText: String?,
+        val isTopads: Boolean = false,
+        val topAdsClickUrl: String? = null
     ) : AutomateCouponModel()
 }

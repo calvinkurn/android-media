@@ -392,7 +392,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         this.googleMap?.uiSettings?.setAllGesturesEnabled(false)
-        activity?.let { MapsInitializer.initialize(it) }
+        activity?.let { MapsInitializer.initialize(requireActivity()) }
         moveMap(getLatLng(currentLat, currentLong))
     }
 

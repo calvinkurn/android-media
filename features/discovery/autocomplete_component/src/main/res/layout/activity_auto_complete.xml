@@ -33,4 +33,9 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
+    <FrameLayout
+        android:id="@+id/autocomplete_unification_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

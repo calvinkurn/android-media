@@ -18,7 +18,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
@@ -138,7 +138,7 @@ open class SearchTestFixtures {
     )
 
     protected fun `Given address data null`() {
-        tokoNowSearchViewModel.mockSuperClassField("chooseAddressData", null)
+        tokoNowSearchViewModel.mockPrivateField("chooseAddressData", null)
     }
 
     protected fun `Given view already created`() {

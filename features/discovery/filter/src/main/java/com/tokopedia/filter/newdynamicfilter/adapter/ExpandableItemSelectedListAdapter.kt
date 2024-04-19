@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import com.tokopedia.design.item.DeletableItemView
+import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget.DeletableItemView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.NumberParseHelper

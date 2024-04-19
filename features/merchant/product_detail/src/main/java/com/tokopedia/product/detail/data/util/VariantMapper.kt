@@ -30,7 +30,11 @@ object VariantMapper {
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
-    fun updateDynamicProductInfo(oldData: ProductInfoP1?, newData: VariantChild?): ProductInfoP1? {
+    fun updateDynamicProductInfo(
+        oldData: ProductInfoP1?,
+        newData: VariantChild?,
+        isWishlist: Boolean
+    ): ProductInfoP1? {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
@@ -62,7 +66,8 @@ object VariantMapper {
             isCod = newData?.isCod ?: false,
             componentPriceType = newData?.componentPriceType ?: 0,
             promoPrice = newData?.promoPrice ?: PromoPriceResponse(),
-            labelIcons = newData?.labelIcons.orEmpty()
+            labelIcons = newData?.labelIcons.orEmpty(),
+            isWishlist = isWishlist
         )
 
         return ProductInfoP1(

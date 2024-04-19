@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
@@ -49,7 +50,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
         private const val ONE_TAB = 1
-        private const val MARGIN_16_DP = 16f
+        private const val MARGIN_12_DP = 12f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
         private const val THREE_TAB = 3
         private const val EXTRA_WIDTH_TAB_TITLE_DP = 8
@@ -164,8 +165,9 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
                 //Measure tab width
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
+                val tabWidth = tab.view.measuredWidth
                 tabTotalWidth += tabWidth
+                tabTotalWidth += (MARGIN_12_DP.dpToPx() + MARGIN_12_DP.dpToPx()).toInt()
             }
 
             handleTabChange(tabsUnify, uiModel, tabs)
@@ -228,9 +230,12 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         }
 
         tabTitle?.apply {
-            setTypeface(Typography.getFontType(context, true, Typography.DISPLAY_3))
+            /**
+             * since setting text weight will cause the text to overflow to next line,
+             * we try to use html <b> text to solve this issue
+             */
+            text = MethodChecker.fromHtml("<b>$text</b>")
             setTextColor(highEmphasizeColor)
-            invalidate()
         }
     }
 
@@ -248,9 +253,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         }
 
         tabTitle?.apply {
-            setTypeface(Typography.getFontType(context, false, Typography.DISPLAY_3))
+            text = MethodChecker.fromHtml("$text")
             setTextColor(disabledTextColor)
-            invalidate()
         }
     }
 
@@ -263,8 +267,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                     tabsUnify.visible()
 
                     val screenWidth = getScreenWidth()
-                    if (tabTotalWidth < screenWidth && tabs.size <= THREE_TAB) {
-                        tabsUnify.customTabMode = TabLayout.MODE_AUTO
+                    if (tabTotalWidth < screenWidth) {
+                        tabsUnify.customTabMode = TabLayout.MODE_FIXED
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {
                         tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE

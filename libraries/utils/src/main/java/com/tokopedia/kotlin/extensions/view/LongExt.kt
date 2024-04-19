@@ -1,6 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
-import java.util.Date
+import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -8,9 +8,7 @@ import kotlin.math.pow
  * Created by jegul on 31/01/20
  */
 
-
 const val THOUSAND_EXPONENT = 3
-
 
 fun Long.toDate(): Date {
     return Date(this)
@@ -33,10 +31,10 @@ fun Long.pow(exponent: Int) = toDouble().pow(exponent).toLong()
  * e.g. 1100 -> 1,1rb
  */
 fun Long.toAmountString(
-        ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
-        decimalPlaces: Int = 1,
-        separator: String = ",",
-        withSpacing: Boolean = false
+    ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
+    decimalPlaces: Int = 1,
+    separator: String = ",",
+    withSpacing: Boolean = false
 ): String {
     val exponent = THOUSAND_EXPONENT
     val multiplier: Long = 10L.pow(exponent)
@@ -51,19 +49,19 @@ fun Long.toAmountString(
  * Convert amount to string format given specific denominator
  */
 fun Long.toAmountStringByDivider(
-        denominator: Long,
-        suffix: String,
-        decimalPlaces: Int,
-        separator: String,
-        withSpacing: Boolean
+    denominator: Long,
+    suffix: String,
+    decimalPlaces: Int,
+    separator: String,
+    withSpacing: Boolean
 ): String {
-    val wholeNum = this/denominator
-    val fractionNum = this%denominator
+    val wholeNum = this / denominator
+    val fractionNum = this % denominator
     return buildString {
         append(wholeNum)
         if (fractionNum > 0) {
             val fullString = this@toAmountStringByDivider.toString()
-            val fractionString = fullString.substring(max(0, fullString.indexOf(wholeNum.toString()) + 1) + wholeNum.toString().length-1, fullString.length)
+            val fractionString = fullString.substring(max(0, fullString.indexOf(wholeNum.toString()) + 1) + wholeNum.toString().length - 1, fullString.length)
             append(separator)
             println(decimalPlaces)
             for (num in 0 until decimalPlaces) {
@@ -81,3 +79,5 @@ fun Long?.isLessThanZero(): Boolean = this?.let { it < 0L } ?: false
 fun Long?.isOdd(): Boolean = this?.let { it % 2L == 1L } ?: false
 fun Long?.isEven(): Boolean = this?.let { it % 2L == 0L } ?: false
 fun Long?.isLessThanEqualZero(): Boolean = this?.let { it <= 0L } ?: false
+
+val Long.half get() = this.div(2)

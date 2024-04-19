@@ -3,6 +3,7 @@ package com.tokopedia.devicefingerprint.header
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import com.bytedance.common.utility.NetworkUtils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.cachemanager.PersistentCacheManager
@@ -206,7 +207,8 @@ object FingerprintModelGenerator : CoroutineScope {
             pid = imei,
             uuid = uuid,
             inval = VisorFingerprintInstance.getDVToken(context),
-            installer = context.packageManager.getInstallerPackageName(context.packageName) ?: ""
+            installer = context.packageManager.getInstallerPackageName(context.packageName) ?: "",
+            accessType = getNetworkTypeInt(context)
         )
         return fp
     }
@@ -294,9 +296,26 @@ object FingerprintModelGenerator : CoroutineScope {
             versionName = additionalInfoModel.versionName,
             advertisingId = additionalInfoModel.advertisingId,
             wideVineId = additionalInfoModel.wideVineId,
-            installer = context.packageManager.getInstallerPackageName(context.packageName) ?: ""
+            installer = context.packageManager.getInstallerPackageName(context.packageName) ?: "",
+            accessType = getNetworkTypeInt(context)
         )
         return fp
+    }
+
+    // https://bytedance.sg.larkoffice.com/docx/LI0Qdh5m1ojHTNxhmQ1lWJgVg5f?from=from_copylink
+    private fun getNetworkTypeInt(context: Context): Int {
+        val networkType = NetworkUtils.getNetworkType(context)
+        return when (networkType) {
+            NetworkUtils.NetworkType.MOBILE_3G,
+            NetworkUtils.NetworkType.MOBILE_3G_H,
+            NetworkUtils.NetworkType.MOBILE_3G_HP -> 3 // NT3G
+            NetworkUtils.NetworkType.MOBILE_4G -> 4 // NT4G
+            NetworkUtils.NetworkType.MOBILE -> 2 // Mobile
+            NetworkUtils.NetworkType.WIFI,
+            NetworkUtils.NetworkType.WIFI_24GHZ,
+            NetworkUtils.NetworkType.WIFI_5GHZ -> 1 // Wifi
+            else -> 0 // Unknown
+        }
     }
 
     private fun getLocationFromCache(ctx: Context): Pair<Double, Double> {
