@@ -25,7 +25,6 @@ class ShopHomeReimagineTerlarisAdapter(
         private const val LEFT_PEEK_MARGIN = 56
     }
 
-    private val noLeftPeekProductCardWidth by lazy { getScreenWidth() }
     private val leftPeekProductCardWidth by lazy { getScreenWidth() - LEFT_PEEK_MARGIN.toPx() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -66,7 +65,7 @@ class ShopHomeReimagineTerlarisAdapter(
                 shopHomeProductViewModel = product,
                 isWideContent = false,
                 productRating = product.averageRating,
-                isOverrideTheme = listener.isOverrideTheme(),
+                isOverrideTheme = true,
                 patternColorType = listener.getPatternColorType(),
                 backgroundColor = listener.getBackgroundColor(),
                 isFestivity = element.isFestivity,
@@ -91,12 +90,9 @@ class ShopHomeReimagineTerlarisAdapter(
         }
 
         private fun adjustProductCardWidthAppearance(productCount: Int) {
-            val productCardWidthPx = if (productCount == PRODUCT_THREE) {
-                noLeftPeekProductCardWidth
-            } else {
-                leftPeekProductCardWidth
+            if (productCount > PRODUCT_THREE) {
+                binding.productContainer.width(leftPeekProductCardWidth)
             }
-            binding.productContainer.width(productCardWidthPx)
         }
 
         private fun setupImpressionListener(carouselData: List<ShopHomeProductUiModel>) {

@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -45,18 +46,27 @@ class ShopHomeReimagineTerlarisViewHolder(
             products = products
         )
 
-        val gridLayoutManager = GridLayoutManager(
-            itemView.context,
-            THREE_COLUMN,
-            GridLayoutManager.HORIZONTAL,
-            false
-        )
+        val widgetLayoutManager = if (products.size == PRODUCT_THREE) {
+            LinearLayoutManager(
+                itemView.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+        } else {
+            GridLayoutManager(
+                itemView.context,
+                THREE_COLUMN,
+                GridLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+
 
         viewBinding?.recyclerView?.apply {
             isNestedScrollingEnabled = false
             setHasFixedSize(true)
             adapter = terlarisWidgetAdapter
-            layoutManager = gridLayoutManager
+            layoutManager = widgetLayoutManager
         }
 
         setupImpressionListener(element, products)
