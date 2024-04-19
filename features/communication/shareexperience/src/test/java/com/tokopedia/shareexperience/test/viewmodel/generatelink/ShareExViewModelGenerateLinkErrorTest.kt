@@ -596,11 +596,12 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
     fun `generate short link and error generate branch link, still get intent and default link with utm`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "defaultUrl",
-                trackerArg = ShareExTrackerArg("utmcampaign"),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -612,7 +613,11 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                                 affiliate = ShareExAffiliateModel(
                                     eligibility = ShareExAffiliateEligibilityModel(false)
                                 ),
-                                linkProperties = ShareExLinkProperties(
+                                linkProperties = ShareExLinkPropertiesModel(
+                                    messageObject = ShareExLinkMessagePropertiesModel(
+                                        message = ShareExMessagePlaceholderEnum.BRANCH_LINK.placeholder,
+                                        replacementMap = mutableMapOf(ShareExMessagePlaceholderEnum.BRANCH_LINK to "")
+                                    ),
                                     androidUrl = dummyUrl,
                                     iosUrl = dummyUrl,
                                     desktopUrl = dummyUrl
