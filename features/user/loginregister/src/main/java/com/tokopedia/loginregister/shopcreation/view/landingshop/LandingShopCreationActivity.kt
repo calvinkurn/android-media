@@ -32,7 +32,6 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
                 KycBridgingFragment.createInstance(bundle),
                 "kyc_bridge_tag"
             )
-            .addToBackStack(null)
             .commit()
     }
 
@@ -45,16 +44,8 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
             .replace(
                 com.tokopedia.loginregister.R.id.parent_view,
                 ShopCreationKycStatusFragment.createInstance(),
-                "kyc_bridge_tag"
+                "kyc_bridge_tag_2"
             )
             .commit()
-    }
-
-    override fun onBackPressed() {
-        if (supportFragmentManager.fragments.first() is ShopCreationKycStatusFragment) {
-            supportFragmentManager.popBackStack()
-        } else {
-            finish()
-        }
     }
 }

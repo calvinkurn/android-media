@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -30,8 +31,10 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.media.loader.loadImage
@@ -89,16 +92,12 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initView()
+        shopCreationViewModel.getShopStatus()
     }
 
     override fun onStart() {
         super.onStart()
         shopCreationAnalytics.trackScreen(screenName)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initButtonListener()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -168,11 +167,17 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun initButtonListener() {
         viewBinding?.btnContinue?.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
-            if (userIsLoggedIn()) {
-                goToShopAdminRedirection()
+            if (!ShopCreationUtils.isShopPending(requireContext())) {
+                if (userIsLoggedIn()) {
+                    goToShopAdminRedirection()
+                } else {
+                    showLoading()
+                    goToPhoneShopCreation()
+                }
             } else {
-                showLoading()
-                goToPhoneShopCreation()
+                if (isForceKycEnabkled()) {
+                    openKycBridgePage()
+                }
             }
         }
     }
@@ -251,6 +256,40 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         }
+
+        shopCreationViewModel.shopStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShopStatus.NotRegistered -> {
+                    ShopCreationUtils.storeShopStatus(requireContext(), isShopPending = false)
+                }
+                is ShopStatus.Pending -> {
+                    ShopCreationUtils.storeShopStatus(requireContext(), isShopPending = true)
+                } else -> {}
+            }
+            initButtonListener()
+        }
+    }
+
+    private fun showVerifyPhoneNoDialog(phoneNo: String) {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.verify_phone_dialog_title))
+                setDescription(it.getString(R.string.verify_phone_dialog_subtitle))
+                setPrimaryCTAText(it.getString(R.string.verify_phone_dialog_primary_btn))
+                setSecondaryCTAText(it.getString(R.string.verify_phone_dialog_secondary_btn))
+                setPrimaryCTAClickListener {
+                    goToPhoneShopCreation(phoneNo)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    hideLoading()
+                    dismiss()
+                }
+                setOnDismissListener {
+                    hideLoading()
+                }
+            }.show()
+        }
     }
 
     private fun onSuccessGetProfileInfo(userProfileCompletionData: UserProfileCompletionData) {
@@ -268,7 +307,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
             } else {
-                goToPhoneShopCreation(userProfileCompletionData.phone)
+                showVerifyPhoneNoDialog(userProfileCompletionData.phone)
             }
         } else {
             goToPhoneShopCreation()

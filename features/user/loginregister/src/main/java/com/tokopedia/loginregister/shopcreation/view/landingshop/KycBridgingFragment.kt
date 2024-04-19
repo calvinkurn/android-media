@@ -10,10 +10,13 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.databinding.FragmentKycBridgingBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
@@ -22,6 +25,7 @@ import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant.KYC_
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
+import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
 import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.unifycomponents.CardUnify2
@@ -107,14 +111,22 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         viewBinding?.btnContinue?.setOnClickListener {
-            if (isNormalShopSelected()) {
-                shopCreationAnalytics.sendSellerClickKycEvent(shopId = userSession.shopId, userId = userSession.userId)
-                viewModel.getShopStatus()
-            } else if (isOfficialStoreSelected()){
-                shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
-                viewModel.getShopStatus()
+            if (ShopCreationUtils.isShopPending(requireContext())) {
+                showToaster("Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.")
             } else {
-                Toaster.build(viewBinding?.root!!, "Pilih salah satu jenis toko dulu, ya.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                if (isNormalShopSelected()) {
+                    shopCreationAnalytics.sendSellerClickIndividualEvent(
+                        shopId = userSession.shopId,
+                        userId = userSession.userId
+                    )
+                    viewModel.checkKycStatus()
+                    viewModel.showLoader(true)
+                } else if (isOfficialStoreSelected()) {
+                    shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
+                    showOfficialShopBottomSheet()
+                } else {
+                    showToaster("Pilih salah satu jenis toko dulu, ya.")
+                }
             }
         }
 
@@ -136,6 +148,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         viewModel.shopStatus.observe(viewLifecycleOwner) {
+            viewModel.showLoader(false)
             when (it) {
                 is ShopStatus.NotRegistered -> {
                     if (isNormalShopSelected()) {
@@ -145,10 +158,10 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
                 is ShopStatus.Pending -> {
-                    Toaster.build(viewBinding?.root!!, "Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    showToaster("Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.")
                 }
                 is ShopStatus.Error -> {
-                    Toaster.build(viewBinding?.root!!, it.throwable.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    showToaster(it.throwable.message ?: "")
                 }
             }
         }
@@ -206,6 +219,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     ApplinkConstInternalGlobal.WEBVIEW,
                     TokopediaUrl.getInstance().WEB.plus(OS_PATH)
                 )
+                shopCreationAnalytics.sendSellerClickTetapBukaDiPerangkatIniEvent(shopId = userSession.shopId, userId = userSession.userId)
             }
             setOnWebviewClick { }
             setCloseClickListener {
@@ -220,7 +234,29 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
+        if (GlobalConfig.isSellerApp()) {
+            activity?.let {
+                if (userSession.isLoggedIn) {
+                    RouteManager.route(it, ApplinkConstInternalUserPlatform.LOGOUT)
+                    it.finish()
+                } else if (it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+                    RouteManager.route(it, ApplinkConst.LOGIN)
+                    it.finish()
+                } else {
+                    RouteManager.route(it, ApplinkConstInternalSellerapp.WELCOME)
+                    it.finish()
+                }
+            }
+        } else {
+            activity?.finish()
+        }
         return true
+    }
+
+    private fun showToaster(message: String) {
+        val height = viewBinding?.btnContinue?.measuredHeight ?: 144
+        Toaster.toasterCustomBottomHeight = height + 32
+        Toaster.build(viewBinding?.root!!, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     companion object {

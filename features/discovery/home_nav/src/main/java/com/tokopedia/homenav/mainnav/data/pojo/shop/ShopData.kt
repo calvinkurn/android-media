@@ -8,9 +8,12 @@ data class ShopData(
         @SerializedName("notifications")
         val notifications: NotificationPojo = NotificationPojo()
 ) {
+
     data class ShopInfoPojo(
             @SerializedName("info")
-            val info: Info = Info()
+            val info: Info = Info(),
+            @SerializedName("reserveStatusInfo")
+            val reserveStatusInfo: ReserveStatusData = ReserveStatusData()
     ) {
         data class Info(
                 @SerializedName("shop_name")
@@ -18,6 +21,22 @@ data class ShopData(
                 @SerializedName("shop_id")
                 val shopId: String = ""
         )
+
+        data class ReserveStatusData(
+            @SerializedName("shopID")
+            val shopId: Int = 0,
+            @SerializedName("shopName")
+            val shopName: String = "",
+            @SerializedName("domain")
+            val domain: String = "",
+            @SerializedName("status")
+            val status: Int = 0,
+            @SerializedName("reasonID")
+            val reasonId: Int = 0
+        ) {
+            fun isShopPending(): Boolean = shopId > 0 && status == 0 && reasonId == 2
+        }
+
     }
 
     data class NotificationPojo(

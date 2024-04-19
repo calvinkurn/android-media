@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
-import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ProjectInfoResult
@@ -39,6 +38,7 @@ class KycBridgingViewModel @Inject constructor(
     updateUserProfileUseCase,
     getProfileUseCase,
     shopInfoUseCase,
+    getShopStatusUseCase,
     dispatchers
 ) {
     private val _selectedShopType = MutableLiveData<Int>()
@@ -53,10 +53,6 @@ class KycBridgingViewModel @Inject constructor(
     val projectInfo: LiveData<ProjectInfoResult>
         get() = _projectInfo
 
-    private val _shopStatus = MutableLiveData<ShopStatus>()
-    val shopStatus: LiveData<ShopStatus>
-        get() = _shopStatus
-
     fun setSelectedShopType(int: Int) {
         _selectedShopType.value = int
     }
@@ -69,20 +65,6 @@ class KycBridgingViewModel @Inject constructor(
                 _projectInfo.value = resp
             } catch (e: Exception) {
                 _projectInfo.value = ProjectInfoResult.Failed(e)
-            } finally {
-                showLoader(false)
-            }
-        }
-    }
-
-    fun getShopStatus() {
-        launch {
-            showLoader(true)
-            try {
-                val resp = getShopStatusUseCase("")
-                _shopStatus.value = resp
-            } catch (e: Exception) {
-                _shopStatus.value = ShopStatus.Error(e)
             } finally {
                 showLoader(false)
             }

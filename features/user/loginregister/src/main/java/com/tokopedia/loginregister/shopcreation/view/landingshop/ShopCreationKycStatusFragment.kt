@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
+import com.tokopedia.loginregister.databinding.ItemKycRejectionReasonBinding
 import com.tokopedia.loginregister.databinding.LayoutShopCreationKycStatusBinding
 import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
@@ -78,7 +79,9 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
     private fun initToolbar() {
         binding?.unifyToolbar?.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
+            if (activity is LandingShopCreationActivity) {
+                (activity as LandingShopCreationActivity).switchToKycBridgeFragment()
+            }
         }
     }
 
@@ -153,14 +156,21 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onRejected(rejectionReason: String) {
+    private fun onRejected(rejectionReason: List<String>) {
+        binding?.layoutStatusRejected?.listReason?.removeAllViews()
+        rejectionReason.forEach {
+            val item = ItemKycRejectionReasonBinding.inflate(layoutInflater)
+            item.txtReason.text = it
+
+            binding?.layoutStatusRejected?.listReason?.addView(item.root)
+        }
+
         binding?.apply {
             unifyToolbar.show()
             layoutStatusPending.root.hide()
             layoutStatusRejected.ivStatusSubmission.loadImageWithoutPlaceholder(getString(R.string.shop_creation_kyc_rejected))
             layoutStatusRejected.root.show()
             layoutStatusBlacklisted.root.hide()
-            layoutStatusRejected.tvReason.text = rejectionReason
             globalError.hide()
             loader.hide()
         }

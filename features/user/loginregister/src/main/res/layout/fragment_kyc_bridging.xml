@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_2"
+            app:typographyType="heading_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -66,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Toko Perorangan"
+                    android:text="Toko perorangan"
                     app:layout_constraintStart_toEndOf="@+id/imageUnify"
                     app:layout_constraintTop_toTopOf="@+id/imageUnify"
                     app:typographyWeight="bold"
@@ -78,6 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="3dp"
+                    android:textColor="@color/Unify_NN600"
                     android:text="Buka toko, prosesnya mudah dan cepat, hanya dengan verifikasi e-KTP."
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageUnify"
@@ -101,13 +102,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
+                    app:icon_name="BADGE_OS_FILLED"
                     android:id="@+id/imageUnify2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/img_official_store" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography3"
@@ -126,7 +127,8 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="3dp"
                     android:layout_marginEnd="26dp"
-                    android:text="Toko dengan layanan eksklusif yang memiliki dokumen SIUP/NIB, KTP dan NPWP."
+                    android:textColor="@color/Unify_NN600"
+                    android:text="Toko dengan layanan eksklusif yang memiliki dokumen SIUP/NIB, KTP &amp; NPWP."
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageUnify2"
                     app:layout_constraintTop_toBottomOf="@+id/typography3"
