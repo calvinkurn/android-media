@@ -79,7 +79,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
     private fun initToolbar() {
         binding?.unifyToolbar?.setNavigationOnClickListener {
-            if(activity is LandingShopCreationActivity) {
+            if (activity is LandingShopCreationActivity) {
                 (activity as LandingShopCreationActivity).switchToKycBridgeFragment()
             }
         }
@@ -157,7 +157,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     }
 
     private fun onRejected(rejectionReason: List<String>) {
-
+        binding?.layoutStatusRejected?.listReason?.removeAllViews()
         rejectionReason.forEach {
             val item = ItemKycRejectionReasonBinding.inflate(layoutInflater)
             item.txtReason.text = it
