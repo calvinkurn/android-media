@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:paddingHorizontal="16dp"
-    android:paddingTop="12dp"
     android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.CardUnify2

@@ -1270,7 +1270,7 @@ open class BuyerOrderDetailFragment :
                     previousState = newState
                     if (isCurrentlyShowingData && isPreviouslyLoadingData) {
                         brcCsatShowToasterRunnable = Runnable {
-                            showCommonToaster(message)
+                            showCommonToaster(message, getString(R.string.bom_brc_csat_toaster_action_text))
                             brcCsatShowToasterRunnable = null
                         }.also { binding?.widgetBrcBom?.postDelayed(it, delay) }
                         toasterShowed = true
