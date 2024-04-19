@@ -153,9 +153,6 @@ class SubmitPostService : JobIntentServiceX() {
                     userSession.shopId
                 },
                 viewModel.caption,
-                viewModel.completeImageList.map {
-                    getFileAbsolutePath(it.path)!! to it.type
-                },
                 viewModel.completeImageList,
                 viewModel.mediaWidth,
                 viewModel.mediaHeight
@@ -216,14 +213,6 @@ class SubmitPostService : JobIntentServiceX() {
     private fun stopService() {
         stopSelf()
         scope.cancel()
-    }
-
-    private fun getFileAbsolutePath(path: String): String? {
-        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://")) {
-            Uri.parse(path).path
-        } else {
-            path
-        }
     }
 
     private fun initInjector() {

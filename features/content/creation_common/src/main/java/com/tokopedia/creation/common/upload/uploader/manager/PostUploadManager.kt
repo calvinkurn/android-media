@@ -59,9 +59,6 @@ class PostUploadManager @AssistedInject constructor(
                 token = createPostData.token,
                 authorId = uploadData.authorId,
                 caption = createPostData.caption,
-                media = createPostData.completeImageList.map {
-                    getFileAbsolutePath(it.path)!! to it.type
-                },
                 mediaList = createPostData.completeImageList,
                 mediaWidth = createPostData.mediaWidth,
                 mediaHeight = createPostData.mediaHeight,
@@ -105,14 +102,6 @@ class PostUploadManager @AssistedInject constructor(
                 uploadData,
                 loggedThrowable
             )
-        }
-    }
-
-    private fun getFileAbsolutePath(path: String): String? {
-        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://")) {
-            Uri.parse(path).path
-        } else {
-            path
         }
     }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.createpost.common.domain.usecase
 
+import android.content.ContentResolver
+import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
@@ -51,20 +53,21 @@ open class SubmitPostUseCase @Inject constructor(
         token: String,
         authorId: String,
         caption: String,
-        media: List<Pair<String, String>>,
         mediaList: List<MediaModel>,
         mediaWidth: Int,
         mediaHeight: Int,
         onSuccessUploadPerMedia: suspend () -> Unit,
     ): SubmitPostData {
-        val mediumList = getMediumList(media, mediaList)
+
+        /** Map Media Data to Request */
+        val mediaRequest = mapMediaToRequest(mediaList)
 
         /** Save Media Post Cache Reference */
-        val setMediaUrl = mediumList.map { it.mediaURL }.toSet()
+        val setMediaUrl = mediaRequest.map { it.mediaURL }.toSet()
         saveMediaPostCacheUseCase(setMediaUrl)
 
         /** Upload Async */
-        val newMediumList = uploadMultipleMediaUseCase.execute(mediumList, onSuccessUploadPerMedia)
+        val newMediumList = uploadMultipleMediaUseCase.execute(mediaRequest, onSuccessUploadPerMedia)
 
         /** Rearrange Media */
         val arrangedMedia = rearrangeMedia(newMediumList)
@@ -94,6 +97,7 @@ open class SubmitPostUseCase @Inject constructor(
             throw Exception(result.feedContentSubmit.error)
         }
 
+        /** Delete Media Cache */
         deleteMediaPostCacheUseCase(Unit)
 
         return result
@@ -109,8 +113,6 @@ open class SubmitPostUseCase @Inject constructor(
         token: String,
         authorId: String,
         caption: String,
-        media: List<Pair<String, String>>,
-        relatedIdList: List<String>,
         mediaList: List<MediaModel>,
         mediaWidth: Int,
         mediaHeight: Int
@@ -118,7 +120,7 @@ open class SubmitPostUseCase @Inject constructor(
         uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
 
         /** Upload All Media */
-        val newMediumList = uploadMultipleMediaUseCase.executeOnBackground(getMediumList(media, mediaList))
+        val newMediumList = uploadMultipleMediaUseCase.executeOnBackground(mapMediaToRequest(mediaList))
 
         /** Rearrange Media */
         val arrangedMedia = rearrangeMedia(newMediumList)
@@ -147,35 +149,30 @@ open class SubmitPostUseCase @Inject constructor(
         return super.executeOnBackground()
     }
 
-    private fun getMediumList(media: List<Pair<String, String>>, mediaList: List<MediaModel>): List<SubmitPostMedium> {
-        val mediumList = mutableListOf<SubmitPostMedium>()
-        media.forEachIndexed { index, pair ->
-            val tags = mapTagList(mediaList[index].tags, mediaList[index].products)
-            mediumList.add(SubmitPostMedium(pair.first, index, tags, pair.second))
+    private fun mapMediaToRequest(mediaList: List<MediaModel>): List<SubmitPostMedium> {
+        return mediaList.mapIndexed { index, media ->
+            SubmitPostMedium(
+                mediaURL = getFileAbsolutePath(media.path).orEmpty(),
+                order = index,
+                tags = mapTagList(mediaList[index].tags, mediaList[index].products),
+                type = media.type,
+            )
         }
-        return mediumList
     }
 
     private fun mapTagList(tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
-        val tagList : MutableList<MediaTag> = arrayListOf()
-
-        tags.forEach {
-            val position: MutableList<Double> = arrayListOf()
-            position.add(it.posX.toDouble())
-            position.add(it.posY.toDouble())
-
-            val id = productItem.getOrNull(it.tagIndex)?.id
+        return tags.mapIndexedNotNull { index, tag ->
+            val id = productItem.getOrNull(tag.tagIndex)?.id
             if (id != null) {
-                val tag = MediaTag(
+                MediaTag(
                     type = TAGS_TYPE_PRODUCT,
                     content = id,
-                    position = position
+                    position = listOf(tag.posX.toDouble(), tag.posY.toDouble())
                 )
-                tagList.add(tag)
+            } else {
+                null
             }
         }
-
-        return tagList
     }
 
     private fun rearrangeMedia(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
@@ -184,6 +181,14 @@ open class SubmitPostUseCase @Inject constructor(
             rearrangedList[media.order] = media
         }
         return rearrangedList
+    }
+
+    private fun getFileAbsolutePath(path: String): String? {
+        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://")) {
+            Uri.parse(path).path
+        } else {
+            path
+        }
     }
 
     companion object {
