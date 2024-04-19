@@ -1,7 +1,5 @@
 package com.tokopedia.feed.common.comment
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.feed.common.comment.repository.ContentCommentRepository
 import com.tokopedia.feed.common.comment.uimodel.CommentParam
@@ -26,8 +24,8 @@ class CommentViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers,
     private val userSession: UserSessionInterface,
     pageSource: PageSource,
-    repository: ContentCommentRepository,
-) : Closeable, Parcelable {
+    repository: ContentCommentRepository
+) : Closeable {
 
     override fun close() {
         vm.viewModelScope.coroutineContext.cancelChildren()
@@ -38,14 +36,6 @@ class CommentViewModelRobot(
         repo = repository,
         userSession = userSession
     )
-
-    constructor(parcel: Parcel) : this(
-        TODO("dispatchers"),
-        TODO("userSession"),
-        TODO("pageSource"),
-        TODO("repository")
-    ) {
-    }
 
     suspend fun submitAction(act: CommentAction) = act {
         vm.submitAction(act)
@@ -129,24 +119,6 @@ class CommentViewModelRobot(
         fn()
         yield()
     }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<CommentViewModelRobot> {
-        override fun createFromParcel(parcel: Parcel): CommentViewModelRobot {
-            return CommentViewModelRobot(parcel)
-        }
-
-        override fun newArray(size: Int): Array<CommentViewModelRobot?> {
-            return arrayOfNulls(size)
-        }
-    }
 }
 
 internal fun createCommentRobot(
@@ -158,10 +130,13 @@ internal fun createCommentRobot(
     repository: ContentCommentRepository = mockk(
         relaxed = true
     ),
-    fn: CommentViewModelRobot.() -> Unit = {},
+    fn: CommentViewModelRobot.() -> Unit = {}
 ): CommentViewModelRobot {
     return CommentViewModelRobot(
-        dispatchers, userSession, pageSource, repository
+        dispatchers,
+        userSession,
+        pageSource,
+        repository
     ).apply(fn)
 }
 

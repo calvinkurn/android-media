@@ -19,21 +19,8 @@ android {
     testNamespace 'com.tokopedia.feed.common.test'
 
     defaultConfig {
-        multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         consumerProguardFiles 'proguard-rules.pro'
-    }
-
-    buildTypes {
-        debug {
-            ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            testCoverageEnabled (project.hasProperty('coverage'))
-        }
-        release {
-            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
-        }
     }
 
     buildFeatures {

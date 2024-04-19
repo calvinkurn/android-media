@@ -14,16 +14,16 @@ import dagger.Component
  */
 @PlayScope
 @Component(
-        modules = [
-            PlayModule::class,
-            PlayViewModelModule::class,
-            PlayViewerFragmentModule::class,
-            PlayBindModule::class,
-            PlayRepositoryModule::class,
-            PlayWidgetModule::class,
-            com.tokopedia.feed.common.comment.di.ContentCommentModule::class,
-        ],
-        dependencies = [BaseAppComponent::class]
+    modules = [
+        PlayModule::class,
+        PlayViewModelModule::class,
+        PlayViewerFragmentModule::class,
+        PlayBindModule::class,
+        PlayRepositoryModule::class,
+        PlayWidgetModule::class,
+        ContentCommentModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
 )
 interface PlayComponent {
 

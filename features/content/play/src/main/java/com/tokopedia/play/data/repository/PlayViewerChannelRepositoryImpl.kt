@@ -28,10 +28,10 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val getChannelDetailsUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChatHistory: GetChatHistoryUseCase,
     private val getCartCountUseCase: UpdateCartCounterUseCase,
-    private val getCountComment: com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase,
+    private val getCountComment: GetCountCommentsUseCase,
     private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
-    private val channelMapper: PlayChannelDetailsWithRecomMapper,
+    private val channelMapper: PlayChannelDetailsWithRecomMapper
 ) : PlayViewerChannelRepository {
 
     override fun getChannelData(
@@ -52,7 +52,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         return@withContext PlayChannelStatus(
             statusType = statusType,
             statusSource = PlayStatusSource.Network,
-            waitingDuration = response.playGetChannelsStatus.waitingDuration,
+            waitingDuration = response.playGetChannelsStatus.waitingDuration
         )
     }
 
@@ -66,17 +66,17 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
 
         return@withContext PagingChannel(
             channelList = channelMapper.map(response, extraParams),
-            cursor = response.channelDetails.meta.cursor,
+            cursor = response.channelDetails.meta.cursor
         )
     }
 
     override suspend fun getChatHistory(
         channelId: String,
-        cursor: String,
+        cursor: String
     ): PlayChatHistoryUiModel = withContext(dispatchers.io) {
         val response = getChatHistory.executeOnBackground(
             channelId = channelId,
-            cursor = cursor,
+            cursor = cursor
         )
 
         uiMapper.mapHistoryChat(response)
@@ -87,9 +87,9 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCountComment(channelId: String): PlayCommentUiModel {
-        val source = com.tokopedia.feed.common.comment.PageSource.Play(channelId)
+        val source = PageSource.Play(channelId)
         val result = getCountComment(
-            com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase.Param(
+            GetCountCommentsUseCase.Param(
                 sourceId = listOf(source.id),
                 sourceType = source.type
             )
