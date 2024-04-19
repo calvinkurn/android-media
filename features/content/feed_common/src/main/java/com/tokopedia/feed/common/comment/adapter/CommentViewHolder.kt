@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.util.setSafeOnClickListener
 import com.tokopedia.feed.common.comment.MentionedSpanned
 import com.tokopedia.feed.common.comment.TagMentionBuilder
 import com.tokopedia.feed.common.comment.uimodel.CommentUiModel
