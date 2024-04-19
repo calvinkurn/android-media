@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewAppLinkMapper
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
@@ -23,6 +24,20 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
     lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var binding: ActivityProductPreviewBinding
+
+    private val productPreviewBundle: Bundle?
+        get() {
+            val productId = intent.data?.pathSegments?.first()
+
+            val bundle = if (productId.isNullOrBlank()) {
+                intent.extras
+            } else {
+                ProductPreviewAppLinkMapper(productId).mapSourceAppLink(intent)
+            }
+
+            if (bundle == null) finish()
+            return bundle
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -71,7 +86,7 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
         return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = intent.extras
+            bundle = productPreviewBundle
         )
     }
 

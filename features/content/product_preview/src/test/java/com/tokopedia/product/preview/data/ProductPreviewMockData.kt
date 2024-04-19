@@ -13,6 +13,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel.ProductPreviewSourceName
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class ProductPreviewMockData {
@@ -20,13 +21,14 @@ class ProductPreviewMockData {
     fun mockSourceProduct(
         productId: String,
         productMedia: List<ProductMediaUiModel> = mockProductMediaList(),
-        hasReview: Boolean = true,
+        hasReview: Boolean = true
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
+            sourceName = ProductPreviewSourceName.PRODUCT,
             source = ProductPreviewSourceModel.ProductSourceData(
                 productSourceList = productMedia,
-                hasReviewMedia = hasReview,
+                hasReviewMedia = hasReview
             )
         )
     }
@@ -34,13 +36,14 @@ class ProductPreviewMockData {
     fun mockSourceReview(
         productId: String,
         reviewSourceId: String,
-        attachmentId: String,
+        attachmentId: String
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
+            sourceName = ProductPreviewSourceName.REVIEW,
             source = ProductPreviewSourceModel.ReviewSourceData(
                 reviewSourceId = reviewSourceId,
-                attachmentSourceId = attachmentId,
+                attachmentSourceId = attachmentId
             )
         )
     }
@@ -48,7 +51,8 @@ class ProductPreviewMockData {
     fun mockSourceUnknown(productId: String): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
-            source = ProductPreviewSourceModel.UnknownSource,
+            sourceName = ProductPreviewSourceName.UNKNOWN,
+            source = ProductPreviewSourceModel.UnknownSource
         )
     }
 
@@ -62,7 +66,7 @@ class ProductPreviewMockData {
                 thumbnailUrl = "thumbnail1.url",
                 videoLastDuration = 0L,
                 videoTotalDuration = 150000L,
-                url = "video.source.url",
+                url = "video.source.url"
             ),
             ProductMediaUiModel(
                 contentId = "2",
@@ -70,7 +74,7 @@ class ProductPreviewMockData {
                 variantName = "Content 2",
                 type = MediaType.Image,
                 thumbnailUrl = "thumbnail2.url",
-                url = "image2.source.url",
+                url = "image2.source.url"
             ),
             ProductMediaUiModel(
                 contentId = "3",
@@ -78,8 +82,8 @@ class ProductPreviewMockData {
                 variantName = "Content 3",
                 type = MediaType.Image,
                 thumbnailUrl = "thumbnail3.url",
-                url = "image3.source.url",
-            ),
+                url = "image3.source.url"
+            )
         )
     }
 
@@ -91,7 +95,7 @@ class ProductPreviewMockData {
                 variantName = "Content 1",
                 type = MediaType.Video,
                 thumbnailUrl = "thumbnail1.url",
-                url = "image1.source.url",
+                url = "image1.source.url"
             ),
             ProductMediaUiModel(
                 contentId = "2",
@@ -99,7 +103,7 @@ class ProductPreviewMockData {
                 variantName = "Content 2",
                 type = MediaType.Image,
                 thumbnailUrl = "thumbnail2.url",
-                url = "image2.source.url",
+                url = "image2.source.url"
             ),
             ProductMediaUiModel(
                 contentId = "3",
@@ -107,13 +111,13 @@ class ProductPreviewMockData {
                 variantName = "Content 3",
                 type = MediaType.Image,
                 thumbnailUrl = "thumbnail3.url",
-                url = "image3.source.url",
-            ),
+                url = "image3.source.url"
+            )
         )
     }
 
     fun mockReviewDataByIds(
-        reviewId: String,
+        reviewId: String
     ): ReviewUiModel {
         val reviewContent = listOf(
             ReviewContentUiModel(
@@ -122,18 +126,18 @@ class ProductPreviewMockData {
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",
                         type = MediaType.Video,
-                        selected = true,
+                        selected = true
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_2",
                         type = MediaType.Image,
-                        selected = false,
+                        selected = false
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_3",
                         type = MediaType.Image,
-                        selected = false,
-                    ),
+                        selected = false
+                    )
                 ),
                 menus = ReviewMenuStatus(isReportable = true),
                 likeState = ReviewLikeUiState(
@@ -157,6 +161,7 @@ class ProductPreviewMockData {
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
                 isScrolling = false,
+                isShareAble = true
             )
         )
         return ReviewUiModel(
@@ -173,18 +178,18 @@ class ProductPreviewMockData {
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",
                         type = MediaType.Video,
-                        selected = true,
+                        selected = true
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_2",
                         type = MediaType.Image,
-                        selected = false,
+                        selected = false
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_3",
                         type = MediaType.Image,
-                        selected = false,
-                    ),
+                        selected = false
+                    )
                 ),
                 menus = ReviewMenuStatus(isReportable = true),
                 likeState = ReviewLikeUiState(
@@ -208,6 +213,7 @@ class ProductPreviewMockData {
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
                 isScrolling = false,
+                isShareAble = true
             ),
             ReviewContentUiModel(
                 reviewId = "reviewId_1234",
@@ -215,18 +221,18 @@ class ProductPreviewMockData {
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",
                         type = MediaType.Video,
-                        selected = true,
+                        selected = true
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_2",
                         type = MediaType.Image,
-                        selected = false,
+                        selected = false
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_3",
                         type = MediaType.Image,
-                        selected = false,
-                    ),
+                        selected = false
+                    )
                 ),
                 menus = ReviewMenuStatus(isReportable = true),
                 likeState = ReviewLikeUiState(
@@ -250,6 +256,7 @@ class ProductPreviewMockData {
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
                 isScrolling = false,
+                isShareAble = true
             ),
             ReviewContentUiModel(
                 reviewId = "reviewId_1235",
@@ -257,18 +264,18 @@ class ProductPreviewMockData {
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",
                         type = MediaType.Video,
-                        selected = true,
+                        selected = true
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_2",
                         type = MediaType.Image,
-                        selected = false,
+                        selected = false
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_3",
                         type = MediaType.Image,
-                        selected = false,
-                    ),
+                        selected = false
+                    )
                 ),
                 menus = ReviewMenuStatus(isReportable = true),
                 likeState = ReviewLikeUiState(
@@ -292,7 +299,8 @@ class ProductPreviewMockData {
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
                 isScrolling = false,
-            ),
+                isShareAble = true
+            )
         )
         return ReviewUiModel(
             reviewPaging = ReviewPaging.Success(1, true),
@@ -303,7 +311,7 @@ class ProductPreviewMockData {
     fun mockProductMiniInfo(
         isCampaignActive: Boolean = true,
         hasVariant: Boolean = false,
-        buttonState: BottomNavUiModel.ButtonState = BottomNavUiModel.ButtonState.Active,
+        buttonState: BottomNavUiModel.ButtonState = BottomNavUiModel.ButtonState.Active
     ): BottomNavUiModel {
         val ogPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
             price = 10000,
@@ -340,17 +348,17 @@ class ProductPreviewMockData {
                 BottomNavUiModel.CategoryTree(
                     id = "1",
                     name = "Category 1",
-                    title = "This is Category 1",
+                    title = "This is Category 1"
                 ),
                 BottomNavUiModel.CategoryTree(
                     id = "2",
                     name = "Category 2",
-                    title = "This is Category 2",
+                    title = "This is Category 2"
                 ),
                 BottomNavUiModel.CategoryTree(
                     id = "3",
                     name = "Category 3",
-                    title = "This is Category 3",
+                    title = "This is Category 3"
                 )
             )
         )
@@ -359,8 +367,7 @@ class ProductPreviewMockData {
     fun mockReviewReport(): ReviewReportUiModel {
         return ReviewReportUiModel(
             text = "Muka sellernya ngeselin",
-            reasonCode = 12,
+            reasonCode = 12
         )
     }
-
 }
