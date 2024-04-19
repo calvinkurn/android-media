@@ -18,7 +18,7 @@ import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSetti
 class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator) :
     Fragment() {
 
-    val entryPoint = StoriesSettingsEntryPoint(authorType = "shop", authorId = "479541")
+    val entryPoint = StoriesSettingsEntryPoint(authorType = "shop", authorId = "479541") //TODO: get from Intent/appLink path/ userInterface
 
     private val viewModel by viewModels<StoriesSettingsViewModel> { factory.create(entryPoint) }
     override fun onCreateView(
