@@ -51,7 +51,6 @@ import java.math.RoundingMode
 import java.util.Calendar
 import java.util.Date
 import com.tokopedia.shop.common.R as shopcommonR
-import com.tokopedia.shop_widget.R as shop_widgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -133,8 +132,8 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun handleRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        //If campaign is ongoing, hide Remind Me bell
-        
+        // If campaign is ongoing, hide Remind Me bell
+
         if (GlobalConfig.isSellerApp()) {
             val campaignStatus = model.data?.firstOrNull()?.statusCampaign.orEmpty().lowercase()
             if (campaignStatus == StatusCampaign.ONGOING.statusCampaign) {
@@ -160,7 +159,7 @@ class ShopHomeNplCampaignViewHolder(
         val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
-        
+
         textTitle?.setTextColor(titleColor)
         textTimeDescription?.setTextColor(subTitleColor)
         iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
@@ -282,7 +281,7 @@ class ShopHomeNplCampaignViewHolder(
                             shopHomeProductViewModel = it,
                             widgetName = model.name,
                             statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty(),
-                            forceLightModeColor = shopHomeCampaignNplWidgetListener.isOverrideTheme(),
+                            isOverrideTheme = shopHomeCampaignNplWidgetListener.isOverrideTheme(),
                             patternColorType = shopHomeCampaignNplWidgetListener.getPatternColorType(),
                             backgroundColor = shopHomeCampaignNplWidgetListener.getBackgroundColor(),
                             isFestivity = model.isFestivity

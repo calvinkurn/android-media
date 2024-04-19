@@ -52,7 +52,7 @@ open class ShopHomeProductItemBigGridViewHolder(
             shopHomeProductViewModel = shopHomeProductViewModel,
             isWideContent = true,
             productRating = shopHomeProductViewModel.averageRating,
-            forceLightModeColor = shopHomeListener.isOverrideTheme(),
+            isOverrideTheme = shopHomeListener.isOverrideTheme(),
             patternColorType = shopHomeListener.getPatternColorType(),
             backgroundColor = shopHomeListener.getBackgroundColor(),
             isFestivity = false,

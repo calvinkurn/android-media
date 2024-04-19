@@ -108,7 +108,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
-            forceLightModeColor = listener.isOverrideTheme(),
+            isOverrideTheme = listener.isOverrideTheme(),
             patternColorType = listener.getPatternColorType(),
             backgroundColor = listener.getBackgroundColor(),
             isFestivity = fsUiModel?.isFestivity.orFalse()
@@ -122,17 +122,17 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         setProductImpressionListener(productCardModel, listener)
     }
 
-    fun getHeightOfImageProduct(action: (Int) -> Unit){
+    fun getHeightOfImageProduct(action: (Int) -> Unit) {
         val productImageView = productCardBigGrid?.getProductImageView()
         val viewTreeObserver: ViewTreeObserver? = productImageView?.viewTreeObserver
         if (viewTreeObserver?.isAlive.orFalse()) {
             viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    action(productImageView.height + paddingOffset.toInt())
-                }
-            })
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        action(productImageView.height + paddingOffset.toInt())
+                    }
+                })
         }
     }
 
@@ -175,9 +175,9 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     private fun adjustProductCardWidth() {
         val productCardBigGrid = productCardBigGrid ?: return
-        val productCardWidth = if(isFestivity){
+        val productCardWidth = if (isFestivity) {
             (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO
-        }else {
+        } else {
             (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO - SHOP_PAGE_RE_IMAGINED_MARGIN
         }
         val layoutParams = productCardBigGrid.layoutParams

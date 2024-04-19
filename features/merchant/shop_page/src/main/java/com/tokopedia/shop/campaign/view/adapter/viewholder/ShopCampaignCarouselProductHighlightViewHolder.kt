@@ -26,7 +26,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-//need to surpress this one, since there are no pii related data defined on this class
+// need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ShopCampaignCarouselProductHighlightViewHolder(
     itemView: View,
@@ -88,7 +88,7 @@ class ShopCampaignCarouselProductHighlightViewHolder(
                 shopHomeProductViewModel = it,
                 widgetName = it.name,
                 statusCampaign = uiModel.statusCampaign,
-                forceLightModeColor = false,
+                isOverrideTheme = false,
                 patternColorType = listener.getPatternColorType(),
                 backgroundColor = listener.getBackgroundColor(),
                 isFestivity = uiModel.isFestivity
@@ -189,7 +189,7 @@ class ShopCampaignCarouselProductHighlightViewHolder(
                     it,
                     listProductCardModel,
                     carouselProductCardOnItemClickListener,
-                    carouselProductCardOnItemImpressedListener,
+                    carouselProductCardOnItemImpressedListener
                 )
             )
             val totalProductSize = uiModel.productList.size
@@ -208,5 +208,4 @@ class ShopCampaignCarouselProductHighlightViewHolder(
     ): Boolean {
         return shopHomeProductViewModelList.size == TOTAL_PRODUCT_FOR_DOUBLE_PRODUCT_CARD || shopHomeProductViewModelList.size == Int.ONE
     }
-
 }

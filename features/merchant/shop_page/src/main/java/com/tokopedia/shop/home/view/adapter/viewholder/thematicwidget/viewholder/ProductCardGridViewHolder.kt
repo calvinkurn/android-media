@@ -38,8 +38,8 @@ class ProductCardGridViewHolder(
                     shopHomeProductViewModel = element,
                     widgetName = thematicWidgetUiModel.name,
                     statusCampaign = thematicWidgetUiModel.statusCampaign,
-                    forceLightModeColor = isOverrideWidgetTheme,
-                    patternColorType =  listener?.getPatternColorType().orEmpty(),
+                    isOverrideTheme = isOverrideWidgetTheme,
+                    patternColorType = listener?.getPatternColorType().orEmpty(),
                     backgroundColor = listener?.getBackgroundColor().orEmpty(),
                     isFestivity = isFestivity
                 )

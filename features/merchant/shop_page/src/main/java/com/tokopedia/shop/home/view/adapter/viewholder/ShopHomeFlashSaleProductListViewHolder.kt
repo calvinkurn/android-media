@@ -22,7 +22,7 @@ class ShopHomeFlashSaleProductListViewHolder(
     private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
-    companion object{
+    companion object {
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
@@ -64,7 +64,7 @@ class ShopHomeFlashSaleProductListViewHolder(
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
-            forceLightModeColor = listener.isOverrideTheme(),
+            isOverrideTheme = listener.isOverrideTheme(),
             patternColorType = listener.getPatternColorType(),
             backgroundColor = listener.getBackgroundColor(),
             isFestivity = fsUiModel?.isFestivity.orFalse()

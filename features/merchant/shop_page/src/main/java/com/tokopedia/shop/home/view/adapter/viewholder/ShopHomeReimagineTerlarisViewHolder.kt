@@ -36,7 +36,6 @@ class ShopHomeReimagineTerlarisViewHolder(
 
         val terlarisWidgetAdapter = ShopHomeReimagineTerlarisAdapter(
             listener = listener,
-            isOverrideTheme = element.header.isOverrideTheme,
             isFestivity = element.isFestivity,
             backgroundColor = listener.getBackgroundColor(),
             patternColorType = listener.getPatternColorType(),

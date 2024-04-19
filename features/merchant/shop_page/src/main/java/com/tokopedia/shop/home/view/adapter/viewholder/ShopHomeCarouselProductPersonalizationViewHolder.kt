@@ -38,7 +38,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * author by Rafli Syam on 17/02/2021
  */
-//need to surpress this one, since there are no pii related data defined on this class
+// need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ShopHomeCarouselProductPersonalizationViewHolder(
     itemView: View,
@@ -82,9 +82,11 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 isHasOCCButton = (element.name == WidgetNameEnum.BUY_AGAIN.value) || (element.name == WidgetNameEnum.REMINDER.value),
                 occButtonText = if (isAtcOcc(element.name)) {
                     itemView.context.getString(R.string.occ_text)
-                } else "",
+                } else {
+                    ""
+                },
                 element.name,
-                forceLightModeColor = shopHomeListener.isOverrideTheme(),
+                isOverrideTheme = shopHomeListener.isOverrideTheme()
             )
         }
 
@@ -412,9 +414,9 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     }
 
     private fun RecyclerView.trackHorizontalScroll(
-        model: ShopHomeCarousellProductUiModel,
+        model: ShopHomeCarousellProductUiModel
     ) {
-        if(hasApplogScrollListener) return
+        if (hasApplogScrollListener) return
         addHorizontalTrackListener(
             slideTrackObject = SlideTrackObject(
                 moduleName = model.name,
@@ -426,7 +428,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     }
 
     private fun CarouselProductCardView.trackHorizontalScroll(
-        model: ShopHomeCarousellProductUiModel,
+        model: ShopHomeCarousellProductUiModel
     ) {
         addHorizontalTrackListener(
             SlideTrackObject(

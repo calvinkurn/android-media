@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
-import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.databinding.ItemShopReimagineTerlarisWidgetScrollableBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
@@ -18,7 +17,6 @@ import com.tokopedia.unifycomponents.toPx
 
 class ShopHomeReimagineTerlarisAdapter(
     private val listener: ShopHomeReimagineTerlarisViewHolder.Listener,
-    private val isOverrideTheme: Boolean,
     private val isFestivity: Boolean,
     private val backgroundColor: String,
     private val patternColorType: String,
@@ -29,7 +27,6 @@ class ShopHomeReimagineTerlarisAdapter(
         private const val LEFT_PEEK_MARGIN = 56
     }
 
-    private val productCardColorHelper = ShopProductCardColorHelper()
     private val noLeftPeekProductCardWidth by lazy { getScreenWidth() }
     private val leftPeekProductCardWidth by lazy { getScreenWidth() - LEFT_PEEK_MARGIN.toPx() }
 
@@ -71,7 +68,7 @@ class ShopHomeReimagineTerlarisAdapter(
                 shopHomeProductViewModel = product,
                 isWideContent = false,
                 productRating = product.averageRating,
-                forceLightModeColor = false,
+                isOverrideTheme = false,
                 patternColorType = patternColorType,
                 backgroundColor = backgroundColor,
                 isFestivity = isFestivity,

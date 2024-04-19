@@ -52,7 +52,7 @@ open class ShopHomeProductItemListViewHolder(
             shopHomeProductViewModel = shopHomeProductViewModel,
             isWideContent = false,
             productRating = shopHomeProductViewModel.averageRating,
-            forceLightModeColor = shopHomeListener.isOverrideTheme(),
+            isOverrideTheme = shopHomeListener.isOverrideTheme(),
             patternColorType = shopHomeListener.getPatternColorType(),
             backgroundColor = shopHomeListener.getBackgroundColor(),
             isFestivity = false,

@@ -129,7 +129,7 @@ object ShopPageHomeMapper {
         isHasOCCButton: Boolean,
         occButtonText: String = "",
         widgetName: String = "",
-        forceLightModeColor: Boolean
+        isOverrideTheme: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -161,7 +161,7 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                forceLightModeColor = forceLightModeColor
+                forceLightModeColor = isOverrideTheme
             )
         } else {
             ProductCardModel(
@@ -176,7 +176,7 @@ object ShopPageHomeMapper {
                     mapToProductCardLabelGroup(it)
                 },
                 hasAddToCartButton = isHasATC,
-                forceLightModeColor = forceLightModeColor
+                forceLightModeColor = isOverrideTheme
             )
         }
         return if (isShopPersonalizationWidgetEnableDirectPurchase(
@@ -218,7 +218,7 @@ object ShopPageHomeMapper {
         shopHomeProductViewModel: ShopHomeProductUiModel,
         isWideContent: Boolean,
         productRating: String,
-        forceLightModeColor: Boolean,
+        isOverrideTheme: Boolean,
         patternColorType: String,
         backgroundColor: String,
         isFestivity: Boolean,
@@ -249,7 +249,7 @@ object ShopPageHomeMapper {
 
         val productCardColorMode = productCardColorHelper.determineProductCardColorMode(
             isFestivity = isFestivity,
-            shouldOverrideTheme = forceLightModeColor,
+            shouldOverrideTheme = isOverrideTheme,
             patternColorType = patternColorType,
             backgroundColor = backgroundColor,
             makeProductCardTransparent = makeProductCardTransparent
@@ -270,7 +270,7 @@ object ShopPageHomeMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             isWideContent = isWideContent,
             isWishlisted = shopHomeProductViewModel.isWishList,
-            forceLightModeColor = forceLightModeColor,
+            forceLightModeColor = isOverrideTheme,
             colorMode = productCardColorMode,
             shopBadgeList = badges
         )
@@ -342,7 +342,7 @@ object ShopPageHomeMapper {
         shopHomeProductViewModel: ShopHomeProductUiModel,
         widgetName: String,
         statusCampaign: String,
-        forceLightModeColor: Boolean,
+        isOverrideTheme: Boolean,
         patternColorType: String,
         backgroundColor: String,
         isFestivity: Boolean,
@@ -380,7 +380,7 @@ object ShopPageHomeMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarLabel = shopHomeProductViewModel.stockLabel,
             stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage,
-            forceLightModeColor = forceLightModeColor,
+            forceLightModeColor = isOverrideTheme,
             shopBadgeList = shopHomeProductViewModel.shopBadgeList.map {
                 ProductCardModel.ShopBadge(
                     isShown = false,
@@ -390,7 +390,7 @@ object ShopPageHomeMapper {
             },
             colorMode = productCardColorHelper.determineProductCardColorMode(
                 isFestivity = isFestivity,
-                shouldOverrideTheme = forceLightModeColor,
+                shouldOverrideTheme = isOverrideTheme,
                 patternColorType = patternColorType,
                 backgroundColor = backgroundColor,
                 makeProductCardTransparent = makeProductCardTransparent
