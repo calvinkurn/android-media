@@ -1,15 +1,13 @@
 package com.tokopedia.creation.common.upload.domain.usecase.post
 
-import android.content.ContentResolver
-import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.domain.usecase.UploadMultipleMediaUseCase
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.util.getFileAbsolutePath
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -84,7 +82,7 @@ open class SubmitPostUseCase @Inject constructor(
         }
 
         /** Delete Media Cache */
-        deleteMediaPostCacheUseCase(uploadedMedia.map { it.mediaURL }.toSet())
+        deleteMediaPostCacheUseCase(data.mediaList.map { it.path }.toSet())
 
         return result
     }
@@ -112,14 +110,6 @@ open class SubmitPostUseCase @Inject constructor(
             rearrangedList[media.order] = media
         }
         return rearrangedList
-    }
-
-    private fun getFileAbsolutePath(path: String): String? {
-        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://")) {
-            Uri.parse(path).path
-        } else {
-            path
-        }
     }
 
     companion object {

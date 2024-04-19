@@ -636,14 +636,20 @@ class FeedBaseFragment :
                                     }
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
+                                        /** JOE TODO: logic here and the one in CreationUploadReceiver can & should be combined
+                                         * to centralize logic
+                                         * */
                                         launch {
                                             creationUploader.deleteQueueAndChannel(uploadResult.data)
                                             creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
                                             binding.uploadView.hide()
                                         }
 
-                                        if (uploadResult.data.uploadType == CreationUploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
+                                        when (val uploadData = uploadResult.data) {
+                                            is CreationUploadData.Post -> {
+                                                feedMainViewModel.deletePostCache(uploadData.mediaList)
+                                            }
+                                            else -> {}
                                         }
                                     }
                                 })

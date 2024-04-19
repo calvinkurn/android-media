@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.creation.common.upload.domain.usecase.post.DeleteMediaPostCacheUseCase
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
@@ -192,10 +193,9 @@ class FeedMainViewModel @AssistedInject constructor(
         }
     }
 
-    fun deletePostCache() {
+    fun deletePostCache(mediaList: List<CreationUploadData.Post.Media>) {
         viewModelScope.launch {
-            /** JOE TODO: delete post cache from parameter */
-//            deletePostCacheUseCase(Unit)
+            deletePostCacheUseCase(mediaList.map { it.path }.toSet())
         }
     }
 

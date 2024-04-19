@@ -2,7 +2,7 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.creation.common.upload.domain.usecase.post.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.data.FeedTabsModelBuilder
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
@@ -280,9 +280,9 @@ class FeedMainViewModelTest {
 
     @Test
     fun onDeletePostCache() {
-        viewModel.deletePostCache()
+        viewModel.deletePostCache(emptyList())
 
-        coVerify(exactly = 1) { deletePostCacheUseCase(Unit) }
+        coVerify(exactly = 1) { deletePostCacheUseCase(setOf()) }
     }
 
     @Test
