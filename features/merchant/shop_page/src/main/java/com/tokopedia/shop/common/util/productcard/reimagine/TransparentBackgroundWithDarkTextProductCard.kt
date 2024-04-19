@@ -4,11 +4,10 @@ import com.tokopedia.shop.R
 import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.unifyprinciples.ColorMode
 
-data class LightThemedShopProductCard(
-    val cardBackgroundColorResId: Int,
+data class TransparentBackgroundWithDarkTextProductCard(
     val labelBenefitCutoutFillColor: String
 ): ProductCardColor {
-    override val cardBackgroundColor: Int = cardBackgroundColorResId
+    override val cardBackgroundColor: Int = android.R.color.transparent
     override val productNameTextColor: Int = R.color.dms_static_light_NN950_96
     override val priceTextColor: Int = R.color.dms_static_light_NN950_96
     override val slashPriceTextColor: Int = R.color.dms_static_light_NN950_44

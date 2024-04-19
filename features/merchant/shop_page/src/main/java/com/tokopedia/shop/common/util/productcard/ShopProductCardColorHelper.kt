@@ -1,11 +1,9 @@
 package com.tokopedia.shop.common.util.productcard
 
 import com.tokopedia.productcard.experiments.ProductCardColor
-import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.productcard.festivity.FestivityLightProductCardColor
-import com.tokopedia.shop.common.util.productcard.festivity.FestivityTransparentProductCardColor
-import com.tokopedia.shop.common.util.productcard.reimagine.DarkThemedShopProductCard
-import com.tokopedia.shop.common.util.productcard.reimagine.LightThemedShopProductCard
+import com.tokopedia.shop.common.util.productcard.reimagine.TransparentBackgroundWithDarkTextProductCard
+import com.tokopedia.shop.common.util.productcard.reimagine.TransparentBackgroundWithLightTextProductCard
+import com.tokopedia.shop.common.util.productcard.reimagine.WhiteBackgroundProductCard
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.unifyprinciples.ColorMode
 
@@ -30,9 +28,9 @@ class ShopProductCardColorHelper {
         shopPageBackgroundColor: String
     ): ProductCardColor {
         return if (makeProductCardTransparent) {
-            FestivityTransparentProductCardColor(labelBenefitCutoutFillColor = shopPageBackgroundColor)
+            TransparentBackgroundWithLightTextProductCard(labelBenefitCutoutFillColor = shopPageBackgroundColor)
         } else {
-            FestivityLightProductCardColor(labelBenefitCutoutFillColor = shopPageBackgroundColor)
+            WhiteBackgroundProductCard(shopPageBackgroundColor)
         }
     }
 
@@ -46,22 +44,10 @@ class ShopProductCardColorHelper {
         backgroundColor: String
     ): ProductCardColor {
         val isLightThemedShop = patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value
-        val cardBackgroundColorResId = if (makeProductCardTransparent) {
-            android.R.color.transparent
-        } else {
-            R.color.dms_static_white
-        }
-
-        return if (isLightThemedShop) {
-            LightThemedShopProductCard(
-                cardBackgroundColorResId = cardBackgroundColorResId,
-                labelBenefitCutoutFillColor = backgroundColor
-            )
-        } else {
-            DarkThemedShopProductCard(
-                cardBackgroundColorResId = cardBackgroundColorResId,
-                labelBenefitCutoutFillColor = backgroundColor
-            )
+        return when {
+            !makeProductCardTransparent -> WhiteBackgroundProductCard(labelBenefitCutoutFillColor = backgroundColor)
+            isLightThemedShop -> TransparentBackgroundWithDarkTextProductCard(labelBenefitCutoutFillColor = backgroundColor) // Force light mode
+            else -> TransparentBackgroundWithLightTextProductCard(labelBenefitCutoutFillColor = backgroundColor) // Force dark mode
         }
     }
 
