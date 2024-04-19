@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
@@ -20,9 +23,11 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationConfigMod
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
+import com.tokopedia.stories.widget.settings.StoriesSettingsFactory
 import com.tokopedia.stories.widget.settings.StoriesSettingsFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
+import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 06/09/23
@@ -40,26 +45,27 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelProvider.Factory
-//
-//    @Inject
-//    lateinit var factory: StoriesSettingsFactory.Creator
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        childFragmentManager.fragmentFactory = object : FragmentFactory() {
-//            override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
-//                return when (className) {
-//                    StoriesSettingsFragment::class.java.name -> StoriesSettingsFragment(
-//                        factory,
-//                    )
-//
-//                    else -> super.instantiate(classLoader, className)
-//                }
-//            }
-//        }
-//        super.onCreate(savedInstanceState)
-//    }
+        @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+
+    @Inject
+    lateinit var factory: StoriesSettingsFactory.Creator
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.fragmentFactory = object : FragmentFactory() {
+            override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
+                return when (className) {
+                    StoriesSettingsFragment::class.java.name -> StoriesSettingsFragment(
+                        factory,
+                    )
+
+                    else -> super.instantiate(classLoader, className)
+                }
+            }
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,9 +96,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     onSelectItem = {
                         viewModel.selectCreationItem(it)
                     },
-                    onNextClicked = {
-                        StoriesSettingsFragment.getOrCreateFragment(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
-                    },
+                    onNextClicked = {},
                     onRetryClicked = {
                         viewModel.fetchConfig(widgetSource)
                     }

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
+import com.tokopedia.stories.widget.R
 
 /**
  * Flow: 1) check if shop available (contentCreatorStoryGetAuthorConfig)
@@ -16,7 +18,7 @@ import javax.inject.Inject
  * 3) update toggle (contentCreatorStoryUpdateAuthorOptions)
  */
 class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator) :
-    BottomSheetUnify() {
+    Fragment() {
 
     val entryPoint = StoriesSettingsEntryPoint(authorType = "shop", authorId = "")
 
@@ -26,20 +28,20 @@ class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSe
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val composeView = ComposeView(requireContext()).apply {
-            setContent { StoriesSettingsScreen() }
+        val view = inflater.inflate(R.layout.fragment_stories_setting, container, false)
+        val composeView = view.findViewById<ComposeView>(R.id.container_stories_settings)
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                StoriesSettingsScreen()
+            }
         }
-        setChild(composeView)
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getList()
-    }
-
-    fun show(childFragmentManager: FragmentManager) {
-        super.show(childFragmentManager, TAG)
     }
 
     companion object {
