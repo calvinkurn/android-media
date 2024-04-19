@@ -40,6 +40,7 @@ import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import com.tokopedia.shareexperience.ui.util.getImageGeneratorProperty
 import com.tokopedia.shareexperience.ui.util.getSelectedChipPosition
 import com.tokopedia.shareexperience.ui.util.getSelectedImageUrl
+import com.tokopedia.shareexperience.ui.util.isUrl
 import com.tokopedia.shareexperience.ui.util.map
 import com.tokopedia.shareexperience.ui.util.mapError
 import com.tokopedia.user.session.UserSessionInterface
@@ -201,13 +202,13 @@ class ShareExViewModel @Inject constructor(
                 defaultUrl = it.defaultUrl,
                 trackerArg = it.trackerArg
             )
-            .withProductId(it.productId)
-            .withReviewId(it.reviewId)
-            .withShopId(it.shopId)
-            .withCampaignId(it.campaignId)
-            .withGeneralId(it.generalId)
-            .withSelectedChip(text)
-            .build()
+                .withProductId(it.productId)
+                .withReviewId(it.reviewId)
+                .withShopId(it.shopId)
+                .withCampaignId(it.campaignId)
+                .withGeneralId(it.generalId)
+                .withSelectedChip(text)
+                .build()
         }
         bottomSheetResultArg?.bottomSheetModel?.let { bottomSheetModel ->
             val updatedUiResult = bottomSheetModel.map(position = position)
@@ -239,7 +240,7 @@ class ShareExViewModel @Inject constructor(
             imageUrl = bottomSheetModel.getSelectedImageUrl(
                 chipPosition = chipPosition,
                 imagePosition = 0 // Default first image
-            )?: bottomSheetArg?.defaultImageUrl.orEmpty(),
+            ) ?: bottomSheetArg?.defaultImageUrl.orEmpty(),
             sourceId = imageGeneratorProperty?.sourceId,
             args = imageGeneratorProperty?.args
         )
@@ -305,7 +306,9 @@ class ShareExViewModel @Inject constructor(
                     val finalLinkProperties = linkPropertiesWithCampaign.copy(
                         ogImageUrl = model.imageUrl
                     )
-                    val defaultUrlWithUtm = if (shareProperty.shareId != null) {
+                    val defaultUrlWithUtm = if (shareProperty.shareId != null &&
+                        bottomSheetArg.defaultUrl.isUrl()
+                    ) {
                         generateUrlWithUTM(bottomSheetArg.defaultUrl, channelEnum, campaign)
                     } else {
                         bottomSheetArg.defaultUrl
@@ -585,7 +588,7 @@ class ShareExViewModel @Inject constructor(
     ) {
         val imageUrl = shortLinkRequest.linkerPropertiesRequest.ogImageUrl
         val message = shortLinkRequest.linkerPropertiesRequest.messageObject.getFinalMessage()
-        when(channelItemModel.mimeType) {
+        when (channelItemModel.mimeType) {
             ShareExMimeTypeEnum.ALL, ShareExMimeTypeEnum.IMAGE -> {
                 getDownloadedImageUseCase.downloadImageThumbnail(imageUrl).collectLatest {
                     when (it) {
