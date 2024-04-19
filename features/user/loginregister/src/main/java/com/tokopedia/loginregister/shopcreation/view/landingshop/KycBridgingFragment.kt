@@ -254,8 +254,8 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun showToaster(message: String) {
-        val height = viewBinding?.btnContinue?.height ?: 144
-        Toaster.toasterCustomBottomHeight = height
+        val height = viewBinding?.btnContinue?.measuredHeight ?: 144
+        Toaster.toasterCustomBottomHeight = height + 32
         Toaster.build(viewBinding?.root!!, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
