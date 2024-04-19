@@ -15,7 +15,7 @@ interface ProductCardColor {
     val labelBenefitViewColor: LabelBenefitViewColor?
     val quantityEditorColor: QuantityEditorColor?
     val stockBarColor: StockBarColor?
-    val showOutlineView: Boolean?
+    val showOutlineView: Boolean
 
     data class LabelBenefitViewColor(val cutoutFillColor: String)
     data class QuantityEditorColor(

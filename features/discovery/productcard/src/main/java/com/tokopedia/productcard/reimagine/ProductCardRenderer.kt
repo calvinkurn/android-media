@@ -7,9 +7,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
@@ -372,13 +372,10 @@ internal class ProductCardRenderer(
 
     private fun handleColorMode(productCardModel: ProductCardModel) {
         if (productCardModel.colorMode == null) return
-        overrideColor(
-            colorMode = productCardModel.colorMode,
-            isInBackground = productCardModel.isInBackground
-        )
+        overrideColor(colorMode = productCardModel.colorMode)
     }
 
-    private fun overrideColor(colorMode: ProductCardColor, isInBackground: Boolean) {
+    private fun overrideColor(colorMode: ProductCardColor) {
         colorMode.cardBackgroundColor?.let { cardBackgroundColor ->
             cardContainer?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, cardBackgroundColor))
         }
@@ -425,7 +422,6 @@ internal class ProductCardRenderer(
             }
         }
 
-        val hideOutlineView = colorMode.showOutlineView != null && colorMode.showOutlineView == false
-        if (hideOutlineView) outlineView?.gone()
+        outlineView?.isVisible = colorMode.showOutlineView
     }
 }
