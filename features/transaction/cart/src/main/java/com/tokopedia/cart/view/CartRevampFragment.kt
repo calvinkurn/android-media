@@ -6213,6 +6213,7 @@ class CartRevampFragment :
         cartId: String,
         currentQuantity: Int
     ) {
+        updateCartAfterDetached()
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 context = it,
