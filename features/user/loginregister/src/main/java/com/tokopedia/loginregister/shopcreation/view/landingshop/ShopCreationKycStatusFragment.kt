@@ -196,6 +196,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.layoutStatusPending?.btnPrimary?.setOnClickListener {
+            shopCreationAnalytics.sendSellerClickRefreshStatusEvent(userId = userSession.userId, shopId = userSession.shopId)
             binding?.layoutStatusPending?.btnPrimary?.isLoading = true
             viewModel.checkKycStatus()
         }
@@ -260,7 +261,6 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
     }
 
     private fun onRefreshStatus() {
-        shopCreationAnalytics.sendSellerClickRefreshStatusEvent(userId = userSession.userId, shopId = userSession.shopId)
         binding?.apply {
             unifyToolbar.hide()
             loader.show()
