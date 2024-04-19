@@ -3,7 +3,6 @@ package com.tokopedia.media.loader.module.model
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.util.Log
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Key
@@ -19,7 +18,6 @@ import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylistParser
 import com.tokopedia.network.utils.ErrorHandler
-import java.lang.StringBuilder
 import java.net.HttpURLConnection
 import java.net.URL
 
