@@ -39,7 +39,7 @@
     <string name="buyer_order_detail_error_message_no_product">Tidak ada produk yang dapat ditambahkan ke keranjang!</string>
     <string name="label_call">Hubungi</string>
     <string name="tag_buyer_order_detail_chat_icon_menu">buyerOrderDetailToolbarChatIcon</string>
-    <string name="buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
+    <string name="buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice">Oops, link halaman detail produk tidak ditemukan.</string>
     <string name="copy_label_awb_number">bom_awb</string>
     <string name="copy_label_receiver_address">bom_receiver_address</string>
     <string name="copy_label_dropship">bom_dropship</string>
@@ -98,4 +98,6 @@
     <!-- One Warehouse One Checkout (OWOC) -->
     <string name="buyer_order_detail_owoc_product_list_expand">Lihat Semua Produk</string>
 
+    <!--  Common  -->
+    <string name="buyer_order_detail_oke">Oke</string>
 </resources>

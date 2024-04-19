@@ -580,6 +580,8 @@ data class GetBuyerOrderDetailResponse(
                         val productId: String = "0",
                         @SerializedName("product_name")
                         val productName: String = "",
+                        @SerializedName("product_url")
+                        val productUrl: String = "",
                         @SerializedName("thumbnail")
                         val thumbnail: String = "",
                         @SerializedName("price")
@@ -691,6 +693,10 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("product_name")
                         @Expose
                         val productName: String = "",
+
+                        @SerializedName("product_url")
+                        @Expose
+                        val productUrl: String = "",
 
                         @SerializedName("quantity")
                         @Expose

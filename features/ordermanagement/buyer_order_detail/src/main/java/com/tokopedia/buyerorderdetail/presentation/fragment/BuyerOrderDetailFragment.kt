@@ -1147,11 +1147,15 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        if (uiModel.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-            navigator.openProductDetailPage(uiModel.productId)
+        val productUrl = uiModel.productUrl
+        if (productUrl.isNotBlank()) {
+            navigator.openProductUrl(productUrl)
             BuyerOrderDetailTracker.eventClickProduct(uiModel.orderStatusId, uiModel.orderId)
         } else {
-            showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+            showToaster(
+                getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice),
+                getString(R.string.buyer_order_detail_oke)
+            )
         }
     }
 
@@ -1177,9 +1181,15 @@ open class BuyerOrderDetailFragment :
         viewModel.impressBmgmProduct(uiModel)
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(message: String, actionText: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.buildWithAction(
+                view = it,
+                text = message,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL,
+                actionText = actionText
+            ).show()
         }
     }
 
@@ -1266,7 +1276,13 @@ open class BuyerOrderDetailFragment :
         }
 
         override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
-            navigator.goToProductSnapshotPage(addOn.orderId, addOn.orderDetailId)
+            if (addOn.addOnsUrl.isNotBlank()) {
+                navigator.openProductUrl(addOn.addOnsUrl)
+            } else {
+                showToaster(
+                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(), context?.getString(R.string.buyer_order_detail_oke).orEmpty()
+                )
+            }
         }
     }
 }

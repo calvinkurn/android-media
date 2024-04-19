@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
@@ -84,12 +83,15 @@ class ProductBundlingViewHolder(
         }
     }
 
-    override fun onBundleItemClicked(productID: String, orderStatusId: String) {
-        if (productID != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-            navigator.openProductDetailPage(productID)
+    override fun onBundleItemClicked(productID: String, orderStatusId: String, productUrl: String) {
+        if (productUrl.isNotBlank()) {
+            navigator.openProductUrl(productUrl)
             BuyerOrderDetailTracker.eventClickProduct(orderStatusId, productID)
         } else {
-            showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+            showToaster(
+                getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice),
+                getString(R.string.buyer_order_detail_oke)
+            )
         }
     }
 

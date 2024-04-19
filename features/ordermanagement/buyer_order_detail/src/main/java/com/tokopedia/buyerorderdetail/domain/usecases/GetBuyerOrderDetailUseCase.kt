@@ -503,6 +503,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         order_detail_id
                         product_id
                         product_name
+                        product_url
                         thumbnail
                         quantity
                         total_price_text
