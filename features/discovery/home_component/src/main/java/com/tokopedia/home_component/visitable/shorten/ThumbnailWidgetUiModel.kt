@@ -31,7 +31,10 @@ data class ItemThumbnailWidgetUiModel(
     val gridId: String,
     val url: String,
     val appLink: String,
-    val campaignCode: String
+    val campaignCode: String,
+    val channelId: String,
+    val headerName : String,
+    val creativeName : String
 ) : ShortenVisitable by ItemShortenVisitable(ItemTwoSquareType.Thumbnail.value) {
 
     val impression = ImpressHolder()

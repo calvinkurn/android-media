@@ -38,7 +38,19 @@ data class ItemMissionWidgetUiModel(
     val shopId: String,
     val isTopAds: Boolean,
     val isCarousel: Boolean,
+    val channelId: String,
+    val headerName: String,
+    val gridId: String,
+    val creativeName: String,
+    val campaignCode: String,
+    val productID: String,
+    val verticalPosition: Int,
+    val channelName: String,
 ) : ShortenVisitable by ItemShortenVisitable(ItemTwoSquareType.Mission.value) {
+
+    fun isProduct(): Boolean {
+        return this.productID.isNotBlank() && this.productID != "0"
+    }
 
     val impression = ImpressHolder()
 }
