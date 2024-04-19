@@ -43,7 +43,7 @@ class StoriesSettingOptionsUseCase @Inject constructor(
     companion object {
         private const val QUERY_NAME = "StoriesSettingOptionsUseCaseQuery"
         private const val QUERY = """
-            query getStoriesSettingOpt(req: contentCreatorStoryGetAuthorOptions) {
+            query getStoriesSettingOpt(${'$'}req: ContentCreatorStoryGetAuthorOptionsRequest!) {
             contentCreatorStoryGetAuthorOptions(req:${'$'}req){
                 options{
                      copy 

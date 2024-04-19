@@ -47,7 +47,7 @@ class UpdateStoriesSettingUseCase @Inject constructor(
     companion object {
         private const val QUERY_NAME = "UpdateStoriesSettingUseCaseQuery"
         private const val QUERY = """
-                query updateStoriesSetting(req: contentCreatorStorySetAuthorOptions!){
+                mutation updateStoriesSetting(${'$'}req: ContentCreatorStorySetAuthorOptionsRequest!){
                 contentCreatorStorySetAuthorOptions(req:${'$'}req){
                     success
                 }

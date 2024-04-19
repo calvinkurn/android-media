@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
  * @author by astidhiyaa on 3/22/24
  */
 class StoriesSettingsViewModel @AssistedInject constructor(
-    @Assisted entryPoint: StoriesSettingsEntryPoint,
+    @Assisted private val entryPoint: StoriesSettingsEntryPoint,
     private val repository: StoriesSettingsRepository
 ) : ViewModel() {
 
@@ -29,14 +29,23 @@ class StoriesSettingsViewModel @AssistedInject constructor(
 
     fun getList() {
         viewModelScope.launchCatchError(block = {
-            val data = repository.getOptions("", "")
+            val data = repository.getOptions(entryPoint = entryPoint)
             _options.update { data }
         }) {}
+
+        check()
+        updateOption(StoriesSettingOpt("", true))
     }
 
     fun updateOption(option: StoriesSettingOpt) {
         viewModelScope.launchCatchError(block = {
-            repository.updateOption("", "", option)
+            repository.updateOption(entryPoint = entryPoint, option)
+        }) {}
+    }
+
+    fun check() {
+        viewModelScope.launchCatchError(block = {
+            repository.checkEligibility(entryPoint = entryPoint)
         }) {}
     }
 }

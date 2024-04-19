@@ -43,7 +43,7 @@ class StoriesEligibilityUseCase @Inject constructor(
     companion object {
         private const val QUERY_NAME = "StoriesEligibilityUseCaseQuery"
         private const val QUERY = """
-                query checkEligibility(req: contentCreatorStoryGetAuthorConfig!){
+                query checkEligibility(${'$'}req: ContentCreatorStoryGetAuthorConfigRequest!){
                 contentCreatorStoryGetAuthorConfig(req:${'$'}req){
                     isEligibleToCreateAutomaticStory
                     isEligibleToCreateManualStory

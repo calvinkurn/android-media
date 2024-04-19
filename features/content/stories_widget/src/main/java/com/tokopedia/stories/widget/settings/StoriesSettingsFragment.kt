@@ -20,7 +20,7 @@ import com.tokopedia.stories.widget.R
 class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator) :
     Fragment() {
 
-    val entryPoint = StoriesSettingsEntryPoint(authorType = "shop", authorId = "")
+    val entryPoint = StoriesSettingsEntryPoint(authorType = "shop", authorId = "479541")
 
     private val viewModel by viewModels<StoriesSettingsViewModel> { factory.create(entryPoint) }
     override fun onCreateView(
