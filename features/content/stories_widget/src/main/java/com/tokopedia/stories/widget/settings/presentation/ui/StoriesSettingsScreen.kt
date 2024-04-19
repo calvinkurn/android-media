@@ -19,11 +19,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.unifycomponents.compose.NestCheckbox
-import com.tokopedia.unifycomponents.compose.NestSwitch
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
+import com.tokopedia.unifycomponents.compose.NestCheckbox
+import com.tokopedia.unifycomponents.compose.NestSwitch
 
 /**
  * @author by astidhiyaa on 3/22/24
@@ -41,7 +41,7 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
             NestTypography(
                 modifier = Modifier.padding(bottom = 16.dp),
                 text = stringResource(id = R.string.stories_settings_header),
-                textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold),
+                textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold)
             )
             Row {
                 NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier.padding(end = 12.dp))
@@ -49,24 +49,23 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
                     NestTypography(
                         modifier = Modifier.padding(bottom = 16.dp),
                         text = pageInfo.options.firstOrNull()?.text.orEmpty(),
-                        textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold),
+                        textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
                     )
                     NestTypography(
                         modifier = Modifier.padding(bottom = 16.dp),
                         text = pageInfo.config.articleCopy,
-                        textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+                        textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
                     )
                     NestTypography(
                         modifier = Modifier.padding(bottom = 16.dp),
                         text = stringResource(id = R.string.stories_settings_body),
-                        textStyle = NestTheme.typography.paragraph3,
+                        textStyle = NestTheme.typography.paragraph3
                     )
 
                     LazyColumn {
                         items(pageInfo.options.drop(1)) { item ->
                             SettingOptItem(item) {
                                 viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
-                                //emit ui event to hit tracker
                             }
                         }
                     }
@@ -79,8 +78,8 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
                                 pageInfo.options.firstOrNull() ?: return@NestSwitch
                             )
                         )
-                        //emit ui event to hit tracker
-                    })
+                    }
+                )
             }
         }
     }
@@ -97,7 +96,7 @@ private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSet
     ) {
         NestTypography(
             text = item.text,
-            textStyle = NestTheme.typography.paragraph3,
+            textStyle = NestTheme.typography.paragraph3
         )
         NestCheckbox(isChecked = item.isSelected, onCheckedChange = {
             onOptionClicked(item)
@@ -108,13 +107,13 @@ private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSet
 data class StoriesSettingOpt(
     val text: String,
     val optionType: String,
-    val isSelected: Boolean,
+    val isSelected: Boolean
 )
 
 data class StoriesSettingConfig(
     val articleCopy: String,
     val articleAppLink: String,
-    val articleWebLink: String,
+    val articleWebLink: String
 )
 
 data class StoriesSettingsPageUiModel(
