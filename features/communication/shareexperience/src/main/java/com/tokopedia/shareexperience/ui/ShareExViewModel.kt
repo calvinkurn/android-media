@@ -11,11 +11,12 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMessagePlaceholderEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkPropertiesModel
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
@@ -30,6 +31,7 @@ import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
@@ -70,8 +72,9 @@ class ShareExViewModel @Inject constructor(
     private val _actionFlow =
         MutableSharedFlow<ShareExAction>(extraBufferCapacity = 16)
 
-    // Cache the args from initializer & fetcher
-    var bottomSheetArgs: ShareExBottomSheetArg? = null
+    // Cache the args from initializer & result from fetch
+    var bottomSheetArg: ShareExBottomSheetArg? = null
+    var bottomSheetResultArg: ShareExBottomSheetResultArg? = null
 
     /**
      * Ui state for bottom sheet views
@@ -123,18 +126,20 @@ class ShareExViewModel @Inject constructor(
     private fun getShareBottomSheetData() {
         viewModelScope.launch {
             try {
-                val bottomSheetArgs = bottomSheetArgs!! // Safe !!
+                val bottomSheetArg = bottomSheetArg!! // Safe !!
+                val bottomSheetResultArg = bottomSheetResultArg!! // Safe !!
                 when {
-                    (bottomSheetArgs.throwable != null) -> {
+                    (bottomSheetResultArg.throwable != null) -> {
                         getDefaultBottomSheetModel(
-                            bottomSheetArgs.throwable,
-                            bottomSheetArgs.defaultUrl
+                            bottomSheetResultArg.throwable,
+                            bottomSheetArg.defaultUrl,
+                            bottomSheetArg.defaultImageUrl
                         )
                     }
-                    (bottomSheetArgs.bottomSheetModel != null) -> {
+                    (bottomSheetResultArg.bottomSheetModel != null) -> {
                         handleFirstLoadBottomSheetModel(
-                            bottomSheetArgs.bottomSheetModel,
-                            bottomSheetArgs.selectedChip
+                            bottomSheetResultArg.bottomSheetModel,
+                            bottomSheetArg.selectedChip
                         )
                     }
                 }
@@ -147,7 +152,8 @@ class ShareExViewModel @Inject constructor(
                 )
                 getDefaultBottomSheetModel(
                     throwable = throwable,
-                    defaultUrl = ""
+                    defaultUrl = "",
+                    defaultImageUrl = ""
                 )
             }
         }
@@ -167,9 +173,13 @@ class ShareExViewModel @Inject constructor(
         )
     }
 
-    private fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
-        val defaultShareProperties = getSharePropertiesUseCase.getDefaultData()
-        bottomSheetArgs = bottomSheetArgs?.copy(
+    private fun getDefaultBottomSheetModel(
+        throwable: Throwable,
+        defaultUrl: String,
+        defaultImageUrl: String
+    ) {
+        val defaultShareProperties = getSharePropertiesUseCase.getDefaultData(defaultImageUrl)
+        bottomSheetResultArg = bottomSheetResultArg?.copy(
             bottomSheetModel = defaultShareProperties
         )
         val uiResult = defaultShareProperties.mapError(defaultUrl, throwable)
@@ -185,10 +195,21 @@ class ShareExViewModel @Inject constructor(
         position: Int,
         text: String
     ) {
-        bottomSheetArgs = bottomSheetArgs?.copy(
-            selectedChip = text
-        )
-        bottomSheetArgs?.bottomSheetModel?.let { bottomSheetModel ->
+        bottomSheetArg?.let {
+            bottomSheetArg = ShareExBottomSheetArg.Builder(
+                pageTypeEnum = it.pageTypeEnum,
+                defaultUrl = it.defaultUrl,
+                trackerArg = it.trackerArg
+            )
+            .withProductId(it.productId)
+            .withReviewId(it.reviewId)
+            .withShopId(it.shopId)
+            .withCampaignId(it.campaignId)
+            .withGeneralId(it.generalId)
+            .withSelectedChip(text)
+            .build()
+        }
+        bottomSheetResultArg?.bottomSheetModel?.let { bottomSheetModel ->
             val updatedUiResult = bottomSheetModel.map(position = position)
             updateBottomSheetUiState(
                 title = bottomSheetModel.title,
@@ -218,7 +239,7 @@ class ShareExViewModel @Inject constructor(
             imageUrl = bottomSheetModel.getSelectedImageUrl(
                 chipPosition = chipPosition,
                 imagePosition = 0 // Default first image
-            ),
+            )?: bottomSheetArg?.defaultImageUrl.orEmpty(),
             sourceId = imageGeneratorProperty?.sourceId,
             args = imageGeneratorProperty?.args
         )
@@ -226,12 +247,26 @@ class ShareExViewModel @Inject constructor(
 
     private fun handleUpdateShareImage(imageUrl: String) {
         // Each chip might have different source id and args
-        val imageGeneratorProperty = bottomSheetArgs?.bottomSheetModel?.getImageGeneratorProperty(imageUrl)
+        val imageGeneratorProperty = bottomSheetResultArg?.bottomSheetModel?.getImageGeneratorProperty(imageUrl)
         updateImageGeneratorUiState(
             imageUrl = imageUrl,
             sourceId = imageGeneratorProperty?.sourceId,
             args = imageGeneratorProperty?.args
         )
+        bottomSheetResultArg?.bottomSheetModel?.let { bottomSheetModel ->
+            val position = _bottomSheetUiState.value.chipPosition
+            val updatedUiResult = bottomSheetModel.map(
+                position = position,
+                selectedImageUrl = imageUrl
+            )
+            _bottomSheetUiState.update { uiState ->
+                uiState.copy(
+                    title = bottomSheetModel.title,
+                    uiModelList = updatedUiResult,
+                    chipPosition = position
+                )
+            }
+        }
     }
 
     private fun updateImageGeneratorUiState(
@@ -252,12 +287,12 @@ class ShareExViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Safe !! because of try catch
-                val bottomSheetArgs = bottomSheetArgs!!
-                val bottomSheetModel = bottomSheetArgs.bottomSheetModel!!
+                val bottomSheetArg = bottomSheetArg!!
+                val bottomSheetModel = bottomSheetResultArg!!.bottomSheetModel!!
                 val channelEnum = channelItemModel.channelEnum
-                val chipPosition = bottomSheetModel.getSelectedChipPosition(bottomSheetArgs.selectedChip).orZero()
+                val chipPosition = bottomSheetModel.getSelectedChipPosition(bottomSheetArg.selectedChip).orZero()
                 val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
-                val campaign = bottomSheetArgs.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
+                val campaign = bottomSheetArg.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
                     androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
                     iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
@@ -271,14 +306,14 @@ class ShareExViewModel @Inject constructor(
                         ogImageUrl = model.imageUrl
                     )
                     val defaultUrlWithUtm = if (shareProperty.shareId != null) {
-                        generateUrlWithUTM(bottomSheetArgs.defaultUrl, channelEnum, campaign)
+                        generateUrlWithUTM(bottomSheetArg.defaultUrl, channelEnum, campaign)
                     } else {
-                        bottomSheetArgs.defaultUrl
+                        bottomSheetArg.defaultUrl
                     }
                     val shortLinkRequest = generateShortLinkRequest(
-                        bottomSheetArgs.identifier,
+                        bottomSheetArg.getIdentifier(),
                         defaultUrlWithUtm,
-                        bottomSheetArgs.pageTypeEnum,
+                        bottomSheetArg.pageTypeEnum,
                         channelEnum,
                         finalLinkProperties,
                         isAffiliate
@@ -294,7 +329,7 @@ class ShareExViewModel @Inject constructor(
                 )
                 updateIntentUiStateWithDefaultUrl(
                     channelItemModel,
-                    bottomSheetArgs?.defaultUrl.toEmptyStringIfNull(),
+                    bottomSheetArg?.defaultUrl.toEmptyStringIfNull(),
                     throwable,
                     ShareExIntentErrorEnum.DEFAULT_URL_ERROR
                 )
@@ -351,7 +386,7 @@ class ShareExViewModel @Inject constructor(
         defaultUrlWithUtm: String,
         pageTypeEnum: ShareExPageTypeEnum,
         channelEnum: ShareExChannelEnum,
-        finalLinkProperties: ShareExLinkProperties,
+        finalLinkProperties: ShareExLinkPropertiesModel,
         isAffiliate: Boolean
     ): ShareExShortLinkRequest {
         return ShareExShortLinkRequest(
@@ -372,6 +407,10 @@ class ShareExViewModel @Inject constructor(
         getShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest { (apiType, result) ->
             when (result) {
                 is ShareExResult.Success -> {
+                    shortLinkRequest.linkerPropertiesRequest.messageObject.updateReplacementMap(
+                        ShareExMessagePlaceholderEnum.BRANCH_LINK,
+                        result.data
+                    )
                     downloadImageAndShare(shortLinkRequest, channelItemModel, result.data, imageType)
                 }
                 is ShareExResult.Error -> {
@@ -545,16 +584,15 @@ class ShareExViewModel @Inject constructor(
         imageType: ShareExImageTypeEnum
     ) {
         val imageUrl = shortLinkRequest.linkerPropertiesRequest.ogImageUrl
-        val message = shortLinkRequest.linkerPropertiesRequest.message
-        val messageWithUrl = if (message.isNotBlank()) "$message $shortLink" else shortLink
+        val message = shortLinkRequest.linkerPropertiesRequest.messageObject.getFinalMessage()
         when(channelItemModel.mimeType) {
             ShareExMimeTypeEnum.ALL, ShareExMimeTypeEnum.IMAGE -> {
                 getDownloadedImageUseCase.downloadImageThumbnail(imageUrl).collectLatest {
                     when (it) {
                         is ShareExResult.Success -> {
                             updateIntentUiState(
-                                intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
-                                message = messageWithUrl,
+                                intent = getAppIntent(channelItemModel, message, it.data),
+                                message = message,
                                 shortLink = shortLink,
                                 channelEnum = channelItemModel.channelEnum,
                                 isLoading = false,
@@ -565,8 +603,8 @@ class ShareExViewModel @Inject constructor(
                         }
                         is ShareExResult.Error -> {
                             updateIntentUiState(
-                                intent = getAppIntent(channelItemModel, messageWithUrl, null),
-                                message = messageWithUrl,
+                                intent = getAppIntent(channelItemModel, message, null),
+                                message = message,
                                 shortLink = shortLink,
                                 channelEnum = channelItemModel.channelEnum,
                                 isLoading = false,
@@ -581,8 +619,8 @@ class ShareExViewModel @Inject constructor(
             }
             else -> {
                 updateIntentUiState(
-                    intent = getAppIntent(channelItemModel, messageWithUrl, null),
-                    message = messageWithUrl,
+                    intent = getAppIntent(channelItemModel, message, null),
+                    message = message,
                     shortLink = shortLink,
                     channelEnum = channelItemModel.channelEnum,
                     isLoading = false,

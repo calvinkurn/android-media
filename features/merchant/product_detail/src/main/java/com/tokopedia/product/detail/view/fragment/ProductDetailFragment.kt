@@ -4290,11 +4290,14 @@ open class ProductDetailFragment :
     private fun openShareExBottomSheet(
         dynamicProductInfoP1: ProductInfoP1
     ) {
+        val mediaPosition = pdpUiUpdater?.mediaMap?.indexOfSelectedVariantOptionId()?.coerceAtLeast(0).orZero()
+        val productImageUrl = pdpUiUpdater?.mediaMap?.listOfMedia?.getOrNull(mediaPosition)?.urlOriginal.orEmpty()
         shareExInitializer?.openShareBottomSheet(
             generateShareExBottomSheetArg(
                 productId = dynamicProductInfoP1.basic.productID,
                 productUrl = dynamicProductInfoP1.basic.url,
-                campaignId = dynamicProductInfoP1.data.campaign.campaignID
+                campaignId = dynamicProductInfoP1.data.campaign.campaignID,
+                productImageUrl = productImageUrl
             )
         )
     }
