@@ -642,7 +642,6 @@ class FeedBaseFragment :
                                         launch {
                                             creationUploader.deleteQueueAndChannel(uploadResult.data)
                                             creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                            binding.uploadView.hide()
                                         }
 
                                         when (val uploadData = uploadResult.data) {
