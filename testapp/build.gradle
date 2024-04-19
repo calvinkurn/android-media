@@ -5,6 +5,7 @@ apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: "com.google.devtools.ksp"
+apply plugin: 'com.bytedance.security.ByteSignPlugin'
 
 buildscript {
     repositories {
@@ -18,11 +19,17 @@ buildscript {
 }
 
 def isEnableMacrobenchmarkUtil() {
-    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+    if (project.hasProperty('enableMacrobenchmarkUtil') ?: "false") {
         return "true";
     }
     return "false";
 }
+
+SigningConfiguration {
+    applicationId = "com.tokopedia.tkpd"
+    overwriteOriginalFile = false
+}
+
 android {
     namespace 'com.tokopedia.tkpd'
     testNamespace 'com.tokopedia.tkpd.test'
@@ -63,7 +70,6 @@ android {
         minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "com.tokopedia.tkpd"
         versionCode 391100000
         versionName "3.150"
         vectorDrawables.useSupportLibrary = true
