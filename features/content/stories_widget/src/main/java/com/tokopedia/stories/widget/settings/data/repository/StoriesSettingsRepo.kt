@@ -57,7 +57,7 @@ class StoriesSettingsRepo @Inject constructor(
                         req = UpdateStoriesSettingUseCase.Param.Author(
                             authorId = entryPoint.authorId,
                             authorType = entryPoint.authorType,
-                            optionType = option.text,
+                            optionType = option.optionType,
                             isDisabled = option.isSelected
                         )
                     )

@@ -22,6 +22,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.compose.NestCheckbox
 import com.tokopedia.unifycomponents.compose.NestSwitch
 import com.tokopedia.stories.widget.R
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 
 /**
@@ -63,20 +64,30 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
 
                     LazyColumn {
                         items(pageInfo.options.drop(1)) { item ->
-                            SettingOptItem(item)
+                            SettingOptItem(item) {
+                                viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                                //emit ui event to hit tracker
+                            }
                         }
                     }
                 }
                 NestSwitch(
                     isChecked = isStoryEnable,
-                    onCheckedChanged = {})
+                    onCheckedChanged = {
+                        viewModel.onEvent(
+                            StoriesSettingsAction.SelectOption(
+                                pageInfo.options.firstOrNull() ?: return@NestSwitch
+                            )
+                        )
+                        //emit ui event to hit tracker
+                    })
             }
         }
     }
 }
 
 @Composable
-private fun SettingOptItem(item: StoriesSettingOpt) {
+private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSettingOpt) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -88,7 +99,9 @@ private fun SettingOptItem(item: StoriesSettingOpt) {
             text = item.text,
             textStyle = NestTheme.typography.paragraph3,
         )
-        NestCheckbox(isChecked = item.isSelected, onCheckedChange = {})
+        NestCheckbox(isChecked = item.isSelected, onCheckedChange = {
+            onOptionClicked(item)
+        })
     }
 }
 

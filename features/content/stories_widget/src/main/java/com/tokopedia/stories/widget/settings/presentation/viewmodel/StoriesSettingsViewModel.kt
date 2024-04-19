@@ -11,6 +11,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -31,22 +32,44 @@ class StoriesSettingsViewModel @AssistedInject constructor(
     val pageInfo: Flow<StoriesSettingsPageUiModel>
         get() = _pageInfo
 
-//    private val _event = MutableSharedFlow<>()
+    private val _event = MutableSharedFlow<StoriesSettingEvent>()
 
-    fun getList() {
+    val uiEvent: Flow<StoriesSettingEvent>
+        get() = _event
+
+    fun onEvent(action: StoriesSettingsAction) {
+        when (action) {
+            StoriesSettingsAction.FetchPageInfo-> getList()
+            is StoriesSettingsAction.SelectOption -> updateOption(action.option)
+            else -> {}
+        }
+    }
+
+    private fun getList() {
         viewModelScope.launchCatchError(block = {
             val data = repository.getOptions(entryPoint = entryPoint)
             _pageInfo.update { data }
         }) {}
     }
 
-    fun updateOption(option: StoriesSettingOpt) {
+    private fun updateOption(option: StoriesSettingOpt) {
         viewModelScope.launchCatchError(block = {
             val response = repository.updateOption(entryPoint = entryPoint, option)
-            //Update pageInfo
-        }) {}
+            if (response) {
+                _pageInfo.update { page ->
+                    page.copy(options = page.options.map { opt ->
+                        if (option == opt) opt.copy(isSelected = !opt.isSelected) else opt
+                    })
+                }
+            } else throw Exception()
+        }) {
+            _event.emit(StoriesSettingEvent.ShowErrorToaster(it) {
+                updateOption(option)
+            })
+        }
     }
 
+    //Todo(): move to outside~~
     fun check() {
         viewModelScope.launchCatchError(block = {
             val response = repository.checkEligibility(entryPoint = entryPoint)

@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import javax.inject.Inject
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 
@@ -39,7 +40,7 @@ class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getList()
+        viewModel.onEvent(StoriesSettingsAction.FetchPageInfo)
     }
 
     companion object {
