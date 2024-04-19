@@ -35,7 +35,7 @@ data class AtfDataList(
     fun copyAtfContentsFromCache(atfDataList: AtfDataList): AtfDataList {
         if (atfDataList.listAtfData.size != listAtfData.size) return this
         val newDynamicPosition = listAtfData.zip(atfDataList.listAtfData) { remotePosition, cachedAtf ->
-            remotePosition.copy(atfContent = cachedAtf.atfContent, isCache = cachedAtf.isCache)
+            remotePosition.copy(atfContent = cachedAtf.atfContent)
         }
         return this.copy(listAtfData = newDynamicPosition)
     }
