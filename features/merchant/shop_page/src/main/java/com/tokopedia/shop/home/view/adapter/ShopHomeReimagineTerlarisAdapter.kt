@@ -67,7 +67,7 @@ class ShopHomeReimagineTerlarisAdapter(
                 isWideContent = false,
                 productRating = product.averageRating,
                 isOverrideTheme = listener.isOverrideTheme(),
-                patternColorType = listener.getBackgroundColor(),
+                patternColorType = listener.getPatternColorType(),
                 backgroundColor = listener.getBackgroundColor(),
                 isFestivity = element.isFestivity,
                 makeProductCardTransparent = true
