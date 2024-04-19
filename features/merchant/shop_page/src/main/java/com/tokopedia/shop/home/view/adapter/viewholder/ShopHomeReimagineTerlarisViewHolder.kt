@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
@@ -26,20 +27,22 @@ class ShopHomeReimagineTerlarisViewHolder(
 
         const val PRODUCT_THREE = 3
         private const val THREE_COLUMN = 3
+        private const val MAX_PRODUCT_TO_SHOW = 9
     }
 
     private val viewBinding: ItemShopHomeReimagineTerlarisWidgetBinding? by viewBinding()
 
     override fun bind(element: ShopHomeCarousellProductUiModel) {
+        if (element.productList.size.isZero()) return
+
         setHeaderSection(element)
         overrideWidgetHeaderTheme(colorSchema = element.header.colorSchema)
+        val products = element.productList.take(MAX_PRODUCT_TO_SHOW)
 
         val terlarisWidgetAdapter = ShopHomeReimagineTerlarisAdapter(
             listener = listener,
-            isFestivity = element.isFestivity,
-            backgroundColor = listener.getBackgroundColor(),
-            patternColorType = listener.getPatternColorType(),
-            element = element
+            element = element,
+            products = products
         )
 
         val gridLayoutManager = GridLayoutManager(
@@ -56,7 +59,7 @@ class ShopHomeReimagineTerlarisViewHolder(
             layoutManager = gridLayoutManager
         }
 
-        setupImpressionListener(element, element.productList)
+        setupImpressionListener(element, products)
     }
 
     private fun overrideWidgetHeaderTheme(colorSchema: ShopPageColorSchema) {
@@ -102,6 +105,7 @@ class ShopHomeReimagineTerlarisViewHolder(
             position: Int,
             widgetId: String
         )
+        fun isOverrideTheme(): Boolean
         fun getPatternColorType(): String
         fun getBackgroundColor(): String
     }

@@ -35,7 +35,7 @@ class ShopProductCardColorHelper {
     }
 
     /**
-     * If shop is reimagine, we will ignore the device selected theme and override the product card color
+     * If shop overrideTheme=true from backend, we will ignore the device selected theme and override the product card color
      * based on the shop selected theme from `patternColorType` property instead.
      */
     private fun overrideToShopThemeColor(
@@ -65,7 +65,7 @@ class ShopProductCardColorHelper {
             override val shopBadgeTextColor: Int? = null
             override val quantityEditorColor = null
             override val stockBarColor = null
-            override val showOutlineView = true
+            override val showOutlineView = false
         }
 
         return defaultProductCardColor

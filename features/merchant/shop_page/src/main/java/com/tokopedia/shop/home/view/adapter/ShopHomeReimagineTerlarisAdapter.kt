@@ -17,10 +17,8 @@ import com.tokopedia.unifycomponents.toPx
 
 class ShopHomeReimagineTerlarisAdapter(
     private val listener: ShopHomeReimagineTerlarisViewHolder.Listener,
-    private val isFestivity: Boolean,
-    private val backgroundColor: String,
-    private val patternColorType: String,
-    private val element: ShopHomeCarousellProductUiModel
+    private val element: ShopHomeCarousellProductUiModel,
+    private val products: List<ShopHomeProductUiModel>
 ) : RecyclerView.Adapter<ShopHomeReimagineTerlarisAdapter.ViewHolder>() {
 
     companion object {
@@ -41,23 +39,23 @@ class ShopHomeReimagineTerlarisAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(element.productList[position])
+        holder.bind(products[position])
     }
-    override fun getItemCount() = element.productList.size
+    override fun getItemCount() = products.size
 
     inner class ViewHolder(
         private val binding: ItemShopHomeReimagineTerlarisProductRankBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: ShopHomeProductUiModel) {
-            sendImpressionTracker(element.productList)
+            sendImpressionTracker(products)
             renderProductCard(product)
-            adjustProductCardWidthAppearance(element.productList.size)
+            adjustProductCardWidthAppearance(products.size)
         }
 
         private fun sendImpressionTracker(productList: List<ShopHomeProductUiModel>) {
             if (productList.size >= PRODUCT_THREE) {
-                setupImpressionListener(element.productList)
+                setupImpressionListener(products)
             }
         }
 
@@ -68,10 +66,10 @@ class ShopHomeReimagineTerlarisAdapter(
                 shopHomeProductViewModel = product,
                 isWideContent = false,
                 productRating = product.averageRating,
-                isOverrideTheme = false,
-                patternColorType = patternColorType,
-                backgroundColor = backgroundColor,
-                isFestivity = isFestivity,
+                isOverrideTheme = listener.isOverrideTheme(),
+                patternColorType = listener.getBackgroundColor(),
+                backgroundColor = listener.getBackgroundColor(),
+                isFestivity = element.isFestivity,
                 makeProductCardTransparent = true
             )
 
