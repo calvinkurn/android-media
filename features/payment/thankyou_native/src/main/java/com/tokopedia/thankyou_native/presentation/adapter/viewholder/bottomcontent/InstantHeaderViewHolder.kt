@@ -15,6 +15,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.InstantHeaderUiM
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_PLUS_BADGE
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.isDeviceAnimationDisabled
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -40,8 +41,12 @@ class InstantHeaderViewHolder(
     override fun bind(data: InstantHeaderUiModel?) {
         if (data == null) return
 
-        if (hasAnimationStarted == false) {
+        if (!hasAnimationStarted && !itemView.context.isDeviceAnimationDisabled()) {
             setupIcon(data)
+        } else {
+            binding?.headerIcon?.scaleX = 1f
+            binding?.headerIcon?.scaleY = 1f
+            binding?.headerIcon?.setImageUrl(data.gatewayImage)
         }
         binding?.headerTitle?.text = data.title
         binding?.headerDescription?.text = data.description
@@ -88,13 +93,6 @@ class InstantHeaderViewHolder(
         })
 
         hasAnimationStarted = true
-//        Handler().postDelayed({
-//
-//
-//            Handler().postDelayed({
-//
-//            }, 1000)
-//        }, 1000)
     }
 
     private fun setUpTotalDeduction(data: InstantHeaderUiModel?) {

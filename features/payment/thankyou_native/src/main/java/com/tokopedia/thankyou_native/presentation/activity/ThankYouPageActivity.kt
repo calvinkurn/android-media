@@ -157,7 +157,7 @@ class ThankYouPageActivity :
         this.thanksPageData = thanksPageData
 
         val header = findViewById<ImageView>(R.id.header_background)
-        when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
+        when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus)) {
             InstantPaymentPage -> {
                 this.let {
                     header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_GN500))
