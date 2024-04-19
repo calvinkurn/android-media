@@ -36,7 +36,7 @@ class UniversalInboxRecommendationProductViewHolder(
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
-        setVisiblePercentage(getViewAreaPercentage(recyclerView, itemView))
+        setVisiblePercentage(getViewAreaPercentage(rvHolder, itemView))
         setRecTriggerObject(uiModel.recommendationItem)
         binding?.inboxProductRecommendation?.run {
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))
