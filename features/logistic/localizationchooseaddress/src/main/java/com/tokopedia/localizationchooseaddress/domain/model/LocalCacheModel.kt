@@ -62,8 +62,6 @@ data class LocalCacheModel(
 ) {
     companion object {
         const val OOC_WAREHOUSE_ID = "0"
-        const val SERVICE_TYPE_15M = "15m"
-        const val SERVICE_TYPE_20M = "20m"
     }
 
     /**
