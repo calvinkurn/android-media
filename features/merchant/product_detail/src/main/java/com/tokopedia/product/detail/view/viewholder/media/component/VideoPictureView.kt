@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.*
@@ -23,9 +24,10 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureLabelAnimBinding
-import com.tokopedia.product.detail.databinding.WidgetVideoPictureLiveIndicatorBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductPictureViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder
 import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.time.Duration.Companion.seconds
@@ -50,8 +52,6 @@ class VideoPictureView @JvmOverloads constructor(
     private var previouslyPrefetch = false
     private val overlayRecommStub by binding.txtAnimLabelRecommendationStub
         .lazyBind<WidgetVideoPictureLabelAnimBinding>()
-    private val liveIndicatorStub by binding.liveIndicatorStub
-        .lazyBind<WidgetVideoPictureLiveIndicatorBinding>()
 
     // region uiModel
     private var liveIndicatorUiModel: LiveIndicatorUiModel = LiveIndicatorUiModel()
@@ -170,6 +170,7 @@ class VideoPictureView @JvmOverloads constructor(
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     onMediaPageSelected(position)
+                    sendImageView(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -179,6 +180,23 @@ class VideoPictureView @JvmOverloads constructor(
                     }
                 }
             })
+    }
+
+    private fun sendImageView(position: Int) {
+        val vh =
+            (binding.pdpViewPager.get(0) as? RecyclerView)?.findViewHolderForAdapterPosition(
+                position
+            )
+
+        val imageView = if (vh is ProductPictureViewHolder) {
+            vh.getImageUnify()
+        } else if (vh is ProductVideoViewHolder) {
+            vh.getImageUnify()
+        } else {
+            null
+        }
+
+        mListener?.setImageUnify(imageView)
     }
 
     private fun onMediaPageSelected(position: Int) {
@@ -284,7 +302,7 @@ class VideoPictureView @JvmOverloads constructor(
         setupLiveIndicatorAnalytic()
     }
 
-    private fun setupLiveIndicatorAnalytic() = with(liveIndicatorStub.binding) {
+    private fun setupLiveIndicatorAnalytic() = with(binding) {
         val p1 = mListener?.getProductInfo() ?: return
         val liveIndicatorAnalyticModel = PlayWidgetLiveIndicatorAnalytic.Model(
             channelId = liveIndicatorUiModel.channelID,
@@ -295,7 +313,7 @@ class VideoPictureView @JvmOverloads constructor(
         liveThumbnailView.setAnalyticModel(model = liveIndicatorAnalyticModel)
     }
 
-    private fun setupLiveIndicatorEvent() = with(liveIndicatorStub.binding) {
+    private fun setupLiveIndicatorEvent() = with(binding) {
         val listener = mListener ?: return@with
         val onClick = OnClickListener { listener.goToApplink(url = liveIndicatorUiModel.appLink) }
         liveBadgeView.setOnClickListener(onClick)
@@ -323,7 +341,7 @@ class VideoPictureView @JvmOverloads constructor(
     private fun shouldShowLiveIndicatorXOverlayRecomm() {
         when {
             shouldLiveIndicatorShow -> {
-                liveIndicatorStub.show()
+                binding.liveIndicatorGroup.show()
                 overlayRecommStub.hide()
             }
 
@@ -331,11 +349,11 @@ class VideoPictureView @JvmOverloads constructor(
                 overlayRecommStub.show {
                     overlayRecommStub.binding.txtAnimLabelRecommendation.showView()
                 }
-                liveIndicatorStub.hide()
+                binding.liveIndicatorGroup.hide()
             }
 
             else -> {
-                liveIndicatorStub.hide()
+                binding.liveIndicatorGroup.hide()
                 overlayRecommStub.hide {
                     overlayRecommStub.binding.txtAnimLabelRecommendation.hideView()
                 }

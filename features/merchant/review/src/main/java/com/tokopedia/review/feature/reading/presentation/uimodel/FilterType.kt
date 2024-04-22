@@ -10,4 +10,5 @@ sealed class FilterType(open val param: String, open var value: String) {
     data class FilterWithMedia(override var value: String = "image,video") : FilterType(PARAM_WITH_MEDIA, value)
     data class FilterTopic(override var value: String = "") : FilterType(PARAM_TOPIC, value)
     data class FilterRating(override var value: String = "") : FilterType(PARAM_RATING, value)
+    data class FilterVariant(override var value: String = "") : FilterType("", value)
 }

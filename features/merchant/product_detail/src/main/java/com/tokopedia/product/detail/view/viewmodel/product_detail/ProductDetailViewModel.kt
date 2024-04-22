@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.byteio.ProductType
@@ -55,6 +56,7 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -108,11 +110,11 @@ import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
@@ -130,12 +132,17 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -247,9 +254,9 @@ class ProductDetailViewModel @Inject constructor(
     val discussionMostHelpful: LiveData<Result<DiscussionMostHelpfulResponseWrapper>>
         get() = _discussionMostHelpful
 
-    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> =
+    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageUiModel>>> =
         MutableLiveData()
-    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
+    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageUiModel>>>
         get() = _topAdsImageView
 
     private val _topAdsRecomChargeData =
@@ -271,6 +278,28 @@ class ProductDetailViewModel @Inject constructor(
 
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
+
+    private val _finishAnimationAtc = MutableStateFlow(false)
+    private val _finishAtc = MutableStateFlow(false)
+
+    val successAtcAndAnimation: Flow<Boolean> =
+        _finishAnimationAtc.combine(_finishAtc) { finishAtcAnimation, finishAtc ->
+            val finishAtcAnimationResult =
+                !ProductRollenceHelper.rollenceAtcAnimationActive() || finishAtcAnimation
+
+            finishAtcAnimationResult && finishAtc
+        }.map { bothSuccess ->
+            if (bothSuccess) {
+                _finishAnimationAtc.emit(false)
+                _finishAtc.emit(false)
+            }
+            bothSuccess
+        }.filter {
+            it
+        }.shareIn(
+            viewModelScope,
+            SharingStarted.Lazily
+        )
 
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
         val edu = it.bottomSheetEdu
@@ -346,6 +375,14 @@ class ProductDetailViewModel @Inject constructor(
 
     init {
         iniQuantityFlow()
+    }
+
+    fun onFinishAnimation() {
+        _finishAnimationAtc.tryEmit(true)
+    }
+
+    fun onFinishAtc() {
+        _finishAtc.tryEmit(true)
     }
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
@@ -768,7 +805,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
-        sendConfirmCartBytIoTracker()
+//        sendConfirmCartBytIoTracker() // disabled on this phase
         val result = withContext(dispatcher.io) {
             addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
         }

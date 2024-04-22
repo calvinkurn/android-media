@@ -21,16 +21,16 @@ class TopAdsImageViewListenerDelegate(
 
         TopAdsUrlHitter(context).hitImpressionUrl(
             className,
-            searchTopAdsImageDataView.topAdsImageViewModel.adViewUrl,
+            searchTopAdsImageDataView.topAdsImageUiModel.adViewUrl,
             "",
             "",
-            searchTopAdsImageDataView.topAdsImageViewModel.imageUrl
+            searchTopAdsImageDataView.topAdsImageUiModel.imageUrl
         )
 
     }
 
     override fun onTopAdsImageViewClick(searchTopAdsImageDataView: SearchProductTopAdsImageDataView) {
-        val applink = searchTopAdsImageDataView.topAdsImageViewModel.applink ?: return
+        val applink = searchTopAdsImageDataView.topAdsImageUiModel.applink ?: return
         openApplink(context, applink)
     }
 }

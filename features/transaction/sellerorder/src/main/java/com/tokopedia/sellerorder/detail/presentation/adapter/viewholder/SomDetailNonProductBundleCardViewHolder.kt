@@ -46,6 +46,10 @@ class SomDetailNonProductBundleCardViewHolder(
         setupContainerBackground()
     }
 
+    override fun onViewRecycled() {
+        productDetailViewHolder?.onViewRecycled()
+    }
+
     override fun getAddOnSummaryLayout(): View? {
         return itemView.findViewById(R.id.layoutProductAddOn)
     }

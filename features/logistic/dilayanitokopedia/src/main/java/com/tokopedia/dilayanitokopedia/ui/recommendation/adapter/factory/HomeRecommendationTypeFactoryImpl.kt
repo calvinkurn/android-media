@@ -19,7 +19,7 @@ import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.viewholder.Home
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.viewholder.HomeRecommendationLoadingMoreViewHolder
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.viewholder.HomeRecommendationLoadingViewHolder
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 
 class HomeRecommendationTypeFactoryImpl(private val topAdsBannerClickListener: TopAdsBannerClickListener) :
     HomeRecommendationTypeFactory {

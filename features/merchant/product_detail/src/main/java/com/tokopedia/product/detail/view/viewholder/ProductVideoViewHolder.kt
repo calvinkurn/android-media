@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.databinding.PdpVideoViewHolderBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.VideoStateListener
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.unifycomponents.toPx
 
 /**
@@ -53,6 +53,10 @@ class ProductVideoViewHolder(
         videoVolume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
         videoFullScreen = binding.pdpMainVideo.findViewById(R.id.pdp_maximize_control)
         binding.pdpMainVideo.layoutTransition.setAnimateParentHierarchy(false)
+    }
+
+    fun getImageUnify(): ImageView? {
+        return binding.pdpVideoOverlay
     }
 
     override fun bind(data: MediaDataModel) {

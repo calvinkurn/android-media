@@ -17,8 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.binding.viewBinding
@@ -79,7 +79,7 @@ class DiscoveryTDNBannerViewHolder(
     }
 
     override fun onTdnBannerResponse(
-        categoriesList: MutableList<List<TopAdsImageViewModel>>
+        categoriesList: MutableList<List<TopAdsImageUiModel>>
     ) {
         binding?.apply {
             val tdnBanners = categoriesList.firstOrNull()
@@ -176,7 +176,7 @@ class DiscoveryTDNBannerViewHolder(
     }
 
     private fun onTdnBannerClicked(
-        bannerData: TopAdsImageViewModel
+        bannerData: TopAdsImageUiModel
     ) {
         viewModel?.apply {
             analytics?.trackTDNBannerClick(
@@ -194,7 +194,7 @@ class DiscoveryTDNBannerViewHolder(
     }
 
     private fun onTdnBannerImpressed(
-        bannerData: TopAdsImageViewModel
+        bannerData: TopAdsImageUiModel
     ) {
         viewModel?.apply {
             analytics?.trackTDNBannerImpression(
@@ -209,7 +209,7 @@ class DiscoveryTDNBannerViewHolder(
     }
 
     private fun updateCurrentTdnBanners(
-        categoriesList: MutableList<List<TopAdsImageViewModel>>
+        categoriesList: MutableList<List<TopAdsImageUiModel>>
     ) {
         val tdnBannerUiModel = tdnBannerUiModels.firstOrNull { it.id == viewModel?.components?.id }
         if (tdnBannerUiModel != null) {

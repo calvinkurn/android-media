@@ -10,6 +10,7 @@ import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import com.tokopedia.shareexperience.ui.ShareExAction
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -20,11 +21,12 @@ class ShareExViewModelUpdateShareBodyTest : ShareExViewModelTestFixture() {
     fun `update share body, get updated share ui state`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = "testId",
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId("testId").build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -45,6 +47,7 @@ class ShareExViewModelUpdateShareBodyTest : ShareExViewModelTestFixture() {
                     )
                 )
             )
+
             viewModel.bottomSheetUiState.test {
                 // When
                 viewModel.setupViewModelObserver()
@@ -77,7 +80,7 @@ class ShareExViewModelUpdateShareBodyTest : ShareExViewModelTestFixture() {
     fun `update null share body, do nothing`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = null
+            viewModel.bottomSheetArg = null
 
             viewModel.bottomSheetUiState.test {
                 // When
