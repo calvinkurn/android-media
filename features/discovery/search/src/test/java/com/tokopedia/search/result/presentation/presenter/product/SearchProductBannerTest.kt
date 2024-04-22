@@ -13,7 +13,7 @@ import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.shouldBe
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import io.mockk.every
 import io.mockk.slot
 import org.junit.Test
@@ -162,7 +162,7 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
     @Test
     fun `Test show banner at top of page`() {
         val searchProductModel = topBannerResponse.jsonToObject<SearchProductModel>()
-        val dummyTDN = TopAdsImageViewModel(position = 1, bannerName = "Position 1")
+        val dummyTDN = TopAdsImageUiModel(position = 1, bannerName = "Position 1")
         searchProductModel.setTopAdsImageViewModelList(listOf(dummyTDN))
 
         `Given top ads headline helper will process headline ads`(searchProductModel)
@@ -210,7 +210,7 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
     @Test
     fun `Test show banner at top of page with broad match`() {
         val searchProductModel = topBannerWithBroadMatchResponse.jsonToObject<SearchProductModel>()
-        val dummyTDN = TopAdsImageViewModel(position = 1, bannerName = "Position 1")
+        val dummyTDN = TopAdsImageUiModel(position = 1, bannerName = "Position 1")
         searchProductModel.setTopAdsImageViewModelList(listOf(dummyTDN))
 
         `Given top ads headline helper will process headline ads`(searchProductModel)

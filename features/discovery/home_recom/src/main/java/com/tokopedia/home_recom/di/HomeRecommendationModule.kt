@@ -3,6 +3,7 @@ package com.tokopedia.home_recom.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_recom.domain.query.PrimaryProductQuery
 import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
@@ -11,8 +12,7 @@ import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcherImpl
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
@@ -26,7 +26,7 @@ import dagger.Provides
 /**
  * A class module for dagger recommendation page
  */
-@Module(includes = [TopAdsWishlistModule::class])
+@Module
 class HomeRecommendationModule {
 
     @Provides
@@ -59,7 +59,7 @@ class HomeRecommendationModule {
         graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>,
         irisSession: TopAdsIrisSession
     ): GetTopadsIsAdsUseCase {
-        return GetTopadsIsAdsUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TopadsIsAdsQuery>, irisSession)
+        return GetTopadsIsAdsUseCase(graphqlUseCase as GraphqlUseCase<TopadsIsAdsQuery>, irisSession)
     }
 
     @Provides

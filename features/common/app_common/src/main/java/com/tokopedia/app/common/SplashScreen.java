@@ -40,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -100,15 +101,27 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
         linkerDeeplinkData.setActivity(SplashScreen.this);
 
+        Map<String, String> additionalQueryParams = new HashMap<>();
+        if (linkerDeeplinkData.getReferrable() != null) {
+            for (String key : linkerDeeplinkData.getReferrable().getQueryParameterNames()) {
+                additionalQueryParams.put(key, linkerDeeplinkData.getReferrable().getQueryParameter(key));
+            }
+        }
+
         LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
                 linkerDeeplinkData, new DefferedDeeplinkCallback() {
                     @Override
                     public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
                         PersistentCacheManager.instance.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
                                 linkerDefferedDeeplinkData.getPromoCode() : "");
-                        String deeplink = linkerDefferedDeeplinkData.getDeeplink();
-                        if (!TextUtils.isEmpty(deeplink)) {
-                            navigateBranchDeeplink(deeplink, linkerDefferedDeeplinkData.getMinVersion());
+                        Uri.Builder deeplink = Uri.parse(linkerDefferedDeeplinkData.getDeeplink()).buildUpon();
+                        if (!TextUtils.isEmpty(deeplink.toString())) {
+                            if (!additionalQueryParams.isEmpty()) {
+                                for (Map.Entry<String, String> set : additionalQueryParams.entrySet()) {
+                                    deeplink.appendQueryParameter(set.getKey(), set.getValue());
+                                }
+                            }
+                            navigateBranchDeeplink(deeplink.toString(), linkerDefferedDeeplinkData.getMinVersion());
                         }
                     }
 
@@ -175,7 +188,8 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
                     && uri.getPathSegments().size() == 1) {
                 AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     private void logLinker(String deeplink, String reason) {
@@ -225,5 +239,10 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
     @Override
     public boolean isShadow() {
         return true;
+    }
+
+    @Override
+    public boolean shouldTrackEnterPage() {
+        return false;
     }
 }

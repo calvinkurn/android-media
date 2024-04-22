@@ -20,10 +20,10 @@ class ByteIOTrackingDataFactoryImpl @Inject constructor(
 
     val searchEntrance = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty()
 
-    fun renew(requestId: String) {
+    fun renew(requestId: String, searchId: String) {
         update(requestId)
 
-        searchId = requestId
+        this.searchId = searchId
 
         SearchId.update(searchId)
     }

@@ -270,9 +270,8 @@ fun CatalogSellerOfferingBody(
                         if (index != productList.size - 1) {
                             Divider(
                                 Modifier
-                                    .fillMaxWidth()
-                                    .height(1.dp)
-                                    .background(NestNN.light._50)
+                                    .fillMaxWidth(),
+                                color= NestNN.light._50
                             )
                         }
                         if (index == productList.size - 1 && hasNextPage.value) {

@@ -55,24 +55,31 @@ fun TrackingPageScreen(
     onEvent: (TrackingPageEvent) -> Unit
 ) {
     val unifyIconId = getIconUnifyResourceIdRef(iconId = IconUnify.CALL_CENTER)
-    Scaffold(topBar = {
-        NestHeader(
-            type = NestHeaderType.SingleLine(
-                title = stringResource(id = logisticorderR.string.label_tracking_activity),
-                onBackClicked = pressBack,
-                optionsButton = if (!state.trackingData?.page?.contactUsUrl.isNullOrEmpty()) {
-                    listOf(
-                        HeaderActionButton(
-                            icon = IconSource.Painter(unifyIconId),
-                            onClicked = { state.trackingData?.page?.contactUsUrl?.run(openWebview) }
+    Scaffold(
+        topBar = {
+            NestHeader(
+                type = NestHeaderType.SingleLine(
+                    title = stringResource(id = logisticorderR.string.label_tracking_activity),
+                    onBackClicked = pressBack,
+                    optionsButton = if (!state.trackingData?.page?.contactUsUrl.isNullOrEmpty()) {
+                        listOf(
+                            HeaderActionButton(
+                                icon = IconSource.Painter(unifyIconId),
+                                onClicked = {
+                                    state.trackingData?.page?.contactUsUrl?.run(
+                                        openWebview
+                                    )
+                                }
+                            )
                         )
-                    )
-                } else {
-                    listOf()
-                }
+                    } else {
+                        listOf()
+                    }
+                )
             )
-        )
-    }) { paddingValues ->
+        },
+        backgroundColor = NestTheme.colors.NN._0
+    ) { paddingValues ->
         Column(
             Modifier
                 .padding(paddingValues)

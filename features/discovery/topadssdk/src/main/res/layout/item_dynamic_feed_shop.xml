@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.topads.sdk.view.ImpressedImageView
+        <com.tokopedia.topads.sdk.v2.dynamicfeedshop.widget.ImpressedImageView
             android:id="@+id/ivImageRight"
             android:layout_width="72dp"
             android:layout_height="0dp"

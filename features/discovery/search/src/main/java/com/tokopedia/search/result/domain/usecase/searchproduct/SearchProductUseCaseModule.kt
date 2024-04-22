@@ -12,9 +12,9 @@ import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapper
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.utils.SearchLogger
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
-import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.data.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,7 +47,9 @@ class SearchProductUseCaseModule {
             reimagineRollence,
         )
 
-        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
+        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase(
+            reimagineRollence
+        )
 
         return SearchProductTypoCorrectionUseCase(
             searchProductUseCase = firstPageGqlUseCase,
@@ -96,7 +98,9 @@ class SearchProductUseCaseModule {
             searchProductModelMapper,
             reimagineRollence,
         )
-        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
+        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase(
+            reimagineRollence
+        )
         return SearchProductTypoCorrectionUseCase(
             searchProductUseCase = loadMoreGqlUseCase,
             searchProductTopAdsUseCase = topAdsGqlUseCase,
@@ -119,7 +123,12 @@ class SearchProductUseCaseModule {
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_TOPADS_USE_CASE)
-    fun provideSearchProductTopAdsUseCase(): UseCase<TopAdsModel> {
-        return SearchProductTopAdsUseCase(GraphqlUseCase())
+    fun provideSearchProductTopAdsUseCase(
+        reimagineRollence: ReimagineRollence
+    ): UseCase<TopAdsModel> {
+        return SearchProductTopAdsUseCase(
+            GraphqlUseCase(),
+            reimagineRollence
+        )
     }
 }

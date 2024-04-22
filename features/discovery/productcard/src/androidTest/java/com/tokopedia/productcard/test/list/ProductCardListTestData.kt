@@ -32,6 +32,7 @@ internal val productCardListViewStubTestData= getProductCardModelMatcherData(tru
     it.add(testAddToCartAndRemoveFromWishlist())
     it.add(testDeleteProductButton())
     it.add(testSimilarProductButton(true))
+    it.add(testListViewGenericCtaLayout())
 }
 
 private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
@@ -280,6 +281,54 @@ private fun testListViewOverlayBestSellerLayout(): ProductCardModelMatcher {
             imageUrl = freeOngkirImageUrl
         ),
         productListType = ProductCardModel.ProductListType.LIST_VIEW,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayed(),
+        R.id.labelOverlayStatus to isDisplayedWithText(labelOverlay.title),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testListViewGenericCtaLayout(): ProductCardModelMatcher {
+    val labelOverlay = LabelGroup(
+        position = LABEL_OVERLAY,
+        title = "Terlaris",
+        type = "#E1AA1D",
+    )
+
+    val labelBestSeller = LabelGroup(
+        position = LABEL_BEST_SELLER,
+        title = "Terlaris",
+        type = "#E1AA1D"
+    )
+
+    val productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+        "+ Keranjang"
+    )
+
+    val productCardModel = ProductCardModel(
+        productImageUrl = productImageUrl,
+        productName = "List View Layout with label overlay and label best seller",
+        formattedPrice = "Rp8.999.000",
+        discountPercentage = "50%",
+        slashedPrice = "Rp8.000.000",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelOverlay, labelBestSeller),
+        freeOngkir = ProductCardModel.FreeOngkir(
+            isActive = true,
+            imageUrl = freeOngkirImageUrl
+        ),
+        productListType = ProductCardModel.ProductListType.LIST_VIEW,
+        productCardGenericCta = productCardGenericCta,
     )
 
     val productCardMatcher = mapOf(

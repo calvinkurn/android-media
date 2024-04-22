@@ -73,8 +73,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -583,7 +583,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -592,14 +592,14 @@ class HomeRecommendationFragment :
         val rvContext = recyclerView?.context
 
         rvContext?.let {
-            RouteManager.route(it, model.topAdsImageViewModel?.applink)
+            RouteManager.route(it, model.topAdsImageUiModel?.applink)
         }
     }
 
     override fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -609,7 +609,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -625,7 +625,7 @@ class HomeRecommendationFragment :
         rvContext?.let {
             RouteManager.route(
                 it,
-                model.topAdsImageViewModel?.applink
+                model.topAdsImageUiModel?.applink
             )
         }
     }
@@ -633,7 +633,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>

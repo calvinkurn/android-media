@@ -56,8 +56,8 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.EnterMethod;
-import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -1027,6 +1027,15 @@ public class MainParentActivity extends BaseActivity implements
     private void saveInstanceState(Bundle outState) {
         if (getIntent() != null) {
             outState.putBoolean(IS_RECURRING_APPLINK, presenter.get().isRecurringApplink());
+
+            //only save position when feed page is active and remove only if it is not feed
+            boolean isCurrentFragmentFeed = currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE);
+            if (!isCurrentFragmentFeed) {
+                if (getIntent().getIntExtra(ARGS_TAB_POSITION, 0) != FEED_MENU) return;
+                getIntent().removeExtra(ARGS_TAB_POSITION);
+            } else {
+                getIntent().putExtra(ARGS_TAB_POSITION, FEED_MENU);
+            }
         }
     }
 
@@ -1232,7 +1241,7 @@ public class MainParentActivity extends BaseActivity implements
                         PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getPageLoadTimePerformanceInterface().stopMonitoring();
+            getPageLoadTimePerformanceInterface().stopMonitoring(null);
         }
     }
 
@@ -1352,34 +1361,43 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        updateAppLogPageData(position);
-        handleAppLogEnterMethod(pageTitle);
+        updateAppLogPageData(position, false);
+        sendEnterPage(position);
         return true;
     }
 
-    private void handleAppLogEnterMethod(String pageTitle) {
-        if (pageTitle.equals(getResources().getString(R.string.home))) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
-        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+    private void handleAppLogEnterMethod(AppLogInterface appLogInterface, boolean isFirstTimeInit) {
+        if (isFirstTimeInit) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+        } else {
+            String pageName = appLogInterface.getPageName();
+            if (AppLogAnalytics.INSTANCE.getPageDataList().isEmpty()) return;
+            if (pageName.equals(PageName.HOME)) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
+            } else if (pageName.equals(PageName.WISHLIST)) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+            }
         }
     }
 
-    private void updateAppLogPageData(int position) {
+    private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
-        if (fragment instanceof AppLogInterface applogInterface) {
+        if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
             Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
-            if (currentPageName != null
-                    && applogInterface.getPageName().equals(currentPageName.toString())) {
-                return;
+            if (currentPageName == null
+                    || !applogInterface.getPageName().equals(currentPageName.toString())) {
+                AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
+                AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
             }
-            AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
-            AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
+            handleAppLogEnterMethod(applogInterface, isFirstTimeInit);
+        }
+    }
 
-            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
-            if (currentEnterMethod == null) {
-                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
-            }
+    private void sendEnterPage(int position) {
+        Fragment fragment = fragmentList.get(position);
+        if (!isFirstTimeUser() && fragment instanceof AppLogInterface appLogInterface &&
+                appLogInterface.shouldTrackEnterPage()) {
+            AppLogRecommendation.INSTANCE.sendEnterPageAppLog();
         }
     }
 
@@ -1414,7 +1432,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            updateAppLogPageData(homePosition);
+            updateAppLogPageData(homePosition, true);
+            sendEnterPage(homePosition);
             bottomNavigation.setInitialState(homePosition);
         }
     }
