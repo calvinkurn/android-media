@@ -46,7 +46,6 @@ import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
-import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -636,19 +635,8 @@ class FeedBaseFragment :
                                     }
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
-                                        /** JOE TODO: logic here and the one in CreationUploadReceiver can & should be combined
-                                         * to centralize logic
-                                         * */
                                         launch {
-                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
-                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                        }
-
-                                        when (val uploadData = uploadResult.data) {
-                                            is CreationUploadData.Post -> {
-                                                feedMainViewModel.deletePostCache(uploadData.mediaList)
-                                            }
-                                            else -> {}
+                                            creationUploader.removeFailedContentFromQueue(uploadResult.data)
                                         }
                                     }
                                 })

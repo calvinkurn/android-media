@@ -61,15 +61,7 @@ class CreationUploadReceiver : BroadcastReceiver() {
             }
             Action.RemoveQueue.value -> {
                 scope.launch {
-                    uploadQueueRepository.deleteQueueAndChannel(uploadData)
-                    creationUploader.retry(uploadData.notificationIdAfterUpload)
-
-                    when (uploadData) {
-                        is CreationUploadData.Post -> {
-                            deleteMediaPostCacheUseCase(uploadData.mediaList.map { it.path }.toSet())
-                        }
-                        else -> {}
-                    }
+                    creationUploader.removeFailedContentFromQueue(uploadData)
                 }
             }
         }

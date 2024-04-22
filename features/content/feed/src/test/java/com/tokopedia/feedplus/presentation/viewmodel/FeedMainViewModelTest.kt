@@ -41,7 +41,6 @@ class FeedMainViewModelTest {
     private val activeTabSource = ActiveTabSource(null, 0)
 
     private val repository: FeedRepository = mockk()
-    private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = coroutineTestRule.dispatchers
@@ -68,7 +67,6 @@ class FeedMainViewModelTest {
         viewModel = FeedMainViewModel(
             activeTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
             uiEventManager
@@ -88,7 +86,6 @@ class FeedMainViewModelTest {
         val mViewModel = FeedMainViewModel(
             activeTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
             uiEventManager
@@ -276,13 +273,6 @@ class FeedMainViewModelTest {
                 assert(it == null || it.id != event.id)
             }
         }
-    }
-
-    @Test
-    fun onDeletePostCache() {
-        viewModel.deletePostCache(emptyList())
-
-        coVerify(exactly = 1) { deletePostCacheUseCase(setOf()) }
     }
 
     @Test
@@ -474,7 +464,6 @@ class FeedMainViewModelTest {
         coEvery { factory.create(mActiveTabSource) } returns FeedMainViewModel(
             mActiveTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
             uiEventManager
