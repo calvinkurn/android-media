@@ -66,7 +66,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
             buttonTopup.text = it.buttonText
             eTollCardInfoView.visibility = View.VISIBLE
-            eTollCardInfoView.showCardInfo(it)
+            eTollCardInfoView.showCardInfo(it, inquiryBalanceModel.isBCAGenOne)
             buttonTopup.visibility = View.VISIBLE
 
             if (::listener.isInitialized) {
