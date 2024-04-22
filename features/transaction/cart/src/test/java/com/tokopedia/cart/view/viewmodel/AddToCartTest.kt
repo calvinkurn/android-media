@@ -11,7 +11,7 @@ import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every

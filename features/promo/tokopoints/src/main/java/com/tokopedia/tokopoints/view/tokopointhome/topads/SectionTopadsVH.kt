@@ -13,11 +13,11 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONObject
 
@@ -54,7 +54,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
             }
 
             topadsReward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
-                override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
+                override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageUiModel>) {
                     if (imageDataList.isNotEmpty()) {
                         val topadsBannerData = imageDataList.last()
                         topadsReward.loadImage(topadsBannerData, convertDpToPixel(10, view.context))

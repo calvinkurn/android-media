@@ -3,12 +3,12 @@ package com.tokopedia.topads.sdk.utils
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsAddressConstant.USER_ADDRESS_ID
-import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsAddressConstant.USER_CITY_ID
-import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsAddressConstant.USER_DISTRICT_ID
-import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsAddressConstant.USER_LAT
-import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsAddressConstant.USER_LONG
-import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsAddressConstant.USER_POSTCODE
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsAddressConstant.USER_ADDRESS_ID
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsAddressConstant.USER_CITY_ID
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsAddressConstant.USER_DISTRICT_ID
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsAddressConstant.USER_LAT
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsAddressConstant.USER_LONG
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsAddressConstant.USER_POSTCODE
 import javax.inject.Inject
 
 class TopAdsAddressHelper @Inject constructor(@ApplicationContext private val context: Context) {
