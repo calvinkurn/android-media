@@ -73,7 +73,7 @@ class ProductShippingHeaderViewHolder(
             element.isFreeOngkirQuotaEmpty,
             element.freeOngkirEtas
         )
-        renderWeight(element.weight)
+        renderWeight(element.weightWording)
     }
 
     private fun renderTokoCabang(element: ProductShippingHeaderDataModel) = with(itemView) {
@@ -115,8 +115,8 @@ class ProductShippingHeaderViewHolder(
         }
     }
 
-    private fun renderWeight(weightFormatted: String) = with(itemView) {
-        txtWeight?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_shipping_weight_builder, weightFormatted)).spannedString
+    private fun renderWeight(weightWording: String) = with(itemView) {
+        txtWeight?.text = HtmlLinkHelper(context, weightWording).spannedString
     }
 
     private fun renderBo(

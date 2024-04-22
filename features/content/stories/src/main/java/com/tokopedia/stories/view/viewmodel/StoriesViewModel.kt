@@ -61,7 +61,7 @@ class StoriesViewModel @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
     val userSession: UserSessionInterface,
-    private val sharedPref: StoriesPreference,
+    private val sharedPref: StoriesPreference
 ) : ViewModel() {
 
     @AssistedFactory
@@ -170,7 +170,7 @@ class StoriesViewModel @AssistedInject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        StoriesUiState.Empty,
+        StoriesUiState.Empty
     )
 
     private val _timerState: Flow<TimerStatusInfo>
@@ -590,7 +590,7 @@ class StoriesViewModel @AssistedInject constructor(
                 repository.getStoriesProducts(
                     validAuthorId,
                     storyId,
-                    mGroup.groupName,
+                    mGroup.groupName
                 )
             _productsState.value = productList
         }) { exception ->
@@ -777,7 +777,9 @@ class StoriesViewModel @AssistedInject constructor(
             authorType = args.authorType,
             source = args.source,
             sourceId = args.sourceId,
-            entryPoint = args.entryPoint
+            entryPoint = args.entryPoint,
+            categoryIds = args.categoryIds,
+            productIds = args.productIds
         )
     }
 
@@ -788,7 +790,9 @@ class StoriesViewModel @AssistedInject constructor(
                 authorType = group.author.type.type,
                 source = args.source,
                 sourceId = args.sourceId,
-                entryPoint = args.entryPoint
+                entryPoint = args.entryPoint,
+                categoryIds = emptyList(),
+                productIds = emptyList()
             )
         } else {
             repository.getStoriesDetailData(
@@ -796,7 +800,9 @@ class StoriesViewModel @AssistedInject constructor(
                 authorType = args.authorType,
                 source = StoriesSource.STORY_GROUP.value,
                 sourceId = group.groupId,
-                entryPoint = args.entryPoint
+                entryPoint = args.entryPoint,
+                categoryIds = args.categoryIds,
+                productIds = args.productIds
             )
         }
     }

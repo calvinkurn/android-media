@@ -3,12 +3,12 @@ package com.tokopedia.tokopedianow.search.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
+import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import org.junit.Assert
 import org.junit.Test
 
-class SearchWishlistTest: SearchTestFixtures() {
+class SearchWishlistTest : SearchTestFixtures() {
     @Test
     fun `when updating wishlist status but the product not found should not do nothing`() {
         /**
@@ -21,7 +21,7 @@ class SearchWishlistTest: SearchTestFixtures() {
         /**
          * mock private field from viewModel
          */
-        tokoNowSearchViewModel.mockSuperClassField(
+        tokoNowSearchViewModel.mockPrivateField(
             name = fieldName,
             value = fieldValue
         )
@@ -69,7 +69,7 @@ class SearchWishlistTest: SearchTestFixtures() {
         /**
          * mock private field from viewModel
          */
-        tokoNowSearchViewModel.mockSuperClassField(
+        tokoNowSearchViewModel.mockPrivateField(
             name = fieldName,
             value = fieldValue
         )
@@ -85,7 +85,7 @@ class SearchWishlistTest: SearchTestFixtures() {
         /**
          * verify the data test
          */
-        val actualValue = tokoNowSearchViewModel.getParentPrivateField<MutableList<Visitable<*>>>(fieldName)
+        val actualValue = tokoNowSearchViewModel.getPrivateField<MutableList<Visitable<*>>>(fieldName)
         Assert.assertEquals(expectedValue, actualValue)
         Assert.assertTrue(tokoNowSearchViewModel.updatedVisitableIndicesLiveData.value != null)
     }

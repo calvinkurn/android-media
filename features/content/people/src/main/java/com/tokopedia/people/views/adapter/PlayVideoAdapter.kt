@@ -19,6 +19,7 @@ class PlayVideoAdapter(
             .addDelegate(PlayVideoAdapterDelegate.Channel(channelWidgetListener))
             .addDelegate(PlayVideoAdapterDelegate.Transcode(transcodeWidgetListener))
             .addDelegate(PlayVideoAdapterDelegate.Loading())
+            .addDelegate(PlayVideoAdapterDelegate.Shimmer())
     }
 
     override fun onBindViewHolder(
@@ -33,6 +34,7 @@ class PlayVideoAdapter(
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return when {
             oldItem is Model.Loading && newItem is Model.Loading -> false
+            oldItem is Model.Shimmer && newItem is Model.Shimmer -> false
             oldItem is Model.Channel && newItem is Model.Channel -> oldItem.data.channelId == newItem.data.channelId
             oldItem is Model.Transcode && newItem is Model.Transcode -> oldItem.data.channelId == newItem.data.channelId
             else -> oldItem == newItem
@@ -44,8 +46,9 @@ class PlayVideoAdapter(
     }
 
     sealed interface Model {
-       data class Channel(val data: PlayWidgetChannelUiModel) : Model
-       data class Transcode(val data: PlayWidgetChannelUiModel) : Model
-       object Loading : Model
+        data class Channel(val data: PlayWidgetChannelUiModel) : Model
+        data class Transcode(val data: PlayWidgetChannelUiModel) : Model
+        object Loading : Model
+        object Shimmer : Model
    }
 }

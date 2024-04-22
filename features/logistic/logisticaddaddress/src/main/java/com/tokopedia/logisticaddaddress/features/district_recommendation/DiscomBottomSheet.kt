@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -731,7 +732,7 @@ class DiscomBottomSheet :
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
+    private fun getLocation(looper: Looper? = Looper.myLooper()) {
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
                 source?.takeIf { it is DiscomSource.LCA }
@@ -744,11 +745,13 @@ class DiscomBottomSheet :
                 }
 
             } else {
-                fusedLocationClient?.requestLocationUpdates(
-                    AddNewAddressUtils.getLocationRequest(),
-                    locationCallback,
-                    null
-                )
+                looper?.let {
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        locationCallback,
+                        it
+                    )
+                }
             }
         }
     }

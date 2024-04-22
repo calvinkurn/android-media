@@ -20,11 +20,13 @@ import javax.inject.Inject
 
 class UserShopInfoMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun mapToUserShopInfoUiModel(dateShopCreated: String,
-                                 shopInfoByIDResult: UserShopInfoResponse.ShopInfoByID.Result?,
-                                 periodTypePmPro: String,
-                                 goldGetPMShopInfo: UserShopInfoResponse.GoldGetPMShopInfo,
-                                 goldGetPMOSStatusData: UserShopInfoResponse.GoldGetPMOSStatus.Data): UserShopInfoWrapper {
+    fun mapToUserShopInfoUiModel(
+        dateShopCreated: String,
+        shopInfoByIDResult: UserShopInfoResponse.ShopInfoByID.Result?,
+        periodTypePmPro: String,
+        goldGetPMShopInfo: UserShopInfoResponse.GoldGetPMShopInfo,
+        goldGetPMOSStatusData: UserShopInfoResponse.GoldGetPMOSStatus.Data
+    ): UserShopInfoWrapper {
         val targetDateText = "2021-06-14"
         val isBeforeOnDate = isBeforeOnDate(dateShopCreated, targetDateText)
         val goldOsResult = shopInfoByIDResult?.goldOS
@@ -54,7 +56,8 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
                     statusMessage = shopInfoByIDResult?.statusInfo?.statusMessage.orEmpty(),
                     tickerType = shopInfoByIDResult?.statusInfo?.tickerType.orEmpty(),
                     shopStatus = shopInfoByIDResult?.statusInfo?.shopStatus.orZero()
-                )
+                ),
+                isKyc = goldGetPMShopInfo.isVerifiedKyc()
             )
         )
     }

@@ -96,6 +96,13 @@ class VisitableFactory @Inject constructor(
                 visitableList,
             )
         }
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
+            processHeadlineAdsFirstPage(
+                data.searchProductModel,
+                visitableList,
+                data.isLocalSearch,
+            )
+        }
         processBannerAndBroadMatchInSamePosition(visitableList, data.responseCode)
         addBanner(visitableList)
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
@@ -108,13 +115,6 @@ class VisitableFactory @Inject constructor(
             processTopAdsImageViewModel(visitableList)
         }
         addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
-            processHeadlineAdsFirstPage(
-                data.searchProductModel,
-                visitableList,
-                data.isLocalSearch,
-            )
-        }
         determineByteIORank(visitableList, listOf())
         return visitableList
     }

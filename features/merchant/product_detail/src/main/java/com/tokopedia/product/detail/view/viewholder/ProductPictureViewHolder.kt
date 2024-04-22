@@ -72,6 +72,7 @@ class ProductPictureViewHolder(
             is MediaContainerType.Portrait -> {
                 setFashionScale()
             }
+
             else -> {
                 setNormalScale()
             }
@@ -110,5 +111,9 @@ class ProductPictureViewHolder(
 
         // set scaleType must always be after setAdjustViewBounds
         scaleType = scale
+    }
+
+    fun getImageUnify(): ImageView? {
+        return binding.pdpMainImg
     }
 }

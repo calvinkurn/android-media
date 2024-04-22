@@ -1,5 +1,6 @@
 package com.tokopedia.stories.internal.usecase
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 class StoriesGroupsUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<StoriesGroupsUseCase.Request, StoriesGroupsResponseModel>(dispatchers.io) {
 
     override suspend fun execute(params: Request): StoriesGroupsResponseModel {
@@ -29,8 +30,8 @@ class StoriesGroupsUseCase @Inject constructor(
 
     override fun graphqlQuery(): String {
         return """
-            query ContentStoryGroups(${"$${PARAM_REQUEST}"}: ContentStoryGroupsRequest!) {
-              contentStoryGroups($PARAM_REQUEST: ${"$${PARAM_REQUEST}"}){
+            query ContentStoryGroups(${"$$PARAM_REQUEST"}: ContentStoryGroupsRequest!) {
+              contentStoryGroups($PARAM_REQUEST: ${"$$PARAM_REQUEST"}){
                groups{
                     type
                     value
@@ -72,5 +73,11 @@ class StoriesGroupsUseCase @Inject constructor(
         val limit: Int = 20,
         @SerializedName("cursor")
         val cursor: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("categoryIDs")
+        val categoryIds: List<String> = emptyList(),
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("productIDs")
+        val productIds: List<String> = emptyList()
     )
 }
