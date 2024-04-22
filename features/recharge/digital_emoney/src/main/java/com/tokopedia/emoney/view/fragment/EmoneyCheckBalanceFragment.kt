@@ -385,7 +385,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                                bRawPrivateKey: String, ATD: String) {
         showLoading(getOperatorName(issuerActive))
         bcaBalanceViewModel.processBCATagBalance(isoDep, MID, TID, bRawPublicKey,
-            bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD)
+            bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD,
+            getString(common_electronic_moneyR.string.emoney_nfc_bca_top_up_2)
+        )
     }
     private fun processGen1BCA(isoDep: IsoDep, bRawPublicKey: String, bRawPrivateKey: String) {
         showLoading(getOperatorName(issuerActive))

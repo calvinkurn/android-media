@@ -11,6 +11,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerType
 import com.tokopedia.unifyprinciples.Typography
 import org.jetbrains.annotations.NotNull
 
@@ -60,7 +61,8 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         eTollCardInfoView.setListener(this)
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
-        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash || inquiryBalanceModel.isBCAGenOne) View.VISIBLE else View.GONE
+        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash || inquiryBalanceModel.isBCAGenOne ||
+             inquiryBalanceModel.isErrorTopUp2) View.VISIBLE else View.GONE
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
             buttonTopup.text = it.buttonText
             eTollCardInfoView.visibility = View.VISIBLE
@@ -91,6 +93,9 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
                 } else if (inquiryBalanceModel.isBCAGenOne) {
                     tickerType = Ticker.TYPE_ERROR
                     setHtmlDescription(inquiryBalanceModel.messageBCAGen1)
+                } else if (inquiryBalanceModel.isErrorTopUp2) {
+                    tickerType = Ticker.TYPE_WARNING
+                    setHtmlDescription(inquiryBalanceModel.messageTopUp2)
                 }
             }
         }

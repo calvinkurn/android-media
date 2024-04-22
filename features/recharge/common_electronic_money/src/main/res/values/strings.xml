@@ -43,4 +43,5 @@
     <string name="emoney_nfc_connection_issue">https://images.tokopedia.net/img/emoney_revamp_connection_issue.png</string>
     <string name="emoney_nfc_socket_time_out">https://images.tokopedia.net/img/emoney_revamp_socket_time_out.png</string>
     <string name="emoney_nfc_bca_gen_one">Kartu Flazz-mu nggak mendukung transaksi ini, pastikan sudah pakai kartu Gen 2, ya.</string>
+    <string name="emoney_nfc_bca_top_up_2">Update saldo gagal. Transaksi anda bermasalah &amp; dibatalkan, silahkan tunggu secara berkala sampai dana dikembalikan sesuai metode pembayaran. Jika anda ingin tetap bertransaksi silahkan coba lagi</string>
 </resources>

@@ -25,7 +25,8 @@ data class EmoneyInquiry(
         val isCheckSaldoTapcash : Boolean = false,
         val isBCAGenOne: Boolean = false,
         val messageBCAGen1: String = "",
-        val messageTopUp2: String = ""
+        val messageTopUp2: String = "",
+        var isErrorTopUp2: Boolean = false
 )
 
 data class AttributesEmoneyInquiry(
