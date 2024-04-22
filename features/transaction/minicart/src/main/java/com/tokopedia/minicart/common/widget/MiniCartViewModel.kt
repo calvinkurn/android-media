@@ -672,7 +672,11 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    fun updateCart(offerId: Long = DEFAULT_OFFER_ID, newQty: Int? = null) {
+    fun updateCart(
+        offerId: Long = DEFAULT_OFFER_ID,
+        productId: String = "",
+        newQty: Int? = null
+    ) {
         val source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         val miniCartProductUiModels = mutableListOf<UpdateCartRequest>()
         val visitables = getVisitables()
@@ -707,13 +711,17 @@ class MiniCartViewModel @Inject constructor(
         // No-op for booth onSuccess & onError
         updateCartUseCase.execute(
             onSuccess = {
-                updateGwpWidget(offerId, newQty)
+                updateGwpWidget(offerId, productId, newQty)
             },
             onError = { /* do nothing */ }
         )
     }
 
-    private fun getBmGmGroupProductTicker(offerId: Long, newQty: Int? = null) {
+    private fun getBmGmGroupProductTicker(
+        offerId: Long,
+        productId: String? = null,
+        newQty: Int? = null
+    ) {
         if (offerId > DEFAULT_OFFER_ID) {
             updateGwpUseCaseJob[offerId]?.cancel()
             updateGwpUseCaseJob[offerId] = launchCatchError(
@@ -721,6 +729,7 @@ class MiniCartViewModel @Inject constructor(
                     paramsToUpdateGwp = mapParamsFilteredToUpdateGwp(
                         params = paramsToUpdateGwp,
                         offerId = offerId,
+                        productId = productId,
                         qty = newQty
                     )
                     _miniCartListBottomSheetUiModel.value = getGwpSuccessState(
@@ -738,8 +747,8 @@ class MiniCartViewModel @Inject constructor(
         }
     }
 
-    private fun updateGwpWidget(offerId: Long, newQty: Int?) {
-        getBmGmGroupProductTicker(offerId, newQty)
+    private fun updateGwpWidget(offerId: Long, productId: String, newQty: Int?) {
+        getBmGmGroupProductTicker(offerId, productId, newQty)
     }
 
     fun refreshGwpWidget(offerId: Long) {

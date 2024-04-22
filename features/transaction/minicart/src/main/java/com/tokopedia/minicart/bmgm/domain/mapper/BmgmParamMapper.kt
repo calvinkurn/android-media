@@ -79,6 +79,7 @@ object BmgmParamMapper {
     fun mapParamsFilteredToUpdateGwp(
         params: BmGmGetGroupProductTickerParams?,
         offerId: Long,
+        productId: String?,
         qty: Int?
     ): BmGmGetGroupProductTickerParams {
         val carts = params?.carts?.filter { cart ->
@@ -91,7 +92,13 @@ object BmgmParamMapper {
                 it.cartDetails.forEach {
                     var products = it.products
                     if (it.offer.offerId == offerId) {
-                        products = it.products.map { product -> product.copy(qty = qty) }
+                        products = it.products.map { product ->
+                            if (product.productId == productId) {
+                                product.copy(qty = qty)
+                            } else {
+                                product
+                            }
+                        }
                     }
                     cartDetails.add(it.copy(products = products))
                 }

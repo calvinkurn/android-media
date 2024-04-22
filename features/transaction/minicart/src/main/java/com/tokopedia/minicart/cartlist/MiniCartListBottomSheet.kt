@@ -934,11 +934,11 @@ class MiniCartListBottomSheet @Inject constructor(
         bottomSheetListener?.hideProgressLoading()
     }
 
-    private fun updateCart(offerId: Long, newQty: Int? = null) {
+    private fun updateCart(productId: String, offerId: Long, newQty: Int? = null) {
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(LONG_DELAY)
-            viewModel?.updateCart(offerId, newQty)
+            viewModel?.updateCart(offerId, productId, newQty)
         }
     }
 
@@ -992,7 +992,7 @@ class MiniCartListBottomSheet @Inject constructor(
     override fun onQuantityChanged(element: MiniCartProductUiModel, newQty: Int) {
         viewModel?.updateProductQty(element, newQty)
         calculateProduct()
-        updateCart(element.offerId, newQty)
+        updateCart(element.productId, element.offerId, newQty)
     }
 
     override fun onNotesChanged(
@@ -1004,7 +1004,7 @@ class MiniCartListBottomSheet @Inject constructor(
         newNotes: String
     ) {
         viewModel?.updateProductNotes(productId, isBundlingItem, bundleId, bundleGroupId, newNotes)
-        updateCart(offerId)
+        updateCart(productId, offerId)
     }
 
     override fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel) {
