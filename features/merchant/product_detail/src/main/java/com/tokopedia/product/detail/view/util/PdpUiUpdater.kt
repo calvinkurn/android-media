@@ -221,14 +221,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
         updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
             basicContentMap?.run {
-                data = it.createProductContentData()
+                data = it.createProductContentData(loadInitialData)
                 isWishlisted = it.data.isWishlist
             }
         }
 
         updateData(ProductDetailConstant.ONGOING_CAMPAIGN, loadInitialData) {
             ongoingCampaignData?.apply {
-                data = it.createOngoingCampaignData()
+                data = it.createOngoingCampaignData(loadInitialData)
                 shouldShowCampaign = data?.hasCampaign.orFalse()
             }
         }
@@ -309,10 +309,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun ProductInfoP1.createProductContentData() = createContentMainData()
-    private fun ProductInfoP1.createOngoingCampaignData() = createContentMainData()
+    private fun ProductInfoP1.createProductContentData(loadInitialData: Boolean) = createContentMainData(loadInitialData)
+    private fun ProductInfoP1.createOngoingCampaignData(loadInitialData: Boolean) = createContentMainData(loadInitialData)
 
-    private fun ProductInfoP1.createContentMainData() = ProductContentMainData(
+    private fun ProductInfoP1.createContentMainData(loadInitialData: Boolean) = ProductContentMainData(
         campaign = data.campaign,
         thematicCampaign = data.thematicCampaign,
         cashbackPercentage = data.isCashback.percentage,
@@ -320,6 +320,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         stockWording = data.stock.stockWording,
         isVariant = data.variant.isVariant,
         productName = data.name,
+        productNameCollapsed = loadInitialData,
         labelIcons = data.labelIcons,
         isProductActive = basic.isActive(),
         isShowPrice = data.isShowPrice
@@ -1508,6 +1509,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     )
                 }
             }
+        }
+    }
+
+    fun updateOnExpandProductName() {
+        updateData(ProductDetailConstant.PRODUCT_CONTENT, false) {
+            basicContentMap?.data?.productNameCollapsed = false
         }
     }
 }
