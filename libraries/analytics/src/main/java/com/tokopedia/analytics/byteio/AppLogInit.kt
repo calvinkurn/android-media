@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSession
 
 internal fun initAppLog(context: Context) {
-    val channel = if (GlobalConfig.isAllowDebuggingTools()) "local_test" else "googleplay"
+    val channel = if (GlobalConfig.isAllowDebuggingTools()) "local_test" else GlobalConfig.STORE_CHANNEL
     val config = InitConfig("573733", channel)
     config.setAppName("Tokopedia")
 
