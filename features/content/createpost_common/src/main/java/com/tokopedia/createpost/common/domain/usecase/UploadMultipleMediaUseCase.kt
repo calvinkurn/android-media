@@ -6,7 +6,7 @@ import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
-import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostRequest
 import com.tokopedia.createpost.common.view.util.FileUtil
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -30,7 +30,7 @@ class UploadMultipleMediaUseCase @Inject constructor(
     @SubmitPostCoroutineScope private val scope: CoroutineScope,
     private val uploaderUseCase: UploaderUseCase,
     @ApplicationContext graphqlRepository: GraphqlRepository,
-) : GraphqlUseCase<List<SubmitPostMedium>>(graphqlRepository) {
+) : GraphqlUseCase<List<SubmitPostRequest>>(graphqlRepository) {
 
     var postUpdateProgressManager: PostUpdateProgressManager? = null
 
@@ -50,9 +50,9 @@ class UploadMultipleMediaUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        mediaList: List<SubmitPostMedium>,
+        mediaList: List<SubmitPostRequest>,
         onSuccessUploadPerMedia: suspend () -> Unit,
-    ): List<SubmitPostMedium> {
+    ): List<SubmitPostRequest> {
         val deferredList = mediaList.map { media ->
             scope.async {
                 uploadMedia(media).also {
@@ -72,7 +72,7 @@ class UploadMultipleMediaUseCase @Inject constructor(
      * 1. async upload
      * 2. error handling if one of the media is failed upload
      */
-    suspend fun executeOnBackground(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
+    suspend fun executeOnBackground(mediaList: List<SubmitPostRequest>): List<SubmitPostRequest> {
         return mediaList.map {
             uploadMedia(it).also {
                 updateProgress()
@@ -80,25 +80,25 @@ class UploadMultipleMediaUseCase @Inject constructor(
         }
     }
 
-    private suspend fun uploadMedia(medium: SubmitPostMedium): SubmitPostMedium {
+    private suspend fun uploadMedia(media: SubmitPostRequest): SubmitPostRequest {
         val param = uploaderUseCase.createParams(
-            sourceId = getUploadSourceId(medium),
-            filePath = File(setTempFilePath(medium)),
-            withTranscode = getUploadWithTranscode(medium),
+            sourceId = getUploadSourceId(media),
+            filePath = File(setTempFilePath(media)),
+            withTranscode = getUploadWithTranscode(media),
         )
 
         val result = uploaderUseCase(param)
 
         when(result) {
             is UploadResult.Success -> {
-                if(isVideo(medium)) {
-                    medium.videoID = result.uploadId
-                    medium.mediaURL = result.videoUrl
+                if(isVideo(media)) {
+                    media.videoID = result.uploadId
+                    media.mediaURL = result.videoUrl
                 }
                 else {
-                    medium.mediaUploadID = result.uploadId
-                    medium.mediaURL = ""
-                    medium.type = SubmitPostMedium.TYPE_MEDIA_IMAGE_UPLOAD_ID
+                    media.mediaUploadID = result.uploadId
+                    media.mediaURL = ""
+                    media.type = SubmitPostRequest.TYPE_MEDIA_IMAGE_UPLOAD_ID
                 }
             }
             is UploadResult.Error -> {
@@ -106,20 +106,20 @@ class UploadMultipleMediaUseCase @Inject constructor(
             }
         }
 
-        return medium
+        return media
     }
 
-    private fun isVideo(medium: SubmitPostMedium): Boolean {
-        return medium.type == SubmitPostMedium.TYPE_VIDEO
+    private fun isVideo(media: SubmitPostRequest): Boolean {
+        return media.type == SubmitPostRequest.TYPE_VIDEO
     }
 
-    private fun getUploadSourceId(medium: SubmitPostMedium): String {
-        return if(isVideo(medium)) UPLOAD_VIDEO_SOURCE_ID
+    private fun getUploadSourceId(media: SubmitPostRequest): String {
+        return if(isVideo(media)) UPLOAD_VIDEO_SOURCE_ID
         else UPLOAD_IMAGE_SOURCE_ID
     }
 
-    private fun getUploadWithTranscode(medium: SubmitPostMedium): Boolean {
-        return !isVideo(medium)
+    private fun getUploadWithTranscode(media: SubmitPostRequest): Boolean {
+        return !isVideo(media)
     }
 
     private fun updateProgress() {
@@ -127,19 +127,19 @@ class UploadMultipleMediaUseCase @Inject constructor(
         postUpdateProgressManager?.onAddProgress()
     }
 
-    private fun handleUri(medium: SubmitPostMedium): String{
-        val filePath =  context.let { FileUtil.createFilePathFromUri(it,Uri.parse(medium.mediaURL)) }
+    private fun handleUri(media: SubmitPostRequest): String{
+        val filePath =  context.let { FileUtil.createFilePathFromUri(it,Uri.parse(media.mediaURL)) }
         if (filePath.isNotEmpty()) {
-            medium.mediaURL = filePath
+            media.mediaURL = filePath
         }
-        return medium.mediaURL
+        return media.mediaURL
     }
 
-    private fun setTempFilePath(medium: SubmitPostMedium): String {
-        val tempFilePath = if (medium.mediaURL.contains("${ContentResolver.SCHEME_CONTENT}://")) {
-            handleUri(medium)
+    private fun setTempFilePath(media: SubmitPostRequest): String {
+        val tempFilePath = if (media.mediaURL.contains("${ContentResolver.SCHEME_CONTENT}://")) {
+            handleUri(media)
         } else {
-            medium.mediaURL
+            media.mediaURL
         }
 
         mapTempFilePath.add(tempFilePath)

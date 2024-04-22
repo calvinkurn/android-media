@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
-import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostRequest
 import com.tokopedia.createpost.common.domain.usecase.UploadMultipleMediaUseCase
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.util.getFileAbsolutePath
@@ -45,13 +45,13 @@ open class SubmitPostUseCase @Inject constructor(
 
         val uploadedMedia = if (data.creationId.isEmpty()) {
             /** Map Media Data to Request */
-            val mediaRequest = mapMediaToRequest(data.mediaList)
+            val mediaList = mapMediaToRequest(data.mediaList)
 
             /** Upload Media to Uploadpedia */
-            val newMediumList = uploadMultipleMediaUseCase.execute(mediaRequest, onSuccessUploadPerMedia)
+            val response = uploadMultipleMediaUseCase.execute(mediaList, onSuccessUploadPerMedia)
 
             /** Rearrange Media Order */
-            rearrangeMedia(newMediumList)
+            rearrangeMedia(response)
         } else {
             emptyList()
         }
@@ -87,9 +87,9 @@ open class SubmitPostUseCase @Inject constructor(
         return result
     }
 
-    private fun mapMediaToRequest(mediaList: List<CreationUploadData.Post.Media>): List<SubmitPostMedium> {
+    private fun mapMediaToRequest(mediaList: List<CreationUploadData.Post.Media>): List<SubmitPostRequest> {
         return mediaList.mapIndexed { index, media ->
-            SubmitPostMedium(
+            SubmitPostRequest(
                 order = index,
                 mediaURL = getFileAbsolutePath(media.path).orEmpty(),
                 type = media.type,
@@ -104,7 +104,7 @@ open class SubmitPostUseCase @Inject constructor(
         }
     }
 
-    private fun rearrangeMedia(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
+    private fun rearrangeMedia(mediaList: List<SubmitPostRequest>): List<SubmitPostRequest> {
         return mediaList.sortedBy { it.order }
     }
 
