@@ -14,7 +14,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class UserProfileModule {
+object UserProfileModule {
 
     @Provides
     @UserProfileScope

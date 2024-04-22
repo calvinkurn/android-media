@@ -181,15 +181,16 @@ internal class FollowListViewModel @AssistedInject constructor(
     ) {
         if (_isLoading.value) return
 
-        if (shouldRefresh) _isRefreshing.value = true
-        _isLoading.value = true
+        if (shouldRefresh) _isRefreshing.update { true }
+        _isLoading.update { true }
 
         viewModelScope.launch(dispatchers.io) {
             val (result, nextCursor, total) = when (type) {
                 FollowListType.Follower -> getFollowers(cursor)
                 FollowListType.Following -> getFollowings(cursor)
             }
-            _result.value = result
+
+            result
                 .onSuccess { followList ->
                     _followMap.update {
                         if (shouldRefresh) {
@@ -203,12 +204,13 @@ internal class FollowListViewModel @AssistedInject constructor(
                     if (!shouldRefresh) return@onFailure
                     _followMap.update { emptyMap() }
                 }
-                .map {}
-            _nextCursor.value = nextCursor
-            if (total != null) _countFmt.value = total
+
+            _result.update { result.map {} }
+            _nextCursor.update { nextCursor }
+            if (total != null) _countFmt.update { total }
         }.invokeOnCompletion {
-            _isLoading.value = false
-            _isRefreshing.value = false
+            _isLoading.update { false }
+            _isRefreshing.update { false }
         }
     }
 

@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.content.common.ui.contract.OpenLogin
+import com.tokopedia.content.common.util.activitycontract.ContentActivityResultContracts.OpenLogin
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 
 internal class LoginToFollowHelper(

@@ -1,4 +1,4 @@
-package com.tokopedia.people.views.screen
+package com.tokopedia.people.views.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,20 +12,16 @@ import com.tokopedia.nest.components.NestLocalLoad
 import com.tokopedia.people.R
 
 @Composable
-fun FollowListErrorScreen(
+fun FollowListErrorLayout(
     isLoading: Boolean,
     onRefreshButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val onRefreshClicked = remember<(Boolean) -> Unit>(onRefreshButtonClicked) {
-        { onRefreshButtonClicked() }
-    }
-
     NestLocalLoad(
         title = stringResource(R.string.up_common_failed_title),
         description = stringResource(R.string.up_common_failed_title),
         isLoading = isLoading,
-        onRefreshButtonClicked = onRefreshClicked,
+        onRefreshButtonClicked = { onRefreshButtonClicked() },
         modifier = modifier
             .wrapContentHeight()
             .fillMaxWidth()

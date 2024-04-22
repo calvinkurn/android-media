@@ -39,6 +39,7 @@ import com.tokopedia.people.viewmodels.FollowerFollowingListViewModel
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_ACTIVE_TAB
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.screen.FollowingFollowerListScreen
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.action.FollowListAction
@@ -84,7 +85,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val vm = followerFollowingListVMFactory.create(userId)
-                vm onAction FollowerFollowingListAction.Init
+                vm onAction FollowerFollowingListAction.FetchData
                 return vm as T
             }
         }
@@ -113,7 +114,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
     }
 
     private fun onListRefresh() {
-        profileViewModel.onAction(FollowerFollowingListAction.Refresh)
+        profileViewModel.onAction(FollowerFollowingListAction.FetchData)
     }
 
     private fun onPageChanged(type: FollowListType) {

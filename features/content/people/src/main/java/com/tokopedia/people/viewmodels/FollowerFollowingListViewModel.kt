@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 data class FollowerFollowingListUiState(
     val profileName: String,
     val totalFollowersFmt: String,
-    val totalFollowingsFmt: String,
+    val totalFollowingsFmt: String
 ) {
     companion object {
         val Empty
@@ -30,14 +30,12 @@ data class FollowerFollowingListUiState(
 
 sealed interface FollowerFollowingListAction {
 
-    object Init : FollowerFollowingListAction
-
-    object Refresh : FollowerFollowingListAction
+    object FetchData : FollowerFollowingListAction
 }
 
 internal class FollowerFollowingListViewModel @AssistedInject constructor(
     @Assisted private val profileIdentifier: String,
-    private val profileRepo: UserProfileRepository,
+    private val profileRepo: UserProfileRepository
 ) : ViewModel() {
 
     @AssistedFactory
@@ -57,8 +55,7 @@ internal class FollowerFollowingListViewModel @AssistedInject constructor(
 
     infix fun onAction(action: FollowerFollowingListAction) {
         when (action) {
-            FollowerFollowingListAction.Init -> onInit()
-            FollowerFollowingListAction.Refresh -> onInit()
+            FollowerFollowingListAction.FetchData -> onInit()
         }
     }
 

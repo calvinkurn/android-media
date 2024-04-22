@@ -26,9 +26,9 @@ import dagger.Component
         FeedFloatingButtonManagerModule::class,
         ShopRecomModule::class,
         PeopleModule::class,
-        ContentCoachMarkSharedPrefModule::class,
+        ContentCoachMarkSharedPrefModule::class
     ],
-    dependencies = [BaseAppComponent::class],
+    dependencies = [BaseAppComponent::class]
 )
 interface UserProfileComponent {
 
@@ -40,9 +40,9 @@ interface UserProfileComponent {
 
     @Component.Factory
     interface Factory {
-        fun component(
+        fun create(
             baseAppComponent: BaseAppComponent,
-            @BindsInstance context: Context,
+            @BindsInstance context: Context
         ): UserProfileComponent
     }
 }

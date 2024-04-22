@@ -1,4 +1,4 @@
-package com.tokopedia.people.views.screen
+package com.tokopedia.people.views.compose
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -41,7 +41,7 @@ import kotlinx.collections.immutable.toPersistentList
  * Created by kenny.hadisaputra on 22/11/23
  */
 @Composable
-internal fun FollowListScreen(
+internal fun FollowListLayout(
     people: ImmutableList<PeopleUiModel>,
     hasNextPage: Boolean,
     onLoadMore: () -> Unit,
@@ -256,9 +256,9 @@ private fun UserFollowListItemRowPreview() {
 @Preview(name = "Light Mode", uiMode = UI_MODE_NIGHT_NO)
 @Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun FollowListScreenPreview() {
+private fun FollowListLayoutPreview() {
     NestTheme {
-        FollowListScreen(
+        FollowListLayout(
             List(6) {
                 if (it % 2 == 0) {
                     PeopleUiModel.ShopUiModel(

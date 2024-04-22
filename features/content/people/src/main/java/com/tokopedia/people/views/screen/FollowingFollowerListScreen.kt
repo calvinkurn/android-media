@@ -1,4 +1,4 @@
-package com.tokopedia.people.views.fragment
+package com.tokopedia.people.views.screen
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -29,7 +29,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
-import com.tokopedia.content.common.util.activitycontract.ContentActivityResultContracts
+import com.tokopedia.content.common.util.activitycontract.ContentActivityResultContracts.OpenAppLink
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.nest.components.tabs.NestTabs
@@ -41,8 +41,8 @@ import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.utils.LoginListener
 import com.tokopedia.people.utils.rememberLoginToFollowHelper
 import com.tokopedia.people.viewmodels.FollowListViewModel
-import com.tokopedia.people.views.screen.FollowListErrorScreen
-import com.tokopedia.people.views.screen.FollowListScreen
+import com.tokopedia.people.views.compose.FollowListErrorLayout
+import com.tokopedia.people.views.compose.FollowListLayout
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.people.views.uimodel.action.FollowListAction
@@ -171,7 +171,7 @@ internal fun FollowListScreen(
         }
     }
 
-    val userAppLinkLauncher = rememberLauncherForActivityResult(ContentActivityResultContracts.OpenAppLink()) { result ->
+    val userAppLinkLauncher = rememberLauncherForActivityResult(OpenAppLink()) { result ->
         if (result.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val intent = result.intent ?: return@rememberLauncherForActivityResult
         val isFollow = UserProfileActivityResult.isFollow(intent)
@@ -182,7 +182,7 @@ internal fun FollowListScreen(
         )
     }
 
-    val shopAppLinkLauncher = rememberLauncherForActivityResult(ContentActivityResultContracts.OpenAppLink()) { result ->
+    val shopAppLinkLauncher = rememberLauncherForActivityResult(OpenAppLink()) { result ->
         if (result.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val intent = result.intent ?: return@rememberLauncherForActivityResult
         val isFollow = ShopPageActivityResult.isFollow(intent)
@@ -282,7 +282,7 @@ internal fun FollowListScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-internal fun FollowListScreen(
+private fun FollowListScreen(
     state: FollowListState,
     onPeopleClicked: (PeopleUiModel) -> Unit,
     onFollowClicked: (PeopleUiModel) -> Unit,
@@ -301,7 +301,7 @@ internal fun FollowListScreen(
                 .pullRefresh(pullRefreshState)
                 .verticalScroll(rememberScrollState())
         ) {
-            FollowListErrorScreen(
+            FollowListErrorLayout(
                 isLoading = state.isLoading,
                 onRefreshButtonClicked = onRefresh
             )
@@ -318,7 +318,7 @@ internal fun FollowListScreen(
                 .fillMaxSize()
                 .pullRefresh(pullRefreshState)
         ) {
-            FollowListScreen(
+            FollowListLayout(
                 people = state.followList.toImmutableList(),
                 hasNextPage = state.hasNextPage,
                 onLoadMore = onLoadMore,

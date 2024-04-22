@@ -12,9 +12,9 @@ object UserProfileInjector {
 
     fun get(context: Context): UserProfileComponent = synchronized(this) {
         return customComponent ?: DaggerUserProfileComponent.factory()
-            .component(
+            .create(
                 (context.applicationContext as BaseMainApplication).baseAppComponent,
-                context,
+                context
             )
     }
 

@@ -2,6 +2,8 @@ package com.tokopedia.people.viewmodel.followerfollowing
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.content.test.dispatcher.StandardDispatcherProvider
+import com.tokopedia.content.test.dispatcher.UnconfinedDispatcherProvider
 import com.tokopedia.content.test.util.assertEmpty
 import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.content.test.util.assertFalse
@@ -9,8 +11,6 @@ import com.tokopedia.content.test.util.assertNotEqualTo
 import com.tokopedia.content.test.util.assertTrue
 import com.tokopedia.people.model.FollowListModelBuilder
 import com.tokopedia.people.repo.MockUserFollowRepository
-import com.tokopedia.people.util.StandardDispatcherProvider
-import com.tokopedia.people.util.UnconfinedDispatcherProvider
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.action.FollowListAction
