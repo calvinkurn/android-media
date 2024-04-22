@@ -12,12 +12,17 @@ internal val ActivityBasicTwo = object : AppLogInterface {
     override fun getPageName(): String = "Page Two"
 }
 
+internal val ActivityBasicThree = object : AppLogInterface {
+    override fun getPageName(): String = "Page Three"
+}
+
+
 internal val ActivityEnterFrom = object : AppLogInterface {
     override fun getPageName(): String = "Page EnterFrom"
     override fun isEnterFromWhitelisted(): Boolean = true
 }
 
 internal val ActivityShadow = object : AppLogInterface {
-    override fun getPageName(): String = "Shadow"
+    override fun getPageName(): String = ""
     override fun isShadow(): Boolean = true
 }

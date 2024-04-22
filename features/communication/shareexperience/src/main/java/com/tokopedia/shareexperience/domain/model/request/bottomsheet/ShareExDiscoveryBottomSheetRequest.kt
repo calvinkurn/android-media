@@ -6,5 +6,5 @@ data class ShareExDiscoveryBottomSheetRequest(
     @SerializedName("pageType")
     val pageType: Int,
     @SerializedName("campaignId")
-    val id: String
+    val campaignId: String
 ) : ShareExBottomSheetRequest

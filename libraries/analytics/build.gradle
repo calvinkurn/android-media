@@ -64,22 +64,22 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     // applog
-    implementation 'com.bytedance.applog:bdtracker-global:5.6.9-bugfix.6'
-    implementation 'com.bytedance.applog:sampling:5.6.9-bugfix.6'
-    implementation 'com.bytedance.applog:compress:5.6.9-bugfix.6'
-    implementation 'com.bytedance.applog:monitor:5.6.9-bugfix.6'
-    implementation 'com.bytedance.frameworks.core:encrypt:1.2.2'
-    implementation 'com.bytedance.frameworks.baselib:utility:2.0.11'
-    implementation 'com.bytedance.common_business:alog:2.0.0-rc.10'
-    implementation 'com.bytedance.android:alog:1.0.0-rc.6@aar'
-    implementation 'com.ss.android.ugc.quota:BDNetworkTag:0.0.1-alpha.2-support'
-    debugImplementation 'com.bytedance.applog:bdtracker-et_verify:5.6.9-bugfix.6' // debugOnly
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
+    implementation rootProject.ext.appLogDependencies.sampling
+    implementation rootProject.ext.appLogDependencies.compress
+    implementation rootProject.ext.appLogDependencies.monitor
+    implementation rootProject.ext.appLogDependencies.encrypt
+    implementation rootProject.ext.appLogDependencies.baseLibsUtility
+    implementation rootProject.ext.appLogDependencies.businessALog
+    implementation rootProject.ext.appLogDependencies.androidALog
+    implementation rootProject.ext.appLogDependencies.bdNetworkTag
+    debugImplementation rootProject.ext.appLogDependencies.bdTrackerEtVerify // debugOnly
 
     // ttnet
-    implementation 'org.chromium.net:cronet:4.2.137.43-tiktok'
-    implementation 'com.bytedance.frameworks.baselib:ttnet:4.2.137.43-tiktok'
-    implementation 'com.bytedance.boringssl.so:boringssl-so:1.3.6-ttp'
-    implementation 'com.bytedance.ies.common:cpp_shared:21.1.4'
+    implementation rootProject.ext.ttnetDependencies.chromiumCronet
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.ttnetDependencies.boringSsl
+    implementation rootProject.ext.ttnetDependencies.cppShared
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
