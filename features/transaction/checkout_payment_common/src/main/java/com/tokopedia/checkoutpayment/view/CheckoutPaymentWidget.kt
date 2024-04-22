@@ -66,13 +66,6 @@ fun CheckoutPaymentWidget(
                                 variant = NestLoaderType.Shimmer(NestShimmerType.Circle),
                                 modifier = Modifier.size(28.dp)
                             )
-//                            Column(modifier = Modifier.padding(start = 8.dp)) {
-//                                NestLoader(
-//                                    variant = NestLoaderType.Shimmer(NestShimmerType.Line),
-//                                    modifier = Modifier
-//                                        .height(12.dp)
-//                                        .width(48.dp)
-//                                )
                                 NestLoader(
                                     variant = NestLoaderType.Shimmer(NestShimmerType.Line),
                                     modifier = Modifier
@@ -80,7 +73,6 @@ fun CheckoutPaymentWidget(
                                         .height(12.dp)
                                         .width(142.dp)
                                 )
-//                            }
                         }
                     }
 

@@ -188,7 +188,7 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.UnavailableTenureError -> {
                 latestWidget.copy(
-                    installmentText = "Pilih periode pembayaran"
+                    installmentText = DEFAULT_PAYMENT_INSTALLMENT_TEXT
                 )
             }
 
@@ -280,6 +280,7 @@ class PaymentProcessor @Inject constructor(
 
     companion object {
         private const val FULL_PAYMENT_INSTALLMENT_TEXT = "Bayar Penuh"
+        private const val DEFAULT_PAYMENT_INSTALLMENT_TEXT = "Pilih Lama Pembayaran"
     }
 }
 

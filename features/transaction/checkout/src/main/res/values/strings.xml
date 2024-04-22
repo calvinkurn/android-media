@@ -143,6 +143,10 @@
     <string name="platform_fee_diskon_label">Diskon %s</string>
     <string name="platform_fee_diskon_format" formatted="false">-%s</string>
 
+    <string name="checkout_service_fee_title_info">Biaya Layanan</string>
+    <string name="checkout_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
+    <string name="checkout_lbl_installment_fee">Biaya Cicilan</string>
+
     <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
     <string name="checkout_label_total_gifting">Total Pelengkap Hadiah</string>
     <string name="bmgm_mini_cart_bottom_sheet_title">Buy More Save More</string>
@@ -160,5 +164,6 @@
     <string name="checkout_cost_others_title">Total Lainnya</string>
     <string name="checkout_cost_payments_title">Biaya Transaksi</string>
     <string name="checkout_cost_total_title">Total Belanja</string>
+    <string name="checkout_cost_total_with_payment_title">Total Tagihan</string>
 
 </resources>

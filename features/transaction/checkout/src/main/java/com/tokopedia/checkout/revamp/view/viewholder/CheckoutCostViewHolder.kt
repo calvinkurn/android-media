@@ -499,6 +499,8 @@ class CheckoutCostViewHolder(
 
                 var totalPaymentFee = 0.0
 
+                val titleString = binding.root.context.getString(R.string.checkout_service_fee_title_info)
+                val descString = binding.root.context.getString(R.string.checkout_service_fee_tooltip_info)
                 for (installmentService in installmentServiceFee) {
                     totalPaymentFee += installmentService
                     val itemBinding = ItemCheckoutCostPaymentDynamicBinding.inflate(
@@ -506,13 +508,13 @@ class CheckoutCostViewHolder(
                         binding.llCheckoutCostPaymentsExpanded,
                         false
                     )
-                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = "Biaya Layanan"
+                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = titleString
                     itemBinding.icCheckoutCostPaymentFee.isVisible = true
                     itemBinding.icCheckoutCostPaymentFee.setOnClickListener {
                         listener.showPaymentFeeTooltipInfoBottomSheet(
                             OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu."
+                                title = titleString,
+                                tooltipInfo = descString
                             )
                         )
                     }
@@ -581,6 +583,7 @@ class CheckoutCostViewHolder(
                     binding.llCheckoutCostPaymentsExpanded.addView(itemBinding.root)
                 }
 
+                val installmentTitleString = binding.root.context.getString(R.string.checkout_lbl_installment_fee)
                 for (installment in installmentFee) {
                     totalPaymentFee += installment
                     val itemBinding = ItemCheckoutCostPaymentDynamicBinding.inflate(
@@ -588,7 +591,7 @@ class CheckoutCostViewHolder(
                         binding.llCheckoutCostPaymentsExpanded,
                         false
                     )
-                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan"
+                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = installmentTitleString
                     itemBinding.icCheckoutCostPaymentFee.isVisible = false
                     itemBinding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
                     itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment, false).removeDecimalSuffix()
@@ -684,14 +687,16 @@ class CheckoutCostViewHolder(
                 // render outside
                 val paymentFee = installmentServiceFee.first()
                 binding.apply {
-                    tvCheckoutCostPaymentFeeTitle.text = "Biaya Layanan"
+                    val titleString = binding.root.context.getString(R.string.checkout_service_fee_title_info)
+                    val descString = binding.root.context.getString(R.string.checkout_service_fee_tooltip_info)
+                    tvCheckoutCostPaymentFeeTitle.text = titleString
                     tvCheckoutCostPaymentFeeTitle.isVisible = true
                     icCheckoutCostPaymentFee.isVisible = true
                     icCheckoutCostPaymentFee.setOnClickListener {
                         listener.showPaymentFeeTooltipInfoBottomSheet(
                             OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu."
+                                title = titleString,
+                                tooltipInfo = descString
                             )
                         )
                     }
@@ -708,7 +713,7 @@ class CheckoutCostViewHolder(
                 // render outside
                 val paymentFee = installmentFee.first()
                 binding.apply {
-                    tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan"
+                    tvCheckoutCostPaymentFeeTitle.text = binding.root.context.getString(R.string.checkout_lbl_installment_fee)
                     tvCheckoutCostPaymentFeeTitle.isVisible = true
                     icCheckoutCostPaymentFee.isVisible = false
                     tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
@@ -733,6 +738,7 @@ class CheckoutCostViewHolder(
                     llCheckoutCostPaymentsExpanded.isVisible = false
                 }
             }
+            binding.tvCheckoutCostTotalTitle.text = binding.root.context.getString(R.string.checkout_cost_total_with_payment_title)
         } else {
             binding.apply {
                 tvCheckoutCostPaymentFeeTitle.isVisible = false
