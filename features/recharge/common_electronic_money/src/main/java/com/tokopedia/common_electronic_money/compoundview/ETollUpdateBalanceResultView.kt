@@ -78,6 +78,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
 
             tickerTapcash.apply {
                 if (inquiryBalanceModel.isCheckSaldoTapcash) {
+                    tickerType = Ticker.TYPE_WARNING
                     setHtmlDescription(resources.getString(R.string.emoney_nfc_ticker_desc))
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -88,6 +89,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
                         override fun onDismiss() {}
                     })
                 } else if (inquiryBalanceModel.isBCAGenOne) {
+                    tickerType = Ticker.TYPE_ERROR
                     setHtmlDescription(inquiryBalanceModel.messageBCAGen1)
                 }
             }
