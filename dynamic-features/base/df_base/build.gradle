@@ -100,7 +100,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.autocomplete)
     implementation projectOrAar(rootProject.ext.features.homeRecom)
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
-    implementation projectOrAar(rootProject.ext.features.productCardCompact)
 
     //Fintech
     implementation projectOrAar(rootProject.ext.features.wallet)
