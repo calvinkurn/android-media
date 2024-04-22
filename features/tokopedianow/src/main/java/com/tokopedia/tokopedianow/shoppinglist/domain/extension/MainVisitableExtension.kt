@@ -295,7 +295,7 @@ internal object MainVisitableExtension {
             val nextProduct = iterator.next()
             for (miniCartItem in miniCartItems) {
                 if (nextProduct.id == miniCartItem.productId) {
-                    add(ShoppingListCartProductItemUiModel(nextProduct.image))
+                    add(ShoppingListCartProductItemUiModel(nextProduct.image, nextProduct.productLayoutType))
                     iterator.remove()
                     break
                 }
