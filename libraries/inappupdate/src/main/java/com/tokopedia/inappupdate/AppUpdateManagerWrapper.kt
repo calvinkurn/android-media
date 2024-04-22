@@ -16,6 +16,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.gson.Gson
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inappupdate.model.DataUpdateApp
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.lang.ref.WeakReference
@@ -30,6 +31,8 @@ object AppUpdateManagerWrapper {
     private var INAPP_UPDATE_PREF = "inappupdate_pref"
     private var KEY_INAPP_TYPE = "inapp_type"
     private var KEY_LAST_TIME_SHOW_FLEXIBLE_UPDATE = "inapp_last_time_show_flexible_update"
+    private const val ANDROID_CUSTOMER_APP_UPDATE = "android_customer_app_update"
+    private const val ANDROID_SELLER_APP_UPDATE = "android_seller_app_update"
 
     private var LOG_UPDATE_TYPE_FLEXIBLE = "flexible"
     private var LOG_UPDATE_TYPE_IMMEDIATE = "immediate"
@@ -136,7 +139,11 @@ object AppUpdateManagerWrapper {
     private fun showDialogReasonForceUpdate(activity: Activity) {
         val gson = Gson()
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
-        val dataAppUpdate: String = remoteConfig.getString("android_customer_app_update")
+        val dataAppUpdate: String = if (GlobalConfig.isSellerApp()) {
+            remoteConfig.getString(ANDROID_SELLER_APP_UPDATE)
+        } else {
+            remoteConfig.getString(ANDROID_CUSTOMER_APP_UPDATE)
+        }
         val dataUpdateApp: DataUpdateApp = gson.fromJson(
             dataAppUpdate,
             DataUpdateApp::class.java
