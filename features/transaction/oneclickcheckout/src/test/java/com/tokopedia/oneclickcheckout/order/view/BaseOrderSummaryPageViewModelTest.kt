@@ -140,7 +140,8 @@ open class BaseOrderSummaryPageViewModelTest {
                 editAddressUseCase,
                 orderSummaryAnalytics,
                 setStateChosenAddressFromAddressUseCase,
-                testDispatchers
+                testDispatchers,
+                gson
             ),
             OrderSummaryPageCheckoutProcessor(
                 checkoutOccUseCase,

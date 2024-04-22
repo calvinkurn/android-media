@@ -35,6 +35,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel.ButtonState.OOS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_KEY
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
@@ -94,12 +95,10 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
-    private val pageSource: String by lazyThreadSafetyNone {
-        pagerAdapter.getCurrentTabKey(binding.vpProductPreview.currentItem)
+    private val currentTab: String get() {
+        val index = binding.vpProductPreview.currentItem
+        return pagerAdapter.getCurrentTabKey(index)
     }
-
-    private val currentTab: String get() =
-        pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
 
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
@@ -113,11 +112,11 @@ class ProductPreviewFragment @Inject constructor(
     private var coachMark: CoachMark2? = null
 
     private var coachMarkJob: Job? = null
-
     private val hasCoachMark: Boolean get() =
         when (val source = viewModel.productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
             is ProductPreviewSourceModel.ReviewSourceData -> false
+            is ProductPreviewSourceModel.ShareSourceData -> true
             else -> false
         }
 
@@ -159,12 +158,20 @@ class ProductPreviewFragment @Inject constructor(
 
     private val coachMarkItems by lazyThreadSafetyNone {
         arrayListOf(
-            CoachMark2Item(
-                anchorView = binding.layoutProductPreviewTab.anchorCoachmark,
-                title = "",
-                description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
-                position = CoachMark2.POSITION_BOTTOM
-            )
+            when (viewModel.productPreviewSource.source) {
+                is ProductPreviewSourceModel.ShareSourceData -> CoachMark2Item(
+                    anchorView = binding.anchorAtc,
+                    title = "",
+                    description = getString(contentproductpreviewR.string.product_prev_coachmark_share),
+                    position = CoachMark2.POSITION_TOP
+                )
+                else -> CoachMark2Item(
+                    anchorView = binding.layoutProductPreviewTab.anchorCoachmark,
+                    title = "",
+                    description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            }
         )
     }
 
@@ -188,7 +195,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun onClickHandler() = with(binding) {
         layoutProductPreviewTab.icBack.setOnClickListener {
-            analytics.onClickBackButton(pageSource)
+            analytics.onClickBackButton(currentTab)
             activity?.finish()
         }
         layoutProductPreviewTab.tvProductTabTitle.setOnClickListener {
@@ -256,6 +263,7 @@ class ProductPreviewFragment @Inject constructor(
                         requireContext(),
                         event.appLink
                     )
+
                     is ProductPreviewUiEvent.ShowSuccessToaster -> {
                         val isAtc = event.type == ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC
                         Toaster.build(
@@ -265,10 +273,16 @@ class ProductPreviewFragment @Inject constructor(
                                 getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
                                 )
-                            } else { "" },
+                            } else {
+                                ""
+                            },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
-                                if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                                if (isAtc) viewModel.onAction(
+                                    ProductPreviewAction.Navigate(
+                                        ApplinkConst.CART
+                                    )
+                                )
                             }
                         ).show()
                     }
@@ -286,9 +300,11 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
+
                     is ProductPreviewUiEvent.FailFetchMiniInfo -> {
                         binding.viewFooter.gone()
                     }
+
                     is ProductPreviewUiEvent.UnknownSourceData -> activity?.finish()
                     else -> return@collect
                 }
@@ -309,8 +325,8 @@ class ProductPreviewFragment @Inject constructor(
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
-        analytics.onImpressATC(pageSource)
-        if (model.buttonState == OOS) analytics.onImpressRemindMe(pageSource)
+        analytics.onImpressATC(currentTab)
+        if (model.buttonState == OOS) analytics.onImpressRemindMe(currentTab)
 
         binding.viewFooter.apply {
             show()
@@ -318,13 +334,20 @@ class ProductPreviewFragment @Inject constructor(
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
                     handleAtc(model)
+                }, onNavClicked = {
+                    analytics.onClickBottomNav(model)
+                    router.route(
+                        requireContext(),
+                        ApplinkConst.PRODUCT_INFO,
+                        viewModel.productPreviewSource.productId
+                    )
                 })
             }
         }
     }
 
     private fun handleAtc(model: BottomNavUiModel) {
-        if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
+        if (model.buttonState == OOS) analytics.onClickRemindMe(currentTab)
         if (model.hasVariant) {
             analytics.onAtcVariant(model, currentTab)
             AtcVariantHelper.goToAtcVariant(

@@ -1,16 +1,15 @@
 package com.tokopedia.topads.sdk.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.topads.sdk.widget.TdnBannerView;
-import com.tokopedia.topads.sdk.widget.TdnVerticalView;
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView;
-import com.tokopedia.topads.sdk.widget.TopAdsImageView;
+import com.tokopedia.topads.sdk.v2.tdnvertical.widget.TdnVerticalView;
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView;
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView;
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TdnBannerView;
 
 import dagger.Component;
 
 @TopAdsScope
-@Component(modules = {TopAdsModule.class, TopAdsWishlistModule.class, ViewModelModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {TopAdsModule.class, ViewModelModule.class}, dependencies = BaseAppComponent.class)
 public interface TopAdsComponent {
 
     void inject(TdnBannerView tdnBannerView);

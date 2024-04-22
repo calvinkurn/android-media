@@ -23,6 +23,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.Transaction
 import com.tokopedia.applink.RouteManager
@@ -89,7 +91,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -226,7 +228,7 @@ import javax.inject.Inject
 import com.tokopedia.atc_common.R as atc_commonR
 
 @Keep
-open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener {
+open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener, AppLogInterface {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -237,7 +239,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var paramUohOrder = UohListParam()
     private var orderList: UohListOrder.UohOrders = UohListOrder.UohOrders()
     private var recommendationList: List<RecommendationWidget> = listOf()
-    private var tdnBanner: TopAdsImageViewModel = TopAdsImageViewModel()
+    private var tdnBanner: TopAdsImageUiModel = TopAdsImageUiModel()
     private var responseFinishOrder: UohFinishOrder.FinishOrderBuyer = UohFinishOrder.FinishOrderBuyer()
     private var responseLsPrintFinishOrder: LsPrintData.Oiaction = LsPrintData.Oiaction()
     private var currFilterDateKey: String = ""
@@ -2013,6 +2015,14 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     override fun getScreenName(): String = ""
+
+    override fun getPageName(): String {
+        return PageName.UOH
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
 
     override fun initInjector() {
         activity?.let { activity ->

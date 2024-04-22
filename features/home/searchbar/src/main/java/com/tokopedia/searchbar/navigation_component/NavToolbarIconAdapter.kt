@@ -168,13 +168,21 @@ internal class NavToolbarIconAdapter(
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+
     fun getShareIconPosition(): Int? {
         val model = iconConfig.iconList.find { it.id == IconList.ID_SHARE }
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+
     fun getNoteBookPosition(): Int? {
         val model = iconConfig.iconList.find { it.id == IconList.ID_NOTEBOOK }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
+    }
+
+    fun getCartIconPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_CART }
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
@@ -344,7 +352,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.name
-        iconImage.cancelAnimation()
+        iconImage.pauseAnimation()
         iconImage.progress = INITIAL_LOTTIE_PROGRESS
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {

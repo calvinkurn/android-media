@@ -1,8 +1,7 @@
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModelTest
-import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModelTest
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModelTest
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightPresenterTest
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModelTest
-import com.tokopedia.topads.dashboard.viewmodel.TopAdsEducationViewModel
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsEducationViewModelTest
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsInsightViewModelTest
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModelTest

@@ -91,6 +91,7 @@ class HomeAtfUseCaseTest {
         }
 
         homeAtfUseCase.fetchAtfDataList()
+        delay(2000)
 
         Assert.assertNull(result[0])
         val result1 = result[1]
@@ -111,6 +112,7 @@ class HomeAtfUseCaseTest {
         }
 
         val homeAtfUseCase = createHomeAtfUseCase(
+            homeDispatcher = dispatcher,
             dynamicPositionRepository = mockDynamicPositionRepository
         )
 
@@ -119,6 +121,7 @@ class HomeAtfUseCaseTest {
         }
 
         homeAtfUseCase.fetchAtfDataList()
+        delay(2000)
 
         Assert.assertNull(result[0])
         val result1 = result[1]

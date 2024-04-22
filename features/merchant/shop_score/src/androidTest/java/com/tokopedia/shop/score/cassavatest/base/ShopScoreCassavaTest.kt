@@ -15,10 +15,12 @@ import com.tokopedia.shop.score.stub.common.util.getHyperlinkText
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
+import com.tokopedia.shop.score.stub.common.util.onIdVisibleView
 import com.tokopedia.shop.score.stub.common.util.scrollTo
 import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.MatcherAssert
 import org.junit.Rule
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 open class ShopScoreCassavaTest : BaseShopScoreTest() {
 
@@ -66,7 +68,7 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
 
     protected fun clickTickerPenalty() {
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
-        onIdView(com.tokopedia.unifycomponents.R.id.ticker_description).isViewDisplayed().onClick()
+        onIdVisibleView(unifycomponentsR.id.ticker_description).isViewDisplayed().onClick()
         validate(CLICK_TICKER_PENALTY_PATH)
     }
 

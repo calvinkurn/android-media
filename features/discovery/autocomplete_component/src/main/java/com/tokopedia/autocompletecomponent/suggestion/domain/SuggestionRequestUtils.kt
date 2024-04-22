@@ -99,6 +99,8 @@ object SuggestionRequestUtils {
                         }
                         badges {
                             image_url
+                            title
+                            show
                         }
                         shop {
                             id

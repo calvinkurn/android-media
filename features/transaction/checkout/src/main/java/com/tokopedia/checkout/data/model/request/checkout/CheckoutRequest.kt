@@ -32,7 +32,9 @@ data class CheckoutRequest(
     @SerializedName("fingerprint_support")
     val fingerprintSupport: String,
     @SerializedName("fingerprint_publickey")
-    val fingerprintPublickey: String
+    val fingerprintPublickey: String,
+    @SerializedName("tracker")
+    val tracker: String
 )
 
 data class Carts(
@@ -80,6 +82,23 @@ data class Carts(
                 }
             }
             return pppLabelList
+        }
+
+    val cartIds: ArrayList<String>
+        get() {
+            val arr = arrayListOf<String>()
+            data.forEach { data ->
+                data.groupOrders.forEach { groupOrder ->
+                    groupOrder.shopOrders.forEach { shopOrders ->
+                        shopOrders.bundle.forEach { bundle ->
+                            bundle.productData.forEach { product ->
+                                arr.add(product.cartId)
+                            }
+                        }
+                    }
+                }
+            }
+            return arr
         }
 }
 

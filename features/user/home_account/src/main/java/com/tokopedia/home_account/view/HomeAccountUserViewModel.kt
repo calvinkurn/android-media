@@ -37,12 +37,12 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -260,7 +260,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getRecommendation(page: Int) {
         launchCatchError(block = {
             val recommendationWidget = getRecommendationList(page)
-            var tdnBanner: TopAdsImageViewModel? = null
+            var tdnBanner: TopAdsImageUiModel? = null
             if (recommendationWidget.recommendationItemList.size >= TDN_INDEX && checkFirstPage(page)) {
                 tdnBanner = getTdnBannerData()
             }
@@ -279,7 +279,7 @@ class HomeAccountUserViewModel @Inject constructor(
             })
     }
 
-    private suspend fun getTdnBannerData(): TopAdsImageViewModel? {
+    private suspend fun getTdnBannerData(): TopAdsImageUiModel? {
         return try {
             val queryParams =
                 topAdsImageViewUseCase.getQueryMap(

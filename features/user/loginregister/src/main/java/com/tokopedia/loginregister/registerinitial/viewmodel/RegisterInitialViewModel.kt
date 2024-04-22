@@ -28,11 +28,10 @@ import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodS
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
-import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,7 +52,7 @@ class RegisterInitialViewModel @Inject constructor(
     private val activateUserUseCase: ActivateUserUseCase,
     private val discoverUseCase: DiscoverUseCase,
     private val loginTokenUseCase: LoginTokenUseCase,
-    private val getProfileUseCase: GetProfileUseCase,
+    private val getProfileUseCase: GetUserInfoAndSaveSessionUseCase,
     private val tickerInfoUseCase: TickerInfoUseCase,
     private val dynamicBannerUseCase: DynamicBannerUseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
@@ -140,8 +139,8 @@ class RegisterInitialViewModel @Inject constructor(
             val result = discoverUseCase(PARAM_DISCOVER_REGISTER)
             mutableGetProviderResponse.value = Success(result.data)
         }, onError = {
-            mutableGetProviderResponse.value = Fail(it)
-        })
+                mutableGetProviderResponse.value = Fail(it)
+            })
     }
 
     fun registerGoogle(accessToken: String, email: String) {
@@ -168,23 +167,30 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun getUserInfo() {
         idlingResourceProvider?.increment()
-        getProfileUseCase.execute(
-            GetProfileSubscriber(
-                userSession,
-                onSuccessGetUserInfo(),
-                onFailedGetUserInfo()
-            )
-        )
+        launch {
+            try {
+                val result = getProfileUseCase(Unit)
+                when (result) {
+                    is Success -> onSuccessGetUserInfo(result.data.profileInfo)
+                    is Fail -> onFailedGetUserInfo(result.throwable)
+                }
+            } catch (e: Exception) {
+                onFailedGetUserInfo(e)
+            }
+        }
     }
 
     fun getUserInfoAfterAddPin() {
-        getProfileUseCase.execute(
-            GetProfileSubscriber(
-                userSession,
-                onSuccessGetUserInfoAfterAddPin(),
-                onFailedGetUserInfoAfterAddPin()
-            )
-        )
+        launch {
+            when (val response = getProfileUseCase(Unit)) {
+                is Success -> {
+                    mutableGetUserInfoAfterAddPinResponse.value = Success(ProfileInfoData(response.data.profileInfo))
+                }
+                is Fail -> {
+                    mutableGetUserInfoAfterAddPinResponse.value = Fail(response.throwable)
+                }
+            }
+        }
     }
 
     fun getTickerInfo() {
@@ -205,8 +211,8 @@ class RegisterInitialViewModel @Inject constructor(
             val result = registerCheckUseCase(params)
             onSuccessRegisterCheck().invoke(result)
         }, onError = {
-            onFailedRegisterCheck().invoke(it)
-        })
+                onFailedRegisterCheck().invoke(it)
+            })
     }
 
     fun registerRequestV2(
@@ -220,16 +226,21 @@ class RegisterInitialViewModel @Inject constructor(
             if (keyData.key.isNotEmpty()) {
                 val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
                 val registerRequestParam = RegisterRequestParam(
-                    email, encryptedPassword, OS_TYPE_ANDROID, REG_TYPE_EMAIL,
-                    fullName, validateToken, keyData.hash
+                    email,
+                    encryptedPassword,
+                    OS_TYPE_ANDROID,
+                    REG_TYPE_EMAIL,
+                    fullName,
+                    validateToken,
+                    keyData.hash
                 )
                 userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
                 val result = registerRequestV2UseCase(registerRequestParam)
                 onSuccessRegisterRequest(result.data)
             }
         }, onError = {
-            onFailedRegisterRequest(it)
-        })
+                onFailedRegisterRequest(it)
+            })
     }
 
     fun activateUser(
@@ -310,42 +321,14 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
-        return {
-            mutableGetUserInfoResponse.value = Success(ProfileInfoData(it.profileInfo))
-            idlingResourceProvider?.decrement()
-        }
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo) {
+        mutableGetUserInfoResponse.value = Success(ProfileInfoData(profileInfo))
+        idlingResourceProvider?.decrement()
     }
 
-    private fun onFailedGetUserInfo(): (Throwable) -> Unit {
-        return {
-            mutableGetUserInfoResponse.value = Fail(it)
-            idlingResourceProvider?.decrement()
-        }
-    }
-
-    private fun onSuccessGetUserInfoAfterAddPin(): (ProfilePojo) -> Unit {
-        return {
-            mutableGetUserInfoAfterAddPinResponse.value = Success(ProfileInfoData(it.profileInfo))
-        }
-    }
-
-    private fun onFailedGetUserInfoAfterAddPin(): (Throwable) -> Unit {
-        return {
-            mutableGetUserInfoAfterAddPinResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessGetTickerInfo(): (List<TickerInfoPojo>) -> Unit {
-        return {
-            mutableGetTickerInfoResponse.value = Success(it)
-        }
-    }
-
-    private fun onFailedGetTickerInfo(): (Throwable) -> Unit {
-        return {
-            mutableGetTickerInfoResponse.value = Fail(it)
-        }
+    private fun onFailedGetUserInfo(throwable: Throwable) {
+        mutableGetUserInfoResponse.value = Fail(throwable)
+        idlingResourceProvider?.decrement()
     }
 
     private fun onSuccessRegisterCheck(): (RegisterCheckPojo) -> Unit {
@@ -447,7 +430,6 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun clearBackgroundTask() {
         loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
     }
 
     override fun onCleared() {

@@ -43,4 +43,13 @@
         <item name="colorControlActivated">@color/Unify_GN500</item>
         <item name="colorControlHighlight">@color/Unify_GN500</item>
     </style>
+
+    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/Unify_NN700_32</item>
+        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
+    </style>
+
+    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/Unify_GN400</item>
+    </style>
 </resources>

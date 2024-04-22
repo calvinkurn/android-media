@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.utils.enableRollenceContentProductPreview
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -54,6 +55,7 @@ import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTo
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopReviewList
+import com.tokopedia.review.feature.reading.data.VariantFilter
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapter
@@ -75,6 +77,9 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilter
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.review.feature.reading.presentation.widget.SelectVariantUiModel
+import com.tokopedia.review.feature.reading.presentation.widget.VariantFilterBottomSheet
+import com.tokopedia.review.feature.reading.presentation.widget.toVariantUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -85,6 +90,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
@@ -163,8 +169,12 @@ open class ReadReviewFragment :
     private var errorType = GlobalError.NO_CONNECTION
     private var isProductReview: Boolean = false
     private var imageClickedPosition = 0
+    private var tickerInfo: Ticker? = null
 
     private var selectedTopic: String? = null
+
+    private var filterVariants: List<SelectVariantUiModel.Variant> = emptyList()
+    private var pairedOptions: List<List<String>> = emptyList()
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -514,6 +524,33 @@ open class ReadReviewFragment :
         }
     }
 
+    override fun onFilterWithVariantClicked(isActive: Boolean) {
+        val title = context?.getString(R.string.review_reading_filter_all_variants) ?: ""
+        if (isProductReview) {
+            ReadReviewTracking.trackOnFilterClicked(
+                title,
+                isActive,
+                viewModel.getProductId()
+            )
+        } else {
+            ReadReviewTracking.trackOnFilterShopReviewClicked(
+                title,
+                isActive,
+                viewModel.getProductId()
+            )
+        }
+
+        reviewHeader?.removeNewBadge(
+            context?.getString(R.string.review_reading_filter_all_variants) ?: ""
+        )
+
+        VariantFilterBottomSheet.instance(
+            this,
+            filterVariants,
+            pairedOptions
+        ).show(parentFragmentManager, VariantFilterBottomSheet.TAG)
+    }
+
     override fun onFilterSubmitted(
         filterName: String,
         selectedFilter: Set<ListItemUnify>,
@@ -563,6 +600,15 @@ open class ReadReviewFragment :
         reviewHeader?.updateSelectedSort(selectedSort.listTitleText)
         viewModel.setSort(selectedSort.listTitleText, isProductReview)
         showListOnlyLoading()
+    }
+
+    override fun onFilterVariant(selectVariantUiModel: SelectVariantUiModel) = with(selectVariantUiModel) {
+        this@ReadReviewFragment.filterVariants = variants
+        clearAllData()
+        reviewHeader?.updateSelectedVariant(count)
+        viewModel.setVariantFilter(filter, opt, isProductReview)
+        showListOnlyLoading()
+        updateTopicExtraction()
     }
 
     override fun onReportOptionClicked(reviewId: String, shopId: String) {
@@ -626,6 +672,7 @@ open class ReadReviewFragment :
             }
         }
         updateTopicExtraction()
+        resetFilterVariants()
     }
 
     override fun onAttachedImagesClicked(
@@ -646,7 +693,7 @@ open class ReadReviewFragment :
             ReadReviewTracking.trackOnShopReviewImageClicked(productReview.feedbackID, shopId)
         }
 
-        if (enableContentProductPreview) {
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
             goToProductPreviewActivityReviewSource(
                 reviewId = productReview.feedbackID,
                 attachmentId = attachmentId
@@ -656,7 +703,7 @@ open class ReadReviewFragment :
                 positionClicked = positionClicked,
                 reviewMediaThumbnailUiModel = reviewMediaThumbnailUiModel,
                 productReview = productReview,
-                shopId = shopId,
+                shopId = shopId
             )
         }
     }
@@ -851,6 +898,11 @@ open class ReadReviewFragment :
         }
     }
 
+    private fun resetFilterVariants() {
+        val options = filterVariants.flatMap { it.options }
+        options.forEach { it.isSelected = false }
+    }
+
     private fun updateTopicExtraction() {
         reviewHeader?.loadingTopicExtraction()
         viewModel.updateTopicExtraction()
@@ -875,6 +927,7 @@ open class ReadReviewFragment :
         emptyFilteredStateImage = view.findViewById(R.id.read_review_empty_list_image)
         goToTopFab = view.findViewById(R.id.read_review_go_to_top_fab)
         emptyRatingOnly = view.findViewById(R.id.read_review_rating_only)
+        tickerInfo = view.findViewById(R.id.read_review_ticker_info)
     }
 
     private fun setupFab() {
@@ -969,7 +1022,6 @@ open class ReadReviewFragment :
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReadReviewFragment)
-            setTopicExtraction(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             setAvailableFilters(
                 ratingAndTopics.topics,
                 ratingAndTopics.availableFilters,
@@ -978,8 +1030,12 @@ open class ReadReviewFragment :
             getRecyclerView(view)?.show()
             setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
             setSeeAll(false)
+            setTopicExtraction(ratingAndTopics.keywords, selectedTopic, this@ReadReviewFragment)
             show()
         }
+
+        filterVariants = ratingAndTopics.variantsData.toVariantUiModel()
+        pairedOptions = ratingAndTopics.pairedVariantsData.map { it.optionIds }
     }
 
     open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
@@ -1039,6 +1095,14 @@ open class ReadReviewFragment :
             )
             if (isListEmpty || currentPage == 0) hideFab() else showFab()
         }
+        setTickerInfo(productrevGetProductReviewList.variantFilter)
+    }
+
+    private fun setTickerInfo(data: VariantFilter) {
+        if (data.isUnavailable) {
+            tickerInfo?.setTextDescription(data.ticker)
+            tickerInfo?.show()
+        } else tickerInfo?.hide()
     }
 
     private fun onSuccessGetShopReviews(productrevGetShopReviewList: ProductrevGetShopReviewList) {

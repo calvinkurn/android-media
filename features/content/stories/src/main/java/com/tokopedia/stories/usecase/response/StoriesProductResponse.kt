@@ -82,6 +82,9 @@ data class StoriesProductResponse(
             @SerializedName("priceMaskedFmt")
             val priceMaskedFmt: String = "",
 
+            @SerializedName("priceFormatPriority")
+            val priceFormatPriority: String = "",
+
             @SerializedName("isBebasOngkir")
             val isBebasOngkir: Boolean = false,
 

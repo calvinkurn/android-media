@@ -7,6 +7,7 @@ import com.tokopedia.dropoff.R
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dropoff.databinding.ItemAutocompleteResultBinding
 import com.tokopedia.logisticCommon.domain.model.*
+import com.tokopedia.baselist.R as baselistR
 
 class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -48,7 +49,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = when (data[position]) {
         is SuggestedPlace -> R.layout.item_autocomplete_result
         is SavedAddress -> R.layout.item_autocomplete_result
-        is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
+        is LoadingType -> baselistR.layout.item_shimmering_list
         is HeaderType -> R.layout.item_autocomplete_header
         is NoResultType -> R.layout.item_autocomplete_no_result
         is Place -> R.layout.item_autocomplete_result

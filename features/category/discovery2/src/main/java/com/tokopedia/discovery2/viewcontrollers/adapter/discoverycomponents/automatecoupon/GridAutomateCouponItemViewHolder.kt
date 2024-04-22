@@ -25,7 +25,7 @@ class GridAutomateCouponItemViewHolder(
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val binding = GridAutomateCouponItemLayoutBinding.bind(itemView)
+    private val couponGrid = itemView.findViewById<AutomateCouponGridView>(R.id.coupon_grid)
 
     private var viewModel: ListAutomateCouponItemViewModel? = null
 
@@ -40,11 +40,11 @@ class GridAutomateCouponItemViewHolder(
 
         lifecycleOwner?.let { lifeCycle ->
             viewModel?.getCouponModel()?.observe(lifeCycle) {
-                binding.renderCoupon(it)
+                renderCoupon(it)
             }
 
             viewModel?.getCTAState()?.observe(lifeCycle) { ctaState ->
-                binding.couponGrid.setState(mapToCTAHandler(ctaState))
+                couponGrid.setState(mapToCTAHandler(ctaState))
             }
 
             viewModel?.shouldShowErrorClaimCouponToaster()?.observe(lifeCycle) { reason ->
@@ -62,7 +62,7 @@ class GridAutomateCouponItemViewHolder(
         }
     }
 
-    private fun GridAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponUiModel) {
+    private fun renderCoupon(model: AutomateCouponUiModel) {
         val handler = mapToCTAHandler(model.ctaState)
 
         couponGrid.apply {

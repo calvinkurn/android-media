@@ -11,4 +11,11 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="TradeInHintTextInputLayout" parent="TextInputLayout">
+        <item name="android:theme">@style/TradeInHintTextInputLayoutColorLine</item>
+    </style>
+
+    <style name="TradeInHintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
+        <item name="android:textColorHint">@color/Unify_NN200</item>
+    </style>
 </resources>

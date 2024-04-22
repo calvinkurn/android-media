@@ -170,6 +170,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
     testImplementation rootProject.ext.testDependencies.assertJ
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
@@ -202,6 +203,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.accompanistFlowLayout
 }
 
 project.ext {

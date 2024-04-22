@@ -47,7 +47,7 @@ internal fun productCardGridCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
-        addToCartHeight(context, productCardModel),
+        ctaHeight(context, productCardModel),
     )
 
     val productCardHeight = productCardComponentHeightList.sum()
@@ -120,7 +120,7 @@ internal fun productCardListCarouselHeight(
         listOf(
             maxOf(productCardImageSectionHeight, productCardComponentHeight),
             listCardPaddingInBackground(productCardModel, context),
-            addToCartHeight(context, productCardModel),
+            ctaHeight(context, productCardModel),
         ).sum()
 
     Timber.d(
@@ -220,8 +220,8 @@ private fun shopSectionHeight(context: Context?, productCardModel: ProductCardMo
             .plus(context.getPixel(productcardR.dimen.product_card_reimagine_shop_section_height))
     else 0
 
-private fun addToCartHeight(context: Context?, productCardModel: ProductCardModel): Int =
-    if (productCardModel.showAddToCartButton() || productCardModel.useQuantityEditor())
+private fun ctaHeight(context: Context?, productCardModel: ProductCardModel): Int =
+    if (productCardModel.showAddToCartButton() || productCardModel.useQuantityEditor() || productCardModel.shouldShowGenericCta())
         context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_margin_top)
             .plus(context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_height))
     else 0

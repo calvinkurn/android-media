@@ -327,7 +327,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun setShopReimaginedContainerMargin() {
         containerProductList?.let {
             it.clipToOutline = true
-            it.background = MethodChecker.getDrawable(itemView.context, shop_widgetR.drawable.bg_shop_reimagined_rounded)
+            it.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_reimagined_rounded)
             (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
             (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }

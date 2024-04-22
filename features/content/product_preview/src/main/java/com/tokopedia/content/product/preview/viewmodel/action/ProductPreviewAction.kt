@@ -17,6 +17,9 @@ sealed interface ProductPreviewAction {
     object FetchReviewByIds : ProductPreviewAction
     object HasVisitCoachMark : ProductPreviewAction
     object ProductMediaVideoEnded : ProductPreviewAction
+
+    data class ProductImageInteraction(val isScalingMode: Boolean) : ProductPreviewAction
+
     data class ProductMediaSelected(val position: Int) : ProductPreviewAction
     data class ReviewContentSelected(val position: Int) : ProductPreviewAction
     data class ReviewContentScrolling(val position: Int, val isScrolling: Boolean) : ProductPreviewAction

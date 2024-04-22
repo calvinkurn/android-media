@@ -40,6 +40,7 @@ import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import com.tokopedia.shareexperience.ui.util.getImageGeneratorProperty
 import com.tokopedia.shareexperience.ui.util.getSelectedChipPosition
 import com.tokopedia.shareexperience.ui.util.getSelectedImageUrl
+import com.tokopedia.shareexperience.ui.util.isUrl
 import com.tokopedia.shareexperience.ui.util.map
 import com.tokopedia.shareexperience.ui.util.mapError
 import com.tokopedia.user.session.UserSessionInterface
@@ -305,9 +306,16 @@ class ShareExViewModel @Inject constructor(
                     val finalLinkProperties = linkPropertiesWithCampaign.copy(
                         ogImageUrl = model.imageUrl
                     )
+                    val defaultUrlWithUtm = if (shareProperty.shareId != null &&
+                        bottomSheetArg.defaultUrl.isUrl()
+                    ) {
+                        generateUrlWithUTM(bottomSheetArg.defaultUrl, channelEnum, campaign)
+                    } else {
+                        bottomSheetArg.defaultUrl
+                    }
                     val shortLinkRequest = generateShortLinkRequest(
                         bottomSheetArg.getIdentifier(),
-                        bottomSheetArg.defaultUrl,
+                        defaultUrlWithUtm,
                         bottomSheetArg.pageTypeEnum,
                         channelEnum,
                         finalLinkProperties,
@@ -377,8 +385,8 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun generateShortLinkRequest(
-        identifier: String, // 2151019476
-        defaultUrl: String,
+        identifier: String,
+        defaultUrlWithUtm: String,
         pageTypeEnum: ShareExPageTypeEnum,
         channelEnum: ShareExChannelEnum,
         finalLinkProperties: ShareExLinkPropertiesModel,
@@ -389,7 +397,7 @@ class ShareExViewModel @Inject constructor(
             channelEnum = channelEnum,
             linkerPropertiesRequest = finalLinkProperties,
             fallbackPriorityEnumList = getFallbackPriorityEnumList(isAffiliate),
-            defaultUrl = defaultUrl,
+            defaultUrl = defaultUrlWithUtm,
             pageTypeEnum = pageTypeEnum
         )
     }

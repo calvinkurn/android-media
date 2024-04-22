@@ -8,7 +8,7 @@ import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.KeyPairManager
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

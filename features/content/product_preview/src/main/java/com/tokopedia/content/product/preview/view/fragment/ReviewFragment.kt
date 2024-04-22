@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
@@ -224,14 +225,16 @@ class ReviewFragment @Inject constructor(
                         is ProductPreviewUiEvent.ShowErrorToaster -> {
                             val view = ReviewReportBottomSheet.get(childFragmentManager)?.view?.rootView ?: requireView().rootView
                             Toaster.toasterCustomBottomHeight = 60
-                            Toaster.buildWithAction(view ?: return@collect,
+                            Toaster.buildWithAction(
+                                view ?: return@collect,
                                 text = event.message.message.ifNull { getString(event.type.textRes) },
                                 duration = Toaster.LENGTH_LONG,
                                 type = Toaster.TYPE_ERROR,
                                 actionText = getString(R.string.bottom_atc_failed_click_toaster),
                                 clickListener = {
                                     event.onClick()
-                                }).show()
+                                }
+                            ).show()
                         }
                         else -> {}
                     }
@@ -377,7 +380,7 @@ class ReviewFragment @Inject constructor(
         val productId = viewModel.productPreviewSource.productId
         val mediaType = item.medias.find { it.mediaId == selectedMediaId }?.type?.value.orEmpty()
         val partialLabel = "$SHARE_ID_KEY-$productId-$reviewId"
-        val label = "$SHARE_ID_KEY - $productId - $reviewId - $partialLabel - $mediaType"
+        val label = "$SHARE_ID_KEY - $productId - $reviewId - $mediaType"
         shareExInitializer?.openShareBottomSheet(
             bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.REVIEW,
@@ -408,7 +411,13 @@ class ReviewFragment @Inject constructor(
         attachmentId: String,
         source: String
     ): String {
-        return "tokopedia://product-review/$productId?review_id=$reviewId&attachment_id=$attachmentId&source=$source"
+        return String.format(
+            ApplinkConst.ProductPreview.SHARE_PRODUCT_PREVIEW,
+            productId,
+            reviewId,
+            attachmentId,
+            source
+        )
     }
 
     /**

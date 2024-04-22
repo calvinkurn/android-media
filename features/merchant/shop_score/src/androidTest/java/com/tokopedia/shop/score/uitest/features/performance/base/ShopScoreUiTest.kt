@@ -20,7 +20,6 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSelle
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.stub.common.util.getShopPerformanceFragment
-import com.tokopedia.shop.score.stub.common.util.getTextHtml
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.isViewNotDisplayed
 import com.tokopedia.shop.score.stub.common.util.onClick

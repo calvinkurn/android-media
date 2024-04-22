@@ -31,7 +31,7 @@ import com.tokopedia.unifycomponents.compose.NestRadioButton
 internal fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewReportUiModel) -> Unit = {}) {
     var reason by remember { mutableStateOf("") }
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(ReviewReportUiModel.Empty) }
-    NestTheme {
+    NestTheme(isOverrideStatusBarColor = false) {
         Column(
             modifier = Modifier
                 .wrapContentHeight()

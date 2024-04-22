@@ -19,7 +19,7 @@ sealed class TimeLimit(
         val endText: String?
     ) : TimeLimit(prefix) {
         override fun isAvailable(): Boolean {
-            return !prefix?.value.isNullOrEmpty() && !endText.isNullOrEmpty()
+            return !prefix?.value.isNullOrEmpty()
         }
     }
 

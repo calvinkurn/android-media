@@ -4,12 +4,20 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 
 data class PlayCardModel(
     val cardId: String,
     val appLink: String,
     val playVideoWidgetUiModel: PlayVideoWidgetUiModel,
-    val playVideoTrackerUiModel: PlayVideoTrackerUiModel
+    val playVideoTrackerUiModel: PlayVideoTrackerUiModel,
+    val isAds: Boolean,
+    val shopId: String,
+    val pageName: String,
+    val position: Int,
+    val appLog: RecommendationAppLog = RecommendationAppLog(),
+    val tabIndex: Int = -1,
+    val tabName: String = ""
 ) : ForYouRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {
