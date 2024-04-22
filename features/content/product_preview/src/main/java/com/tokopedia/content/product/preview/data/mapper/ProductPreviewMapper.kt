@@ -6,6 +6,7 @@ import com.tokopedia.content.product.preview.domain.response.GetMiniProductInfoR
 import com.tokopedia.content.product.preview.domain.response.LikeReviewResponse
 import com.tokopedia.content.product.preview.domain.response.MediaReviewResponse
 import com.tokopedia.content.product.preview.domain.response.ReviewByIdsResponse
+import com.tokopedia.content.product.preview.utils.isUsingShare
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
@@ -16,6 +17,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiMo
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
@@ -23,7 +25,10 @@ import javax.inject.Inject
 /**
  * @author by astidhiyaa on 06/12/23
  */
-class ProductPreviewMapper @Inject constructor(private val userSession: UserSessionInterface) {
+class ProductPreviewMapper @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val abTestPlatform: AbTestPlatform
+) {
 
     fun mapReviewsByIds(response: ReviewByIdsResponse): ReviewUiModel {
         val mapped = response.data.review.map {
@@ -63,7 +68,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false
+                isScrolling = false,
+                isShareAble = abTestPlatform.isUsingShare()
             )
         }
         return ReviewUiModel(
@@ -112,7 +118,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
-                isScrolling = false
+                isScrolling = false,
+                isShareAble = abTestPlatform.isUsingShare()
             )
         }
         return ReviewUiModel(

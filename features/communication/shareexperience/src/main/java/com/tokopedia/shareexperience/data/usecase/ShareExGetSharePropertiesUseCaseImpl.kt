@@ -39,8 +39,8 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
             .flowOn(dispatchers.io)
     }
 
-    override fun getDefaultData(): ShareExBottomSheetModel {
-        return mapper.mapDefault()
+    override fun getDefaultData(defaultImageUrl: String): ShareExBottomSheetModel {
+        return mapper.mapDefault(defaultImageUrl)
     }
 
     private fun getRequest(params: ShareExBottomSheetRequest): ShareExBottomSheetWrapperRequest {

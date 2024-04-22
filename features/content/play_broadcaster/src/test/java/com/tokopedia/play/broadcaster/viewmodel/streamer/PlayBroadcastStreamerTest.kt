@@ -6,12 +6,14 @@ import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.fake.FakeBroadcastTimer
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.assertType
@@ -19,6 +21,10 @@ import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,6 +46,7 @@ class PlayBroadcastStreamerTest {
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
+    private val fakeTimer = FakeBroadcastTimer()
 
     private val uiModelBuilder = UiModelBuilder()
     private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
@@ -55,7 +62,9 @@ class PlayBroadcastStreamerTest {
 
     @Before
     fun setUp() {
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
     }
@@ -587,6 +596,36 @@ class PlayBroadcastStreamerTest {
             )
 
             verify { mock invokeNoArgs "closeWebSocket" }
+        }
+    }
+
+    @Test
+    fun `when duration timer is ticking, it should update the live stats duration`() {
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            broadcastTimer = fakeTimer,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            CoroutineScope(testDispatcher.coroutineDispatcher).launch {
+                it.getViewModel().broadcastTimerStateChanged.collect {
+
+                }
+            }
+
+            val state = it.recordState {
+                getAccountConfiguration()
+                fakeTimer.triggerTimerTick()
+            }
+
+            state.liveReportSummary
+                .liveStats
+                .filterIsInstance<LiveStatsUiModel.Duration>()
+                .first()
+                .timeInMillis
+                .assertEqualTo(fakeTimer.duration)
         }
     }
 }

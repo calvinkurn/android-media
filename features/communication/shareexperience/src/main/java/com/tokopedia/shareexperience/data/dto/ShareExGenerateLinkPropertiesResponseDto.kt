@@ -3,8 +3,8 @@ package com.tokopedia.shareexperience.data.dto
 import com.google.gson.annotations.SerializedName
 
 data class ShareExGenerateLinkPropertiesResponseDto(
-    @SerializedName("message")
-    val message: String = "",
+    @SerializedName("messageObject")
+    val messageObject: ShareExGenerateLinkMessagePropertiesResponseDto = ShareExGenerateLinkMessagePropertiesResponseDto(),
     @SerializedName("ogTitle")
     val ogTitle: String = "",
     @SerializedName("ogDescription")

@@ -24,6 +24,7 @@ import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSect
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -37,6 +38,7 @@ import com.tokopedia.play.broadcaster.domain.model.LiveDuration
 import com.tokopedia.play.broadcaster.domain.model.NewMetricList
 import com.tokopedia.play.broadcaster.domain.model.TotalLike
 import com.tokopedia.play.broadcaster.domain.model.TotalView
+import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -61,14 +63,13 @@ import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.EventUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadCustomFaceAssetException
@@ -90,6 +91,9 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiMode
 import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
@@ -212,10 +216,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
-    val observableTotalView: LiveData<TotalViewUiModel>
-        get() = _observableTotalView
-    val observableTotalLike: LiveData<TotalLikeUiModel>
-        get() = _observableTotalLike
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
@@ -241,8 +241,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
-    private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
-    private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetrics = MutableLiveData<Event<List<PlayMetricUiModel>>>()
     private val _observableShareInfo = MutableLiveData<String>()
@@ -279,8 +277,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
     private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
-
     private val _tickerBottomSheetConfig = MutableStateFlow(TickerBottomSheetUiModel.Empty)
+
+    /** Stats */
+    private val _liveReportSummary = MutableStateFlow(LiveReportSummaryUiModel.Empty)
+    private val _productReportSummary = MutableStateFlow<NetworkResult<ProductReportSummaryUiModel>>(NetworkResult.Unknown)
+
     val tickerBottomSheetConfig: TickerBottomSheetUiModel
         get() = _tickerBottomSheetConfig.value
 
@@ -435,6 +437,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private val _componentPreparation = MutableStateFlow(ComponentPreparationUiModel.Empty)
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
@@ -455,7 +459,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _title,
         _cover,
         _beautificationConfig,
-        _tickerBottomSheetConfig
+        _tickerBottomSheetConfig,
+        _liveReportSummary,
+        _productReportSummary,
+        _componentPreparation,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -475,7 +482,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         title,
         cover,
         beautificationConfig,
-        tickerBottomSheetConfig, ->
+        tickerBottomSheetConfig,
+        liveReportSummary,
+        productReportSummary,
+        componentPreparation ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -497,6 +507,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             cover = cover,
             beautificationConfig = beautificationConfig,
             tickerBottomSheetConfig = tickerBottomSheetConfig,
+            liveReportSummary = liveReportSummary,
+            productReportSummary = productReportSummary,
+            componentPreparation = componentPreparation,
         )
     }.stateIn(
         viewModelScope,
@@ -509,7 +522,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _uiEvent
 
     val broadcastTimerStateChanged: Flow<PlayBroadcastTimerState>
-        get() = broadcastTimer.stateChanged
+        get() = broadcastTimer.stateChanged.map {
+            if (it is PlayBroadcastTimerState.Active) {
+                updateDuration(it.duration)
+            }
+
+            it
+        }
 
     val isBroadcastStopped
         get() = mIsBroadcastStopped
@@ -621,6 +640,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
+
+            /** Report */
+            is PlayBroadcastAction.GetLiveReportSummary -> handleGetLiveReportSummary()
+            is PlayBroadcastAction.GetProductReportSummary -> handleGetProductReportSummary()
+
+            /** CoachMark */
+            is PlayBroadcastAction.ComponentHasBeenHandled -> handleComponentHasBeenHandled()
 
             /** Log */
             is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
@@ -827,7 +853,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun sendLogs() {
         try {
             logger.sendAll(channelId)
-        } catch (e: Exception) { }
+        } catch (_: Exception) { }
     }
 
     private fun setActiveInteractiveTitle(title: String) {
@@ -848,6 +874,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (!gameConfig.isNoGameActive()) {
                 initQuizFormData()
                 handleActiveInteractive()
+            }
+
+            updateComponentPreparation {
+                it.copy(
+                    gameIcon = ComponentPreparationUiModel.State.Ready
+                )
             }
         }) { }
     }
@@ -1001,10 +1033,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val socketMapper = PlayBroadcastWebSocketMapper(message, gson)
             socketMapper.map()
         }
+
         when (result) {
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
-            is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
-            is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
             is LiveDuration -> {
                 restartLiveDuration(result)
                 if (result.duration >= result.maxDuration) logSocket(result)
@@ -1047,6 +1078,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
                 _pinnedMessage.value = mappedResult.copy(
                     editStatus = _pinnedMessage.value.editStatus
+                )
+            }
+            is LiveStats -> {
+                updateLiveReportSummary(
+                    listOf(
+                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
+                        LiveStatsUiModel.TotalViewer(result.visitChannel),
+                        LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
+                        LiveStatsUiModel.Like(result.likeChannel),
+                    ),
+                    result.timestamp.toString(),
                 )
             }
         }
@@ -1785,6 +1827,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             startWebSocket()
             getPinnedMessage()
             getInteractiveConfig()
+            submitAction(PlayBroadcastAction.GetLiveReportSummary)
         }) {
             logger.logBroadcastError(it)
             _uiEvent.emit(
@@ -1982,6 +2025,42 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         saveBeautificationConfig()
+    }
+
+    private fun handleComponentHasBeenHandled() {
+        _componentPreparation.update {
+            it.copy(
+                hasBeenHandled = true
+            )
+        }
+    }
+
+    private fun handleGetLiveReportSummary() {
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getLiveReportSummary(channelId, selectedAccount.isShop)
+            updateLiveReportSummary(response.liveStats, response.timestamp)
+        }) {
+        }
+    }
+
+    private fun handleGetProductReportSummary() {
+        viewModelScope.launchCatchError(block = {
+            if (_productReportSummary.value is NetworkResult.Loading) return@launchCatchError
+
+            _productReportSummary.update { NetworkResult.Loading }
+
+            val response = repo.getReportProductSummary(channelId = channelId)
+
+            _productReportSummary.update {
+                NetworkResult.Success(response)
+            }
+        }) { throwable ->
+            _productReportSummary.update {
+                NetworkResult.Fail(throwable) {
+                    submitAction(PlayBroadcastAction.GetProductReportSummary)
+                }
+            }
+        }
     }
 
     private fun handleSendErrorLog(throwable: Throwable) {
@@ -2241,6 +2320,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
+
+        setupLiveStats(_selectedAccount.value)
+
+        _onboarding.update {
+            it.copy(
+                firstStatisticIconShown = sharedPref.isFirstStatisticIconShown(selectedAccount.id)
+            )
+        }
+
+        updateComponentPreparation {
+            it.copy(
+                statisticIcon = ComponentPreparationUiModel.State.Ready
+            )
+        }
     }
 
     private fun handleSuccessOnBoardingUGC() {
@@ -2365,6 +2458,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         logger.sendBroadcasterLog(mappedMetric)
     }
 
+    /** Generated Cover */
     private fun handleSetCoverUploadedSource(source: Int) {
         sharedPref.setUploadedCoverSource(source, authorId, SOURCE_PREP_PAGE)
     }
@@ -2398,6 +2492,58 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
+    private fun setupLiveStats(selectedAccount: ContentAccountUiModel) {
+        viewModelScope.launch {
+            _liveReportSummary.update {
+                LiveReportSummaryUiModel(
+                    liveStats = buildList {
+                        add(LiveStatsUiModel.Viewer())
+                        add(LiveStatsUiModel.TotalViewer())
+                        if (selectedAccount.isShop) {
+                            add(LiveStatsUiModel.EstimatedIncome())
+                        }
+                        add(LiveStatsUiModel.Like())
+                        add(LiveStatsUiModel.Duration())
+                    },
+                    timestamp = "",
+                )
+            }
+        }
+    }
+
+    private fun updateLiveReportSummary(newLiveStats: List<LiveStatsUiModel>, timestamp: String) {
+        runCatching {
+            _liveReportSummary.update {
+                if (timestamp.toLongOrZero() >= it.timestamp.toLongOrZero()) {
+                    it.copy(
+                        liveStats = it.liveStats.map { liveStats ->
+                            newLiveStats.firstOrNull { item ->
+                                item::class == liveStats::class
+                            } ?: return@map liveStats
+                        },
+                        timestamp = timestamp
+                    )
+                } else {
+                    it
+                }
+            }
+        }
+    }
+
+    private fun updateDuration(duration: Long) {
+        _liveReportSummary.update {
+            it.copy(
+                liveStats = it.liveStats.map { liveStats ->
+                    if (liveStats is LiveStatsUiModel.Duration) {
+                        liveStats.copy(timeInMillis = duration)
+                    } else {
+                        liveStats
+                    }
+                }
+            )
+        }
+    }
+
     private fun addPreparationMenu(vararg newMenuList: DynamicPreparationMenu) {
         _menuList.update {
             _menuList.value.toMutableSet().apply {
@@ -2409,6 +2555,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun removePreparationMenu(menu: DynamicPreparationMenu.Menu) {
         _menuList.update {
             _menuList.value.filter { it.menu.id != menu.id }
+        }
+    }
+
+    /** Component Preparation */
+    private fun updateComponentPreparation(onUpdate: (ComponentPreparationUiModel) -> ComponentPreparationUiModel) {
+        _componentPreparation.update {
+            onUpdate(it)
         }
     }
 
