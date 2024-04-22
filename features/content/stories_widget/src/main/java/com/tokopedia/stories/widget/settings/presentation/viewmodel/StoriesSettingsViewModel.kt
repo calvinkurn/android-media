@@ -69,11 +69,4 @@ class StoriesSettingsViewModel @AssistedInject constructor(
             })
         }
     }
-
-    //Todo(): move to outside~~
-    fun check() {
-        viewModelScope.launchCatchError(block = {
-            val response = repository.checkEligibility(entryPoint = entryPoint)
-        }) {}
-    }
 }

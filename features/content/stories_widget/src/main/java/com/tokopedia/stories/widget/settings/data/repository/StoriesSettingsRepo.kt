@@ -5,7 +5,6 @@ import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingConfi
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
 import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsPageUiModel
-import com.tokopedia.stories.widget.settings.data.usecase.StoriesEligibilityUseCase
 import com.tokopedia.stories.widget.settings.data.usecase.StoriesSettingOptionsUseCase
 import com.tokopedia.stories.widget.settings.data.usecase.UpdateStoriesSettingUseCase
 import kotlinx.coroutines.withContext
@@ -17,7 +16,6 @@ import javax.inject.Inject
 class StoriesSettingsRepo @Inject constructor(
     private val storiesSettingOptionsUseCase: StoriesSettingOptionsUseCase,
     private val updateStoriesSettingUseCase: UpdateStoriesSettingUseCase,
-    private val checkEligibilityUseCase: StoriesEligibilityUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : StoriesSettingsRepository {
 
@@ -76,19 +74,6 @@ class StoriesSettingsRepo @Inject constructor(
             } else {
                 throw Exception(ERROR_MESSAGE)
             }
-        }
-
-    override suspend fun checkEligibility(entryPoint: StoriesSettingsEntryPoint): Boolean =
-        withContext(dispatchers.io) {
-            val response = checkEligibilityUseCase(
-                StoriesEligibilityUseCase.Param(
-                    req = StoriesEligibilityUseCase.Param.Author(
-                        authorId = entryPoint.authorId,
-                        authorType = entryPoint.authorType
-                    )
-                )
-            )
-            return@withContext response.data.isEligibleForAuto || response.data.isEligibleForManual
         }
 
     companion object {
