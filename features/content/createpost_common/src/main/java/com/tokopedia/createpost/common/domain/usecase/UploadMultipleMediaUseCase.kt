@@ -4,36 +4,23 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
-import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.view.util.FileUtil
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
-import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
-import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Func1
-import rx.schedulers.Schedulers
 import java.io.File
 import javax.inject.Inject
-import kotlin.Exception
 
 /**
  * Revamped By : Jonathan Darwin on October 13, 2022
@@ -42,7 +29,6 @@ class UploadMultipleMediaUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     @SubmitPostCoroutineScope private val scope: CoroutineScope,
     private val uploaderUseCase: UploaderUseCase,
-    private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>, /** Will be removed after video uploader migration is done soon */
     @ApplicationContext graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<List<SubmitPostMedium>>(graphqlRepository) {
 
@@ -142,9 +128,9 @@ class UploadMultipleMediaUseCase @Inject constructor(
     }
 
     private fun handleUri(medium: SubmitPostMedium): String{
-       val filePath =  context?.let { FileUtil.createFilePathFromUri(it,Uri.parse(medium.mediaURL)) }
-        if (filePath != null) {
-            medium.mediaURL= filePath
+        val filePath =  context.let { FileUtil.createFilePathFromUri(it,Uri.parse(medium.mediaURL)) }
+        if (filePath.isNotEmpty()) {
+            medium.mediaURL = filePath
         }
         return medium.mediaURL
     }

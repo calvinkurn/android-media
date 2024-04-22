@@ -105,11 +105,7 @@ open class SubmitPostUseCase @Inject constructor(
     }
 
     private fun rearrangeMedia(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
-        val rearrangedList: MutableList<SubmitPostMedium> = ArrayList(mediaList)
-        mediaList.forEach { media ->
-            rearrangedList[media.order] = media
-        }
-        return rearrangedList
+        return mediaList.sortedBy { it.order }
     }
 
     companion object {
