@@ -60,7 +60,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         eTollCardInfoView.setListener(this)
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
-        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash) View.VISIBLE else View.GONE
+        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash || inquiryBalanceModel.isBCAGenOne) View.VISIBLE else View.GONE
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
             buttonTopup.text = it.buttonText
             eTollCardInfoView.visibility = View.VISIBLE
@@ -77,15 +77,19 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
             }
 
             tickerTapcash.apply {
-                setHtmlDescription(resources.getString(R.string.emoney_nfc_ticker_desc))
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        listener.onClickTickerTapcash()
-                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
-                    }
+                if (inquiryBalanceModel.isCheckSaldoTapcash) {
+                    setHtmlDescription(resources.getString(R.string.emoney_nfc_ticker_desc))
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            listener.onClickTickerTapcash()
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        }
 
-                    override fun onDismiss() {}
-                })
+                        override fun onDismiss() {}
+                    })
+                } else if (inquiryBalanceModel.isBCAGenOne) {
+                    setHtmlDescription(inquiryBalanceModel.messageBCAGen1)
+                }
             }
         }
     }
