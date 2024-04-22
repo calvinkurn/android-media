@@ -3318,7 +3318,7 @@ class CheckoutViewModel @Inject constructor(
             cost = cost.copy(
                 usePaymentFees = true
             )
-            if (payment.tenorList != null) {
+            if (payment.tenorList != null || payment.installmentData != null) {
                 payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
                 updateTotalAndPayment(cost, payment, skipValidatePayment = true)
                 validatePromo(skipEE = true)
