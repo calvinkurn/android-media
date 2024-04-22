@@ -97,6 +97,8 @@ data class ThanksPageData(
     val feeDetailList: ArrayList<FeeDetail>?,
     @SerializedName("thanks_summaries")
     val thanksSummaryInfo: ArrayList<ThanksSummaryInfo>?,
+    @SerializedName("cta_data_thanks_page")
+    val ctaDataThanksPage: CtaDataThanksPage = CtaDataThanksPage(),
     //created and used locally
     var paymentMethodCount: Int,
     // parse config flag json
@@ -620,4 +622,26 @@ data class CustomDataOtherV2(
     val signaturePurchaseInfo: String?,
     @SerializedName("summary_info")
     var summaryInfo: String = ""
+) : Parcelable
+
+@Parcelize
+data class CtaDataThanksPage(
+    @SerializedName("primary")
+    val primary: CtaDetails = CtaDetails(),
+    @SerializedName("secondary")
+    val secondary: CtaDetails = CtaDetails(),
+): Parcelable
+
+@Parcelize
+data class CtaDetails(
+    @SerializedName("type")
+    val type: String = "",
+    @SerializedName("text")
+    val text: String = "",
+    @SerializedName("url")
+    val url: String = "",
+    @SerializedName("applink")
+    val applink: String = "",
+    @SerializedName("hide_button")
+    val hideButton: Boolean = false,
 ) : Parcelable
