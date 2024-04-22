@@ -739,6 +739,7 @@ class CheckoutCostViewHolder(
                 }
             }
             binding.tvCheckoutCostTotalTitle.text = binding.root.context.getString(R.string.checkout_cost_total_with_payment_title)
+            binding.tvCheckoutCostHeader.text = binding.root.context.getString(R.string.checkout_cost_with_payment_header_title)
         } else {
             binding.apply {
                 tvCheckoutCostPaymentFeeTitle.isVisible = false
@@ -750,6 +751,8 @@ class CheckoutCostViewHolder(
                 icCheckoutCostPaymentsToggle.isVisible = false
                 vCheckoutCostPaymentsExpandedSeparator.isVisible = false
                 llCheckoutCostPaymentsExpanded.isVisible = false
+                tvCheckoutCostTotalTitle.text = root.context.getString(R.string.checkout_cost_total_title)
+                tvCheckoutCostHeader.text = root.context.getString(R.string.checkout_cost_header_title)
             }
         }
     }
