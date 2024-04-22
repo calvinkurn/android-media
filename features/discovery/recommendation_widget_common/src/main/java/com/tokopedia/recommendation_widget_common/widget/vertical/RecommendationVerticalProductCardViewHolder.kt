@@ -104,7 +104,7 @@ class RecommendationVerticalProductCardViewHolder(
 
         element.widgetTracking?.sendEventItemImpression(
             trackingQueue = trackingQueue,
-            item = element.recomItem,
+            item = element.recomItem
         )
     }
 
@@ -132,7 +132,7 @@ class RecommendationVerticalProductCardViewHolder(
         }
 
         element.widgetTracking?.sendEventItemClick(
-            item = element.recomItem,
+            item = element.recomItem
         )
 
         AppLogRecommendation.sendProductClickAppLog(

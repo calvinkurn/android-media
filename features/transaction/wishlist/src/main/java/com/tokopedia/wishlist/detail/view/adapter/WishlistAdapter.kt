@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListe
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionEmptyStateViewHolder
 import com.tokopedia.wishlist.collection.view.fragment.WishlistCollectionDetailFragment
@@ -108,8 +108,8 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean)
         fun onProductItemClicked(wishlistItem: WishlistUiModel.Item, position: Int)
         fun onViewProductCard(wishlistItem: WishlistUiModel.Item, position: Int)
-        fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
-        fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
+        fun onBannerTopAdsImpression(topAdsImageUiModel: TopAdsImageUiModel, position: Int)
+        fun onBannerTopAdsClick(topAdsImageUiModel: TopAdsImageUiModel, position: Int)
         fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemImpression(

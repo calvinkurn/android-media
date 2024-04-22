@@ -3,10 +3,10 @@ package com.tokopedia.navigation.domain.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.navigation.presentation.adapter.InboxTypeFactory
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 class InboxTopAdsBannerUiModel constructor(
-        var ads: List<TopAdsImageViewModel>? = null
+        var ads: List<TopAdsImageUiModel>? = null
 ) : Visitable<InboxTypeFactory> {
 
     val impressHolder: ImpressHolder = ImpressHolder()

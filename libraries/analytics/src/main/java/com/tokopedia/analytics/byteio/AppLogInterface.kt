@@ -7,6 +7,8 @@ interface AppLogInterface {
     fun isEnterFromWhitelisted() : Boolean = false
 
     fun isShadow() : Boolean = false
+
+    fun shouldTrackEnterPage() : Boolean = false
 }
 
 interface AppLogFragmentInterface {

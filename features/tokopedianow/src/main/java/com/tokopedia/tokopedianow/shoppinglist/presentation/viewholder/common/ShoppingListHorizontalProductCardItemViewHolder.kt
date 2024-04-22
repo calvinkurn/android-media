@@ -21,6 +21,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
+import com.tokopedia.tokopedianow.common.util.ImageUtil.NORMAL_BRIGHTNESS
+import com.tokopedia.tokopedianow.common.util.ImageUtil.OOS_BRIGHTNESS
 import com.tokopedia.tokopedianow.common.util.ImageUtil.applyBrightnessFilter
 import com.tokopedia.tokopedianow.common.util.TypographyUtil.setLeftImageDrawable
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListHorizontalProductCardBinding
@@ -39,9 +41,6 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private val listener: ShoppingListHorizontalProductCardItemListener? = null
 ): AbstractViewHolder<ShoppingListHorizontalProductCardItemUiModel>(itemView) {
     companion object {
-        private const val NORMAL_BRIGHTNESS = 1f
-        private const val OOS_BRIGHTNESS = 0.5f
-
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_shopping_list_horizontal_product_card
     }

@@ -331,6 +331,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX_SA
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
@@ -2340,6 +2341,15 @@ open class ProductDetailFragment :
         return !viewModel.isShopOwner() && !isPrefetch
     }
 
+    override fun onExpandProductName(componentTrackData: ComponentTrackDataModel) {
+        pdpUiUpdater?.updateOnExpandProductName()
+        ProductDetailTracking.Click.eventProductNameExpandClicked(
+            componentTrackDataModel = componentTrackData,
+            productInfo = viewModel.getProductInfoP1,
+            userId = viewModel.userId
+        )
+    }
+
     override fun onMainImageClicked(
         componentTrackDataModel: ComponentTrackDataModel?,
         position: Int
@@ -3086,7 +3096,9 @@ open class ProductDetailFragment :
             cartItemId = cartId
         }
         if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+            || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+//            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
+            ) {
             AppLogPdp.sendConfirmCartResult(model)
         }
     }
@@ -4289,11 +4301,14 @@ open class ProductDetailFragment :
     private fun openShareExBottomSheet(
         dynamicProductInfoP1: ProductInfoP1
     ) {
+        val mediaPosition = pdpUiUpdater?.mediaMap?.indexOfSelectedVariantOptionId()?.coerceAtLeast(0).orZero()
+        val productImageUrl = pdpUiUpdater?.mediaMap?.listOfMedia?.getOrNull(mediaPosition)?.urlOriginal.orEmpty()
         shareExInitializer?.openShareBottomSheet(
             generateShareExBottomSheetArg(
                 productId = dynamicProductInfoP1.basic.productID,
                 productUrl = dynamicProductInfoP1.basic.url,
-                campaignId = dynamicProductInfoP1.data.campaign.campaignID
+                campaignId = dynamicProductInfoP1.data.campaign.campaignID,
+                productImageUrl = productImageUrl
             )
         )
     }
@@ -6423,10 +6438,15 @@ open class ProductDetailFragment :
      * from old share to share 2.0
      */
     private fun isUsingShareEx(): Boolean {
+        val rollenceKey = if (!GlobalConfig.isSellerApp()) {
+            ROLLENCE_SHARE_EX
+        } else {
+            ROLLENCE_SHARE_EX_SA
+        }
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            ROLLENCE_SHARE_EX,
+            rollenceKey,
             ""
-        ) == ROLLENCE_SHARE_EX
+        ) == rollenceKey
     }
 
     private fun processAffiliateSubIds(bundle: Bundle?) {

@@ -9,31 +9,41 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.TopAdsConstants
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
-import com.tokopedia.topads.sdk.base.adapter.Item
+import com.tokopedia.topads.sdk.common.adapter.Item
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_8
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.domain.model.*
-import com.tokopedia.topads.sdk.listener.*
-import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
 import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
-import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductReimagineViewHolder
-import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreReimagineViewHolder
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerUiModel
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
-import com.tokopedia.topads.sdk.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
+import com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout10.widget.ShopAdsSingleItemHorizontalLayout
+import com.tokopedia.topads.sdk.v2.shopadslayout11.widget.ShopAdsSingleItemVerticalLayout
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.uimodel.ShopProductModel
+import com.tokopedia.topads.sdk.v2.shopadslayout5.widget.ShopAdsWithOneProductReimagineView
+import com.tokopedia.topads.sdk.v2.shopadslayout6.widget.ToadsCarousel
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.widget.ShopAdsWithThreeProducts
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.BannerAdsAdapter
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory.BannerAdsAdapterTypeFactoryReimagine
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerProductShimmerUiModel
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopViewMoreUiModel
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShopProductReimagineViewHolder
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShowMoreReimagineViewHolder
+import com.tokopedia.topads.sdk.v2.uimodel.ShopAdsWithSingleProductModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
@@ -56,6 +66,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             return
         }
         val cpmData = cpmModel?.data?.firstOrNull()
+
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
             View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager_reimagine, this)
             BannerShopProductReimagineViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product_reimagine
@@ -122,7 +133,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     shop_badge?.let {
                         if ((cpmData.cpm.badges.size.orZero()) > 0) {
                             shop_badge.show()
-                            Glide.with(shop_badge).load(cpmData.cpm.badges.firstOrNull()?.imageUrl).into(shop_badge)
+                            shop_badge.loadImage(cpmData.cpm.badges.firstOrNull()?.imageUrl)
                         } else {
                             shop_badge.hide()
                         }
@@ -139,7 +150,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
                     val shopImage = findViewById<ImageView>(R.id.topAdsShopImage)
                     shopImage?.let {
-                        Glide.with(context).load(cpmData.cpm.cpmImage.fullEcs).into(shopImage)
+                        shopImage.loadImage(cpmData.cpm.cpmImage.fullEcs)
                         cpmData.cpm.cpmShop.imageShop?.let { it1 ->
                             shopImage.addOnImpressionListener(it1) {
                                 impressionListener?.let {
@@ -275,11 +286,11 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String) {
         val containerSeeMore = findViewById<View>(R.id.topAdsBtnSeeMore)
-        val isApplinkNotEmpty = appLink.isNotEmpty()
-        if (isApplinkNotEmpty) {
+        val isAppLinkNotEmpty = appLink.isNotEmpty()
+        if (isAppLinkNotEmpty) {
             showHeaderSeeMore(containerSeeMore, cpmData, appLink, adsClickUrl)
         } else {
-            containerSeeMore.gone()
+            containerSeeMore.hide()
         }
     }
 

@@ -10,7 +10,7 @@ import com.tokopedia.test.application.benchmark_component.BenchmarkObject
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import com.tokopedia.tkpd.feed_component.mock.MockTitleModel
 import com.tokopedia.tkpd.feed_component.mock.MockTopAdsImageViewModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,7 +42,7 @@ class BenchMarkTopAdsBannerViewHolder {
         val viewHolder = TopAdsBannerViewHolder(
                 itemView, null, null
         )
-        val data = TopAdsBannerModel(title = MockTitleModel.get(), topAdsBannerList = listOf((MockTopAdsImageViewModel.get())) as ArrayList<TopAdsImageViewModel>)
+        val data = TopAdsBannerModel(title = MockTitleModel.get(), topAdsBannerList = listOf((MockTopAdsImageViewModel.get())) as ArrayList<TopAdsImageUiModel>)
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewHolder.bind(data)

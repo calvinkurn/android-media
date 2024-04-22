@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceShareLinkItemBinding
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
@@ -31,7 +32,12 @@ class ShareExLinkShareViewHolder(
     }
 
     private fun bindImage(element: ShareExLinkShareUiModel) {
-        binding?.shareexIvImageThumbnailLink?.loadImage(element.imageThumbnailUrl)
+        binding?.shareexIvImageThumbnailLink?.loadImage(
+            url = element.imageThumbnailUrl,
+            properties = {
+                this.setCacheStrategy(MediaCacheStrategy.AUTOMATIC)
+            }
+        )
     }
 
     private fun bindLink(element: ShareExLinkShareUiModel) {
