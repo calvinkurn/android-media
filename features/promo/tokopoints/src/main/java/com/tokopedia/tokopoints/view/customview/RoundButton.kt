@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.tokopoints.R
 
 class RoundButton : AppCompatButton {
 
@@ -42,10 +43,10 @@ class RoundButton : AppCompatButton {
     private fun readAttributes(attrs: AttributeSet?) {
         if (attrs != null) {
             val array = context.theme
-                .obtainStyledAttributes(attrs, com.tokopedia.tokopoints.R.styleable.RoundButton, 0, 0)
-            cornerRadius = array.getDimension(com.tokopedia.tokopoints.R.styleable.RoundButton_tpRbCornerRadius, 0f)
+                .obtainStyledAttributes(attrs, R.styleable.RoundButton, 0, 0)
+            cornerRadius = array.getDimension(R.styleable.RoundButton_tpRbCornerRadius, 0f)
             buttonColor = array.getColor(
-                com.tokopedia.tokopoints.R.styleable.RoundButton_tpRbButtonColor,
+                R.styleable.RoundButton_tpRbButtonColor,
                 MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN0
@@ -55,7 +56,7 @@ class RoundButton : AppCompatButton {
         }
     }
     override fun onDraw(canvas: Canvas?) {
-        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.transparent))
+        setBackgroundColor(MethodChecker.getColor(context, R.color.tp_transparent))
         drawRoundBackground(canvas)
         super.onDraw(canvas)
     }
