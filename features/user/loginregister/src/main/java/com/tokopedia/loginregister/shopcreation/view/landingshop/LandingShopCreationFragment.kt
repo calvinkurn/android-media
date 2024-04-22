@@ -45,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Ade Fulki on 2019-12-09.
@@ -447,7 +448,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             viewBinding?.scrollView?.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
             )
         }
