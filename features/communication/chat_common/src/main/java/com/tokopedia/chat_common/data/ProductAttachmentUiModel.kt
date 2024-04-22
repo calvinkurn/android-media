@@ -53,6 +53,7 @@ open class ProductAttachmentUiModel protected constructor(
     var minOrder: Int = builder.minOrder
     var variants: List<AttachmentVariant> = builder.variants
     var remainingStock: Int = builder.remainingStock
+    var sold: String = builder.sold
     var status: Int = builder.status
     var wishList: Boolean = builder.wishList
     var rating: TopchatProductRating = builder.rating
@@ -73,9 +74,7 @@ open class ProductAttachmentUiModel protected constructor(
         }
     val stringBlastId: String get() = blastId
     var campaignId: String = builder.campaignId
-    var stockLabelPercentage: Int = builder.stockLabelPercentage
-    var stockLabelText: String = builder.stockLabelText
-    var stockLabelColor: String = builder.stockLabelColor
+    var campaign: TopChatCampaign = builder.campaign
     var isFulfillment: Boolean = builder.isFulfillment
     var urlTokocabang: String = builder.urlTokoCabang
     var descTokoCabang: String = builder.descTokoCabang
@@ -133,9 +132,7 @@ open class ProductAttachmentUiModel protected constructor(
             rating = attribute.productProfile.rating
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
-            stockLabelPercentage = attribute.productProfile.stockLabelPercentage
-            stockLabelText = attribute.productProfile.stockLabelText
-            stockLabelColor = attribute.productProfile.stockLabelColor
+            campaign = attribute.productProfile.campaign
             isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
             descTokoCabang = attribute.productProfile.descTokocabang
@@ -367,6 +364,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var playStoreData: PlayStoreData = PlayStoreData()
         internal var minOrder: Int = 1
         internal var remainingStock: Int = 0
+        internal var sold: String = ""
         internal var status: Int = 0
         internal var rating: TopchatProductRating = TopchatProductRating()
         internal var variants: List<AttachmentVariant> = emptyList()
@@ -376,9 +374,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var needSync: Boolean = true
         internal var isSupportVariant: Boolean = false
         internal var campaignId: String = "0"
-        internal var stockLabelPercentage: Int = 0
-        internal var stockLabelText: String = ""
-        internal var stockLabelColor: String = ""
+        internal var campaign: TopChatCampaign = TopChatCampaign()
         internal var locationStock: LocationStock = LocationStock()
         internal var isUpcomingCampaign: Boolean = false
         internal var isFulfillment: Boolean = false
@@ -405,17 +401,14 @@ open class ProductAttachmentUiModel protected constructor(
             withPlayStoreData(product.productProfile.playStoreData)
             withMinOrder(product.productProfile.minOrder)
             withRemainingStock(product.productProfile.remainingStock)
+            withSold(product.productProfile.sold)
             withStatus(product.productProfile.status)
             withWishList(product.productProfile.wishList)
             withImages(product.productProfile.images)
             withRating(product.productProfile.rating)
             withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
-            withStockLabel(
-                product.productProfile.stockLabelPercentage,
-                product.productProfile.stockLabelText,
-                product.productProfile.stockLabelColor
-            )
+            withCampaign(product.productProfile.campaign)
             withIsPreOrder(product.productProfile.isPreOrder)
             withLocationStock(product.productProfile.locationStock)
             withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
@@ -512,6 +505,10 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
+        fun withSold(sold: String?) = apply {
+            this.sold = sold.orEmpty()
+        }
+
         fun withStatus(status: Int): Builder {
             this.status = status
             return self()
@@ -557,6 +554,10 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
+        fun withCampaign(campaign: TopChatCampaign) = apply {
+            this.campaign = campaign
+        }
+
         fun withLocationStock(locationStock: LocationStock): Builder {
             this.locationStock = locationStock
             return self()
@@ -590,16 +591,6 @@ open class ProductAttachmentUiModel protected constructor(
         fun withIOSUrl(iosUrl: String): Builder {
             this.iosUrl = iosUrl
             return self()
-        }
-
-        fun withStockLabel(
-            stockLabelPercentage: Int,
-            stockLabelText: String,
-            stockLabelColor: String
-        ) = apply {
-            this.stockLabelPercentage = stockLabelPercentage
-            this.stockLabelText = stockLabelText
-            this.stockLabelColor = stockLabelColor
         }
 
         override fun build(): ProductAttachmentUiModel {

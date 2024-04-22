@@ -32,14 +32,13 @@ object TopChatRoomProductCardMapper {
             discountPercentage = productAttachment.dropPercentage.toIntOrZero(),
             labelGroupList = getProductCardLabelList(productAttachment),
             rating = if (productAttachment.rating.score > 0) productAttachment.rating.score.toString() else "",
-            shopBadge = ProductCardModel.ShopBadge(),
             hasAddToCart = false,
             videoUrl = "",
             hasThreeDots = false,
             stockInfo = ProductCardModel.StockInfo(
-                percentage = productAttachment.stockLabelPercentage,
-                label = productAttachment.stockLabelText,
-                labelColor = productAttachment.stockLabelColor
+                percentage = productAttachment.campaign.percentage,
+                label = productAttachment.campaign.label,
+                labelColor = productAttachment.campaign.labelColor
             ),
             isSafeProduct = false,
             isInBackground = true,
@@ -101,11 +100,11 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.rating.sold.isNotBlank()) {
+        if (productAttachment.sold.isNotBlank()) {
             labelGroupList.add(
                 ProductCardModel.LabelGroup(
                     position = LABEL_REIMAGINE_CREDIBILITY,
-                    title = productAttachment.rating.sold,
+                    title = productAttachment.sold,
                     type = TEXT_COLOR_SOLD
                 )
             )
@@ -130,7 +129,7 @@ object TopChatRoomProductCardMapper {
             } else {
                 productAttachment.rating.score.toString()
             },
-            sold = productAttachment.rating.sold,
+            sold = productAttachment.sold,
             hasBeenWishlist = productAttachment.isWishListed(),
             isVariant = productAttachment.hasVariant(),
             labelGroupList = getProductCardCompactLabelList(productAttachment)
