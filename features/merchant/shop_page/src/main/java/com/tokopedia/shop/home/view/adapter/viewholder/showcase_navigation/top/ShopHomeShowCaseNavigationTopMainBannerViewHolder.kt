@@ -129,7 +129,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             layoutManager =
                 LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = showCaseAdapter
-            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
 
         showCaseAdapter.submit(filteredShowcases)

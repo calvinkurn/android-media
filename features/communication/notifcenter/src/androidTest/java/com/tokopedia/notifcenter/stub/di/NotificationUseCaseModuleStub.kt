@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.notifcenter.stub.data.repository.FakeTopAdsRepository
 import com.tokopedia.notifcenter.stub.data.repository.FakeTopAdsRestRepository
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides

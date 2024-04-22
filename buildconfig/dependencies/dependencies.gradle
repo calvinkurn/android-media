@@ -45,7 +45,7 @@ ext {
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '3.4.1'
+    lottieVersion = '6.0.1'
     cardioVersion = '5.5.1'
     roomVersion = '2.4.3'
     sqliteFrameworkVersion = '2.1.0'
@@ -133,7 +133,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.35'
     unifyPrinciplesVersion = '1.4.18'
-    unifyComponentsVersion = '1.2.58'
+    unifyComponentsVersion = '1.2.58-rc01'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.9'
@@ -546,6 +546,9 @@ ext {
 
     appLogDependencies = [
         bdTrackerGlobal   : "com.bytedance.applog:bdtracker-global:$appLogVersion",
+        businessALog      : "com.bytedance.common_business:alog:2.0.0-rc.10",
+        androidALog       : "com.bytedance.android:alog:1.0.0-rc.6@aar",
+        bdTrackerEtVerify : "com.bytedance.applog:bdtracker-et_verify:5.6.9-bugfix.6",
         sampling          : "com.bytedance.applog:sampling:$appLogVersion",
         compress          : "com.bytedance.applog:compress:$appLogVersion",
         monitor           : "com.bytedance.applog:monitor:$appLogVersion",
@@ -553,5 +556,10 @@ ext {
         encrypt           : "com.bytedance.frameworks.core:encrypt:$frameworkCoreEncryptVersion",
         baseLibsUtility   : "com.bytedance.frameworks.baselib:utility:$baseLibsUtilityVersion",
         bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
+    ]
+
+    libra = [
+            abTest                  : "com.bytedance.dataplatform:abtest:0.10.1",
+            abTestApt               : "com.bytedance.dataplatform:abtest_apt:0.5.1"
     ]
 }

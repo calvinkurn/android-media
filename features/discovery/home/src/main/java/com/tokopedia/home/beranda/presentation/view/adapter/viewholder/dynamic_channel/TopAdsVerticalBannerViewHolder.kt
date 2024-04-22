@@ -44,7 +44,7 @@ class TopAdsVerticalBannerViewHolder constructor(
             }
         )
 
-        val tdnBannerList = element.topAdsImageViewModelList?.let {
+        val tdnBannerList = element.topAdsImageUiModelList?.let {
             TdnHelper.categoriesTdnBanners(
                 it
             )

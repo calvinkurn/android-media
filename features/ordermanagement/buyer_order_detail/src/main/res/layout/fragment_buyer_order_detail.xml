@@ -25,12 +25,12 @@
         android:id="@+id/globalErrorBuyerOrderDetail"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constrainedHeight="true"
         android:visibility="gone"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshBuyerOrderDetail"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@id/containerActionButtons"
+        app:layout_constraintBottom_toTopOf="@id/barrier_bottom_sticky"
         app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -52,8 +52,21 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_bottom_sticky"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="containerActionButtons,widget_brc_bom" />
+
     <com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
         android:id="@+id/containerActionButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.buyerorderdetail.presentation.partialview.WidgetBrcCsat
+        android:id="@+id/widget_brc_bom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent" />
