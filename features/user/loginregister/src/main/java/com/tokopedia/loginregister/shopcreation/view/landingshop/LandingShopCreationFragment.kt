@@ -307,7 +307,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
             } else {
-                showVerifyPhoneNoDialog(userProfileCompletionData.phone)
+                goToPhoneShopCreation(userProfileCompletionData.phone)
             }
         } else {
             goToPhoneShopCreation()
@@ -367,7 +367,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     it,
                     Toaster.toasterLength,
                     Toaster.TYPE_ERROR
-                )
+                ).show()
             }
         }
         goToShopPage(userSession.shopId)
