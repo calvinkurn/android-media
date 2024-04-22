@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.shopcreation.view.landingshop
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationActivity
+import com.tokopedia.loginregister.R as loginregisterR
 
 /**
  * Created by Ade Fulki on 2019-12-09.
@@ -28,9 +29,9 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
         }
         supportFragmentManager.beginTransaction()
             .replace(
-                com.tokopedia.loginregister.R.id.parent_view,
+                loginregisterR.id.parent_view,
                 KycBridgingFragment.createInstance(bundle),
-                "kyc_bridge_tag"
+                KYC_BRIDGE_FRAGMENT_TAG
             )
             .commit()
     }
@@ -42,10 +43,15 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
         }
         supportFragmentManager.beginTransaction()
             .replace(
-                com.tokopedia.loginregister.R.id.parent_view,
+                loginregisterR.id.parent_view,
                 ShopCreationKycStatusFragment.createInstance(),
-                "kyc_bridge_tag_2"
+                KYC_STATUS_FRAGMENT_TAG
             )
             .commit()
+    }
+
+    companion object {
+        private const val KYC_BRIDGE_FRAGMENT_TAG = "KycBridgeFragmentTag"
+        private const val KYC_STATUS_FRAGMENT_TAG = "KycStatusFragmentTag"
     }
 }

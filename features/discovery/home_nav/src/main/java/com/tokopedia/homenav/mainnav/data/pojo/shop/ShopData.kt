@@ -24,7 +24,7 @@ data class ShopData(
 
         data class ReserveStatusData(
             @SerializedName("shopID")
-            val shopId: Int = 0,
+            val shopId: Long = 0,
             @SerializedName("shopName")
             val shopName: String = "",
             @SerializedName("domain")
@@ -32,9 +32,9 @@ data class ShopData(
             @SerializedName("status")
             val status: Int = 0,
             @SerializedName("reasonID")
-            val reasonId: Int = 0
+            val reasonId: Long = 0
         ) {
-            fun isShopPending(): Boolean = shopId > 0 && status == 0 && reasonId == 2
+            fun isShopPending(): Boolean = shopId > 0 && status == 0 && reasonId == 2L
         }
 
     }

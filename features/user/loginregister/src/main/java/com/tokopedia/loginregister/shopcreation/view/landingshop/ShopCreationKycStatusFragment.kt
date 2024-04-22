@@ -41,6 +41,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
@@ -98,7 +99,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }

@@ -239,4 +239,7 @@
     <string name="verify_phone_dialog_primary_btn">Verifikasi Nomor HP</string>
     <string name="verify_phone_dialog_secondary_btn">Batal</string>
 
+    <string name="official_store_on_progress_text">Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.</string>
+    <string name="shop_creation_card_unselected_text">Pilih salah satu jenis toko dulu, ya.</string>
+
 </resources>

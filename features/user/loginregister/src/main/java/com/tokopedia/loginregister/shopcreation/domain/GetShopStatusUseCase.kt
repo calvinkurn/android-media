@@ -18,10 +18,10 @@ class GetShopStatusUseCase @Inject constructor(
     override fun graphqlQuery(): String = ""
 
     override suspend fun execute(params: String): ShopStatus {
-        val param = mapOf("source" to params)
+        val param = mapOf(PARAM_SOURCE to params)
         val response: GetShopInfoResponse = graphqlRepository.request<Map<String, String>, GetShopInfoResponse>(query, param)
         with (response.shopInfo.reserveStatusInfo) {
-            if (shopId > 0 && status == 0 && reasonId == 2) {
+            if (this.isShopPending()) {
                 return ShopStatus.Pending
             } else {
                 return ShopStatus.NotRegistered
@@ -31,6 +31,7 @@ class GetShopStatusUseCase @Inject constructor(
 
     companion object {
         private const val OPERATION_NAME = "userShopInfo"
+        private const val PARAM_SOURCE = "source"
 
         private var query = object: GqlQueryInterface {
             override fun getOperationNameList(): List<String> {

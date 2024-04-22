@@ -34,6 +34,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.loginregister.R as loginregisterR
 
 class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
@@ -112,7 +113,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         viewBinding?.btnContinue?.setOnClickListener {
             if (ShopCreationUtils.isShopPending(requireContext())) {
-                showToaster("Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.")
+                showToaster(getString(loginregisterR.string.official_store_on_progress_text))
             } else {
                 if (isNormalShopSelected()) {
                     shopCreationAnalytics.sendSellerClickIndividualEvent(
@@ -125,7 +126,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     shopCreationAnalytics.sendSellerClickRegisterToOsEvent()
                     showOfficialShopBottomSheet()
                 } else {
-                    showToaster("Pilih salah satu jenis toko dulu, ya.")
+                    showToaster(getString(loginregisterR.string.shop_creation_card_unselected_text))
                 }
             }
         }
@@ -158,7 +159,7 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
                 is ShopStatus.Pending -> {
-                    showToaster("Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.")
+                    showToaster(getString(loginregisterR.string.official_store_on_progress_text))
                 }
                 is ShopStatus.Error -> {
                     showToaster(it.throwable.message ?: "")
@@ -254,13 +255,16 @@ class KycBridgingFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun showToaster(message: String) {
-        val height = viewBinding?.btnContinue?.measuredHeight ?: 144
-        Toaster.toasterCustomBottomHeight = height + 32
+        val height = viewBinding?.btnContinue?.measuredHeight ?: TOASTER_MARGIN_HEIGHT
+        Toaster.toasterCustomBottomHeight = height + TOASTER_MARGIN_BOTTOM_HEIGHT
         Toaster.build(viewBinding?.root!!, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     companion object {
         private const val OS_PATH = "open-shop-v2/welcome-os"
+        private const val TOASTER_MARGIN_HEIGHT = 144
+        private const val TOASTER_MARGIN_BOTTOM_HEIGHT = 32
+
         fun createInstance(bundle: Bundle): KycBridgingFragment {
             val fragment = KycBridgingFragment()
             fragment.arguments = bundle

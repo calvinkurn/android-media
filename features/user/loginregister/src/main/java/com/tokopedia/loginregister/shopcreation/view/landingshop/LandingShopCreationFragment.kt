@@ -167,18 +167,24 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun initButtonListener() {
         viewBinding?.btnContinue?.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
-            if (!ShopCreationUtils.isShopPending(requireContext())) {
-                if (userIsLoggedIn()) {
-                    goToShopAdminRedirection()
+            if (isForceKycEnabkled()) {
+                if (!ShopCreationUtils.isShopPending(requireContext())) {
+                    checkPrimaryButtonRedirection()
                 } else {
-                    showLoading()
-                    goToPhoneShopCreation()
-                }
-            } else {
-                if (isForceKycEnabkled()) {
                     openKycBridgePage()
                 }
+            } else {
+                checkPrimaryButtonRedirection()
             }
+        }
+    }
+
+    private fun checkPrimaryButtonRedirection() {
+        if (userIsLoggedIn()) {
+            goToShopAdminRedirection()
+        } else {
+            showLoading()
+            goToPhoneShopCreation()
         }
     }
 
