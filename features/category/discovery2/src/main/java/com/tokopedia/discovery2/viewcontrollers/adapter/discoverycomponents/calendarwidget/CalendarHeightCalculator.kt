@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget
 
 import android.content.Context
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.CAROUSEL
 import com.tokopedia.discovery2.Constant.Calendar.DOUBLE
 import com.tokopedia.discovery2.Constant.Calendar.TRIPLE
@@ -8,6 +9,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import com.tokopedia.abstraction.R as abstractionR
 
 suspend fun List<DataItem>?.getMaxHeightForCarouselView(context: Context?, coroutineDispatcher: CoroutineDispatcher, calendarLayout : String?): Int {
     if (this == null || context == null) return 0
@@ -16,23 +18,30 @@ suspend fun List<DataItem>?.getMaxHeightForCarouselView(context: Context?, corou
         val calendarCardHeightList = mutableListOf<Int>()
 
         forEach { dataItem ->
-            val calendarDate = getCalendarDateHeight(context)
-            val calendarTitleImage = getCalendarTitleImageHeight(context, dataItem.titleLogoUrl, dataItem.title)
-            val calendarTitle = getCalendarTitleHeight(context, dataItem.title)
-            val calendarDescription = getCalendarDescriptionHeight(context)
-            val calendarButton = getCalendarButtonHeight(context, dataItem.buttonApplink)
-            val calendarImage = getCalendarImageHeight(context, dataItem.imageUrl, calendarLayout)
-            val padding = context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4)
+            if (calendarLayout == DOUBLE) {
+                // somehow double is strict to 280 in code CalendarWidgetItemViewHolder
+                calendarCardHeightList.add(context.resources.getDimensionPixelSize(R.dimen.dp_280))
+            } else {
+                val calendarDate = getCalendarDateHeight(context)
+                val calendarTitleImage =
+                    getCalendarTitleImageHeight(context, dataItem.titleLogoUrl, dataItem.title)
+                val calendarTitle = getCalendarTitleHeight(context, dataItem.title)
+                val calendarDescription = getCalendarDescriptionHeight(context)
+                val calendarButton = getCalendarButtonHeight(context, dataItem.buttonApplink)
+                val calendarImage =
+                    getCalendarImageHeight(context, dataItem.imageUrl, calendarLayout)
+                val padding = context.resources.getDimensionPixelSize(abstractionR.dimen.dp_4)
 
-            calendarCardHeightList.add(
-                        calendarDate +
+                calendarCardHeightList.add(
+                    calendarDate +
                         calendarTitleImage +
                         calendarTitle +
                         calendarDescription +
                         calendarImage +
                         calendarButton +
                         padding
-            )
+                )
+            }
         }
 
         calendarCardHeightList.maxOrNull()?.toInt() ?: 0
