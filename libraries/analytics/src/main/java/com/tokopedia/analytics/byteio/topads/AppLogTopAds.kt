@@ -144,12 +144,14 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
-                if(pageName != PageName.SEARCH_RESULT) {
-                    put(
-                        AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK,
-                        (timeStamp - lastClickTimestamp).toString()
-                    )
-                }
+
+                //todo need to confirm, after pak jaka confirm this attribute will be removed
+//                if(pageName != PageName.SEARCH_RESULT) {
+//                    put(
+//                        AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK,
+//                        (timeStamp - lastClickTimestamp).toString()
+//                    )
+//                }
 
                 putTag(pageName)
             }

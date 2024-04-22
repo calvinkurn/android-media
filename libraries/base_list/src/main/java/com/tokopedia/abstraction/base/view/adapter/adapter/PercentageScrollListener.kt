@@ -13,51 +13,65 @@ import kotlin.math.roundToInt
 
 open class PercentageScrollListener : OnScrollListener() {
 
+    private val globalVisibleRect = Rect()
+
+    private val LOCK = Any()
+
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
-
-        val layoutManager = recyclerView.layoutManager
-
-        val firstPosition = when (layoutManager) {
-            is StaggeredGridLayoutManager -> layoutManager.findFirstVisibleItemPositions(null).minOrNull()
-            is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
-            else -> (layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
-        } ?: return
-
-        val lastPosition = when (layoutManager) {
-            is StaggeredGridLayoutManager -> layoutManager.findLastVisibleItemPositions(null).maxOrNull()
-            is GridLayoutManager -> layoutManager.findLastVisibleItemPosition()
-            else -> (layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
-        } ?: return
-
-        if (firstPosition == RecyclerView.NO_POSITION || lastPosition == RecyclerView.NO_POSITION) {
-            return
+        //horizontal approach
+        if (dx > 0 || dx < 0) {
+            setVisiblePercentageOnScrollChanged(recyclerView)
         }
+        //vertical approach
+        else if (dy > 0 || dy < 0) {
+            setVisiblePercentageOnScrollChanged(recyclerView)
+        }
+    }
 
-        val globalVisibleRect = Rect()
+    private fun setVisiblePercentageOnScrollChanged(recyclerView: RecyclerView) {
+        synchronized(LOCK) {
+            val layoutManager = recyclerView.layoutManager
 
-        recyclerView.getGlobalVisibleRect(globalVisibleRect)
+            val firstPosition = when (layoutManager) {
+                is StaggeredGridLayoutManager -> layoutManager.findFirstVisibleItemPositions(null).minOrNull()
+                is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+                else -> (layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+            } ?: return
 
-        for (pos in firstPosition..lastPosition) {
-            setItemViewVisiblePercentage(layoutManager, pos, recyclerView, globalVisibleRect)
+            val lastPosition = when (layoutManager) {
+                is StaggeredGridLayoutManager -> layoutManager.findLastVisibleItemPositions(null).maxOrNull()
+                is GridLayoutManager -> layoutManager.findLastVisibleItemPosition()
+                else -> (layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
+            } ?: return
+
+            if (firstPosition == RecyclerView.NO_POSITION || lastPosition == RecyclerView.NO_POSITION) {
+                return
+            }
+
+            recyclerView.getGlobalVisibleRect(globalVisibleRect)
+
+            for (pos in firstPosition..lastPosition) {
+                setItemViewVisiblePercentage(layoutManager, pos, recyclerView, globalVisibleRect)
+            }
         }
     }
 
     private fun setItemViewVisiblePercentage(layoutManager: RecyclerView.LayoutManager?, i: Int, recyclerView: RecyclerView, globalVisibleRect: Rect) {
-        val view = layoutManager?.findViewByPosition(i) ?: return
+        val itemView = layoutManager?.findViewByPosition(i) ?: return
 
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i) as? IAdsViewHolderTrackListener
             ?: return
 
         val itemVisibleRect = Rect()
 
-        view.getGlobalVisibleRect(itemVisibleRect)
+        itemView.getGlobalVisibleRect(itemVisibleRect)
 
-        val visibleAreaPercentage = getCalculateVisibleViewArea(view, itemVisibleRect, globalVisibleRect)
+        val visibleAreaPercentage = getCalculateVisibleViewArea(itemView, itemVisibleRect, globalVisibleRect)
 
         val prevValue = viewHolder.visiblePercentage
 
@@ -65,9 +79,11 @@ open class PercentageScrollListener : OnScrollListener() {
     }
 }
 
-fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?): Int {
+fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, bindingAdapterPosition: Int): Int {
 
     if (itemView == null || recyclerView == null) return 0
+
+    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener
 
     val globalVisibleRect = Rect()
 
@@ -78,7 +94,9 @@ fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?): Int {
 
     val visibleArea = getCalculateVisibleViewArea(itemView, itemVisibleRect, globalVisibleRect)
 
-    return if (visibleArea > 0) visibleArea else 100
+    val prevValue = viewHolder?.visiblePercentage ?: 0
+
+    return if (visibleArea > 0) max(prevValue, visibleArea) else 100
 }
 
 fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect, globalVisibleRect: Rect): Int {
