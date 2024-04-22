@@ -4,12 +4,12 @@ import android.nfc.tech.IsoDep
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.usecase.GetBCAGenCheckerUseCase
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.util.ElectronicMoneyEncryption
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.domain.EmoneyParamMapper.mapParamLogErrorNetworkFlazz
+import com.tokopedia.emoney.domain.request.BCAFlazzAction
 import com.tokopedia.emoney.domain.request.BCAFlazzRequestMapper
 import com.tokopedia.emoney.domain.request.BCAFlazzStatus
 import com.tokopedia.emoney.domain.request.CommonBodyEnc
@@ -31,8 +31,7 @@ class BCABalanceViewModel @Inject constructor(
     private val bcaLibrary: BCALibraryIntegration,
     private val gson: Gson,
     private val electronicMoneyEncryption: ElectronicMoneyEncryption,
-    private val bcaFlazzUseCase: GetBCAFlazzUseCase,
-    private val getBCAGenCheckerUseCase: GetBCAGenCheckerUseCase
+    private val bcaFlazzUseCase: GetBCAFlazzUseCase
 ) : BaseViewModel(dispatcher) {
 
     private var bcaInquiryMutable = SingleLiveEvent<EmoneyInquiry>()
@@ -133,32 +132,16 @@ class BCABalanceViewModel @Inject constructor(
     fun processBCACheckBalanceGen1(
         isoDep: IsoDep,
         rawPublicKeyString: String,
-        rawPrivateKeyString: String,
-        messageGen1: String,
+        rawPrivateKeyString: String
     ) {
         if (isoDep != null) {
             run {
                 try {
                     val dataBalance = checkLatestBalance()
-                    launchCatchError(block = {
-                        val data = getBCAGenCheckerUseCase.execute(listOf(dataBalance.cardNo))
-                        val message = if (data.persoFavoriteNumber.items.first().label2.isNotEmpty()) {
-                            data.persoFavoriteNumber.items.first().label2
-                        } else {
-                            messageGen1
-                        }
-                        getPendingBalanceProcess(
-                            isoDep, dataBalance.cardNo, dataBalance.balance,
-                            rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", "",
-                            message
-                        )
-                    }) {
-                        getPendingBalanceProcess(
-                            isoDep, dataBalance.cardNo, dataBalance.balance,
-                            rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", "",
-                            messageGen1
-                        )
-                    }
+                    getPendingBalanceProcess(
+                        isoDep, dataBalance.cardNo, dataBalance.balance,
+                        rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", ""
+                    )
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
@@ -198,8 +181,7 @@ class BCABalanceViewModel @Inject constructor(
         rawPrivateKeyString: String,
         cardType: String,
         strCurrDateTime: String,
-        ATD: String,
-        messageBCAGen1: String = ""
+        ATD: String
     ) {
         launchCatchError(block = {
             val payloadGetPendingBalanceQuery = BCAFlazzRequestMapper.createGetPendingBalanceParam(
@@ -241,8 +223,7 @@ class BCABalanceViewModel @Inject constructor(
                         cardNumber,
                         lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
                         result.attributes.amount, result.status, result.attributes.message,
-                        result.attributes.hasMorePendingBalance,
-                        messageBCAGen1 = messageBCAGen1
+                        result.attributes.hasMorePendingBalance
                     )
                 )
             }

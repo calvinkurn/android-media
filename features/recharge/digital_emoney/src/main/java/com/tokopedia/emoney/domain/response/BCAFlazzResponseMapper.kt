@@ -10,9 +10,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 object BCAFlazzResponseMapper {
     private const val ISSUER_ID_BCA = 5
     fun bcaMapper(cardNo: String, balance: Int, imageUrl: String, isBCAGenOne: Boolean, pendingBalance: Int,
-                  status: Int, message: String, hasMorePendingBalance: Boolean, ackStatusOverride: Boolean = false,
-                  messageBCAGen1: String = "", messageTopUp2: String = ""
-    ): EmoneyInquiry {
+                  status: Int, message: String, hasMorePendingBalance: Boolean, ackStatusOverride: Boolean = false): EmoneyInquiry {
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
                 buttonText = "Top-Up Sekarang",
@@ -28,8 +26,6 @@ object BCAFlazzResponseMapper {
                 showAdditionalBalance = (status == BCAFlazzStatus.DONE.status && pendingBalance > Int.ZERO),
             ),
             isBCAGenOne = isBCAGenOne,
-            messageBCAGen1 = if (isBCAGenOne) messageBCAGen1 else "",
-            messageTopUp2 = messageTopUp2,
             error = EmoneyInquiryError(
                 "",
                 message,

@@ -389,9 +389,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
     private fun processGen1BCA(isoDep: IsoDep, bRawPublicKey: String, bRawPrivateKey: String) {
         showLoading(getOperatorName(issuerActive))
-        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey,
-            getString(common_electronic_moneyR.string.emoney_nfc_bca_gen_one)
-        )
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
     }
 
     private fun showCardNotEligible() {

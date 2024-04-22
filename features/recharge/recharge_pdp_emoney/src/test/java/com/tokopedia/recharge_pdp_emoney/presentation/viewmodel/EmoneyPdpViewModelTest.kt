@@ -21,6 +21,8 @@ import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommend
 import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recharge_pdp_emoney.presentation.domain.GetBCAGenCheckerUseCase
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

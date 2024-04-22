@@ -1,10 +1,10 @@
-package com.tokopedia.common.topupbills.usecase
+package com.tokopedia.recharge_pdp_emoney.presentation.domain
 
 import com.tokopedia.common.topupbills.data.requests.DigiPersoRequestParam
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
-import com.tokopedia.common.topupbills.usecase.query.BCAGenCheckerQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetBCAGenCheckerUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
