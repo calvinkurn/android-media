@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'com.google.gms.google-services'
@@ -18,11 +18,12 @@ buildscript {
 }
 
 def isEnableMacrobenchmarkUtil() {
-    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+    if (project.hasProperty('enableMacrobenchmarkUtil') ?: "false") {
         return "true";
     }
     return "false";
 }
+
 android {
     namespace 'com.tokopedia.tkpd'
     testNamespace 'com.tokopedia.tkpd.test'
@@ -63,7 +64,6 @@ android {
         minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "com.tokopedia.tkpd"
         versionCode 391100000
         versionName "3.150"
         vectorDrawables.useSupportLibrary = true

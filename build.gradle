@@ -59,6 +59,10 @@ buildscript {
         classpath "com.tokopedia.plugin:codebasereader:0.0.1"
         classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion"
         classpath rootProject.ext.gradlePlugin.composeCompilerReportGenerator
+
+        if (project.findProperty("resRepo") == 'bits') {
+            classpath "com.bytedance.security:ByteSignPlugin:2.3.1"
+        }
     }
 }
 
