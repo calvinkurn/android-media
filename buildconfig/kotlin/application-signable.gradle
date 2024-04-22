@@ -21,7 +21,11 @@ if (isBitsRepo()) {
 android {
     defaultConfig {
         if (isBitsRepo()) {
-            applicationId "com.tokopedia.sellerapp"
+            if (project.name == "sellerapp") {
+                applicationId = "com.tokopedia.sellerapp"
+            } else {
+                applicationId = "com.tokopedia.tkpd"
+            }
         }
     }
 }
