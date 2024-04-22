@@ -8,6 +8,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -280,7 +282,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every { additionalData } returns additionalEpharmacyData
         },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        getBrcCsatWidgetRequestState: GetBrcCsatWidgetRequestState = GetBrcCsatWidgetRequestState.Complete.Success(mockk(relaxed = true))
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -303,7 +306,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         ),
                         GetP1DataRequestState.Complete(
                             GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
-                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult),
+                            getBrcCsatWidgetRequestState
                         )
                     )
                 )
@@ -335,7 +339,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     ),
                     GetP1DataRequestState.Complete(
                         GetOrderResolutionRequestState.Complete.Error(throwable),
-                        GetInsuranceDetailRequestState.Complete.Error(throwable)
+                        GetInsuranceDetailRequestState.Complete.Error(throwable),
+                        GetBrcCsatWidgetRequestState.Complete.Error(throwable)
                     )
                 )
             )

@@ -100,7 +100,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.common_tradein.R as common_tradeinR
 
@@ -1082,7 +1082,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateTopAdsImageData(data: ArrayList<TopAdsImageViewModel>) {
+    fun updateTopAdsImageData(data: ArrayList<TopAdsImageUiModel>) {
         updateData(ProductDetailConstant.KEY_TOP_ADS) {
             topAdsImageData?.data = data
         }

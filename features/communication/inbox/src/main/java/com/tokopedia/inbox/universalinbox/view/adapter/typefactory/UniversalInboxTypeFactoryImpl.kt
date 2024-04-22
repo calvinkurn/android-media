@@ -27,8 +27,8 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerti
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
 import com.tokopedia.user.session.UserSessionInterface
 
 class UniversalInboxTypeFactoryImpl(
