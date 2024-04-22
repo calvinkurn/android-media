@@ -7,8 +7,6 @@ import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
-import com.tokopedia.stories.widget.settings.data.usecase.StoriesEligibilityUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -39,15 +37,4 @@ object ContentCreationModule {
 
     @Provides
     fun provideFirebaseRemoteConfig(context: Context): RemoteConfig = FirebaseRemoteConfigImpl(context)
-
-    @Provides
-    fun provideStoriesChecker(
-        checkEligibilityUseCase: StoriesEligibilityUseCase,
-        userSessionInterface: UserSessionInterface,
-        dispatchers: CoroutineDispatchers
-    ): StoriesSettingsChecker {
-        return StoriesSettingsChecker(
-            checkEligibilityUseCase, userSessionInterface, dispatchers
-        )
-    }
 }

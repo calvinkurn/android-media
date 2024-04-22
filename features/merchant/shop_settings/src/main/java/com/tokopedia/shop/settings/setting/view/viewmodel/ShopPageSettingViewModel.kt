@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.settings.setting.data.ShopSettingAccess
 import com.tokopedia.shopadmin.common.util.AccessId
+import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,7 +25,8 @@ class ShopPageSettingViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val authorizeAccessUseCase: Provider<AuthorizeAccessUseCase>,
-    private val dispatcherProvider: CoroutineDispatchers
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val storiesChecker: StoriesSettingsChecker,
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
@@ -58,9 +61,14 @@ class ShopPageSettingViewModel @Inject constructor(
                 }
             )
 
+            val isContentEligible = asyncCatchError(dispatcherProvider.io,
+                block = {
+                    storiesChecker.isEligible()
+                }, onError = { false })
+
             // Check for access role
             if (userSessionInterface.isShopOwner) {
-                mShopSettingAccessLiveData.value = Success(ShopSettingAccess())
+                mShopSettingAccessLiveData.value = Success(ShopSettingAccess(isContentManageAccessAuthorized = isContentEligible.await().orFalse()))
                 shopInfo.await()?.let {
                     shopInfoResp.value = Success(it)
                 }
@@ -96,7 +104,8 @@ class ShopPageSettingViewModel @Inject constructor(
                             isNotesAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_NOTES] ?: false,
                             isInfoAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_INFO] ?: false,
                             isShipmentAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_SHIPMENT] ?: false,
-                            isProductManageAccessAuthorized = adminAccessMap[AccessId.PRODUCT_LIST] ?: false
+                            isProductManageAccessAuthorized = adminAccessMap[AccessId.PRODUCT_LIST] ?: false,
+                            isContentManageAccessAuthorized = isContentEligible.await() ?: false
                         )
                     )
                 )

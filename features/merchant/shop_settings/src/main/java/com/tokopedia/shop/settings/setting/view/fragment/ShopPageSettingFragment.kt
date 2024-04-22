@@ -53,7 +53,8 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         ShopPageSettingAdapter.ProfileItemClickListener,
         ShopPageSettingAdapter.ProductItemClickListener,
         ShopPageSettingAdapter.SupportItemClickListener,
-        ShopPageSettingAdapter.ShippingItemClickListener {
+        ShopPageSettingAdapter.ShippingItemClickListener,
+        ShopPageSettingAdapter.ContentItemClickListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -157,7 +158,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         // setup shop page setting recycler view
         val shopPageSettingView = binding?.rvShopPageSetting
         val linearLayoutManager = LinearLayoutManager(activity)
-        shopPageSettingAdapter = ShopPageSettingAdapter(this, this, this, this)
+        shopPageSettingAdapter = ShopPageSettingAdapter(this, this, this, this, this)
         shopPageSettingView?.apply {
             setHasFixedSize(true)
             layoutManager = linearLayoutManager
@@ -171,6 +172,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingList.add(Product())
         shopPageSettingList.add(Support())
         shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Content())
         shopPageSettingAdapter?.setShopPageSettingList(shopPageSettingList)
 
         observeRoleAccess()
@@ -369,6 +371,12 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         ShopPageTrackingShopPageSetting.clickSetShippingService(customDimensionShopPage)
         whenRoleAuthorized(shopSettingAccess.isShipmentAccessAuthorized) {
             RouteManager.route(activity, ApplinkConst.SELLER_SHIPPING_EDITOR)
+        }
+    }
+    //Atur konten toko
+    override fun onClickContent() {
+        whenRoleAuthorized(shopSettingAccess.isContentManageAccessAuthorized) {
+            RouteManager.route(activity, ApplinkConst.CONTENT_SETTINGS)
         }
     }
 }
