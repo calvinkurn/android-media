@@ -215,6 +215,17 @@
       ],
       "sessionIris":".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - search bar",
+      "eventCategory": "feed browse page",
+      "eventLabel": ".*",
+      "trackerId": "50385",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
     }
   ]
 }
