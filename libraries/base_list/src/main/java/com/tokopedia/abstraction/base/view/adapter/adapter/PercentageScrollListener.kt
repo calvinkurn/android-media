@@ -83,7 +83,7 @@ fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, bindingA
 
     if (itemView == null || recyclerView == null) return 0
 
-    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener
+    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener ?: return 0
 
     val globalVisibleRect = Rect()
 
@@ -94,7 +94,7 @@ fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, bindingA
 
     val visibleArea = getCalculateVisibleViewArea(itemView, itemVisibleRect, globalVisibleRect)
 
-    val prevValue = viewHolder?.visiblePercentage ?: 0
+    val prevValue = viewHolder.visiblePercentage
 
     return if (visibleArea > 0) max(prevValue, visibleArea) else 100
 }
