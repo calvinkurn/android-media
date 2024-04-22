@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.util.asAdsLogShowModel
 import com.tokopedia.home.util.asAdsLogShowOverModel
 import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -52,6 +53,8 @@ class FlashSaleViewHolder (view: View,
                     itemView.context,
                     it.grid.asAdsLogShowOverModel(visibilityPercentage)
                 )
+
+                setVisiblePercentage(Int.ZERO)
             }
         }
     }

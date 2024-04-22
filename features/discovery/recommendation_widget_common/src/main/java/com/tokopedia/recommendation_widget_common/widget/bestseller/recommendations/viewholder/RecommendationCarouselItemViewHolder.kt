@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller.recommendat
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.R
@@ -54,6 +55,7 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
 
     override fun onViewDetachedFromWindow(element: RecommendationCarouselItemDataModel?, visiblePercentage: Int) {
         element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     companion object {

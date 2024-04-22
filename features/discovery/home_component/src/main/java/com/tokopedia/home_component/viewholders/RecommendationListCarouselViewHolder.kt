@@ -29,6 +29,7 @@ import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -276,6 +277,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         override fun onViewDetachedFromWindow(visiblePercentage: Int) {
             channelGrid.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
+            setVisiblePercentage(Int.ZERO)
         }
 
         override fun setVisiblePercentage(visiblePercentage: Int) {

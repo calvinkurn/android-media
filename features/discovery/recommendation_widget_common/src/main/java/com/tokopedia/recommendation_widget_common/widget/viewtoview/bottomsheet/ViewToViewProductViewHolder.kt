@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
@@ -47,6 +48,7 @@ class ViewToViewProductViewHolder(
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

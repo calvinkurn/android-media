@@ -11,6 +11,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -54,6 +55,7 @@ class SpecialReleaseRevampItemViewHolder(
 
     override fun onViewDetachedFromWindow(element: SpecialReleaseRevampItemDataModel?, visiblePercentage: Int) {
         element?.grid.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     private fun HomeComponentSpecialReleaseRevampItemBinding.renderShop(element: SpecialReleaseRevampItemDataModel) {

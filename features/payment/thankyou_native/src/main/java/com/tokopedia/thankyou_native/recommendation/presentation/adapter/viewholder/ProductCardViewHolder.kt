@@ -111,7 +111,7 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
                 view.context,
                 visiblePercentage
             )
-            this.visibleViewPercentage = Int.ZERO
+            setVisiblePercentage(Int.ZERO)
         }
     }
 }

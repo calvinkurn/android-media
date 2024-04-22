@@ -27,6 +27,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -70,7 +71,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        dataItem?.let { AppLogTopAds.sendEventShowOver(itemView.context, it.asAdsLogShowOverModel(visiblePercentage)) }
+        dataItem?.let {
+            AppLogTopAds.sendEventShowOver(itemView.context, it.asAdsLogShowOverModel(visiblePercentage))
+            setVisiblePercentage(Int.ZERO)
+        }
     }
 
     override fun onViewDetachedToWindow() {

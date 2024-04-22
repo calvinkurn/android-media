@@ -21,6 +21,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 
 class ProductCardColumnListViewHolder(
@@ -161,6 +162,7 @@ class ProductCardColumnListViewHolder(
 
             if (product?.isTopads == true) {
                 AppLogTopAds.sendEventShowOver(itemView.context, product.asAdsLogShowOverModel(visiblePercentage))
+                setVisiblePercentage(Int.ZERO)
             }
         }
     }

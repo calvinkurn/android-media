@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardClickListener
@@ -104,6 +105,7 @@ class BigGridProductItemViewHolder(
                 itemView.context,
                 element.asAdsLogShowOverModel(visiblePercentage)
             )
+            setVisiblePercentage(Int.ZERO)
         }
     }
 }

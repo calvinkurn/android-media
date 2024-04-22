@@ -9,6 +9,7 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -62,6 +63,7 @@ class RecommendationCardGridViewHolder constructor(
                     itemView.context,
                     it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
                 )
+                setVisiblePercentage(Int.ZERO)
             }
         }
     }
