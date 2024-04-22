@@ -71,6 +71,10 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
+def isResourceBits() {
+    return project.hasProperty('resRepo').toBoolean()
+}
+
 def isEnableMacrobenchmarkUtil() {
     if (project.hasProperty('enableMacrobenchmarkUtil')) {
         return "true";
@@ -113,7 +117,6 @@ apply plugin: "org.gradle.test-retry"
 SigningConfiguration {
     applicationId = "com.tokopedia.tkpd"
     overwriteOriginalFile = false
-    enableDynamicFeature = true
 }
 
 android {
