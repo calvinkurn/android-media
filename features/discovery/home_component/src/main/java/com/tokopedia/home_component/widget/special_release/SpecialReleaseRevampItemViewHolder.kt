@@ -20,6 +20,7 @@ import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 
 /**

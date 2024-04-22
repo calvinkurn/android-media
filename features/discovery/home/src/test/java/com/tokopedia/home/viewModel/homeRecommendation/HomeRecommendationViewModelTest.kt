@@ -12,12 +12,12 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewM
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -733,7 +733,7 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
@@ -907,7 +907,7 @@ class HomeRecommendationViewModelTest {
             homeRecommendationDataModel2
         )
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
@@ -1019,7 +1019,7 @@ class HomeRecommendationViewModelTest {
             homeRecommendationDataModel2
         )
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()), arrayListOf())
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()), arrayListOf())
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
@@ -1128,7 +1128,7 @@ class HomeRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
-        topAdsImageViewUseCase.givenDataReturnAndThenThrows(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturnAndThenThrows(arrayListOf(TopAdsImageUiModel()))
 
         every { HomeRecommendationController.isUsingRecommendationCard() } returns false
 
@@ -1366,7 +1366,7 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         val cpmModel = CpmModel()
         val cpmData = CpmData()
@@ -1441,7 +1441,7 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         val cpmModel = CpmModel()
         val cpmData = CpmData()
@@ -1501,7 +1501,7 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         val cpmModel = CpmModel()
         val cpmData = CpmData()
@@ -1582,7 +1582,7 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         every { HomeRecommendationController.isUsingRecommendationCard() } returns false
 
@@ -1654,7 +1654,7 @@ class HomeRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         every { HomeRecommendationController.isUsingRecommendationCard() } returns false
 

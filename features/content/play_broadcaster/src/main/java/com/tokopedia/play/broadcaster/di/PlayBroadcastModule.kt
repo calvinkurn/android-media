@@ -6,8 +6,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.BroadcastManager
 import com.tokopedia.broadcaster.revamp.Broadcaster
-import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.byteplus.effect.EffectManager
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -23,9 +26,6 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
-import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl

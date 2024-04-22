@@ -331,6 +331,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX_SA
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
@@ -2338,6 +2339,15 @@ open class ProductDetailFragment :
     override fun shouldShowWishlist(): Boolean {
         val isPrefetch = viewModel.getProductInfoP1?.cacheState?.isPrefetch == true
         return !viewModel.isShopOwner() && !isPrefetch
+    }
+
+    override fun onExpandProductName(componentTrackData: ComponentTrackDataModel) {
+        pdpUiUpdater?.updateOnExpandProductName()
+        ProductDetailTracking.Click.eventProductNameExpandClicked(
+            componentTrackDataModel = componentTrackData,
+            productInfo = viewModel.getProductInfoP1,
+            userId = viewModel.userId
+        )
     }
 
     override fun onMainImageClicked(
@@ -6428,10 +6438,15 @@ open class ProductDetailFragment :
      * from old share to share 2.0
      */
     private fun isUsingShareEx(): Boolean {
+        val rollenceKey = if (!GlobalConfig.isSellerApp()) {
+            ROLLENCE_SHARE_EX
+        } else {
+            ROLLENCE_SHARE_EX_SA
+        }
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            ROLLENCE_SHARE_EX,
+            rollenceKey,
             ""
-        ) == ROLLENCE_SHARE_EX
+        ) == rollenceKey
     }
 
     private fun processAffiliateSubIds(bundle: Bundle?) {
