@@ -1068,19 +1068,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 Timber.w(e);
             }
-        } else if (url.contains(ApplinkConst.ShareExperience.SHARE_EXPERIENCE)) { // Todo : remove this handling once lite already able to redirect to share applink
-            String DUMMY_APPLINK = "tokopedia://share?" +
-                    "referral_code=TARI123" +
-//                    "product_id=2151019476" +
-                    "&page_type=7" +
-                    "&default_url=https://tkp.me/GPL-TARI123" +
-                    "&label_action_click_share_icon={share_id}" +
-                    "&label_action_click_close_icon={share_id}" +
-                    "&label_action_click_channel={channel}%20-%20{share_id}" +
-                    "&label_impression_bottomsheet={share_id}" +
-                    "&utm_campaign=gopayReferral-{share_id}-010424";
-
-            Intent intent = RouteManager.getIntent(getContext(), DUMMY_APPLINK);
+        } else if (url.contains(ApplinkConst.ShareExperience.SHARE_EXPERIENCE)) {
+            Intent intent = RouteManager.getIntent(getContext(), url);
             startActivityForResult(intent, REQUEST_CODE_SHARE);
             return true;
         }

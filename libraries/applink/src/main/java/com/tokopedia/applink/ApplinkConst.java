@@ -906,6 +906,6 @@ public interface ApplinkConst {
     }
 
     interface ShareExperience {
-        String SHARE_EXPERIENCE = /*"tokopedia://share"*/ "tokopedia://topchat"; // Todo: Revert
+        String SHARE_EXPERIENCE = "tokopedia://share";
     }
 }
