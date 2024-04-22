@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: "com.google.devtools.ksp"
-apply plugin: 'com.bytedance.security.ByteSignPlugin'
 
 buildscript {
     repositories {
@@ -23,11 +22,6 @@ def isEnableMacrobenchmarkUtil() {
         return "true";
     }
     return "false";
-}
-
-SigningConfiguration {
-    applicationId = "com.tokopedia.tkpd"
-    overwriteOriginalFile = false
 }
 
 android {

@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 if(project.hasProperty('enableEmbraceMa')) {
     apply plugin: 'embrace-swazzler'
 }
@@ -15,7 +15,6 @@ apply plugin: 'io.hansel.preprocessor'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.bytedance.security.ByteSignPlugin'
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -71,10 +70,6 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
-def isResourceBits() {
-    return project.hasProperty('resRepo').toBoolean()
-}
-
 def isEnableMacrobenchmarkUtil() {
     if (project.hasProperty('enableMacrobenchmarkUtil')) {
         return "true";
@@ -113,11 +108,6 @@ ext.lintchecks = [
 ] as String[]
 
 apply plugin: "org.gradle.test-retry"
-
-SigningConfiguration {
-    applicationId = "com.tokopedia.tkpd"
-    overwriteOriginalFile = false
-}
 
 android {
     namespace 'com.tokopedia.tkpd'
