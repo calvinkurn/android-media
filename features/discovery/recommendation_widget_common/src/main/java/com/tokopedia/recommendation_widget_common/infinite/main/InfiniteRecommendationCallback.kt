@@ -5,7 +5,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 interface InfiniteRecommendationCallback {
     fun fetchRecommendation()
-    fun onClickProductCard(recommendationItem: RecommendationItem)
-    fun onImpressProductCard(recommendationItem: RecommendationItem)
+    fun onClickProductCard(
+        recommendationItem: RecommendationItem,
+        additionalAppLogParams: Map<String, Any>
+    )
+    fun onImpressProductCard(
+        recommendationItem: RecommendationItem,
+        additionalAppLogParams: Map<String, Any>,
+    )
     fun onClickViewAll(recommendationWidget: RecommendationWidget)
 }

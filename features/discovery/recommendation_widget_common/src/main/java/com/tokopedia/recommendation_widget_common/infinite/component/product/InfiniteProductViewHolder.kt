@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.infinite.component.product
 
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemInfiniteProductBinding
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -18,11 +19,17 @@ class InfiniteProductViewHolder(
         setProductModel(recommendationItem.toProductCardModel())
         addOnImpressionListener(item.impressHolder) {
             if (recommendationItem.isTopAds) hitTopAdsImpression(recommendationItem)
-            callback.onImpressProductCard(recommendationItem)
+            callback.onImpressProductCard(
+                recommendationItem,
+                item.additionalAppLogParams
+            )
         }
         setOnClickListener {
             if (recommendationItem.isTopAds) hitTopAdsClick(recommendationItem)
-            callback.onClickProductCard(recommendationItem)
+            callback.onClickProductCard(
+                recommendationItem,
+                item.additionalAppLogParams
+            )
         }
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.infinite.component.title.Infin
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import javax.inject.Inject
 
 class InfiniteRecommendationViewModel @Inject constructor(
@@ -30,11 +31,15 @@ class InfiniteRecommendationViewModel @Inject constructor(
 
     private var currentPage = DEFAULT_CURRENT_PAGE
     private var nextPage = DEFAULT_NEXT_PAGE
+    private var additionalAppLogParam: Map<String, Any> = hashMapOf()
 
-    fun init() {
+    fun init(
+        additionalAppLogParam: Map<String, Any> = hashMapOf()
+    ) {
         currentPage = DEFAULT_CURRENT_PAGE
         nextPage = DEFAULT_NEXT_PAGE
         _components.value = listOf(InfiniteLoadingUiModel)
+        this.additionalAppLogParam = additionalAppLogParam
     }
 
     fun fetchComponents(
@@ -68,7 +73,9 @@ class InfiniteRecommendationViewModel @Inject constructor(
                 components.add(0, InfiniteTitleUiModel(this))
             }
 
-            val products = recommendationItemList.map { InfiniteProductUiModel(it) }
+            val products = recommendationItemList.map {
+                InfiniteProductUiModel(it, additionalAppLogParam)
+            }
             val target = components.indexOfLast {
                 it is InfiniteLoadingUiModel
             }.takeIf { it > -1 } ?: components.size

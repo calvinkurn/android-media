@@ -22,6 +22,7 @@ object TrackRecommendationMapper {
         enterMethod: EnterMethod? = null,
         tabName: String = "",
         tabPosition: Int = -1,
+        additionalParams: Map<String, Any> = hashMapOf(),
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.toString(),
@@ -42,6 +43,7 @@ object TrackRecommendationMapper {
             volume = countSold,
             originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
             salesPrice = priceInt.toFloat(),
+            additionalParams = additionalParams,
         )
     }
 
