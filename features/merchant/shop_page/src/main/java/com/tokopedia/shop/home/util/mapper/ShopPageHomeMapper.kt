@@ -26,6 +26,7 @@ import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
+import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -1393,7 +1394,13 @@ object ShopPageHomeMapper {
                             )
                         },
                         widgetStyle = it.header.widgetStyle
-                    )
+                    ),
+                    it.options.map { option ->
+                        ShopPageWidgetRequestModel.Option(
+                            key = option.key,
+                            value = option.value
+                        )
+                    }
                 )
             }
         )
