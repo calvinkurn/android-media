@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.visitable.shorten
 
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelTracker
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable.ItemShortenVisitable
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactory
@@ -23,6 +24,7 @@ data class ThumbnailWidgetUiModel(
 
 data class ItemThumbnailWidgetUiModel(
     val card: SmallProductModel,
+    val tracker: ChannelTracker,
     val pageName: String,
     val gridId: String,
     val url: String,

@@ -1,0 +1,26 @@
+package com.tokopedia.home_component.model
+
+data class ChannelTracker(
+    val entranceForm: String,
+    val sourceModuleType: String,
+    val recomPageName: String,
+    val layoutTrackerType: String,
+    val productId: String,
+    val isTopAds: Boolean,
+    val trackId: String,
+    val recSessionId: String,
+    val recParams: String,
+    val requestId: String,
+    val shopId: String,
+    val itemOrder: String,
+    val layout: String,
+    val cardName: String,
+    val campaignCode: String,
+    val creativeName: String,
+    val creativeSlot: String,
+    val isCarousel: Boolean,
+    val categoryId: String,
+    val productName: String,
+    val recommendationType: String,
+    val buType: String,
+)

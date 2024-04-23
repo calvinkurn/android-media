@@ -195,6 +195,8 @@ data class DynamicHomeChannel(
         @Expose
         @SerializedName("id")
         val id: String = "",
+        @SerializedName("trackerJson")
+        val trackerJson: String = "",
         @Expose
         @SerializedName("back_color", alternate = ["backColor"])
         val backColor: String = "",

@@ -1,7 +1,7 @@
 package com.tokopedia.home_component.viewholders.shorten.factory
 
-import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.MissionWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 
 interface ShortenViewFactory {
 

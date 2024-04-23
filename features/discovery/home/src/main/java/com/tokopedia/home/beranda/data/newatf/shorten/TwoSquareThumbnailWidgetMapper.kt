@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf.shorten
 
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
@@ -32,6 +33,7 @@ object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetU
                 }
 
                 ItemThumbnailWidgetUiModel(
+                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid),
                     card = createSmallProductCardModel(grid.labelGroup.toList()).copy(
                         ribbon = SmallProductModel.Ribbon(
                             text = ribbon?.title.orEmpty(),

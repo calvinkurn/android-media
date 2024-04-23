@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf.shorten
 
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.visitable.shorten.ItemMissionWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.MissionWidgetUiModel
@@ -23,6 +24,7 @@ object TwoSquareMissionWidgetMapper : BaseShortenWidgetMapper<MissionWidgetUiMod
 
                 ItemMissionWidgetUiModel(
                     id = labelGroup[Keys.ID]?.title.orEmpty(),
+                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid),
                     card = createSmallProductCardModel(grid.labelGroup.toList()),
                     url = labelGroup[Keys.URL]?.imageUrl.orEmpty(), // this shouldn't be imageUrl
                     appLink = labelGroup[Keys.APP_LINK]?.imageUrl.orEmpty(),
