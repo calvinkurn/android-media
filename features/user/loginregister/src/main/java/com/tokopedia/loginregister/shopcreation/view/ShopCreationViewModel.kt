@@ -6,13 +6,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckParam
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
+import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
-import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckParam
-import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoParam
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileParam
@@ -43,6 +45,7 @@ open class ShopCreationViewModel @Inject constructor(
     private val updateUserProfileUseCase: UpdateUserProfileUseCase,
     private val getProfileUseCase: GetUserInfoAndSaveSessionUseCase,
     private val shopInfoUseCase: ShopInfoUseCase,
+    private val getShopStatusUseCase: GetShopStatusUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -77,6 +80,10 @@ open class ShopCreationViewModel @Inject constructor(
     private val _getShopInfoResponse = MutableLiveData<Result<ShopInfoByID>>()
     val getShopInfoResponse: LiveData<Result<ShopInfoByID>>
         get() = _getShopInfoResponse
+
+    private val _shopStatus = MutableLiveData<ShopStatus>()
+    val shopStatus: LiveData<ShopStatus>
+        get() = _shopStatus
 
     fun addName(name: String, validateToken: String) {
         launchCatchError(block = {
@@ -150,6 +157,17 @@ open class ShopCreationViewModel @Inject constructor(
         }, onError = {
                 _getShopInfoResponse.value = Fail(it)
             })
+    }
+
+    fun getShopStatus() {
+        launch {
+            try {
+                val resp = getShopStatusUseCase("")
+                _shopStatus.value = resp
+            } catch (e: Exception) {
+                _shopStatus.value = ShopStatus.Error(e)
+            }
+        }
     }
 
     fun registerPhoneAndName(phone: String, name: String) {

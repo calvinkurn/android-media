@@ -34,7 +34,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.util.ViewHelper
@@ -124,7 +123,7 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.sessioncommon.tracker.OclTracker
 import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -1012,7 +1011,7 @@ open class HomeAccountUserFragment :
 
     private fun onSuccessGetFirstRecommendationData(
         recommendation: RecommendationWidget,
-        tdnBanner: TopAdsImageViewModel?
+        tdnBanner: TopAdsImageUiModel?
     ) {
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
@@ -1027,7 +1026,7 @@ open class HomeAccountUserFragment :
 
     private fun addRecommendationItem(
         list: List<RecommendationItem>,
-        tdnBanner: TopAdsImageViewModel?
+        tdnBanner: TopAdsImageUiModel?
     ) {
         list.forEachIndexed { index, recommendationItem ->
             if (index == TDN_INDEX) tdnBanner?.let { adapter?.addItem(it) }
