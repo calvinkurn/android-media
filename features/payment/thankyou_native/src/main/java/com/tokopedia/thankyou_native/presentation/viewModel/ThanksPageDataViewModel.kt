@@ -259,7 +259,7 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     @VisibleForTesting
-    suspend fun postGyroRecommendation(
+    fun postGyroRecommendation(
         engineData: FeatureEngineData?,
         queryParamTokomember: TokoMemberRequestParam?
     ) {
