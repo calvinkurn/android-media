@@ -41,9 +41,9 @@ data class RecommendationTriggerObject(
     val sessionId: String = "",
     val requestId: String = "",
     val moduleName: String = "",
-    val isUnderGuide: Boolean = false,
     val listName: String = "",
     val listNum: Int = -1,
+    val additionalParams: Map<String, Any> = hashMapOf(),
 )
 
 class VerticalTrackScrollListener(
@@ -202,7 +202,7 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
 }
 
 fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTriggerObject) {
-    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
+    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject(model.additionalParams).also {
         it.addPage()
         it.addEnterFrom()
         it.put(AppLogParam.LIST_NAME, model.listName.underscoredParam())

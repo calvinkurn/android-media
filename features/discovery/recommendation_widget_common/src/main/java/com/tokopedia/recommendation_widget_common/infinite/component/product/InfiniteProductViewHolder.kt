@@ -21,7 +21,7 @@ class InfiniteProductViewHolder(
     override fun bind(item: InfiniteProductUiModel) = with(binding.infiniteProductCard) {
         val recommendationItem = item.recommendationItem
         setProductModel(recommendationItem.toProductCardModel())
-        updateRecTriggerObject(recommendationItem)
+        updateRecTriggerObject(item)
         addOnImpressionListener(item.impressHolder) {
             if (recommendationItem.isTopAds) hitTopAdsImpression(recommendationItem)
             callback.onImpressProductCard(
@@ -38,11 +38,12 @@ class InfiniteProductViewHolder(
         }
     }
 
-    private fun updateRecTriggerObject(item: RecommendationItem) {
+    private fun updateRecTriggerObject(model: InfiniteProductUiModel) {
         recTriggerObject = RecommendationTriggerObject(
-            sessionId = item.appLog.sessionId,
-            requestId = item.appLog.requestId,
-            moduleName = item.pageName,
+            sessionId = model.recommendationItem.appLog.sessionId,
+            requestId = model.recommendationItem.appLog.requestId,
+            moduleName = model.recommendationItem.pageName,
+            additionalParams = model.additionalAppLogParams,
         )
     }
 
