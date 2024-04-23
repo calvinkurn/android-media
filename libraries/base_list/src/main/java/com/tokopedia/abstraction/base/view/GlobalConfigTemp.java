@@ -1,10 +1,10 @@
-package com.tokopedia.config;
+package com.tokopedia.abstraction.base.view;
 
 /**
  * Created by ricoharisin on 11/21/16.
  */
 
-public class GlobalConfig {
+public class GlobalConfigTemp {
 
     public static final int SELLER_APPLICATION = 2;
     public static final int CONSUMER_APPLICATION = -1;
