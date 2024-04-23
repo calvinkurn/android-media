@@ -36,6 +36,7 @@ class UniversalInboxRecommendationProductViewHolder(
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
+        setVisiblePercentage(getViewAreaPercentage(rvHolder, binding?.inboxProductRecommendation, bindingAdapterPosition))
         setRecTriggerObject(uiModel.recommendationItem)
         binding?.inboxProductRecommendation?.run {
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))
@@ -90,7 +91,6 @@ class UniversalInboxRecommendationProductViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
-        setVisiblePercentage(getViewAreaPercentage(rvHolder, binding?.inboxProductRecommendation, bindingAdapterPosition))
         element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
