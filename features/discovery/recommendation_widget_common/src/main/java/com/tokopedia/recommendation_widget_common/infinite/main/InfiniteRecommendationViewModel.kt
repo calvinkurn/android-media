@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingUiModel
@@ -13,7 +14,6 @@ import com.tokopedia.recommendation_widget_common.infinite.component.title.Infin
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import javax.inject.Inject
 
 class InfiniteRecommendationViewModel @Inject constructor(
@@ -31,15 +31,15 @@ class InfiniteRecommendationViewModel @Inject constructor(
 
     private var currentPage = DEFAULT_CURRENT_PAGE
     private var nextPage = DEFAULT_NEXT_PAGE
-    private var additionalAppLogParam: Map<String, Any> = hashMapOf()
+    private var appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None()
 
     fun init(
-        additionalAppLogParam: Map<String, Any> = hashMapOf()
+        appLogAdditionalParam: AppLogAdditionalParam,
     ) {
         currentPage = DEFAULT_CURRENT_PAGE
         nextPage = DEFAULT_NEXT_PAGE
         _components.value = listOf(InfiniteLoadingUiModel)
-        this.additionalAppLogParam = additionalAppLogParam
+        this.appLogAdditionalParam = appLogAdditionalParam
     }
 
     fun fetchComponents(
@@ -74,7 +74,7 @@ class InfiniteRecommendationViewModel @Inject constructor(
             }
 
             val products = recommendationItemList.map {
-                InfiniteProductUiModel(it, additionalAppLogParam)
+                InfiniteProductUiModel(it, appLogAdditionalParam)
             }
             val target = components.indexOfLast {
                 it is InfiniteLoadingUiModel

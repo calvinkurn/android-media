@@ -262,6 +262,10 @@ object AppLogParam {
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
     const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
     const val PARENT_PRODUCT_ID = "parent_product_id"
+    const val PARENT_TRACK_ID = "parent_track_id"
+    const val PARENT_REQUEST_ID = "parent_request_id"
+    const val FIRST_TRACK_ID = "first_track_id"
+    const val FIRST_SOURCE_PAGE = "first_source_page"
     val ENTER_METHOD_SEE_MORE
         get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"

@@ -38,12 +38,12 @@ data class AppLogRecommendationCardModel(
     val sourcePageType: String,
     val enterMethod: String?,
     val authorId: String,
-    val additionalParams: Map<String, Any>,
+    val additionalParam: AppLogAdditionalParam,
 ) {
 
     val trackId = constructTrackId(cardId, productId, requestId, itemOrder, cardName)
 
-    fun toShowClickJson() = JSONObject(additionalParams).apply {
+    fun toShowClickJson() = JSONObject(additionalParam.parameters).apply {
         addPage()
         put(AppLogParam.CARD_NAME, cardName)
         put(AppLogParam.LIST_NAME, listName)
@@ -68,7 +68,7 @@ data class AppLogRecommendationCardModel(
         //TODO P1: group_id, main_video_id
     }
 
-    fun toRecTriggerJson() = JSONObject().apply {
+    fun toRecTriggerJson() = JSONObject(additionalParam.parameters).apply {
         addPage()
         addEnterFrom()
         put(AppLogParam.GLIDE_DISTANCE, 0)
@@ -107,7 +107,7 @@ data class AppLogRecommendationCardModel(
             enterMethod: String? = null,
             sourcePageType: String = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)?.toString().orEmpty(),
             authorId: String = "",
-            additionalParams: Map<String, Any> = hashMapOf(),
+            additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardId = cardId,
@@ -133,7 +133,7 @@ data class AppLogRecommendationCardModel(
                 enterMethod = enterMethod,
                 sourcePageType = sourcePageType,
                 authorId = authorId.zeroAsEmpty(),
-                additionalParams = additionalParams,
+                additionalParam = additionalParam,
             )
         }
     }

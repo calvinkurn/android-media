@@ -1,12 +1,13 @@
 package com.tokopedia.recommendation_widget_common.infinite.component.product
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 data class InfiniteProductUiModel(
     val recommendationItem: RecommendationItem,
-    val additionalAppLogParams: Map<String, Any> = hashMapOf(),
+    val appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None()
 ) : InfiniteRecommendationUiModel {
 
     override val isFullSpan: Boolean = false

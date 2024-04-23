@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.infinite.component.product
 
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
-import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemInfiniteProductBinding
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -26,14 +25,14 @@ class InfiniteProductViewHolder(
             if (recommendationItem.isTopAds) hitTopAdsImpression(recommendationItem)
             callback.onImpressProductCard(
                 recommendationItem,
-                item.additionalAppLogParams
+                item.appLogAdditionalParam
             )
         }
         setOnClickListener {
             if (recommendationItem.isTopAds) hitTopAdsClick(recommendationItem)
             callback.onClickProductCard(
                 recommendationItem,
-                item.additionalAppLogParams
+                item.appLogAdditionalParam
             )
         }
     }
@@ -43,7 +42,7 @@ class InfiniteProductViewHolder(
             sessionId = model.recommendationItem.appLog.sessionId,
             requestId = model.recommendationItem.appLog.requestId,
             moduleName = model.recommendationItem.pageName,
-            additionalParams = model.additionalAppLogParams,
+            additionalParam = model.appLogAdditionalParam,
         )
     }
 

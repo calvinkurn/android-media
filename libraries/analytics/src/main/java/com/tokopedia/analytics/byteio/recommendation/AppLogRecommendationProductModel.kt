@@ -38,7 +38,7 @@ data class AppLogRecommendationProductModel(
     val groupId: String,
     val cardName: String,
     val isEligibleForRecTrigger: Boolean,
-    val additionalParams: Map<String, Any>,
+    val additionalParam: AppLogAdditionalParam,
 ) {
 
     val trackId = constructTrackId(null, productId, requestId, itemOrder, cardName)
@@ -67,10 +67,10 @@ data class AppLogRecommendationProductModel(
         rate = rate,
         volume = volume,
         authorId = authorId,
-        additionalParams = additionalParams,
+        additionalParam = additionalParam,
     )
 
-    fun toShowClickJson() = JSONObject(additionalParams).apply {
+    fun toShowClickJson() = JSONObject(additionalParam.parameters).apply {
         addPage()
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
@@ -97,7 +97,7 @@ data class AppLogRecommendationProductModel(
         //TODO P1: group_id, main_video_id
     }
 
-    fun toRecTriggerJson() = JSONObject().apply {
+    fun toRecTriggerJson() = JSONObject(additionalParam.parameters).apply {
         addPage()
         addEnterFrom()
         put(AppLogParam.LIST_NAME, listName)
@@ -134,7 +134,7 @@ data class AppLogRecommendationProductModel(
             cardName: String = CardName.REC_GOODS_CARD,
             isTrackAsHorizontalSourceModule : Boolean = false,
             isEligibleForRecTrigger: Boolean = false,
-            additionalParams: Map<String, Any> = hashMapOf(),
+            additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = getProductId(productId, parentProductId),
@@ -159,7 +159,7 @@ data class AppLogRecommendationProductModel(
                 groupId = groupId.zeroAsEmpty(),
                 cardName = getCardName(cardName, isAd).spacelessParam(),
                 isEligibleForRecTrigger = isEligibleForRecTrigger,
-                additionalParams = additionalParams,
+                additionalParam = additionalParam,
             )
         }
     }

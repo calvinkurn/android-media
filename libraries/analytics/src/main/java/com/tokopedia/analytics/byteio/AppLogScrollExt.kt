@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
 import com.tokopedia.analytics.byteio.util.underscoredParam
 import org.json.JSONObject
@@ -31,7 +32,7 @@ data class SlideTrackObject(
     val moduleName: String = "",
     val barName: String = "",
     val shopId: String = "",
-    val additionalParams: Map<String, Any> = hashMapOf(),
+    val additionalParams: AppLogAdditionalParam = AppLogAdditionalParam.None(),
 )
 
 /**
@@ -44,7 +45,7 @@ data class RecommendationTriggerObject(
     val moduleName: String = "",
     val listName: String = "",
     val listNum: Int = -1,
-    val additionalParams: Map<String, Any> = hashMapOf(),
+    val additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
 )
 
 class VerticalTrackScrollListener(
@@ -203,7 +204,7 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
 }
 
 fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTriggerObject) {
-    val additionalParams = model.additionalParams.getScrollingParams()
+    val additionalParams = model.additionalParam.parameters
     AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject(additionalParams).also {
         it.addPage()
         it.addEnterFrom()
@@ -218,7 +219,7 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
 }
 
 fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
-    val additionalParams = model.additionalParams.getScrollingParams()
+    val additionalParams = model.additionalParams.parameters
     AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject(additionalParams).also {
         it.addPage()
         it.addEnterFrom()
@@ -228,10 +229,6 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
         it.put(AppLogParam.BAR_NAME, model.barName)
         it.put(AppLogParam.SHOP_ID, model.shopId.zeroAsEmpty())
     })
-}
-
-private fun Map<String, Any>.getScrollingParams(): Map<String, Any> {
-    return this.filterKeys { it == AppLogParam.PARENT_PRODUCT_ID }
 }
 
 /**

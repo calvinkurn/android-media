@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.infinite.main
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -17,7 +18,7 @@ class InfiniteRecommendationManager(
     private val context: Context,
     val listener: InfiniteRecommendationListener? = null,
     private val headingType: Int = 0,
-    private val additionalAppLogParams: Map<String, Any> = hashMapOf(),
+    private val additionalAppLogParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
 ) : InfiniteRecommendationCallback {
 
     val adapter: InfiniteRecommendationAdapter by getAdapter()
@@ -28,7 +29,7 @@ class InfiniteRecommendationManager(
             field = value.copy(
                 hasNewProductCardEnabled = true
             )
-            viewModel?.init(additionalAppLogParams)
+            viewModel?.init(additionalAppLogParam)
         }
 
     init {
@@ -56,12 +57,12 @@ class InfiniteRecommendationManager(
 
     override fun onImpressProductCard(
         recommendationItem: RecommendationItem,
-        additionalAppLogParams: Map<String, Any>
+        additionalAppLogParam: AppLogAdditionalParam
     ) {
         AppLogRecommendation.sendProductShowAppLog(
             recommendationItem.asProductTrackModel(
                 entranceForm = EntranceForm.PURE_GOODS_CARD,
-                additionalParams = additionalAppLogParams
+                additionalParam = additionalAppLogParam
             )
         )
         listener?.onImpressProductCard(recommendationItem)
@@ -73,12 +74,12 @@ class InfiniteRecommendationManager(
 
     override fun onClickProductCard(
         recommendationItem: RecommendationItem,
-        additionalAppLogParams: Map<String, Any>
+        additionalAppLogParam: AppLogAdditionalParam
     ) {
         AppLogRecommendation.sendProductClickAppLog(
             recommendationItem.asProductTrackModel(
                 entranceForm = EntranceForm.PURE_GOODS_CARD,
-                additionalParams = additionalAppLogParams
+                additionalParam = additionalAppLogParam
             )
         )
         RouteManager.route(
