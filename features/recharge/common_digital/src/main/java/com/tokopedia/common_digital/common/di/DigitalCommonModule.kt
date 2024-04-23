@@ -11,6 +11,9 @@ import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendati
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -61,6 +64,12 @@ class DigitalCommonModule {
         }
     }
 
+    @DigitalCommonScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
+
     @Provides
     @DigitalCommonScope
     @DigitalAddToCartQualifier
@@ -81,5 +90,12 @@ class DigitalCommonModule {
         listInterceptor.add(digitalInterceptor)
         listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
         return listInterceptor
+    }
+
+    @Provides
+    @DigitalCommonScope
+    @DigitalCacheEnablerQualifier
+    fun provideCacheEnabler(remoteConfig: RemoteConfig): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
     }
 }

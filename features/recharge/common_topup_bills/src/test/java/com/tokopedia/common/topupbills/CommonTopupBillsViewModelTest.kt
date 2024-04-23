@@ -78,7 +78,7 @@ class CommonTopupBillsViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, testCoroutineRule.dispatchers)
+        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, false, testCoroutineRule.dispatchers)
     }
 
     @Test
@@ -503,7 +503,7 @@ class CommonTopupBillsViewModelTest {
 
     @Test
     fun createExpressCheckoutFieldParam_expressCheckoutInputNotEmpty_isCalled() {
-        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, testCoroutineRule.dispatchers), recordPrivateCalls = true)
+        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, false, testCoroutineRule.dispatchers), recordPrivateCalls = true)
 
         every { topupBillsViewModelSpyk["createExpressCheckoutFieldParam"](allAny<String>(), allAny<String>()) } returns mapOf<String, String>()
 

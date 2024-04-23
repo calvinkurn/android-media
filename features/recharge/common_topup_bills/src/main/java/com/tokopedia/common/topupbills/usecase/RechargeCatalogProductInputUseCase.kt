@@ -1,7 +1,9 @@
 package com.tokopedia.common.topupbills.usecase
 
+import android.util.Log
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,19 +14,25 @@ import javax.inject.Inject
  * @author by jessica on 08/04/21
  */
 class RechargeCatalogProductInputUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<CatalogData.Response>
+        private val useCase: GraphqlUseCase<CatalogData.Response>,
+        @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean
 ) {
     fun execute(
             params: Map<String, Any>,
             onSuccess: (CatalogData.Response) -> Unit,
             onError: (Throwable) -> Unit
     ) {
+        Log.d("MisaelJonathan", "[RechargeCatalogProductInputUseCase] isEnableGqlCache: ${isEnableGqlCache}")
         useCase.apply {
             setTypeClass(CatalogData.Response::class.java)
             setRequestParams(params)
             setGraphqlQuery(CommonTopupBillsGqlQuery.rechargeCatalogProductInput)
-            setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+            if (isEnableGqlCache) {
+                setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+            } else {
+                setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }
 
             execute(onSuccess, onError)
         }

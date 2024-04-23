@@ -12,6 +12,7 @@ import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.data.source.ContactDataSourceImpl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPDataPlanPerformanceCallback
@@ -22,6 +23,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -161,5 +164,12 @@ class DigitalPDPModule {
     @DigitalPDPScope
     fun provideContactDataSource(@ApplicationContext context: Context): ContactDataSource {
         return ContactDataSourceImpl(context.contentResolver)
+    }
+
+    @Provides
+    @DigitalPDPScope
+    @DigitalCacheEnablerQualifier
+    fun provideCacheEnabler(remoteConfig: FirebaseRemoteConfigImpl): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
@@ -42,6 +43,9 @@ interface DigitalTopupComponent {
 
     @DigitalAddToCartQualifier
     fun restRepository(): RestRepository
+
+    @DigitalCacheEnablerQualifier
+    fun isEnableGqlCache(): Boolean
 
     fun digitalInterceptor(): DigitalInterceptor
 

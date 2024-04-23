@@ -1,7 +1,9 @@
 package com.tokopedia.digital.digital_recommendation.domain
 
+import android.util.Log
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationQuery
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
+import com.tokopedia.digital.digital_recommendation.di.DigitalRecommendationCacheEnablerQualifier
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.graphql.GraphqlConstant
@@ -21,12 +23,14 @@ import javax.inject.Inject
  */
 class DigitalRecommendationUseCase @Inject constructor(
         private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        @DigitalRecommendationCacheEnablerQualifier private val isEnableGqlCache: Boolean
 ) {
     suspend fun execute(page: DigitalRecommendationPage,
                         dgCategories: List<Int>,
                         pgCategories: List<Int>)
             : Result<DigitalRecommendationModel> {
+        Log.d("MisaelJonathan", "[DigitalRecommendationUseCase] isEnableGqlCache: ${isEnableGqlCache}")
         val params = mapOf(
                 PARAM_INPUT to mapOf(
                         PARAM_CHANNEL_NAME to getPageParams(page),
@@ -35,13 +39,14 @@ class DigitalRecommendationUseCase @Inject constructor(
                         PARAM_PG_CATEGORY_IDS to pgCategories
                 )
         )
-
-        multiRequestGraphqlUseCase.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
-                        .setSessionIncluded(true)
-                        .build()
-        )
+        val graphqlCacheStrategy = if (isEnableGqlCache) {
+            GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                .setSessionIncluded(true)
+        } else {
+            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+        }
+        multiRequestGraphqlUseCase.setCacheStrategy(graphqlCacheStrategy.build())
         multiRequestGraphqlUseCase.clearRequest()
 
         return try {
@@ -69,6 +74,7 @@ class DigitalRecommendationUseCase @Inject constructor(
         dgCategories: List<Int>,
         pgCategories: List<Int>
     ): Result<List<String>>{
+        Log.d("MisaelJonathan", "[DigitalRecommendationUseCase::getRecommendationPosition] isEnableGqlCache: ${isEnableGqlCache}")
         val params = mapOf(
             PARAM_INPUT to mapOf(
                 PARAM_CHANNEL_NAME to getPageParams(page),
@@ -77,13 +83,14 @@ class DigitalRecommendationUseCase @Inject constructor(
                 PARAM_PG_CATEGORY_IDS to pgCategories
             )
         )
-
-        multiRequestGraphqlUseCase.setCacheStrategy(
+        val graphqlCacheStrategy = if (isEnableGqlCache) {
             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
                 .setSessionIncluded(true)
-                .build()
-        )
+        } else {
+            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+        }
+        multiRequestGraphqlUseCase.setCacheStrategy(graphqlCacheStrategy.build())
         multiRequestGraphqlUseCase.clearRequest()
 
         return try {

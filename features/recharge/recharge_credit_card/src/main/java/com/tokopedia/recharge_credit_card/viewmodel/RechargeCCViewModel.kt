@@ -1,5 +1,6 @@
 package com.tokopedia.recharge_credit_card.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -8,6 +9,7 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipMode
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.GraphqlConstant
@@ -38,7 +40,8 @@ class RechargeCCViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher,
     private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository,
-    private val getDppoConsentUseCase: GetDppoConsentUseCase
+    private val getDppoConsentUseCase: GetDppoConsentUseCase,
+    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean
 ) : BaseViewModel(dispatcher) {
 
     var prefixData: RechargeCCCatalogPrefix = RechargeCCCatalogPrefix()
@@ -66,15 +69,21 @@ class RechargeCCViewModel @Inject constructor(
     fun getMenuDetail(rawQuery: String, menuId: String) {
         launch {
             runCatching {
+                Log.d("MisaelJonathan", "[RechargeCCViewModel::getMenuDetail] isEnableGqlCache: ${isEnableGqlCache}")
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[MENU_ID] = menuId.toIntSafely()
 
                 val data = withContext(dispatcher) {
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
+                    val graphqlCacheStrategy = if (isEnableGqlCache) {
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL)
+                    } else {
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                    }
                     graphqlRepository.response(
                         listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL).build()
+                        graphqlCacheStrategy.build()
                     )
                 }.getSuccessData<RechargeCCMenuDetailResponse>()
 
@@ -91,15 +100,21 @@ class RechargeCCViewModel @Inject constructor(
     fun getListBank(rawQuery: String, categoryId: Int) {
         launch {
             runCatching {
+                Log.d("MisaelJonathan", "[RechargeCCViewModel::getListBank] isEnableGqlCache: ${isEnableGqlCache}")
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[CATEGORY_ID] = categoryId
 
                 val data = withContext(dispatcher) {
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
+                    val graphqlCacheStrategy = if (isEnableGqlCache) {
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK)
+                    } else {
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                    }
                     graphqlRepository.response(
                         listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK).build()
+                        graphqlCacheStrategy.build()
                     )
                 }.getSuccessData<RechargeCCBankListReponse>()
 
@@ -117,15 +132,21 @@ class RechargeCCViewModel @Inject constructor(
     fun getPrefixes(rawQuery: String, menuId: String) {
         launch {
             runCatching {
+                Log.d("MisaelJonathan", "[RechargeCCViewModel::getPrefixes] isEnableGqlCache: ${isEnableGqlCache}")
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[MENU_ID] = menuId.toIntSafely()
 
                 prefixData = withContext(dispatcher) {
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
+                    val graphqlCacheStrategy = if (isEnableGqlCache) {
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX)
+                    } else {
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                    }
                     graphqlRepository.response(
                         listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX).build()
+                        graphqlCacheStrategy.build()
                     )
                 }.getSuccessData()
 

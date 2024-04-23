@@ -12,6 +12,7 @@ import com.tokopedia.common.topupbills.favoritepage.view.fragment.SingleTabSaved
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -46,6 +47,9 @@ interface CommonTopupBillsComponent {
 
     @DigitalAddToCartQualifier
     fun restRepository(): RestRepository
+
+    @DigitalCacheEnablerQualifier
+    fun isEnableGqlCache(): Boolean
 
     fun digitalInterceptor(): DigitalInterceptor
 

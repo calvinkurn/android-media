@@ -1,9 +1,11 @@
 package com.tokopedia.rechargegeneral.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,6 +30,7 @@ class RechargeGeneralViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val getDppoConsentUseCase: GetDppoConsentUseCase,
     private val rechargeGeneralMapper: RechargeGeneralMapper,
+    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean,
     private val dispatcher: CoroutineDispatchers
 ) :
     BaseViewModel(dispatcher.io) {
@@ -48,8 +51,9 @@ class RechargeGeneralViewModel @Inject constructor(
 
     fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, nullErrorMessage: String) {
         launchCatchError(block = {
+            Log.d("MisaelJonathan", "[RechargeGeneralViewModel::getOperatorCluster] isEnableGqlCache: ${isEnableGqlCache}")
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud || !isEnableGqlCache) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)

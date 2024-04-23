@@ -1,7 +1,9 @@
 package com.tokopedia.common.topupbills.usecase
 
+import android.util.Log
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,7 +14,8 @@ import javax.inject.Inject
  * @author by jessica on 08/04/21
  */
 class RechargeCatalogPrefixSelectUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<TelcoCatalogPrefixSelect>
+        private val useCase: GraphqlUseCase<TelcoCatalogPrefixSelect>,
+        @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean
 ) {
     /**
      * To fetch all prefixes and its operator of telco and recharge products
@@ -23,13 +26,17 @@ class RechargeCatalogPrefixSelectUseCase @Inject constructor(
             onSuccess: (TelcoCatalogPrefixSelect) -> Unit,
             onError: (Throwable) -> Unit
     ) {
+        Log.d("MisaelJonathan", "[RechargeCatalogPrefixSelectUseCase] isEnableGqlCache: ${isEnableGqlCache}")
         useCase.apply {
             setTypeClass(TelcoCatalogPrefixSelect::class.java)
             setRequestParams(params)
             setGraphqlQuery(CommonTopupBillsGqlQuery.prefixSelectTelco)
-            setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+            if (isEnableGqlCache) {
+                setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
-
+            } else {
+                setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }
             execute(onSuccess, onError)
         }
     }

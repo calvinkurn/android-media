@@ -37,5 +37,8 @@ interface DigitalCommonComponent {
     fun networkRouter(): NetworkRouter
 
     fun coroutineDispatchers(): CoroutineDispatchers
+
+    @DigitalCacheEnablerQualifier
+    fun isEnableGqlCache(): Boolean
 }
 

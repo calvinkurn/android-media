@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.common.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -8,6 +9,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.source.ContactDataSource
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -29,6 +31,7 @@ import javax.inject.Inject
 class SharedTelcoViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val contactDataSource: ContactDataSource,
+    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean,
     val dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
@@ -87,15 +90,21 @@ class SharedTelcoViewModel @Inject constructor(
 
     fun getPrefixOperator(rawQuery: String, menuId: Int) {
         launchCatchError(block = {
+            Log.d("MisaelJonathan", "[SharedTelcoViewModel] isEnableGqlCache: ${isEnableGqlCache}")
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam[KEY_MENU_ID] = menuId
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
+                val graphqlCacheStrategy = if (isEnableGqlCache) {
+                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME)
+                } else {
+                    GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                }
                 graphqlRepository.response(
                     listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build()
+                    graphqlCacheStrategy.build()
                 )
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 

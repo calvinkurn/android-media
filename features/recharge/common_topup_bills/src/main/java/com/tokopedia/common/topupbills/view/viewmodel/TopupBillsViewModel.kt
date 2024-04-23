@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -18,6 +19,7 @@ import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavor
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
+import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -51,6 +53,7 @@ class TopupBillsViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
     private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
+    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -119,16 +122,16 @@ class TopupBillsViewModel @Inject constructor(
 
     fun getMenuDetail(
         rawQuery: String,
-        mapParam: Map<String, Any>,
-        isLoadFromCloud: Boolean = false
+        mapParam: Map<String, Any>
     ) {
         launch {
             runCatching {
+                Log.d("MisaelJonathan", "[TopupBillsViewModel] isEnableGqlCache: ${isEnableGqlCache}")
                 val data = withContext(dispatcher.io) {
                     val graphqlRequest =
                         GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                     val graphqlCacheStrategy =
-                        GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                        GraphqlCacheStrategy.Builder(if (isEnableGqlCache) CacheType.CACHE_FIRST else CacheType.CLOUD_THEN_CACHE)
                             .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
                     graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<TelcoCatalogMenuDetailData>()
