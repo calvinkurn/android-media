@@ -30,7 +30,6 @@ class DigitalRecommendationUseCase @Inject constructor(
                         dgCategories: List<Int>,
                         pgCategories: List<Int>)
             : Result<DigitalRecommendationModel> {
-        Log.d("MisaelJonathan", "[DigitalRecommendationUseCase] isEnableGqlCache: ${isEnableGqlCache}")
         val params = mapOf(
                 PARAM_INPUT to mapOf(
                         PARAM_CHANNEL_NAME to getPageParams(page),
@@ -74,7 +73,6 @@ class DigitalRecommendationUseCase @Inject constructor(
         dgCategories: List<Int>,
         pgCategories: List<Int>
     ): Result<List<String>>{
-        Log.d("MisaelJonathan", "[DigitalRecommendationUseCase::getRecommendationPosition] isEnableGqlCache: ${isEnableGqlCache}")
         val params = mapOf(
             PARAM_INPUT to mapOf(
                 PARAM_CHANNEL_NAME to getPageParams(page),

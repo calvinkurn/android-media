@@ -25,7 +25,6 @@ class VoucherGameListUseCase(
 
     suspend fun getVoucherGameOperators(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean): Result<VoucherGameListData> {
         try {
-            Log.d("MisaelJonathan", "[VoucherGameListUseCase] isEnableGqlCache: ${isEnableGqlCache}")
             this.setGraphqlQuery(rawQuery)
             this.setRequestParams(mapParam)
             this.setTypeClass(VoucherGameListData.Response::class.java)

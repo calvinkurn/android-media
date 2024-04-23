@@ -22,7 +22,6 @@ class GetRechargeCatalogPrefixSelectUseCase @Inject constructor(
     private var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): TelcoCatalogPrefixSelect {
-        Log.d("MisaelJonathan", "[GetRechargeCatalogPrefixSelectUseCase] isEnableGqlCache: ${isEnableGqlCache}")
         val gqlRequest = GraphqlRequest(
             CommonTopupBillsGqlQuery.prefixSelectTelco,
             TelcoCatalogPrefixSelect::class.java,

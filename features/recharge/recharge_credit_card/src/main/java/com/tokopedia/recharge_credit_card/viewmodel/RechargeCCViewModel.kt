@@ -69,7 +69,6 @@ class RechargeCCViewModel @Inject constructor(
     fun getMenuDetail(rawQuery: String, menuId: String) {
         launch {
             runCatching {
-                Log.d("MisaelJonathan", "[RechargeCCViewModel::getMenuDetail] isEnableGqlCache: ${isEnableGqlCache}")
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[MENU_ID] = menuId.toIntSafely()
 
@@ -100,7 +99,6 @@ class RechargeCCViewModel @Inject constructor(
     fun getListBank(rawQuery: String, categoryId: Int) {
         launch {
             runCatching {
-                Log.d("MisaelJonathan", "[RechargeCCViewModel::getListBank] isEnableGqlCache: ${isEnableGqlCache}")
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[CATEGORY_ID] = categoryId
 
@@ -132,7 +130,6 @@ class RechargeCCViewModel @Inject constructor(
     fun getPrefixes(rawQuery: String, menuId: String) {
         launch {
             runCatching {
-                Log.d("MisaelJonathan", "[RechargeCCViewModel::getPrefixes] isEnableGqlCache: ${isEnableGqlCache}")
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[MENU_ID] = menuId.toIntSafely()
 

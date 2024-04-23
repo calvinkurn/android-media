@@ -26,7 +26,6 @@ class RechargeCatalogPrefixSelectUseCase @Inject constructor(
             onSuccess: (TelcoCatalogPrefixSelect) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        Log.d("MisaelJonathan", "[RechargeCatalogPrefixSelectUseCase] isEnableGqlCache: ${isEnableGqlCache}")
         useCase.apply {
             setTypeClass(TelcoCatalogPrefixSelect::class.java)
             setRequestParams(params)

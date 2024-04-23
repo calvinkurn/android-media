@@ -126,7 +126,6 @@ class TopupBillsViewModel @Inject constructor(
     ) {
         launch {
             runCatching {
-                Log.d("MisaelJonathan", "[TopupBillsViewModel] isEnableGqlCache: ${isEnableGqlCache}")
                 val data = withContext(dispatcher.io) {
                     val graphqlRequest =
                         GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)

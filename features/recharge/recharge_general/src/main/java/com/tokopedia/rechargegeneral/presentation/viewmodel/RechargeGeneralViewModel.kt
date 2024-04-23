@@ -51,7 +51,6 @@ class RechargeGeneralViewModel @Inject constructor(
 
     fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, nullErrorMessage: String) {
         launchCatchError(block = {
-            Log.d("MisaelJonathan", "[RechargeGeneralViewModel::getOperatorCluster] isEnableGqlCache: ${isEnableGqlCache}")
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud || !isEnableGqlCache) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()

@@ -90,7 +90,6 @@ class SharedTelcoViewModel @Inject constructor(
 
     fun getPrefixOperator(rawQuery: String, menuId: Int) {
         launchCatchError(block = {
-            Log.d("MisaelJonathan", "[SharedTelcoViewModel] isEnableGqlCache: ${isEnableGqlCache}")
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam[KEY_MENU_ID] = menuId
 

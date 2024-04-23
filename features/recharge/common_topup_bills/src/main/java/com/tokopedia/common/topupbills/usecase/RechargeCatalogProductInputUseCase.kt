@@ -22,7 +22,6 @@ class RechargeCatalogProductInputUseCase @Inject constructor(
             onSuccess: (CatalogData.Response) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        Log.d("MisaelJonathan", "[RechargeCatalogProductInputUseCase] isEnableGqlCache: ${isEnableGqlCache}")
         useCase.apply {
             setTypeClass(CatalogData.Response::class.java)
             setRequestParams(params)
