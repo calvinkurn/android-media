@@ -52,7 +52,7 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = FeedSearchResultUiState.Empty,
+        initialValue = FeedSearchResultUiState.empty(searchKeyword),
     )
 
     fun submitAction(action: FeedSearchResultAction) {

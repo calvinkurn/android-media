@@ -9,13 +9,13 @@ data class FeedSearchResultUiState(
     val hasNextPage: Boolean,
 ) {
     companion object {
-        val Empty: FeedSearchResultUiState
-            get() = FeedSearchResultUiState(
-                searchKeyword = "",
-                pageState = FeedSearchResultPageState.UNKNOWN,
-                contents = emptyList(),
-                hasNextPage = true,
-            )
+
+        fun empty(searchKeyword: String) = FeedSearchResultUiState(
+            searchKeyword = searchKeyword,
+            pageState = FeedSearchResultPageState.UNKNOWN,
+            contents = emptyList(),
+            hasNextPage = true,
+        )
     }
 }
 
