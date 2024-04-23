@@ -74,6 +74,8 @@ data class GetBomGroupedOrderResponse(
                         val productId: String = "0",
                         @SerializedName("product_name")
                         val productName: String = "",
+                        @SerializedName("product_url")
+                        val productUrl: String = "",
                         @SerializedName("quantity")
                         val quantity: Int = 0,
                         @SerializedName("thumbnail")
@@ -92,6 +94,8 @@ data class GetBomGroupedOrderResponse(
                     val productId: String = "0",
                     @SerializedName("product_name")
                     val productName: String = "",
+                    @SerializedName("product_url")
+                    val productUrl: String = "",
                     @SerializedName("quantity")
                     val quantity: Int = 0,
                     @SerializedName("thumbnail")

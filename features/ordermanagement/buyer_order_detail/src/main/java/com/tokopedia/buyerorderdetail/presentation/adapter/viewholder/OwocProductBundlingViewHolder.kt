@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.OwocProductBundlingIt
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
@@ -66,8 +67,15 @@ class OwocProductBundlingViewHolder(
         }
     }
 
-    override fun onBundleItemClicked(productId: String) {
-        navigator?.openProductDetailPage(productId)
+    override fun onBundleItemClicked(productUrl: String) {
+        if (productUrl.isNotBlank()) {
+            navigator?.openProductUrl(productUrl)
+        } else {
+            showToaster(
+                itemView?.context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(),
+                itemView?.context?.getString(R.string.buyer_order_detail_oke).orEmpty()
+            )
+        }
     }
 
     private fun setupBundleAdapter() {
@@ -97,10 +105,16 @@ class OwocProductBundlingViewHolder(
         bundleItemAdapter.setItems(bundleItemList)
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(message: String, actionText: String = String.EMPTY) {
         itemView.parent?.parent?.parent?.let {
             if (it is View) {
-                Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                Toaster.buildWithAction(
+                    view = it,
+                    text = message,
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_NORMAL,
+                    actionText = actionText
+                ).show()
             }
         }
     }

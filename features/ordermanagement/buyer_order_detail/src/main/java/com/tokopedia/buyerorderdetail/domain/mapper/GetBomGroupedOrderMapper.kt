@@ -271,6 +271,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                 priceText = it.priceText,
                 productId = it.productId,
                 productName = it.productName,
+                productUrl = it.productUrl,
                 productThumbnailUrl = it.thumbnail,
                 quantity = it.quantity,
                 addOnSummaryUiModel = mapToAddOnUiModel(
@@ -339,6 +340,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                 priceText = it.priceText,
                 productId = it.productId,
                 productName = it.productName,
+                productUrl = it.productUrl,
                 productThumbnailUrl = it.thumbnail,
                 quantity = it.quantity
             )

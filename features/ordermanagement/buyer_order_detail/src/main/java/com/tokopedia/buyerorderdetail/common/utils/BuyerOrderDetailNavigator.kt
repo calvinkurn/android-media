@@ -224,11 +224,6 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun openProductDetailPage(productID: String) {
-        val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productID)
-        openAppLink(appLink, true)
-    }
-
     fun openProductUrl(url: String) {
         openAppLink(url, true)
     }

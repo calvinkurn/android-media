@@ -72,7 +72,7 @@ class OwocProductBundlingItemAdapter(
                     setBundleItemProductPriceQuantity(it.quantity, it.priceText)
                     setBundleItemThumbnail(it.productThumbnailUrl)
                 }
-                setItemOnClickListener(it.productId)
+                setItemOnClickListener(it.productUrl)
             }
         }
 
@@ -93,14 +93,14 @@ class OwocProductBundlingItemAdapter(
             )
         }
 
-        private fun setItemOnClickListener(productId: String) {
+        private fun setItemOnClickListener(productUrl: String) {
             itemView.setOnClickListener {
-                listener.onBundleItemClicked(productId)
+                listener.onBundleItemClicked(productUrl)
             }
         }
 
         interface Listener {
-            fun onBundleItemClicked(productId: String)
+            fun onBundleItemClicked(productUrl: String)
         }
     }
 }
