@@ -444,7 +444,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
-        assertEquals("Pilih periode pembayaran", viewModel.listData.value.payment()!!.widget.installmentText)
+        assertEquals("Pilih Lama Pembayaran", viewModel.listData.value.payment()!!.widget.installmentText)
         assertNotNull(latestToaster)
         coVerify(exactly = 1) {
             dynamicPaymentFeeUseCase(any())
@@ -517,10 +517,10 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         // Then
         assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
         assertEquals(2, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
-        coVerify(exactly = 1) {
+        coVerify(exactly = 2) {
             dynamicPaymentFeeUseCase(any())
         }
-        coVerify(exactly = 1) {
+        coVerify(exactly = 2) {
             goCicilInstallmentOptionUseCase(any())
         }
     }
@@ -585,7 +585,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
-        assertEquals("Pilih periode pembayaran", viewModel.listData.value.payment()!!.widget.installmentText)
+        assertEquals("Pilih Lama Pembayaran", viewModel.listData.value.payment()!!.widget.installmentText)
         assertNotNull(latestToaster)
         coVerify(exactly = 1) {
             dynamicPaymentFeeUseCase(any())

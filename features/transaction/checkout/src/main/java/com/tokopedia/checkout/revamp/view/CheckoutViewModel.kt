@@ -3285,7 +3285,7 @@ class CheckoutViewModel @Inject constructor(
 
         val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
         if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
-            payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost)
+            payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.tenorList == null) {
                 toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, INSTALLMENT_ERROR_MESSAGE))
@@ -3293,7 +3293,7 @@ class CheckoutViewModel @Inject constructor(
         }
 
         if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
-            payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost)
+            payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.installmentData == null) {
                 toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, INSTALLMENT_ERROR_MESSAGE))
@@ -3352,11 +3352,11 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun generateGoCicilInstallmentRequest(payment: CheckoutPaymentModel): GoCicilInstallmentRequest {
-        return paymentProcessor.generateInstallmentRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!)
+        return paymentProcessor.generateInstallmentRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!, shipmentPlatformFeeData)
     }
 
     fun generateCreditCardTenorListRequest(payment: CheckoutPaymentModel): CreditCardTenorListRequest {
-        return paymentProcessor.generateCreditCardTenorRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!)
+        return paymentProcessor.generateCreditCardTenorRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!, shipmentPlatformFeeData)
     }
 
     fun choosePayment(gatewayCode: String, metadata: String) {

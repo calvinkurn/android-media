@@ -424,7 +424,8 @@ class CheckoutPaymentProcessor @Inject constructor(
         paymentData: PaymentWidgetData,
         paymentRequest: PaymentRequest,
         checkoutItems: List<CheckoutItem>,
-        cost: CheckoutCostModel
+        cost: CheckoutCostModel,
+        shipmentPlatformFeeData: ShipmentPlatformFeeData
     ): CreditCardTenorListRequest {
         return CreditCardTenorListRequest(
             tokenId = paymentData.installmentPaymentData.creditCardAttribute.tokenId,
@@ -438,7 +439,7 @@ class CheckoutPaymentProcessor @Inject constructor(
             },
             ccfeeSignature = paymentData.installmentPaymentData.creditCardAttribute.tenureSignature,
             timestamp = paymentData.unixTimestamp,
-            additionalData = paymentData.metadata,
+            additionalData = shipmentPlatformFeeData.additionalData,
             detailData = paymentRequest
         )
     }
@@ -448,11 +449,12 @@ class CheckoutPaymentProcessor @Inject constructor(
         paymentData: PaymentWidgetData,
         paymentRequest: PaymentRequest,
         checkoutItems: List<CheckoutItem>,
-        cost: CheckoutCostModel
+        cost: CheckoutCostModel,
+        shipmentPlatformFeeData: ShipmentPlatformFeeData
     ): CheckoutPaymentModel {
         try {
             val tenorList = processor.getCreditCardTenorList(
-                generateCreditCardTenorRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
+                generateCreditCardTenorRequest(payment, paymentData, paymentRequest, checkoutItems, cost, shipmentPlatformFeeData)
             )
             val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
             val widgetData = paymentWidgetData.first()
@@ -476,7 +478,8 @@ class CheckoutPaymentProcessor @Inject constructor(
         paymentData: PaymentWidgetData,
         paymentRequest: PaymentRequest,
         checkoutItems: List<CheckoutItem>,
-        cost: CheckoutCostModel
+        cost: CheckoutCostModel,
+        shipmentPlatformFeeData: ShipmentPlatformFeeData
     ): GoCicilInstallmentRequest {
         val address = checkoutItems.address()!!.recipientAddressModel
         val order = checkoutItems.filterIsInstance(CheckoutOrderModel::class.java).first()
@@ -506,7 +509,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                 )
             },
             promoCodes = getValidPromoCodes(checkoutItems.promo()?.promo),
-            additionalData = paymentData.metadata,
+            additionalData = shipmentPlatformFeeData.additionalData,
             detailData = paymentRequest
         )
     }
@@ -541,11 +544,12 @@ class CheckoutPaymentProcessor @Inject constructor(
         paymentData: PaymentWidgetData,
         paymentRequest: PaymentRequest,
         checkoutItems: List<CheckoutItem>,
-        cost: CheckoutCostModel
+        cost: CheckoutCostModel,
+        shipmentPlatformFeeData: ShipmentPlatformFeeData
     ): CheckoutPaymentModel {
         try {
             val installmentData = processor.getGocicilInstallmentOption(
-                generateInstallmentRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
+                generateInstallmentRequest(payment, paymentData, paymentRequest, checkoutItems, cost, shipmentPlatformFeeData)
             )
             val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
             val widgetData = paymentWidgetData.first()
