@@ -79,7 +79,6 @@ dependencies {
     }
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
-    implementation rootProject.ext.slardarDependencies.commonMonitor
 }
 
 project.ext {

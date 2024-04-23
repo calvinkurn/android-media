@@ -174,7 +174,6 @@ public class GraphqlClient {
             }
         }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-        tkpdOkHttpBuilder.addInterceptor(new SlardarAPMInterceptor());
 
         addBannerEnvironmentInterceptor(tkpdOkHttpBuilder, context);
 
