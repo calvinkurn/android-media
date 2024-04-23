@@ -19,8 +19,8 @@ data class ContentSlot(
 )
 
 data class ContentSlotMeta(
-    @SerializedName("message")
-    val message: String = "",
+    @SerializedName("status_code")
+    val statusCode: Int = 0,
 
     @SerializedName("is_autoplay")
     val isAutoplay: Boolean = false,

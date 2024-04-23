@@ -95,7 +95,7 @@ class FeedBrowseMapper @Inject constructor() {
 
     internal fun mapWidgetResponse(response: WidgetSlot): ContentSlotModel {
 
-        if (response.playGetContentSlot.meta.message == FORBIDDEN_SEARCH_KEYWORD) {
+        if (response.playGetContentSlot.meta.statusCode == FORBIDDEN_SEARCH_KEYWORD) {
             throw RestrictedKeywordException()
         }
 
@@ -256,6 +256,6 @@ class FeedBrowseMapper @Inject constructor() {
         private const val IDENTIFIER_UGC_WIDGET = "content_browse_ugc"
         private const val IDENTIFIER_INSPIRATIONAL_WIDGET = "content_browse_inspirational"
 
-        private const val FORBIDDEN_SEARCH_KEYWORD = "forbidden search keyword"
+        private const val FORBIDDEN_SEARCH_KEYWORD = 435
     }
 }
