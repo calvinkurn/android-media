@@ -161,13 +161,18 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             val descriptionText: String
             if (data.isUseVps) {
                 val vpsPackageData = getSellerVpsPackageData(data)
-                val formattedExpiryDate = Date(
-                    vpsPackageData?.expiredAtUnix.orZero().unixToMs()
-                ).parseTo(DateUtil.DEFAULT_VIEW_FORMAT)
-                contentText = String.format(
-                    getString(R.string.seller_info_bottom_sheet_expiry_content_vps),
-                    formattedExpiryDate
-                )
+                val expiredAt = vpsPackageData?.expiredAtUnix
+                contentText = if(expiredAt.orZero() < 0){
+                    getString(R.string.seller_info_bottom_sheet_expiry_content_non_vps)
+                }else{
+                    val formattedExpiryDate = Date(
+                        expiredAt.orZero().unixToMs()
+                    ).parseTo(DateUtil.DEFAULT_VIEW_FORMAT)
+                    String.format(
+                        getString(R.string.seller_info_bottom_sheet_expiry_content_vps),
+                        formattedExpiryDate
+                    )
+                }
                 descriptionText = ""
             } else {
                 contentText = getString(R.string.seller_info_bottom_sheet_expiry_content_non_vps)
@@ -243,9 +248,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun getSellerVpsPackageData(data: ShopDiscountSellerInfoUiModel): ShopDiscountSellerInfoUiModel.SlashPriceBenefitData? {
-        return data.listSlashPriceBenefitData.firstOrNull {
-            it.packageId.toIntOrZero() != -1
-        }
+        return data.listSlashPriceBenefitData.firstOrNull()
     }
 
     private fun showErrorState(throwable: Throwable) {
