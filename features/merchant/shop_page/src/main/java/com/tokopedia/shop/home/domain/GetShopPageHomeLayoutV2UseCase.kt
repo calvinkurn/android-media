@@ -173,6 +173,11 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                            value
                         }
                       }
+                      badge {
+                        title
+                        imageUrl
+                        show
+                      }
                       warehouseID
                       minimumOrder
                       maximumOrder

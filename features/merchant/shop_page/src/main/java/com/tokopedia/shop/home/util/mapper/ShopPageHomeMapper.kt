@@ -106,7 +106,8 @@ object ShopPageHomeMapper {
                 it.shopBadgeList = shopProduct.badge.map { badge ->
                     ShopBadgeUiModel(
                         title = badge.title,
-                        imageUrl = badge.imageUrl
+                        imageUrl = badge.imageUrl,
+                        show = true
                     )
                 }
             }
@@ -1311,6 +1312,13 @@ object ShopPageHomeMapper {
             this.parentId = response.parentId
             isFulfillment = ShopUtil.isFulfillmentByGroupLabel(response.labelGroups)
             warehouseId = response.warehouseID
+            shopBadgeList = listOf(
+                ShopBadgeUiModel(
+                    title = response.badge.title,
+                    imageUrl = response.badge.imageUrl,
+                    show = response.badge.show
+                )
+            )
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
