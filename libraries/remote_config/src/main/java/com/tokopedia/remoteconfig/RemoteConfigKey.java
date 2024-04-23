@@ -360,4 +360,6 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_ENABLE_DIGITAL_GQL_CACHE = "android_enable_digital_gql_cache";
 
+    public static final String ANDROID_TOP_ADS_SDK_V2 = "android_top_ads_sdk_v2";
+
 }

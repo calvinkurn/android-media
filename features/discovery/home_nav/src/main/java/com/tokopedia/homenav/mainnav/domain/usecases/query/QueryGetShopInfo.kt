@@ -17,6 +17,13 @@ internal object QueryGetShopInfo {
         "          shop_name" +
         "          shop_id" +
         "        }" +
+        "        reserveStatusInfo {" +
+        "           shopID" +
+        "           shopName" +
+        "           domain" +
+        "           status" +
+        "           reasonID" +
+       "        }" +
         "     }" +
         "     notifications(input: \$input) {" +
         "        sellerOrderStatus {" +
