@@ -15,7 +15,7 @@ data class UpcomingCampaignUiModel(
     val upcomingType: String = "",
     val ribbonCopy: String = "",
     val startDate: String = "",
-    val isOwner: Boolean = false
+    val showReminderButton: Boolean = false
 ) {
 
     val hasValue
@@ -23,7 +23,4 @@ data class UpcomingCampaignUiModel(
 
     val isNpl
         get() = upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
-
-    val showReminderButton
-        get() = !isOwner && !isNpl
 }

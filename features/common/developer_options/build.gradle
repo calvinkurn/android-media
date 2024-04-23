@@ -80,6 +80,7 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
 
 }
 

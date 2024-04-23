@@ -30,6 +30,8 @@ class GetLiveStatisticsUseCase @Inject constructor(
                     visitShopFmt
                     visitPDPFmt
                     visitChannelFmt
+                    maxConcurrentUsersFmt
+                    estimatedIncomeFmt
                   }
                   userMetrics {
                     visitChannelFmt
@@ -39,6 +41,7 @@ class GetLiveStatisticsUseCase @Inject constructor(
                     visitProfileFmt
                     addToCartFmt
                     productSoldQtyFmt
+                    maxConcurrentUsersFmt
                   }
                 }
                 duration

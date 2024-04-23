@@ -5,6 +5,7 @@ import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.Dy
 import com.tokopedia.product.detail.view.viewholder.promo_price.delegate.ProductPriceCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.callback.GWPCallback
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
+import com.tokopedia.product.detail.view.viewholder.sdui.SDUICallback
 
 /**
  * Created by yovi.putra on 14/11/23"
@@ -18,6 +19,8 @@ interface PdpCallbackDelegate {
     val gwp: GWPCallback
     val dynamicOneLiner: DynamicOneLinerCallback
     val productRecomm: PartialRecommendationManager
+    val atcAnimation: AtcAnimationManager
+    val sdui: SDUICallback
 
     fun registerCallback(mediator: PdpComponentCallbackMediator)
 }

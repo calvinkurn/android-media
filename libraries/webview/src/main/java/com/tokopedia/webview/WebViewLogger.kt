@@ -59,7 +59,7 @@ private fun MutableMap<String, String>?.addWebviewVersion(context: Context?) {
     }
 }
 
-internal fun Context?.logWebReceivedError(
+fun Context?.logWebReceivedError(
     webView: WebView,
     failingUrl: String?,
     errorCodeString: String,

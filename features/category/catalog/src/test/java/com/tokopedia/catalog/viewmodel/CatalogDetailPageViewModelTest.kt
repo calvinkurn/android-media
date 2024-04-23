@@ -100,7 +100,9 @@ class CatalogDetailPageViewModelTest {
                         navigationProperties = NavigationProperties(),
                         priceCtaProperties = PriceCtaProperties(),
                         productSortingStatus = 0,
-                        catalogUrl = ""
+                        catalogUrl = "",
+                        brand = "",
+                        departmentId = ""
                     )
                 )
             )
@@ -203,17 +205,17 @@ class CatalogDetailPageViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `When emitScrollEvent called, Then should emit scrollEvents`() = runTest {
-        var result: String? = null
+        var result: Pair<Int,Int>? = null
         val job = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.scrollEvents.collectLatest {
-                result = it
+                result = Pair(0,0)
             }
         }
 
-        viewModel.emitScrollEvent("Highlight")
+        viewModel.emitScrollEvent(0,0)
         job.cancel()
 
-        assert(result == "Highlight")
+        assert(result?.first == 0 && result?.second == 0)
     }
 
     @Test

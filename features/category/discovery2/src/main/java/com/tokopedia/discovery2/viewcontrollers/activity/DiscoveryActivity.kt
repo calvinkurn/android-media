@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -33,7 +34,7 @@ const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 private const val LOGIN_REQUEST_CODE = 35769
 
-open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
+open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppLogInterface {
 
     protected lateinit var discoveryViewModel: DiscoveryViewModel
 
@@ -189,6 +190,10 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
                 getSourceIdentifier(),
                 UserSession(this),
                 trackingQueue)
+    }
+
+    override fun getPageName(): String {
+        return (fragment as? AppLogInterface)?.getPageName().orEmpty()
     }
 
 }

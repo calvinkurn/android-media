@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -505,7 +505,7 @@ object WishlistAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun impressTopAdsBanner(userId: String, topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
+    fun impressTopAdsBanner(userId: String, topAdsImageUiModel: TopAdsImageUiModel, position: Int) {
         val map = DataLayer.mapOf(
             EVENT, PROMO_VIEW,
             EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
@@ -522,7 +522,7 @@ object WishlistAnalytics {
                     PROMOTIONS,
                     DataLayer.listOf(
                         convertBannerTopAdsToDataTrackingObject(
-                            item = topAdsImageViewModel,
+                            item = topAdsImageUiModel,
                             position = position
                         )
                     )
@@ -532,7 +532,7 @@ object WishlistAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
     }
 
-    fun clickTopAdsBanner(item: TopAdsImageViewModel, userId: String, position: Int) {
+    fun clickTopAdsBanner(item: TopAdsImageUiModel, userId: String, position: Int) {
         val map = DataLayer.mapOf(
             EVENT, PROMO_CLICK,
             EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
@@ -560,7 +560,7 @@ object WishlistAnalytics {
     }
 
     private fun convertBannerTopAdsToDataTrackingObject(
-        item: TopAdsImageViewModel,
+        item: TopAdsImageUiModel,
         position: Int
     ): Any {
         return DataLayer.mapOf(

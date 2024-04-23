@@ -21,7 +21,7 @@ android {
 project.ext {
     artifactId = 'global_config'
     groupId = 'com.tokopedia.config'
-    versionName = "1.0.26"
+    versionName = "1.0.27"
     artifactName = "global_config-debug"
 }
 

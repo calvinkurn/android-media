@@ -68,6 +68,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerReposit
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeUserStatusRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.TargetedTicketRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
@@ -87,9 +88,9 @@ import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModu
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
-import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.data.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -318,6 +319,12 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
+    fun provideTargetedTicketRepository(
+        graphqlRepository: GraphqlRepository
+    ) = TargetedTicketRepository(graphqlRepository)
+
+    @Provides
+    @HomeScope
     fun provideHomeIconRepository(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): HomeIconRepository {
         val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
         return HomeIconRepository(graphqlRepository, isUsingV2)
@@ -333,13 +340,11 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun provideGetHomeAtfUseCase(
-        graphqlRepository: GraphqlRepository,
-        homeRoomDataSource: HomeRoomDataSource,
-        deviceScreenHelper: DeviceScreenHelper
+        graphqlRepository: GraphqlRepository
     ): HomeAtfRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
         useCase.setGraphqlQuery(AtfQuery())
-        return HomeAtfRepository(useCase, homeRoomDataSource, deviceScreenHelper)
+        return HomeAtfRepository(useCase)
     }
 
     @Provides

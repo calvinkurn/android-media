@@ -6,7 +6,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.inactivephone_otp.testing.common.robot.UnifyComponent
 import com.tokopedia.inactivephone_otp.testing.common.robot.clickClickableSpan
 import com.tokopedia.inactivephone_otp.testing.common.robot.waitOnView
-import com.tokopedia.otp.R
+import com.tokopedia.verification.R
 import org.hamcrest.CoreMatchers
 
 fun otpVerification(func: OtpVerificationRobot.() -> Unit) = OtpVerificationRobot().apply(func)

@@ -62,7 +62,7 @@ internal fun FeedProductHighlight(
 ) {
     val ctx = LocalContext.current
 
-    NestTheme(darkTheme = false) {
+    NestTheme(darkTheme = false, isOverrideStatusBarColor = false) {
         AnimatedVisibility(
             visible = isVisible,
             enter = slideInVertically(

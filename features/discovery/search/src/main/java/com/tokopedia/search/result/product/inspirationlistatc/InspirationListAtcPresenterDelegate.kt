@@ -10,8 +10,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
 import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcDataView
@@ -34,6 +37,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     private val inspirationListAtcView: InspirationListAtcView,
     private val viewUpdater: ViewUpdater,
     private val searchParameterProvider: SearchParameterProvider,
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
 ): InspirationListAtcPresenter,
     SearchParameterProvider by searchParameterProvider {
 
@@ -89,6 +93,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
                         val inspirationPostAtc = getInspirationListPostAtcData(searchInspiration)
                         val inspirationListPostAtc =
                             InspirationListPostAtcDataViewMapper.convertToInspirationListPostAtcDataView(
+                                byteIOTrackingDataFactory.create(false),
                                 product,
                                 inspirationPostAtc,
                             )
@@ -185,7 +190,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
                 quantity
             )
         inspirationListAtcView.trackItemClick(trackingData)
-        inspirationListAtcView.trackAddToCart(trackingData)
+        inspirationListAtcView.trackAddToCart(trackingData, product)
         if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
     }
 

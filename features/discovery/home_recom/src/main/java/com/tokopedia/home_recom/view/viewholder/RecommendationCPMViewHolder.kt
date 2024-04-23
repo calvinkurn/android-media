@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCPMDataModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
 
 /**
  * Created by yfsx on 18/08/21.

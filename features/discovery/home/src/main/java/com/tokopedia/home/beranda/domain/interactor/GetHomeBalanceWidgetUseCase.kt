@@ -5,8 +5,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.helper.DeviceScreenHelper
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -32,8 +30,8 @@ class GetHomeBalanceWidgetUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): GetHomeBalanceWidgetData {
         graphqlUseCase.clearCache()
-        params.putString(EXPERIMENT, RollenceKey.HOME_COMPONENT_ATF)
-        params.putString(VARIANT, HomeRollenceController.getAtfRollence(deviceScreenHelper.isFoldableOrTablet()))
+        params.putString(EXPERIMENT, "")
+        params.putString(VARIANT, "")
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }

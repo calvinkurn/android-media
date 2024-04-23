@@ -31,7 +31,6 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop_widget.common.util.WidgetState
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
@@ -159,8 +158,6 @@ open class ShopHomeAdapter(
         newList.addAll(
             data.onEach {
                 if (it is BaseShopHomeWidgetUiModel) {
-                    it.widgetState = WidgetState.PLACEHOLDER
-                } else if (it is ThematicWidgetUiModel) {
                     it.widgetState = WidgetState.PLACEHOLDER
                 }
             }
@@ -577,9 +574,6 @@ open class ShopHomeAdapter(
                     is BaseShopHomeWidgetUiModel -> {
                         widgetContentData.key.first == it.widgetId
                     }
-                    is ThematicWidgetUiModel -> {
-                        widgetContentData.key.first == it.widgetId
-                    }
                     else -> {
                         false
                     }
@@ -593,11 +587,6 @@ open class ShopHomeAdapter(
                         is BaseShopHomeWidgetUiModel -> {
                             (widgetContentData.value as BaseShopHomeWidgetUiModel).widgetState = WidgetState.FINISH
                             (widgetContentData.value as BaseShopHomeWidgetUiModel).isNewData = true
-                            newList.setElement(position, widgetContentData.value)
-                        }
-                        is ThematicWidgetUiModel -> {
-                            (widgetContentData.value as ThematicWidgetUiModel).widgetState = WidgetState.FINISH
-                            (widgetContentData.value as ThematicWidgetUiModel).isNewData = true
                             newList.setElement(position, widgetContentData.value)
                         }
                     }
@@ -614,9 +603,6 @@ open class ShopHomeAdapter(
                     is BaseShopHomeWidgetUiModel -> {
                         widgetLayout.widgetId == it.widgetId
                     }
-                    is ThematicWidgetUiModel -> {
-                        widgetLayout.widgetId == it.widgetId
-                    }
                     else -> {
                         false
                     }
@@ -626,17 +612,13 @@ open class ShopHomeAdapter(
                     is BaseShopHomeWidgetUiModel -> {
                         it.widgetState = WidgetState.LOADING
                     }
-                    is ThematicWidgetUiModel -> {
-                        it.widgetState = WidgetState.LOADING
-                    }
                 }
             }
         }
     }
 
     fun isLoadNextHomeWidgetData(position: Int): Boolean {
-        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER ||
-            visitables.filterIsInstance<ThematicWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
+        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
     }
 
     fun isLoadProductGridListData(position: Int): Boolean {
@@ -669,7 +651,6 @@ open class ShopHomeAdapter(
         return visitables.filterIsInstance<Visitable<*>>().none {
             when (it) {
                 is BaseShopHomeWidgetUiModel -> it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
-                is ThematicWidgetUiModel -> it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
                 else -> false
             }
         }
@@ -695,9 +676,6 @@ open class ShopHomeAdapter(
                     is BaseShopHomeWidgetUiModel -> {
                         shopWidgetLayout.widgetId == it.widgetId
                     }
-                    is ThematicWidgetUiModel -> {
-                        shopWidgetLayout.widgetId == it.widgetId
-                    }
                     else -> {
                         false
                     }
@@ -719,7 +697,6 @@ open class ShopHomeAdapter(
         newList.forEach {
             when (it) {
                 is BaseShopHomeWidgetUiModel -> it.isNewData = false
-                is ThematicWidgetUiModel -> it.isNewData = false
             }
         }
         visitables.addAll(newList)
@@ -741,12 +718,12 @@ open class ShopHomeAdapter(
 
     fun getLastVisibleShopWidgetPosition(lastVisibleItemPosition: Int): Int {
         return when (visitables.getOrNull(lastVisibleItemPosition)) {
-            is BaseShopHomeWidgetUiModel, is ThematicWidgetUiModel -> {
+            is BaseShopHomeWidgetUiModel -> {
                 lastVisibleItemPosition
             }
             else -> {
                 val lastShopWidgetUiModel = visitables.lastOrNull {
-                    it is BaseShopHomeWidgetUiModel || it is ThematicWidgetUiModel
+                    it is BaseShopHomeWidgetUiModel
                 }
                 visitables.lastIndexOf(lastShopWidgetUiModel)
             }
@@ -761,7 +738,6 @@ open class ShopHomeAdapter(
         return visitables.filterIsInstance<Visitable<*>>().any {
             when (it) {
                 is BaseShopHomeWidgetUiModel -> it.isFestivity
-                is ThematicWidgetUiModel -> it.isFestivity
                 else -> false
             }
         }
@@ -771,7 +747,6 @@ open class ShopHomeAdapter(
         return visitables.filterIsInstance<Visitable<*>>().firstOrNull {
             when (it) {
                 is BaseShopHomeWidgetUiModel -> !it.isFestivity
-                is ThematicWidgetUiModel -> !it.isFestivity
                 else -> false
             }
         }
