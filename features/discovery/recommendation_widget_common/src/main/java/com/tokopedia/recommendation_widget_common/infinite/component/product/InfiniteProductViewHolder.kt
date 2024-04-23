@@ -1,5 +1,7 @@
 package com.tokopedia.recommendation_widget_common.infinite.component.product
 
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemInfiniteProductBinding
@@ -12,11 +14,14 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 class InfiniteProductViewHolder(
     private val binding: ItemInfiniteProductBinding,
     private val callback: InfiniteRecommendationCallback,
-) : InfiniteRecommendationViewHolder<InfiniteProductUiModel>(binding.root) {
+) : InfiniteRecommendationViewHolder<InfiniteProductUiModel>(binding.root), AppLogRecTriggerInterface {
+
+    private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(item: InfiniteProductUiModel) = with(binding.infiniteProductCard) {
         val recommendationItem = item.recommendationItem
         setProductModel(recommendationItem.toProductCardModel())
+        updateRecTriggerObject(recommendationItem)
         addOnImpressionListener(item.impressHolder) {
             if (recommendationItem.isTopAds) hitTopAdsImpression(recommendationItem)
             callback.onImpressProductCard(
@@ -31,6 +36,14 @@ class InfiniteProductViewHolder(
                 item.additionalAppLogParams
             )
         }
+    }
+
+    private fun updateRecTriggerObject(item: RecommendationItem) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = item.appLog.sessionId,
+            requestId = item.appLog.requestId,
+            moduleName = item.pageName,
+        )
     }
 
     private fun hitTopAdsImpression(recommendationItem: RecommendationItem) {
@@ -51,5 +64,9 @@ class InfiniteProductViewHolder(
             recommendationItem.name,
             recommendationItem.imageUrl
         )
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject? {
+        return recTriggerObject
     }
 }
