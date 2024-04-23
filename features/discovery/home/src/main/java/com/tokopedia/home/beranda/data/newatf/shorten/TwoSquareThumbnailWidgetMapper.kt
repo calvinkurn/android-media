@@ -7,18 +7,19 @@ import com.tokopedia.home_component.widget.card.SmallProductModel
 
 object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetUiModel>() {
 
+    override fun layout() = "2_square_thumbnail"
+
     override fun map(
         data: DynamicHomeChannel,
-        channel: DynamicHomeChannel.Channels
-    ): ThumbnailWidgetUiModel {
-        val (index, model, header) = mapChannelToPartialWidget(data, channel)
-        val limitTopTwoGrids = channel.grids.take(2)
+        channel: DynamicHomeChannel.Channels?
+    ): ThumbnailWidgetUiModel? {
+        val widget = widget(data, channel) ?: return null
 
         return ThumbnailWidgetUiModel(
-            channelModel = model,
-            position = index,
-            header = header,
-            data = limitTopTwoGrids.map { grid ->
+            channelModel = widget.channelModel,
+            position = widget.position,
+            header = widget.header,
+            data = widget.grids.map { grid ->
                 val labelGroup = grid.labelGroup.associateBy { it.position }
                 val ribbon = labelGroup[Keys.RIBBON]
 

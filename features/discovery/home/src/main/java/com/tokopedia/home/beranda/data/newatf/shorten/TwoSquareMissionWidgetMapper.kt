@@ -6,18 +6,19 @@ import com.tokopedia.home_component.visitable.shorten.MissionWidgetUiModel
 
 object TwoSquareMissionWidgetMapper : BaseShortenWidgetMapper<MissionWidgetUiModel>() {
 
+    override fun layout() = "2_square_mission"
+
     override fun map(
         data: DynamicHomeChannel,
-        channel: DynamicHomeChannel.Channels
-    ): MissionWidgetUiModel {
-        val (index, model, header) = mapChannelToPartialWidget(data, channel)
-        val limitTopTwoGrids = channel.grids.take(2)
+        channel: DynamicHomeChannel.Channels?
+    ): MissionWidgetUiModel? {
+        val widget = widget(data, channel) ?: return null
 
         return MissionWidgetUiModel(
-            channelModel = model,
-            position = index,
-            header = header,
-            data = limitTopTwoGrids.map { grid ->
+            channelModel = widget.channelModel,
+            position = widget.position,
+            header = widget.header,
+            data = widget.grids.map { grid ->
                 val labelGroup = grid.labelGroup.associateBy { it.position }
 
                 ItemMissionWidgetUiModel(
