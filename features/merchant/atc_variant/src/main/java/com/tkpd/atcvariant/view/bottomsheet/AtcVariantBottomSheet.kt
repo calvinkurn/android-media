@@ -516,7 +516,9 @@ class AtcVariantBottomSheet :
 
                 val model = getConfirmCartAnalyticsModel(it)
                 if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-                    || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+                    || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+    //                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
+                    ) {
                     AppLogPdp.sendConfirmCartResult(model)
                 }
 
@@ -760,7 +762,7 @@ class AtcVariantBottomSheet :
     }
 
     private fun putAppLogEnterMethod() {
-        if (AppLogAnalytics.getLastDataExactStep(AppLogParam.PAGE_NAME) == PageName.PDP) {
+        if (AppLogAnalytics.getDataLast(AppLogParam.PAGE_NAME) == PageName.PDP) {
             AppLogAnalytics.putPreviousPageData(
                 AppLogParam.ENTER_METHOD,
                 EnterMethod.CLICK_ATC_TOASTER_PDP.str

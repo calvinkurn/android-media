@@ -5,13 +5,13 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 /**
  * @author by devaraFA on 2020-07-10
  */
 data class HomeTopAdsBannerDataModel(
-        var topAdsImageViewModel: TopAdsImageViewModel?,
+        var topAdsImageUiModel: TopAdsImageUiModel?,
         val channel : DynamicHomeChannel.Channels = DynamicHomeChannel.Channels()
 ) : HomeVisitable, ImpressHolder() {
 

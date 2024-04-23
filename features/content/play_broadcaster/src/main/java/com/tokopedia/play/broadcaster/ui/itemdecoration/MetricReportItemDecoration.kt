@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.viewholder.TrafficMetricViewHolder
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -32,7 +31,7 @@ class MetricReportItemDecoration(
             val viewHolder = parent.getChildViewHolder(child)
 
             if (viewHolder is TrafficMetricViewHolder) {
-                val tvMetric = viewHolder.binding.tvItemPlaySummaryDescription
+                val tvMetric = viewHolder.binding.iconMetric
 
                 val start = if (tvMetric.left <= 0) child.left
                 else tvMetric.left

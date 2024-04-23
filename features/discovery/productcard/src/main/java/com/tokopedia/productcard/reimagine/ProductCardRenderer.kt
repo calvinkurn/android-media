@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.ColorInt
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -106,20 +107,16 @@ internal class ProductCardRenderer(
 
     private fun renderImage(productCardModel: ProductCardModel) {
         val cornerType = if (productCardModel.stockInfo() != null) TOP else ALL
-
+        val overlayColor = ContextCompat.getColor(context, R.color.dms_product_card_reimagine_image_overlay)
         imageView?.apply {
             if (productCardModel.isSafeProduct)
                 loadImage(ContextCompat.getDrawable(context, overlayProductImageSafe(cornerType)))
             else
-                loadImage(productCardModel, cornerType)
-
-            setColorFilter(
-                ContextCompat.getColor(
-                    context,
-                    R.color.dms_product_card_reimagine_image_overlay,
-                ),
-                PorterDuff.Mode.SRC_OVER
-            )
+                loadImage (
+                    productCardModel,
+                    cornerType,
+                    overlayColor
+                )
         }
     }
 
@@ -132,13 +129,16 @@ internal class ProductCardRenderer(
     private fun ImageView.loadImage(
         productCardModel: ProductCardModel,
         cornerType: RoundedCornersTransformation.CornerType,
+        @ColorInt
+        overlayColor: Int
     ) {
         imageRounded(
             productCardModel.imageUrl,
             context.resources.getDimensionPixelSize(
                 R.dimen.product_card_reimagine_image_radius
             ).toFloat(),
-            cornerType
+            cornerType,
+            overlayColor
         )
     }
 

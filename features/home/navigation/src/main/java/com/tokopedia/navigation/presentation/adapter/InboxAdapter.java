@@ -11,11 +11,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel;
-import com.tokopedia.navigation.presentation.adapter.viewholder.InboxTopAdsBannerViewHolder;
 import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation_common.model.NotificationsModel;
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel;
 
 import java.util.List;
 
@@ -76,13 +75,13 @@ public class InboxAdapter extends BaseAdapter<InboxAdapterTypeFactory> {
         return visitables.get(position).type(typeFactory);
     }
 
-    public void updateTopAdsBanner(List<TopAdsImageViewModel> topAdsImageViewModel) {
+    public void updateTopAdsBanner(List<TopAdsImageUiModel> topAdsImageUiModel) {
         int bannerPosition = 4;
         if (bannerPosition >= visitables.size()) return;
         Visitable item = visitables.get(bannerPosition);
         if (item instanceof InboxTopAdsBannerUiModel) {
             InboxTopAdsBannerUiModel banner = (InboxTopAdsBannerUiModel) item;
-            banner.setAds(topAdsImageViewModel);
+            banner.setAds(topAdsImageUiModel);
         }
     }
 }

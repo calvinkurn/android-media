@@ -2,11 +2,9 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
@@ -16,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -73,6 +72,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
     private val _channelSummary = MutableStateFlow(ChannelSummaryUiModel.empty())
     private val _trafficMetric = MutableStateFlow<NetworkResult<List<TrafficMetricUiModel>>>(NetworkResult.Loading)
+    private val _trafficMetricHighlight = MutableStateFlow<NetworkResult<List<LiveStatsUiModel>>>(NetworkResult.Loading)
     private val _tags = MutableStateFlow<NetworkResult<Set<String>>>(NetworkResult.Loading)
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
 
@@ -86,8 +86,11 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         )
     }
 
-    private val _liveReportUiState = _trafficMetric.map {
-        LiveReportUiState(it)
+    private val _liveReportUiState = combine(
+        _trafficMetric,
+        _trafficMetricHighlight
+    ) { trafficMetric, trafficMetricHighlight ->
+        LiveReportUiState(trafficMetric, trafficMetricHighlight)
     }
 
     private val _tagUiState = combine(
@@ -285,28 +288,33 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         hydraConfigStore.getAuthor(),
                                     )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
+
             val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()
-            val metrics = mutableListOf<TrafficMetricUiModel>().apply {
-                if (leaderboard.data.slots.isNotEmpty()) {
+            val metrics = playBroadcastMapper.mapToLiveTrafficUiMetrics(
+                authorType = hydraConfigStore.getAuthorType(),
+                metrics = reportChannelSummary
+            )
+
+            val metricHighlight = mutableListOf<LiveStatsUiModel>().apply {
+                if (account.isShop) {
                     add(
-                        TrafficMetricUiModel(
-                            type = TrafficMetricType.GameParticipants,
-                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString()
-                        )
+                        LiveStatsUiModel.EstimatedIncome(reportChannelSummary.channel.metrics.estimatedIncome)
                     )
                 }
-                addAll(
-                    playBroadcastMapper.mapToLiveTrafficUiMetrics(
-                        authorType = hydraConfigStore.getAuthorType(),
-                        metrics = reportChannelSummary
+
+                if (leaderboard.data.slots.isNotEmpty()) {
+                    add(
+                        LiveStatsUiModel.GameParticipant(participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString())
                     )
-                )
-            }.toList()
+                }
+            }
 
             _trafficMetric.value = NetworkResult.Success(metrics)
-        }) {
+            _trafficMetricHighlight.update { NetworkResult.Success(metricHighlight) }
+        }) { throwable ->
             _channelSummary.value = ChannelSummaryUiModel.empty()
-            _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+            _trafficMetric.value = NetworkResult.Fail(throwable) { fetchLiveTraffic() }
+            _trafficMetricHighlight.update { NetworkResult.Fail(throwable) { fetchLiveTraffic() } }
         }
     }
 

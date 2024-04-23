@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
@@ -43,8 +44,9 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                     .getBuyerOrderDetailRequestState
                 if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Success) {
                     val getP1DataParams = GetP1DataParams(
-                        getBuyerOrderDetailRequestState.result.hasResoStatus.orFalse(),
-                        getBuyerOrderDetailRequestState.result.hasInsurance.orFalse(),
+                        getBuyerOrderDetailRequestState.result.widget?.resoStatus?.show.orFalse(),
+                        getBuyerOrderDetailRequestState.result.widget?.resoCsat?.show.orFalse(),
+                        getBuyerOrderDetailRequestState.result.widget?.ppp?.show.orFalse(),
                         getBuyerOrderDetailRequestState.result.orderId.toLongOrZero(),
                         getBuyerOrderDetailRequestState.result.invoice,
                         shouldCheckCache
@@ -56,6 +58,7 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                             p0DataRequestState, GetP1DataRequestState.Complete(
                                 GetOrderResolutionRequestState.Complete.Error(null),
                                 GetInsuranceDetailRequestState.Complete.Error(null),
+                                GetBrcCsatWidgetRequestState.Complete.Error(null)
                             )
                         )
                     )
@@ -92,7 +95,8 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                 GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)),
                 GetP1DataRequestState.Complete(
                     GetOrderResolutionRequestState.Complete.Error(it),
-                    GetInsuranceDetailRequestState.Complete.Error(it)
+                    GetInsuranceDetailRequestState.Complete.Error(it),
+                    GetBrcCsatWidgetRequestState.Complete.Error(it)
                 )
             )
         )

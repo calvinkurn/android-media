@@ -15,6 +15,7 @@ data class ReviewContentUiModel(
     val mediaSelectedPosition: Int,
     val isWatchMode: Boolean,
     val isScrolling: Boolean,
+    val isShareAble: Boolean
 ) {
     companion object {
         val Empty
@@ -28,6 +29,7 @@ data class ReviewContentUiModel(
                 mediaSelectedPosition = -1,
                 isWatchMode = false,
                 isScrolling = false,
+                isShareAble = false
             )
     }
 }

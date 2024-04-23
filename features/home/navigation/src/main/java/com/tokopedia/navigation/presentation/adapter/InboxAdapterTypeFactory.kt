@@ -10,9 +10,8 @@ import com.tokopedia.navigation.domain.model.*
 import com.tokopedia.navigation.presentation.adapter.viewholder.*
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
 import com.tokopedia.user.session.UserSessionInterface
 
 /**

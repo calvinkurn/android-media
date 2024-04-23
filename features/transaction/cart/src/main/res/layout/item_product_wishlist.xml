@@ -20,8 +20,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="6"
-            app:unify_image_type="rect"
-            tools:src="@drawable/empty_photo" />
+            app:unify_image_type="rect" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_product_name"
