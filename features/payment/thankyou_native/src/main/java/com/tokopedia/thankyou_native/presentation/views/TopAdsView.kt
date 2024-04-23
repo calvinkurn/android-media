@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TdnHelper
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.thanks_topads_view.view.*
@@ -44,11 +44,11 @@ class TopAdsView @JvmOverloads constructor(
                 findViewById<TextView>(R.id.tvFeatureDescription).text = topAdsParams.sectionDescription
             }
 
-            val topAdsImageViewModels = mutableListOf<TopAdsImageViewModel>()
+            val topAdsImageUiModels = mutableListOf<TopAdsImageUiModel>()
             topAdsParams.topAdsUIModelList?.forEach {
-                topAdsImageViewModels.add(it.topAdsImageViewModel)
+                topAdsImageUiModels.add(it.topAdsImageUiModel)
             }
-            val tdnBannerList = TdnHelper.categoriesTdnBanners(topAdsImageViewModels)
+            val tdnBannerList = TdnHelper.categoriesTdnBanners(topAdsImageUiModels)
             if (!tdnBannerList.isNullOrEmpty()) {
                 tdnBannerView?.renderTdnBanner(
                     tdnBannerList.first(),
@@ -61,7 +61,7 @@ class TopAdsView @JvmOverloads constructor(
         }
     }
 
-    private fun onTdnBannerClicked(imageData: TopAdsImageViewModel) {
+    private fun onTdnBannerClicked(imageData: TopAdsImageUiModel) {
         if (!imageData.applink.isNullOrBlank()) RouteManager.route(tdnBannerView.context, imageData.applink)
     }
 

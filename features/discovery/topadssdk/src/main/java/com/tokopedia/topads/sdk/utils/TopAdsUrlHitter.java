@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.utils;
 
-import static com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY;
-import static com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.TOP_ADS_SHARED_PREF_KEY;
+import static com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY;
+import static com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsClickUrlTrackerConstant.TOP_ADS_SHARED_PREF_KEY;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
-import com.tokopedia.topads.sdk.listener.TopAdsHeaderResponseListener;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsHeaderResponseListener;
 
 public class TopAdsUrlHitter {
 

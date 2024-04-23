@@ -43,14 +43,22 @@ object ShareExAnalyticsConst {
     object Category {
         const val TOP_NAV_PDP = "top nav - product detail page"
         const val PDP = "product detail page"
+        const val REVIEW = "fullscreen review"
     }
 
     object Tracker {
+        // PDP
         const val ID_10365 = "10365"
         const val ID_10366 = "10366"
         const val ID_10367 = "10367"
         const val ID_10368 = "10368"
         const val ID_31185 = "31185"
         const val ID_31186 = "31186"
+
+        // Review
+        const val ID_50124 = "50124"
+        const val ID_50125 = "50125"
+        const val ID_50126 = "50126"
+        const val ID_50127 = "50127"
     }
 }

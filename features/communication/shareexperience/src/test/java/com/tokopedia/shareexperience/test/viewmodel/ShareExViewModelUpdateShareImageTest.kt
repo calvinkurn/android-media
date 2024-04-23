@@ -9,6 +9,7 @@ import com.tokopedia.shareexperience.domain.model.property.ShareExImageGenerator
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import com.tokopedia.shareexperience.ui.ShareExAction
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -19,11 +20,12 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
     fun `update selected image, get updated image generator state`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = "",
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -63,7 +65,7 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
                 assertEquals("sourceId", expectedValue.sourceId)
                 assertEquals(0, expectedValue.args?.size)
 
-                println(cancelAndConsumeRemainingEvents())
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
@@ -72,11 +74,12 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
     fun `update selected image without image generator param, get updated image generator state`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = "",
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -113,7 +116,7 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
                 assertEquals(null, expectedValue.sourceId)
                 assertEquals(null, expectedValue.args?.size)
 
-                println(cancelAndConsumeRemainingEvents())
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
@@ -122,7 +125,7 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
     fun `update selected image without bottomsheet args, get updated image generator state`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = null
+            viewModel.bottomSheetArg = null
 
             viewModel.imageGeneratorModel.test {
                 // When

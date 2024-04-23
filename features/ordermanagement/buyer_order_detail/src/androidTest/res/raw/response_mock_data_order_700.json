@@ -154,6 +154,10 @@
       "is_bo": false,
       "bo_image_url": ""
     },
-    "has_ppp": true
+    "widget": {
+      "ppp": {
+        "show": true
+      }
+    }
   }
 }
