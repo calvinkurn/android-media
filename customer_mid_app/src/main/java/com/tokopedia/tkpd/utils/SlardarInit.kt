@@ -104,7 +104,7 @@ object SlardarInit {
     /**
      * can be invoke after app launched since it may cost time
      */
-    fun startApm(aid: String, channel: String) {
+    fun startApm(aid: String, channel: String, userId: String) {
         val builder = ApmStartConfig.builder()
 //        val headerInfo: JSONObject = AppLog.getHeader() // todo better copy
         builder.blockDetectOnlySampled(true)
@@ -159,7 +159,11 @@ object SlardarInit {
             }
 
             override fun getUid(): Long {
-                return 0 // todo return your real uid
+                return try {
+                    userId.toLong()
+                } catch (e: Exception) {
+                    0L
+                }
             }
         })
         builder.queryParams {
