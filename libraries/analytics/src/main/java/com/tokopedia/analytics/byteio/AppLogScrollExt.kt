@@ -31,6 +31,7 @@ data class SlideTrackObject(
     val moduleName: String = "",
     val barName: String = "",
     val shopId: String = "",
+    val additionalParams: Map<String, Any> = hashMapOf(),
 )
 
 /**
@@ -202,7 +203,8 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
 }
 
 fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTriggerObject) {
-    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject(model.additionalParams).also {
+    val additionalParams = model.additionalParams.getScrollingParams()
+    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject(additionalParams).also {
         it.addPage()
         it.addEnterFrom()
         it.put(AppLogParam.LIST_NAME, model.listName.underscoredParam())
@@ -216,7 +218,8 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
 }
 
 fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
-    AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject().also {
+    val additionalParams = model.additionalParams.getScrollingParams()
+    AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject(additionalParams).also {
         it.addPage()
         it.addEnterFrom()
         it.put(AppLogParam.SLIDE_TYPE, if (scrollOffset > 0) "show_right" else "show_left")
@@ -225,6 +228,10 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
         it.put(AppLogParam.BAR_NAME, model.barName)
         it.put(AppLogParam.SHOP_ID, model.shopId.zeroAsEmpty())
     })
+}
+
+private fun Map<String, Any>.getScrollingParams(): Map<String, Any> {
+    return this.filterKeys { it == AppLogParam.PARENT_PRODUCT_ID }
 }
 
 /**
