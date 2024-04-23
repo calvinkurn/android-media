@@ -3,9 +3,6 @@ package com.tokopedia.topchat.chatlist.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
@@ -45,14 +42,11 @@ import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.TopChatListFilterEnum
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
@@ -67,7 +61,6 @@ import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
 import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
-import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
@@ -77,12 +70,10 @@ import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
-import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
-import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
@@ -93,7 +84,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
-import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -137,8 +127,6 @@ open class ChatListInboxFragment :
     @RoleType
     private var role: Int = RoleType.BUYER
     private var itemPositionLongClicked: Int = -1
-    private var filterChecked = 0
-    private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
     private var rvAdapter: ChatListAdapter? = null
@@ -204,31 +192,6 @@ open class ChatListInboxFragment :
         TopChatAnalytics.FPM_CHAT_LIST
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.chat_options_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_chat_filter -> {
-                chatListAnalytics.eventClickFilterChat()
-                showFilterDialog()
-                true
-            }
-            R.id.menu_chat_setting -> {
-                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
-                startActivity(intent)
-                true
-            }
-            R.id.menu_chat_search -> {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SEARCH)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chat_list, container, false)?.also {
             initView(it)
@@ -286,7 +249,7 @@ open class ChatListInboxFragment :
         chatFilter?.init(isTabSeller())
         chatFilter?.setFilterListener(
             object : ChatFilterView.FilterListener {
-                override fun onFilterChanged(filterType: String) {
+                override fun onFilterChanged(filterType: TopChatListFilterEnum) {
                     viewModel.filter = filterType
                     loadInitialData()
                 }
@@ -637,12 +600,11 @@ open class ChatListInboxFragment :
         }
     }
 
-    fun processIncomingMessage(newItem: IncomingTypingWebSocketModel) {
+    private fun processIncomingMessage(newItem: IncomingTypingWebSocketModel) {
         adapter?.let { adapter ->
             if (
                 (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
-                adapter.list.isEmpty() ||
-                filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
+                adapter.list.isEmpty()
             ) {
                 return
             }
@@ -718,34 +680,6 @@ open class ChatListInboxFragment :
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-    }
-
-    fun showFilterDialog() {
-        activity?.let {
-            if (filterMenu.isAdded) return@let
-            val itemMenus = ArrayList<TopchatItemMenu>()
-            val arrayFilterString = viewModel.getFilterTitles(it, isTabSeller())
-
-            for ((index, title) in arrayFilterString.withIndex()) {
-                if (index == filterChecked) {
-                    itemMenus.add(TopchatItemMenu(title, hasCheck = true))
-                } else {
-                    itemMenus.add(TopchatItemMenu(title))
-                }
-            }
-
-            val title = getString(R.string.menu_chat_filter)
-            filterMenu.apply {
-                setTitle(title)
-                setItemMenuList(itemMenus)
-                setOnItemMenuClickListener { menu, pos ->
-                    chatListAnalytics.eventClickListFilterChat(menu.title.lowercase(Locale.getDefault()))
-                    filterChecked = pos
-                    loadInitialData()
-                    dismiss()
-                }
-            }.show(childFragmentManager, FilterMenu.TAG)
-        }
     }
 
     override fun loadInitialData() {
@@ -950,15 +884,15 @@ open class ChatListInboxFragment :
                 }
             }
 
-            if (viewModel.filter == PARAM_FILTER_UNREAD ||
-                viewModel.filter == PARAM_FILTER_UNREPLIED
+            if (viewModel.filter == TopChatListFilterEnum.FILTER_UNREAD ||
+                viewModel.filter == TopChatListFilterEnum.FILTER_UNREPLIED
             ) {
                 image = CHAT_BUYER_EMPTY
                 title = it.getString(R.string.empty_chat_read_all_title)
                 subtitle = it.getString(R.string.empty_chat_read_all_subtitle)
                 ctaText = ""
                 ctaApplink = ""
-            } else if (viewModel.filter == PARAM_FILTER_TOPBOT) {
+            } else if (viewModel.filter == TopChatListFilterEnum.FILTER_TOPBOT) {
                 image = CHAT_SELLER_EMPTY_SMART_REPLY
                 title = it.getString(R.string.empty_chat_smart_reply)
                 subtitle = ""
@@ -1039,13 +973,6 @@ open class ChatListInboxFragment :
         adapter?.putToOriginalPosition(element, position, viewModel.pinnedMsgId.size)
         viewModel.pinnedMsgId.remove(element.msgId)
         showToaster(R.string.title_success_unpin_chat)
-    }
-
-    private fun showToaster(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                .show()
-        }
     }
 
     private fun showToaster(@StringRes message: Int) {
