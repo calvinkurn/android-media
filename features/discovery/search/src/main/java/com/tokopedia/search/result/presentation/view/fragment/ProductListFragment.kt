@@ -1429,6 +1429,10 @@ class ProductListFragment :
         recyclerViewUpdater.backToTop()
     }
 
+    override fun immediateMoveToTop() {
+        recyclerViewUpdater.immediateMoveToTop()
+    }
+
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
     }
