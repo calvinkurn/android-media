@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -125,7 +126,7 @@ class HomeViewModelDynamicChannelTest {
         )
         getHomeUseCase.givenUpdateHomeDataReturn(Result.errorPagination(error = Throwable()))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.FIRST_OPEN)
         homeViewModel.homeDataModel.findWidget<DynamicChannelRetryModel>(
             actionOnFound = { model, index ->
                 Assert.assertTrue(!model.isLoading)
@@ -148,7 +149,7 @@ class HomeViewModelDynamicChannelTest {
         )
         getHomeUseCase.givenUpdateHomeDataReturn(Result.errorPagination(error = Throwable()))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.FIRST_OPEN)
         homeViewModel.homeDataModel.findWidget<DynamicChannelRetryModel>(
             actionOnFound = { model, index ->
                 Assert.assertTrue(!model.isLoading)
@@ -178,7 +179,7 @@ class HomeViewModelDynamicChannelTest {
             userSessionInterface = userSession,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.FIRST_OPEN)
         homeViewModel.updateNetworkLiveData.observeOnce {
             Assert.assertTrue(it.error is Throwable)
         }
@@ -196,7 +197,7 @@ class HomeViewModelDynamicChannelTest {
         )
         getHomeUseCase.givenUpdateHomeDataErrorNullMessage()
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.FIRST_OPEN)
         homeViewModel.updateNetworkLiveData.observeOnce {
             Assert.assertTrue(it.error is Throwable)
         }
@@ -285,7 +286,7 @@ class HomeViewModelDynamicChannelTest {
         val mockGetHomeDataJob = mockk<Job>(relaxed = true)
         homeViewModel.getHomeDataJob = mockGetHomeDataJob
         every { homeViewModel.getHomeDataJob?.isActive } returns true
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.PULL_TO_REFRESH)
         homeViewModel.hideShowLoading.observeOnce {
             Assert.assertTrue(it.getContentIfNotHandled() ?: false)
         }
@@ -305,7 +306,7 @@ class HomeViewModelDynamicChannelTest {
         val mockGetHomeDataJob = mockk<Job>(relaxed = true)
         homeViewModel.getHomeDataJob = mockGetHomeDataJob
         every { homeViewModel.getHomeDataJob?.isActive } returns false
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.PULL_TO_REFRESH)
         Assert.assertNull(homeViewModel.hideShowLoading.value)
     }
 
@@ -323,7 +324,7 @@ class HomeViewModelDynamicChannelTest {
         val mockHomeDataModel = mockk<HomeDynamicChannelModel>(relaxed = true)
         homeViewModel.homeDataModel = mockHomeDataModel
         every { homeViewModel.homeDataModel.flowCompleted } returns false
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.PULL_TO_REFRESH)
         homeViewModel.hideShowLoading.observeOnce {
             Assert.assertTrue(it.getContentIfNotHandled() ?: false)
         }
@@ -339,9 +340,9 @@ class HomeViewModelDynamicChannelTest {
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         every { (homeViewModel.getProperty("homeRateLimit") as RateLimiter<String>).shouldFetch(any()) } returns true
-        homeViewModel.refreshWithThreeMinsRules(false)
+        homeViewModel.refreshWithThreeMinsRules(false, refreshType = HomeRefreshType.AUTO_REFRESH)
 
-        verify { homeViewModel.refreshHomeData() }
+        verify { homeViewModel.refreshHomeData(HomeRefreshType.AUTO_REFRESH) }
         homeViewModel.isNeedRefresh.observeOnce {
             Assert.assertTrue(it.getContentIfNotHandled() == true)
         }
@@ -360,7 +361,7 @@ class HomeViewModelDynamicChannelTest {
         val mockErrorAtf = Result.errorAtf<Any>(error = Throwable())
         getHomeUseCase.givenUpdateHomeDataReturn(mockErrorAtf)
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.refreshHomeData()
+        homeViewModel.refreshHomeData(HomeRefreshType.PULL_TO_REFRESH)
         homeViewModel.updateNetworkLiveData.observeOnce {
             Assert.assertEquals(it, mockErrorAtf)
         }

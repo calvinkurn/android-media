@@ -75,7 +75,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/bg_rect_white_round"
+        android:background="@drawable/moneyin_bg_rect_white_round"
         android:elevation="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/space"
         app:layout_constraintLeft_toLeftOf="parent"

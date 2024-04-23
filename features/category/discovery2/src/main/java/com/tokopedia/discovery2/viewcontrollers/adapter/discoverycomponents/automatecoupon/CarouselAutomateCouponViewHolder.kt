@@ -4,26 +4,25 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingProperties
 import com.tokopedia.discovery2.analytics.CouponTrackingProperties
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.databinding.CarouselAutomateCouponLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.resources.isDarkMode
-import com.tokopedia.utils.view.binding.viewBinding
 
 class CarouselAutomateCouponViewHolder(
     itemView: View,
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val binding: CarouselAutomateCouponLayoutBinding?
-        by viewBinding()
+    private val automateCouponRv = itemView.findViewById<RecyclerView>(R.id.automateCouponRv)
 
     private val couponAdapter: DiscoveryRecycleAdapter
         by lazy {
@@ -42,7 +41,7 @@ class CarouselAutomateCouponViewHolder(
     private var viewModel: ListAutomateCouponViewModel? = null
 
     init {
-        binding?.setupRecyclerView()
+        setupRecyclerView()
     }
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as? ListAutomateCouponViewModel
@@ -59,7 +58,7 @@ class CarouselAutomateCouponViewHolder(
         if (lifecycleOwner == null) return
 
         viewModel?.getComponentList()?.observe(lifecycleOwner) { items ->
-            binding?.showWidget(items)
+            showWidget(items)
             trackImpression(items)
         }
     }
@@ -72,7 +71,7 @@ class CarouselAutomateCouponViewHolder(
         super.removeObservers(lifecycleOwner)
     }
 
-    private fun CarouselAutomateCouponLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
+    private fun showWidget(items: ArrayList<ComponentsItem>) {
         automateCouponRv.show()
         couponAdapter.setDataList(items)
     }
@@ -89,7 +88,7 @@ class CarouselAutomateCouponViewHolder(
         if (properties.isNotEmpty()) analytics?.trackCouponImpression(properties)
     }
 
-    private fun CarouselAutomateCouponLayoutBinding.setupRecyclerView() {
+    private fun setupRecyclerView() {
         automateCouponRv.apply {
             adapter = couponAdapter
             layoutManager = linearLayoutManager

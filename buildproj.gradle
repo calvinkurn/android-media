@@ -20,26 +20,10 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven {
-            url "${gcp_artifactory_url}" + "/libs-release-temporary"
-            credentials {
-                username = "${gcp_artifactory_username}"
-                password = "${gcp_artifactory_password}"
-            }
-            allowInsecureProtocol = true
-        }
-        maven {
             url "${gcp_artifactory_url}" + "/libs-release-local";
             credentials {
                 username = "${gcp_artifactory_username}"
                 password = "${gcp_artifactory_password}"
-            }
-            allowInsecureProtocol = true
-        }
-        maven {
-            url "${artifactory_url}" + "/libs-release-local";
-            credentials {
-                username = "${artifactory_username}"
-                password = "${artifactory_password}"
             }
             allowInsecureProtocol = true
         }
@@ -94,10 +78,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-ext {
-    artifactoryUrl = "${artifactory_url}"
-}
-
 afterEvaluate {
     tasks.withType(PublishToMavenRepository).all { publishTask ->
         publishTask.onlyIf { task ->
@@ -150,7 +130,6 @@ subprojects {
                 substitute module('com.google.android.material:material') using module("com.google.android.material:material:${materialVersion}")
                 substitute module('androidx.constraintlayout:constraintlayout') using module("androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}")
                 substitute module('org.apache.commons:commons-lang3') using module('org.apache.commons:commons-lang3:3.5')
-                substitute module('com.google.android.gms:play-services-base') using module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') using module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
                 substitute module('com.google.android.gms:play-services-base') using module("com.google.android.gms:play-services-base:${playServiceBase}")
                 substitute module('com.google.firebase:firebase-config') using module("com.google.firebase:firebase-config:${firebaseRemoteConfigVersion}")

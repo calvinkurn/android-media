@@ -1,19 +1,17 @@
 package com.tokopedia.tokopedianow.common.util
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
+import android.widget.ImageView
 import com.tokopedia.media.loader.loadImageWithTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 
 object ImageUtil {
-    private const val LEFT_BOUND = 0
-    private const val TOP_BOUND = 0
+    const val NORMAL_BRIGHTNESS = 1f
+    const val OOS_BRIGHTNESS = 0.5f
 
     fun setBackgroundImage(
         context: Context,
@@ -29,31 +27,15 @@ object ImageUtil {
         }
     }
 
-    fun convertVectorToDrawable(
-        context: Context,
-        @DrawableRes drawableId: Int,
-        colorId: Int
-    ): BitmapDrawable? {
-        ContextCompat.getDrawable(context, drawableId)?.apply {
-            DrawableCompat.setTint(
-                this,
-                ContextCompat.getColor(context, colorId)
-            )
-            val bitmap = Bitmap.createBitmap(
-                intrinsicWidth,
-                intrinsicHeight,
-                Bitmap.Config.ARGB_8888
-            )
-            val canvas = Canvas(bitmap)
-            setBounds(
-                LEFT_BOUND,
-                TOP_BOUND,
-                canvas.width,
-                canvas.height
-            )
-            draw(canvas)
-            return BitmapDrawable(context.resources, bitmap)
+    fun ImageView.applyBrightnessFilter(brightnessFactor: Float) {
+        val colorMatrix = ColorMatrix().apply {
+            set(floatArrayOf(
+                brightnessFactor, 0f, 0f, 0f, 0f,
+                0f, brightnessFactor, 0f, 0f, 0f,
+                0f, 0f, brightnessFactor, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            ))
         }
-        return null
+        colorFilter = ColorMatrixColorFilter(colorMatrix)
     }
 }

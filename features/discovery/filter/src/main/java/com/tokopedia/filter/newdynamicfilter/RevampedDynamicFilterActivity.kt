@@ -13,7 +13,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.R
 import com.tokopedia.resources.common.R as RCommon
@@ -27,6 +26,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.DynamicFilterDbManager
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDbHelper
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDetailActivityRouter
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.KeyboardHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 

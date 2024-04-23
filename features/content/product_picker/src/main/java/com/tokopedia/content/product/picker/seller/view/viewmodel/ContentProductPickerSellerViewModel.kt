@@ -89,6 +89,9 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
     val isEligibleForPin: Boolean
         get() = savedStateHandle.isEligibleForPin()
 
+    val searchKeyword: String
+        get() = searchQuery.value
+
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
         savedStateHandle.getProductSections().flatMap { it.products }
@@ -198,6 +201,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
             ProductSetupAction.SaveProducts -> handleSaveProducts()
             ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
+            is ProductSetupAction.SyncSelectedProduct -> handleSyncSelectedProduct()
             is ProductSetupAction.ClickPinProduct -> handleClickPin(action.product)
         }
     }
@@ -412,6 +416,12 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
                     submitAction(ProductSetupAction.DeleteSelectedProduct(product))
                 }
             )
+        }
+    }
+
+    private fun handleSyncSelectedProduct() {
+        _selectedProductList.update {
+            _productTagSectionList.value.flatMap { it.products }
         }
     }
 

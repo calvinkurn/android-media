@@ -19,6 +19,9 @@ class HomeMissionWidgetData {
         @SerializedName("header")
         @Expose
         val header: Header = Header(),
+        @SerializedName("appLog")
+        @Expose
+        val appLog: AppLog = AppLog(),
         @SerializedName("missions")
         @Expose
         val missions: List<Mission> = listOf(),
@@ -40,6 +43,18 @@ class HomeMissionWidgetData {
         @SerializedName("dividerType")
         @Expose
         val dividerType: Int = 0,
+    )
+
+    data class AppLog(
+        @SerializedName("bytedanceSessionID")
+        @Expose
+        val bytedanceSessionId: String = "",
+        @SerializedName("requestID")
+        @Expose
+        val requestId: String = "",
+        @SerializedName("logID")
+        @Expose
+        val logId: String = "",
     )
 
     data class Mission(
@@ -67,6 +82,9 @@ class HomeMissionWidgetData {
         @SerializedName("productID")
         @Expose
         val productID: String = "",
+        @SerializedName("parentProductID")
+        @Expose
+        val parentProductID: String = "",
         @SerializedName("productName")
         @Expose
         val productName: String = "",
@@ -88,5 +106,45 @@ class HomeMissionWidgetData {
         @SerializedName("campaignCode")
         @Expose
         val campaignCode: String = "",
-    )
+        @SerializedName("recParam")
+        @Expose
+        val recParam: String = "",
+        @SerializedName("labelGroup")
+        @Expose
+        val labelGroup: List<LabelGroup> = listOf(),
+    ) {
+
+        data class LabelGroup(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+
+            @SerializedName("type")
+            @Expose
+            val type: String = "",
+
+            @SerializedName("position")
+            @Expose
+            val position: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = "",
+
+            @SerializedName("styles")
+            @Expose
+            val styles: List<Styles> = listOf(),
+        ) {
+
+            data class Styles(
+                @SerializedName("key")
+                @Expose
+                val key: String = "",
+
+                @SerializedName("value")
+                @Expose
+                val value: String = "",
+            )
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.seamlessinspirationcard.seamlessprod
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -52,7 +53,10 @@ class InspirationProductTitleViewHolder(
             ),
             listener = object : HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
-                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(
+                        option,
+                        CLICK_SEE_MORE,
+                    )
                 }
             },
             maxLines = SEARCH_PAGE_RESULT_MAX_LINE,

@@ -4,15 +4,15 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouHeadlineTopadsBinding
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.HeadlineTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.TemporaryBackwardCompatible
-import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouHeadlineTopadsBinding
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 @TemporaryBackwardCompatible

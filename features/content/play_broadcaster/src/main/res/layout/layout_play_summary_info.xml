@@ -120,13 +120,20 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/view_live_stats_highlight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/cl_bro_summary_meta"
+        />
+
     <FrameLayout
         android:id="@+id/fl_info"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cl_bro_summary_meta">
+        app:layout_constraintTop_toBottomOf="@+id/view_live_stats_highlight">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_info"

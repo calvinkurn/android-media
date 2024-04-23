@@ -7,9 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
@@ -51,6 +49,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoGqlParam
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
@@ -61,7 +60,9 @@ import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
@@ -110,7 +111,6 @@ class MainNavViewModel @Inject constructor(
     val profileDataLiveData: LiveData<AccountHeaderDataModel>
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
-
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -338,7 +338,7 @@ class MainNavViewModel @Inject constructor(
 
                 val transactionListItemViewModel = TransactionListItemDataModel(
                     NavOrderListModel(orderListToShow, paymentListToShow),
-                    otherTransaction,
+                    otherTransaction
                 )
 
                 findPosition<InitialShimmerTransactionRevampDataModel>()?.let {
@@ -396,7 +396,7 @@ class MainNavViewModel @Inject constructor(
                 val inboxTicketNotification = result.unreadCountInboxTicket
                 navNotification = NavNotificationModel(
                     unreadCountComplain = complainNotification,
-                    unreadCountInboxTicket = inboxTicketNotification,
+                    unreadCountInboxTicket = inboxTicketNotification
                 )
                 if (complainNotification.isMoreThanZero()) updateMenu(ID_COMPLAIN, complainNotification.toString())
                 if (inboxTicketNotification.isMoreThanZero()) updateMenu(ID_TOKOPEDIA_CARE, inboxTicketNotification.toString())
@@ -442,7 +442,7 @@ class MainNavViewModel @Inject constructor(
                         val shopName = it.userShopInfo.info.shopName
                         val shopId: String = if (it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
                         val orderCount = getTotalOrderCount(it.notifications)
-                        setUserShopName(shopName, shopId, orderCount)
+                        setUserShopName(shopName, shopId, orderCount, isShopPending = it.userShopInfo.reserveStatusInfo.isShopPending())
                         setAdminData(adminData?.data)
                     }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
@@ -595,12 +595,12 @@ class MainNavViewModel @Inject constructor(
             if (userSession.get().isShopOwner) {
                 Pair(null, null)
             } else {
-                accountAdminInfoUseCase.get().run {
-                    requestParams = AccountAdminInfoUseCase.createRequestParams(SOURCE)
-                    isLocationAdmin = userSession.get().isLocationAdmin
-                    setStrategyCloudThenCache()
-                    executeOnBackground()
-                }
+                accountAdminInfoUseCase.get()(
+                    AccountAdminInfoGqlParam(
+                        source = SOURCE,
+                        isLocationAdmin = userSession.get().isLocationAdmin
+                    )
+                )
             }
         val isShopActive = adminDataResponse?.data?.isShopActive() == true
         adminDataResponse?.let {
@@ -632,7 +632,7 @@ class MainNavViewModel @Inject constructor(
     private fun updateMenu(
         menuId: Int,
         counter: String? = null,
-        showCta: Boolean? = null,
+        showCta: Boolean? = null
     ) {
         val existingMenu = _mainNavListVisitable.find {
             it is HomeNavMenuDataModel && it.id() == menuId

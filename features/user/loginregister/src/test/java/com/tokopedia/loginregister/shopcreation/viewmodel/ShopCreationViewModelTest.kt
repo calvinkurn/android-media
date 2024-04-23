@@ -4,9 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.FileUtil
-import com.tokopedia.loginregister.shopcreation.data.GetUserProfileCompletionPojo
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.data.GetUserProfileCompletionPojo
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoPojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
@@ -14,8 +15,8 @@ import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdatePojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidatePojo
+import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
-import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCase
@@ -25,8 +26,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -72,10 +73,13 @@ class ShopCreationViewModelTest {
     lateinit var updateUserProfileUseCase: UpdateUserProfileUseCase
 
     @RelaxedMockK
-    lateinit var getProfileUseCase: GetProfileUseCase
+    lateinit var getProfileUseCase: GetUserInfoAndSaveSessionUseCase
 
     @RelaxedMockK
     lateinit var shopInfoUseCase: ShopInfoUseCase
+
+    @RelaxedMockK
+    lateinit var getShopStatusUseCase: GetShopStatusUseCase
 
     @RelaxedMockK
     lateinit var addNameObserver: Observer<Result<UserProfileUpdate>>
@@ -121,7 +125,7 @@ class ShopCreationViewModelTest {
             updateUserProfileUseCase,
             getProfileUseCase,
             shopInfoUseCase,
-            userSession,
+            getShopStatusUseCase,
             CoroutineTestDispatchersProvider
         )
     }
@@ -443,15 +447,14 @@ class ShopCreationViewModelTest {
 
     @Test
     fun `Success get user info`() {
+        // When
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
-        }
+        val response = Success(successGetUserInfoResponse)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewmodel.getUserInfo()
 
-        verify { getUserInfoObserver.onChanged(any<Success<ProfileInfo>>()) }
+        coVerify { getUserInfoObserver.onChanged(any<Success<ProfileInfo>>()) }
         assert(viewmodel.getUserInfoResponse.value is Success)
 
         val result = viewmodel.getUserInfoResponse.value as Success<ProfileInfo>
@@ -461,10 +464,8 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed get user info`() {
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile.invoke(throwable)
-        }
+        val response = Fail(throwable)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewmodel.getUserInfo()
 
@@ -473,14 +474,6 @@ class ShopCreationViewModelTest {
 
         val result = viewmodel.getUserInfoResponse.value as Fail
         assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `clear background task`() {
-        viewmodel.clearBackgroundTask()
-        verify {
-            getProfileUseCase.unsubscribe()
-        }
     }
 
     companion object {

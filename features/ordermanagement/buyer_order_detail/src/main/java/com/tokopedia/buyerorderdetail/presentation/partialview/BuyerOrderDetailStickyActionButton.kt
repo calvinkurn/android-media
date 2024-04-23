@@ -148,8 +148,11 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
         btnBuyerOrderDetailPrimaryActions?.isLoading = false
     }
 
-    fun setupActionButtons(actionButtonsUiModel: ActionButtonsUiModel) {
-        if (actionButtonsUiModel.primaryActionButton.key.isNotBlank()) {
+    fun setupActionButtons(
+        actionButtonsUiModel: ActionButtonsUiModel,
+        hasCsatWidgetShowing: Boolean
+    ) {
+        if (actionButtonsUiModel.primaryActionButton.key.isNotBlank() && !hasCsatWidgetShowing) {
             show()
             setupPrimaryButton(actionButtonsUiModel.primaryActionButton)
             setupSecondaryButton(actionButtonsUiModel.secondaryActionButtons)

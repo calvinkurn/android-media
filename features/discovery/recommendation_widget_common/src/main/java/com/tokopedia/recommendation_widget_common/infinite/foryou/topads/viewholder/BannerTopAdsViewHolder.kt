@@ -2,6 +2,8 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.topads.viewho
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -13,8 +15,8 @@ import com.tokopedia.recommendation_widget_common.databinding.WidgetBannerTopads
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BannerTopAdsViewHolder constructor(
@@ -23,11 +25,14 @@ class BannerTopAdsViewHolder constructor(
 ) : BaseRecommendationViewHolder<BannerTopAdsModel>(
     view,
     BannerTopAdsModel::class.java
-) {
+), AppLogRecTriggerInterface {
 
     private val binding: WidgetBannerTopadsBinding? by viewBinding()
 
+    private var recTriggerObject = RecommendationTriggerObject()
+
     override fun bind(element: BannerTopAdsModel) {
+        setRecTriggerObject(element)
         setImageTopAdsNewQuery(element)
         setBannerTopAdsClickListener(element)
     }
@@ -39,7 +44,7 @@ class BannerTopAdsViewHolder constructor(
     private fun loadImageTopAdsNewQuery(
         recommendationBannerTopAdsDataModel: BannerTopAdsModel
     ) {
-        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.let { topAdsImageViewModel ->
+        recommendationBannerTopAdsDataModel.topAdsImageUiModel?.let { topAdsImageViewModel ->
             setBannerTopAdsImpressionListener(
                 recommendationBannerTopAdsDataModel,
                 listener
@@ -67,10 +72,10 @@ class BannerTopAdsViewHolder constructor(
                 override fun onViewHint() {
                     TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this::class.java.simpleName,
-                        recommendationBannerTopAdsUiModel.topAdsImageViewModel?.adViewUrl,
+                        recommendationBannerTopAdsUiModel.topAdsImageUiModel?.adViewUrl,
                         "",
                         "",
-                        recommendationBannerTopAdsUiModel.topAdsImageViewModel?.imageUrl,
+                        recommendationBannerTopAdsUiModel.topAdsImageUiModel?.imageUrl,
                         HOME_RECOM_TAB_BANNER
                     )
                     listener.onBannerTopAdsImpress(
@@ -86,10 +91,10 @@ class BannerTopAdsViewHolder constructor(
         binding?.homeRecomTopadsImageView?.setOnClickListener {
             TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
-                element.topAdsImageViewModel?.adClickUrl,
+                element.topAdsImageUiModel?.adClickUrl,
                 "",
                 "",
-                element.topAdsImageViewModel?.imageUrl,
+                element.topAdsImageUiModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
             listener.onBannerTopAdsClick(element, bindingAdapterPosition)
@@ -100,7 +105,7 @@ class BannerTopAdsViewHolder constructor(
         recommendationBannerTopAdsDataModelDataModel: BannerTopAdsModel,
         appCompatImageView: AppCompatImageView
     ) {
-        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel?.imageUrl?.let {
             appCompatImageView.loadImageRounded(it, TDN_BANNER_ROUNDED.toPx()) {
                 fitCenter()
                 listener(onSuccess = { _, _ ->
@@ -114,10 +119,24 @@ class BannerTopAdsViewHolder constructor(
         }
     }
 
+    private fun setRecTriggerObject(model: BannerTopAdsModel) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = model.appLog.sessionId,
+            requestId = model.appLog.requestId,
+            moduleName = model.pageName,
+            listName = model.tabName,
+            listNum = model.tabIndex,
+        )
+    }
+
     companion object {
         val LAYOUT = R.layout.widget_banner_topads
 
         private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
         private const val TDN_BANNER_ROUNDED = 8F
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
     }
 }

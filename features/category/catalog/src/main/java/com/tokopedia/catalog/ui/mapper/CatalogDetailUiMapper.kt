@@ -128,6 +128,8 @@ class CatalogDetailUiMapper @Inject constructor(
         }
         return CatalogDetailUiModel(
             widgets = widgets,
+            departmentId = remoteModel.basicInfo.departmentID.orEmpty(),
+            brand = remoteModel.basicInfo.brand.orEmpty(),
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
             priceCtaSellerOfferingProperties = mapToPriceCtaSellerOfferingProperties(remoteModel),
@@ -819,7 +821,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 price = if (minPrice == maxPrice) maxPrice else "$minPrice - $maxPrice",
                 textTitleColor = color,
                 textPriceColor = color,
-                iconColor = color
+                iconColor = color,
+                shopId = data.topSeller.shop.id,
+                productId = data.topSeller.productID,
             )
         } else {
             BlankUiModel()
@@ -838,6 +842,7 @@ class CatalogDetailUiMapper @Inject constructor(
             val productOffer =
                 labelGroups.firstOrNull { it.position == "ri_product_offer" }?.title.orEmpty()
             SellerOfferingUiModel(
+                shopId = shop.id,
                 productId = productID,
                 productImage = mediaUrl.thumbnailUrl,
                 shopBadge = shop.badge,

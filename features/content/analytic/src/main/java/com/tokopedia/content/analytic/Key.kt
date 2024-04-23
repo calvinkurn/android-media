@@ -53,4 +53,5 @@ object Key {
     const val itemList = "item_list"
 
     const val dimension40 = "dimension40"
+    const val categoryId = "category_id"
 }

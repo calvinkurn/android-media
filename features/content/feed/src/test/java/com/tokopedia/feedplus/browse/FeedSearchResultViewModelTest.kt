@@ -63,11 +63,6 @@ class FeedSearchResultViewModelTest {
 
     private val mockSearchResultTabsMenu = ContentSlotModel.TabMenus(menus = emptyList())
 
-    @Before
-    fun setUp() {
-
-    }
-
     @Test
     fun feedLocalSearchSRP_loadResult_success() = runTestUnconfined {
         /** Prepare */

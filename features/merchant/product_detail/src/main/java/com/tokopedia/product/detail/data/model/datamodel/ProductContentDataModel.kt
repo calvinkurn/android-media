@@ -46,7 +46,8 @@ data class ProductContentDataModel(
                 isNpl == newData.isNpl &&
                 isWishlisted == newData.isWishlisted &&
                 freeOngkirImgUrl == newData.freeOngkirImgUrl &&
-                data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName
+                data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName &&
+                data?.productNameCollapsed == newData.data?.productNameCollapsed
         } else {
             false
         }
@@ -58,7 +59,11 @@ data class ProductContentDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return if (newData is ProductContentDataModel) {
-            if (data?.hashCode() != newData.data?.hashCode() || isNpl != newData.isNpl) {
+            if (
+                data?.hashCode() != newData.data?.hashCode() ||
+                isNpl != newData.isNpl ||
+                data?.productNameCollapsed != newData.data?.productNameCollapsed
+            ) {
                 // Update the whole component
                 return null
             }
@@ -101,6 +106,7 @@ data class ProductContentMainData(
     var stockWording: String = "",
     var isVariant: Boolean = false,
     var productName: String = "",
+    var productNameCollapsed: Boolean = true,
     var isProductActive: Boolean = false,
     var isShowPrice: Boolean = true,
     var labelIcons: List<LabelIcons> = emptyList(),

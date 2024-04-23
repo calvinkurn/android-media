@@ -1,13 +1,16 @@
 [
-    {
+  {
+    "data": {
+      "universe_placeholder": {
         "data": {
-            "universe_placeholder": {
-                "data": {
-                    "keyword": "Android Test",
-                    "placeholder": "Android test placeholder",
-                    "placeholder_list": []
-                }
-            }
+          "placeholder": "masker anak",
+          "keyword": "masker anak",
+          "words_source": "search_bar_outer",
+          "impr_id": "202404030523307A2A851A48FA1C0F3B1G",
+          "group_id": "8629213114686746452",
+          "placeholder_list": []
         }
+      }
     }
+  }
 ]

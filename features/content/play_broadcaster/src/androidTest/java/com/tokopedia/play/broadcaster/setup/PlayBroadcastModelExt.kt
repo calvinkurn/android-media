@@ -4,6 +4,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
+import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
@@ -15,6 +16,8 @@ import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConf
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import java.util.*
 
 /**
@@ -227,3 +230,21 @@ fun buildBeautificationConfig(
         }
     )
 }
+
+fun buildProductReportSummary() = ProductReportSummaryUiModel(
+    totalStatsList = listOf(
+        LiveStatsUiModel.EstimatedIncome(),
+        LiveStatsUiModel.Visit(),
+        LiveStatsUiModel.AddToCart(),
+        LiveStatsUiModel.TotalSold(),
+    ),
+    productStatsList = emptyList()
+)
+
+fun buildLiveReportSummary() = GetLiveStatisticsResponse.ReportChannelSummary(
+    channel = GetLiveStatisticsResponse.Channel(
+        channelId = "123",
+        metrics = GetLiveStatisticsResponse.ReportSellerChannelMetric(),
+        userMetrics = GetLiveStatisticsResponse.ReportUserChannelMetric()
+    )
+)

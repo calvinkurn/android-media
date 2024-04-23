@@ -13,13 +13,14 @@ import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
+import com.tokopedia.content.common.util.setSafeOnClickListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.content.common.R as contentR
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 09/02/23
@@ -47,17 +48,17 @@ class CommentViewHolder {
         }
 
         private val parentColor by lazyThreadSafetyNone {
-            MethodChecker.getColor(itemView.context, unifyR.color.Unify_NN950)
+            MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950)
         }
 
         private val mentionColor by lazyThreadSafetyNone {
-            MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
+            MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
         }
 
-        private val space8 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl1)
-        private val space24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
-        private val space32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
-        private val space48 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl6)
+        private val space8 = itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl1)
+        private val space24 = itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl3)
+        private val space32 = itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl4)
+        private val space48 = itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl6)
 
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
@@ -132,14 +133,14 @@ class CommentViewHolder {
             if (item.isExpanded) {
                 binding.ivChevron.setImage(newIconId = IconUnify.CHEVRON_UP)
                 binding.tvCommentExpandable.text =
-                    getString(contentR.string.content_comment_expand_hide)
+                    getString(contentcommonR.string.content_comment_expand_hide)
             } else {
                 binding.ivChevron.setImage(newIconId = IconUnify.CHEVRON_DOWN)
                 binding.tvCommentExpandable.text =
-                    getString(contentR.string.content_comment_expand_visible, item.repliesCount)
+                    getString(contentcommonR.string.content_comment_expand_visible, item.repliesCount)
             }
 
-            binding.root.setOnClickListener {
+            binding.root.setSafeOnClickListener {
                 listener.onClicked(item, absoluteAdapterPosition)
             }
 
