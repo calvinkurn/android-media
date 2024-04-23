@@ -19,16 +19,16 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface GetDataService {
-    @GET("/translate_a/single")
+    @GET("/translate_a/t")
     @Headers("Content-Type: application/json")
     fun getTranslatedString(
         @Query("client") client: String,
         @Query("sl") sl: String,
-        @Query("tl") tl: String,
+        @Query("tl") tl: String?,
         @Query("dt") dt: String,
-        @Query("oe") oe: String,
-        @Query("ie") ie: String,
-        @Query("q") q: String
+        /* @Query("oe") oe: String, */
+       /* @Query("ie") ie: String, */
+        @Query("q") q: List<String>
     ): Call<String>
 
     @GET("https://translate.yandex.net/api/v1.5/tr.json/translate")

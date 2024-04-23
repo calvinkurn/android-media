@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.CardUnify
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created by shruti.agarwal on 23/02/23
@@ -40,9 +41,6 @@ class ContentTaggedProductBottomSheetItemView(
         binding.ivProductImage.setImageUrl(product.imageUrl)
         binding.tvProductTitle.text = product.title
 
-        bindPrice(product.price)
-        bindCampaign(product.campaign)
-
         binding.btnProductBuy.setOnClickListener {
             mListener?.onBuyProductButtonClicked(this, product)
         }
@@ -61,24 +59,36 @@ class ContentTaggedProductBottomSheetItemView(
             }
         }
 
-        bindStock(product.stock)
+        bindStock(product.stock, product.price)
+        bindCampaign(product.campaign)
+        bindPrice(product.price)
     }
 
     private fun bindPrice(price: ContentTaggedProductUiModel.Price) {
         when (price) {
             is ContentTaggedProductUiModel.CampaignPrice -> {
                 binding.tvProductDiscount.hide()
-                binding.tvOriginalPrice.show()
-                binding.tvOriginalPrice.text = price.originalFormattedPrice
+                binding.tvOriginalPrice.hide()
                 binding.tvCurrentPrice.text = price.formattedPrice
+
+                if (price.isMasked) {
+                    binding.btnProductAtc.hide()
+                    binding.btnProductBuy.hide()
+                    binding.btnProductLongAtc.hide()
+                }
             }
+
             is ContentTaggedProductUiModel.DiscountedPrice -> {
                 binding.tvProductDiscount.show()
                 binding.tvOriginalPrice.show()
-                binding.tvProductDiscount.text = context.getString(com.tokopedia.content.common.R.string.feed_product_discount_percent, price.discount)
+                binding.tvProductDiscount.text = context.getString(
+                    contentcommonR.string.feed_product_discount_percent,
+                    price.discount
+                )
                 binding.tvOriginalPrice.text = price.originalFormattedPrice
                 binding.tvCurrentPrice.text = price.formattedPrice
             }
+
             is ContentTaggedProductUiModel.NormalPrice -> {
                 binding.tvProductDiscount.hide()
                 binding.tvOriginalPrice.hide()
@@ -114,12 +124,20 @@ class ContentTaggedProductBottomSheetItemView(
         }
     }
 
-    private fun bindStock(stock: ContentTaggedProductUiModel.Stock) {
-        val isShown = stock is ContentTaggedProductUiModel.Stock.Available
-        binding.btnProductBuy.isEnabled = isShown
-        binding.btnProductAtc.isEnabled = isShown
-        binding.viewOverlayOos.showWithCondition(!isShown)
-        binding.labelOutOfStock.showWithCondition(!isShown)
+    private fun bindStock(
+        stock: ContentTaggedProductUiModel.Stock,
+        price: ContentTaggedProductUiModel.Price
+    ) {
+        val isStockAvailable = stock is ContentTaggedProductUiModel.Stock.Available
+        val isMaskedPrice = price is ContentTaggedProductUiModel.CampaignPrice && price.isMasked
+
+        binding.btnProductBuy.isEnabled = isStockAvailable
+        binding.btnProductAtc.isEnabled = isStockAvailable
+
+        binding.viewOverlayOos.showWithCondition(!isStockAvailable && !isMaskedPrice)
+
+        binding.labelOutOfStock.showWithCondition(!isStockAvailable)
+        binding.labelSoon.showWithCondition(isMaskedPrice)
     }
 
     interface Listener {

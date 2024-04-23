@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.product.inspirationcarousel
 
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
@@ -19,10 +20,16 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
     SearchParameterProvider by searchParameterProvider,
     QueryKeyProvider by queryKeyProvider {
 
+    override fun trackDynamicCarouselImpression(dynamicProductCarousel: BroadMatchDataView) {
+        AppLogSearch.eventSearchResultShow(
+            dynamicProductCarousel.asByteIOSearchResult(null),
+        )
+    }
+
     override fun trackDynamicProductCarouselImpression(
         dynamicProductCarousel: BroadMatchItemDataView,
         type: String,
-        inspirationCarouselProduct: InspirationCarouselDataView.Option.Product
+        inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
     ) {
         val trackingQueue = trackingQueue
         val data = createCarouselTrackingUnificationData(
@@ -31,6 +38,13 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         )
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        AppLogSearch.eventSearchResultShow(
+            dynamicProductCarousel.asByteIOSearchResult(null),
+        )
+        AppLogSearch.eventProductShow(
+            dynamicProductCarousel.asByteIOProduct()
+        )
     }
 
     override fun trackDynamicProductCarouselClick(
@@ -44,16 +58,28 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        AppLogSearch.eventSearchResultClick(
+            dynamicProductCarousel.asByteIOSearchResult(""),
+        )
+        AppLogSearch.eventProductClick(
+            dynamicProductCarousel.asByteIOProduct()
+        )
     }
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(
         dynamicProductCarousel: BroadMatchDataView,
         type: String,
-        inspirationCarouselOption: InspirationCarouselDataView.Option
+        inspirationCarouselOption: InspirationCarouselDataView.Option,
+        aladdinButtonType: String,
     ) {
         InspirationCarouselTracking.trackCarouselClickSeeAll(
             queryKey,
             inspirationCarouselOption,
+        )
+
+        AppLogSearch.eventSearchResultClick(
+            dynamicProductCarousel.asByteIOSearchResult(aladdinButtonType),
         )
     }
 }

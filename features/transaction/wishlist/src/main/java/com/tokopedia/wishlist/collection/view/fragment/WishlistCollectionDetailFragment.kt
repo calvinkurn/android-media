@@ -24,6 +24,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -62,7 +64,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.CardUnify2
@@ -136,6 +138,8 @@ import com.tokopedia.wishlist.detail.view.adapter.BottomSheetThreeDotsMenuWishli
 import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistCleanerAdapter
 import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistFilterAdapter
 import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
+import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationItemViewHolder
+import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationTitleViewHolder
 import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetCleanerWishlist
 import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetFilterWishlist
 import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetThreeDotsMenuWishlist
@@ -240,6 +244,9 @@ class WishlistCollectionDetailFragment :
     private val wishlistPref: WishlistLayoutPreference? by lazy {
         activity?.let { WishlistLayoutPreference(it) }
     }
+
+    private var hasTrackEnterPage: Boolean = false
+    private var hasApplogScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -604,6 +611,7 @@ class WishlistCollectionDetailFragment :
                                 if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                     onFailedGetWishlistV2(ResponseErrorException())
                                 } else {
+                                    trackEnterPage()
                                     showRvWishlist()
                                     isFetchRecommendation = true
                                     hideTotalLabel()
@@ -1489,6 +1497,7 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun addEndlessScrollListener() {
+        addRecommendationScrollListener()
         val staggeredGlm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         rvScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGlm) {
@@ -1544,9 +1553,21 @@ class WishlistCollectionDetailFragment :
         }
     }
 
+    private fun addRecommendationScrollListener() {
+        if(hasApplogScrollListener) return
+        binding?.rvWishlistCollectionDetail?.addVerticalTrackListener()
+        hasApplogScrollListener = true
+    }
+
     private fun loadRecommendationList() {
         currRecommendationListPage += 1
         wishlistCollectionDetailViewModel.loadRecommendation(currRecommendationListPage)
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun initTrackingQueue() {
@@ -2481,21 +2502,21 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onBannerTopAdsImpression(
-        topAdsImageViewModel: TopAdsImageViewModel,
+        topAdsImageUiModel: TopAdsImageUiModel,
         position: Int
     ) {
         TopAdsUrlHitter(context).hitImpressionUrl(
             this::class.java.simpleName,
-            topAdsImageViewModel.adViewUrl,
+            topAdsImageUiModel.adViewUrl,
             "",
             "",
-            topAdsImageViewModel.imageUrl
+            topAdsImageUiModel.imageUrl
         )
-        WishlistAnalytics.impressTopAdsBanner(userSession.userId, topAdsImageViewModel, position)
+        WishlistAnalytics.impressTopAdsBanner(userSession.userId, topAdsImageUiModel, position)
     }
 
-    override fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
-        RouteManager.route(context, topAdsImageViewModel.applink)
+    override fun onBannerTopAdsClick(topAdsImageUiModel: TopAdsImageUiModel, position: Int) {
+        RouteManager.route(context, topAdsImageUiModel.applink)
     }
 
     override fun onRecommendationItemImpression(

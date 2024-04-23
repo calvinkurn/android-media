@@ -6,6 +6,7 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 
 /**
  * Created by dhaba
@@ -24,6 +25,7 @@ data class CarouselMissionWidgetDataModel(
     val animateOnPress: Int,
     val isCache: Boolean,
     val type: MissionWidgetListDataModel.Type,
+    val appLog: RecommendationAppLog,
 ) : Visitable<MissionWidgetTypeFactory>, HomeComponentCarouselDiffUtil, ImpressHolder() {
 
     override fun getId(): String {
@@ -38,5 +40,13 @@ data class CarouselMissionWidgetDataModel(
 
     override fun type(typeFactory: MissionWidgetTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun isProduct(): Boolean {
+        return this.data.productID.isNotBlank() && this.data.productID != ZERO_PRODUCT_ID
+    }
+
+    companion object {
+        private const val ZERO_PRODUCT_ID = "0"
     }
 }

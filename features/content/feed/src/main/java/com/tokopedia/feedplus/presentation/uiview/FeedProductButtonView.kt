@@ -180,7 +180,7 @@ class FeedProductButtonView(
     fun pauseProductIconAnimation() {
         if (!animationOn) return
         animationTimerDelay.cancel()
-        binding.lottieProductSeeMore.cancelAnimation()
+        binding.lottieProductSeeMore.pauseAnimation()
     }
 
     private fun showIconProductAnimation() = with(binding) {

@@ -24,7 +24,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerticalBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import timber.log.Timber
 
 class UniversalInboxAdapter(
@@ -197,7 +197,7 @@ class UniversalInboxAdapter(
         } ?: false
     }
 
-    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
+    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageUiModel>) {
         getTopAdsBannerFirstPosition()?.let {
             if (visitables[it] is UniversalInboxTopAdsBannerUiModel) {
                 (visitables[it] as UniversalInboxTopAdsBannerUiModel).ads = listAds
@@ -303,6 +303,18 @@ class UniversalInboxAdapter(
             val editedList = visitables.toMutableList()
             editedList.removeAt(position)
             updateItems(editedList)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    fun tryRemoveProductRecommendation() {
+        try {
+            if (visitables.isEmpty()) return
+            getProductRecommendationFirstPosition()?.let { startPosition ->
+                val editedList = visitables.slice(0 until startPosition)
+                updateItems(editedList)
+            }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }

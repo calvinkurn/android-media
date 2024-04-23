@@ -67,7 +67,7 @@ internal fun FeedProductLabel(
         enter = fadeIn(animationSpec = tween(durationMillis = 600, easing = EaseOut)),
         exit = fadeOut(animationSpec = tween(easing = EaseOut, durationMillis = 400, delayMillis = 200)),
     ) {
-        NestTheme(darkTheme = false) {
+        NestTheme(darkTheme = false, isOverrideStatusBarColor = false) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,

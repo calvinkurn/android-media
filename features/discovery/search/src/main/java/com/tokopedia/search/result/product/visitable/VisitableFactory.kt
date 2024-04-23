@@ -2,6 +2,8 @@ package com.tokopedia.search.result.product.visitable
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
@@ -9,6 +11,9 @@ import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -46,6 +51,8 @@ class VisitableFactory @Inject constructor(
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     private val pagination: Pagination,
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
+    private val remoteConfig: RemoteConfig,
 ) {
 
     private var isGlobalNavWidgetAvailable = false
@@ -76,13 +83,6 @@ class VisitableFactory @Inject constructor(
             data.keyword,
             productDataView.seamlessCarouselDataViewList,
         )
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
-            processHeadlineAdsFirstPage(
-                data.searchProductModel,
-                visitableList,
-                data.isLocalSearch,
-            )
-        }
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             addInspirationCarousel(
                 productDataView.inspirationCarouselDataView,
@@ -94,6 +94,13 @@ class VisitableFactory @Inject constructor(
             addInspirationWidget(
                 productDataView.inspirationWidgetDataView,
                 visitableList,
+            )
+        }
+        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
+            processHeadlineAdsFirstPage(
+                data.searchProductModel,
+                visitableList,
+                data.isLocalSearch,
             )
         }
         processBannerAndBroadMatchInSamePosition(visitableList, data.responseCode)
@@ -108,7 +115,7 @@ class VisitableFactory @Inject constructor(
             processTopAdsImageViewModel(visitableList)
         }
         addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
-
+        determineByteIORank(visitableList, listOf())
         return visitableList
     }
 
@@ -212,7 +219,8 @@ class VisitableFactory @Inject constructor(
             val cpmDataView = createCpmDataView(
                 searchProductModel.cpmModel,
                 cpmDataList,
-                verticalSeparator
+                verticalSeparator,
+                byteIOTrackingDataFactory.create(true),
             )
 
             if (index == 0) processHeadlineAdsAtTop(list, cpmDataView)
@@ -228,10 +236,19 @@ class VisitableFactory @Inject constructor(
         visitableList: MutableList<Visitable<*>>,
         cpmDataView: CpmDataView,
     ) {
-        val firstProductIndex = visitableList.indexOfFirstProductItem()
+        val pos = cpmDataView.cpmModel.data.first().cpm.position
+        var firstProductIndex = if (dynamicHeadlineAdsPosition(cpmDataView)) visitableList.getIndexForWidgetPosition(pos) else visitableList.indexOfFirstProductItem()
         if (firstProductIndex !in visitableList.indices) return
 
         visitableList.add(firstProductIndex, cpmDataView)
+    }
+
+    private fun dynamicHeadlineAdsPosition(cpmDataView: CpmDataView): Boolean {
+        return cpmDataView.cpmModel.data.firstOrNull()?.cpm?.position?: 0 > 0 && dynamicHeadlineAdsConfig()
+    }
+
+    private fun dynamicHeadlineAdsConfig(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DYNAMIC_SHOP_ADS_POSITION, false)
     }
 
     private fun isHeadlineAdsAllowed(isLocalSearch: Boolean): Boolean {
@@ -250,9 +267,10 @@ class VisitableFactory @Inject constructor(
         cpmModel: CpmModel,
         cpmData: ArrayList<CpmData>,
         verticalSeparator: VerticalSeparator,
+        byteIOTrackingData: ByteIOTrackingData,
     ): CpmDataView {
         val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
-        return CpmDataView(cpmForViewModel, verticalSeparator)
+        return CpmDataView(cpmForViewModel, verticalSeparator, byteIOTrackingData)
     }
 
     private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmModel {
@@ -272,16 +290,22 @@ class VisitableFactory @Inject constructor(
         inspirationCarouselPresenter.setInspirationCarouselDataViewList(
             inspirationCarouselDataView
         )
-        processInspirationCarouselPosition(list, externalReference)
+        processInspirationCarouselPosition(
+            list,
+            externalReference,
+            true,
+        )
     }
 
     private fun processInspirationCarouselPosition(
         list: MutableList<Visitable<*>>,
         externalReference: String,
+        isFirstPage: Boolean,
     ) {
         inspirationCarouselPresenter.processInspirationCarouselPosition(
             visitableList.getTotalProductItem(),
             externalReference,
+            isFirstPage,
         ) { position, inspirationCarouselVisitableList ->
             val visitableIndex = visitableList.getIndexForWidgetPosition(position)
             list.addAll(visitableIndex, inspirationCarouselVisitableList)
@@ -421,7 +445,8 @@ class VisitableFactory @Inject constructor(
             val cpmDataView = createCpmDataView(
                 searchProductModel.cpmModel,
                 cpmDataList,
-                verticalSeparator
+                verticalSeparator,
+                byteIOTrackingDataFactory.create(false),
             )
 
             processHeadlineAdsAtBottom(list, cpmDataView)
@@ -447,13 +472,18 @@ class VisitableFactory @Inject constructor(
         processInspirationCarouselPosition(
             visitableList,
             data.externalReference,
+            false,
         )
         processBannerAndBroadMatchInSamePosition(visitableList, data.responseCode)
         addBanner(visitableList)
         addBroadMatch(data.responseCode, visitableList)
         addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
 
-        return visitableList - previousVisitableList.toSet()
+        val loadMoreVisitableList = visitableList - previousVisitableList.toSet()
+
+        determineByteIORank(loadMoreVisitableList, previousVisitableList)
+
+        return loadMoreVisitableList
     }
 
     fun createEmptyResultDuringLoadMoreVisitableList(
@@ -473,5 +503,20 @@ class VisitableFactory @Inject constructor(
         addSearchInTokopedia(visitableList, isLocalSearch, globalSearchApplink)
 
         return visitableList
+    }
+
+    private fun determineByteIORank(
+        currentVisitableList: List<Visitable<*>>,
+        previousVisitableList: List<Visitable<*>>,
+    ) {
+        val previousByteIORankingList = previousVisitableList.filterIsInstance<ByteIORanking>()
+        val lastByteIORanking =
+            if (previousByteIORankingList.isEmpty()) -1
+            else previousByteIORankingList.last().getRank()
+
+        currentVisitableList.filterIsInstance<ByteIORanking>().forEachIndexed { index, byteIORanking ->
+            val rank = index + lastByteIORanking + 1
+            byteIORanking.setRank(rank)
+        }
     }
 }

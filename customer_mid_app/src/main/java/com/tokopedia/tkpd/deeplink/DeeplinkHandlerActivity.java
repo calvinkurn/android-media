@@ -6,10 +6,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
+import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
+import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
@@ -25,7 +31,6 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -46,7 +51,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
+public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback, AppLogInterface {
 
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";
@@ -57,7 +62,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         super.onCreate(savedInstanceState);
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
-        if (getIntent() != null && getIntent().getData()!= null) {
+        if (getIntent() != null && getIntent().getData() != null) {
             String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
             Uri applink = Uri.parse(applinkString);
             presenter.processUTM(this, applink);
@@ -85,6 +90,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     cancelNotification(notificationType, notificationId);
                 }
             }
+
+            checkAppLogPDPExternalPromo(applink);
         }
         initializationNewRelic();
         iniBranchIO(this);
@@ -172,9 +179,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
     }
 
-    private boolean uriHaveCampaignData(){
+    private boolean uriHaveCampaignData() {
         boolean uriHaveCampaignData = false;
-        if (getIntent() != null && getIntent().getData()!= null) {
+        if (getIntent() != null && getIntent().getData() != null) {
             String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
             Uri applink = Uri.parse(applinkString);
             uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
@@ -205,11 +212,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private void logWebViewApplink() {
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
-        if(uri.toString().contains(ApplinkConst.WEBVIEW)) {
+        if (uri.toString().contains(ApplinkConst.WEBVIEW)) {
             Uri urlToLoad = getUrlToLoad(uri);
-            if(urlToLoad != null) {
+            if (urlToLoad != null) {
                 String domain = urlToLoad.getHost();
-                if(domain != null) {
+                if (domain != null) {
                     if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
                         Map<String, String> messageMap = new HashMap<>();
                         messageMap.put("type", "applink");
@@ -223,7 +230,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     }
 
     private String getBaseDomain(String host) {
-        if(host == null) {
+        if (host == null) {
             return "";
         }
         String[] split = host.split("\\.");
@@ -240,5 +247,38 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private void checkAppLogPDPExternalPromo(Uri uri) {
+        try {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_EXTERNAL_ADS);
+            if (uri.getHost() != null
+                    && uri.getHost().equals("product")
+                    && uri.getPathSegments().size() == 1) {
+                AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    @NonNull
+    @Override
+    public String getPageName() {
+        return "";
+    }
+
+    @Override
+    public boolean isEnterFromWhitelisted() {
+        return false;
+    }
+
+    @Override
+    public boolean isShadow() {
+        return true;
+    }
+
+    @Override
+    public boolean shouldTrackEnterPage() {
+        return false;
     }
 }

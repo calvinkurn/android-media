@@ -39,7 +39,9 @@ class StoriesWidgetFakeRepository(
 
     override suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntryPoint,
-        shopIds: List<String>
+        shopIds: List<String>,
+        categoryIds: List<String>,
+        productIds: List<String>
     ): StoriesWidgetInfo {
         if (forbiddenEntryPoints.contains(entryPoint)) return StoriesWidgetInfo.Default
         return StoriesWidgetInfo(stateMap, coachMarkText)

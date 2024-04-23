@@ -238,7 +238,8 @@ object ShopPageWidgetMapper {
             header = ShopPageHomeMapper.mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),
             layoutOrder = response.layoutOrder,
             name = response.name,
-            type = response.type
+            type = response.type,
+            lastTabIndexSelected = 0
         )
     }
     fun mapToHomeBannerProductGroupWidget(

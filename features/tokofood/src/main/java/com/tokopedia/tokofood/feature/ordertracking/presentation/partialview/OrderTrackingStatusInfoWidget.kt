@@ -85,7 +85,7 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
 
     fun clearLottie() {
         binding?.lottieOrderTrackingStatus?.run {
-            cancelAnimation()
+            pauseAnimation()
             (drawable as? LottieDrawable)?.clearComposition()
         }
     }

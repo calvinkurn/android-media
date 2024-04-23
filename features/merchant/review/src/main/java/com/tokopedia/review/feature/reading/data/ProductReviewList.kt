@@ -19,7 +19,10 @@ data class ProductrevGetProductReviewList(
     val shopInfo: ProductReviewShopInfo = ProductReviewShopInfo(),
     @SerializedName("hasNext")
     @Expose
-    val hasNext: Boolean = false
+    val hasNext: Boolean = false,
+    @SerializedName("variantFilter")
+    @Expose
+    val variantFilter: VariantFilter = VariantFilter()
 )
 
 data class ProductReview(
@@ -151,3 +154,12 @@ data class LikeDislike(
         return likeStatus == LIKED
     }
 }
+
+data class VariantFilter(
+    @SerializedName("isUnavailable")
+    @Expose
+    val isUnavailable: Boolean = false,
+    @SerializedName("ticker")
+    @Expose
+    val ticker: String = ""
+)

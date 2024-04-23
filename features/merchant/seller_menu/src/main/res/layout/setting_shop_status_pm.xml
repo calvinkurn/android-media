@@ -18,23 +18,12 @@
             android:id="@+id/powerMerchantText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/power_merchant_status"
+            android:text="@string/power_merchant_upgrade"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_NN950"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/powerMerchantStatusText"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:textColor="@color/Unify_RN500"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@id/powerMerchantText"
-            android:text="@string/setting_not_active"/>
 
         <View
             android:id="@+id/badgeBorder"

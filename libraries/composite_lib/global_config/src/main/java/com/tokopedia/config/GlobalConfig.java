@@ -31,6 +31,8 @@ public class GlobalConfig {
     public static String DEVICE_ID = "";
     public static int LAUNCHER_ICON_RES_ID = 0;
 
+    public static String STORE_CHANNEL = StoreChannelVariant.GOOGLEPLAY;
+
     /**
      * This field is used to enable the debug trace to find the performance insights. Used by automation test for perforamnce
      */
@@ -73,5 +75,15 @@ public class GlobalConfig {
 
     public static Boolean isAllowDebuggingTools() {
         return DEBUG || ENABLE_DISTRIBUTION;
+    }
+
+    public static class StoreChannelVariant {
+        public static String GOOGLEPLAY = "googleplay";
+        public static String HUAWEI = "huawei";
+        public static String VIVO = "vivo";
+        public static String OPPO = "oppo";
+        public static String XIAOMI = "xiaomi";
+        public static String SAMSUNG = "samsung";
+        public static String INFINIX = "infinix";
     }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -12,6 +13,7 @@ import androidx.activity.result.launch
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
+import androidx.core.view.marginStart
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -26,10 +28,12 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
+import com.tokopedia.content.common.util.CompositeTouchDelegate
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
@@ -72,6 +76,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.extension.hitRect
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -80,10 +89,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.play_common.util.extension.withCache
-import kotlinx.coroutines.flow.filterNotNull
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -92,7 +100,8 @@ import com.tokopedia.creation.common.R as creationcommonR
 class FeedBaseFragment :
     TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
-    FragmentListener {
+    FragmentListener,
+    AppLogInterface {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -204,6 +213,15 @@ class FeedBaseFragment :
             }
         }
 
+    private val containerFeedTouchDelegate by viewLifecycleBound(
+        creator = {
+            CompositeTouchDelegate(binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab)
+        },
+        onLifecycle = whenLifecycle {
+            onDestroy { it.removeAll() }
+        }
+    )
+
     override fun onAttach(context: Context) {
         inject()
         super.onAttach(context)
@@ -299,6 +317,14 @@ class FeedBaseFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
+    override fun getPageName(): String {
+        return PageName.FEED
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
+
     override fun onCreationNextClicked(data: ContentCreationItemModel) {
         when (data.type) {
             ContentCreationTypeEnum.LIVE -> {
@@ -340,6 +366,8 @@ class FeedBaseFragment :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
+        binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.touchDelegate = containerFeedTouchDelegate
+
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
@@ -476,7 +504,7 @@ class FeedBaseFragment :
                             handleActiveTab(currValue.data)
                         }
 
-                        is NetworkResult.Error -> {
+                        is NetworkResult.Fail -> {
                             showErrorView(currValue.error)
                         }
 
@@ -554,7 +582,7 @@ class FeedBaseFragment :
                                                 val intent = RouteManager.getIntent(
                                                     context,
                                                     ApplinkConst.FEED_RELEVANT_POST,
-                                                    uploadData.activityId,
+                                                    uploadData.activityId
                                                 )
 
                                                 router.route(requireActivity(), intent)
@@ -718,6 +746,16 @@ class FeedBaseFragment :
             }
 
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.show()
+
+            val rect = binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.hitRect
+            rect.top = binding.containerFeedTopNav.root.top
+            rect.bottom += binding.containerFeedTopNav.root.bottom
+            rect.left -= binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.paddingStart
+            rect.right += binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.marginStart / 2
+            containerFeedTouchDelegate.addDelegate(
+                binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab,
+                TouchDelegate(rect, binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab)
+            )
         } else {
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.hide()
         }
@@ -736,6 +774,16 @@ class FeedBaseFragment :
             }
 
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.show()
+
+            val rect = binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.hitRect
+            rect.top = binding.containerFeedTopNav.root.top
+            rect.bottom += binding.containerFeedTopNav.root.bottom
+            rect.right += binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.paddingEnd
+            rect.left -= binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.marginStart / 2
+            containerFeedTouchDelegate.addDelegate(
+                binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab,
+                TouchDelegate(rect, binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab)
+            )
         } else {
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.hide()
         }
