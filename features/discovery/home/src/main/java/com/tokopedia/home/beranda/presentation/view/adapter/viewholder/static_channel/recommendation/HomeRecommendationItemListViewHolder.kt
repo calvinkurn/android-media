@@ -13,6 +13,7 @@ import com.tokopedia.home.util.asAdsLogShowModel
 import com.tokopedia.home.util.asAdsLogShowOverModel
 import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
@@ -112,6 +113,7 @@ class HomeRecommendationItemListViewHolder(
                     itemView.context,
                     it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
                 )
+                setVisiblePercentage(Int.ZERO)
             }
         }
     }

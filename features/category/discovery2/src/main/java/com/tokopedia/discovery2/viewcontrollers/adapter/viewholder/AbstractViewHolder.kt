@@ -3,18 +3,21 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.viewholder
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.discoveryext.UIWidgetUninitializedException
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 
-abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), IAdsViewHolderTrackListener {
 
     var lifecycleOwner: LifecycleOwner? = null
 
     constructor(itemView: View, lifecycleOwner: LifecycleOwner) : this(itemView) {
         this.lifecycleOwner = lifecycleOwner
     }
+
+    private var viewVisiblePercentage = 0
 
     protected var parentAbstractViewHolder: AbstractViewHolder? = null
     var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -61,9 +64,20 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
         return null
     }
 
-    open fun onViewAttachedToWindow() {
+    override fun onViewAttachedToWindow() {
 
     }
+
+    override fun setVisiblePercentage(visiblePercentage: Int) {
+        this.viewVisiblePercentage = visiblePercentage
+    }
+
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
+
+    }
+
+    override val visiblePercentage: Int
+        get() = viewVisiblePercentage
 
     open fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         discoveryBaseViewModel?.let { lifecycleOwner?.lifecycle?.addObserver(it) }

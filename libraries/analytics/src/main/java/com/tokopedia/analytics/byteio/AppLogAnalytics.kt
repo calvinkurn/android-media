@@ -67,15 +67,6 @@ object AppLogAnalytics {
     @JvmField
     var pageNames = mutableListOf<Pair<String, Int?>>()
 
-    /**
-     * key = Fragment name from Activity class
-     * value = fragment hashcode value.
-     * We store fragment name to prevent the newly created fragment
-     * to override value for current page name
-     */
-    @JvmField
-    var pageFragmentNames = mutableListOf<Pair<Fragment?, Int?>>()
-
     @JvmField
     var activityCount: Int = 0
 
@@ -101,21 +92,13 @@ object AppLogAnalytics {
 
     internal fun addPageName(activity: Activity) {
         val actName = activity.javaClass.simpleName
-        val currentFragment = getCurrentFragment(activity)
-
-        if(currentFragment is AppLogInterface) {
-            val name = (currentFragment as AppLogInterface).getPageName()
-        }
-
         if (activity is IAppLogActivity) {
             synchronized(lock) {
                 pageNames.add(actName to activity.hashCode())
-                pageFragmentNames.add(currentFragment to currentFragment.hashCode())
             }
         } else {
             synchronized(lock) {
                 pageNames.add(actName to null)
-                pageFragmentNames.add(currentFragment to null)
             }
         }
     }
@@ -579,11 +562,6 @@ object AppLogAnalytics {
             return it.toString()
         }
         return null
-    }
-
-    fun getTwoLastPage(): String? {
-        if (pageFragmentNames.size < 3) return null
-        return (pageFragmentNames[pageFragmentNames.size - 3].first as? AppLogFragmentInterface)?.getFragmentName()
     }
 
     private fun getCurrentFragment(currentActivity: Activity): Fragment? {

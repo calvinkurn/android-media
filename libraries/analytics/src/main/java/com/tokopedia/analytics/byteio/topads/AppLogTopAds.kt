@@ -3,7 +3,6 @@ package com.tokopedia.analytics.byteio.topads
 import android.content.Context
 import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.PageName
@@ -145,12 +144,14 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
-                if(pageName != PageName.SEARCH_RESULT) {
-                    put(
-                        AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK,
-                        (timeStamp - lastClickTimestamp).toString()
-                    )
-                }
+
+                //todo need to confirm, after pak jaka confirm this attribute will be removed
+//                if(pageName != PageName.SEARCH_RESULT) {
+//                    put(
+//                        AdsLogConst.Param.TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK,
+//                        (timeStamp - lastClickTimestamp).toString()
+//                    )
+//                }
 
                 putTag(pageName)
             }
@@ -171,7 +172,8 @@ object AppLogTopAds {
             PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
             PageName.SHOP -> AdsLogConst.Channel.STORE_SEARCH
             PageName.EXTERNAL_PROMO -> AdsLogConst.Channel.FIND_SEARCH
-            else -> AdsLogConst.Channel.DISCOVERY_SEARCH
+            PageName.DISCOVERY -> AdsLogConst.Channel.DISCOVERY_SEARCH
+            else -> ""
         }
     }
 

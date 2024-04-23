@@ -48,8 +48,8 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
     @Override
     public void onViewAttachedToWindow(@NonNull AbstractViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if(holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
-            Visitable item = visitables.get(holder.getAbsoluteAdapterPosition());
+        if(holder.getBindingAdapterPosition() > RecyclerView.NO_POSITION) {
+            Visitable item = visitables.get(holder.getBindingAdapterPosition());
             holder.onViewAttachedToWindow(item);
         }
     }
@@ -57,8 +57,8 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
     @Override
     public void onViewDetachedFromWindow(@NonNull AbstractViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if(holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
-            Visitable item = visitables.get(holder.getAbsoluteAdapterPosition());
+        if(holder.getBindingAdapterPosition() > RecyclerView.NO_POSITION) {
+            Visitable item = visitables.get(holder.getBindingAdapterPosition());
             holder.onViewDetachedFromWindow(item, holder.getVisiblePercentage());
         }
     }

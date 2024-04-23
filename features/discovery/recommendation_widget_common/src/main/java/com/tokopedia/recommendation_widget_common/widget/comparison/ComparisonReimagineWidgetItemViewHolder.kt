@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonReimagineWidgetBinding
@@ -117,6 +118,7 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         recommendationItem?.let { adsViewListener?.onViewDetachedFromWindow(it, bindingAdapterPosition, visiblePercentage) }
+        setVisiblePercentage(Int.ZERO)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

@@ -3,10 +3,10 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.adapter.getViewAreaPercentage
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
@@ -90,6 +90,7 @@ class UniversalInboxRecommendationProductViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
+        setVisiblePercentage(getViewAreaPercentage(rvHolder, binding?.inboxProductRecommendation, bindingAdapterPosition))
         element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 

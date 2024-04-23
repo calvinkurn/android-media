@@ -3,6 +3,7 @@ package com.tokopedia.carouselproductcard
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -47,6 +48,7 @@ internal class CarouselProductCardGridViewHolder(
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         carouselProductCardModel?.let { model ->
             model.getOnViewListener()?.onViewDetachedFromWindow(model.productCardModel, absoluteAdapterPosition, visiblePercentage)
+            setVisiblePercentage(Int.ZERO)
         }
     }
 

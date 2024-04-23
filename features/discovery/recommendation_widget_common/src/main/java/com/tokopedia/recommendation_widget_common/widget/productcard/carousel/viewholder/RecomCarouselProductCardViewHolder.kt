@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.productcard.carousel.v
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -118,6 +119,7 @@ class RecomCarouselProductCardViewHolder (view: View,
 
     override fun onViewDetachedFromWindow(element: RecomCarouselProductCardDataModel, visiblePercentage: Int) {
         element.listener?.onViewDetachedFromWindow(element.recomItem, bindingAdapterPosition, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     override fun onViewRecycled() {

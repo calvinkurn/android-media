@@ -7,6 +7,7 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -60,6 +61,7 @@ class RecommendationVerticalProductCardViewHolder(
 
     override fun onViewDetachedFromWindow(element: RecommendationVerticalProductCardModel?, visiblePercentage: Int) {
         element?.recomItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     private fun setupProductCardLayoutData(productModel: ProductCardModel) {
