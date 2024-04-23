@@ -35,7 +35,7 @@ class SlardarAPMInterceptor() : Interceptor {
             sendTime = startTime
             status = 500 // Internal Server Error
             // Monitor SLA with default values
-            ApmAgent.monitorApiError(duration, sendTime, url, remoteIp, "", status, JSONObject());
+            ApmAgent.monitorApiError(duration, sendTime, url, remoteIp, "", status, JSONObject())
             ApmAgent.monitorSLA(duration, sendTime, url, remoteIp, "", status, JSONObject())
             // Re-throw the exception
             throw e
