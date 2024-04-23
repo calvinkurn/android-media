@@ -12,13 +12,13 @@ gradle.allprojects { project ->
         replaceRepositoriesWith(project.buildscript.repositories) {
             project.buildscript.repositories {
                 maven {
-                    name "Bits-Production"
-                    url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
+                    name "Android-Public-Bits"
+                    url  "${production_bits_artifactory_url}" + "${android_public_bits_repo}"
                 }
 
                 maven {
-                    name "Bits-Sandbox"
-                    url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
+                    name "Tokopedia-Mixed-Bits"
+                    url  "${production_bits_artifactory_url}" + "${tokopedia_bits_repo}"
                     allowInsecureProtocol = true
                 }
             }
@@ -26,13 +26,13 @@ gradle.allprojects { project ->
         replaceRepositoriesWith(project.repositories) {
             project.repositories {
                 maven {
-                    name "Bits-Production"
-                    url  "${production_bits_artifactory_url}" + "${production_bits_repo}"
+                    name "Android-Public-Bits"
+                    url  "${production_bits_artifactory_url}" + "${android_public_bits_repo}"
                 }
 
                 maven {
-                    name "Bits-Sandbox"
-                    url  "${sandbox_bits_artifactory_url}" + "${sandbox_bits_repo}"
+                    name "Tokopedia-Mixed-Bits"
+                    url  "${production_bits_artifactory_url}" + "${tokopedia_bits_repo}"
                     allowInsecureProtocol = true
                 }
             }
