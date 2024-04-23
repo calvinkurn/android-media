@@ -104,6 +104,7 @@ object SlardarInit {
     /**
      * can be invoke after app launched since it may cost time
      */
+    @Suppress("SwallowedException")
     fun startApm(aid: String, channel: String, userId: String) {
         val builder = ApmStartConfig.builder()
 //        val headerInfo: JSONObject = AppLog.getHeader() // todo better copy
