@@ -1,6 +1,5 @@
 package com.tokopedia.digital.digital_recommendation.domain
 
-import android.util.Log
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationQuery
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.digital.digital_recommendation.di.DigitalRecommendationCacheEnablerQualifier

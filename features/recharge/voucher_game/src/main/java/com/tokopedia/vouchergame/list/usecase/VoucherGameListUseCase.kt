@@ -1,6 +1,5 @@
 package com.tokopedia.vouchergame.list.usecase
 
-import android.util.Log
 import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
