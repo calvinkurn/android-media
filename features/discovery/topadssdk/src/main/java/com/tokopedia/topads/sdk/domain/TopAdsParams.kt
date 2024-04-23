@@ -1,6 +1,6 @@
 package com.tokopedia.topads.sdk.domain
 
-import com.tokopedia.topads.sdk.base.TKPDMapParam
+import com.tokopedia.topads.sdk.common.TKPDMapParam
 
 class TopAdsParams {
     val param: TKPDMapParam<String, String> = TKPDMapParam()

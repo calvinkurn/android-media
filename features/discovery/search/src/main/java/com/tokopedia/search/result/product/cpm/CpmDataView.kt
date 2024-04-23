@@ -15,7 +15,7 @@ import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
-import com.tokopedia.topads.sdk.TopAdsConstants
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Product as CPMProduct

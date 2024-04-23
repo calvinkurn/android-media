@@ -15,8 +15,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRec
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -260,7 +260,7 @@ class WishlistCollectionDetailViewModelTest {
     private val getWishlistCollectionItemsParams = GetWishlistCollectionItemsParams()
     private val typeLayout = WishlistConsts.TYPE_GRID
 
-    private var topAdsImageViewModel = TopAdsImageViewModel()
+    private var topAdsImageUiModel = TopAdsImageUiModel()
     private val productCardModel1 = ProductCardModel(
         productName = "product1",
         labelGroupList = listOf(ProductCardModel.LabelGroup()),
@@ -313,7 +313,7 @@ class WishlistCollectionDetailViewModelTest {
         title = "TestRecomm"
     )
 
-    private val topadsImage = TopAdsImageViewModel(bannerId = "1")
+    private val topadsImage = TopAdsImageUiModel(bannerId = "1")
     private val topadsResult = arrayListOf(topadsImage)
 
     private var deleteWishlistCollectionItemsStatusOkErrorEmpty = DeleteWishlistCollectionItemsResponse(
@@ -397,7 +397,7 @@ class WishlistCollectionDetailViewModelTest {
                 affiliateCookieHelper
             )
         )
-        topAdsImageViewModel = TopAdsImageViewModel(bannerName = "testBanner")
+        topAdsImageUiModel = TopAdsImageUiModel(bannerName = "testBanner")
 
         val primaryButton1 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons.PrimaryButton(action = "ADD_TO_CART")
         val primaryButton2 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons.PrimaryButton(action = "SEE_SIMILAR_PRODUCT")
@@ -458,7 +458,7 @@ class WishlistCollectionDetailViewModelTest {
 
         coEvery {
             wishlistCollectionDetailViewModel.getTopAdsData()
-        } returns topAdsImageViewModel
+        } returns topAdsImageUiModel
 
         coEvery {
             singleRecommendationUseCase.getData(any())
@@ -541,7 +541,7 @@ class WishlistCollectionDetailViewModelTest {
 
         coEvery {
             wishlistCollectionDetailViewModel.getTopAdsData()
-        } returns topAdsImageViewModel
+        } returns topAdsImageUiModel
 
         coEvery {
             singleRecommendationUseCase.getData(any())
@@ -1002,7 +1002,7 @@ class WishlistCollectionDetailViewModelTest {
         )
 
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers {
-            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+            arrayListOf(TopAdsImageUiModel(imageUrl = "url"))
         }
         coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery {
@@ -1026,7 +1026,7 @@ class WishlistCollectionDetailViewModelTest {
         )
 
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers {
-            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+            arrayListOf(TopAdsImageUiModel(imageUrl = "url"))
         }
         coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery {
@@ -1049,7 +1049,7 @@ class WishlistCollectionDetailViewModelTest {
         )
 
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers {
-            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+            arrayListOf(TopAdsImageUiModel(imageUrl = "url"))
         }
         coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery {
@@ -1072,7 +1072,7 @@ class WishlistCollectionDetailViewModelTest {
         )
 
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers {
-            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+            arrayListOf(TopAdsImageUiModel(imageUrl = "url"))
         }
         coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery {
@@ -1094,7 +1094,7 @@ class WishlistCollectionDetailViewModelTest {
             getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "", items = collectionDetailFiveItemList, totalData = 5, page = 1, hasNextPage = false)
         )
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers {
-            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+            arrayListOf(TopAdsImageUiModel(imageUrl = "url"))
         }
         coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery {

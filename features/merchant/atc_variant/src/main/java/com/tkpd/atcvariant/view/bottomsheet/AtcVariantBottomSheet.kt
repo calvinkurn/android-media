@@ -766,7 +766,7 @@ class AtcVariantBottomSheet :
     }
 
     private fun putAppLogEnterMethod() {
-        if (AppLogAnalytics.getLastDataExactStep(AppLogParam.PAGE_NAME) == PageName.PDP) {
+        if (AppLogAnalytics.getDataLast(AppLogParam.PAGE_NAME) == PageName.PDP) {
             AppLogAnalytics.putPreviousPageData(
                 AppLogParam.ENTER_METHOD,
                 EnterMethod.CLICK_ATC_TOASTER_PDP.str
