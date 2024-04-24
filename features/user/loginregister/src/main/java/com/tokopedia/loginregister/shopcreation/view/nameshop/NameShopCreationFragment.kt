@@ -5,14 +5,17 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
@@ -274,6 +277,13 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 userSession.shopId,
                 userSession.shopName
         )
+
+        val appID = "573733"
+        val mgr = MSManagerUtils.get(appID)
+        mgr?.let {
+            mgr.report("registered")
+            Toast.makeText(requireContext(), String.format("selected config %s", "registered"), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun emptyStatePhoneField() {

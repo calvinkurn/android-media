@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -516,6 +517,14 @@ class CheckoutFragment :
                 }
 
                 is CheckoutPageState.Success -> {
+
+                    val appID = "573733"
+                    val mgr = MSManagerUtils.get(appID)
+                    mgr?.let {
+                        mgr.report("checkout")
+                        Toast.makeText(requireContext(), String.format("selected config %s", "registered"), Toast.LENGTH_SHORT).show()
+                    }
+
                     hideLoading()
                     updateLocalCacheAddressData(it.cartShipmentAddressFormData.groupAddress.first().userAddress)
                     binding.globalErrorCheckout.isVisible = false

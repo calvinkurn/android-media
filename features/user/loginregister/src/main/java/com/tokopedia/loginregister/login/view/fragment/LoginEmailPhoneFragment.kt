@@ -24,9 +24,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -1105,6 +1107,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
+
+
+                val appID = "573733"
+                val mgr = MSManagerUtils.get(appID)
+                mgr?.let {
+                    mgr.report("logged")
+                    Toast.makeText(requireContext(), String.format("selected config %s", "registered"), Toast.LENGTH_SHORT).show()
+                }
                 analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister, isLoginAfterSq)
 
                 if (isFromChooseAccount) {
