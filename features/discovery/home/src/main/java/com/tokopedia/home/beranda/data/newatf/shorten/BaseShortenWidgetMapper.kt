@@ -8,6 +8,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.widget.card.SmallProductModel
 import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 
 abstract class BaseShortenWidgetMapper<T> {
 
@@ -92,11 +93,14 @@ abstract class BaseShortenWidgetMapper<T> {
      * [mapChannelToPartialWidget] simplifies the marshalling process of raw dynamic channel model,
      * hence we can get model-ready such as [ChannelModel], index-position, as well as [ChannelHeader].
      */
-    protected fun mapChannelToPartialWidget(
+    private fun mapChannelToPartialWidget(
         data: DynamicHomeChannel,
         channel: DynamicHomeChannel.Channels
     ): Triple<Int, ChannelModel, ChannelHeader> {
-        val widgetPosition = data.channels.indexOf(channel)
+        val widgetPosition = with(data.channels.indexOf(channel)) {
+            if (this.isLessThanZero()) 0 else this
+        }
+
         val channelModel = DynamicChannelComponentMapper
             .mapHomeChannelToComponent(channel, widgetPosition)
 

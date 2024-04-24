@@ -13,6 +13,8 @@ import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSq
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ContainerMultiTwoSquareViewHolder(
@@ -25,6 +27,11 @@ class ContainerMultiTwoSquareViewHolder(
 
     private var mAdapter: ShortenStaticSquaresAdapter? = null
     private val visitableList = mutableListOf<ShortenVisitable>()
+
+    // this is an intentional to make it global variables,
+    // we can reduce a redundant calculation and set the view height
+    // by using this [maxHeight] variable as validation.
+    private var maxHeight = 0
 
     init {
         if (recyclerRecycledViewPool != null) {
@@ -39,12 +46,35 @@ class ContainerMultiTwoSquareViewHolder(
         binding?.root?.setGradientBackground(element.backgroundGradientColor)
 
         renderWidgets(element)
-        mAdapter?.submitList(visitableList)
+        mAdapter?.submitList(visitableList) {
+            calculateTallestItemAndSetAllItem()
+        }
     }
 
     private fun renderWidgets(element: MultiTwoSquareWidgetUiModel) {
         visitableList.clear()
         visitableList.addAll(MultiTwoSquareWidgetUiModel.visitableList(element))
+    }
+
+    private fun calculateTallestItemAndSetAllItem() {
+        if (binding?.lstComponent?.isComputingLayout == true || maxHeight.isMoreThanZero()) return
+
+        val childCount = binding?.lstComponent?.childCount ?: return
+        val childViewRef = mutableListOf<View>()
+
+        for (i in 0 until childCount) {
+            val view = binding?.lstComponent?.getChildAt(i) ?: return
+
+            val currentSizeHeight = view.measuredHeight
+            maxHeight = maxOf(maxHeight, currentSizeHeight)
+
+            childViewRef.add(view)
+        }
+
+        childViewRef.forEach {
+            it.setLayoutHeight(maxHeight)
+            it.requestLayout()
+        }
     }
 
     private fun setupRecyclerView() {
