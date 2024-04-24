@@ -336,7 +336,8 @@ class CheckoutViewModel @Inject constructor(
                             )
                         )
 
-                        val cost = CheckoutCostModel()
+                        cartType = saf.cartShipmentAddressFormData.cartType
+                        val cost = CheckoutCostModel(useNewWording = payment.enable)
 
                         val paymentLevelAddOnsMap = mutableMapOf<Long, CheckoutCrossSellItem>()
                         if (!tickerError.isError) {
@@ -409,8 +410,6 @@ class CheckoutViewModel @Inject constructor(
                                 it
                             }
                         }
-
-                        cartType = saf.cartShipmentAddressFormData.cartType
 
                         withContext(dispatchers.main) {
                             listData.value = listOf(

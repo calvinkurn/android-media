@@ -51,7 +51,8 @@ data class CheckoutCostModel(
     val isInstallment: Boolean = false,
     val installmentFee: Double = 0.0,
     val installmentDetail: GoCicilInstallmentOption? = null,
-    var isExpandPaymentFee: Boolean = false
+    var isExpandPaymentFee: Boolean = false,
+    val useNewWording: Boolean = false
 ) : CheckoutItem {
 
     val finalPaymentFee: Double
