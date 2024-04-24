@@ -1,0 +1,10 @@
+code_review_config:
+  maintainers:
+    - yovie.putra
+
+code_review_rule:
+  files:
+    - pattern: *
+      reviewers:
+        - rama.putra
+      required_approvals: 1

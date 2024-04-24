@@ -21,6 +21,8 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
     @Inject
     lateinit var getDefaultChosenAddressUseCase: GetDefaultChosenAddressUseCase
 
+
+
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
