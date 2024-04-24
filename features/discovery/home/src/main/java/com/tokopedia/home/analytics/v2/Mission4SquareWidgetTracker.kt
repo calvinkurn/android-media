@@ -17,7 +17,7 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
 
 
     fun sendMissionWidgetClicked(element: ItemMissionWidgetUiModel, horizontalPosition: Int, userId: String) {
-        sendMissionWidgetClicked(element.channelId, userId, horizontalPosition, element.channelId, element.headerName, element.campaignCode, element.gridId, element.shopId, horizontalPosition, element.categoryId, element.recommendationType, element.card.title.first)
+        sendMissionWidgetClicked(element.tracker.channelId, userId, horizontalPosition, element.tracker.channelId, element.tracker.headerName, element.tracker.campaignCode, element.tracker.gridId, element.shopId, horizontalPosition, element.categoryId, element.recommendationType, element.card.title.first)
     }
 
     fun sendMissionWidgetClicked(
@@ -82,9 +82,9 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
         horizontalPosition: Int,
         userId: String
     ): Map<String, Any> {
-        return getMissionWidgetView(horizontalPosition, userId, element.channelName, element.gridId,
+        return getMissionWidgetView(horizontalPosition, userId, element.tracker.channelName, element.tracker.gridId,
             element.shopId, element.verticalPosition, element.categoryId, element.recommendationType,
-            element.card.title.first, element.channelId, element.headerName)
+            element.card.title.first, element.tracker.channelId, element.tracker.headerName)
     }
 
     fun getMissionWidgetView(
@@ -151,10 +151,10 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
         horizontalPosition: Int,
         userId: String
     ) {
-        sendMissionWidgetClickedToPdp(userId, horizontalPosition, element.channelId, element.headerName,
-            element.categoryId, element.productID, element.productName, element.verticalPosition,
+        sendMissionWidgetClickedToPdp(userId, horizontalPosition, element.tracker.channelId, element.tracker.headerName,
+            element.categoryId, element.tracker.productId, element.productName, element.verticalPosition,
             element.isTopAds, element.isCarousel, element.recommendationType,element.pageName,
-            element.buType, element.card.title.first, element.gridId)
+            element.buType, element.card.title.first, element.tracker.gridId)
     }
 
     fun sendMissionWidgetClickedToPdp(
@@ -218,10 +218,10 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
         horizontalPosition: Int,
         userId: String
     ): Map<String, Any> {
-        return getMissionWidgetProductView(horizontalPosition, userId, element.categoryId, element.gridId,
-            element.productID, element.productName, element.verticalPosition, element.isTopAds,
+        return getMissionWidgetProductView(horizontalPosition, userId, element.categoryId, element.tracker.gridId,
+            element.tracker.productId, element.productName, element.verticalPosition, element.isTopAds,
             element.isCarousel, element.recommendationType, element.pageName, element.buType,
-            element.card.title.first, element.channelId, element.headerName)
+            element.card.title.first, element.tracker.channelId, element.tracker.headerName)
     }
 
     fun getMissionWidgetProductView(
