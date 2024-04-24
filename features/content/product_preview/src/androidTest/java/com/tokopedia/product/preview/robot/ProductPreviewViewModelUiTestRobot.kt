@@ -2,6 +2,17 @@ package com.tokopedia.product.preview.robot
 
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeLeft
+import androidx.test.espresso.action.ViewActions.swipeRight
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
 import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalyticsImpl
@@ -16,6 +27,7 @@ import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourc
 import com.tokopedia.product.preview.factory.ProductPreviewFragmentFactoryUITest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
+import com.tokopedia.content.product.preview.R as contentproductpreviewR
 import com.tokopedia.empty_state.R as empty_stateR
 
 internal class ProductPreviewViewModelUiTestRobot(
@@ -62,8 +74,8 @@ internal class ProductPreviewViewModelUiTestRobot(
                     ): ContentAnalyticManager {
                         return ContentAnalyticManager(
                             userSession = userSession,
-                            businessUnit = "",
-                            eventCategory = ""
+                            businessUnit = BusinessUnit.content,
+                            eventCategory = EventCategory.unifiedViewPDP
                         )
                     }
                 }
@@ -76,7 +88,7 @@ internal class ProductPreviewViewModelUiTestRobot(
             ProductPreviewFragment::class.java to {
                 ProductPreviewFragment(
                     viewModelFactory = viewModelFactory,
-                    router = mockk(),
+                    router = mockk(relaxed = true),
                     analyticsFactory = productPreviewAnalyticsFactory
                 )
             },
@@ -88,8 +100,8 @@ internal class ProductPreviewViewModelUiTestRobot(
             ReviewFragment::class.java to {
                 ReviewFragment(
                     analyticsFactory = productPreviewAnalyticsFactory,
-                    router = mockk(),
-                    abTestPlatform = mockk()
+                    router = mockk(relaxed = true),
+                    abTestPlatform = mockk(relaxed = true)
                 )
             }
         )
@@ -102,6 +114,61 @@ internal class ProductPreviewViewModelUiTestRobot(
 
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
+    }
+
+    fun showProductAndReviewTab() = chainable {
+        Espresso
+            .onView(withId(contentproductpreviewR.id.tv_product_tab_title))
+            .check(matches(isDisplayed()))
+
+        Espresso
+            .onView(withId(contentproductpreviewR.id.tv_review_tab_title))
+            .check(matches(isDisplayed()))
+    }
+
+    fun onSwipeProductContent() = chainable {
+        Espresso
+            .onView(withId(contentproductpreviewR.id.rv_media_product))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1))
+
+        Espresso
+            .onView(withId(contentproductpreviewR.id.rv_media_product))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(2))
+
+        Espresso
+            .onView(withId(contentproductpreviewR.id.rv_media_product))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
+    }
+
+    fun onClickTab() = chainable {
+        Espresso
+            .onView(withId(contentproductpreviewR.id.tv_product_tab_title))
+            .perform(click())
+
+        Espresso
+            .onView(withId(contentproductpreviewR.id.tv_review_tab_title))
+            .perform(click())
+
+        Espresso
+            .onView(withId(contentproductpreviewR.id.tv_product_tab_title))
+            .perform(click())
+    }
+
+    fun onSwipeTab() = chainable {
+        Espresso.onView(withId(contentproductpreviewR.id.vp_product_preview))
+            .perform(swipeLeft())
+            .perform(swipeRight())
+            .perform(swipeLeft())
+    }
+
+    fun onClickProductThumbnail() = chainable {
+        Espresso.onView(withId(contentproductpreviewR.id.rv_thumbnail_product))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    1,
+                    click()
+                )
+            )
     }
 
     private fun chainable(fn: () -> Unit): ProductPreviewViewModelUiTestRobot {

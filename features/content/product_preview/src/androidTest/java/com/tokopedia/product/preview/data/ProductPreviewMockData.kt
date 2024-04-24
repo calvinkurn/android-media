@@ -63,26 +63,26 @@ class ProductPreviewMockData {
                 selected = true,
                 variantName = "Content 1",
                 type = MediaType.Video,
-                thumbnailUrl = "thumbnail1.url",
+                thumbnailUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
                 videoLastDuration = 0L,
                 videoTotalDuration = 150000L,
-                url = "video.source.url"
+                url = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372"
             ),
             ProductMediaUiModel(
                 contentId = "2",
                 selected = false,
                 variantName = "Content 2",
                 type = MediaType.Image,
-                thumbnailUrl = "thumbnail2.url",
-                url = "image2.source.url"
+                thumbnailUrl = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g"
             ),
             ProductMediaUiModel(
                 contentId = "3",
                 selected = false,
                 variantName = "Content 3",
                 type = MediaType.Image,
-                thumbnailUrl = "thumbnail3.url",
-                url = "image3.source.url"
+                thumbnailUrl = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
             )
         )
     }
@@ -94,24 +94,24 @@ class ProductPreviewMockData {
                 selected = false,
                 variantName = "Content 1",
                 type = MediaType.Video,
-                thumbnailUrl = "thumbnail1.url",
-                url = "image1.source.url"
+                thumbnailUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
+                url = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372"
             ),
             ProductMediaUiModel(
                 contentId = "2",
                 selected = true,
                 variantName = "Content 2",
                 type = MediaType.Image,
-                thumbnailUrl = "thumbnail2.url",
-                url = "image2.source.url"
+                thumbnailUrl = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g"
             ),
             ProductMediaUiModel(
                 contentId = "3",
                 selected = false,
                 variantName = "Content 3",
                 type = MediaType.Image,
-                thumbnailUrl = "thumbnail3.url",
-                url = "image3.source.url"
+                thumbnailUrl = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
             )
         )
     }
