@@ -1,11 +1,9 @@
 package com.tokopedia.carouselproductcard
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardGridTypeFactoryImpl
 
 internal class CarouselProductCardGridAdapter(
@@ -39,7 +37,6 @@ internal class CarouselProductCardGridAdapter(
     }
 
     override fun onBindViewHolder(baseProductCardViewHolder: BaseProductCardViewHolder<BaseCarouselCardModel>, position: Int) {
-        setOnAttachStateChangeListener(baseProductCardViewHolder)
         baseProductCardViewHolder.bind(getItem(position))
     }
 
@@ -54,22 +51,5 @@ internal class CarouselProductCardGridAdapter(
 
     override fun submitCarouselProductCardModelList(list: List<BaseCarouselCardModel>?) {
         submitList(list)
-    }
-
-    private fun setOnAttachStateChangeListener(viewHolder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
-        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewAttachedToWindow()
-                }
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
-                }
-            }
-        }
-        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 }

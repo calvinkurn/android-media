@@ -2,7 +2,6 @@ package com.tokopedia.wishlist.detail.view.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -347,12 +346,11 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     (holder as WishlistEmptyStateNotFoundViewHolder).bind(element)
                 }
                 TYPE_RECOMMENDATION_LIST -> {
-                    setOnAttachStateChangeListener(holder as WishlistRecommendationItemViewHolder)
                     val params =
                         (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = false
                     holder.itemView.layoutParams = params
-                    holder.bind(
+                    (holder as WishlistRecommendationItemViewHolder).bind(
                         element,
                         holder.adapterPosition
                     )
@@ -565,22 +563,5 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun resetTicker() {
         isTickerCloseClicked = false
-    }
-
-    fun setOnAttachStateChangeListener(viewHolder: WishlistRecommendationItemViewHolder) {
-        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewAttachedToWindow()
-                }
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
-                }
-            }
-        }
-        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 }

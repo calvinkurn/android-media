@@ -64,7 +64,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        setOnAttachStateChangeListener(holder);
         holder.bind(visitables.get(position));
     }
 
@@ -97,28 +96,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     public void onViewRecycled(@NonNull AbstractViewHolder holder) {
         super.onViewRecycled(holder);
         holder.onViewRecycled();
-    }
-
-    public void setOnAttachStateChangeListener(AbstractViewHolder viewHolder) {
-        View.OnAttachStateChangeListener onAttachStateChangeListener = new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(@NonNull View view) {
-                if (viewHolder.getBindingAdapterPosition() > RecyclerView.NO_POSITION) {
-                    Visitable item = visitables.get(viewHolder.getBindingAdapterPosition());
-                    viewHolder.onViewAttachedToWindow(item);
-                }
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(@NonNull View view) {
-                if (viewHolder.getBindingAdapterPosition() > RecyclerView.NO_POSITION) {
-                    Visitable item = visitables.get(viewHolder.getBindingAdapterPosition());
-                    viewHolder.onViewDetachedFromWindow(item, viewHolder.visibilityPercentage);
-                }
-            }
-        };
-
-        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener);
     }
 
     public List<Visitable> getList() {

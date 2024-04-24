@@ -1,10 +1,8 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -55,7 +53,6 @@ class UniversalInboxAdapter(
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         try {
-            setOnAttachStateChangeListener(holder)
             @Suppress("UNCHECKED_CAST")
             (holder as AbstractViewHolder<Visitable<*>>).bind(visitables[position])
         } catch (throwable: Throwable) {
