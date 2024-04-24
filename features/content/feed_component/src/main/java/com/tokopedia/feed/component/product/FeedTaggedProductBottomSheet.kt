@@ -1,6 +1,8 @@
 package com.tokopedia.feed.component.product
 
 import android.os.Bundle
+import android.text.Spanned
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
+import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -83,6 +86,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         when (data.state) {
             is ResultState.Success -> {
                 showLoading(false)
+                showError(false)
                 val productShopId =
                     data.products.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
                 if (productShopId.isNotEmpty()) {
@@ -94,10 +98,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
             is ResultState.Fail -> {
                 showLoading(false)
+                showError(true)
             }
 
             ResultState.Loading -> {
                 showLoading(true)
+                showError(false)
             }
 
             else -> {}
@@ -154,6 +160,14 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     private val isListHeightTaller : Boolean
         get() = binding.rvTaggedProduct.height > binding.root.height
 
+    private val errorClickable : ClickableSpan get() {
+        return object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                listener?.onFeedProductNextPage(activityId, sourceType)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -169,6 +183,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         showLoading(true)
+        setupError()
 
         binding.root.maxHeight = maxHeight
         binding.rvTaggedProduct.apply {
@@ -255,6 +270,17 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private fun showLoading(isVisible: Boolean) {
         _binding?.feedProductLoadMore?.showWithCondition(isVisible)
+    }
+
+    private fun showError(isVisible: Boolean) {
+        binding.tvErrorLoadMore.showWithCondition(isVisible)
+    }
+
+    private fun setupError() {
+        binding.tvErrorLoadMore.text = buildSpannedString {
+            append("Gagal menampilkan produk lainnya")
+            append("Coba Lagi", errorClickable, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+        }
     }
 
     interface Listener {

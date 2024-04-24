@@ -25,6 +25,7 @@ import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
+import com.tokopedia.feed.component.product.FeedProductNextPageError
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
@@ -1323,8 +1324,8 @@ class FeedPostViewModel @Inject constructor(
                     ProductMapper.transform(it, response.campaign, sourceType)
                 }
 
+                if (isNextPage) throw FeedProductNextPageError //todo: testing purpose
                 val distinctData = (currentList + mappedData).distinctBy { it.id }
-                delay(3000) //Todo: remove testing purpose
                 _feedTagProductList.value = FeedProductPaging(ResultState.Success ,distinctData, response.nextCursor)
             } catch (t: Throwable) {
                 _feedTagProductList.update { state -> state.copy(state = ResultState.Fail(t)) }
