@@ -25,7 +25,6 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     public abstract void bind(T element);
 
-
     protected T element;
 
     protected View.OnAttachStateChangeListener onAttachStateChangeListener = new View.OnAttachStateChangeListener() {
