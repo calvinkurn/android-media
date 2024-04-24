@@ -10,6 +10,7 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -36,6 +37,13 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
         private var uiModel: RecommendationItem? = null
 
         private var visibleViewPercentage: Int = 0
+
+        init {
+            itemView.addOnAttachStateChangeListener(
+                onViewAttachedToWindow = { onViewAttachedToWindow() },
+                onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+            )
+        }
 
         fun bind(model: RecommendationWrapper) {
             productView.setProductModel(model.recomData)
@@ -116,16 +124,6 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         recyclerView.removeOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onViewAttachedToWindow(holder: ProductCardViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        holder.onViewAttachedToWindow()
-    }
-
-    override fun onViewDetachedFromWindow(holder: ProductCardViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        holder.onViewDetachedFromWindow(holder.visiblePercentage)
     }
 
     override fun getItemCount(): Int {

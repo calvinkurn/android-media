@@ -16,6 +16,7 @@ import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.home_component.databinding.LayoutLegoProductCardItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
@@ -38,6 +39,13 @@ class LegoProductCardViewHolder(
     private var viewVisiblePercentage = 0
 
     private var channelGrid: ChannelGrid? = null
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow() },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+        )
+    }
 
     fun bind(element: LegoProductCardDataModel) {
         setLayout(element)

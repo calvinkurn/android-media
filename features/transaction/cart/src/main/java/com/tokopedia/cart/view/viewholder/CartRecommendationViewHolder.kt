@@ -15,6 +15,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
@@ -41,6 +42,13 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
     private var visibleViewPercentage: Int = 0
     private var recTriggerObject = RecommendationTriggerObject()
     private var recommendationItem: RecommendationItem? = null
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow() },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+        )
+    }
 
     fun bind(element: CartRecommendationItemHolderData) {
         this.recommendationItem = element.recommendationItem

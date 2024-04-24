@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardItemListLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -21,6 +22,13 @@ internal class CarouselProductCardListViewHolder(
 
     private var binding: CarouselProductCardItemListLayoutBinding? by viewBinding()
     private var carouselProductCardModel: CarouselProductCardModel? = null
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow() },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+        )
+    }
 
     override fun bind(carouselProductCardModel: CarouselProductCardModel) {
         val binding = binding ?: return
