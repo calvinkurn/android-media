@@ -89,7 +89,7 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (val item = items[position]) {
             is ShimmerItemType -> (holder as ShimmerViewHolder).bind(item)
-            is ProductItemType -> getProductViewHolder(item, holder)
+            is ProductItemType -> bindProductCard(item, holder)
             is VerticalBannerItemType -> (holder as VerticalBannerViewHolder).bind(item)
         }
     }
@@ -102,9 +102,9 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter(
         }
     }
 
-    private fun getProductViewHolder(item: ProductItemType, holder: ViewHolder) {
+    private fun bindProductCard(item: ProductItemType, holder: ViewHolder) {
         val showProductInfo = item.showProductInfo
-        return if (showProductInfo) {
+        if (showProductInfo) {
             (holder as ProductWithInfoViewHolder).bind(item)
         } else {
             (holder as ProductWithoutInfoViewHolder).bind(item)
