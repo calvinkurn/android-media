@@ -33,14 +33,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
 
 /**
  * Created by Ade Fulki on 2020-02-08.
@@ -62,6 +63,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
 
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
+
 
     override val coroutineContext: CoroutineContext
         get() = job + dispatcher.main
@@ -137,33 +139,28 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                 binding.nextAction.setOnClickListener(nextActionClickListener())
                 binding.joinButton.setOnClickListener(joinActionClickListener())
             }
+
         }
     }
 
     private fun generateListAllButton(): List<OnboardingScreenItem> {
         val listItem = arrayListOf<OnboardingScreenItem>()
         context?.let {
-            listItem.add(
-                OnboardingScreenItem(
+            listItem.add(OnboardingScreenItem(
                     title = getString(R.string.title_screen_item_page_1),
                     imageUrl = ONBOARD_IMAGE_PAGE_1_URL,
                     placeholder = R.drawable.onboarding_image_page_1_placeholder
-                )
-            )
-            listItem.add(
-                OnboardingScreenItem(
+            ))
+            listItem.add(OnboardingScreenItem(
                     title = getString(R.string.title_screen_item_page_2),
                     imageUrl = ONBOARD_IMAGE_PAGE_2_URL,
                     placeholder = R.drawable.onboarding_image_page_2_placeholder
-                )
-            )
-            listItem.add(
-                OnboardingScreenItem(
+            ))
+            listItem.add(OnboardingScreenItem(
                     title = getString(R.string.title_screen_item_page_3),
                     imageUrl = ONBOARD_IMAGE_PAGE_3_URL,
                     placeholder = R.drawable.onboarding_image_page_3_placeholder
-                )
-            )
+            ))
         }
         return listItem
     }
@@ -203,14 +200,14 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                 }
 
                 launchCatchError(
-                    block = {
-                        finishOnBoarding()
-                        val intent = getIntentforApplink(it, applink)
-                        startActivity(intent)
-                        activity?.finish()
-                    },
-                    onError = {
-                    }
+                        block = {
+                            finishOnBoarding()
+                            val intent = getIntentforApplink(it, applink)
+                            startActivity(intent)
+                            activity?.finish()
+                        },
+                        onError = {
+                        }
                 )
             }
         }
@@ -233,14 +230,14 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     private fun goToRegisterPage() {
         context?.let {
             launchCatchError(
-                block = {
-                    finishOnBoarding()
-                    val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
-                    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
-                    startActivityForResult(intent, REQUEST_REGISTER)
-                },
-                onError = {
-                }
+                    block = {
+                        finishOnBoarding()
+                        val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
+                        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+                        startActivityForResult(intent, REQUEST_REGISTER)
+                    },
+                    onError = {
+                    }
             )
         }
     }
@@ -268,20 +265,16 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         context?.let {
             val date = Date()
             sharedPrefs = it.getSharedPreferences(
-                KEY_FIRST_INSTALL_SEARCH,
-                Context.MODE_PRIVATE
-            )
+                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs.edit().putLong(
-                KEY_FIRST_INSTALL_TIME_SEARCH,
-                date.time
-            ).apply()
+                    KEY_FIRST_INSTALL_TIME_SEARCH, date.time).apply()
         }
     }
 
     /**
      * Get Intent for Applink using suspend function
      */
-    private suspend fun getIntentforApplink(context: Context, applink: String): Intent = withContext(Dispatchers.IO) {
+    private suspend fun getIntentforApplink(context: Context, applink: String): Intent = withContext(Dispatchers.IO){
         return@withContext RouteManager.getIntent(context, applink)
     }
 
@@ -290,7 +283,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         return true
     }
 
-    inner class OnPageChangeListener : ViewPager.OnPageChangeListener {
+    inner class OnPageChangeListener: ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) { }
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
 

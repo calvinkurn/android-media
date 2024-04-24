@@ -1,5 +1,6 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -34,6 +35,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
+
 
 class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
@@ -110,8 +112,8 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                 initView()
             }
         }, onFinish = {
-                trackPreInstall()
-            })
+            trackPreInstall()
+        })
         return true
     }
 
@@ -237,7 +239,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                 if (appLink == ApplinkConst.REGISTER || appLink == ApplinkConst.LOGIN) {
                     page.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
                     startActivityForResult(page, REQUEST_NEXT_PAGE)
-                } else if (appLink != ApplinkConst.HOME) {
+                } else if (appLink !=  ApplinkConst.HOME) {
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     activity?.startActivities(arrayOf(intentHome, page))
@@ -264,13 +266,9 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         context?.let {
             val date = Date()
             sharedPrefs = it.getSharedPreferences(
-                OnboardingFragment.KEY_FIRST_INSTALL_SEARCH,
-                Context.MODE_PRIVATE
-            )
+                    OnboardingFragment.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs.edit().putLong(
-                OnboardingFragment.KEY_FIRST_INSTALL_TIME_SEARCH,
-                date.time
-            ).apply()
+                    OnboardingFragment.KEY_FIRST_INSTALL_TIME_SEARCH, date.time).apply()
         }
     }
 

@@ -39,6 +39,7 @@ import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.perf.*
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -817,11 +818,11 @@ open class HomeRevampFragment :
             val balanceWidgetSubscriptionView =
                 getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && (
-                (
-                    balanceWidgetSubscriptionView?.y
-                        ?: VIEW_DEFAULT_HEIGHT
-                    ) > VIEW_DEFAULT_HEIGHT
-                )
+                    (
+                        balanceWidgetSubscriptionView?.y
+                            ?: VIEW_DEFAULT_HEIGHT
+                        ) > VIEW_DEFAULT_HEIGHT
+                    )
             ) {
                 return balanceWidgetSubscriptionView
             }
@@ -1497,11 +1498,8 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            val takeLimit: Int = if ((
-                layoutManager?.findLastVisibleItemPosition()
-                    ?: DEFAULT_BLOCK_SIZE
-                ) >= 0
-            ) {
+            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition()
+                    ?: DEFAULT_BLOCK_SIZE) >= 0) {
                 layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
             } else {
                 DEFAULT_BLOCK_SIZE
@@ -2109,7 +2107,7 @@ open class HomeRevampFragment :
                         HOME_SOURCE,
                         data.keyword.safeEncodeUtf8(),
                         isFirstInstall().toString(),
-                        AppLogSearch.ParamValue.ENTER
+                        AppLogSearch.ParamValue.ENTER,
                     )
 
                     navToolbarMicroInteraction
@@ -2119,14 +2117,12 @@ open class HomeRevampFragment :
                 searchbarImpressionCallback = {},
                 shouldShowTransition = false,
                 hintImpressionCallback = { hintData, index ->
-                    if (hintData.imprId.isNotBlank()) {
+                    if (hintData.imprId.isNotBlank())
                         AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
-                    }
                 },
                 hintClickCallback = { hintData, index ->
-                    if (hintData.imprId.isNotBlank()) {
+                    if (hintData.imprId.isNotBlank())
                         AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
-                    }
                 }
             )
         }
@@ -2139,7 +2135,7 @@ open class HomeRevampFragment :
             groupId = hintData.groupId,
             imprId = hintData.imprId,
             wordsSource = hintData.wordsSource,
-            searchEntrance = PageName.HOME
+            searchEntrance = PageName.HOME,
         )
 
     private fun hints(data: SearchPlaceholder.Data): List<HintData> {
@@ -2148,23 +2144,22 @@ open class HomeRevampFragment :
                 ?.filter { !it.placeholder.isNullOrBlank() && !it.keyword.isNullOrEmpty() }
                 ?: listOf()
 
-        return if (placeholders.isNotEmpty()) {
+        return if (placeholders.isNotEmpty())
             placeholders.map { hintData(it, data.wordsSource, data.imprId) }
-        } else {
+        else
             listOf(hintData(data, data.wordsSource, data.imprId))
-        }
     }
 
     private fun hintData(
         placeholder: SearchPlaceholder.PlaceHolder,
         wordsSource: String,
-        imprId: String
+        imprId: String,
     ) = HintData(
         placeholder = placeholder.placeholder ?: "",
         keyword = placeholder.keyword ?: "",
         groupId = placeholder.groupId,
         imprId = imprId,
-        wordsSource = wordsSource
+        wordsSource = wordsSource,
     )
 
     private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
@@ -2802,17 +2797,17 @@ open class HomeRevampFragment :
     private fun initEggDragListener() {
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.setOnDragListener(object :
-                FloatingEggButtonFragment.OnDragListener {
-                override fun onDragStart() {
-                    refreshLayout?.setCanChildScrollUp(true)
-                    refreshLayoutOld?.setCanChildScrollUp(true)
-                }
+            FloatingEggButtonFragment.OnDragListener {
+            override fun onDragStart() {
+                refreshLayout?.setCanChildScrollUp(true)
+                refreshLayoutOld?.setCanChildScrollUp(true)
+            }
 
-                override fun onDragEnd() {
-                    refreshLayout?.setCanChildScrollUp(false)
-                    refreshLayoutOld?.setCanChildScrollUp(false)
-                }
-            })
+            override fun onDragEnd() {
+                refreshLayout?.setCanChildScrollUp(false)
+                refreshLayoutOld?.setCanChildScrollUp(false)
+            }
+        })
     }
 
     override fun onPromoDragStart() {}
