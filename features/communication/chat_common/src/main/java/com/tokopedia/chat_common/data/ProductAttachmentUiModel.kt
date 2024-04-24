@@ -132,7 +132,7 @@ open class ProductAttachmentUiModel protected constructor(
             rating = attribute.productProfile.rating
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
-            campaign = attribute.productProfile.campaign
+            campaign = attribute.productProfile.campaign ?: TopChatCampaign()
             isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
             descTokoCabang = attribute.productProfile.descTokocabang
@@ -408,7 +408,7 @@ open class ProductAttachmentUiModel protected constructor(
             withRating(product.productProfile.rating)
             withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
-            withCampaign(product.productProfile.campaign)
+            withCampaign(product.productProfile.campaign ?: TopChatCampaign())
             withIsPreOrder(product.productProfile.isPreOrder)
             withLocationStock(product.productProfile.locationStock)
             withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)

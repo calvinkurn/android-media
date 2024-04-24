@@ -71,7 +71,7 @@ data class ProductProfile(
     var campaignId: String = "0",
 
     @SerializedName("campaign")
-    var campaign: TopChatCampaign = TopChatCampaign(),
+    var campaign: TopChatCampaign? = TopChatCampaign(),
 
     @SerializedName("is_fulfillment")
     var isFulFillment: Boolean = false,

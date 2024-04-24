@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_BLOCK
@@ -36,9 +37,9 @@ object TopChatRoomProductCardMapper {
             videoUrl = "",
             hasThreeDots = false,
             stockInfo = ProductCardModel.StockInfo(
-                percentage = productAttachment.campaign.percentage,
-                label = productAttachment.campaign.label,
-                labelColor = productAttachment.campaign.labelColor
+                percentage = productAttachment.campaign.percentage.orZero(),
+                label = productAttachment.campaign.label.orEmpty(),
+                labelColor = productAttachment.campaign.labelColor.orEmpty()
             ),
             isSafeProduct = false,
             isInBackground = true,

@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class TopChatCampaign(
     @SerializedName("percentage")
-    var percentage: Int = 0,
+    var percentage: Int? = 0,
 
     @SerializedName("label")
-    var label: String = "",
+    var label: String? = "",
 
     @SerializedName("label_color")
-    var labelColor: String = ""
+    var labelColor: String? = ""
 )
