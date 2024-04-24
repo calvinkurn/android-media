@@ -189,7 +189,7 @@ object AppLogTopAds {
     }
 
     private fun JSONObject.putNetworkType(context: Context) {
-        val networkType = NetworkUtils.getNetworkType(context)
+        val networkType = NetworkUtils.getNetworkTypeDetail(context)
         put(AdsLogConst.Param.NT, networkType)
     }
 }
