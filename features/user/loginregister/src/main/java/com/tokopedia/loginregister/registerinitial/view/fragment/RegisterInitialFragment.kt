@@ -872,6 +872,7 @@ class RegisterInitialFragment :
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             it.startActivity(intent)
             it.finish()

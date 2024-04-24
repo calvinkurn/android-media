@@ -1048,6 +1048,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            intent.putExtra(PARAM_CALLBACK_REGISTER, callbackRegister)
             startActivity(intent)
             it.finish()
         }

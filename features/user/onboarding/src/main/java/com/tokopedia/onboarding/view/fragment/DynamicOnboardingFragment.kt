@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.onboarding.R
@@ -234,6 +235,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val page = RouteManager.getIntent(it, appLink)
             if (defferedDeeplinkPath.isEmpty()) {
                 if (appLink == ApplinkConst.REGISTER || appLink == ApplinkConst.LOGIN) {
+                    page.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
                     startActivityForResult(page, REQUEST_NEXT_PAGE)
                 } else if (appLink != ApplinkConst.HOME) {
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
