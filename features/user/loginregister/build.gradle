@@ -99,39 +99,26 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
 
-    implementation 'com.bytedance.applog:bdtracker-global:5.6.9-bugfix.6'
-
-    implementation('com.bytedance.mobsec.metasec:ov:5.0.0-alpha.124@aar')
-    implementation ('com.bytedance.frameworks.core:sdk_monitor:2.0.42-rc.5-tt@aar')
-    implementation ('com.bytedance.frameworks.baselib:utility:2.0.13-rc.0@aar')//DONE
-//    implementation ('com.bytedance.frameworks.core:sdk_monitor:2.0.22@aar')
-    implementation ('com.bytedance.frameworks.baselib:ttnet:4.1.120.3-dut@aar')
-    implementation('com.bytedance.keva:keva:1.6.9@aar')//DONE
-
-    implementation('com.bytedance.frameworks.core:encrypt:1.2.2@aar')//DONE
-    implementation('com.bytedance.frameworks.baselib:network:4.1.120.3-dut@aar')//DONE
-    implementation('com.bytedance.common_business:alog:2.0.0-rc.10@aar')// DONE
-    implementation('com.bytedance.frameworks.baselib:network-cronet:4.1.120.3-dut@aar')
-    implementation('com.bytedance.frameworks.baselib:network-ok3:4.1.120.3-dut@aar')//DONE
-    implementation('com.bytedance.librarian:librarian:0.1.6@aar') // DONE
-    implementation('com.bytedance.android:alog:1.0.0-rc.6@aar')// DONE
-//    implementation('@aar')
-//    implementation('@aar')
-//    implementation('@aar')
-//    implementation('@aar')
-//    implementation('@aar')
-//    implementation('@aar')
-    implementation('com.bytedance.frameworks.apm:util:5.0.20.1-rc.101-ttp@aar')
-//    implementation('@aar')
-//    implementation('@aar')
-    implementation('com.bytedance.news.common:service-manager:1.0.3:@aar')
-    implementation('com.bytedance.news.common:service-manager-annotation:1.0.0')
-    implementation('com.bytedance.thirdparty:ss-retrofit2:4.1.120.3-dut@aar')
-    implementation('com.bytedance.platform:thread:1.0.20@aar')//DONE
-
-    implementation ('com.bytedance.common:wschannel:1.5.4-pp@aar')
-    implementation('com.bytedance.frameworks.core:apm_api:5.0.18-rc.1@aar')
-    implementation('com.bytedance.news.common:service-manager:1.0.3@aar')
+    implementation rootProject.ext.msSdkDependencies.msSdk
+    implementation rootProject.ext.msSdkDependencies.sdkMonitor
+    implementation rootProject.ext.appLogDependencies.baseLibsUtility
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.msSdkDependencies.keva
+    implementation rootProject.ext.appLogDependencies.encrypt
+    implementation rootProject.ext.msSdkDependencies.network
+    implementation rootProject.ext.appLogDependencies.businessALog
+    implementation rootProject.ext.msSdkDependencies.cronet
+    implementation rootProject.ext.msSdkDependencies.networkOk3
+    implementation rootProject.ext.msSdkDependencies.librarian
+    implementation rootProject.ext.appLogDependencies.androidALog
+    implementation rootProject.ext.msSdkDependencies.apmUtil
+    implementation rootProject.ext.msSdkDependencies.serviceManager
+    implementation rootProject.ext.msSdkDependencies.serviceManagerAnnotation
+    implementation rootProject.ext.msSdkDependencies.ssRetrofit2
+    implementation rootProject.ext.msSdkDependencies.platformThread
+    implementation rootProject.ext.msSdkDependencies.wsChannel
+    implementation rootProject.ext.msSdkDependencies.apmApi
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

@@ -107,15 +107,20 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
         Embrace.getInstance().start(this);
-        initMsSDK();
         super.onCreate();
         super.setupAppScreenMode();
+        initMsSDK();
         setupAlphaObserver();
         registerAppLifecycleCallbacks();
 
     }
 
     private void initMsSDK(){
+
+        // prevent initiate mssdk as it will crash debug
+        if(!GlobalConfig.DEBUG)
+            return;
+
         // 构建config的Builder对象
         String appID = "573733";
 
@@ -132,7 +137,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         // 配置config参数，通过builder生成config对象. 如果暂时获取不到，可以通过延迟配置，见下面说明
         builder.setDeviceID(deviceID);                                                    // 必填项，如果当前获取不到，可以在后续配置,如果设置空串会触发crash。注意⚠️：applog在新增设备上刚开始的返回值为空串，注册完成后需要重新设置
         builder.setClientType(MSConfig.CLIENT_TYPE_INHOUSE);          // 必填项，CLIENT_TYPE_INHOUSE代表字节内的应用，注意不要填写错误
-        builder.setChannel("local_test");                                                  // 必填项，有助于业务作弊分析，反爬虫使用
+        builder.setChannel(GlobalConfig.isAllowDebuggingTools() ? "local_test" : GlobalConfig.STORE_CHANNEL);                                                  // 必填项，有助于业务作弊分析，反爬虫使用
         builder.setInstallID(installID);                  // 必填项，如果初始化时候获取不到，可以不调用该接口，后续请业务通过MSManager 传入
 
         // 对于海外版，必填项。MSConfig.OVREGION_TYPE_SG代表新加坡，MSConfig.OVREGION_TYPE_VA代表美东。

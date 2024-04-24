@@ -62,7 +62,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.webkit.WebSettingsCompat;
 
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
@@ -103,18 +102,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import timber.log.Timber;
 
 
@@ -329,16 +318,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         addJavascriptInterface(webView);
         WebSettings webSettings = webView.getSettings();
-
-//        UserAgentMetadata userAgentMetadata = new UserAgentMetadata.
-//                Builder()
-//                .setWow64(false)
-//                 .setArchitecture("arm64-v8a")
-//                 .build();
-//        WebSettingsCompat.setUserAgentMetadata(webSettings, userAgentMetadata);
-
-        WebSettingsCompat.setOffscreenPreRaster(webView.getSettings(), true);
-
         String identifierUserAgent = getIdentifierUserAgent();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + identifierUserAgent);
         webSettings.setJavaScriptEnabled(true);
@@ -852,80 +831,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             webViewClientShouldInterceptRequest(view, request);
-
-            // https://integration-gws-app.gopayapi.com/app/preAuth?reference=0d18fd0a-764c-4a00-aa17-d6ec4851c54f
-            String url = "https://integration-gws-app.gopayapi.com";
-
-            // Only intercept requests to a specific URL
-            if (!request.getUrl().toString().contains(url)) {
-                return super.shouldInterceptRequest(view, request);
-            }
-
-            try {
-
-                final TrustManager[] trustAllCerts = new TrustManager[]{
-                        new X509TrustManager() {
-                            @Override
-                            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                                // No need to implement
-                            }
-
-                            @Override
-                            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                                // No need to implement
-                            }
-
-                            @Override
-                            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                                return new java.security.cert.X509Certificate[]{};
-                            }
-                        }
-                };
-
-                final SSLContext sslContext = SSLContext.getInstance("SSL");
-                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-                final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
-                OkHttpClient client = new OkHttpClient.Builder()
-                        .sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0])
-                        .hostnameVerifier(new HostnameVerifier() {
-                            @Override
-                            public boolean verify(String hostname, SSLSession session) {
-                                return true;
-                            }
-                        }).build();
-                Request.Builder builder = new Request.Builder()
-                        .url(request.getUrl().toString())
-                        .addHeader("authority", "merchants-gws-app.gopayapi.com")
-                        .addHeader("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
-                        .addHeader("accept-language", "en-US,en;q=0.9")
-                        .addHeader("referer", "https://pay.tokopedia.com/")
-                        .addHeader("sec-ch-ua", "\"Chromium\";v=\"122\", \"Not(A:Brand\";v=\"24\", \"Android WebView\";v=\"122\"")
-                        .addHeader("sec-ch-ua-mobile", "?1")
-                        .addHeader("sec-ch-ua-platform", "\"Android\"")
-                        .addHeader("sec-fetch-dest", "iframe")
-                        .addHeader("sec-fetch-mode", "navigate")
-                        .addHeader("sec-fetch-site", "cross-site")
-                        .addHeader("sec-fetch-user", "?1")
-                        .addHeader("upgrade-insecure-requests", "1")
-                        .addHeader("user-agent", "Mozilla/5.0 (Linux; Android 13; 23021RAA2Y Build/TKQ1.221114.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/122.0.6261.105 Mobile Safari/537.36 [App Android/3.257.8]")
-                        .addHeader("x-requested-with", "com.tokopedia.tkpd");
-
-                // Execute the request
-                Response response = client.newCall(builder.build()).execute();
-
-                // Create and return a WebResourceResponse
-                String contentType = response.header("Content-Type", "text/html");
-                String charset = response.header("charset", "UTF-8");
-                return new WebResourceResponse(
-                        contentType,
-                        charset,
-                        response.body().byteStream()
-                );
-            } catch (Exception e) {
-                // Handle the exception as needed, perhaps log it
-                return super.shouldInterceptRequest(view, request);
-            }
+            return super.shouldInterceptRequest(view, request);
         }
 
         @Override
@@ -1039,8 +945,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     // to be overridden
     protected void webViewClientShouldInterceptRequest(WebView view, WebResourceRequest request) {
         //noop
-
-
     }
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
