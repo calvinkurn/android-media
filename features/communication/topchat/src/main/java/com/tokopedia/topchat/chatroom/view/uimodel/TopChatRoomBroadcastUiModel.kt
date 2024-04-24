@@ -24,7 +24,8 @@ class TopChatRoomBroadcastUiModel(
     replyTime = reply.replyTime,
     message = reply.msg,
     source = reply.source,
-    blastId = reply.blastId
+    blastId = reply.blastId,
+    messageType = reply.messageType
 ),
     Visitable<TopChatRoomTypeFactory> {
 
