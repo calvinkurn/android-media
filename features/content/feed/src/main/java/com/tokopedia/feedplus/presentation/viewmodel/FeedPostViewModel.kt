@@ -91,6 +91,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -1296,7 +1297,9 @@ class FeedPostViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                if(!isNextPage) _feedTagProductList.value = FeedProductPaging.Empty
+                if (!isNextPage) _feedTagProductList.value = FeedProductPaging.Empty
+                else _feedTagProductList.update { state -> state.copy(state = ResultState.Loading) }
+
                 val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     _feedTagProductList.value.products.isNotEmpty() -> _feedTagProductList.value.products
@@ -1321,6 +1324,7 @@ class FeedPostViewModel @Inject constructor(
                 }
 
                 val distinctData = (currentList + mappedData).distinctBy { it.id }
+                delay(3000) //Todo: remove testing purpose
                 _feedTagProductList.value = FeedProductPaging(ResultState.Success ,distinctData, response.nextCursor)
             } catch (t: Throwable) {
                 _feedTagProductList.update { state -> state.copy(state = ResultState.Fail(t)) }

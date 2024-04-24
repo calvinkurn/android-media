@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -20,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
@@ -52,10 +52,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private val minHeight by lazyThreadSafetyNone {
-        (getScreenHeight() * MIN_HEIGHT_PERCENT).roundToInt()
-    }
-
     private val mAdapterListener = object : ContentTaggedProductBottomSheetViewHolder.Listener {
         override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
             listener?.onProductCardClicked(product, itemPosition)
@@ -86,7 +82,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     private val productListObserver = FlowCollector<FeedProductPaging> { data ->
         when (data.state) {
             is ResultState.Success -> {
-                hideLoading()
+                showLoading(false)
                 val productShopId =
                     data.products.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
                 if (productShopId.isNotEmpty()) {
@@ -94,28 +90,14 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 }
 
                 mAdapter.setItemsAndAnimateChanges(data.products)
-
-                binding.root.let { view ->
-                    view.viewTreeObserver.addOnGlobalLayoutListener(object :
-                        ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                            view.layoutParams = view.layoutParams.apply {
-                                if (view.measuredHeight > maxHeight) {
-                                    height = maxHeight
-                                } else if (view.measuredHeight < minHeight) {
-                                    height = minHeight
-                                } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
-                                    height = ViewGroup.LayoutParams.WRAP_CONTENT
-                                }
-                            }
-                        }
-                    })
-                }
             }
 
             is ResultState.Fail -> {
-                hideLoading()
+                showLoading(false)
+            }
+
+            ResultState.Loading -> {
+                showLoading(true)
             }
 
             else -> {}
@@ -152,6 +134,26 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             return  position >= numItems - 5 //threshold
         }
 
+    private val rvLayoutChangeListener = object : View.OnLayoutChangeListener {
+        override fun onLayoutChange(
+            view: View,
+            left: Int,
+            top: Int,
+            right: Int,
+            bottom: Int,
+            oldLeft: Int,
+            oldTop: Int,
+            oldRight: Int,
+            oldBottom: Int
+        ) {
+            if (!isListHeightTaller) return
+            binding.root.layoutParams = binding.root.layoutParams.apply { height = maxHeight }
+        }
+    }
+
+    private val isListHeightTaller : Boolean
+        get() = binding.rvTaggedProduct.height > binding.root.height
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -166,13 +168,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showLoading()
+        showLoading(true)
 
-        binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
+        binding.root.maxHeight = maxHeight
         binding.rvTaggedProduct.apply {
             addOnScrollListener(scrollListener)
+            addOnLayoutChangeListener(rvLayoutChangeListener)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = mAdapter
         }
@@ -248,17 +249,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding.rvTaggedProduct.removeOnScrollListener(scrollListener)
+        binding.rvTaggedProduct.removeOnLayoutChangeListener(rvLayoutChangeListener)
         listener = null
     }
 
-    private fun showLoading() {
-        _binding?.feedProductLoadMore?.show()
-        _binding?.rvTaggedProduct?.hide()
-    }
-
-    private fun hideLoading() {
-        _binding?.feedProductLoadMore?.hide()
-        _binding?.rvTaggedProduct?.show()
+    private fun showLoading(isVisible: Boolean) {
+        _binding?.feedProductLoadMore?.showWithCondition(isVisible)
     }
 
     interface Listener {
@@ -287,7 +283,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val HEIGHT_PERCENT = 0.8
-        private const val MIN_HEIGHT_PERCENT = 0.2
         private const val BOTTOM_SHEET_SHOW_DELAY = 500L
     }
 }
