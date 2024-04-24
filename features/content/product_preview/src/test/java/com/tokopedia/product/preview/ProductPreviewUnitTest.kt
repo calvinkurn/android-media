@@ -258,6 +258,7 @@ class ProductPreviewUnitTest {
 
             is ProductPreviewSourceModel.ReviewSourceData -> -1
             ProductPreviewSourceModel.UnknownSource -> -1
+            is ProductPreviewSourceModel.ShareSourceData -> -1
         }
 
         getRobot(sourceModel).use { robot ->

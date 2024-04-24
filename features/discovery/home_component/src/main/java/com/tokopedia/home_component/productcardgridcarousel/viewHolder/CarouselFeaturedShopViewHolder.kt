@@ -93,7 +93,7 @@ class CarouselFeaturedShopViewHolder (
     }
 
     private fun setShopLogo(imageUrl: String){
-        binding?.featuredShopProductLogoShop?.let { 
+        binding?.featuredShopProductLogoShop?.let {
             it.shouldShowWithAction(imageUrl.isNotBlank()) {
                 Glide.with(itemView)
                     .load(imageUrl)

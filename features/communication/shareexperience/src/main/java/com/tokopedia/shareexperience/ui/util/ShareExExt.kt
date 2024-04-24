@@ -51,3 +51,8 @@ fun Context.copyTextToClipboard(text: String): Boolean {
         false
     }
 }
+
+fun String.isUrl(): Boolean {
+    val webUrlRegex = Regex("^(https?:\\/\\/)([\\w.-]+)((\\/|\\?|#)[^\\s]*)?\$")
+    return webUrlRegex.matches(this)
+}

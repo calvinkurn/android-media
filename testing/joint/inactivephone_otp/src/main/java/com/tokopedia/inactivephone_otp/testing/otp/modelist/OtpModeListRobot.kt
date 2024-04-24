@@ -8,8 +8,8 @@ fun otpModeList(func: OtpModeListRobot.() -> Unit) = OtpModeListRobot().apply(fu
 class OtpModeListRobot {
 
     fun clickOnUbahNomorHp() {
-        scrollOnNestedView(com.tokopedia.otp.R.id.phone_inactive)
-        clickOnButton(com.tokopedia.otp.R.id.phone_inactive)
+        scrollOnNestedView(com.tokopedia.verification.R.id.phone_inactive)
+        clickOnButton(com.tokopedia.verification.R.id.phone_inactive)
     }
 
     fun clickOnOtpModeEmail() {

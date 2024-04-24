@@ -14,14 +14,13 @@ class ShareExDummyActivity : AppCompatActivity() {
         ShareExInitializer(this).run {
             additionalCheck(ShareExInitializerArg())
             openShareBottomSheet(
-                ShareExBottomSheetArg(
-                    identifier = "",
+                ShareExBottomSheetArg.Builder(
                     pageTypeEnum = ShareExPageTypeEnum.OTHERS,
                     defaultUrl = DEFAULT_URL,
                     trackerArg = ShareExTrackerArg(
                         utmCampaign = ""
                     )
-                )
+                ).build()
             )
         }
     }

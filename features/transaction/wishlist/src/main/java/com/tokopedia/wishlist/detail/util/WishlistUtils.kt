@@ -3,7 +3,7 @@ package com.tokopedia.wishlist.detail.util
 import android.content.res.Resources
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.detail.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionItemsResponse
@@ -35,7 +35,7 @@ object WishlistUtils {
             typeLayout: String?,
             isAutomaticDelete: Boolean,
             recomm: WishlistRecommendationDataModel,
-            topadsData: TopAdsImageViewModel?,
+            topadsData: TopAdsImageUiModel?,
             isUsingCollection: Boolean
     ): List<WishlistTypeLayoutData> {
         var listData = arrayListOf<WishlistTypeLayoutData>()
@@ -240,7 +240,7 @@ object WishlistUtils {
     fun mapToTopads(
             index: Int,
             listData: ArrayList<WishlistTypeLayoutData>,
-            topadsData: TopAdsImageViewModel?
+            topadsData: TopAdsImageUiModel?
     ): ArrayList<WishlistTypeLayoutData> {
         if (topadsData != null) {
             if (index > 0) {
