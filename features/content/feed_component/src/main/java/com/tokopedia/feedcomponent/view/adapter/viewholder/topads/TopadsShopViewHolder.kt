@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
-import com.tokopedia.topads.sdk.view.adapter.DynamicFeedShopAdapter
-import com.tokopedia.topads.sdk.widget.TopAdsDynamicFeedShopView
+import com.tokopedia.topads.sdk.v2.dynamicfeedshop.adapter.DynamicFeedShopAdapter
+import com.tokopedia.topads.sdk.v2.dynamicfeedshop.listener.TopAdsItemClickListener
+import com.tokopedia.topads.sdk.v2.dynamicfeedshop.widget.TopAdsDynamicFeedShopView
 
 /**
  * @author by milhamj on 08/01/19.
@@ -24,7 +24,7 @@ class TopadsShopViewHolder(
     private val cardTitleListener: CardTitleView.CardTitleListener?
 ) : AbstractViewHolder<TopadsShopUiModel>(v), TopAdsItemClickListener,
     DynamicFeedShopAdapter.TopAdsShopImpressionListener {
-    
+
     private val viewPaddingBottom: View = itemView.findViewById(R.id.viewPaddingBottom)
     private val topadsShop: TopAdsDynamicFeedShopView = itemView.findViewById(R.id.topadsShop)
     private val cardTitle: CardTitleView = itemView.findViewById(R.id.cardTitle)

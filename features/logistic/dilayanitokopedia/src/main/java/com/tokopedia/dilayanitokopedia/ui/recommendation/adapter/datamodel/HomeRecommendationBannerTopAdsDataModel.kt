@@ -4,10 +4,10 @@ import android.os.Bundle
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.factory.HomeRecommendationTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.smart_recycler_helper.SmartVisitable
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 data class HomeRecommendationBannerTopAdsDataModel(
-    val topAdsImageViewModel: TopAdsImageViewModel? = null,
+    val topAdsImageUiModel: TopAdsImageUiModel? = null,
     val position: Int = -1
 ) : HomeRecommendationVisitable, ImpressHolder() {
     override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
@@ -15,7 +15,7 @@ data class HomeRecommendationBannerTopAdsDataModel(
     }
 
     override fun getUniqueIdentity(): Any {
-        return topAdsImageViewModel?.bannerId ?: ""
+        return topAdsImageUiModel?.bannerId ?: ""
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
