@@ -68,6 +68,10 @@ class UpgradePmProWidget(
                     && shopInfo.shopScore > scoreShowTickerEligible
                     && shopLevel == PMConstant.ShopLevel.FOUR
                     && shopInfo.isEligiblePmPro
+            val pmEgiblePMPRO = element.shopGrade == PMConstant.ShopGrade.PM
+                && shopInfo.shopScore > scoreShowTickerEligible
+                && shopLevel == PMConstant.ShopLevel.ONE
+                && shopInfo.isEligiblePmPro
 
             when {
                 eligibleForUpdateProAdvance -> {
@@ -95,6 +99,16 @@ class UpgradePmProWidget(
                         root.context.getString(
                             R.string.pm_ticker_eligble_upgrade,
                             PMConstant.EligibleShopGrade.PRO_ULTIMATE,
+                            element.nextMonthlyRefreshDate
+                        )
+                    )
+                    tickerPmWidget.show()
+                }
+                pmEgiblePMPRO -> {
+                    tickerPmWidget.setHtmlDescription(
+                        root.context.getString(
+                            R.string.pm_ticker_eligble_upgrade,
+                            PMConstant.EligibleShopGrade.PRO,
                             element.nextMonthlyRefreshDate
                         )
                     )
