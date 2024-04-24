@@ -28,14 +28,6 @@ allprojects {
             allowInsecureProtocol = true
         }
         maven {
-            url "${artifactory_url}" + "/libs-release-local";
-            credentials {
-                username = "${artifactory_username}"
-                password = "${artifactory_password}"
-            }
-            allowInsecureProtocol = true
-        }
-        maven {
             url "${gcp_artifactory_url}" + "/libs-shared";
             credentials {
                 username = "${gcp_artifactory_username}"
@@ -84,10 +76,6 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-ext {
-    artifactoryUrl = "${artifactory_url}"
 }
 
 afterEvaluate {

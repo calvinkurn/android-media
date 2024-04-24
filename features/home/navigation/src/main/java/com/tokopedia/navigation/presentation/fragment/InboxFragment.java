@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -51,14 +50,11 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener;
-import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
-import com.tokopedia.topads.sdk.utils.TdnHelper;
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener;
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response;
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response;
@@ -72,9 +68,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
 
 /**
  * Created by meta on 19/06/18.
@@ -130,7 +123,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private boolean isTopAdsBannerAdded;
     private int headlineExperimentPosition = HEADLINE_POS_NOT_TO_BE_ADDED;
     private int toAdsBannerExperimentPosition = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED;
-    private List<TopAdsImageViewModel> topAdsBannerInProductCards;
+    private List<TopAdsImageUiModel> topAdsBannerInProductCards;
     private List<Integer> headlineIndexList;
 
     public static InboxFragment newInstance() {
@@ -651,7 +644,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
 
     @Override
-    public void onTdnBannerResponse(@NonNull List<List<TopAdsImageViewModel>> categoriesList) {
+    public void onTdnBannerResponse(@NonNull List<List<TopAdsImageUiModel>> categoriesList) {
         if (categoriesList.isEmpty()) return;
         if (categoriesList.size() == TOP_ADS_BANNER_COUNT) {
             topAdsBannerInProductCards = categoriesList.get(1);

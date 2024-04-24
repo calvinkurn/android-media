@@ -8,7 +8,10 @@ interface BroadMatchView {
 
     fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
 
-    fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView)
+    fun trackEventClickSeeMoreBroadMatch(
+        broadMatchDataView: BroadMatchDataView,
+        aladdinButtonType: String,
+    )
 
     fun openLink(applink: String, url: String)
 

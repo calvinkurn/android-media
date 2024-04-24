@@ -9,6 +9,7 @@ import com.tokopedia.cart.view.CartViewModel
 import com.tokopedia.cart.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cart.view.uimodel.CartAddOnData
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGlobalEvent
@@ -395,7 +396,8 @@ class CartViewModelTest : BaseCartViewModelTest() {
             ShipmentSellerCashbackModel(),
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
-            DisabledAccordionHolderData()
+            DisabledAccordionHolderData(),
+            CartBuyAgainHolderData()
         )
         var index = cartViewModel.cartDataList.value.lastIndex
         val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
@@ -646,9 +648,11 @@ class CartViewModelTest : BaseCartViewModelTest() {
             CartItemHolderData(),
             CartShopBottomHolderData(cartGroupHolderData),
             ShipmentSellerCashbackModel(),
-            DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
-            DisabledAccordionHolderData()
+            DisabledItemHeaderHolderData(),
+            DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
+            CartWishlistHolderData()
         )
         var index = cartViewModel.cartDataList.value.lastIndex
         val cartRecentViewHolderData = CartRecentViewHolderData(
@@ -684,6 +688,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
             DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
             CartRecentViewHolderData(),
             CartWishlistHolderData(),
             CartTopAdsHeadlineData(),
@@ -767,6 +772,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
             DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
             CartRecentViewHolderData(),
             CartWishlistHolderData()
         )
@@ -800,6 +806,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
             DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
             CartWishlistHolderData()
         )
         val oldSize = cartViewModel.cartDataList.value.size
