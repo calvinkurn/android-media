@@ -1680,7 +1680,8 @@ class CheckoutViewModel @Inject constructor(
                 checkoutItems,
                 isTradeIn,
                 isTradeInByDropOff,
-                isOneClickShipment
+                isOneClickShipment,
+                cartType
             ),
             checkoutItems,
             isOneClickShipment,
@@ -2264,7 +2265,8 @@ class CheckoutViewModel @Inject constructor(
                     listData.value,
                     isTradeIn,
                     isTradeInByDropOff,
-                    isOneClickShipment
+                    isOneClickShipment,
+                    cartType
                 )
             )
             if (validateUsePromoRevampUiModel != null) {
