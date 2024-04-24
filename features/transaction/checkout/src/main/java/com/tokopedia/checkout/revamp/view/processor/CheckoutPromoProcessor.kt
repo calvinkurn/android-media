@@ -2,6 +2,7 @@ package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.revamp.view.PROMO_INDEX_FROM_BOTTOM
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
@@ -65,7 +66,8 @@ class CheckoutPromoProcessor @Inject constructor(
         listData: List<CheckoutItem>,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean,
-        isOneClickShipment: Boolean
+        isOneClickShipment: Boolean,
+        cartType: String
     ): PromoRequest {
         val promoRequest = PromoRequest()
         val listOrderItem = ArrayList<Order>()
@@ -160,6 +162,8 @@ class CheckoutPromoProcessor @Inject constructor(
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         if (isOneClickShipment) {
             promoRequest.cartType = "ocs"
+        } else if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+            promoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
         } else {
             promoRequest.cartType = CartConstant.PARAM_DEFAULT
         }
@@ -180,7 +184,8 @@ class CheckoutPromoProcessor @Inject constructor(
         shipmentCartItemModelList: List<CheckoutItem>,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean,
-        isOneClickShipment: Boolean
+        isOneClickShipment: Boolean,
+        cartType: String
     ): ValidateUsePromoRequest {
         val bboPromoCodes = ArrayList<String>()
         val validateUsePromoRequest = ValidateUsePromoRequest()
@@ -250,7 +255,11 @@ class CheckoutPromoProcessor @Inject constructor(
         }
         validateUsePromoRequest.orders = listOrderItem
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
+        if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+            validateUsePromoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
+        } else {
+            validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
+        }
         validateUsePromoRequest.skipApply = 0
         validateUsePromoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
         if (isTradeIn) {
@@ -268,8 +277,6 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest.codes = globalPromoCodes
         if (isOneClickShipment) {
             validateUsePromoRequest.cartType = "ocs"
-        } else {
-            validateUsePromoRequest.cartType = "default"
         }
         this.bboPromoCodes = bboPromoCodes
         return validateUsePromoRequest
@@ -279,13 +286,15 @@ class CheckoutPromoProcessor @Inject constructor(
         shipmentCartItemModelList: List<CheckoutItem>,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean,
-        isOneClickShipment: Boolean
+        isOneClickShipment: Boolean,
+        cartType: String
     ): ValidateUsePromoRequest {
         val validateUsePromoRequest = generateValidateUsePromoRequest(
             shipmentCartItemModelList,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
         setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
         return validateUsePromoRequest

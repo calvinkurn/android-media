@@ -1634,7 +1634,8 @@ class CheckoutViewModel @Inject constructor(
             list ?: listData.value,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
@@ -1643,7 +1644,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
@@ -1652,7 +1654,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
@@ -1661,7 +1664,8 @@ class CheckoutViewModel @Inject constructor(
             newListData,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
