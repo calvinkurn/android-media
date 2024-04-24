@@ -5,23 +5,31 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
-import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.RMTransactionWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.PMTransactionDataUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.PMTransactionWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class RMTransactionViewHolder(itemView: View?,
-                              private val onRmTransactionClicked: (Long) -> Unit,
-                              private val onErrorClicked: () -> Unit) :
-    AbstractViewHolder<RMTransactionWidgetUiModel>(itemView) {
+class PMTransactionViewHolder(
+    itemView: View?,
+    private val onTransactionClicked: (Long) -> Unit,
+    private val onErrorClicked: () -> Unit
+) : AbstractViewHolder<PMTransactionWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.item_sah_new_other_shop_transaction
+        private const val TRANSACTION_FORMAT = "%s/" + Constant.ShopStatus.MAX_TRANSACTION
+        private const val REACH_MAX_FREE_TRANSACTION = ">" + Constant.ShopStatus.MAX_TRANSACTION
     }
 
     private val successGroup: Group? =
@@ -35,7 +43,7 @@ class RMTransactionViewHolder(itemView: View?,
     private val errorLayout: ConstraintLayout? =
         itemView?.findViewById(R.id.error_state_sah_new_other_shop_transaction)
 
-    override fun bind(element: RMTransactionWidgetUiModel) {
+    override fun bind(element: PMTransactionWidgetUiModel) {
         when (val state = element.state) {
             is SettingResponseState.SettingSuccess -> setSuccessTransactionInfo(state.data)
             is SettingResponseState.SettingError -> setErrorTransactionInfo()
@@ -43,47 +51,40 @@ class RMTransactionViewHolder(itemView: View?,
         }
     }
 
-    private fun setSuccessTransactionInfo(rmTransaction: RmTransactionData) {
-        val title = getTransactionTitle(rmTransaction)
+    private fun setSuccessTransactionInfo(rmTransaction: PMTransactionDataUiModel) {
         val desc = getTransactionDesc(rmTransaction)
 
         successGroup?.show()
-        titleTextView?.text = title
         descTextView?.text = desc
         loadingLayout?.gone()
         errorLayout?.gone()
 
+        showTooltipIcon()
         itemView.setOnClickListener {
-            onRmTransactionClicked(rmTransaction.totalTransaction)
+            onTransactionClicked(rmTransaction.totalTransaction)
         }
     }
 
-    private fun getTransactionTitle(rmTransaction: RmTransactionData): String {
-        return when {
-            rmTransaction.totalTransaction > Constant.ShopStatus.MAX_TRANSACTION ->
-                getString(R.string.sah_new_other_rm_since_has_passed)
-            rmTransaction.dateCreated.isBlank() ->
-                getString(R.string.sah_new_other_rm_since_june_fourteenth)
-            rmTransaction.isBeforeOnDate ->
-                getString(R.string.sah_new_other_rm_since_june_fourteenth)
-            else -> getString(R.string.sah_new_other_rm_joined_since)
-        }.orEmpty()
+    private fun showTooltipIcon() {
+        val iconColor = itemView.context.getResColor(
+            unifyprinciplesR.color.Unify_NN900
+        )
+        val iconSize = itemView.context.dpToPx(14)
+        titleTextView?.setUnifyDrawableEnd(
+            iconId = IconUnify.INFORMATION,
+            colorIcon = iconColor,
+            width = iconSize,
+            height = iconSize
+        )
     }
 
-    private fun getTransactionDesc(rmTransaction: RmTransactionData): String {
-        val transactionCountString =
-            if (rmTransaction.totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
-                Constant.ShopStatus.MAX_TRANSACTION.toString()
-            } else {
-                getString(
-                    R.string.sah_new_other_rm_transaction_remaining,
-                    rmTransaction.totalTransaction.toString()
-                )
-            }.orEmpty()
-        return getString(
-            R.string.sah_new_other_rm_total_transaction,
-            transactionCountString
-        ).orEmpty()
+    private fun getTransactionDesc(transaction: PMTransactionDataUiModel): String {
+        val totalTransaction = transaction.totalTransaction
+        return if (totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION) {
+            String.format(TRANSACTION_FORMAT, totalTransaction)
+        } else {
+            REACH_MAX_FREE_TRANSACTION
+        }
     }
 
     private fun setLoadingTransactionInfo() {

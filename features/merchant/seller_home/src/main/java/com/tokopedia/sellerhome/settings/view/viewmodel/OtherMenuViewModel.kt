@@ -20,6 +20,7 @@ import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
@@ -32,14 +33,14 @@ import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
-import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.PMTransactionDataUiModel
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
 import com.tokopedia.sellerhomecommon.domain.model.AutoAdsResponse
 import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsAutoAdsUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsShopInfoUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.GetShopChargableUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.GetShopChargeableUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -55,7 +56,7 @@ import javax.inject.Inject
 class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getTokoPlusBadgeUseCase: GetTokoPlusBadgeUseCase,
-    private val getShopChargableUseCase: GetShopChargableUseCase,
+    private val getShopChargeableUseCase: GetShopChargeableUseCase,
     private val getShopOperationalUseCase: GetShopOperationalUseCase,
     private val getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase,
     private val balanceInfoUseCase: BalanceInfoUseCase,
@@ -82,6 +83,7 @@ class OtherMenuViewModel @Inject constructor(
 
         private const val MAX_TOGGLE_TIMES = 4
         private const val ERROR_COUNT_THRESHOLD = 2
+        private const val INVALID_INT = -1
 
         private const val INVALID_FOLLOWERS_ERROR_MESSAGE = "Shop followers value is invalid"
     }
@@ -105,10 +107,9 @@ class OtherMenuViewModel @Inject constructor(
     private val _isShowTagCentralizePromo = MutableLiveData<SettingResponseState<Boolean>>()
     private val _isTopAdsShopUsed = MutableLiveData<Boolean>()
     private val _topadsAutoAdsData = MutableLiveData< AutoAdsResponse.TopAdsGetAutoAds.Data>()
+    private val _totalTransactionData = MutableLiveData<SettingResponseState<PMTransactionDataUiModel>>()
 
-    private val _totalTransactionData = MutableLiveData<SettingResponseState<RmTransactionData>>()
-
-    val totalTransactionData : LiveData<SettingResponseState<RmTransactionData>>
+    val totalTransactionData : LiveData<SettingResponseState<PMTransactionDataUiModel>>
         get() = _totalTransactionData
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
         get() = _shopBadgeLiveData
@@ -448,22 +449,45 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     private fun getFreeShippingStatusData() {
-        val freeShippingDisabled =
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        val inTransitionPeriod =
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         launchCatchError(block = {
             val freeShippingPair = withContext(dispatcher.io) {
+                val freeShippingDisabled =
+                    remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+                val inTransitionPeriod =
+                    remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+
                 if (freeShippingDisabled || inTransitionPeriod) {
                     TokoPlusBadgeUiModel()
                 } else {
                     getTokoPlusBadgeUseCase.execute(userSession.shopId)
-                    getShopChargableUseCase.execute(userSession.shopId, 1, 50)
                 }
             }
             _freeShippingLiveData.value = SettingResponseState.SettingSuccess(freeShippingPair)
         }, onError = {
             _freeShippingLiveData.value = SettingResponseState.SettingError(it)
+        })
+    }
+
+    private fun getShopChargeableStatus(shopInfo: UserShopInfoWrapper.UserShopInfoUiModel?) {
+        val shopTier = shopInfo?.shopTier ?: INVALID_INT
+        val shopTransaction = shopInfo?.totalTransaction ?: INVALID_INT.toLong()
+        launchCatchError(block = {
+            val shopChargeableStatus = withContext(dispatcher.io) {
+                getShopChargeableUseCase.execute(userSession.shopId, shopTier, shopTransaction)
+            }
+            _totalTransactionData.value = SettingResponseState.SettingSuccess(
+                PMTransactionDataUiModel(
+                    totalTransaction = shopTransaction,
+                    isChargeable = shopChargeableStatus
+                )
+            )
+        }, onError = {
+            _totalTransactionData.value = SettingResponseState.SettingSuccess(
+                PMTransactionDataUiModel(
+                    totalTransaction = shopTransaction,
+                    isChargeable = false
+                )
+            )
         })
     }
 
@@ -540,6 +564,7 @@ class OtherMenuViewModel @Inject constructor(
                 userShopInfoWrapper.shopType?.let {
                     updateShopInfoUserSession(it)
                 }
+                getShopChargeableStatus(userShopInfoWrapper.userShopInfoUiModel)
             },
             onError = {
                 _userShopInfoLiveData.value = SettingResponseState.SettingError(it)

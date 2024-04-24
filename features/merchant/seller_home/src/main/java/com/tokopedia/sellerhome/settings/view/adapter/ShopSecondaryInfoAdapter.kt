@@ -5,9 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.PMTransactionDataUiModel
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.FreeShippingWidgetUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.RMTransactionWidgetUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.PMTransactionWidgetUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ReputationBadgeWidgetUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopFollowersWidgetUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopOperationalWidgetUiModel
@@ -34,6 +35,26 @@ class ShopSecondaryInfoAdapter(
         addElement(getLoadingVisitableList())
     }
 
+    fun setShopTransactionData(transaction: PMTransactionDataUiModel) {
+        visitables?.indexOfFirst { it is PMTransactionWidgetUiModel }?.let { index ->
+            if (index >= START_INDEX) {
+                visitables[index] = PMTransactionWidgetUiModel(
+                    SettingResponseState.SettingSuccess(transaction)
+                )
+                notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun removeShopTransactionData() {
+        visitables?.indexOfFirst { it is PMTransactionWidgetUiModel }?.let { index ->
+            if (index >= START_INDEX) {
+                visitables.removeAt(index)
+                notifyItemRemoved(index)
+            }
+        }
+    }
+
     fun setShopOperationalData(state: SettingResponseState<ShopOperationalData>) {
         visitables?.indexOfFirst { it is ShopOperationalWidgetUiModel }?.let { index ->
             if (index >= 0) {
@@ -48,9 +69,11 @@ class ShopSecondaryInfoAdapter(
             is SettingResponseState.SettingSuccess -> {
                 setShopStatusSuccess(state.data)
             }
+
             is SettingResponseState.SettingError -> {
                 setShopStatusError(state.throwable)
             }
+
             else -> {
                 setShopStatusLoading()
             }
@@ -79,10 +102,12 @@ class ShopSecondaryInfoAdapter(
                             notifyItemChanged(index)
                         }
                     }
+
                     is SettingResponseState.SettingError -> {
                         visitables.removeAt(index)
                         notifyItemRemoved(index)
                     }
+
                     else -> {
                         visitables[index] = TokoMemberWidgetUiModel(state)
                         notifyItemChanged(index)
@@ -118,10 +143,12 @@ class ShopSecondaryInfoAdapter(
                 val tokoPlus = state.data.tokoPlus
                 setOnFreeShippingPlusSuccess<TokoPlusWidgetUiModel>(tokoPlus.status to tokoPlus.badgeUrl)
             }
+
             is SettingResponseState.SettingError -> {
                 setOnFreeShippingPlusError<FreeShippingWidgetUiModel>(state.throwable)
                 setOnFreeShippingPlusError<TokoPlusWidgetUiModel>(state.throwable)
             }
+
             else -> {
                 setOnFreeShippingPlusLoading<FreeShippingWidgetUiModel>()
                 setOnFreeShippingPlusLoading<TokoPlusWidgetUiModel>()
@@ -144,10 +171,12 @@ class ShopSecondaryInfoAdapter(
                         this[index] = model
                         notifyItemChanged(index)
                     }
+
                     index >= START_INDEX && !isActive -> {
                         removeAt(index)
                         notifyItemRemoved(index)
                     }
+
                     isActive -> {
                         addElement(model)
                         notifyItemInserted(lastIndex)
@@ -225,7 +254,7 @@ class ShopSecondaryInfoAdapter(
         return listOf(
             ShopOperationalWidgetUiModel(SettingResponseState.SettingLoading),
             ShopStatusWidgetUiModel(SettingResponseState.SettingLoading),
-            RMTransactionWidgetUiModel(SettingResponseState.SettingLoading),
+            PMTransactionWidgetUiModel(SettingResponseState.SettingLoading),
             ReputationBadgeWidgetUiModel(SettingResponseState.SettingLoading),
             TokoMemberWidgetUiModel(SettingResponseState.SettingLoading),
             ShopFollowersWidgetUiModel(SettingResponseState.SettingLoading),

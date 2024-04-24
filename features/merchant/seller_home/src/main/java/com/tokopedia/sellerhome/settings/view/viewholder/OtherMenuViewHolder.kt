@@ -31,6 +31,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
@@ -40,6 +41,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.PMTransactionDataUiModel
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
@@ -172,6 +174,17 @@ class OtherMenuViewHolder(
     fun setShopOperationalData(state: SettingResponseState<ShopOperationalData>) {
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setShopOperationalData(state)
+        }
+    }
+
+    fun setShopTransactionData(transaction: PMTransactionDataUiModel) {
+        val shouldShowTransaction = transaction.isChargeable && transaction.totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION_VISIBLE
+        secondaryInfoRecyclerView?.post {
+            if (shouldShowTransaction) {
+                secondaryInfoAdapter.setShopTransactionData(transaction)
+            } else {
+                secondaryInfoAdapter.removeShopTransactionData()
+            }
         }
     }
 
@@ -550,7 +563,7 @@ class OtherMenuViewHolder(
         fun getRecyclerView(): RecyclerView?
         fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>?
         fun onShopInfoClicked()
-        fun onRmTransactionClicked(currentTransactionTotal: Long)
+        fun onTransactionClicked(currentTransactionTotal: Long)
         fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onTokoMemberCountClicked()
