@@ -10,12 +10,10 @@ data class SdkAuthorizeParam(
     val redirectUri: String,
     @SerializedName("response_type")
     var responseType: String = "code",
-//    @SerializedName("state")
-//    var state: String = "",
-//    @SerializedName("code_challenge")
-//    var codeChallenge: String = "",
-//    @SerializedName("code_challenge_method")
-//    var codeChallengeMethod: String = ""
+    @SerializedName("code_challenge")
+    var codeChallenge: String,
+    @SerializedName("code_challenge_method")
+    var codeChallengeMethod: String = "S256"
 ): GqlParam
 
 data class SdkAuthorizeInput(

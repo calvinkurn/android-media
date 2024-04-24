@@ -544,7 +544,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         }
     }
 
-    fun authorizeSdk(clientId: String, redirectUri: String, state: String, codeChallenge: String) {
+    fun authorizeSdk(clientId: String, redirectUri: String, codeChallenge: String) {
         launch {
             try {
                 val result = authorizeSdkUseCase(
@@ -552,9 +552,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
                         clientId = clientId,
                         redirectUri = redirectUri,
                         responseType = "code",
-//                        state = state,
-//                        codeChallenge = codeChallenge,
-//                        codeChallengeMethod = "S256"
+                        codeChallenge = codeChallenge
                     )
                 )
                 mutableAuthorizeResponse.value = Success(result.data)

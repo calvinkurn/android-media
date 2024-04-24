@@ -71,8 +71,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             viewModel.authorizeSdk(
                 clientId = arguments?.getString("client_id") ?: "",
                 redirectUri = redirectUrl,
-                state = "",
-                codeChallenge = ""
+                codeChallenge = arguments?.getString("code_verifier") ?: ""
             )
         }
 
@@ -115,8 +114,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                             viewModel.authorizeSdk(
                                 clientId = arguments?.getString("client_id") ?: "",
                                 redirectUri = redirectUrl,
-                                state = "",
-                                codeChallenge = ""
+                                codeChallenge = arguments?.getString("code_verifier") ?: ""
                             )
                         }
                     } else {
