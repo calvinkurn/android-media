@@ -3324,13 +3324,13 @@ class CheckoutViewModel @Inject constructor(
             } else {
                 updateTotalAndPayment(cost, payment)
             }
-            mTrackerShipment.sendViewPaymentMethodEvent(getPaymentMethod(payment), getCartTypeString())
         } else {
             cost = cost.copy(
                 usePaymentFees = true
             )
             updateTotalAndPayment(cost, payment)
         }
+        mTrackerShipment.sendViewPaymentMethodEvent(getPaymentMethod(payment), getCartTypeString())
     }
 
     private fun updateTotalAndPayment(cost: CheckoutCostModel, payment: CheckoutPaymentModel, skipValidatePayment: Boolean = false) {
