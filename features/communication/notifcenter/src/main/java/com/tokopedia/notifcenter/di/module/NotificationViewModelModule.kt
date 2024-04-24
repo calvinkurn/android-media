@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.notifcenter.view.NotificationViewModel
-import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

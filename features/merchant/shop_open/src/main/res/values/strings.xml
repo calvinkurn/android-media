@@ -36,7 +36,7 @@
     <string name="masukkan_info_toko">Masukkan info toko</string>
     <string name="nama_domain">Nama Domain</string>
     <string name="title_text_greeting">Selamat Name,  Tokomu sudah jadi!</string>
-    <string name="text_add_product">Tambah produk dan mulai usahamu</string>
+    <string name="text_add_product">Tambah produk dan mulai usahamu.\nPelajari lebih lanjut catanya dengan download<![CDATA[<br><a href="https://assets.tokopedia.net/asts/Edukasi/Panduan_Memulai_Usaha_di_Tokopedia_2024_(012024).pdf">Panduan Berjualan</a>]]></string>
     <string name="domain_short_create_shop_revamp">tokopedia.com/</string>
     <string name="shop_splash_screen_sub_info">Tokomu sebentar lagi jadi. Ada yang segera ganti status jadi pengusaha nih…</string>
     <string name="text_default_choice_item">Pernah berjualan di e-commerce lain</string>

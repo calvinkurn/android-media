@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
@@ -20,6 +22,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
@@ -1556,6 +1559,70 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 assertTrue(getExpandCollapseState().contains("3"))
             }
         }
+    }
+
+    @Test
+    fun `brc csat should be hidden when get brc csat data is error`() = runCollectingUiState { buyerDetailUiState ->
+        createSuccessGetBuyerOrderDetailDataResult(
+            getBrcCsatWidgetRequestState = GetBrcCsatWidgetRequestState.Complete.Error(mockk(relaxed = true))
+        )
+
+        getBuyerOrderDetailData()
+
+        val successBuyerOrderDetailUiState = buyerDetailUiState.last() as BuyerOrderDetailUiState.HasData.Showing
+        assertTrue(successBuyerOrderDetailUiState.brcCsatUiState is WidgetBrcCsatUiState.NoData.Hidden)
+    }
+
+    @Test
+    fun `brc csat should be hidden when brc csat is eligible is false`() = runCollectingUiState { buyerDetailUiState ->
+        createSuccessGetBuyerOrderDetailDataResult(
+            getBuyerOrderDetailResult = mockk(relaxed = true) {
+                every { getPodInfo() } returns null
+                every { additionalData } returns additionalEpharmacyData
+                every { widget?.resoCsat?.helpUrl } returns "https://www.tokopedia.com"
+            },
+            getBrcCsatWidgetRequestState = GetBrcCsatWidgetRequestState.Complete.Success(
+                mockk(relaxed = true) { every { data?.isEligible } returns false }
+            )
+        )
+
+        getBuyerOrderDetailData()
+
+        val successBuyerOrderDetailUiState = buyerDetailUiState.last() as BuyerOrderDetailUiState.HasData.Showing
+        assertTrue(successBuyerOrderDetailUiState.brcCsatUiState is WidgetBrcCsatUiState.NoData.Hidden)
+    }
+
+    @Test
+    fun `brc csat should be hidden when brc csat help page url is blank`() = runCollectingUiState { buyerDetailUiState ->
+        createSuccessGetBuyerOrderDetailDataResult(
+            getBrcCsatWidgetRequestState = GetBrcCsatWidgetRequestState.Complete.Success(
+                mockk(relaxed = true) { every { data?.isEligible } returns true }
+            )
+        )
+
+        getBuyerOrderDetailData()
+
+        val successBuyerOrderDetailUiState = buyerDetailUiState.last() as BuyerOrderDetailUiState.HasData.Showing
+        assertTrue(successBuyerOrderDetailUiState.brcCsatUiState is WidgetBrcCsatUiState.NoData.Hidden)
+    }
+
+    @Test
+    fun `brc csat should be showing when brc csat is eligible and help page url is not blank`() = runCollectingUiState { buyerDetailUiState ->
+        createSuccessGetBuyerOrderDetailDataResult(
+            getBuyerOrderDetailResult = mockk(relaxed = true) {
+                every { getPodInfo() } returns null
+                every { additionalData } returns additionalEpharmacyData
+                every { widget?.resoCsat?.helpUrl } returns "https://www.tokopedia.com"
+            },
+            getBrcCsatWidgetRequestState = GetBrcCsatWidgetRequestState.Complete.Success(
+                mockk(relaxed = true) { every { data?.isEligible } returns true }
+            )
+        )
+
+        getBuyerOrderDetailData()
+
+        val successBuyerOrderDetailUiState = buyerDetailUiState.last() as BuyerOrderDetailUiState.HasData.Showing
+        assertTrue(successBuyerOrderDetailUiState.brcCsatUiState is WidgetBrcCsatUiState.HasData.Showing)
     }
 
     private fun assertIsExpand(

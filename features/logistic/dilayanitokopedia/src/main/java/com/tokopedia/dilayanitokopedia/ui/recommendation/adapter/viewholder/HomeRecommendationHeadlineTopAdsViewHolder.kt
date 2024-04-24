@@ -9,8 +9,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private val topAdsBannerClickListener: TopAdsBannerClickListener) :

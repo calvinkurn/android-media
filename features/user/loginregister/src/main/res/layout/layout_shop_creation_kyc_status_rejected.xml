@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="@string/shop_creation_title_rejected"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_status_submission"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_max="300dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_header"
+        app:unify_image_disable_shimmering_placeholder="true" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_header_benefit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/shop_creation_status_verification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_status_submission"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_kyc_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_creation_rejected"
+        app:labelType="general_light_red"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_header_benefit"
+        app:layout_constraintStart_toEndOf="@+id/tv_header_benefit"
+        app:layout_constraintTop_toTopOf="@+id/tv_header_benefit" />
+
+    <LinearLayout
+        android:id="@+id/list_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_header_benefit"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_primary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/shop_creation_retry_verification"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/list_reason" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_secondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/shop_creation_connect_tokopedia_care"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_primary" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

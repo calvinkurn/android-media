@@ -26,6 +26,8 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
@@ -36,6 +38,8 @@ import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransforme
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
@@ -60,10 +64,14 @@ class PlayBroadcastTestModule(
     private val mockUserSession: UserSessionInterface,
     private val mockBroadcaster: Broadcaster,
     private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val mockPermissionSharedPreferences: PermissionSharedPreferences,
+    private val mockHydraSharedPreferences: HydraSharedPreferences,
     private val mockBroadcastTimer: PlayBroadcastTimer,
     private val mockGetChannelUseCase: GetChannelUseCase,
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase,
     private val mockValueWrapper: PlayBroadcastValueWrapper,
+    private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase,
+    private val mockGetSellerLeaderboardUseCase: GetSellerLeaderboardUseCase,
     private val mockBroadcasterErrorLogger: BroadcasterErrorLogger,
 ) {
 
@@ -85,6 +93,14 @@ class PlayBroadcastTestModule(
 
     @ActivityRetainedScope
     @Provides
+    fun providePermissionSharedPreferences(): PermissionSharedPreferences = mockPermissionSharedPreferences
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideHydraSharedPreferences(): HydraSharedPreferences = mockHydraSharedPreferences
+
+    @ActivityRetainedScope
+    @Provides
     fun provideBroadcastTimer(): PlayBroadcastTimer = mockBroadcastTimer
 
     @ActivityRetainedScope
@@ -94,6 +110,14 @@ class PlayBroadcastTestModule(
     @ActivityRetainedScope
     @Provides
     fun provideGetAddedChannelTagsUseCase(): GetAddedChannelTagsUseCase = mockGetAddedTagUseCase
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideGetLiveStatisticsUseCase(): GetLiveStatisticsUseCase = mockGetLiveStatisticsUseCase
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideGetSellerLeaderboardUseCase(): GetSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase
 
     @ActivityRetainedScope
     @Provides

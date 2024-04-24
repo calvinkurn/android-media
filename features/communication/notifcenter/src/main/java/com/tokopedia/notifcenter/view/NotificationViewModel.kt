@@ -40,8 +40,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -416,7 +416,7 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTopAdsImageData(): ArrayList<TopAdsImageViewModel> {
+    private suspend fun getTopAdsImageData(): ArrayList<TopAdsImageUiModel> {
         return withContext(dispatcher.io) {
             topAdsImageViewUseCase.getImageData(
                 topAdsImageViewUseCase.getQueryMap(
