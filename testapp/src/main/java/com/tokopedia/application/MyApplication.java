@@ -1,6 +1,8 @@
 package com.tokopedia.application;
 
 
+import static com.tokopedia.developer_options.mssdk.MsSdkPersistentKt.saveStringIntPairDefaultBlocking;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +10,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.bytedance.applog.AppLog;
+import com.bytedance.bdinstall.BDInstall;
+import com.bytedance.mobsec.metasec.ov.MSConfig;
+import com.bytedance.mobsec.metasec.ov.MSManager;
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
@@ -42,7 +50,12 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.developer_options.mssdk.MsSdkOptionConst;
+import com.tokopedia.developer_options.mssdk.MsSdkPersistentKt;
 import com.tokopedia.developer_options.notification.DevOptNotificationManager;
+import com.tokopedia.developer_options.presentation.activity.MsSdkOptionActivity;
+import com.tokopedia.developer_options.presentation.model.MsSdkUiModel;
+import com.tokopedia.developer_options.presentation.viewholder.MsSdkViewHolder;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
@@ -93,6 +106,8 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void onCreate() {
+
+        initMsSDK();
 
         setVersionCode();
         initFileDirConfig();
@@ -227,6 +242,63 @@ public class MyApplication extends BaseMainApplication
         TokoChatConnection.init(this, false);
 
         UserSession userSession = new UserSession(this);
+    }
+
+    private void initMsSDK(){
+        // 构建config的Builder对象
+        String appID = "573733";
+
+        // license需要在风控接入平台生成，license错误会触发crash 云安全平台配置安全SDK License/鉴权文件
+        String licenseStr = this.getString(com.tokopedia.keys.R.string.mssdk_key);
+
+        //特定模式初始化接口
+        //MSConfig.Builder builder = new MSConfig.Builder(appID, licenseStr, COLLECT_MODE_XXX);
+
+        // 海外初始化参考，比如是Tiktok的使用COLLECT_MODE_TIKTOK_INIT完成初始化，海外使用国内的mode 会触发crash，表现为 "MSConfig init error!"
+        MSConfig.Builder builder = new MSConfig.Builder(appID, licenseStr, MSConfig.COLLECT_MODE_TIKTOK_INIT);
+
+
+        String deviceID = AppLog.getDid();
+        String sessionID = AppLog.getSessionId();
+        String installID = AppLog.getIid();
+
+        // 配置config参数，通过builder生成config对象. 如果暂时获取不到，可以通过延迟配置，见下面说明
+        builder.setDeviceID(deviceID);                                                    // 必填项，如果当前获取不到，可以在后续配置,如果设置空串会触发crash。注意⚠️：applog在新增设备上刚开始的返回值为空串，注册完成后需要重新设置
+        builder.setClientType(MSConfig.CLIENT_TYPE_INHOUSE);          // 必填项，CLIENT_TYPE_INHOUSE代表字节内的应用，注意不要填写错误
+        builder.setChannel("local_test");                                                  // 必填项，有助于业务作弊分析，反爬虫使用
+        builder.setInstallID(installID);                  // 必填项，如果初始化时候获取不到，可以不调用该接口，后续请业务通过MSManager 传入
+
+        // 对于海外版，必填项。MSConfig.OVREGION_TYPE_SG代表新加坡，MSConfig.OVREGION_TYPE_VA代表美东。
+        builder.setOVRegionType(MSConfig.OVREGION_TYPE_SG);
+
+        // 构建MSConfig配置对象
+        MSConfig config = builder.build();
+
+        // 初始化SDK, 需要在Application的onCretae中进行初始化调用
+        MSManagerUtils.init(this, config);
+
+        BDInstall.addOnDataObserver(new com.bytedance.bdinstall.IDataObserver(){
+
+            @Override
+            public void onIdLoaded(String did, String iid, String ssid) {
+
+            }
+
+            @Override
+            public void onRemoteIdGet(boolean changed, String oldDid, String newDid, String oldIid, String newIid, String oldSsid, String newSsid){
+                if(changed){
+                    // 如果当前无法获取deviceID和installID，可以在SDK初始化之后适当时间配置，方式如下所示;同时需要监听deviceID、installID的变更，及时传递给mssdk,并调用report接口，见注意事项
+                    // 具体可以参考 AppLog接入文档 第5条 获取设备相关信息一节
+                    MSManager mgr = MSManagerUtils.get(appID);
+                    mgr.setDeviceID(newIid);
+                    mgr.setInstallID(newIid);
+                    mgr.report("did-iid-update");
+                }
+            }
+        });
+
+        // always override set mode to last selected msssdk mode
+        saveStringIntPairDefaultBlocking(this);
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
