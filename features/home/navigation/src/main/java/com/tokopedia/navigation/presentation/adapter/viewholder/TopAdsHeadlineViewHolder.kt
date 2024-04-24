@@ -9,7 +9,7 @@ import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.TopadsHeadlineUiModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "inbox"

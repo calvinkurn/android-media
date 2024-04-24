@@ -74,10 +74,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
 
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
+    implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog

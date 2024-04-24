@@ -5,16 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
-import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
 import com.tokopedia.favorite.R
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.topads.sdk.TopAdsConstants
-import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.FollowButtonClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.uimodel.ShopProductModel
 
 class TopAdsShopAdapter_v2 (
     private val shopAdsProductListener: ShopAdsProductListener,

@@ -175,4 +175,6 @@
 
     <string name="pdp_shipment_failed_title">Konten gagal ditampilkan</string>
     <string name="pdp_shipment_failed_message">Klik ikon di samping buat coba lagi.</string>
+
+    <integer name="pdp_product_name_collapsed_max_lines">3</integer>
 </resources>
