@@ -1,6 +1,7 @@
 package com.tokopedia.carouselproductcard.reimagine
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
+import com.tokopedia.carouselproductcard.BaseCarouselCardModel
+import com.tokopedia.carouselproductcard.BaseProductCardViewHolder
 
 private typealias CarouselProductCardAdapter =
     ListAdapter<Visitable<CarouselProductCardTypeFactory>, AbstractViewHolder<*>>
@@ -31,20 +34,6 @@ internal class Adapter(
         recyclerView.removeOnScrollListener(scrollListener)
     }
 
-    override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
-        }
-    }
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -55,6 +44,7 @@ internal class Adapter(
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        setOnAttachStateChangeListener(holder)
         @Suppress("UNCHECKED_CAST")
         try { (holder as AbstractViewHolder<Visitable<*>>).bind(getItem(position)) }
         catch(_: Throwable) { }
@@ -79,4 +69,22 @@ internal class Adapter(
 
         onCurrentListChanged()
     }
+
+    private fun setOnAttachStateChangeListener(viewHolder: AbstractViewHolder<*>) {
+        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewAttachedToWindow()
+                }
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
+                }
+            }
+        }
+        (viewHolder as? AbstractViewHolder<Visitable<*>>)?.itemView?.addOnAttachStateChangeListener(onAttachStateChangeListener)
+    }
+
 }

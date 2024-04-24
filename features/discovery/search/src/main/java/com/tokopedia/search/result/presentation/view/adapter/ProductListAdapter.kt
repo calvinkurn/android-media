@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -38,22 +39,6 @@ class ProductListAdapter(
         recyclerView.addOnScrollListener(percentageScrollListener)
     }
 
-    override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is IAdsViewHolderTrackListener && holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
-            val item = list[holder.absoluteAdapterPosition]
-            (holder as AbstractViewHolder<Visitable<*>>).onViewAttachedToWindow(item)
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is IAdsViewHolderTrackListener && holder.getAbsoluteAdapterPosition() > RecyclerView.NO_POSITION) {
-            val item = list[holder.absoluteAdapterPosition]
-            (holder as AbstractViewHolder<Visitable<*>>).onViewDetachedFromWindow(item, holder.visiblePercentage)
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
@@ -63,8 +48,29 @@ class ProductListAdapter(
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         setFullSpanForStaggeredGrid(holder, holder.itemViewType)
 
+        setOnAttachStateChangeListener(holder)
+
         @Suppress("UNCHECKED_CAST")
         (holder as AbstractViewHolder<Visitable<*>>).bind(list[position])
+    }
+
+    fun setOnAttachStateChangeListener(viewHolder: AbstractViewHolder<*>) {
+        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    val item: Visitable<*> = list[viewHolder.bindingAdapterPosition]
+                    (viewHolder as? AbstractViewHolder<Visitable<*>>)?.onViewAttachedToWindow(item)
+                }
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    val item: Visitable<*> = list[viewHolder.bindingAdapterPosition]
+                    (viewHolder as? AbstractViewHolder<Visitable<*>>)?.onViewDetachedFromWindow(item, viewHolder.visibilityPercentage)
+                }
+            }
+        }
+        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 
     private fun setFullSpanForStaggeredGrid(holder: AbstractViewHolder<*>, viewType: Int) {

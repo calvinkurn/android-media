@@ -58,23 +58,12 @@ class ComparisonWidgetAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position < comparisonListModel.comparisonData.size) {
+            setOnAttachStateChangeListener(holder)
             if (shouldUseReimagineCard) {
                 bind(holder as ComparisonReimagineWidgetItemViewHolder, position)
             } else {
                 bind(holder as ComparisonWidgetItemViewHolder, position)
             }
-        }
-    }
-
-    override fun onViewAttachedToWindow(holder: ViewHolder) {
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: ViewHolder) {
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
         }
     }
 
@@ -101,5 +90,22 @@ class ComparisonWidgetAdapter(
             trackingQueue,
             userSessionInterface
         )
+    }
+
+    private fun setOnAttachStateChangeListener(viewHolder: ViewHolder) {
+        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION && viewHolder is IAdsViewHolderTrackListener) {
+                    viewHolder.onViewAttachedToWindow()
+                }
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION && viewHolder is IAdsViewHolderTrackListener) {
+                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
+                }
+            }
+        }
+        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 }

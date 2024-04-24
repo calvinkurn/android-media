@@ -71,6 +71,8 @@ class DiscoveryRecycleAdapter(
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         try {
+            setOnAttachStateChangeListener(holder)
+
             if (_componentList.size <= position) {
                 // tmp code need this handling to handle multithread enviorment
                 return
@@ -116,6 +118,23 @@ class DiscoveryRecycleAdapter(
         return id ?: 0
     }
 
+    fun setOnAttachStateChangeListener(viewHolder: AbstractViewHolder) {
+        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewAttachedToWindow()
+                }
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
+                }
+            }
+        }
+        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
+    }
+
     fun <T : DiscoveryBaseViewModel> getFirstViewModel(
         viewModelClass: Class<T>
     ): DiscoveryBaseViewModel? {
@@ -148,7 +167,6 @@ class DiscoveryRecycleAdapter(
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
-
         try {
             holder.onViewAttachedToWindow()
         } catch (e: UninitializedPropertyAccessException) {
@@ -157,8 +175,6 @@ class DiscoveryRecycleAdapter(
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
-
-        holder.onViewDetachedFromWindow(holder.visiblePercentage)
 
         holder.onViewDetachedToWindow()
         try {

@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -33,15 +34,25 @@ class ViewToViewAdapter(
         recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
-    override fun onViewAttachedToWindow(holder: ViewToViewProductViewHolder) {
-        holder.onViewAttachedToWindow()
-    }
-
-    override fun onViewDetachedFromWindow(holder: ViewToViewProductViewHolder) {
-        holder.onViewDetachedFromWindow(holder.visiblePercentage)
-    }
-
     override fun onBindViewHolder(holder: ViewToViewProductViewHolder, position: Int) {
+        setOnAttachStateChangeListener(holder)
         holder.bind(getItem(position))
+    }
+
+    private fun setOnAttachStateChangeListener(viewHolder: ViewToViewProductViewHolder) {
+        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewAttachedToWindow()
+                }
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
+                }
+            }
+        }
+        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 }

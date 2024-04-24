@@ -1,5 +1,6 @@
 package com.tokopedia.carouselproductcard
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -28,20 +29,6 @@ internal class CarouselProductCardListAdapter(
         recyclerView.removeOnScrollListener(scrollListener)
     }
 
-    override fun onViewAttachedToWindow(holder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
-        }
-    }
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         return adapterTypeFactory.onCreateViewHolder(viewGroup, viewType)
     }
@@ -51,6 +38,7 @@ internal class CarouselProductCardListAdapter(
     }
 
     override fun onBindViewHolder(carouselProductCardListViewHolder: BaseProductCardViewHolder<BaseCarouselCardModel>, position: Int) {
+        setOnAttachStateChangeListener(carouselProductCardListViewHolder)
         carouselProductCardListViewHolder.bind(getItem(position))
     }
 
@@ -65,5 +53,22 @@ internal class CarouselProductCardListAdapter(
 
     override fun submitCarouselProductCardModelList(list: List<BaseCarouselCardModel>?) {
         submitList(list)
+    }
+
+    private fun setOnAttachStateChangeListener(viewHolder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
+        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewAttachedToWindow()
+                }
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
+                }
+            }
+        }
+        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 }
