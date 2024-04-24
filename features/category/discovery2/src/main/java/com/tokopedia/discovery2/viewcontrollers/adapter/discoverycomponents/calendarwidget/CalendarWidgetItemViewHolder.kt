@@ -483,7 +483,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                             calendarFullImage.setImageBitmap(newBitmap)
                         }
                     } else {
-                        val bitmapWidth = bitmap.width
                         val maxHeight = dataItem?.maxHeight ?: 0
                         if (maxHeight > 0) {
                             calendarFullImage.adjustViewBounds = false
@@ -495,6 +494,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                             layoutParams.height = maxHeight
                             /*
                             * in case we want to adjust width
+                            val bitmapWidth = bitmap.width
                             when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
                                 Calendar.DOUBLE -> {
                                     val width = Resources.getSystem().displayMetrics.widthPixels
