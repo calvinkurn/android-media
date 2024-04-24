@@ -1,6 +1,5 @@
 package com.tokopedia.common.topupbills.usecase
 
-import android.util.Log
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
