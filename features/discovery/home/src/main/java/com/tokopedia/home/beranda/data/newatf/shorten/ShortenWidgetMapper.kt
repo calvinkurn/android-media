@@ -19,6 +19,7 @@ object ShortenWidgetMapper {
 
         val mission = channel[TwoSquareMissionWidgetMapper.layout()]
         val thumbnail = channel[TwoSquareThumbnailWidgetMapper.layout()]
+        val product = channel[TwoSquareProductWidgetMapper.layout()]
 
         return MultiTwoSquareWidgetUiModel(
             id = atfData.atfMetadata.id.toString(),
@@ -26,6 +27,7 @@ object ShortenWidgetMapper {
             backgroundGradientColor = ArrayList(atfData.style.gradientColor),
             mission = TwoSquareMissionWidgetMapper.map(data, mission, verticalPosition),
             thumbnail = TwoSquareThumbnailWidgetMapper.map(data, thumbnail, verticalPosition),
+            product = TwoSquareProductWidgetMapper.map(data, product, verticalPosition),
             status = MultiTwoSquareWidgetUiModel.Status.Success
         )
     }

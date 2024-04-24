@@ -14,6 +14,7 @@ data class MultiTwoSquareWidgetUiModel(
     val backgroundGradientColor: ArrayList<String> = arrayListOf(),
     val mission: MissionWidgetUiModel? = null,
     val thumbnail: ThumbnailWidgetUiModel? = null,
+    val product: ProductWidgetUiModel? = null,
     val status: Status = Status.Loading
 ) : HomeComponentVisitable,
     ImpressHolder(),
@@ -36,6 +37,7 @@ data class MultiTwoSquareWidgetUiModel(
     sealed class Type(val value: Int) {
         object Mission : Type(1)
         object Thumbnail : Type(2)
+        object Product : Type(3)
     }
 
     companion object {
