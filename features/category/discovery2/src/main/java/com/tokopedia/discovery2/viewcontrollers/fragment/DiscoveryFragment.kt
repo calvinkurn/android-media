@@ -2668,8 +2668,10 @@ open class DiscoveryFragment :
 
     fun setCurrentTabPosition(tabPosition: Int) {
         currentTabPosition = tabPosition
+        val tabPositionString = tabPosition.toString()
         discoComponentQuery?.let {
-            it[ACTIVE_TAB] = tabPosition.toString()
+            it[ACTIVE_TAB] = tabPositionString
+            arguments?.putString(ACTIVE_TAB, tabPositionString)
         }
     }
 }
