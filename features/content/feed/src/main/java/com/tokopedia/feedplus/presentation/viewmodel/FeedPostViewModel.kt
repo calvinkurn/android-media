@@ -1290,7 +1290,7 @@ class FeedPostViewModel @Inject constructor(
 
     fun fetchFeedProduct(
         activityId: String,
-        products: List<ContentTaggedProductUiModel>, //or add default from flow
+        products: List<ContentTaggedProductUiModel> = _feedTagProductList.value.products,
         sourceType: ContentTaggedProductUiModel.SourceType,
         isNextPage: Boolean = false,
     ) {

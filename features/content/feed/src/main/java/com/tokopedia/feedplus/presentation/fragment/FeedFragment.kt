@@ -1925,13 +1925,22 @@ class FeedFragment :
             activityId = activityId,
             shopId = author?.id ?: "",
             manager = childFragmentManager,
-            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
+            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
+            sourceType = sourceType
         )
         if (hasVoucher && author?.type?.isShop == true) {
             getMerchantVoucher(author.id)
         } else {
             feedPostViewModel.clearMerchantVoucher()
         }
+    }
+
+    override fun onFeedProductNextPage(activityId: String, sourceType : ContentTaggedProductUiModel.SourceType) {
+        feedPostViewModel.fetchFeedProduct(
+            activityId = activityId,
+            sourceType = sourceType,
+            isNextPage = true,
+        )
     }
 
     private fun convertToSourceType(type: String): ContentTaggedProductUiModel.SourceType =
