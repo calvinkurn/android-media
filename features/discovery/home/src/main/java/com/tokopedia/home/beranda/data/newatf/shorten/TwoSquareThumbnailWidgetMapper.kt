@@ -34,7 +34,7 @@ object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetU
 
                 ItemThumbnailWidgetUiModel(
                     tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid),
-                    card = createSmallProductCardModel(grid.labelGroup.toList()).copy(
+                    card = createSmallProductCardModel(grid, grid.labelGroup.toList()).copy(
                         ribbon = SmallProductModel.Ribbon(
                             text = ribbon?.title.orEmpty(),
                             type = ribbon()
@@ -42,8 +42,8 @@ object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetU
                     ),
                     pageName = labelGroup[Keys.PAGE_NAME]?.title.orEmpty(),
                     gridId = labelGroup[Keys.GRID_ID]?.title.orEmpty(),
-                    url = labelGroup[Keys.URL]?.imageUrl.orEmpty(), // this shouldn't be imageUrl
-                    appLink = labelGroup[Keys.APP_LINK]?.imageUrl.orEmpty(),
+                    url = grid.url,
+                    appLink = grid.applink,
                     campaignCode = labelGroup[Keys.CAMPAIGN_CODE]?.title.orEmpty(),
                 )
             }

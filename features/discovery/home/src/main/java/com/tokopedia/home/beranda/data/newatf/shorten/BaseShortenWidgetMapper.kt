@@ -51,7 +51,10 @@ abstract class BaseShortenWidgetMapper<T> {
      * by using this [createSmallProductCardModel]. As the labelGroup's payload is similar,
      * we can re-use this method nor improving it if we have additional styles occured.
      */
-    protected fun createSmallProductCardModel(groups: List<LabelGroup>): SmallProductModel {
+    protected fun createSmallProductCardModel(
+        grid: DynamicHomeChannel.Grid,
+        groups: List<LabelGroup>
+    ): SmallProductModel {
         val labelGroup = groups.associateBy { it.position }
 
         val title = labelGroup[Keys.TITLE]
@@ -61,7 +64,7 @@ abstract class BaseShortenWidgetMapper<T> {
         val subtitleStyle = subtitle?.styles.orEmpty().associate { it.key to it.value }
 
         return SmallProductModel(
-            bannerImageUrl = labelGroup[Keys.IMAGE_URL]?.title.orEmpty(),
+            bannerImageUrl = grid.imageUrl,
             title = Pair(
                 title?.title.orEmpty(),
                 SmallProductModel.TextStyle(
@@ -111,13 +114,10 @@ abstract class BaseShortenWidgetMapper<T> {
         const val TITLE = "home-title"
         const val SUBTITLE = "home-subtitle"
         const val RIBBON = "ri_ribbon"
-        const val IMAGE_URL = "home-image-url"
         const val TEXT_FORMAT = "text-format"
         const val TEXT_COLOR = "text-color"
         const val PAGE_NAME = "home-pagename"
         const val GRID_ID = "home-grid-id"
-        const val URL = "home-url"
-        const val APP_LINK = "home-applink"
         const val CAMPAIGN_CODE = "home-campaign-code"
         const val ID = "home-id"
         const val CATEGORY_ID = "ome-category-id"

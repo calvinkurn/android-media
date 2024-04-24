@@ -25,9 +25,9 @@ object TwoSquareMissionWidgetMapper : BaseShortenWidgetMapper<MissionWidgetUiMod
                 ItemMissionWidgetUiModel(
                     id = labelGroup[Keys.ID]?.title.orEmpty(),
                     tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid),
-                    card = createSmallProductCardModel(grid.labelGroup.toList()),
-                    url = labelGroup[Keys.URL]?.imageUrl.orEmpty(), // this shouldn't be imageUrl
-                    appLink = labelGroup[Keys.APP_LINK]?.imageUrl.orEmpty(),
+                    card = createSmallProductCardModel(grid, grid.labelGroup.toList()),
+                    url = grid.url,
+                    appLink = grid.applink,
                     pageName = labelGroup[Keys.PAGE_NAME]?.title.orEmpty(),
                     categoryId = labelGroup[Keys.CATEGORY_ID]?.title.orEmpty(),
                     productName = labelGroup[Keys.PRODUCT_NAME]?.title.orEmpty(),
