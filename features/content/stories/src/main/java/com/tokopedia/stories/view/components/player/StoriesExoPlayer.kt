@@ -59,14 +59,14 @@ class StoriesExoPlayer(val context: Context) {
         exoPlayer.addVideoListener(listener)
     }
 
-    fun start(videoUrl: String, groupId: String) {
+    fun start(videoUrl: String, groupId: String, isAutoPlay: Boolean) {
         if (videoUrl.isEmpty()) return
 
         this.groupId = groupId
 
         val mediaSource = getMediaSourceByUri(context, Uri.parse(videoUrl))
         exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
-        exoPlayer.playWhenReady = true
+        exoPlayer.playWhenReady = isAutoPlay
         exoPlayer.prepare(mediaSource, true, false)
     }
 
