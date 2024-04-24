@@ -34,6 +34,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.CompositeTouchDelegate
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
@@ -68,6 +69,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -411,6 +413,14 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
+
+        //TODO("Mock Code")
+        binding.containerFeedTopNav.btnFeedCreatePost.doOnLayout {
+            val location = it.getLocationOnScreen()
+            val centerX = it.width / 2
+
+            binding.tooltip.setAnchorXLocation(location.x + centerX)
+        }
     }
 
     private fun setupInsets() {
