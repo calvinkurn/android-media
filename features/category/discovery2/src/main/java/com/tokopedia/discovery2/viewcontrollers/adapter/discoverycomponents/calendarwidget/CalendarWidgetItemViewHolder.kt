@@ -39,6 +39,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 
 const val CAROUSEL_WIDTH_RATIO = 2.5
@@ -269,12 +270,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarImage.gone()
                 calendarTitle.hide()
                 calendarTitleImage.hide()
-                calendarButton.hide()
-                calendarExpiredAlpha.hide()
-                calendarDateAlpha.hide()
-                calendarButtonParent.hide()
-                calendarDate.hide()
-                calendarDesc.hide()
 
             } else { // no full image, do logic as usual
                 calendarFullImage.gone()
@@ -294,102 +289,99 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarTitle.text = title
                     calendarTitleImage.hide()
                 }
-                if (Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
-                    calendarButton.show()
-                    calendarExpiredAlpha.show()
-                    calendarButton.isEnabled = false
-                    calendarButton.text =
-                        itemView.context.getString(R.string.discovery_button_event_expired)
-                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
-                    calendarButton.buttonVariant = UnifyButton.Variant.GHOST
-                }  // end if sale over
-                else {
-                    calendarButton.show()
-                    calendarExpiredAlpha.hide()
-                    calendarButton.isEnabled = true
-                    if (!boxColor.isNullOrEmpty()) {
-                        setColouredBackground(boxColor)
-                    } // end if box color is not empty
-                    else {
-                        calendarParent.setBackgroundColor(
-                            MethodChecker.getColor(
-                                itemView.context,
-                                unifyprinciplesR.color.Unify_NN0
-                            )
-                        )
-                        calendarTitle.setTextColor(
-                            MethodChecker.getColor(
-                                itemView.context,
-                                unifyprinciplesR.color.Unify_NN950
-                            )
-                        )
-                        calendarDesc.setTextColor(
-                            MethodChecker.getColor(
-                                itemView.context,
-                                unifyprinciplesR.color.Unify_NN950
-                            )
-                        )
-                        calendarDateAlpha.gone()
-                        calendarDate.setBackgroundColor(
-                            MethodChecker.getColor(
-                                itemView.context,
-                                R.color.discovery2_dms_clr_2F89FC
-                            )
-                        )
-                    } // end if box color empty
-                    if (Utils.isFutureSaleOngoing(
-                            startDate ?: "",
-                            endDate ?: "",
-                            TIMER_DATE_FORMAT
-                        )
-                    ) {
-                        calendarButton.text =
-                            itemView.context.getString(R.string.discovery_button_event_ongoing)
-                        calendarButton.buttonType = UnifyButton.Type.MAIN
-                        calendarButton.buttonVariant = UnifyButton.Variant.FILLED
-                        calendarButton.setOnClickListener {
-                            if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
-                                RouteManager.route(itemView.context, buttonApplink)
-                                calendarWidgetItemViewModel?.let { calendarWidgetItemViewModel ->
-                                    (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                                        .trackEventClickCalendarCTA(
-                                            calendarWidgetItemViewModel.components,
-                                            calendarWidgetItemViewModel.getUserId()
-                                        )
-                                }
-                            }
-                        }
-                    }// end if sale is ongoing
-                    else {
-                        calendarButton.text =
-                            itemView.context.getString(R.string.discovery_button_event_reminder)
-                        calendarButton.buttonVariant = UnifyButton.Variant.FILLED
-                        calendarButton.buttonType = UnifyButton.Type.ALTERNATE
-                        if (calendarWidgetItemViewModel?.isUserLoggedIn() == true) {
-                            calendarWidgetItemViewModel?.checkUserPushStatus(notifyCampaignId)
-                        } else {
-                            calendarButton.setOnClickListener {
-                                (fragment as DiscoveryFragment).openLoginScreen()
-                            }
-                        }
-                        mNotifyCampaignId = notifyCampaignId
-                    } // end if sale is not ongoing
-                }// end if sale is not over
+            } // end if no full image
 
-                if (buttonApplink.isNullOrEmpty() && !Utils.isFutureSale(
-                        startDate ?: "", TIMER_DATE_FORMAT
+            if (Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
+                calendarExpiredAlpha.show()
+                calendarButton.show()
+                calendarButton.isEnabled = false
+                calendarButton.text =
+                    calendarWidgetItemViewModel?.getCtaText(itemView.context.getString(R.string.discovery_button_event_expired))
+                calendarButton.buttonType = UnifyButton.Type.ALTERNATE
+                calendarButton.buttonVariant = UnifyButton.Variant.GHOST
+            }  // end if sale over
+            else {
+                calendarButton.show()
+                calendarExpiredAlpha.hide()
+                calendarButton.isEnabled = true
+                val isDynamic =
+                    calendarWidgetItemViewModel?.components?.properties?.calendarType?.let { it == Calendar.DYNAMIC }
+                if (!headerColor.isNullOrEmpty()) {
+                    if (isDynamic == true) {
+                        calendarDateAlpha.show()
+                    } else {
+                        calendarDateAlpha.gone()
+                    }
+                } else {
+                    calendarDateAlpha.gone()
+                }
+                // header bg
+                calendarDate.setBackgroundColor(
+                    getColorBackendOrDefault(
+                        headerColor,
+                        unifyprinciplesR.color.Unify_NN0
+                    )
+                )
+                // header text
+                calendarDate.setTextColor(
+                    getColorBackendOrDefault(
+                        textHeaderColor,
+                        unifyprinciplesR.color.Unify_NN950
+                    )
+                )
+                // content BG
+                calendarParent.setBackgroundColor(
+                    getColorBackendOrDefault(
+                        boxColor,
+                        unifyprinciplesR.color.Unify_NN0
+                    )
+                )
+                // content text
+                val contentColor = getColorBackendOrDefault(
+                    textContentColor,
+                    unifyprinciplesR.color.Unify_NN950
+                )
+                calendarTitle.setTextColor(contentColor)
+                calendarDesc.setTextColor(contentColor)
+
+                if (Utils.isFutureSaleOngoing(
+                        startDate ?: "",
+                        endDate ?: "",
+                        TIMER_DATE_FORMAT
                     )
                 ) {
-                    calendarButtonParent.hide()
-                } else {
-                    calendarButtonParent.show()
-                }
-                calendarDate.text = textDate
-                calendarDesc.text =
-                    if (description.isNullOrEmpty()) itemView.context.getString(R.string.discovery_calendar_line) else description
-                calendarDate.show()
-                calendarDesc.show()
-            } // end if no full image
+                    calendarButton.text =
+                        calendarWidgetItemViewModel?.getCtaText(itemView.context.getString(R.string.discovery_button_event_ongoing))
+                    calendarButton.buttonType = UnifyButton.Type.MAIN
+                    calendarButton.buttonVariant = UnifyButton.Variant.FILLED
+                    calendarButton.setOnClickListener {
+                        if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
+                            RouteManager.route(itemView.context, buttonApplink)
+                            calendarWidgetItemViewModel?.let { calendarWidgetItemViewModel ->
+                                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                                    .trackEventClickCalendarCTA(
+                                        calendarWidgetItemViewModel.components,
+                                        calendarWidgetItemViewModel.getUserId()
+                                    )
+                            }
+                        }
+                    }
+                }// end if sale is ongoing
+                else {
+                    calendarButton.text =
+                        calendarWidgetItemViewModel?.getCtaText(itemView.context.getString(R.string.discovery_button_event_reminder))
+                    calendarButton.buttonVariant = UnifyButton.Variant.FILLED
+                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
+                    if (calendarWidgetItemViewModel?.isUserLoggedIn() == true) {
+                        calendarWidgetItemViewModel?.checkUserPushStatus(notifyCampaignId)
+                    } else {
+                        calendarButton.setOnClickListener {
+                            (fragment as DiscoveryFragment).openLoginScreen()
+                        }
+                    }
+                    mNotifyCampaignId = notifyCampaignId
+                } // end if sale is not ongoing
+            }// end if sale is not over
 
             calendarCardUnify.setOnClickListener {
                 if (!cta.isNullOrEmpty()) {
@@ -409,6 +401,45 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 }
             }
+
+            if (useFullImage) {
+                calendarDate.hide()
+                calendarDesc.hide()
+            } else {
+                calendarDate.show()
+                calendarDate.text = textDate
+
+                calendarDesc.text =
+                    if (description.isNullOrEmpty()) {
+                        itemView.context.getString(R.string.discovery_calendar_line)
+                    } else description
+                calendarDesc.show()
+            }
+
+            if (buttonApplink.isNullOrEmpty() && !Utils.isFutureSale(
+                    startDate ?: "", TIMER_DATE_FORMAT
+                )
+            ) {
+                calendarButtonParent.hide()
+            } else {
+                calendarButtonParent.show()
+            }
+        }
+    }
+
+    private fun getColorBackendOrDefault(backEndColor: String?, defaultColor: Int): Int {
+        return if (backEndColor.isNullOrEmpty()) {
+            MethodChecker.getColor(
+                itemView.context,
+                defaultColor
+            )
+        } else {
+            Color.parseColor(
+                Utils.getValidHexCode(
+                    itemView.context,
+                    backEndColor
+                )
+            )
         }
     }
 
@@ -462,6 +493,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
                             val layoutParams = calendarCardUnify.layoutParams
                             layoutParams.height = maxHeight
+                            /*
+                            * in case we want to adjust width
                             when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
                                 Calendar.DOUBLE -> {
                                     val width = Resources.getSystem().displayMetrics.widthPixels
@@ -482,7 +515,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                                     // scale the layout to keep ratio
                                     layoutParams.width = (maxHeight * bitmapWidth / bitmap.height)
                                 }
-                            }
+                            } */
                             calendarCardUnify.layoutParams = layoutParams
                             calendarFullImage.setImageBitmap(bitmap)
                         } else {
@@ -497,76 +530,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 }
             })
         })
-    }
-
-    private fun setColouredBackground(boxColor: String) {
-        calendarWidgetItemViewModel?.components?.properties?.calendarType?.let {
-            if (it == Calendar.DYNAMIC) {
-                itemView.findViewById<View>(R.id.calendar_date_alpha).show()
-                itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
-                    .setBackgroundColor(
-                        Color.parseColor(
-                            Utils.getValidHexCode(
-                                itemView.context,
-                                boxColor
-                            )
-                        )
-                    )
-                itemView.findViewById<Typography>(R.id.calendar_title)
-                    .setTextColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                        )
-                    )
-                itemView.findViewById<Typography>(R.id.calendar_date)
-                    .setTextColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                        )
-                    )
-                itemView.findViewById<Typography>(R.id.calendar_desc)
-                    .setTextColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                        )
-                    )
-            } else {
-                itemView.findViewById<View>(R.id.calendar_date_alpha).hide()
-                itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
-                    .setBackgroundColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                        )
-                    )
-                itemView.findViewById<Typography>(R.id.calendar_title)
-                    .setTextColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                        )
-                    )
-                itemView.findViewById<Typography>(R.id.calendar_desc)
-                    .setTextColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                        )
-                    )
-                itemView.findViewById<Typography>(R.id.calendar_date)
-                    .setBackgroundColor(
-                        Color.parseColor(
-                            Utils.getValidHexCode(
-                                itemView.context,
-                                boxColor
-                            )
-                        )
-                    )
-            }
-        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -619,17 +582,19 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         tickButton.setDrawable(
             MethodChecker.getDrawable(
                 itemView.context,
-                com.tokopedia.unifycomponents.R.drawable.unify_check_ic
+                unifycomponentsR.drawable.unify_check_ic
             )
         )
         if (isSubscribed) {
             button.gone()
             tickButton.show()
-            tickButton.text = itemView.context.getString(R.string.discovery_button_event_active)
+            tickButton.text =
+                calendarWidgetItemViewModel?.getNotifiedCtaText(itemView.context.getString(R.string.discovery_button_event_active))
         } else {
             tickButton.gone()
             button.show()
-            button.text = itemView.context.getString(R.string.discovery_button_event_reminder)
+            button.text =
+                calendarWidgetItemViewModel?.getCtaText(itemView.context.getString(R.string.discovery_button_event_reminder))
         }
         button.setOnClickListener {
             setOnClick(isSubscribed)
