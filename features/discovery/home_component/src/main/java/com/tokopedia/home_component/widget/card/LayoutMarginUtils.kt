@@ -38,6 +38,4 @@ fun View.setCustomMargin(area: MarginArea) {
             )
         }
     }
-
-    requestLayout()
 }

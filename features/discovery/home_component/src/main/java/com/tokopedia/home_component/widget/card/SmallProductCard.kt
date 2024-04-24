@@ -27,7 +27,7 @@ class SmallProductCard @JvmOverloads constructor(
 
     init {
         addView(binding.root)
-        stockBar = ProductStockBar(binding.root)
+        stockBar = ProductStockBar(this)
     }
 
     fun setData(model: SmallProductModel) {

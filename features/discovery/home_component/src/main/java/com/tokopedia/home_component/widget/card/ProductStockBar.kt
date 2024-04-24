@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.extensions.view.show
 
-class ProductStockBar(view: View) {
+class ProductStockBar(private val view: View) {
 
     private val stockBarActive = view.findViewById<View>(R.id.stockbar_active)
     private val stockBarInActive = view.findViewById<View>(R.id.stockbar_inactive)
@@ -19,13 +19,15 @@ class ProductStockBar(view: View) {
             return
         }
 
-        val width = stockBarInActive.width * (percentage / 100)
-        setStockBarActiveLength(width)
+        view.post {
+            val width = view.measuredWidth * percentage / 100
+            setStockBarActiveLength(width)
 
-        if (percentage <= MIN_THRESHOLD_FIRE_VISIBLE) {
-            showStockBar()
-        } else {
-            showStockBarWithFire()
+            if (percentage <= MIN_THRESHOLD_FIRE_VISIBLE) {
+                showStockBar()
+            } else {
+                showStockBarWithFire()
+            }
         }
     }
 
@@ -34,7 +36,7 @@ class ProductStockBar(view: View) {
     }
 
     private fun showStockBar() {
-        stockBarActive.setBackgroundColor(R.drawable.bg_spc_stockbar_shape_foreground)
+        stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_shape_foreground)
 
         stockBarActive.show()
         stockBarInActive.show()
@@ -42,7 +44,7 @@ class ProductStockBar(view: View) {
     }
 
     private fun showStockBarWithFire() {
-        stockBarActive.setBackgroundColor(R.drawable.bg_spc_stockbar_foreground)
+        stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_foreground)
 
         stockBarActive.show()
         stockBarInActive.show()
