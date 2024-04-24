@@ -37,9 +37,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 import kotlin.math.roundToInt
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 
 const val CAROUSEL_WIDTH_RATIO = 2.5
@@ -427,7 +428,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
-    private fun getColorBackendOrDefault(backEndColor: String?, defaultColor: Int): Int {
+    private fun getColorBackendOrDefault(backEndColor: String?, defaultColor: Int, backEndOpacity:Int = 90): Int {
         return if (backEndColor.isNullOrEmpty()) {
             MethodChecker.getColor(
                 itemView.context,
@@ -437,10 +438,22 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             Color.parseColor(
                 Utils.getValidHexCode(
                     itemView.context,
-                    backEndColor
+                    convertIntoColorWithOpacity(backEndColor, backEndOpacity)
                 )
             )
         }
+    }
+
+    private fun convertOpacityToHex(opacity: Int): String {
+        val hexString = Integer.toHexString(Math.round((255 * opacity / 100).toFloat()))
+        return (if (hexString.length < 2) "0" else "") + hexString
+    }
+
+    private fun convertIntoColorWithOpacity(color: String, opacity: Int): String {
+        val colorTrim = color.replaceFirst("#", "")
+        return if (colorTrim.isNotEmpty() && colorTrim.length == 6 && opacity < 100) {
+            "#" + convertOpacityToHex(opacity) + colorTrim
+        } else color
     }
 
     private fun setImageAdjustViewBoundPost(
