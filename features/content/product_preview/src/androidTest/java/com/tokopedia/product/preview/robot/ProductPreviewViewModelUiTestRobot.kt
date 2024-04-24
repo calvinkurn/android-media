@@ -1,5 +1,9 @@
 package com.tokopedia.product.preview.robot
 
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +35,7 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 import com.tokopedia.empty_state.R as empty_stateR
 
 internal class ProductPreviewViewModelUiTestRobot(
+    private val composeTestRule: ComposeTestRule,
     private val productPreviewSourceModel: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
     private val userSession: UserSessionInterface,
@@ -169,6 +174,17 @@ internal class ProductPreviewViewModelUiTestRobot(
                     click()
                 )
             )
+    }
+
+    fun showATCRemindMe() = chainable {
+        composeTestRule.onNodeWithTag("ATC Product Preview")
+            .assertIsDisplayed()
+    }
+
+    fun onClickRemindMeButton() = chainable {
+        composeTestRule.onNodeWithTag("ATC Product Preview")
+            .assertIsDisplayed()
+            .performClick()
     }
 
     private fun chainable(fn: () -> Unit): ProductPreviewViewModelUiTestRobot {

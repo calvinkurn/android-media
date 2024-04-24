@@ -1,10 +1,12 @@
 package com.tokopedia.product.preview
 
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.product.preview.domain.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreferences
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.product.preview.data.ProductPreviewMockData
 import com.tokopedia.product.preview.robot.ProductPreviewViewModelUiTestRobot
@@ -22,6 +24,9 @@ import org.junit.runner.RunWith
 class ProductPreviewUiTest {
 
     @get:Rule
+    val composeTestRule = createEmptyComposeRule()
+
+    @get:Rule
     var cassavaTest = CassavaTestRule(sendValidationResult = false)
 
     private val analyticProductPreviewTracker = "tracker/content/productpreview/product_preview.json"
@@ -32,8 +37,10 @@ class ProductPreviewUiTest {
     private val productPreviewPref: ProductPreviewSharedPreferences = mockk(relaxed = true)
 
     private fun getProductPreviewRobot(
-        sourceModel: ProductPreviewSourceModel
+        sourceModel: ProductPreviewSourceModel,
+        userSession: UserSessionInterface = mockk(relaxed = true)
     ) = ProductPreviewViewModelUiTestRobot(
+        composeTestRule = composeTestRule,
         productPreviewSourceModel = sourceModel,
         repo = repository,
         userSession = userSession,
@@ -42,12 +49,10 @@ class ProductPreviewUiTest {
 
     private val productId = "123"
 
-    init {
-        coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
-    }
-
     @Test
     fun test_shouldSwipeContentAndTab() {
+        coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
+
         getProductPreviewRobot(mockData.mockSourceProduct(productId))
             .onSwipeProductContent()
             .onClickTab()
@@ -61,6 +66,8 @@ class ProductPreviewUiTest {
 
     @Test
     fun test_shouldImpressVideo() {
+        coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
+
         getProductPreviewRobot(mockData.mockSourceProduct(productId))
             .showProductAndReviewTab()
 
@@ -72,6 +79,8 @@ class ProductPreviewUiTest {
 
     @Test
     fun test_shouldImpressATC() {
+        coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
+
         getProductPreviewRobot(mockData.mockSourceProduct(productId))
             .showProductAndReviewTab()
 
@@ -83,6 +92,8 @@ class ProductPreviewUiTest {
 
     @Test
     fun test_shouldClickProductThumbnail() {
+        coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
+
         getProductPreviewRobot(mockData.mockSourceProduct(productId))
             .showProductAndReviewTab()
             .onClickProductThumbnail()
@@ -95,6 +106,8 @@ class ProductPreviewUiTest {
 
     @Test
     fun test_shouldShowImage() {
+        coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
+
         getProductPreviewRobot(mockData.mockSourceProduct(productId))
             .showProductAndReviewTab()
             .onSwipeProductContent()
@@ -102,6 +115,45 @@ class ProductPreviewUiTest {
         assertThat(
             cassavaTest.validate(analyticProductPreviewTracker),
             containsTrackerId("49598")
+        )
+    }
+
+    @Test
+    fun test_shouldShowRemindMeButton() {
+        coEvery {
+            repository.getProductMiniInfo(productId)
+        } returns mockData.mockProductMiniInfo(buttonState = BottomNavUiModel.ButtonState.OOS)
+
+        getProductPreviewRobot(mockData.mockSourceProduct(productId))
+            .showProductAndReviewTab()
+            .showATCRemindMe()
+
+        assertThat(
+            cassavaTest.validate(analyticProductPreviewTracker),
+            containsTrackerId("49600")
+        )
+    }
+
+    @Test
+    fun test_shouldClickRemindMeButton() {
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery {
+            repository.getProductMiniInfo(productId)
+        } returns mockData.mockProductMiniInfo(buttonState = BottomNavUiModel.ButtonState.OOS)
+        coEvery {
+            repository.remindMe(productId)
+        } returns BottomNavUiModel.RemindMeUiModel(isSuccess = true, message = "success")
+
+        getProductPreviewRobot(
+            sourceModel = mockData.mockSourceProduct(productId),
+            userSession = userSession
+        )
+            .showProductAndReviewTab()
+            .onClickRemindMeButton()
+
+        assertThat(
+            cassavaTest.validate(analyticProductPreviewTracker),
+            containsTrackerId("49601")
         )
     }
 }

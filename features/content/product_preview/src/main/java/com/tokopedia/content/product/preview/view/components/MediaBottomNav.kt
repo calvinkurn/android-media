@@ -2,7 +2,6 @@ package com.tokopedia.content.product.preview.view.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -46,7 +46,7 @@ import com.tokopedia.nest.principles.utils.noRippleClickable
 internal fun MediaBottomNav(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {},
-    onNavClicked: () -> Unit = {},
+    onNavClicked: () -> Unit = {}
 ) {
     NestTheme(darkTheme = true, isOverrideStatusBarColor = false) {
         if (product == BottomNavUiModel.Empty) {
@@ -113,7 +113,7 @@ private fun RenderLoading() {
 private fun RenderContent(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {},
-    onNavClicked: () -> Unit = {},
+    onNavClicked: () -> Unit = {}
 ) {
     val ctx = LocalContext.current
 
@@ -174,6 +174,7 @@ private fun RenderContent(
             isEnabled = isBtnEnable,
             isClickable = isBtnEnable,
             modifier = Modifier
+                .testTag("ATC Product Preview")
                 .constrainAs(atcBtn) {
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
