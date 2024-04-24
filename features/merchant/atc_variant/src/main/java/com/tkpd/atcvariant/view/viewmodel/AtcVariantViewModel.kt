@@ -540,7 +540,9 @@ class AtcVariantViewModel @Inject constructor(
         val parentId = getVariantData()?.parentId.orEmpty()
         val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
         if (actionButton == ProductDetailCommonConstant.ATC_BUTTON
-            || actionButton == ProductDetailCommonConstant.OCS_BUTTON) {
+            || actionButton == ProductDetailCommonConstant.BUY_BUTTON
+//            || actionButton == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
+            ) {
             AppLogPdp.addToCart.set(true)
             AppLogPdp.sendConfirmCart(
                 TrackConfirmCart(

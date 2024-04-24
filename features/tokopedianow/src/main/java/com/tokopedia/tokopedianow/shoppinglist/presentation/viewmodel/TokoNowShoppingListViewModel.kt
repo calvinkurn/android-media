@@ -1166,7 +1166,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     onSuccessAddingToCart(addToCartMultiParams.size)
                 } else if (response is com.tokopedia.usecase.coroutines.Success) {
                     onErrorAddingToCart(response.data.atcMulti.buyAgainData.message.firstOrNull().orEmpty())
-                } else if (response is Fail) {
+                } else {
                     onErrorAddingToCart(resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart))
                 }
             },
@@ -1186,6 +1186,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
             },
             onError = {
                 recommendedProducts.clear()
+
+                isFirstPageProductRecommendationError = true
 
                 updateLayout()
             }

@@ -7,12 +7,12 @@ import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CpmViewHolder(

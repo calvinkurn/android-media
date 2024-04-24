@@ -2,7 +2,7 @@ package com.tokopedia.topads.sdk.utils
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.topads.sdk.TopAdsConstants
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.UnifyButton
@@ -51,15 +51,18 @@ object MapperUtils {
         isAvailAble: Boolean,
         productCardModel: ProductCardModel
     ): ProductCardModel {
+
+        val labelGroupList = mappingLabelGroupList(product)
+
         if (isAvailAble) {
             return if (!product.campaign.originalPrice.isNullOrEmpty()) {
                 productCardModel.copy(
                     slashedPrice = product.campaign.originalPrice,
-                    labelGroupList = mappingLabelGroupList(product)
+                    labelGroupList = labelGroupList
                 )
             } else {
                 productCardModel.copy(
-                    labelGroupList = mappingLabelGroupList(product)
+                    labelGroupList = labelGroupList
                 )
             }
         }
@@ -105,7 +108,7 @@ object MapperUtils {
         }
     }
 
-    fun checkIfDTAvailable(labelGroupList: List<LabelGroup>): Boolean {
+    private fun checkIfDTAvailable(labelGroupList: List<LabelGroup>): Boolean {
         return labelGroupList.find {
             it.position == TopAdsConstants.FULFILLMENT && it.title == TopAdsConstants.DILYANI_TOKOPEDIA
         } != null
