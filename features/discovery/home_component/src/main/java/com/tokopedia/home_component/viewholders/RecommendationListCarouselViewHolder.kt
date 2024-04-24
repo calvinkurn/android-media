@@ -30,6 +30,7 @@ import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -220,6 +221,13 @@ class RecommendationListCarouselViewHolder(itemView: View,
         private var viewVisiblePercentage = 0
         private var channelGrid: ChannelGrid? = null
 
+        init {
+            itemView.addOnAttachStateChangeListener(
+                onViewAttachedToWindow = { onViewAttachedToWindow() },
+                onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+            )
+        }
+
         override fun bind(recommendation: HomeRecommendationListCarousel) {
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
@@ -367,18 +375,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         override fun onBindViewHolder(holder: RecommendationListCarouselItem, position: Int) {
             holder.bind(recommendationList[position])
-        }
-
-        override fun onViewAttachedToWindow(holder: RecommendationListCarouselItem) {
-            if (holder is HomeRecommendationListViewHolder) {
-                holder.onViewAttachedToWindow()
-            }
-        }
-
-        override fun onViewDetachedFromWindow(holder: RecommendationListCarouselItem) {
-            if (holder is HomeRecommendationListViewHolder) {
-                holder.onViewDetachedFromWindow(holder.visiblePercentage)
-            }
         }
     }
 }

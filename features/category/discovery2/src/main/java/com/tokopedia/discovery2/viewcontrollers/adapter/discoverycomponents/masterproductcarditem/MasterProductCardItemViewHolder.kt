@@ -28,6 +28,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -60,6 +61,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var isFullFilment: Boolean = false
     private var isRecommendation = false
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow() },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+        )
+    }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         isRecommendation = masterProductCardItemViewModel?.components?.recomQueryProdId != null
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
@@ -75,10 +83,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             AppLogTopAds.sendEventShowOver(itemView.context, it.asAdsLogShowOverModel(visiblePercentage))
             setVisiblePercentage(Int.ZERO)
         }
-    }
-
-    override fun onViewDetachedToWindow() {
-        dataItem?.let { AppLogTopAds.sendEventShow(itemView.context, it.asAdsLogShowModel()) }
     }
 
     private fun initView() {
@@ -491,6 +495,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        dataItem?.let { AppLogTopAds.sendEventShow(itemView.context, it.asAdsLogShowModel()) }
+
         masterProductCardItemViewModel?.trackShowProductCard()
         masterProductCardItemViewModel?.sendTopAdsView()
         masterProductCardItemViewModel?.let {

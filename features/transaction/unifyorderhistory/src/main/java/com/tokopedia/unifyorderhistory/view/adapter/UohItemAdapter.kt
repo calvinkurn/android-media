@@ -156,20 +156,6 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is UohRecommendationItemViewHolder) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is UohRecommendationItemViewHolder) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
-        }
-    }
-
     override fun getItemViewType(position: Int): Int {
         return when (listTypeData[position].typeLayout) {
             TYPE_LOADER -> LAYOUT_LOADER

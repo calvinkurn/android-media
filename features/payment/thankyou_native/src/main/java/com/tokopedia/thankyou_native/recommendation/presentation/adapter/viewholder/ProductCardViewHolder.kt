@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHold
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -24,6 +25,13 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view),
     private lateinit var thankYouProductCardModel: ThankYouProductCardModel
 
     private var visibleViewPercentage: Int = Int.ZERO
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow() },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+        )
+    }
 
     fun bind(
         thankYouProductCardModel: ThankYouProductCardModel,

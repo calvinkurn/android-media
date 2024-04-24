@@ -104,20 +104,6 @@ class CartAdapter(
         recyclerView.removeOnScrollListener(scrollListener)
     }
 
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
-        }
-    }
-
     fun updateList(newList: ArrayList<Any>) {
         val diffResult = DiffUtil.calculateDiff(CartDiffUtilCallback(cartDataList, newList))
 

@@ -156,7 +156,6 @@ class DiscoveryRecycleAdapter(
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
-
         holder.onViewDetachedToWindow()
         try {
             super.onViewDetachedFromWindow(holder)

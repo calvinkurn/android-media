@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonReimagineWidgetBinding
@@ -34,6 +35,13 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonReimagineWidgetItemViewHolder.kt"
     }
     val context: Context = view.context
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow() },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+        )
+    }
 
     override fun bind(
         comparisonModel: ComparisonModel,
