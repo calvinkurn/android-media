@@ -291,7 +291,8 @@ open class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
-    var currentTabPosition: Int? = null
+    // current index of navigation tab in the page.
+    private var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
         private set
     private var isFromForcedNavigation = false
