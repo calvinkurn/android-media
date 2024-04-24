@@ -16,6 +16,7 @@ import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -51,6 +52,7 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
+import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
@@ -90,6 +92,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -151,8 +155,8 @@ class FeedPostViewModel @Inject constructor(
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
 
-    private val _feedTagProductList = MutableLiveData<Result<List<ContentTaggedProductUiModel>>?>()
-    val feedTagProductList: LiveData<Result<List<ContentTaggedProductUiModel>>?>
+    private val _feedTagProductList = MutableStateFlow(FeedProductPaging.Empty)
+    val feedTagProductList : Flow<FeedProductPaging>
         get() = _feedTagProductList
 
     private val _followRecommendationResult = MutableLiveData<Result<String>>()
@@ -1286,23 +1290,28 @@ class FeedPostViewModel @Inject constructor(
 
     fun fetchFeedProduct(
         activityId: String,
-        products: List<ContentTaggedProductUiModel>,
-        sourceType: ContentTaggedProductUiModel.SourceType
+        products: List<ContentTaggedProductUiModel>, //or add default from flow
+        sourceType: ContentTaggedProductUiModel.SourceType,
+        isNextPage: Boolean = false,
     ) {
         viewModelScope.launch {
             try {
-                _feedTagProductList.value = null
-
+                if(!isNextPage) _feedTagProductList.value = FeedProductPaging.Empty
                 val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
+                    _feedTagProductList.value.products.isNotEmpty() -> _feedTagProductList.value.products
                     else -> emptyList()
+                }
+                val cursor = when {
+                    _feedTagProductList.value.hasNextPage -> _feedTagProductList.value.cursor
+                    else -> ""
                 }
 
                 val response = withContext(dispatchers.io) {
                     feedXGetActivityProductsUseCase(
                         feedXGetActivityProductsUseCase.getFeedDetailParam(
                             activityId,
-                            ""
+                            cursor
                         )
                     ).data
                 }
@@ -1310,12 +1319,11 @@ class FeedPostViewModel @Inject constructor(
                 val mappedData = response.products.map {
                     ProductMapper.transform(it, response.campaign, sourceType)
                 }
-                val distinctData = (currentList + mappedData).distinctBy {
-                    it.id
-                }
-                _feedTagProductList.value = Success(distinctData)
+
+                val distinctData = (currentList + mappedData).distinctBy { it.id }
+                _feedTagProductList.value = FeedProductPaging(ResultState.Success ,distinctData, response.nextCursor)
             } catch (t: Throwable) {
-                _feedTagProductList.value = Fail(t)
+                _feedTagProductList.update { state -> state.copy(state = ResultState.Fail(t)) }
             }
         }
     }

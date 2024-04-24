@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,6 +94,7 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
+import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -136,6 +136,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -2000,7 +2001,7 @@ class FeedFragment :
     override val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         get() = feedPostViewModel.merchantVoucherLiveData
 
-    override val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
+    override val productListLiveData: Flow<FeedProductPaging>
         get() = feedPostViewModel.feedTagProductList
 
     override fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>) {

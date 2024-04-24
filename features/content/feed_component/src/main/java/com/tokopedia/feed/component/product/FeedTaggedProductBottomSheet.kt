@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
@@ -31,8 +32,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as contentcommonR
 
 class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
@@ -77,18 +81,14 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     var listener: Listener? = null
     var tracker: MvcTrackerImpl = DefaultMvcTrackerImpl()
 
-    private val productListObserver = Observer<Result<List<ContentTaggedProductUiModel>>?> {
-        when (it) {
-            is Success -> {
+    private val productListObserver = FlowCollector<FeedProductPaging> { data ->
+        when (data.state) {
+            is ResultState.Success -> {
                 hideLoading()
+                val productShopId = data.products.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
+                if (productShopId.isNotEmpty()) { shopId = productShopId }
 
-                val productShopId =
-                    it.data.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
-                if (productShopId.isNotEmpty()) {
-                    shopId = productShopId
-                }
-
-                mAdapter.setItemsAndAnimateChanges(it.data)
+                mAdapter.setItemsAndAnimateChanges(data.products)
 
                 binding.root.let { view ->
                     view.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -108,11 +108,14 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                     })
                 }
             }
-            is Fail -> {
+            is ResultState.Fail -> {
                 hideLoading()
             }
+
+            else -> {}
         }
     }
+
     private val mvcObserver = Observer<Result<TokopointsCatalogMVCSummary>?> { result ->
         when (result) {
             is Success -> {
@@ -131,7 +134,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = BottomSheetFeedTaggedProductBinding.inflate(inflater, container, false)
-        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title))
+        setTitle(getString(contentcommonR.string.content_product_bs_title))
         setChild(binding.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -154,7 +157,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         setShowListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(BOTTOM_SHEET_SHOW_DELAY)
-                listener?.productListLiveData?.observe(viewLifecycleOwner, productListObserver)
+                listener?.productListLiveData?.collect(productListObserver)
                 listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
             }
         }
@@ -172,7 +175,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     }
 
     private fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary) {
-        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title_with_promo))
+        setTitle(getString(contentcommonR.string.content_product_bs_title_with_promo))
         val info = data.animatedInfoList
         if (info?.isNotEmpty() == true) {
             binding.mvcTaggedProduct.setData(
@@ -251,7 +254,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>)
 
         val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
-        val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
+        val productListLiveData: Flow<FeedProductPaging>
     }
 
     companion object {
