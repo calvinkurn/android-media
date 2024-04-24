@@ -7,4 +7,5 @@ code_review_rule:
     - pattern: *
       reviewers:
         - rama.putra
+        - yovie.putra
       required_approvals: 1
