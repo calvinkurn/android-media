@@ -2671,7 +2671,7 @@ open class DiscoveryFragment :
         val tabPositionString = tabPosition.toString()
         discoComponentQuery?.let {
             it[ACTIVE_TAB] = tabPositionString
-            arguments?.putString(ACTIVE_TAB, tabPositionString)
         }
+        arguments?.putString(ACTIVE_TAB, tabPositionString)
     }
 }
