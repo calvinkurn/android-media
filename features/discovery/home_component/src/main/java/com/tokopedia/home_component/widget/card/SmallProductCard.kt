@@ -20,22 +20,34 @@ class SmallProductCard @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
-    private val binding = WidgetSmallProductCardBinding.inflate(
-        LayoutInflater.from(context)
-    )
+    private val binding = WidgetSmallProductCardBinding
+        .inflate(LayoutInflater.from(context))
+
+    private var stockBar: ProductStockBar?
 
     init {
         addView(binding.root)
+        stockBar = ProductStockBar(binding.root)
     }
 
     fun setData(model: SmallProductModel) {
-        setupRibbon(model.ribbon)
+        // mandatory
         useCompatPadding(model.ribbon)
+
+        setupRibbon(model.ribbon)
+        renderStockBar(model.stockBar)
         renderCardContainer(model.ribbon)
         setupProductBannerImage(model.bannerImageUrl)
 
         binding.txtTitle.shouldTypographyStyleApplied(model.title)
         binding.txtSubtitle.shouldTypographyStyleApplied(model.subtitle)
+    }
+
+    private fun renderStockBar(data: SmallProductModel.StockBar) {
+        stockBar?.shouldShowStockBar(data.isEnabled, data.percentage)
+
+        val value = if (data.isEnabled) 6.toPx() else 2.toPx()
+        binding.cardContainer.setCustomMargin(MarginArea.Top(value))
     }
 
     private fun setupProductBannerImage(url: String) {
@@ -61,12 +73,8 @@ class SmallProductCard @JvmOverloads constructor(
     }
 
     private fun renderCardContainer(ribbon: SmallProductModel.Ribbon?) {
-        val marginStart = if (ribbon != null) 4.toPx() else 0
-
-        binding.cardContainer.layoutParams = binding.cardContainer.layoutParams.apply {
-            val marginLayoutParams = this as? MarginLayoutParams
-            marginLayoutParams?.marginStart = marginStart
-        }
+        val value = if (ribbon != null) 4.toPx() else 0
+        binding.cardContainer.setCustomMargin(MarginArea.Start(value))
     }
 
     private fun setupRibbon(ribbon: SmallProductModel.Ribbon?) {

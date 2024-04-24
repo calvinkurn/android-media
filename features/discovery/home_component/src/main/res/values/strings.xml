@@ -56,4 +56,5 @@
     <string name="content_desc_coupon_component_background">Background Coupon Widget</string>
 
     <string name="content_desc_small_product_card_image">Small Banner Product Card</string>
+    <string name="content_desc_small_product_card_stockbar_fire">Stockbar Fire Icon</string>
 </resources>

@@ -10,9 +10,9 @@
         android:id="@+id/card_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         tools:layout_marginStart="4dp">
 
         <ImageView
@@ -31,14 +31,47 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
+            android:alpha="0.03"
+            android:background="@color/Unify_Static_Black"
             android:gravity="center"
             android:scaleType="centerCrop"
-            android:background="@color/Unify_Static_Black"
-            android:alpha="0.03"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/stockbar_inactive"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_spc_stockbar_background"
+            app:layout_constraintBottom_toBottomOf="@+id/img_banner"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/stockbar_active"
+            android:layout_width="20dp"
+            android:layout_height="6dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_spc_stockbar_foreground"
+            app:layout_constraintBottom_toBottomOf="@id/stockbar_inactive"
+            app:layout_constraintStart_toStartOf="@+id/stockbar_inactive"
+            app:layout_constraintTop_toTopOf="@id/stockbar_inactive"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ic_fire"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:visibility="gone"
+            android:contentDescription="@string/content_desc_small_product_card_stockbar_fire"
+            app:srcCompat="@drawable/ic_spc_fire_filled"
+            app:layout_constraintTop_toTopOf="@+id/stockbar_active"
+            app:layout_constraintStart_toEndOf="@+id/stockbar_active"
+            app:layout_constraintBottom_toBottomOf="@+id/stockbar_active"
+            app:layout_constraintEnd_toEndOf="@id/stockbar_active"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_title"
@@ -47,23 +80,23 @@
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"
-            app:typographyType="small"
-            app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_banner"
-            tools:text="Beli ini lagi"/>
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Beli ini lagi" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN600"
             android:ellipsize="end"
             android:maxLines="1"
-            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_title"
-            tools:text="Krim Wajah"/>
+            app:typographyType="small"
+            tools:text="Krim Wajah" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

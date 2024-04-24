@@ -3,6 +3,7 @@ package com.tokopedia.home_component.widget.card
 data class SmallProductModel(
     val bannerImageUrl: String,
     val ribbon: Ribbon? = null,
+    val stockBar: StockBar = StockBar(),
     val title: Pair<String, TextStyle>,
     val subtitle: Pair<String, TextStyle>,
 ) {
@@ -22,5 +23,10 @@ data class SmallProductModel(
         val isBold: Boolean = false,
         val textColor: String = "",
         val shouldRenderHtmlFormat: Boolean = false
+    )
+
+    data class StockBar(
+        val isEnabled: Boolean = false,
+        val percentage: Int = 0
     )
 }
