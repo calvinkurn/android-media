@@ -563,15 +563,4 @@ object AppLogAnalytics {
         }
         return null
     }
-
-    private fun getCurrentFragment(currentActivity: Activity): Fragment? {
-        if (currentActivity is FragmentActivity) {
-            currentActivity.supportFragmentManager.fragments.forEach {
-                if (it.isVisible) {
-                    return it
-                }
-            }
-        }
-        return null
-    }
 }

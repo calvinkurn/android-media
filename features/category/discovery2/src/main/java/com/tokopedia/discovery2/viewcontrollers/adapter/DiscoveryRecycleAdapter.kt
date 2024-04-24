@@ -148,7 +148,6 @@ class DiscoveryRecycleAdapter(
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
-
         try {
             holder.onViewAttachedToWindow()
         } catch (e: UninitializedPropertyAccessException) {
@@ -157,8 +156,6 @@ class DiscoveryRecycleAdapter(
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
-
-        holder.onViewDetachedFromWindow(holder.visiblePercentage)
 
         holder.onViewDetachedToWindow()
         try {

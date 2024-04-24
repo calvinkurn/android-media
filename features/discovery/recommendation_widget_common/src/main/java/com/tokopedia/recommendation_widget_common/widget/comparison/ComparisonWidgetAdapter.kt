@@ -66,18 +66,6 @@ class ComparisonWidgetAdapter(
         }
     }
 
-    override fun onViewAttachedToWindow(holder: ViewHolder) {
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: ViewHolder) {
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
-        }
-    }
-
     private fun onCreateView(parent: ViewGroup, @LayoutRes layoutId: Int): View {
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
 

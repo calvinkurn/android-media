@@ -23,14 +23,7 @@ open class PercentageScrollListener : OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
-        //horizontal approach
-        if (dx > 0 || dx < 0) {
-            setVisiblePercentageOnScrollChanged(recyclerView)
-        }
-        //vertical approach
-        else if (dy > 0 || dy < 0) {
-            setVisiblePercentageOnScrollChanged(recyclerView)
-        }
+        setVisiblePercentageOnScrollChanged(recyclerView)
     }
 
     private fun setVisiblePercentageOnScrollChanged(recyclerView: RecyclerView) {

@@ -28,7 +28,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     protected LoadingModel loadingModel = new LoadingModel();
     protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
 
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
@@ -42,7 +42,9 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = onCreateViewItem(parent, viewType);
-        return adapterTypeFactory.createViewHolder(view, viewType);
+        AbstractViewHolder viewHolder = adapterTypeFactory.createViewHolder(view, viewType);
+        viewHolder.setRecyclerView(recyclerView);
+        return viewHolder;
     }
 
     @Override
@@ -62,7 +64,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.setRecyclerView(recyclerView);
         holder.bind(visitables.get(position));
     }
 
@@ -70,7 +71,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
                                  @NonNull List<Object> payloads) {
-        holder.setRecyclerView(recyclerView);
         if (!payloads.isEmpty()) {
             holder.bind(visitables.get(position), payloads);
         } else {
@@ -244,7 +244,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
             notifyItemRangeInserted(positionStart, data.size());
         }
     }
-
 
     public void removeElement(Visitable visitable) {
         visitables.remove(visitable);

@@ -393,7 +393,7 @@ open class ProductDetailFragment :
     ScreenShotListener,
     PlayWidgetListener,
     PdpComponentCallbackMediator,
-    PdpCallbackDelegate by PdpCallbackDelegateImpl(), AppLogFragmentInterface {
+    PdpCallbackDelegate by PdpCallbackDelegateImpl() {
 
     companion object {
 
@@ -6427,10 +6427,6 @@ open class ProductDetailFragment :
                 shareExInitializer = ShareExInitializer(it)
             }
         }
-    }
-
-    override fun getFragmentName(): String {
-        return PageName.PDP
     }
 
     /**

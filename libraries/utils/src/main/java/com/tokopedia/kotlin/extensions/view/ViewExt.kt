@@ -282,6 +282,17 @@ fun View.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
     )
 }
 
+fun View.addOnScrollChangedListener(onView: () -> Unit) {
+    viewTreeObserver.addOnScrollChangedListener(
+        object : ViewTreeObserver.OnScrollChangedListener {
+            override fun onScrollChanged() {
+                onView.invoke()
+                viewTreeObserver.removeOnScrollChangedListener(this)
+            }
+        }
+    )
+}
+
 fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
