@@ -1,0 +1,79 @@
+// This file contains repository for project, app, and module
+// If you want to configure for specific app or module, you can edit this file
+// Repository in respective build.gradle will be replaced with these lists
+// If you want to change the environment, change resRepo in gradle.properties
+
+// List module for root project in Bits environment
+gradle.allprojects { project ->
+    String resRepo = project.findProperty('resRepo')
+    println "Resource Repository --------- ${resRepo})"
+    println "Print project --------- ${project.path})"
+    if (resRepo == "bits") {
+        replaceRepositoriesWith(project.buildscript.repositories) {
+            project.buildscript.repositories {
+                maven {
+                    name "Android-Public-Bits"
+                    url  "${production_bits_artifactory_url}" + "${android_public_bits_repo}"
+                }
+
+                maven {
+                    name "Tokopedia-Mixed-Bits"
+                    url  "${production_bits_artifactory_url}" + "${tokopedia_bits_repo}"
+                    allowInsecureProtocol = true
+                }
+            }
+        }
+        replaceRepositoriesWith(project.repositories) {
+            project.repositories {
+                maven {
+                    name "Android-Public-Bits"
+                    url  "${production_bits_artifactory_url}" + "${android_public_bits_repo}"
+                }
+
+                maven {
+                    name "Tokopedia-Mixed-Bits"
+                    url  "${production_bits_artifactory_url}" + "${tokopedia_bits_repo}"
+                    allowInsecureProtocol = true
+                }
+            }
+        }
+    }
+}
+
+def replaceRepositoriesWith(RepositoryHandler repos, Closure addBits) {
+    def deletedRepos = []
+    repos.configureEach { repo ->
+        String urlRepo = ""
+        String repoName = repo.name
+        PropertyValue property = repo.metaPropertyValues.find {
+            it.name == "repositoryUrls"
+        }
+        if (property != null) {
+            urlRepo = property.getValue()[0]
+        }
+        if (isContainsTokoOrGoogleRepos(urlRepo, repoName)) {
+            // delete tokopedia maven
+            deletedRepos.add(repo)
+        }
+    }
+
+    // Delete Tokopedia Repos
+    repos.removeAll(deletedRepos)
+
+    // Reorder repositories with bits repos on top of repos
+    def newList = repos.collect()
+    repos.removeAll(newList)
+    addBits.call()
+    repos.addAll(newList)
+
+    repos.forEach {repo ->
+        println "Final Repositories: ---- ${repo.name}"
+    }
+}
+
+def isContainsTokoOrGoogleRepos(String url, String name) {
+    return url.contains(gcp_artifactory_url) || url.contains(artifactory_url) ||
+            url.contains(urlCourierClient) || url.contains(urlGoto) || url.contains(urlLaku6) ||
+            url.contains(urlHansel)
+}
+

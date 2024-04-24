@@ -4,9 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.FileUtil
-import com.tokopedia.loginregister.shopcreation.data.GetUserProfileCompletionPojo
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.data.GetUserProfileCompletionPojo
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoPojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
@@ -14,8 +15,8 @@ import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdatePojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidatePojo
+import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
-import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCase
@@ -78,6 +79,9 @@ class ShopCreationViewModelTest {
     lateinit var shopInfoUseCase: ShopInfoUseCase
 
     @RelaxedMockK
+    lateinit var getShopStatusUseCase: GetShopStatusUseCase
+
+    @RelaxedMockK
     lateinit var addNameObserver: Observer<Result<UserProfileUpdate>>
 
     @RelaxedMockK
@@ -121,6 +125,7 @@ class ShopCreationViewModelTest {
             updateUserProfileUseCase,
             getProfileUseCase,
             shopInfoUseCase,
+            getShopStatusUseCase,
             CoroutineTestDispatchersProvider
         )
     }

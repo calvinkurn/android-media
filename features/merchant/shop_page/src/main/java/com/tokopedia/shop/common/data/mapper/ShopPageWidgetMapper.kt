@@ -238,7 +238,8 @@ object ShopPageWidgetMapper {
             header = ShopPageHomeMapper.mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),
             layoutOrder = response.layoutOrder,
             name = response.name,
-            type = response.type
+            type = response.type,
+            lastTabIndexSelected = 0
         )
     }
     fun mapToHomeBannerProductGroupWidget(
@@ -267,7 +268,7 @@ object ShopPageWidgetMapper {
                     BannerProductGroupUiModel.Tab.ComponentList.Data(
                         data.imageUrl,
                         data.ctaLink,
-                        data.linkID,
+                        data.link,
                         linkType,
                         data.isShowProductInfo
                     )
@@ -373,7 +374,7 @@ object ShopPageWidgetMapper {
                     imageUrl = it.banner,
                     etalaseList = it.listEtalase.map {etalase ->
                         Etalase(
-                            etalaseId = etalase.linkId,
+                            etalaseId = etalase.link,
                             name = etalase.name,
                             imageUrl = etalase.imageUrl,
                             productList = listOf()
