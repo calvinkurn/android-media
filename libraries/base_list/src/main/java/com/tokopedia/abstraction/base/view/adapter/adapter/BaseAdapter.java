@@ -24,7 +24,6 @@ import java.util.List;
 public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adapter<AbstractViewHolder> {
 
     protected List<Visitable> visitables;
-    protected List<View.OnAttachStateChangeListener> onAttachStateChangeListenerList;
     private F adapterTypeFactory;
     protected LoadingModel loadingModel = new LoadingModel();
     protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
@@ -118,8 +117,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
                 }
             }
         };
-
-        onAttachStateChangeListenerList.add(onAttachStateChangeListener);
 
         viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener);
     }
@@ -270,11 +267,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
             notifyItemRangeInserted(positionStart, data.size());
         }
     }
-
-    public void clearOnAttachChangeStateListeners() {
-        onAttachStateChangeListenerList.clear();
-    }
-
 
     public void removeElement(Visitable visitable) {
         visitables.remove(visitable);

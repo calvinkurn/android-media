@@ -55,8 +55,8 @@ class UniversalInboxAdapter(
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         try {
-            @Suppress("UNCHECKED_CAST")
             setOnAttachStateChangeListener(holder)
+            @Suppress("UNCHECKED_CAST")
             (holder as AbstractViewHolder<Visitable<*>>).bind(visitables[position])
         } catch (throwable: Throwable) {
             Timber.d(throwable)
