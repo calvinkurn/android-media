@@ -52,6 +52,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
@@ -211,6 +212,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isReturnHomeWhenBackPressed = false
     private var isSuccessRegisterPhone = false
     private var socmedBottomSheet: SocmedBottomSheet? = null
+    private var callbackRegister = ""
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -335,6 +337,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         isEnableDirectBiometric = isEnableDirectBiometric()
         isEnableOcl = isOclEnabled()
+        callbackRegister = getParamString(PARAM_CALLBACK_REGISTER, arguments, savedInstanceState, "")
         refreshRolloutVariant()
     }
 
@@ -1097,8 +1100,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     goToHome()
                 }
 
-                if (isSuccessRegisterPhone) {
-                    goToExplicitPersonalize()
+                if (isSuccessRegisterPhone && callbackRegister.isNotEmpty()) {
+                    goToCallbackRegister(callbackRegister)
                 } else {
                     finishResultOk()
                 }
@@ -1140,9 +1143,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun goToExplicitPersonalize() {
-        val intent = RouteManager.getIntent(this.context, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
-        this.startActivityForResult(intent, RegisterConstants.Request.REQUEST_EXPLICIT_PERSONALIZE)
+    private fun goToCallbackRegister(callback: String) {
+        val intent = RouteManager.getIntent(this.context, callback)
+        this.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CALLBACK_REGISTER)
     }
 
     private fun initTokoChatConnection() {
@@ -1461,9 +1464,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return {
             dismissLoadingLogin()
             context?.let {
-                onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, it)),
-                    LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
+                onErrorLogin(
+                    MessageErrorException(
+                        ErrorHandlerSession.getDefaultErrorCodeMessage(
+                            ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                            it
+                        )
+                    ),
+                    LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN
+                )
             }
         }
     }
@@ -1650,9 +1659,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         activity?.finish()
                     }
                 }
-            } else if (requestCode == RegisterConstants.Request.REQUEST_EXPLICIT_PERSONALIZE) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CALLBACK_REGISTER) {
                 finishResultOk()
-            } else{
+            } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
@@ -1731,16 +1740,28 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     viewModel.loginGoogle(accessToken, email)
                 } else {
                     context?.let {
-                        onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                            ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, it)),
-                            LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL)
+                        onErrorLogin(
+                            MessageErrorException(
+                                ErrorHandlerSession.getDefaultErrorCodeMessage(
+                                    ErrorHandlerSession.ErrorCode.EMPTY_EMAIL,
+                                    it
+                                )
+                            ),
+                            LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL
+                        )
                     }
                 }
             } else {
                 context?.let {
-                    onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                        ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, it)),
-                        LoginErrorCode.ERROR_ON_GMAIL_CATCH)
+                    onErrorLogin(
+                        MessageErrorException(
+                            ErrorHandlerSession.getDefaultErrorCodeMessage(
+                                ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN,
+                                it
+                            )
+                        ),
+                        LoginErrorCode.ERROR_ON_GMAIL_CATCH
+                    )
                 }
             }
         } catch (e: ApiException) {
