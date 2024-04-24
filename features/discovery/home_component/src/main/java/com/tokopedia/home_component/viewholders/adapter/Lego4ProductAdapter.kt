@@ -32,27 +32,9 @@ class Lego4ProductAdapter(
 
     override fun onBindViewHolder(holder: LegoProductCardViewHolder, position: Int) {
         try {
-            setOnAttachStateChangeListener(holder)
             holder.bind(itemList[position])
         } catch (e: Exception) {
             e.recordCrashlytics()
         }
-    }
-
-    private fun setOnAttachStateChangeListener(viewHolder: LegoProductCardViewHolder) {
-        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewAttachedToWindow()
-                }
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
-                }
-            }
-        }
-        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 }

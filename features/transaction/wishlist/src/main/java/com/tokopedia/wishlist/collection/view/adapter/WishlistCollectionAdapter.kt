@@ -194,8 +194,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     )
                 }
                 WishlistConsts.TYPE_RECOMMENDATION_LIST -> {
-                    setOnAttachStateChangeListener(holder as WishlistCollectionRecommendationItemViewHolder)
-                    holder.bind(
+                    (holder as WishlistCollectionRecommendationItemViewHolder).bind(
                         element,
                         holder.adapterPosition
                     )
@@ -225,23 +224,6 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     override fun getItemCount(): Int {
         return listTypeData.size
-    }
-
-    fun setOnAttachStateChangeListener(viewHolder: WishlistCollectionRecommendationItemViewHolder) {
-        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewAttachedToWindow()
-                }
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
-                }
-            }
-        }
-        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 
     fun getItems(): List<WishlistCollectionTypeLayoutData> {

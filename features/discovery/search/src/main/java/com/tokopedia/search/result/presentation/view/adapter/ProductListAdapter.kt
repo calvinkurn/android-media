@@ -48,29 +48,8 @@ class ProductListAdapter(
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         setFullSpanForStaggeredGrid(holder, holder.itemViewType)
 
-        setOnAttachStateChangeListener(holder)
-
         @Suppress("UNCHECKED_CAST")
         (holder as AbstractViewHolder<Visitable<*>>).bind(list[position])
-    }
-
-    fun setOnAttachStateChangeListener(viewHolder: AbstractViewHolder<*>) {
-        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    val item: Visitable<*> = list[viewHolder.bindingAdapterPosition]
-                    (viewHolder as? AbstractViewHolder<Visitable<*>>)?.onViewAttachedToWindow(item)
-                }
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    val item: Visitable<*> = list[viewHolder.bindingAdapterPosition]
-                    (viewHolder as? AbstractViewHolder<Visitable<*>>)?.onViewDetachedFromWindow(item, viewHolder.visibilityPercentage)
-                }
-            }
-        }
-        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 
     private fun setFullSpanForStaggeredGrid(holder: AbstractViewHolder<*>, viewType: Int) {

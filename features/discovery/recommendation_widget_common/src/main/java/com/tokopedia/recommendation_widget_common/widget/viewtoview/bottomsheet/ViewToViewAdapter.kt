@@ -35,24 +35,6 @@ class ViewToViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewToViewProductViewHolder, position: Int) {
-        setOnAttachStateChangeListener(holder)
         holder.bind(getItem(position))
-    }
-
-    private fun setOnAttachStateChangeListener(viewHolder: ViewToViewProductViewHolder) {
-        val onAttachStateChangeListener: View.OnAttachStateChangeListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewAttachedToWindow()
-                }
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                if (viewHolder.bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                    viewHolder.onViewDetachedFromWindow(viewHolder.visiblePercentage)
-                }
-            }
-        }
-        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener)
     }
 }
