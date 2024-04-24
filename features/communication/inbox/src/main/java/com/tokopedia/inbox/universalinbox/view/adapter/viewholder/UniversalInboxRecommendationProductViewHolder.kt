@@ -37,7 +37,7 @@ class UniversalInboxRecommendationProductViewHolder(
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
-        this.element = uiModel
+        this.elementItem = uiModel
 
         setRecTriggerObject(uiModel.recommendationItem)
 

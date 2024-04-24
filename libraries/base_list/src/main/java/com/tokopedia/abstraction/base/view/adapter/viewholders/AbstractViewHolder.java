@@ -25,17 +25,17 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     public abstract void bind(T element);
 
-    protected T element;
+    protected T elementItem;
 
     protected View.OnAttachStateChangeListener onAttachStateChangeListener = new View.OnAttachStateChangeListener() {
         @Override
         public void onViewAttachedToWindow(@NonNull View view) {
-            AbstractViewHolder.this.onViewAttachedToWindow(element);
+            AbstractViewHolder.this.onViewAttachedToWindow(elementItem);
         }
 
         @Override
         public void onViewDetachedFromWindow(@NonNull View view) {
-            AbstractViewHolder.this.onViewDetachedFromWindow(element, visibilityPercentage);
+            AbstractViewHolder.this.onViewDetachedFromWindow(elementItem, visibilityPercentage);
         }
     };
     public int visibilityPercentage = 0;

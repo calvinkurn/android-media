@@ -32,7 +32,7 @@ class RecomCarouselProductCardViewHolder (view: View,
     }
 
     override fun bind(element: RecomCarouselProductCardDataModel, payloads: MutableList<Any>) {
-        this.element = element
+        this.elementItem = element
         val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
         if (payload.isNullOrEmpty()) {
             bind(element)
