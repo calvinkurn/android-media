@@ -273,8 +273,7 @@ open class HomeRevampFragment :
     CMHomeWidgetCallback,
     HomePayLaterWidgetListener,
     AppLogInterface,
-    AppLogGlidePageInterface,
-    AppLogFragmentInterface {
+    AppLogGlidePageInterface {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -546,10 +545,6 @@ open class HomeRevampFragment :
     }
 
     override fun getPageName(): String {
-        return PageName.HOME
-    }
-
-    override fun getFragmentName(): String {
         return PageName.HOME
     }
 

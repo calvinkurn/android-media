@@ -7,6 +7,7 @@ import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingItemLayoutBinding
 import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ProductCardListViewHolder(
@@ -35,9 +36,30 @@ internal class ProductCardListViewHolder(
                 }
             }
         )
-        binding?.carouselPagingProductCardListView?.setOnClickListener {
-            element.listener.onItemClick(element.group, element.productIndex)
-        }
+        binding?.carouselPagingProductCardListView?.setOnClickListener(object: ProductCardClickListener {
+            override fun onClick(v: View) {
+                element.listener.onItemClick(element.group, element.productIndex)
+            }
+
+            override fun onAreaClicked(v: View) {
+                element.listener.onAreaClick(element.group, element.productIndex)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                element.listener.onProductImageClick(element.group, element.productIndex)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                element.listener.onSellerInfoClick(element.group, element.productIndex)
+            }
+        })
+    }
+    override fun onViewAttachedToWindow(element: ProductCardListDataView?) {
+        element?.listener?.onViewAttachedToWindow(element.group, element.productIndex)
+    }
+
+    override fun onViewDetachedFromWindow(element: ProductCardListDataView?, visiblePercentage: Int) {
+        element?.listener?.onViewDetachedFromWindow(element.group, element.productIndex, visiblePercentage)
     }
 
     override fun onViewRecycled() {

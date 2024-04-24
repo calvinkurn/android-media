@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -31,14 +32,6 @@ class ViewToViewAdapter(
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         recyclerView.removeOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onViewAttachedToWindow(holder: ViewToViewProductViewHolder) {
-        holder.onViewAttachedToWindow()
-    }
-
-    override fun onViewDetachedFromWindow(holder: ViewToViewProductViewHolder) {
-        holder.onViewDetachedFromWindow(holder.visiblePercentage)
     }
 
     override fun onBindViewHolder(holder: ViewToViewProductViewHolder, position: Int) {

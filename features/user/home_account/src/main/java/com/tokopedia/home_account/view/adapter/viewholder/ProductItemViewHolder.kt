@@ -10,6 +10,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.HomeAccountRecommendationItemProductCardBinding
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -68,6 +69,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

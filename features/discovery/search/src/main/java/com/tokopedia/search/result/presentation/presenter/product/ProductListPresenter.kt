@@ -1015,7 +1015,7 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.setProductList(visitableList)
-        view.backToTop()
+        view.immediateMoveToTop()
         if (hasNextPage()) {
             view.addLoading()
         }

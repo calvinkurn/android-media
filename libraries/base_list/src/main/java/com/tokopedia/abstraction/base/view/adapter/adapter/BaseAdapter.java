@@ -28,6 +28,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     protected LoadingModel loadingModel = new LoadingModel();
     protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
+    protected RecyclerView recyclerView;
 
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
@@ -41,7 +42,19 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = onCreateViewItem(parent, viewType);
-        return adapterTypeFactory.createViewHolder(view, viewType);
+        AbstractViewHolder viewHolder = adapterTypeFactory.createViewHolder(view, viewType);
+        viewHolder.setRecyclerView(recyclerView);
+        return viewHolder;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.recyclerView = null;
     }
 
     protected View onCreateViewItem(ViewGroup parent, int viewType) {
@@ -231,7 +244,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
             notifyItemRangeInserted(positionStart, data.size());
         }
     }
-
 
     public void removeElement(Visitable visitable) {
         visitables.remove(visitable);

@@ -70,18 +70,6 @@ class ListProductItemViewHolder(
             override fun onClick(v: View) {
                 productListener.onItemClicked(productItemData, adapterPosition)
             }
-
-            override fun onAreaClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.AREA)
-            }
-
-            override fun onProductImageClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.COVER)
-            }
-
-            override fun onSellerInfoClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.SELLER_NAME)
-            }
         })
 
         productCardView.setAddToCartOnClickListener {
@@ -95,24 +83,6 @@ class ListProductItemViewHolder(
 
         productCardView.addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
             productListener.onProductImpressedByteIO(productItemData)
-        }
-    }
-
-    override fun onViewAttachedToWindow(element: ProductItemDataView?) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventShow(
-                itemView.context,
-                element.asAdsLogShowModel()
-            )
-        }
-    }
-
-    override fun onViewDetachedFromWindow(element: ProductItemDataView?, visiblePercentage: Int) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventShowOver(
-                itemView.context,
-                element.asAdsLogShowOverModel(visiblePercentage)
-            )
         }
     }
 

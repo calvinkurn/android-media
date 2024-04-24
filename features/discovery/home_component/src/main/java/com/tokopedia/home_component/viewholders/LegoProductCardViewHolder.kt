@@ -15,6 +15,7 @@ import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
 import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.home_component.databinding.LayoutLegoProductCardItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
@@ -89,6 +90,7 @@ class LegoProductCardViewHolder(
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         channelGrid.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

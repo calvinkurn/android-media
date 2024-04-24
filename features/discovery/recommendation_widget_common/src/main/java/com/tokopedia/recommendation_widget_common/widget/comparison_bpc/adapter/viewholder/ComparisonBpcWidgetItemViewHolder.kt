@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.R
@@ -88,6 +89,7 @@ class ComparisonBpcWidgetItemViewHolder(
 
     override fun onViewDetachedFromWindow(element: ComparisonBpcItemModel?, visiblePercentage: Int) {
         element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     private fun setLayoutParams(element: ComparisonBpcItemModel) {

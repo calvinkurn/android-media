@@ -16,6 +16,7 @@ interface ViewUpdater {
     fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>)
     fun requestRelayout()
     fun backToTop()
+    fun immediateMoveToTop()
     fun scrollToPosition(position: Int)
     fun couponRedeemToaster(message: String)
     fun unBlurItem()

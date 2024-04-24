@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHold
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -72,6 +73,7 @@ class UohRecommendationItemViewHolder(private val binding: UohRecommendationItem
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

@@ -3,7 +3,6 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.view.View
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel

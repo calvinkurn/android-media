@@ -11,6 +11,7 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -143,6 +144,7 @@ class RecommendationItemViewHolder(
 
     override fun onViewDetachedFromWindow(element: RecommendationItemDataModel?, visiblePercentage: Int) {
         element?.productItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     private fun setRecTriggerObject(model: RecommendationItemDataModel) {

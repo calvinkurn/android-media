@@ -10,6 +10,7 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -89,6 +90,7 @@ class WishlistCollectionRecommendationItemViewHolder(
 
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     override fun setVisiblePercentage(visiblePercentage: Int) {

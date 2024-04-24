@@ -4,11 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
@@ -55,6 +55,7 @@ class RecommendationViewHolder constructor(
 
     override fun onViewDetachedFromWindow(element: RecommendationUiModel?, visiblePercentage: Int) {
         element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     private fun setRecTriggerObject(model: RecommendationItem) {

@@ -3,18 +3,15 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asAdsLogShowModel
-import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asAdsLogShowOverModel
 import com.tokopedia.home_component.analytics.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
 import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -85,5 +82,6 @@ class CarouselProductCardViewHolder (
 
     override fun onViewDetachedFromWindow(element: CarouselProductCardDataModel?, visiblePercentage: Int) {
         element?.grid?.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 }

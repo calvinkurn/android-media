@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
@@ -218,20 +220,6 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         recyclerView.removeOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
-        }
     }
 
     override fun getItemCount(): Int {

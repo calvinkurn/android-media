@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardItemListLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -108,6 +109,7 @@ internal class CarouselProductCardListViewHolder(
     override fun onViewDetachedFromWindow(visiblePercentage: Int) {
         carouselProductCardModel?.let { model ->
             model.getOnViewListener()?.onViewDetachedFromWindow(model.productCardModel, absoluteAdapterPosition, visiblePercentage)
+            setVisiblePercentage(Int.ZERO)
         }
     }
 }

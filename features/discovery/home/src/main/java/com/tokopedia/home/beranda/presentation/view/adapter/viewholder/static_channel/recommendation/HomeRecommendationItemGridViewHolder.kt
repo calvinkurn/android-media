@@ -1,9 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.home.R
@@ -14,6 +12,7 @@ import com.tokopedia.home.util.asAdsLogShowModel
 import com.tokopedia.home.util.asAdsLogShowOverModel
 import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
@@ -114,6 +113,7 @@ class HomeRecommendationItemGridViewHolder(
                     itemView.context,
                     it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
                 )
+                setVisiblePercentage(Int.ZERO)
             }
         }
     }

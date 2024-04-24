@@ -1,8 +1,11 @@
 package com.tokopedia.home_component.viewholders.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.viewholders.LegoProductCardViewHolder
@@ -21,14 +24,6 @@ class Lego4ProductAdapter(
             LayoutInflater.from(parent.context).inflate(LegoProductCardViewHolder.LAYOUT, parent, false),
             channels
         )
-    }
-
-    override fun onViewAttachedToWindow(holder: LegoProductCardViewHolder) {
-        holder.onViewAttachedToWindow()
-    }
-
-    override fun onViewDetachedFromWindow(holder: LegoProductCardViewHolder) {
-        holder.onViewDetachedFromWindow(holder.visiblePercentage)
     }
 
     override fun getItemCount(): Int {

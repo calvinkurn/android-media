@@ -3,7 +3,6 @@ package com.tokopedia.inbox.universalinbox.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -14,7 +13,6 @@ import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInbo
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxMenuItemViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxMenuSeparatorViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationLoaderViewHolder
-import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationTitleViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationWidgetViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder
@@ -48,6 +46,8 @@ class UniversalInboxAdapter(
             UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
             UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
         }
+
+        holder.setRecyclerView(recyclerView)
         return holder
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -18,10 +19,28 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     public AbstractViewHolder(View itemView) {
         super(itemView);
+
+        itemView.addOnAttachStateChangeListener(onAttachStateChangeListener);
     }
 
     public abstract void bind(T element);
+
+    protected T elementItem;
+
+    protected View.OnAttachStateChangeListener onAttachStateChangeListener = new View.OnAttachStateChangeListener() {
+        @Override
+        public void onViewAttachedToWindow(@NonNull View view) {
+            AbstractViewHolder.this.onViewAttachedToWindow(elementItem);
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull View view) {
+            AbstractViewHolder.this.onViewDetachedFromWindow(elementItem, visibilityPercentage);
+        }
+    };
     public int visibilityPercentage = 0;
+
+    public RecyclerView rvHolder;
 
     /*
     This method is used to bind the view holder when only some parts of the model is changed.
@@ -52,12 +71,16 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     @Override
     public void onViewAttachedToWindow() {}
 
-    public void onViewAttachedToWindow(T element) {}
+    public void onViewAttachedToWindow(@Nullable T element) {}
 
     @Override
     public void onViewDetachedFromWindow(int visiblePercentage) {}
 
-    public void onViewDetachedFromWindow(T element, int visiblePercentage) {}
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.rvHolder = recyclerView;
+    }
+
+    public void onViewDetachedFromWindow(@Nullable T element, int visiblePercentage) {}
 
     @Override
     public void setVisiblePercentage(int visiblePercentage) {

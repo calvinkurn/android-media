@@ -1,13 +1,13 @@
 package com.tokopedia.carouselproductcard.reimagine
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 
 private typealias CarouselProductCardAdapter =
     ListAdapter<Visitable<CarouselProductCardTypeFactory>, AbstractViewHolder<*>>
@@ -29,20 +29,6 @@ internal class Adapter(
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         recyclerView.removeOnScrollListener(scrollListener)
-    }
-
-    override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewAttachedToWindow()
-        }
-    }
-
-    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is IAdsViewHolderTrackListener) {
-            holder.onViewDetachedFromWindow(holder.visiblePercentage)
-        }
     }
 
     override fun onCreateViewHolder(
@@ -79,4 +65,5 @@ internal class Adapter(
 
         onCurrentListChanged()
     }
+
 }
