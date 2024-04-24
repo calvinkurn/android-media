@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +15,6 @@ import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInbo
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxMenuItemViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxMenuSeparatorViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationLoaderViewHolder
-import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationTitleViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationWidgetViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder
@@ -48,12 +48,15 @@ class UniversalInboxAdapter(
             UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
             UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
         }
+
+        holder.setRecyclerView(recyclerView)
         return holder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         try {
             @Suppress("UNCHECKED_CAST")
+            setOnAttachStateChangeListener(holder)
             (holder as AbstractViewHolder<Visitable<*>>).bind(visitables[position])
         } catch (throwable: Throwable) {
             Timber.d(throwable)

@@ -17,6 +17,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
+import com.tokopedia.kotlin.extensions.view.addOnScrollChangedListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -36,9 +37,14 @@ class UniversalInboxRecommendationProductViewHolder(
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
-        setVisiblePercentage(getViewAreaPercentage(rvHolder, binding?.inboxProductRecommendation, bindingAdapterPosition))
         setRecTriggerObject(uiModel.recommendationItem)
+
         binding?.inboxProductRecommendation?.run {
+
+            addOnScrollChangedListener {
+                setVisiblePercentage(getViewAreaPercentage(rvHolder, binding?.inboxProductRecommendation, bindingAdapterPosition))
+            }
+
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))
             setImageProductViewHintListener(
                 uiModel.recommendationItem,

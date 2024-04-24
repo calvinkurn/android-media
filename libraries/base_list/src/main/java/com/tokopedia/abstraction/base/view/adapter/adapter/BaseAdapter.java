@@ -24,11 +24,12 @@ import java.util.List;
 public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adapter<AbstractViewHolder> {
 
     protected List<Visitable> visitables;
+    protected List<View.OnAttachStateChangeListener> onAttachStateChangeListenerList;
     private F adapterTypeFactory;
     protected LoadingModel loadingModel = new LoadingModel();
     protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
 
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
@@ -42,7 +43,9 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = onCreateViewItem(parent, viewType);
-        return adapterTypeFactory.createViewHolder(view, viewType);
+        AbstractViewHolder viewHolder = adapterTypeFactory.createViewHolder(view, viewType);
+        viewHolder.setRecyclerView(recyclerView);
+        return viewHolder;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.setRecyclerView(recyclerView);
+        setOnAttachStateChangeListener(holder);
         holder.bind(visitables.get(position));
     }
 
@@ -70,7 +73,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
                                  @NonNull List<Object> payloads) {
-        holder.setRecyclerView(recyclerView);
         if (!payloads.isEmpty()) {
             holder.bind(visitables.get(position), payloads);
         } else {
@@ -96,6 +98,30 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     public void onViewRecycled(@NonNull AbstractViewHolder holder) {
         super.onViewRecycled(holder);
         holder.onViewRecycled();
+    }
+
+    public void setOnAttachStateChangeListener(AbstractViewHolder viewHolder) {
+        View.OnAttachStateChangeListener onAttachStateChangeListener = new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(@NonNull View view) {
+                if (viewHolder.getBindingAdapterPosition() > RecyclerView.NO_POSITION) {
+                    Visitable item = visitables.get(viewHolder.getBindingAdapterPosition());
+                    viewHolder.onViewAttachedToWindow(item);
+                }
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(@NonNull View view) {
+                if (viewHolder.getBindingAdapterPosition() > RecyclerView.NO_POSITION) {
+                    Visitable item = visitables.get(viewHolder.getBindingAdapterPosition());
+                    viewHolder.onViewDetachedFromWindow(item, viewHolder.visibilityPercentage);
+                }
+            }
+        };
+
+        onAttachStateChangeListenerList.add(onAttachStateChangeListener);
+
+        viewHolder.itemView.addOnAttachStateChangeListener(onAttachStateChangeListener);
     }
 
     public List<Visitable> getList() {
@@ -243,6 +269,10 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         } else {
             notifyItemRangeInserted(positionStart, data.size());
         }
+    }
+
+    public void clearOnAttachChangeStateListeners() {
+        onAttachStateChangeListenerList.clear();
     }
 
 
