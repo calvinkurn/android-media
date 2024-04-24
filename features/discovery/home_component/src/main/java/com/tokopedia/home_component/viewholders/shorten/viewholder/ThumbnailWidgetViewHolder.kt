@@ -24,7 +24,7 @@ class ThumbnailWidgetViewHolder(
 
     init {
         if (pool != null) {
-            binding?.lstCard?.setRecycledViewPool(pool)
+            binding?.lstThumbnailCard?.setRecycledViewPool(pool)
         }
 
         setupRecyclerView()
@@ -39,9 +39,9 @@ class ThumbnailWidgetViewHolder(
 
     private fun setupRecyclerView() {
         mAdapter = ItemContentCardAdapter(ItemTwoSquareType.Thumbnail, listener)
-        binding?.lstCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
-        binding?.lstCard?.adapter = mAdapter
-        binding?.lstCard?.setHasFixedSize(true)
+        binding?.lstThumbnailCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
+        binding?.lstThumbnailCard?.adapter = mAdapter
+        binding?.lstThumbnailCard?.setHasFixedSize(true)
     }
 
     companion object {

@@ -35,7 +35,7 @@
             android:layout_toEndOf="@+id/txt_header" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lst_card"
+            android:id="@+id/lst_product_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_header"

@@ -25,7 +25,7 @@ class ProductWidgetViewHolder(
 
     init {
         if (pool != null) {
-            binding?.lstCard?.setRecycledViewPool(pool)
+            binding?.lstProductCard?.setRecycledViewPool(pool)
         }
 
         setupRecyclerView()
@@ -40,9 +40,9 @@ class ProductWidgetViewHolder(
 
     private fun setupRecyclerView() {
         mAdapter = PartialItemWidgetAdapter(ItemTwoSquareType.Product, listener)
-        binding?.lstCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
-        binding?.lstCard?.adapter = mAdapter
-        binding?.lstCard?.setHasFixedSize(true)
+        binding?.lstProductCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
+        binding?.lstProductCard?.adapter = mAdapter
+        binding?.lstProductCard?.setHasFixedSize(true)
     }
 
     companion object {

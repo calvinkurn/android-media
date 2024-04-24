@@ -24,7 +24,7 @@ class MissionWidgetViewHolder(
 
     init {
         if (pool != null) {
-            binding?.lstCard?.setRecycledViewPool(pool)
+            binding?.lstMissionCard?.setRecycledViewPool(pool)
         }
 
         setupRecyclerView()
@@ -39,9 +39,9 @@ class MissionWidgetViewHolder(
 
     private fun setupRecyclerView() {
         mAdapter = ItemContentCardAdapter(ItemTwoSquareType.Mission, listener)
-        binding?.lstCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
-        binding?.lstCard?.adapter = mAdapter
-        binding?.lstCard?.setHasFixedSize(true)
+        binding?.lstMissionCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
+        binding?.lstMissionCard?.adapter = mAdapter
+        binding?.lstMissionCard?.setHasFixedSize(true)
     }
 
     companion object {
