@@ -2664,4 +2664,11 @@ open class DiscoveryFragment :
     override fun getPageName(): String {
         return pageInfoHolder?.label?.trackingPagename.orEmpty()
     }
+
+    fun setCurrentTabPosition(tabPosition: Int) {
+        currentTabPosition = tabPosition
+        discoComponentQuery?.let {
+            it[ACTIVE_TAB] = tabPosition.toString()
+        }
+    }
 }
