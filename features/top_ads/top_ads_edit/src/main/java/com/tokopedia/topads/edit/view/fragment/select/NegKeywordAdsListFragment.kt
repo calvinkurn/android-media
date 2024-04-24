@@ -43,7 +43,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
     companion object {
         private const val VALIDATE_KEYWORD_LIMIT = 5
-        private const val ALLOWED_CHARS_REGEX = "[a-zA-Z0-9();+/\"'-.,&*%: ]"
+        private const val ALLOWED_CHARS_REGEX = "[a-zA-Z0-9()+/\"'-.,&*%: ]"
 
         fun createInstance(extras: Bundle?): NegKeywordAdsListFragment {
             val fragment = NegKeywordAdsListFragment()
