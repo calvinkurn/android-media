@@ -251,11 +251,11 @@ object PMActiveTermHelper {
                 description = context.getString(
                     R.string.pm_pro_general_benefit_2
                 ),
-                icon = IconUnify.PROMO_ADS
+                icon = R.drawable.ic_promo
             ),
             PMProBenefitUiModel(
                 description = context.getString(R.string.pm_pro_general_benefit_3),
-                icon = IconUnify.PROMO
+                icon = R.drawable.ic_potential
             )
         )
     }
