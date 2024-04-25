@@ -40,6 +40,27 @@ class TopChatRoomBuyerBroadcastPromoTest : TopchatRoomTest() {
                 productcardcompactR.id.product_name_typography,
                 withText("Product Attachment 1")
             )
+            assertNewBroadcastPromoProductCarouselItem(
+                0,
+                productcardcompactR.id.promo_label,
+                withText("80%")
+            )
+            assertNewBroadcastPromoProductCarouselItem(
+                0,
+                productcardcompactR.id.slash_price_typography,
+                withText("50.000")
+            )
+
+            assertNewBroadcastPromoProductCarouselItem(
+                0,
+                productcardcompactR.id.rating_typography,
+                withText("5.0  •  terjual 12rb")
+            )
+            assertNewBroadcastPromoProductCarouselItem(
+                0,
+                productcardcompactR.id.rating_icon,
+                isDisplayed()
+            )
 
             // product pre-order
             assertNewBroadcastPromoProductCarouselItem(
