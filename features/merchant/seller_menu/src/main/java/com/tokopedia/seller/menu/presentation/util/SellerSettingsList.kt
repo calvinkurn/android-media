@@ -1,7 +1,9 @@
 package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
@@ -126,7 +128,18 @@ object SellerSettingsList {
                 )
                 intent.putExtra(EXTRA_OPEN_SELLER_NOTIF, true)
                 context.startActivity(intent)
-            }
+            },
+            DividerUiModel(DividerType.THICK),
+            IndentedSettingTitleUiModel(context.getString(sellermenuR.string.seller_menu_header_content)),
+            SellerMenuItemUiModel(
+                context.getString(sellermenuR.string.seller_menu_header_body),
+                eventActionSuffix = SettingTrackingConstant.SETTINGS,
+                type = MenuItemType.CONTENT,
+                iconUnify = IconUnify.IMAGE
+            ) {
+               RouteManager.route(context, ApplinkConst.CONTENT_SETTINGS)
+            },
+
         )
     }
 
