@@ -10,7 +10,7 @@ import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiMode
 import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ItemMissionWidgetUiModel
 
-class PartialItemWidgetAdapter(
+class ItemContentCardAdapter(
     private val type: ItemTwoSquareType,
     private val listener: ContainerMultiTwoSquareListener
 ) : ListAdapter<ShortenVisitable, RecyclerView.ViewHolder>(
