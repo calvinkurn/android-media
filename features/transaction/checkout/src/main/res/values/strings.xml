@@ -145,7 +145,7 @@
 
     <string name="checkout_service_fee_title_info">Biaya Layanan</string>
     <string name="checkout_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
-    <string name="checkout_lbl_installment_fee">Biaya Cicilan</string>
+    <string name="checkout_lbl_installment_fee">Biaya cicilan per bulan</string>
 
     <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
     <string name="checkout_label_total_gifting">Total Pelengkap Hadiah</string>

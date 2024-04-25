@@ -592,7 +592,12 @@ class CheckoutCostViewHolder(
                         binding.llCheckoutCostPaymentsExpanded,
                         false
                     )
-                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = installmentTitleString
+                    val interestText = cost.installmentDetail!!.description.split(" ").firstOrNull{ it.contains("%") }
+                    if (interestText != null) {
+                        itemBinding.tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan ($interestText per bulan)"
+                    } else {
+                        itemBinding.tvCheckoutCostPaymentFeeTitle.text = installmentTitleString
+                    }
                     itemBinding.icCheckoutCostPaymentFee.isVisible = false
                     itemBinding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
                     itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment, false).removeDecimalSuffix()
@@ -714,7 +719,12 @@ class CheckoutCostViewHolder(
                 // render outside
                 val paymentFee = installmentFee.first()
                 binding.apply {
-                    tvCheckoutCostPaymentFeeTitle.text = binding.root.context.getString(R.string.checkout_lbl_installment_fee)
+                    val interestText = cost.installmentDetail!!.description.split(" ").firstOrNull{ it.contains("%") }
+                    if (interestText != null) {
+                        tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan ($interestText per bulan)"
+                    } else {
+                        tvCheckoutCostPaymentFeeTitle.text = binding.root.context.getString(R.string.checkout_lbl_installment_fee)
+                    }
                     tvCheckoutCostPaymentFeeTitle.isVisible = true
                     icCheckoutCostPaymentFee.isVisible = false
                     tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
