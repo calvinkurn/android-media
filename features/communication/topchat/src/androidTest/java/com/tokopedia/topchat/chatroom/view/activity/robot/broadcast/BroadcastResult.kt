@@ -192,6 +192,15 @@ object BroadcastResult {
         }
     }
 
+    fun assertNewBroadcastCountdown(
+        position: Int,
+        text: String
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_tv_countdown, withText(text))
+        }
+    }
+
     fun assertNewBroadcastMessage(
         position: Int,
         matcher: Matcher<View>
@@ -213,7 +222,7 @@ object BroadcastResult {
         onView(withId(R.id.topchat_chatroom_broadcast_promo_rv)).check(matches(withTotalItem(totalItem)))
     }
 
-    fun assertNewBroadcastPromoProduct(
+    fun assertNewBroadcastPromoProductCarouselItem(
         position: Int,
         @IdRes viewId: Int,
         matcher: Matcher<View>
@@ -226,21 +235,41 @@ object BroadcastResult {
         ).check(matches(matcher))
     }
 
-    fun assertNewBroadcastVoucherHeader(
-        position: Int,
-        text: String
+    fun assertNewBroadcastPromoProductSingle(
+        position: Int
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.topchat_broadcast_tv_voucher_header, withText(text))
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_product, isDisplayed())
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_single_product, isDisplayed())
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_rv, not(isDisplayed()))
+        }
+    }
+
+    fun assertNewBroadcastPromoWithoutProduct(
+        position: Int
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_product, isDisplayed())
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_single_product, not(isDisplayed()))
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_rv, not(isDisplayed()))
+        }
+    }
+
+    fun assertNewBroadcastVoucherHeader(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_broadcast_tv_voucher_header, matcher)
         }
     }
 
     fun assertNewBroadcastVoucherDesc(
         position: Int,
-        text: String
+        matcher: Matcher<View>
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.topchat_broadcast_tv_desc, withText(text))
+            assertViewInRecyclerViewAt(position, R.id.topchat_broadcast_tv_desc, matcher)
         }
     }
 
@@ -257,6 +286,15 @@ object BroadcastResult {
 
     fun assertNewBroadcastPromoVoucher(
         position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_voucher, matcher)
+        }
+    }
+
+    fun assertNewBroadcastPromoVoucher(
+        position: Int,
         @IdRes viewId: Int,
         matcher: Matcher<View>
     ) {
@@ -266,6 +304,14 @@ object BroadcastResult {
                 viewId
             )
         ).check(matches(matcher))
+    }
+
+    fun assertNewBroadcastPromoSingleVoucher(
+        position: Int
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_broadcast_single_voucher, isDisplayed())
+        }
     }
 
     fun assertNewBroadcastPromoTimeStamp(
