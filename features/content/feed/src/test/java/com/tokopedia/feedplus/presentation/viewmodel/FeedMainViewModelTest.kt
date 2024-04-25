@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -51,6 +52,7 @@ class FeedMainViewModelTest {
     private val onBoardingPreferences: OnBoardingPreferences = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val uiEventManager: UiEventManager<FeedMainEvent> = mockk()
+    private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedMainViewModel
 
@@ -71,7 +73,8 @@ class FeedMainViewModelTest {
             deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager,
         )
     }
 
@@ -91,7 +94,8 @@ class FeedMainViewModelTest {
             deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager,
         )
         val displayName = mViewModel.displayName
 
@@ -477,7 +481,8 @@ class FeedMainViewModelTest {
             deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager
         )
 
         val mViewModel = FeedMainViewModel.provideFactory(factory, mActiveTabSource)

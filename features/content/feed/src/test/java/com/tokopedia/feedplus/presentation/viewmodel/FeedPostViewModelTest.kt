@@ -68,6 +68,7 @@ import com.tokopedia.feedplus.presentation.model.FeedViewModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.model.type.FeedContentType
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
@@ -134,6 +135,7 @@ class FeedPostViewModelTest {
     private val uiEventManager = UiEventManager<FeedPostEvent>()
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase = mockk()
+    private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -166,7 +168,8 @@ class FeedPostViewModelTest {
             uiEventManager = uiEventManager,
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             feedGetChannelStatusUseCase = feedGetChannelStatusUseCase,
-            dispatchers = testDispatcher
+            dispatchers = testDispatcher,
+            tooltipManager = tooltipManager,
         )
     }
 
@@ -177,6 +180,8 @@ class FeedPostViewModelTest {
 
     @Test
     fun getScrollPosition_whenChanged_shouldBeChanged() {
+        coEvery { tooltipManager.isShowTooltip(any()) } returns false
+
         // given
         val position = 1
 
