@@ -6,11 +6,7 @@ import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiMode
 
 object ShortenWidgetMapper {
 
-    fun to2SquareUiModel(
-        data: DynamicHomeChannel,
-        atfData: AtfData,
-        verticalPosition: Int
-    ): MultiTwoSquareWidgetUiModel {
+    fun to2SquareUiModel(data: DynamicHomeChannel, atfData: AtfData, verticalPosition: Int): MultiTwoSquareWidgetUiModel {
         if (data.channels.isEmpty()) return MultiTwoSquareWidgetUiModel()
 
         val channel = data.channels

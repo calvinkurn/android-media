@@ -64,10 +64,10 @@ data class SmallProductModel(
     )
 
     data class LabelGroup(
-        val position: String = "",
-        val title: String = "",
-        val type: String = "",
-        val url: String = "",
+        val position: String,
+        val title: String,
+        val type: String,
+        val url: String,
         val styles: List<Styles> = listOf(),
     ) {
 
