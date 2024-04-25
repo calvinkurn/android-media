@@ -667,10 +667,6 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private fun getPaymentMethod(payment: CheckoutPaymentModel): String {
-        return payment.data?.paymentWidgetData?.firstOrNull()?.gatewayName ?: ""
-    }
-
     fun triggerSendEnhancedEcommerceCheckoutAnalytics(
         tradeInCustomDimension: Map<String, String>?,
         step: String,
@@ -3349,7 +3345,7 @@ class CheckoutViewModel @Inject constructor(
             )
             updateTotalAndPayment(cost, payment)
         }
-        mTrackerShipment.sendViewPaymentMethodEvent(getPaymentMethod(payment), getCartTypeString())
+        mTrackerShipment.sendViewPaymentMethodEvent(payment.getPaymentMethodName(), getCartTypeString())
     }
 
     private fun updateTotalAndPayment(cost: CheckoutCostModel, payment: CheckoutPaymentModel, skipValidatePayment: Boolean = false) {

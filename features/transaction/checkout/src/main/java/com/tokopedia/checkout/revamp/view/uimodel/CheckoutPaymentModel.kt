@@ -17,7 +17,12 @@ data class CheckoutPaymentModel(
     val tenorList: List<TenorListData>? = null,
     val installmentData: GoCicilInstallmentData? = null,
     val validationReport: PaymentValidationReport = PaymentValidationReport.Valid
-) : CheckoutItem
+) : CheckoutItem {
+
+    fun getPaymentMethodName(): String {
+        return data?.paymentWidgetData?.firstOrNull()?.gatewayName ?: ""
+    }
+}
 
 data class OriginalCheckoutPaymentData(
     val gatewayCode: String = "",
