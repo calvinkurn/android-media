@@ -118,7 +118,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     private void initMsSDK(){
 
         // prevent initiate mssdk as it will crash debug
-        if(!GlobalConfig.DEBUG)
+        if(GlobalConfig.DEBUG)
             return;
 
         // 构建config的Builder对象

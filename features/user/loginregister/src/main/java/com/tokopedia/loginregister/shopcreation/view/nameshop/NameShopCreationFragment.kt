@@ -24,6 +24,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_OPEN_SHOP_CREATION
 import com.tokopedia.loginregister.databinding.FragmentNameShopCreationBinding
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
@@ -278,11 +279,10 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 userSession.shopName
         )
 
-        val appID = "573733"
+        val appID = LoginConstants.MsSdkKey.APPID
         val mgr = MSManagerUtils.get(appID)
         mgr?.let {
-            mgr.report("registered")
-            Toast.makeText(requireContext(), String.format("selected config %s", "registered"), Toast.LENGTH_SHORT).show()
+            mgr.report(LoginConstants.MsSdkKey.REGISTERED)
         }
     }
 

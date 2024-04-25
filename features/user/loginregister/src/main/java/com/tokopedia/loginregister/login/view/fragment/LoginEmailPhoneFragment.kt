@@ -1109,11 +1109,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else {
 
 
-                val appID = "573733"
+                val appID = LoginConstants.MsSdkKey.APPID
                 val mgr = MSManagerUtils.get(appID)
                 mgr?.let {
-                    mgr.report("logged")
-                    Toast.makeText(requireContext(), String.format("selected config %s", "registered"), Toast.LENGTH_SHORT).show()
+                    mgr.report(LoginConstants.MsSdkKey.LOGGED)
                 }
                 analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister, isLoginAfterSq)
 

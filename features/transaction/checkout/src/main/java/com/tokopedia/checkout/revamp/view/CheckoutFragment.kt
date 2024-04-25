@@ -518,11 +518,10 @@ class CheckoutFragment :
 
                 is CheckoutPageState.Success -> {
 
-                    val appID = "573733"
+                    val appID = MSSDK_APPID
                     val mgr = MSManagerUtils.get(appID)
                     mgr?.let {
-                        mgr.report("checkout")
-                        Toast.makeText(requireContext(), String.format("selected config %s", "registered"), Toast.LENGTH_SHORT).show()
+                        mgr.report(MSSDK_CHECKOUT)
                     }
 
                     hideLoading()
@@ -1027,6 +1026,8 @@ class CheckoutFragment :
     }
 
     companion object {
+        private const val MSSDK_APPID = 13
+        private const val MSSDK_CHECKOUT = "checkout"
 
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
 
