@@ -26,6 +26,8 @@ data class ItemMissionWidgetUiModel(
     val id: String,
     val card: SmallProductModel,
     val tracker: ChannelTracker,
+    val verticalPosition: Int,
+    val cardPosition: Int,
     val url: String,
     val appLink: String,
     val pageName: String,

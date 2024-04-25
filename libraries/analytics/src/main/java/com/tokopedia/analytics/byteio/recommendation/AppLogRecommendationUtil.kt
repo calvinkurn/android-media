@@ -23,6 +23,8 @@ object CardName {
     const val AD_FEED_CARD = "ad_feed_card"
     const val MISSION_PAGE_CARD = "mission_%s_page_card"
     const val MISSION_PRODUCT_CARD = "mission_%s_product_card"
+    const val TWO_MISSION_PRODUCT_CARD = "2squaremission_%s_product_card"
+    const val TWO_THUMBNAIL_PAGE_CARD = "2squarethumbnail%s_%s_page_card"
 }
 
 internal fun constructSourceModule(

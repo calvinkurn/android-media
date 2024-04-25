@@ -6,20 +6,25 @@ import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiMode
 
 object ShortenWidgetMapper {
 
-    fun to2SquareUiModel(data: DynamicHomeChannel, atfData: AtfData): MultiTwoSquareWidgetUiModel {
-        val channelList = data.channels
-            .takeIf { it.size <= maxWidgetSideToSideSize() }
-            ?.associate { it.layout to it } ?: return MultiTwoSquareWidgetUiModel()
+    fun to2SquareUiModel(
+        data: DynamicHomeChannel,
+        atfData: AtfData,
+        verticalPosition: Int
+    ): MultiTwoSquareWidgetUiModel {
+        if (data.channels.isEmpty()) return MultiTwoSquareWidgetUiModel()
 
-        val mission = channelList[TwoSquareMissionWidgetMapper.layout()]
-        val thumbnail = channelList[TwoSquareThumbnailWidgetMapper.layout()]
+        val channel = data.channels
+            .take(maxWidgetSideToSideSize())
+            .associateBy { it.layout }
+
+        val mission = channel[TwoSquareMissionWidgetMapper.layout()]
+        val thumbnail = channel[TwoSquareThumbnailWidgetMapper.layout()]
 
         return MultiTwoSquareWidgetUiModel(
             id = atfData.atfMetadata.id.toString(),
             showShimmering = atfData.atfMetadata.isShimmer,
-            backgroundGradientColor = data.channels.first().banner.gradientColor,
-            mission = TwoSquareMissionWidgetMapper.map(data, mission),
-            thumbnail = TwoSquareThumbnailWidgetMapper.map(data, thumbnail),
+            mission = TwoSquareMissionWidgetMapper.map(data, mission, verticalPosition),
+            thumbnail = TwoSquareThumbnailWidgetMapper.map(data, thumbnail, verticalPosition),
             status = MultiTwoSquareWidgetUiModel.Status.Success
         )
     }

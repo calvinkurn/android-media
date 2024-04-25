@@ -11,7 +11,8 @@ object TwoSquareMissionWidgetMapper : BaseShortenWidgetMapper<MissionWidgetUiMod
 
     override fun map(
         data: DynamicHomeChannel,
-        channel: DynamicHomeChannel.Channels?
+        channel: DynamicHomeChannel.Channels?,
+        verticalPosition: Int,
     ): MissionWidgetUiModel? {
         val widget = widget(data, channel) ?: return null
 
@@ -19,13 +20,15 @@ object TwoSquareMissionWidgetMapper : BaseShortenWidgetMapper<MissionWidgetUiMod
             channelModel = widget.channelModel,
             position = widget.position,
             header = widget.header,
-            data = widget.grids.map { grid ->
+            data = widget.grids.mapIndexed { index, grid ->
                 val labelGroup = grid.labelGroup.associateBy { it.position }
 
                 ItemMissionWidgetUiModel(
                     id = labelGroup[Keys.ID]?.title.orEmpty(),
-                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid),
+                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(channel, grid),
                     card = createSmallProductCardModel(grid, grid.labelGroup.toList()),
+                    verticalPosition = verticalPosition,
+                    cardPosition = index,
                     url = grid.url,
                     appLink = grid.applink,
                     pageName = labelGroup[Keys.PAGE_NAME]?.title.orEmpty(),

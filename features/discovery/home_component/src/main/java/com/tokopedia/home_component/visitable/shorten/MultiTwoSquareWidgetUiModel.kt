@@ -3,7 +3,9 @@ package com.tokopedia.home_component.visitable.shorten
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class MultiTwoSquareWidgetUiModel(
@@ -38,5 +40,17 @@ data class MultiTwoSquareWidgetUiModel(
 
     companion object {
         private const val BLOCK_NAME = "MultiTwoSquareWidgetUiModel"
+
+        // @mandatory: don't forget to register a new [ShortenVisitable] into this map.
+        fun visitableList(data: MultiTwoSquareWidgetUiModel): List<ShortenVisitable> {
+            val map = mutableMapOf<Int, ShortenVisitable?>()
+
+            map[data.mission?.position.orZero()] = data.mission
+            map[data.thumbnail?.position.orZero()] = data.thumbnail
+
+            return map.entries
+                .sortedBy { it.key }
+                .mapNotNull { it.value }
+        }
     }
 }

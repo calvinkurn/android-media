@@ -24,6 +24,8 @@ data class ThumbnailWidgetUiModel(
 
 data class ItemThumbnailWidgetUiModel(
     val card: SmallProductModel,
+    val verticalPosition: Int,
+    val cardPosition: Int,
     val tracker: ChannelTracker,
     val pageName: String,
     val gridId: String,

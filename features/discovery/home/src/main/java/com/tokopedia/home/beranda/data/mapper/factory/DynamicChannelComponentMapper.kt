@@ -49,7 +49,10 @@ object DynamicChannelComponentMapper {
         )
     }
 
-    fun mapHomeChannelTrackerToModel(grid: DynamicHomeChannel.Grid): ChannelTracker {
+    fun mapHomeChannelTrackerToModel(
+        channel: DynamicHomeChannel.Channels?,
+        grid: DynamicHomeChannel.Grid
+    ): ChannelTracker {
         val json = Gson().fromJson(grid.trackerJson, DynamicChannelTracker::class.java)
 
         return ChannelTracker(
@@ -74,7 +77,11 @@ object DynamicChannelComponentMapper {
             categoryId = json.categoryId,
             productName = json.productName,
             recommendationType = json.recommendationType,
-            buType = json.buType
+            buType = json.buType,
+            channelId = channel?.id.orEmpty(),
+            channelName = channel?.name.orEmpty(),
+            gridId = grid.id,
+            headerName = channel?.header?.name.orEmpty(),
         )
     }
 

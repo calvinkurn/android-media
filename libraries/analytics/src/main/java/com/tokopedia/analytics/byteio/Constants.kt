@@ -170,6 +170,7 @@ enum class EntranceForm(val str: String) {
     CONTENT_GOODS_CARD("content_goods_card"),
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
     MISSION_HORIZONTAL_GOODS_CARD("mission_horizontal_goods_card"),
+    TWO_MISSION_HORIZONTAL_GOODS_CARD("2mission_horizontal_goods_card"),
     APPEND_GOODS_CARD("append_goods_card")
 }
 

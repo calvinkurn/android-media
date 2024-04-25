@@ -123,7 +123,7 @@ class AtfMapper @Inject constructor(
                     is DynamicHomeChannel -> {
                         when (value.atfMetadata.component) {
                             AtfKey.TYPE_CHANNEL -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
-                            AtfKey.TYPE_HORIZONTAL -> visitables.add(ShortenWidgetMapper.to2SquareUiModel(this, value))
+                            AtfKey.TYPE_HORIZONTAL -> visitables.add(ShortenWidgetMapper.to2SquareUiModel(this, value, index))
                         }
                     }
                 }

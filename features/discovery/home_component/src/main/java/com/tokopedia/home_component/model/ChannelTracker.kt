@@ -1,6 +1,9 @@
 package com.tokopedia.home_component.model
 
+import com.tokopedia.analytics.byteio.PageName
+
 data class ChannelTracker(
+    // ByteIO
     val entranceForm: String,
     val sourceModuleType: String,
     val recomPageName: String,
@@ -23,4 +26,15 @@ data class ChannelTracker(
     val productName: String,
     val recommendationType: String,
     val buType: String,
-)
+
+    // GTM
+    val channelId: String,
+    val channelName: String,
+    val gridId: String,
+    val headerName: String
+) {
+
+    fun isProduct() = productId.isNotEmpty() && productId != "0"
+
+    fun sourceModule() = "${sourceModuleType}_${PageName.HOME}_outer_${recomPageName}_module"
+}

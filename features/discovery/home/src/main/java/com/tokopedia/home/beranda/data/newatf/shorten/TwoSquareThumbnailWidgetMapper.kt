@@ -12,7 +12,8 @@ object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetU
 
     override fun map(
         data: DynamicHomeChannel,
-        channel: DynamicHomeChannel.Channels?
+        channel: DynamicHomeChannel.Channels?,
+        verticalPosition: Int
     ): ThumbnailWidgetUiModel? {
         val widget = widget(data, channel) ?: return null
 
@@ -20,7 +21,7 @@ object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetU
             channelModel = widget.channelModel,
             position = widget.position,
             header = widget.header,
-            data = widget.grids.map { grid ->
+            data = widget.grids.mapIndexed { index, grid ->
                 val labelGroup = grid.labelGroup.associateBy { it.position }
                 val ribbon = labelGroup[Keys.RIBBON]
 
@@ -33,7 +34,9 @@ object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetU
                 }
 
                 ItemThumbnailWidgetUiModel(
-                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid),
+                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(channel, grid),
+                    verticalPosition = verticalPosition,
+                    cardPosition = index,
                     card = createSmallProductCardModel(grid, grid.labelGroup.toList()).copy(
                         ribbon = SmallProductModel.Ribbon(
                             text = ribbon?.title.orEmpty(),

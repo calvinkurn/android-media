@@ -44,9 +44,7 @@ class ContainerMultiTwoSquareViewHolder(
 
     private fun renderWidgets(element: MultiTwoSquareWidgetUiModel) {
         visitableList.clear()
-
-        element.addMissionWidget()
-        element.addDealWidget()
+        visitableList.addAll(MultiTwoSquareWidgetUiModel.visitableList(element))
     }
 
     private fun setupRecyclerView() {
@@ -63,12 +61,6 @@ class ContainerMultiTwoSquareViewHolder(
         binding?.lstComponent?.adapter = mAdapter
         binding?.lstComponent?.setHasFixedSize(true)
     }
-
-    private fun MultiTwoSquareWidgetUiModel.addMissionWidget() =
-        mission?.let { visitableList.add(it.position, it) }
-
-    private fun MultiTwoSquareWidgetUiModel.addDealWidget() =
-        thumbnail?.let { visitableList.add(it.position, it) }
 
     companion object {
         val LAYOUT = R.layout.global_component_container_multi_2square

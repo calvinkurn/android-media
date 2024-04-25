@@ -30,7 +30,11 @@ abstract class BaseShortenWidgetMapper<T> {
      * where every single shorten widget comes from dynamic-channel bases, we have to map it
      * as UI-ready model to render it into `ContainerMultiTwoSquareViewHolder`.
      */
-    abstract fun map(data: DynamicHomeChannel, channel: DynamicHomeChannel.Channels?): T?
+    abstract fun map(
+        data: DynamicHomeChannel,
+        channel: DynamicHomeChannel.Channels?,
+        verticalPosition: Int
+    ): T?
 
     fun widget(data: DynamicHomeChannel, channel: DynamicHomeChannel.Channels?): ShortenWidget? {
         if (channel == null) return null
@@ -92,12 +96,12 @@ abstract class BaseShortenWidgetMapper<T> {
         data: DynamicHomeChannel,
         channel: DynamicHomeChannel.Channels
     ): Triple<Int, ChannelModel, ChannelHeader> {
-        val indexPosition = data.channels.indexOf(channel)
+        val widgetPosition = data.channels.indexOf(channel)
         val channelModel = DynamicChannelComponentMapper
-            .mapHomeChannelToComponent(channel, indexPosition)
+            .mapHomeChannelToComponent(channel, widgetPosition)
 
         return Triple(
-            indexPosition,
+            widgetPosition,
             channelModel,
             channel.header.mapToHomeComponentHeader(),
         )
