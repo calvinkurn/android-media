@@ -12,4 +12,6 @@ sealed class FeedTooltipEvent : UiEvent {
     data class ShowTooltip(
         val text: String,
     ) : FeedTooltipEvent()
+
+    object DismissTooltip : FeedTooltipEvent()
 }

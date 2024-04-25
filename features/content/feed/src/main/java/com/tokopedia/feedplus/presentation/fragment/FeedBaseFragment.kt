@@ -562,6 +562,9 @@ class FeedBaseFragment :
                             binding.tooltip.show()
                             feedMainViewModel.setHasShownTooltip()
                         }
+                        is FeedTooltipEvent.DismissTooltip -> {
+                            binding.tooltip.hide()
+                        }
                     }
 
                     feedMainViewModel.consumeEvent(event)

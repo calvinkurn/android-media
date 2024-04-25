@@ -212,7 +212,7 @@ class FeedPostViewModel @Inject constructor(
 
         if (tooltipManager.isShowTooltip(position)) {
             viewModelScope.launch {
-                tooltipManager.emitShowTooltipEvent()
+                tooltipManager.showTooltipEvent()
             }
         }
     }

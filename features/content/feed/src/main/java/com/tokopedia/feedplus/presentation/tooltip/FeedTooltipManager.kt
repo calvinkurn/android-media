@@ -12,7 +12,7 @@ interface FeedTooltipManager {
 
     fun isShowTooltip(contentPosition: Int): Boolean
 
-    suspend fun emitShowTooltipEvent()
+    suspend fun showTooltipEvent()
 
     fun setHasShownTooltip()
 

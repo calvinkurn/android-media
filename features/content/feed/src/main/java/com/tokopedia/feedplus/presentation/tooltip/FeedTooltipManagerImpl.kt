@@ -2,12 +2,15 @@ package com.tokopedia.feedplus.presentation.tooltip
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedplus.data.sharedpref.FeedTooltipPreferences
 import com.tokopedia.feedplus.di.FeedMainScope
 import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.kotlin.extensions.view.toDate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -18,6 +21,7 @@ class FeedTooltipManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val tooltipPreferences: FeedTooltipPreferences,
     private val uiEventManager: UiEventManager<FeedTooltipEvent>,
+    private val dispatchers: CoroutineDispatchers,
 ) : FeedTooltipManager {
 
     override val tooltipEvent: Flow<FeedTooltipEvent?>
@@ -49,11 +53,15 @@ class FeedTooltipManagerImpl @Inject constructor(
         return currentCalendar.getMonth() != lastTimeShownCalendar.getMonth() || currentCalendar.getYear() != lastTimeShownCalendar.getYear()
     }
 
-    override suspend fun emitShowTooltipEvent() {
+    override suspend fun showTooltipEvent() {
         val currentCalendar = getCalendar(System.currentTimeMillis().toDate())
         val currentCategory = FeedSearchTooltipCategory.getByDay(currentCalendar.getDayOfMonth())
 
         uiEventManager.emitEvent(FeedTooltipEvent.ShowTooltip(context.getString(currentCategory.text)))
+
+        withContext(dispatchers.default) { delay(SHOW_TOOLTIP_DURATION) }
+
+        uiEventManager.emitEvent(FeedTooltipEvent.DismissTooltip)
     }
 
     override fun setHasShownTooltip() {
@@ -80,5 +88,9 @@ class FeedTooltipManagerImpl @Inject constructor(
 
     private fun Calendar.getYear(): Int {
         return get(Calendar.YEAR)
+    }
+
+    companion object {
+        private const val SHOW_TOOLTIP_DURATION = 4000L
     }
 }
