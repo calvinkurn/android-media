@@ -23,6 +23,18 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         error_id
         error_message
       }
+      paid_section_info {
+        is_collapsed
+        label_text
+      }
+      tickers {
+        top {
+            text
+        }
+        bottom {
+            text
+        }
+      }
       services {
         service_name
         service_id
@@ -293,6 +305,32 @@ internal fun ratesQuery() = """
           error {
             error_id
             error_message
+          }
+          paid_section_info {
+            is_collapsed
+            label_text
+          }
+          tickers {
+            top {
+                TickerAction {
+                    AppURL
+                    Label
+                    WebURL
+                }
+                TickerType
+                Content
+                Title
+            }
+            bottom {
+                TickerAction {
+                    AppURL
+                    Label
+                    WebURL
+                }
+                TickerType
+                Content
+                Title
+            }
           }
           services {
             service_name
