@@ -68,9 +68,9 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -408,12 +408,10 @@ class FeedBaseFragment :
             getString(R.string.feed_check_next_content)
         )
 
-        //TODO("Mock Code")
-        binding.containerFeedTopNav.btnFeedCreatePost.doOnLayout {
-            val location = it.getLocationOnScreen()
+        binding.containerFeedTopNav.btnFeedBrowse.doOnLayout {
             val centerX = it.width / 2
 
-            binding.tooltip.setAnchorXLocation(location.x + centerX)
+            binding.containerFeedTopNav.searchTooltip.setAnchorXLocation(centerX)
         }
     }
 
@@ -554,12 +552,14 @@ class FeedBaseFragment :
 
                     when (event) {
                         is FeedTooltipEvent.ShowTooltip -> {
-                            binding.tooltip.setTooltipMessage(event.text)
-                            binding.tooltip.show()
-                            feedMainViewModel.setHasShownTooltip()
+                            if (binding.containerFeedTopNav.btnFeedBrowse.isVisible) {
+                                binding.containerFeedTopNav.searchTooltip.setTooltipMessage(event.text)
+                                binding.containerFeedTopNav.searchTooltip.show()
+                                feedMainViewModel.setHasShownTooltip()
+                            }
                         }
                         is FeedTooltipEvent.DismissTooltip -> {
-                            binding.tooltip.hide()
+                            binding.containerFeedTopNav.searchTooltip.hide()
                         }
                     }
 
@@ -577,23 +577,23 @@ class FeedBaseFragment :
                     .collect { uploadResult ->
                         when (uploadResult) {
                             is CreationUploadResult.Empty -> {
-                                binding.uploadView.hide()
+                                binding.containerFeedTopNav.uploadView.hide()
                             }
 
                             is CreationUploadResult.Upload -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setUploadProgress(uploadResult.progress)
-                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.containerFeedTopNav.uploadView.show()
+                                binding.containerFeedTopNav.uploadView.setUploadProgress(uploadResult.progress)
+                                binding.containerFeedTopNav.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             }
 
                             is CreationUploadResult.OtherProcess -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setOtherProgress(uploadResult.progress)
-                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.containerFeedTopNav.uploadView.show()
+                                binding.containerFeedTopNav.uploadView.setOtherProgress(uploadResult.progress)
+                                binding.containerFeedTopNav.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             }
 
                             is CreationUploadResult.Success -> {
-                                binding.uploadView.hide()
+                                binding.containerFeedTopNav.uploadView.hide()
 
                                 when (val uploadData = uploadResult.data) {
                                     is CreationUploadData.Post -> {
@@ -652,10 +652,10 @@ class FeedBaseFragment :
                             }
 
                             is CreationUploadResult.Failed -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setFailed()
-                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                                binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                binding.containerFeedTopNav.uploadView.show()
+                                binding.containerFeedTopNav.uploadView.setFailed()
+                                binding.containerFeedTopNav.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.containerFeedTopNav.uploadView.setListener(object : UploadInfoView.Listener {
                                     override fun onRetryClicked(view: UploadInfoView) {
                                         launch {
                                             creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
@@ -666,7 +666,7 @@ class FeedBaseFragment :
                                         launch {
                                             creationUploader.deleteQueueAndChannel(uploadResult.data)
                                             creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                            binding.uploadView.hide()
+                                            binding.containerFeedTopNav.uploadView.hide()
                                         }
 
                                         if (uploadResult.data.uploadType == CreationUploadType.Post) {
