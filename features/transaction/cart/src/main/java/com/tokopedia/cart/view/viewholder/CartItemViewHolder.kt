@@ -1173,7 +1173,7 @@ class CartItemViewHolder(
     private fun renderVariant(data: CartItemHolderData) {
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
-        val textProductVariant = binding.textProductVariant
+        val textProductVariant = binding.itemVariantCart.textProductVariant
         if (!data.isError && data.variant.isNotBlank()) {
             textProductVariant.text = data.variant
             textProductVariant.show()
@@ -1187,8 +1187,8 @@ class CartItemViewHolder(
                         data.quantity
                     )
                 }
-                binding.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
-                binding.iconVariant.setOnClickListener {
+                binding.itemVariantCart.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
+                binding.itemVariantCart.iconVariant.setOnClickListener {
                     actionListener?.onClickChangeVariant(
                         data.productId,
                         data.shopHolderData.shopId,
@@ -1196,16 +1196,16 @@ class CartItemViewHolder(
                         data.quantity
                     )
                 }
-                binding.iconVariant.show()
+                binding.itemVariantCart.iconVariant.show()
             } else {
-                binding.iconVariant.setOnClickListener(null)
-                binding.iconVariant.gone()
+                binding.itemVariantCart.iconVariant.setOnClickListener(null)
+                binding.itemVariantCart.iconVariant.gone()
             }
         } else {
             textProductVariant.setOnClickListener(null)
             textProductVariant.gone()
-            binding.iconVariant.setOnClickListener(null)
-            binding.iconVariant.gone()
+            binding.itemVariantCart.iconVariant.setOnClickListener(null)
+            binding.itemVariantCart.iconVariant.gone()
         }
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
         if (data.isError) {
