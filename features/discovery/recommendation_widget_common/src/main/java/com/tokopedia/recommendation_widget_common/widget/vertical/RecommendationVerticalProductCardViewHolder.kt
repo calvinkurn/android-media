@@ -3,7 +3,6 @@ package com.tokopedia.recommendation_widget_common.widget.vertical
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager

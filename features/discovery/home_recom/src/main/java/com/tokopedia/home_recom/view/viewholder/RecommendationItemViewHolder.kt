@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
@@ -65,6 +64,7 @@ class RecommendationItemViewHolder(
     }
 
     private fun setupCard(element: RecommendationItemDataModel) {
+        elementItem = element
         productCardView.run {
             setProductModel(element.productItem.toProductCardModel(hasThreeDots = true))
 

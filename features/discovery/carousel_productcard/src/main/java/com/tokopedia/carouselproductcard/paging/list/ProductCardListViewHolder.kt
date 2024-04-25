@@ -36,7 +36,6 @@ internal class ProductCardListViewHolder(
 
     override fun bind(element: ProductCardListDataView) {
         this.elementItem = element
-
         binding?.carouselPagingProductCardListView?.setProductModel(element.productCardModel)
         binding?.carouselPagingProductCardListView?.setImageProductViewHintListener(
             element,

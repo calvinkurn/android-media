@@ -23,7 +23,7 @@ import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class RecommendationViewHolder constructor(
+class RecommendationViewHolder(
     itemView: View?,
     private val recommendationListener: RecommendationListener?
 ) : AbstractViewHolder<RecommendationUiModel>(itemView), AppLogRecTriggerInterface {

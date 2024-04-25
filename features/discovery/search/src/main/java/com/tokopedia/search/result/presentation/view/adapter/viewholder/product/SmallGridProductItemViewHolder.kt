@@ -53,6 +53,7 @@ class SmallGridProductItemViewHolder(
     override fun bind(productItemData: ProductItemDataView?) {
         this.elementItem = productItemData
         if (productItemData == null) return
+        elementItem = productItemData
 
         val productCardView = binding?.productCardView ?: return
         val productCardModel =
