@@ -41,7 +41,7 @@ class SharedTelcoViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        telcoViewModel = SharedTelcoViewModel(graphqlRepository, contactDataSource, Dispatchers.Unconfined)
+        telcoViewModel = SharedTelcoViewModel(graphqlRepository, contactDataSource, false, Dispatchers.Unconfined)
     }
 
     @Test
