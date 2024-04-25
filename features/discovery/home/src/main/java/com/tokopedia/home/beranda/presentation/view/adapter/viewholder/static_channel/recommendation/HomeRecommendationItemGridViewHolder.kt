@@ -13,6 +13,7 @@ import com.tokopedia.home.util.asAdsLogShowOverModel
 import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
@@ -38,8 +39,14 @@ class HomeRecommendationItemGridViewHolder(
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
     override fun bind(element: HomeRecommendationItemDataModel) {
-        elementItem = element
+        this.elementItem = element
         setLayout(element)
 
         productCardImpressionListener(element)

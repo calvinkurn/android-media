@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.R
@@ -33,8 +34,14 @@ class ComparisonBpcWidgetItemViewHolder(
     }
     val context: Context = view.context
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
     override fun bind(element: ComparisonBpcItemModel) {
-        elementItem = element
+        this.elementItem = element
         binding?.run {
             productCardView.applyCarousel()
             setLayoutParams(element)

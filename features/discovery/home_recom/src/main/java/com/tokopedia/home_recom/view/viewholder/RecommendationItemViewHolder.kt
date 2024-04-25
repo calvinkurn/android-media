@@ -11,6 +11,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -43,7 +44,15 @@ class RecommendationItemViewHolder(
 
     private var recTriggerObject = RecommendationTriggerObject()
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(element: RecommendationItemDataModel) {
+        this.elementItem = element
         setupCard(element)
         setRecTriggerObject(element)
     }

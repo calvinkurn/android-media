@@ -13,6 +13,7 @@ import com.tokopedia.home.util.asAdsLogShowModel
 import com.tokopedia.home.util.asAdsLogShowOverModel
 import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -31,6 +32,14 @@ class FlashSaleViewHolder (view: View,
     }
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(home_componentR.id.productCardView) }
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(element: FlashSaleDataModel) {
         elementItem = element
         setLayout(itemView.context, element)

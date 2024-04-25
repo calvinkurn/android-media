@@ -10,6 +10,7 @@ import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -31,8 +32,15 @@ class RecommendationCardGridViewHolder constructor(
 
     private var recTriggerObject = RecommendationTriggerObject()
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(element: RecommendationCardModel) {
-        elementItem = element
+        this.elementItem = element
         setRecTriggerObject(element)
         setLayout(element)
         productCardImpressionListener(element)

@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardClickListener
@@ -33,7 +34,15 @@ class BigGridProductItemViewHolder(
     override val productCardView: IProductCardView?
         get() = binding?.productCardView
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(productItemData: ProductItemDataView?) {
+        this.elementItem = productItemData
         if (productItemData == null) return
         elementItem = productItemData
 
