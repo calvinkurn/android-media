@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
@@ -490,5 +491,26 @@ class FeedMainViewModelTest {
 
         assert(mViewModel.activeTabSource.tabName == mActiveTabSource.tabName)
         assert(mViewModel.activeTabSource.index == mActiveTabSource.index)
+    }
+
+    /** Tooltip */
+    @Test
+    fun consumeEventTooltip() {
+        val event = FeedTooltipEvent.ShowTooltip("pokemon")
+
+        coEvery { tooltipManager.clearTooltipEvent(event.id) } returns Unit
+
+        viewModel.consumeEvent(event)
+
+        coVerify(exactly = 1) { tooltipManager.clearTooltipEvent(event.id) }
+    }
+
+    @Test
+    fun setHasShownTooltip() {
+        coEvery { tooltipManager.setHasShownTooltip() } returns Unit
+
+        viewModel.setHasShownTooltip()
+
+        coVerify(exactly = 1) { tooltipManager.setHasShownTooltip() }
     }
 }
