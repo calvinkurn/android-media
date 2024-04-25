@@ -51,6 +51,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 private const val CLICK_MANUAL_SEARCH = "click - ceklist rekomendasi kata kunci manual search"
 private const val EVENT_CLICK_MANUAL_SEARCH = "kata kunci terpilih yang di ceklist"
@@ -225,7 +226,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
                 }
             } else {
                 txtError?.visibility = View.VISIBLE
-                txtError?.text = getString(com.tokopedia.topads.common.R.string.error_keyword)
+                txtError?.text = getString(topadscommonR.string.error_keyword)
                 setEmpty(adapter.items.isEmpty())
             }
         }
@@ -308,7 +309,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
                 onSelectedItem()
             }
         } else {
-            txtError?.text = getString(com.tokopedia.topads.common.R.string.error_keyword)
+            txtError?.text = getString(topadscommonR.string.error_keyword)
         }
     }
     private fun isValidString(input: String): Boolean {
