@@ -2,16 +2,22 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import com.google.gson.Gson
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PaidSectionInfo
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesTickerData
 import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentTickerActionType
+import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentTickerType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -23,6 +29,9 @@ import javax.inject.Inject
 class ShippingDurationConverter @Inject constructor() {
     companion object {
         private const val COD_TRUE_VAL = 1
+        private const val TICKER_INFO_TYPE = "info"
+        private const val TICKER_WARNING_TYPE = "warning"
+        private const val TICKER_ERROR_TYPE = "danger"
     }
 
     fun convertModel(ratesData: RatesData?): ShippingRecommendationData {
@@ -55,9 +64,53 @@ class ShippingDurationConverter @Inject constructor() {
                 // Has service / duration list
                 shippingRecommendationData.shippingDurationUiModels =
                     convertShippingDuration(ratesData.ratesDetailData)
+
+                // paid section title section
+                shippingRecommendationData.paidSectionInfoUiModel = convertPaidSectionModel(ratesData.ratesDetailData.paidSectionInfo)
+
+                // global ticker
+                shippingRecommendationData.topTicker = convertShipmentTicker(ratesData.ratesDetailData.tickers.top)
+
+                // bottom ticker
+                shippingRecommendationData.freeShippingTicker = convertShipmentTicker(ratesData.ratesDetailData.tickers.bottom)
             }
         }
         return shippingRecommendationData
+    }
+
+    private fun convertShipmentTicker(tickers: List<RatesTickerData>): List<ShipmentTickerModel> {
+        return tickers.map {
+            val type: ShipmentTickerType = when (it.tickerType) {
+                TICKER_INFO_TYPE -> ShipmentTickerType.ANNOUNCEMENT
+                TICKER_WARNING_TYPE -> ShipmentTickerType.WARNING
+                TICKER_ERROR_TYPE -> ShipmentTickerType.ERROR
+                else -> ShipmentTickerType.ANNOUNCEMENT
+            }
+            val action: ShipmentTickerActionType? = it.tickerAction.run {
+                if (appUrl.isNotEmpty()) {
+                    ShipmentTickerActionType.AppUrl(appUrl)
+                } else if (webUrl.isNotEmpty()) {
+                    ShipmentTickerActionType.WebUrl(webUrl)
+                } else {
+                    null
+                }
+            }
+            ShipmentTickerModel(
+                type = type,
+                actionType = action,
+                actionLabel = it.tickerAction.label,
+                description = it.content,
+                title = it.title
+            )
+        }
+    }
+
+    private fun convertPaidSectionModel(paidSectionInfo: PaidSectionInfo): PaidSectionInfoUiModel {
+        return PaidSectionInfoUiModel(
+            showCollapsableIcon = paidSectionInfo.isCollapsed,
+            isCollapsed = paidSectionInfo.isCollapsed,
+            title = paidSectionInfo.labelText
+        )
     }
 
     private fun convertShipmentDetailData(ratesDetailData: RatesDetailData): ProductShipmentDetailModel? {
