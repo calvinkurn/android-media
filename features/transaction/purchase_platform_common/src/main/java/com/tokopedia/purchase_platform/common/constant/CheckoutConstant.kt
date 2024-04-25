@@ -28,6 +28,7 @@ object CheckoutConstant {
     const val PARAM_DEFAULT = "default"
     const val PARAM_CHECKOUT = "checkout"
     const val PARAM_OCC_MULTI = "occmulti"
+    const val PARAM_NEW_OCC = "default_occ"
     const val RESULT_CODE_COUPON_STATE_CHANGED = 735
     const val KERO_TOKEN = "token"
     const val EXTRA_REF = "EXTRA_REF"

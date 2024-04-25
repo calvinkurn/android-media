@@ -1495,7 +1495,8 @@ class CheckoutViewModel @Inject constructor(
                         orderModel.preOrderDurationDay.toString(),
                         orderModel.fulfillmentId,
                         orderModel.cartStringGroup
-                    )
+                    ),
+                    cartType
                 )
                 commonToaster.emit(
                     CheckoutPageToaster(
@@ -1560,7 +1561,8 @@ class CheckoutViewModel @Inject constructor(
                         checkoutOrderModel.preOrderDurationDay.toString(),
                         checkoutOrderModel.fulfillmentId,
                         checkoutOrderModel.cartStringGroup
-                    )
+                    ),
+                    cartType
                 )
                 if (!success) {
                     val items = listData.value.toMutableList()
@@ -1686,7 +1688,8 @@ class CheckoutViewModel @Inject constructor(
             checkoutItems,
             isOneClickShipment,
             isTradeIn,
-            isTradeInByDropOff
+            isTradeInByDropOff,
+            cartType
         )
         newItems = getEntryPointInfo(newItems, checkoutItems)
         newItems = checkCrossSellImpressionState(newItems)
@@ -1783,7 +1786,8 @@ class CheckoutViewModel @Inject constructor(
             courierItemData,
             isOneClickShipment,
             isTradeIn,
-            isTradeInByDropOff
+            isTradeInByDropOff,
+            cartType
         )
         newItems = getEntryPointInfo(newItems, listData.value)
         listData.value = newItems
@@ -1877,7 +1881,8 @@ class CheckoutViewModel @Inject constructor(
                     order.preOrderDurationDay.toString(),
                     order.fulfillmentId,
                     order.cartStringGroup
-                )
+                ),
+                cartType
             )
         }
         val validateUsePromoRequest = generateValidateUsePromoRequest()
@@ -1922,7 +1927,8 @@ class CheckoutViewModel @Inject constructor(
             newCourierItemData,
             isOneClickShipment,
             isTradeIn,
-            isTradeInByDropOff
+            isTradeInByDropOff,
+            cartType
         )
         val newOrder = newItems[cartPosition] as CheckoutOrderModel
         if (newOrder.shipment.courierItemData != null) {
@@ -1989,7 +1995,8 @@ class CheckoutViewModel @Inject constructor(
                 checkoutOrderModel.preOrderDurationDay.toString(),
                 checkoutOrderModel.fulfillmentId,
                 checkoutOrderModel.cartStringGroup
-            )
+            ),
+            cartType
         )
         if (shouldClearPromoBenefit) {
             val list = listData.value.toMutableList()
@@ -2307,7 +2314,8 @@ class CheckoutViewModel @Inject constructor(
                 if (notEligiblePromoHolderdataList.size > 0) {
                     if (promoProcessor.cancelNotEligiblePromo(
                             notEligiblePromoHolderdataList,
-                            listData.value
+                            listData.value,
+                            cartType
                         )
                     ) {
                         if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
@@ -2588,7 +2596,8 @@ class CheckoutViewModel @Inject constructor(
                                         checkoutItem.preOrderDurationDay.toString(),
                                         checkoutItem.fulfillmentId,
                                         checkoutItem.cartStringGroup
-                                    )
+                                    ),
+                                    cartType
                                 )
                                 // reset shipment
                                 checkoutItems[index] =
@@ -2768,7 +2777,8 @@ class CheckoutViewModel @Inject constructor(
                         courierItemData,
                         isOneClickShipment,
                         isTradeIn,
-                        isTradeInByDropOff
+                        isTradeInByDropOff,
+                        cartType
                     ).toMutableList()
                 }
             } else {
@@ -2800,7 +2810,8 @@ class CheckoutViewModel @Inject constructor(
                         order.preOrderDurationDay.toString(),
                         order.fulfillmentId,
                         order.cartStringGroup
-                    )
+                    ),
+                    cartType
                 )
                 val newOrderModel = order.copy(
                     shipment = order.shipment.copy(
@@ -2862,7 +2873,8 @@ class CheckoutViewModel @Inject constructor(
                             shipmentCartItemModel.preOrderDurationDay.toString(),
                             shipmentCartItemModel.fulfillmentId,
                             shipmentCartItemModel.cartStringGroup
-                        )
+                        ),
+                        cartType
                     )
                     // reset shipment
                     checkoutItems[index] =
@@ -2884,7 +2896,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     private suspend fun hitClearAllBo() {
-        promoProcessor.clearAllBo(listData.value)
+        promoProcessor.clearAllBo(listData.value, cartType)
     }
 
     fun setAddon(
@@ -3111,7 +3123,8 @@ class CheckoutViewModel @Inject constructor(
                     order.preOrderDurationDay.toString(),
                     order.fulfillmentId,
                     order.cartStringGroup
-                )
+                ),
+                cartType
             )
             validatePromo()
         }
