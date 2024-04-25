@@ -27,6 +27,7 @@ class TokoNowEmptyStateOocViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_empty_state_ooc
         const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
+        const val SOURCE = "tokonow"
     }
 
     private var binding: ItemTokopedianowEmptyStateOocBinding? by viewBinding()
@@ -37,33 +38,33 @@ class TokoNowEmptyStateOocViewHolder(
         val serviceType = element.serviceType
         hostSource = element.hostSource
 
-        showEmptyStateTitle(serviceType)
-        showEmptyStateDescription(serviceType)
-        showPrimaryBtnText(serviceType)
-        showSecondaryBtnText(serviceType)
+        showEmptyStateTitle()
+        showEmptyStateDescription()
+        showPrimaryBtnText()
+        showSecondaryBtnText()
         setActionListener(eventCategory, serviceType)
     }
 
-    private fun showEmptyStateTitle(serviceType: String) {
-        getServiceTypeRes(OUT_OF_COVERAGE_TITLE_ID, serviceType)?.let {
+    private fun showEmptyStateTitle() {
+        getServiceTypeRes(OUT_OF_COVERAGE_TITLE_ID)?.let {
             binding?.emptyStateOcc?.setTitle(getString(it))
         }
     }
 
-    private fun showEmptyStateDescription(serviceType: String) {
-        getServiceTypeRes(OUT_OF_COVERAGE_DESCRIPTION_ID, serviceType)?.let {
+    private fun showEmptyStateDescription() {
+        getServiceTypeRes(OUT_OF_COVERAGE_DESCRIPTION_ID)?.let {
             binding?.emptyStateOcc?.setDescription(getString(it))
         }
     }
 
-    private fun showPrimaryBtnText(serviceType: String) {
-        getServiceTypeRes(OUT_OF_COVERAGE_PRIMARY_BUTTON_ID, serviceType)?.let {
+    private fun showPrimaryBtnText() {
+        getServiceTypeRes(OUT_OF_COVERAGE_PRIMARY_BUTTON_ID)?.let {
             binding?.emptyStateOcc?.setPrimaryBtnText(getString(it))
         }
     }
 
-    private fun showSecondaryBtnText(serviceType: String) {
-        getServiceTypeRes(OUT_OF_COVERAGE_SECONDARY_BUTTON_ID, serviceType)?.let {
+    private fun showSecondaryBtnText() {
+        getServiceTypeRes(OUT_OF_COVERAGE_SECONDARY_BUTTON_ID)?.let {
             binding?.emptyStateOcc?.setSecondaryBtnText(getString(it))
         }
     }
@@ -75,8 +76,6 @@ class TokoNowEmptyStateOocViewHolder(
                     serviceType == ServiceType.NOW_OOC
                 ) {
                     showBottomSheetChooseAddress()
-                } else {
-                    listener?.onSwitchService()
                 }
             }
 
@@ -85,8 +84,6 @@ class TokoNowEmptyStateOocViewHolder(
                     serviceType == ServiceType.NOW_OOC
                 ) {
                     (itemView.context as? Activity)?.finish()
-                } else {
-                    showBottomSheetChooseAddress()
                 }
             }
 
@@ -124,6 +121,5 @@ class TokoNowEmptyStateOocViewHolder(
         fun onRefreshLayoutPage()
         fun onGetFragmentManager(): FragmentManager
         fun onGetEventCategory(): String
-        fun onSwitchService()
     }
 }

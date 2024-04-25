@@ -28,6 +28,8 @@ import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
+import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -66,6 +68,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
     private val loginFingerprintUseCase: LoginFingerprintUseCase,
     private val getTemporaryKeyUseCase: GetTemporaryKeyUseCase,
+    private val getShopStatusUseCase: GetShopStatusUseCase,
     private val gotoSeamlessHelper: GotoSeamlessHelper,
     private val gotoSeamlessPreference: GotoSeamlessPreference,
     private val userSession: UserSessionInterface,
@@ -157,6 +160,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val getLoginOption: LiveData<LoginOption>
         get() = mutableLoginOption
 
+    private val _shopStatus = MutableLiveData<ShopStatus>()
+    val shopStatus: LiveData<ShopStatus>
+        get() = _shopStatus
+
     fun registerCheck(id: String) {
         launchCatchError(block = {
             val params = RegisterCheckParam(id)
@@ -193,6 +200,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
     fun getUserInfo() {
         launch {
             try {
+                if(GlobalConfig.isSellerApp()) {
+                    getShopStatus()
+                }
                 when (val admin = getProfileAndAdmin(Unit)) {
                     is AdminResult.AdminResultOnSuccessGetProfile -> {
                         mutableProfileResponse.value = Success(admin.profile)
@@ -457,6 +467,16 @@ class LoginEmailPhoneViewModel @Inject constructor(
             )
         }
     }
+
+    private suspend fun getShopStatus() {
+        try {
+            val resp = getShopStatusUseCase("")
+            _shopStatus.value = resp
+        } catch (e: Exception) {
+            _shopStatus.value = ShopStatus.Error(e)
+        }
+    }
+
     public override fun onCleared() {
         super.onCleared()
         clearBackgroundTask()

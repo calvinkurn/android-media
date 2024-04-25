@@ -32,7 +32,6 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValida
 import com.tokopedia.product.addedit.detail.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
@@ -67,7 +66,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -647,14 +645,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         productShowCases = selectedShowcaseList
     }
 
-    fun getMaxProductPhotos(): Int {
-        return if (userSession.isShopOfficialStore) {
-            AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS
-        } else {
-            AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS
-        }
-    }
-
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -790,22 +780,9 @@ class AddEditProductDetailViewModel @Inject constructor(
             })
     }
 
-    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
-        val selectedSpecificationList = mutableListOf<SpecificationInputModel>()
-        annotationCategoryList.forEach {
-            val selectedValue = it.data.firstOrNull { value -> value.selected }
-            selectedValue?.apply {
-                val specificationInputModel = SpecificationInputModel(id, name, it.variant)
-                selectedSpecificationList.add(specificationInputModel)
-            }
-        }
-
-        updateSelectedSpecification(selectedSpecificationList)
-    }
-
     fun updateHasRequiredSpecification(annotationCategoryList: List<AnnotationCategoryData>) {
         mHasRequiredSpecification.value = annotationCategoryList.any {
-            it.variant == SIGNAL_STATUS_VARIANT
+            it.isMandatory
         }
     }
 
@@ -815,7 +792,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun updateSpecificationText(selectedSpecificationList: List<SpecificationInputModel>) {
-        val specificationNames = selectedSpecificationList.map { it.data }
+        val specificationNames = selectedSpecificationList.filter { it.data.isNotEmpty() }.map { it.data }
         mSpecificationText.value = if (specificationNames.isEmpty()) {
             provider.getProductSpecificationTips()
         } else {
@@ -830,7 +807,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun validateSelectedSpecificationList(): Boolean {
         return !hasRequiredSpecification.value.orFalse() || mSelectedSpecificationList.value.orEmpty().any {
-            it.specificationVariant == SIGNAL_STATUS_VARIANT
+            it.required
         }
     }
 

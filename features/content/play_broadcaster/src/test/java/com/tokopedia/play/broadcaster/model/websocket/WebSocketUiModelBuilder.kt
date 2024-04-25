@@ -68,6 +68,20 @@ class WebSocketUiModelBuilder {
         )
     }
 
+    /** REPORT_CHANNEL */
+    fun buildReportChannelString(
+        totalViewFmt: String = "1",
+        totalLikeFmt: String = "1",
+    ) = """
+        {
+            "type": "REPORT_CHANNEL",
+            "data": {
+                "visit_channel_fmt": $totalViewFmt,
+                "like_channel_fmt": $totalLikeFmt
+            }
+        }
+    """.trimIndent()
+
     /** TOTAL_VIEW */
     fun buildTotalViewString(
         channelId: Int = 1,
@@ -83,34 +97,6 @@ class WebSocketUiModelBuilder {
             }
         }
     """.trimIndent()
-
-    fun buildTotalViewModel(
-        totalViewFmt: String = "1"
-    ) = TotalViewUiModel(
-        totalView = totalViewFmt
-    )
-
-    /** TOTAL_LIKE */
-    fun buildTotalLikeString(
-        channelId: Int = 1,
-        totalLike: Long = 1,
-        totalLikeFmt: String = "1"
-    ) = """
-        {
-            "type": "TOTAL_LIKE",
-            "data": {
-                "channel_id" : $channelId,
-                "total_like" : $totalLike,
-                "total_like_formatted" : "$totalLikeFmt"
-            }
-        }
-    """.trimIndent()
-
-    fun buildTotalLikeModel(
-        totalLikeFmt: String = "1"
-    ) = TotalLikeUiModel(
-        totalLike = totalLikeFmt
-    )
 
     /** MESG */
     fun buildChatString(

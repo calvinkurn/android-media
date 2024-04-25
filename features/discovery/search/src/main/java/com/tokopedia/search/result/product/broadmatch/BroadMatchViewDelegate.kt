@@ -83,16 +83,22 @@ class BroadMatchViewDelegate @Inject constructor(
         )
 
         AppLogSearch.eventSearchResultShow(
-            broadMatchDataView.asByteIOSearchResult()
+            broadMatchDataView.asByteIOSearchResult(null)
         )
     }
 
-    override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
+    override fun trackEventClickSeeMoreBroadMatch(
+        broadMatchDataView: BroadMatchDataView,
+        aladdinButtonType: String,
+    ) {
         BroadMatchTracking.trackEventClickBroadMatchSeeMore(
             broadMatchDataView,
             queryKey,
             broadMatchDataView.keyword,
             broadMatchDataView.dimension90,
+        )
+        AppLogSearch.eventSearchResultClick(
+            broadMatchDataView.asByteIOSearchResult(aladdinButtonType),
         )
     }
 

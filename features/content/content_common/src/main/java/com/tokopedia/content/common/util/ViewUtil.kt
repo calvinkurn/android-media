@@ -1,7 +1,10 @@
 package com.tokopedia.content.common.util
 
+import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -73,3 +76,34 @@ private fun View.recordInitialMargin(): InitialMargin {
     )
 }
 
+inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
+    require(this is ConstraintLayout)
+
+    val constraintSet = ConstraintSet()
+
+    constraintSet.clone(this)
+    constraintSet.transform()
+    constraintSet.applyTo(this)
+}
+
+private class SafeClickListener(
+    private var defaultInterval: Int = 1000,
+    private val onSafeCLick: (View) -> Unit
+) : View.OnClickListener {
+    private var lastTimeClicked: Long = 0
+    override fun onClick(v: View) {
+        if (SystemClock.elapsedRealtime() - lastTimeClicked < defaultInterval) {
+            return
+        }
+        lastTimeClicked = SystemClock.elapsedRealtime()
+        onSafeCLick(v)
+    }
+}
+
+
+fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
+    val safeClickListener = SafeClickListener {
+        onSafeClick(it)
+    }
+    setOnClickListener(safeClickListener)
+}

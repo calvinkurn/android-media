@@ -36,7 +36,7 @@ class PriceCtaSellerOfferingViewHolder(itemView: View, val listener: PriceCtaSel
                 newDarkEnable = MethodChecker.getColor(itemView.context, element.iconColor.orZero())
             )
             ivButtonRight.setOnClickListener {
-                listener?.onSellerOfferingButtonRightClicked()
+                listener?.onSellerOfferingButtonRightClicked(productId = element.productId, shopId = element.shopId)
             }
 
             val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)

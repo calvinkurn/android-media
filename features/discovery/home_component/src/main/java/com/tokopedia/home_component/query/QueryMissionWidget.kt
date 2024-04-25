@@ -38,6 +38,16 @@ internal object QueryMissionWidget {
         "      shopID\n" +
         "      campaignCode\n" +
         "      recParam\n" +
+        "      labelGroup {\n" +
+        "       title\n" +
+        "       type\n" +
+        "       position\n" +
+        "       url\n" +
+        "       styles {\n" +
+        "        key\n" +
+        "        value\n" +
+        "       }\n" +
+        "      }\n" +
         "    }\n" +
         "    config {\n" +
         "      styleParam\n" +

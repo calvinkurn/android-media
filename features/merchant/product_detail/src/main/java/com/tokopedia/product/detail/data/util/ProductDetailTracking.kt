@@ -1767,6 +1767,29 @@ object ProductDetailTracking {
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_CLICK, itemBundle)
         }
+
+        fun eventProductNameExpandClicked(
+            componentTrackDataModel: ComponentTrackDataModel,
+            productInfo: ProductInfoP1?,
+            userId: String
+        ) {
+            val payload = mapOf<String, Any>(
+                ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PG,
+                ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.CLICK_EXPAND_PRODUCT_NAME,
+                ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Tracking.KEY_LABEL to productInfo?.getProductName.orEmpty(),
+                ProductTrackingConstant.Tracking.KEY_TRACKER_ID to ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_EXPAND_PRODUCT_NAME,
+                ProductTrackingConstant.Tracking.BUSINESS_UNIT to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_COMPONENT to "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${ProductTrackingConstant.Action.CLICK_EXPAND_PRODUCT_NAME};cpos:${componentTrackDataModel.adapterPosition};",
+                ProductTrackingConstant.Tracking.CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE,
+                ProductTrackingConstant.Tracking.KEY_LAYOUT to "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
+                ProductTrackingConstant.Tracking.KEY_PRODUCT_ID to productInfo?.basic?.productID.orEmpty(),
+                ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER to productInfo?.basic?.shopID.orEmpty(),
+                ProductTrackingConstant.Tracking.KEY_HIT_USER_ID to userId
+            )
+
+            TrackApp.getInstance().gtm.sendGeneralEvent(payload)
+        }
     }
 
     object Iris {

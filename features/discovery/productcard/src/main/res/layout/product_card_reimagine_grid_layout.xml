@@ -64,6 +64,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor"
                 tools:visibility="visible"/>
 
+
             <com.tokopedia.video_widget.VideoPlayerView
                 android:id="@+id/productCardVideo"
                 android:layout_width="0dp"

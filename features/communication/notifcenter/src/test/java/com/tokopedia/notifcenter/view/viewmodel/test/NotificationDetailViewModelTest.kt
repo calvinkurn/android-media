@@ -7,7 +7,7 @@ import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -74,7 +74,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
     @Test
     fun `loadFirstPageNotification as buyer should return data properly`() {
         // given
-        val topAdsImageView = arrayListOf(TopAdsImageViewModel())
+        val topAdsImageView = arrayListOf(TopAdsImageUiModel())
         val expectedValue = NotifcenterDetailMapper().mapFirstPage(
             notifCenterDetailResponse,
             needSectionTitle = false,

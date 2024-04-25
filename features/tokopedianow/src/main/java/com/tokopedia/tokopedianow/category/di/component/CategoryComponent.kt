@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.di.component
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule
+import com.tokopedia.tokopedianow.category.di.module.CategoryResourceModule
 import com.tokopedia.tokopedianow.category.di.module.CategoryViewModelModule
 import com.tokopedia.tokopedianow.category.di.scope.CategoryScope
 import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryFragment
@@ -15,6 +16,7 @@ import dagger.Component
             CategoryViewModelModule::class,
             CategoryContextModule::class,
             CategoryParamModule::class,
+            CategoryResourceModule::class,
             UserSessionModule::class
         ],
         dependencies = [BaseAppComponent::class])
