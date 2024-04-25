@@ -105,10 +105,10 @@
     <string name="feed_product_highlight_atc">+</string>
 
     <!-- Tooltip -->
-    <string name="feed_search_tooltip_user_affinity">Cara cepet cari konten favoritmu!❤️</string>
+    <string name="feed_search_tooltip_user_affinity">Cara cepet cari konten favoritmu! ❤️</string>
     <string name="feed_search_tooltip_creator">Cek konten dari para kreator inspiratif!</string>
     <string name="feed_search_tooltip_story">Udah cek update Story hari ini?</string>
-    <string name="feed_search_tooltip_trending_and_viral_video">Ada konten yang lagi viral!🔥</string>
+    <string name="feed_search_tooltip_trending_and_viral_video">Ada konten yang lagi viral! 🔥</string>
     <string name="feed_search_tooltip_promo">Ada promo hidden gem di konten!</string>
 
 </resources>
