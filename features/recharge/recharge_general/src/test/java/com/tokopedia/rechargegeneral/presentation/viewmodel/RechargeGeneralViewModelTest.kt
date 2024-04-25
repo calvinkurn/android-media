@@ -59,7 +59,7 @@ class RechargeGeneralViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
-            RechargeGeneralViewModel(graphqlRepository, getDppoConsentUseCase, RechargeGeneralMapper(), CoroutineTestDispatchersProvider)
+            RechargeGeneralViewModel(graphqlRepository, getDppoConsentUseCase, RechargeGeneralMapper(), false, CoroutineTestDispatchersProvider)
     }
 
     @Test
