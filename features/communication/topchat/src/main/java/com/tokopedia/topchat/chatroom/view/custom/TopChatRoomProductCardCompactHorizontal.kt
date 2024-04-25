@@ -26,7 +26,9 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
 
     init {
         binding = TopchatChatroomProductCardCompactHorizontalBinding.inflate(
-            LayoutInflater.from(context), this, true
+            LayoutInflater.from(context),
+            this,
+            true
         )
     }
 
@@ -84,8 +86,11 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
         val rating = product.rating
         val sold = product.sold
         if (rating.isNotBlank() || sold.isNotBlank()) {
+            binding.topchatChatroomProductCompactHorizontalSeparator.showWithCondition(
+                rating.isNotBlank() && sold.isNotBlank()
+            )
             bindRatingText(rating)
-            bindSold(sold, rating.isBlank())
+            bindSold(sold)
             binding.topchatChatroomLlProductCompactHorizontalRating.show()
         } else {
             binding.topchatChatroomLlProductCompactHorizontalRating.gone()
@@ -104,8 +109,7 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
         }
     }
 
-    private fun bindSold(sold: String, isRatingEmpty: Boolean) {
-        binding.topchatChatroomProductCompactHorizontalSeparator.showWithCondition(!isRatingEmpty)
+    private fun bindSold(sold: String) {
         if (sold.isNotBlank()) {
             binding.topchatChatroomTvProductCompactHorizontalSold.text = sold
             binding.topchatChatroomTvProductCompactHorizontalSold.show()
@@ -128,7 +132,7 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
                 binding.topchatChatroomTvProductCompactHorizontalLabel.text = preOrderLabelGroup.title
                 binding.topchatChatroomTvProductCompactHorizontalLabel.show()
             }
-            else ->  {
+            else -> {
                 binding.topchatChatroomTvProductCompactHorizontalLabel.gone()
             }
         }
