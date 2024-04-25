@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.presentation.customview
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -24,8 +26,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.feedplus.R as feedplusR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -50,6 +55,46 @@ class FeedTooltipView @JvmOverloads constructor(
 
     fun setTooltipMessage(text: String) {
         this.text = text
+    }
+    
+    fun animateShow() {
+        scaleX = 0f
+        scaleY = 0f
+        alpha = 0f
+
+        animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f)
+            .setInterpolator(UnifyMotion.EASE_OVERSHOOT)
+            .setDuration(UnifyMotion.T3)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {
+                    show()
+                }
+
+                override fun onAnimationEnd(p0: Animator) {}
+
+                override fun onAnimationCancel(p0: Animator) {}
+
+                override fun onAnimationRepeat(p0: Animator) {}
+            })
+            .start()
+    }
+    
+    fun animateHide() {
+        animate().scaleX(0.0f).scaleY(0.0f).alpha(0.0f)
+            .setInterpolator(UnifyMotion.EASE_OUT)
+            .setDuration(UnifyMotion.T3)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {}
+
+                override fun onAnimationEnd(p0: Animator) {
+                    hide()
+                }
+
+                override fun onAnimationCancel(p0: Animator) {}
+
+                override fun onAnimationRepeat(p0: Animator) {}
+            })
+            .start()
     }
 
     @Composable

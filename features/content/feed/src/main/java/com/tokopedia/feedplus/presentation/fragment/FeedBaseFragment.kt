@@ -559,11 +559,11 @@ class FeedBaseFragment :
                         is FeedTooltipEvent.ShowTooltip -> {
                             /** JOE TODO: show tooltip */
                             binding.tooltip.setTooltipMessage(event.text)
-                            binding.tooltip.show()
+                            binding.tooltip.animateShow()
                             feedMainViewModel.setHasShownTooltip()
                         }
                         is FeedTooltipEvent.DismissTooltip -> {
-                            binding.tooltip.hide()
+                            binding.tooltip.animateHide()
                         }
                     }
 
