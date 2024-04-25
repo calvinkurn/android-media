@@ -1,9 +1,12 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.asTrackingPageSource
 import com.tokopedia.homenav.mainnav.view.interactor.listener.BuyAgainCallback
 import com.tokopedia.homenav.mainnav.view.widget.BuyAgainModel
+import com.tokopedia.iris.Iris
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -16,15 +19,15 @@ object BuyAgainTracker : BaseTrackerConst() {
     private const val IMPRESSION_ACTION = "product list impression"
     private const val IMPRESSION_TRACKER_ID = "49873"
     fun impression(
+        irisInstance: Iris,
         userId: String,
         position: Int,
         models: List<BuyAgainModel>,
-        pageDetail: BuyAgainCallback.PageDetail?
-    ): Map<String, Any> {
+        pageDetail: BuyAgainCallback.PageDetail?,
+    ) {
         val pageSource = pageDetail?.source?.asTrackingPageSource(pageDetail.path)
-
         val bundle = Bundle().apply {
-            putString(Event.KEY, Event.PRODUCT_VIEW)
+            putString(Event.KEY, Event.VIEW_ITEM_LIST)
             putString(Action.KEY, IMPRESSION_ACTION)
             putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
             putString(Label.KEY, COMPONENT_NAME)
@@ -35,41 +38,22 @@ object BuyAgainTracker : BaseTrackerConst() {
             putString(UserId.KEY, userId)
             putParcelableArray(
                 Items.KEY, models.mapIndexed { _, model ->
-                Bundle().apply {
-                    putString("index", (position + 1).toString())
-                    putString("dimension39", GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
-                    putString("dimension80", "")
-                    putString("item_brand", "")
-                    putString("item_category", model.category)
-                    putString("item_id", model.productId)
-                    putString("item_name", model.productName)
-                    putString("item_variant", "")
-                    putString("price", model.priceInt)
-                }
-            }.toTypedArray()
+                    Bundle().apply {
+                        putString("index", (position + 1).toString())
+                        putString("dimension40", GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
+                        putString("dimension90", pageSource)
+                        putString("item_brand", "")
+                        putString("item_category", model.category)
+                        putString("item_id", model.productId)
+                        putString("item_name", model.productName)
+                        putString("item_variant", model.variant)
+                        putString("price", model.priceInt)
+                    }
+                }.toTypedArray()
             )
         }
-
-        return BaseTrackerBuilder().constructBasicPromotionView(
-            event = "view_item_list",
-            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
-            eventAction = IMPRESSION_ACTION,
-            eventLabel = COMPONENT_NAME,
-            promotions = models.mapIndexed { _, model ->
-                Promotion(
-                    id = model.productId,
-                    name = model.productName,
-                    creative = "", // TODO ??
-                    position = position.toString()
-                )
-            }
-        )
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(userId)
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_TRACKER_ID)
-            .appendCustomKeyValue(ItemList.KEY, GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
-            .build()
+        irisInstance.saveEvent(bundle)
+        getTracker().sendEnhanceEcommerceEvent(Ecommerce.PRODUCT_VIEW, bundle)
     }
 
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 19)
@@ -90,23 +74,22 @@ object BuyAgainTracker : BaseTrackerConst() {
             putString(UserId.KEY, userId)
             putParcelableArrayList(
                 Items.KEY, arrayListOf(
-                Bundle().apply {
-                    putString("index", (position + 1).toString())
-                    putString("dimension40", GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
-                    putString("dimension45", model.cartId)
-                    putString("dimension90", "")
-                    putString("item_brand", "")
-                    putString("item_category", model.category)
-                    putString("item_id", model.productId)
-                    putString("item_name", model.productName)
-                    putString("item_variant", model.variant)
-                    putString("price", model.price)
-                }
-            )
+                    Bundle().apply {
+                        putString("index", (position + 1).toString())
+                        putString("dimension40", GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
+                        putString("dimension90", pageSource)
+                        putString("item_brand", "")
+                        putString("item_category", model.category)
+                        putString("item_id", model.productId)
+                        putString("item_name", model.productName)
+                        putString("item_variant", model.variant)
+                        putString("price", model.price)
+                    }
+                )
             )
         }
 
-        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Ecommerce.PRODUCT_CLICK, bundle)
     }
 
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 20)
@@ -126,26 +109,27 @@ object BuyAgainTracker : BaseTrackerConst() {
             putString(UserId.KEY, userId)
             putParcelableArrayList(
                 Items.KEY, arrayListOf(
-                Bundle().apply {
-                    putString("category_id", "")
-                    putString("dimension40", GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
-                    putString("dimension45", model.cartId)
-                    putString("dimension90", "")
-                    putString("item_brand", "")
-                    putString("item_category", model.category)
-                    putString("item_id", model.productId)
-                    putString("item_name", model.productName)
-                    putString("item_variant", model.variant)
-                    putString("price", model.priceInt)
-                    putString("quantity", "1")
-                    putString("shop_id", model.shopId)
-                    putString("shop_name", model.shopName)
-                    putString("shop_type", model.shopType)
-                }
-            )
+                    Bundle().apply {
+                        putString("category_id", "")
+                        putString("dimension40", GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
+                        putString("dimension45", model.cartId)
+                        putString("dimension90", pageSource)
+                        putString("item_brand", "")
+                        putString("item_category", model.category)
+                        putString("item_id", model.productId)
+                        putString("item_name", model.productName)
+                        putString("item_variant", model.variant)
+                        putString("price", model.priceInt)
+                        putString("quantity", "1")
+                        putString("shop_id", model.shopId)
+                        putString("shop_name", model.shopName)
+                        putString("shop_type", model.shopType)
+                    }
+                )
             )
         }
 
-        getTracker().sendEnhanceEcommerceEvent(Event.PRODUCT_ADD_TO_CART, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Ecommerce.ADD_TO_CART, bundle)
     }
 }
+

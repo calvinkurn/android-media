@@ -9,6 +9,8 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainVi
 import com.tokopedia.homenav.mainnav.view.analytics.BuyAgainTracker
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.widget.BuyAgainModel
+import com.tokopedia.iris.Iris
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -18,7 +20,7 @@ class BuyAgainCallback(
     private val mainNavListener: MainNavListener,
     private val addToCart: (String, String) -> Unit
 ) : BuyAgainViewHolder.Listener {
-
+    val irisInstance = fragment.context?.let { IrisAnalytics.getInstance(it) }
     /**
      * [mDetail] contains the page source details due
      * the home-nav could be opened any entry points.
@@ -53,8 +55,8 @@ class BuyAgainCallback(
         }
     }
 
-    fun setPageDetail(source: NavSource, path: String) = apply {
-        mDetail = PageDetail(source, path)
+    fun setPageDetail(source: NavSource, path: String, pageName: String) = apply {
+        mDetail = PageDetail(source, path, pageName)
     }
 
     override fun onProductCardClicked(model: BuyAgainModel, position: Int) {
@@ -88,12 +90,15 @@ class BuyAgainCallback(
     }
 
     override fun onBuyAgainWidgetImpression(models: List<BuyAgainModel>, position: Int) {
-        BuyAgainTracker.impression(
-            userId = mainNavListener.getUserId(),
-            pageDetail = mDetail,
-            position = position,
-            models = models
-        )
+        irisInstance?.let {
+            BuyAgainTracker.impression(
+                irisInstance = it,
+                userId = mainNavListener.getUserId(),
+                pageDetail = mDetail,
+                position = position,
+                models = models
+            )
+        }
     }
 
     private fun onProductTrackClicked(model: BuyAgainModel, position: Int) {
@@ -120,5 +125,5 @@ class BuyAgainCallback(
         atcBuyAgainParam = Pair(model, position)
     }
 
-    data class PageDetail(val source: NavSource, val path: String)
+    data class PageDetail(val source: NavSource, val path: String, val pageName: String? = null)
 }

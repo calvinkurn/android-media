@@ -48,6 +48,7 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.recommendation_widget_common.DEFAULT_PAGE_NAME
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -80,6 +81,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     var pageSource = NavSource.DEFAULT
     var pageSourcePath: String = ""
+    var pageName = DEFAULT_PAGE_NAME
 
     override fun initInjector() {
         val baseNavComponent =
@@ -438,7 +440,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                     viewModel.addToCartProduct(productId, shopId)
                 }
             ).also {
-                it.setPageDetail(pageSource, pageSourcePath)
+                it.setPageDetail(pageSource, pageSourcePath, pageName)
             }
         )
 

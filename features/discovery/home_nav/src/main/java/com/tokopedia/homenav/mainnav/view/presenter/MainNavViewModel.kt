@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -238,7 +239,6 @@ class MainNavViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = addToCartUseCase.get().executeOnBackground()
-
                 withContext(baseDispatcher.get().main) {
                     _onAtcProductState.value = Pair(
                         result.isStatusError(),
@@ -246,7 +246,7 @@ class MainNavViewModel @Inject constructor(
                     )
                 }
             } catch (t: Throwable) {
-                _onAtcProductState.value = Pair(false, t.message.orEmpty())
+                _onAtcProductState.value = Pair(true, t.message.orEmpty())
             }
         }
     }

@@ -84,7 +84,8 @@ class BuyAgainView @JvmOverloads constructor(
         val slashPrice: String,
         val discount: String,
         val category: String,
-        val variant: String = ""
+        val categoryChildId: Int,
+        val variant: String = "",
     )
 
     interface Listener {

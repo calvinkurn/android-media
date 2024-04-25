@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain
 
+import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,6 +52,7 @@ class BuyAgainViewHolder constructor(
             }
 
             override fun onAtcButtonClicked(model: BuyAgainModel) {
+                Log.d("TAG", "onAtcButtonClicked: Kteken atc")
                 listener.onAtcButtonClicked(model, bindingAdapterPosition)
             }
         }

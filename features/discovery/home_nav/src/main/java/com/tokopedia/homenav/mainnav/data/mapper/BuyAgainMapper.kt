@@ -27,7 +27,8 @@ object BuyAgainMapper {
             priceInt = item.priceInt.toString(),
             slashPrice = item.slashedPrice,
             discount = item.discountPercentage,
-            category = item.categoryBreadcrumbs
+            categoryChildId = item.departmentId,
+            category = item.categoryBreadcrumbs,
         )
     }
 }

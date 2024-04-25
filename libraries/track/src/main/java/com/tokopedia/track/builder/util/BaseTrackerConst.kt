@@ -1,3 +1,5 @@
+
+
 package com.tokopedia.track.builder.util
 
 import android.os.Bundle
@@ -24,7 +26,8 @@ abstract class BaseTrackerConst {
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
         const val CLICK_HOMEPAGE = "clickHomepage"
-        const val PRODUCT_ADD_TO_CART = "addToCart"
+        const val PRODUCT_ADD_TO_CART = "add_to_cart"
+        const val VIEW_ITEM_LIST = "view_item_list"
         const val SELECT_CONTENT = "select_content"
         const val VIEW_ITEM = "view_item"
     }
@@ -164,8 +167,9 @@ abstract class BaseTrackerConst {
     object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
-        private const val PRODUCT_VIEW = "productView"
+        const val PRODUCT_VIEW = "productView"
         const val PRODUCT_CLICK = "productClick"
+        const val ADD_TO_CART = "addToCart"
         private const val CLICK = "click"
         private const val ADD = "add"
         private const val IMPRESSIONS = "impressions"
@@ -440,3 +444,4 @@ abstract class BaseTrackerConst {
         return TrackApp.getInstance().gtm
     }
 }
+
