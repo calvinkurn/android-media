@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class MultiTwoSquareWidgetUiModel(
     val id: String = "",
     val showShimmering: Boolean = true,
+    val backgroundGradientColor: ArrayList<String> = arrayListOf(),
     val mission: MissionWidgetUiModel? = null,
     val thumbnail: ThumbnailWidgetUiModel? = null,
     val status: Status = Status.Loading

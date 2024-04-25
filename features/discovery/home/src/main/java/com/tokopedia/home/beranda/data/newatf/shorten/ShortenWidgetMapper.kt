@@ -17,6 +17,7 @@ object ShortenWidgetMapper {
         return MultiTwoSquareWidgetUiModel(
             id = atfData.atfMetadata.id.toString(),
             showShimmering = atfData.atfMetadata.isShimmer,
+            backgroundGradientColor = data.channels.first().banner.gradientColor,
             mission = TwoSquareMissionWidgetMapper.map(data, mission),
             thumbnail = TwoSquareThumbnailWidgetMapper.map(data, thumbnail),
             status = MultiTwoSquareWidgetUiModel.Status.Success

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponentContainerMulti2squareBinding
 import com.tokopedia.home_component.decoration.StaticMissionWidgetItemDecoration
+import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.shorten.factory.ShortenViewFactoryImpl
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSquaresAdapter
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
@@ -35,6 +36,7 @@ class ContainerMultiTwoSquareViewHolder(
 
     override fun bind(element: MultiTwoSquareWidgetUiModel?) {
         if (element == null) return
+        binding?.root?.setGradientBackground(element.backgroundGradientColor)
 
         renderWidgets(element)
         mAdapter?.submitList(visitableList)
