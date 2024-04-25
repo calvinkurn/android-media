@@ -109,7 +109,7 @@ class TopAdsShopAdapter(
             Glide.with(context!!)
                     .load(shopItem.shopCoverEcs)
                     .dontAnimate()
-                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page_topads)
                     .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
