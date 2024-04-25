@@ -1,5 +1,5 @@
 {
-   "data":{
+   "get_group_product_ticker":{
       "status":"OK",
       "error_message":[
 
@@ -48,13 +48,13 @@
                         "name":"gift1",
                         "quantity":1,
                         "image_url":"bmgm",
-                        "weight": 2.0,
-                        "actual_weight": 3.0
+                        "weight":2.0,
+                        "actual_weight":3.0
                      }
                   ]
                },
                "bmgm":{
-                  "offer_id":1,
+                  "offer_id":123,
                   "offer_type_id":2,
                   "offer_name":"Summer Sale",
                   "offer_icon":"left icon",
