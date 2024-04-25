@@ -428,7 +428,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
-    private fun getColorBackendOrDefault(backEndColor: String?, defaultColor: Int, backEndOpacity:Int = 90): Int {
+    private fun getColorBackendOrDefault(backEndColor: String?, defaultColor: Int): Int {
         return if (backEndColor.isNullOrEmpty()) {
             MethodChecker.getColor(
                 itemView.context,
@@ -438,22 +438,10 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             Color.parseColor(
                 Utils.getValidHexCode(
                     itemView.context,
-                    convertIntoColorWithOpacity(backEndColor, backEndOpacity)
+                    backEndColor
                 )
             )
         }
-    }
-
-    private fun convertOpacityToHex(opacity: Int): String {
-        val hexString = Integer.toHexString(Math.round((255 * opacity / 100).toFloat()))
-        return (if (hexString.length < 2) "0" else "") + hexString
-    }
-
-    private fun convertIntoColorWithOpacity(color: String, opacity: Int): String {
-        val colorTrim = color.replaceFirst("#", "")
-        return if (colorTrim.isNotEmpty() && colorTrim.length == 6 && opacity < 100) {
-            "#" + convertOpacityToHex(opacity) + colorTrim
-        } else color
     }
 
     private fun setImageAdjustViewBoundPost(
