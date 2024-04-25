@@ -236,15 +236,16 @@ class ShippingDurationViewModel @Inject constructor(
             initiateShowcase(eligibleServices)
         }
 
-        // paid shipping
-        val uiModelList: MutableList<RatesViewModelType> =
-            mutableListOf<RatesViewModelType>().apply {
-                addAll(eligibleServices)
-            }
+        val uiModelList: MutableList<RatesViewModelType> = mutableListOf()
 
-        // title paid shipping
+        // paid shipping
         if (paidSectionInfoUiModel.title.isNotEmpty()) {
+            if (paidSectionInfoUiModel.isCollapsed) {
+                uiModelList.addAll(eligibleServices)
+            }
             uiModelList.add(0, paidSectionInfoUiModel)
+        } else {
+            uiModelList.addAll(eligibleServices)
         }
 
         // bebas ongkir
@@ -267,5 +268,22 @@ class ShippingDurationViewModel @Inject constructor(
 
     private fun initiateShowcase(services: List<ShippingDurationUiModel>) {
         services.firstOrNull()?.isShowShowCase = true
+    }
+
+    fun onCollapseClicked(collapsed: Boolean, isOcc: Boolean) {
+        shippingData?.let { model ->
+            model.paidSectionInfoUiModel.isCollapsed = collapsed
+            _shipmentData.value = ShippingDurationListState.ShowList(
+                convertServiceListToUiModel(
+                    model.shippingDurationUiModels,
+                    model.listLogisticPromo,
+                    model.productShipmentDetailModel,
+                    model.paidSectionInfoUiModel,
+                    model.freeShippingTicker,
+                    model.topTicker,
+                    isOcc
+                )
+            )
+        }
     }
 }
