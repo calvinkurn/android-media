@@ -73,8 +73,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -554,7 +554,7 @@ class HomeGlobalRecommendationFragment :
     override fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -563,14 +563,14 @@ class HomeGlobalRecommendationFragment :
         val rvContext = recyclerView?.context
 
         rvContext?.let {
-            RouteManager.route(it, model.topAdsImageViewModel?.applink)
+            RouteManager.route(it, model.topAdsImageUiModel?.applink)
         }
     }
 
     override fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -585,7 +585,7 @@ class HomeGlobalRecommendationFragment :
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -601,7 +601,7 @@ class HomeGlobalRecommendationFragment :
         rvContext?.let {
             RouteManager.route(
                 it,
-                model.topAdsImageViewModel?.applink
+                model.topAdsImageUiModel?.applink
             )
         }
     }
@@ -612,7 +612,7 @@ class HomeGlobalRecommendationFragment :
         )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -1020,4 +1020,3 @@ class HomeGlobalRecommendationFragment :
         }
     }
 }
-
