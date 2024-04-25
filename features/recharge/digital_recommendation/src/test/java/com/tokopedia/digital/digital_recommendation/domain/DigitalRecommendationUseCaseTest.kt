@@ -263,7 +263,7 @@ class DigitalRecommendationUseCaseTest {
 
     @Before
     fun setUp() {
-        usecase = DigitalRecommendationUseCase(multiRequestUseCase, userSession)
+        usecase = DigitalRecommendationUseCase(multiRequestUseCase, userSession, false)
     }
 
     @ExperimentalCoroutinesApi
