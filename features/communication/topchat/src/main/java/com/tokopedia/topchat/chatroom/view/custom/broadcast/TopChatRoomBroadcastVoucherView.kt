@@ -38,7 +38,6 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
     fun setListener(listener: TopChatRoomVoucherListener) {
         this.listener = listener
         setSingleVoucherListener()
-        setCarouselVoucherListener()
     }
 
     fun bind(broadcastUiModel: TopChatRoomBroadcastUiModel) {
@@ -89,6 +88,7 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
             binding.topchatBroadcastTvDesc.showWithCondition(
                 uiModel.vouchers.first().description.isNotBlank()
             )
+            setCarouselVoucherListener()
             binding.topchatBroadcastRvVoucher.initData(uiModel.vouchers)
             binding.topchatBroadcastRvVoucher.show()
         } else {
@@ -122,9 +122,8 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
     }
 
     private fun setCarouselVoucherListener() {
-        val uiModel = this.uiModel
         val broadcastUiModel = this.broadcastUiModel
-        if (uiModel != null && broadcastUiModel != null) {
+        if (broadcastUiModel != null) {
             listener?.let {
                 binding.topchatBroadcastRvVoucher.setVoucherListener(
                     it,
