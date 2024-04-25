@@ -577,7 +577,7 @@ class CheckoutPaymentProcessor @Inject constructor(
         }
         selectedTerm = installmentTerms.lastOrNull { it.isRecommended && it.isActive }
         if (selectedTerm == null) {
-            selectedTerm = installmentTerms.lastOrNull { it.isActive }
+            selectedTerm = installmentTerms.firstOrNull { it.isActive }
         }
         return selectedTerm
     }
