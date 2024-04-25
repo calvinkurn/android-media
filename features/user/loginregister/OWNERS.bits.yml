@@ -4,7 +4,7 @@ code_review_config:
 
 code_review_rule:
   files:
-    - pattern: *
+    - pattern: .*
       reviewers:
         - rama.putra
         - yovie.putra
