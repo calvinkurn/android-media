@@ -33,19 +33,19 @@ public class MainParentPresenter {
     }
 
     public void getNotificationData() {
-        try {
-            if (userSession.isLoggedIn()) {
-                this.mainParentView.onStartLoading();
-                RequestParams requestParams = RequestParams.create();
-                requestParams.putString(GlobalNavConstant.QUERY,
-                        GraphqlHelper.loadRawString(this.mainParentView.getContext().getResources(), R.raw.query_notification));
-                Param param = new Param(userSession.getShopId());
-                requestParams.putObject(PARAM_INPUT, param);
-                getNotificationUseCase.execute(requestParams, new NotificationSubscriber(this.mainParentView));
-            }
-        } catch (Exception e) {
-
-        }
+//        try {
+//            if (userSession.isLoggedIn()) {
+//                this.mainParentView.onStartLoading();
+//                RequestParams requestParams = RequestParams.create();
+//                requestParams.putString(GlobalNavConstant.QUERY,
+//                        GraphqlHelper.loadRawString(this.mainParentView.getContext().getResources(), R.raw.query_notification));
+//                Param param = new Param(userSession.getShopId());
+//                requestParams.putObject(PARAM_INPUT, param);
+//                getNotificationUseCase.execute(requestParams, new NotificationSubscriber(this.mainParentView));
+//            }
+//        } catch (Exception e) {
+//
+//        }
     }
 
     public void onResume() {

@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
 import static com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT;
 import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
@@ -40,6 +39,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwnerKt;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -80,6 +80,7 @@ import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
+import com.tokopedia.home.beranda.di.module.ViewModelFactory;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -99,6 +100,7 @@ import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
+import com.tokopedia.navigation.presentation.presenter.MainParentViewModel;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation.util.FeedCoachMark;
 import com.tokopedia.navigation.util.MainParentServerLogger;
@@ -112,6 +114,7 @@ import com.tokopedia.navigation_common.listener.HomeScrollViewListener;
 import com.tokopedia.navigation_common.listener.MainParentStateListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
+import com.tokopedia.navigation_common.ui.DynamicHomeNavBarView;
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -230,10 +233,13 @@ public class MainParentActivity extends BaseActivity implements
     @Inject
     Lazy<MainParentPresenter> presenter;
     @Inject
+    Lazy<ViewModelFactory> vmFactory;
+    @Inject
     Lazy<GlobalNavAnalytics> globalNavAnalytics;
     @Inject
     Lazy<RemoteConfig> remoteConfig;
 
+    private MainParentViewModel viewModel;
     private ApplicationUpdate appUpdate;
     private View lineBottomNav;
     List<Fragment> fragmentList;
@@ -263,6 +269,7 @@ public class MainParentActivity extends BaseActivity implements
     private String embracePageName = "";
 
     private LottieBottomNavbar bottomNavigation;
+    private DynamicHomeNavBarView newBottomNavigation;
 
     private AppDownloadManagerHelper appDownloadManagerHelper;
 
@@ -307,6 +314,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         HomeRollenceController.fetchIconJumperValue();
         initInjector();
+        viewModel = new ViewModelProvider(this, vmFactory.get()).get(MainParentViewModel.class);
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -331,6 +339,8 @@ public class MainParentActivity extends BaseActivity implements
         }
         sendNotificationUserSetting();
         showDarkModeIntroBottomSheet();
+        observeData();
+        getDynamicBottomNavBar();
     }
 
     private void initDownloadManagerDialog() {
@@ -447,6 +457,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList = fragments();
 
         bottomNavigation = findViewById(R.id.bottom_navbar);
+        newBottomNavigation = findViewById(R.id.dynamic_navbar);
         lineBottomNav = findViewById(R.id.line_bottom_nav);
 
         WeaveInterface firstTimeWeave = new WeaveInterface() {
@@ -762,6 +773,7 @@ public class MainParentActivity extends BaseActivity implements
         checkForInAppUpdateInProgressOrCompleted();
         showDownloadManagerBottomSheet();
         presenter.get().onResume();
+        this.viewModel.fetchNotificationData();
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             int position = HOME_MENU;
             if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
@@ -1022,6 +1034,8 @@ public class MainParentActivity extends BaseActivity implements
     public void onNotifyCart() {
         if (presenter != null)
             this.presenter.get().getNotificationData();
+        
+        this.viewModel.fetchNotificationData();
     }
 
     private void saveInstanceState(Bundle outState) {
@@ -1205,6 +1219,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onRefreshNotification() {
         presenter.get().getNotificationData();
+        this.viewModel.fetchNotificationData();
     }
 
     private void startMainParentPerformanceMonitoring() {
@@ -1337,6 +1352,7 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         } else {
             presenter.get().getNotificationData();
+            this.viewModel.fetchNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
             intent.putExtra(FEED_IS_VISIBLE, true);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
@@ -1493,6 +1509,15 @@ public class MainParentActivity extends BaseActivity implements
         DarkModeIntroductionLauncher
                 .withToaster(getIntent(), getWindow().getDecorView())
                 .launch(this, getSupportFragmentManager(), userSession.get().isLoggedIn());
+    }
+    
+    private void observeData() {
+        viewModel.getNotification().observe(this, this::renderNotification);
+        viewModel.getDynamicBottomNav().observe(this, bottomNav -> newBottomNavigation.setModelList(bottomNav));
+    }
+
+    private void getDynamicBottomNavBar() {
+        viewModel.fetchDynamicBottomNavBar();
     }
 
     @NonNull
