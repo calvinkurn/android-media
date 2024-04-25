@@ -76,5 +76,17 @@ data class GetProductTagSummarySectionResponse(
 
         @SerializedName("product_number")
         val productNumber: Int = 0,
+
+        @SerializedName("shopName")
+        val shopName: String = "",
+
+        @SerializedName("badge")
+        val shopBadge: String = "",
+
+        @SerializedName("ratingFmt")
+        val ratingFmt: String = "",
+
+        @SerializedName("countSoldFmt")
+        val countSoldFmt: String = "",
     )
 }

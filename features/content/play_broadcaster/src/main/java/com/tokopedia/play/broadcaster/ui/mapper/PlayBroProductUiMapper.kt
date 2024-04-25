@@ -1,9 +1,5 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
-import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
-import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
@@ -12,6 +8,10 @@ import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import java.math.BigDecimal
 import javax.inject.Inject
 
@@ -41,6 +41,10 @@ class PlayBroProductUiMapper @Inject constructor(
                     extraCommission = false,
                     pinStatus = PinProductUiModel.Empty,
                     number = "",
+                    shopBadge = "",
+                    shopName = "",
+                    ratingFmt = "",
+                    countSoldFmt = "",
                 )
             },
             hasNextPage = response.wrapper.pagerCursor.hasNext,
@@ -78,6 +82,10 @@ class PlayBroProductUiMapper @Inject constructor(
                         commissionFmt = "",
                         commission = 0L,
                         extraCommission = false,
+                        shopBadge = "",
+                        shopName = "",
+                        ratingFmt = "",
+                        countSoldFmt = "",
                     )
                 }
             )
@@ -113,6 +121,10 @@ class PlayBroProductUiMapper @Inject constructor(
                         ),
                         pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
                         number = product.productNumber.toString(),
+                        shopBadge = "",
+                        shopName = "",
+                        ratingFmt = "",
+                        countSoldFmt = "",
                     )
                 }
             )

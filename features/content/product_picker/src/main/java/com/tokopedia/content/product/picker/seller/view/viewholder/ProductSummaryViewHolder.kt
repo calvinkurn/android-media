@@ -10,16 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.content.product.picker.databinding.ItemProductSummaryHeaderListBinding
-import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.view.adapter.ProductSummaryAdapter
+import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
@@ -147,6 +147,28 @@ class ProductSummaryViewHolder private constructor() {
             }
             binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
             binding.tvSummaryProductTagNumber.text = item.product.number
+
+            binding.productTagRateFmt.text = item.product.ratingFmt
+            binding.productTagSoldFmt.text = item.product.countSoldFmt
+            binding.productTagShopBadge.loadImage(item.product.shopBadge)
+            binding.productTagShopName.text = item.product.shopName
+
+            // hide star icon and rate text when rateFmt empty
+            binding.productTagRateIcon.showWithCondition(item.product.ratingFmt.isNotBlank())
+            binding.productTagRateFmt.showWithCondition(item.product.ratingFmt.isNotBlank())
+
+            // hide dots when rateFmt or soldCountFmt is empty
+            binding.productTagDots.showWithCondition(item.product.ratingFmt.isNotBlank()
+                && item.product.countSoldFmt.isNotBlank())
+
+            // hide sold fmt text when countSoldFmt empty
+            binding.productTagSoldFmt.showWithCondition(item.product.countSoldFmt.isNotBlank())
+
+            // hide shop badge icon when shop badge empty
+            binding.productTagShopBadge.showWithCondition(item.product.shopBadge.isNotBlank())
+
+            // hide shop name when shop name empty
+            binding.productTagShopName.showWithCondition(item.product.shopName.isNotBlank())
         }
 
         companion object {
