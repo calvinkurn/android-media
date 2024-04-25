@@ -112,6 +112,12 @@ class ArmyViewHolder(val binding: ItemArmyBinding) : RecyclerView.ViewHolder(bin
                 itemView.setOnClickListener(null)
             }
 
+            if (data.isLast) {
+                vSeparator.gone()
+            } else {
+                vSeparator.visible()
+            }
+
             if (data.isApplied) {
                 imgCheck.visible()
             } else {
