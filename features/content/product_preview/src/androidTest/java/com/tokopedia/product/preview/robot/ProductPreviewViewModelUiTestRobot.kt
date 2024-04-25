@@ -29,6 +29,7 @@ import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.product.preview.factory.ProductPreviewFragmentFactoryUITest
+import com.tokopedia.product.preview.utils.smoothScrollTo
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
@@ -185,6 +186,20 @@ internal class ProductPreviewViewModelUiTestRobot(
         composeTestRule.onNodeWithTag("ATC Product Preview")
             .assertIsDisplayed()
             .performClick()
+    }
+
+    fun onSwipeReviewContentFromProductPage() = chainable {
+        Espresso
+            .onView(withId(contentproductpreviewR.id.tv_review_tab_title))
+            .perform(click())
+
+        Espresso
+            .onView(withId(contentproductpreviewR.id.rv_review))
+            .perform(smoothScrollTo(1))
+
+        Espresso
+            .onView(withId(contentproductpreviewR.id.rv_review))
+            .perform(smoothScrollTo(2))
     }
 
     private fun chainable(fn: () -> Unit): ProductPreviewViewModelUiTestRobot {

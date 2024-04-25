@@ -156,4 +156,22 @@ class ProductPreviewUiTest {
             containsTrackerId("49601")
         )
     }
+
+    @Test
+    fun test_shouldSwipeReviewNextContent() {
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
+        coEvery { repository.getReview(productId, 1) } returns mockData.mockReviewData()
+
+        getProductPreviewRobot(
+            sourceModel = mockData.mockSourceProduct(productId),
+            userSession = userSession
+        )
+            .onSwipeReviewContentFromProductPage()
+
+        assertThat(
+            cassavaTest.validate(analyticProductPreviewTracker),
+            containsTrackerId("49602")
+        )
+    }
 }

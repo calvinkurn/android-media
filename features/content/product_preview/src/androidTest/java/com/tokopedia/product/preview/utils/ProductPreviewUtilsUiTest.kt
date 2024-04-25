@@ -1,6 +1,7 @@
 package com.tokopedia.product.preview.utils
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -41,6 +42,23 @@ fun waitFor(delay: Long): ViewAction {
         override fun getDescription(): String = "wait for $delay milliseconds"
         override fun perform(uiController: UiController, v: View?) {
             uiController.loopMainThreadForAtLeast(delay)
+        }
+    }
+}
+
+fun smoothScrollTo(position: Int): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View> {
+            return ViewMatchers.isDisplayingAtLeast(90)
+        }
+
+        override fun getDescription(): String {
+            return "smooth scroll order widget"
+        }
+
+        override fun perform(uiController: UiController?, view: View?) {
+            (view as? RecyclerView)?.smoothScrollToPosition(position)
+            uiController?.loopMainThreadForAtLeast(500)
         }
     }
 }

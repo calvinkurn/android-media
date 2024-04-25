@@ -173,22 +173,25 @@ class ProductPreviewMockData {
     fun mockReviewData(): ReviewUiModel {
         val reviewContent = listOf(
             ReviewContentUiModel(
-                reviewId = "reviewId_123",
+                reviewId = "reviewId_1",
                 medias = listOf(
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",
-                        type = MediaType.Video,
-                        selected = true
+                        type = MediaType.Image,
+                        selected = true,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_2",
                         type = MediaType.Image,
-                        selected = false
+                        selected = false,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_3",
                         type = MediaType.Image,
-                        selected = false
+                        selected = false,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     )
                 ),
                 menus = ReviewMenuStatus(isReportable = true),
@@ -198,7 +201,7 @@ class ProductPreviewMockData {
                     withAnimation = true
                 ),
                 author = ReviewAuthorUiModel(
-                    name = "Author Name",
+                    name = "Author Name 1",
                     type = "Shop",
                     id = "userId_12345",
                     avatarUrl = "avatar.url",
@@ -216,22 +219,25 @@ class ProductPreviewMockData {
                 isShareAble = true
             ),
             ReviewContentUiModel(
-                reviewId = "reviewId_1234",
+                reviewId = "reviewId_12",
                 medias = listOf(
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",
-                        type = MediaType.Video,
-                        selected = true
+                        type = MediaType.Image,
+                        selected = true,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_2",
                         type = MediaType.Image,
-                        selected = false
+                        selected = false,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_3",
                         type = MediaType.Image,
-                        selected = false
+                        selected = false,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     )
                 ),
                 menus = ReviewMenuStatus(isReportable = true),
@@ -241,7 +247,7 @@ class ProductPreviewMockData {
                     withAnimation = true
                 ),
                 author = ReviewAuthorUiModel(
-                    name = "Author Name",
+                    name = "Author Name 2",
                     type = "Shop",
                     id = "userId_12345",
                     avatarUrl = "avatar.url",
@@ -263,18 +269,21 @@ class ProductPreviewMockData {
                 medias = listOf(
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",
-                        type = MediaType.Video,
-                        selected = true
+                        type = MediaType.Image,
+                        selected = true,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_2",
                         type = MediaType.Image,
-                        selected = false
+                        selected = false,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     ),
                     ReviewMediaUiModel(
                         mediaId = "mediaId_3",
                         type = MediaType.Image,
-                        selected = false
+                        selected = false,
+                        url = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc"
                     )
                 ),
                 menus = ReviewMenuStatus(isReportable = true),
@@ -284,7 +293,7 @@ class ProductPreviewMockData {
                     withAnimation = true
                 ),
                 author = ReviewAuthorUiModel(
-                    name = "Author Name",
+                    name = "Author Name 3",
                     type = "Shop",
                     id = "userId_12345",
                     avatarUrl = "avatar.url",
