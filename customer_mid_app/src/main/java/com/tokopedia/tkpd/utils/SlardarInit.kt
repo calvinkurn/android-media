@@ -174,7 +174,7 @@ object SlardarInit {
             params
         }
         builder.apmLogListener { logType, logSubType, log ->
-            Log.d("LogDeva", "$logType")
+            Log.d("LogDeva", "$logType - $logSubType: $log ")
         }
         Apm.getInstance().start(builder.build())
 

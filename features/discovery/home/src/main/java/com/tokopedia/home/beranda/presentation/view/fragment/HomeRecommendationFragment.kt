@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bytedance.apm.trace.fps.FpsTracer
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -206,6 +207,18 @@ class HomeRecommendationFragment :
         initListeners()
         observeStateFlow()
         observeLiveData()
+
+        val fpsTracer = FpsTracer("Home Recommendation Scene", true)
+        recyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    fpsTracer.start();
+                }else {
+                    fpsTracer.stop();
+                }
+            }
+        })
     }
 
     override fun onPause() {

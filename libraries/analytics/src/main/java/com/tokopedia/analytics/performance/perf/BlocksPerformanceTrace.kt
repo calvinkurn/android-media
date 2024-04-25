@@ -11,6 +11,10 @@ import android.util.Log
 import android.view.Choreographer
 import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.bytedance.apm.launch.DefaultLaunchMode
+import com.bytedance.apm.trace.LaunchTrace
+import com.bytedance.apm.trace.LaunchTrace.*
+import com.bytedance.services.apm.LaunchTypeInf
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
@@ -32,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 @FlowPreview
 class BlocksPerformanceTrace(
-    context: Context?,
+    val activity: Activity?,
     val traceName: String,
     scope: LifecycleCoroutineScope,
     val touchListenerActivity: TouchListenerActivity?,
@@ -98,15 +102,37 @@ class BlocksPerformanceTrace(
     }
 
     init {
-        context?.applicationContext?.let {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
+        activity?.applicationContext?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(activity)
             this.isPerformanceTraceEnabled = remoteConfig.getBoolean(
                 ENABLE_PERFORMANCE_TRACE,
                 true
             )
         }
-        initialize(context, scope, onLaunchTimeFinished)
+        initialize(activity, scope, onLaunchTimeFinished)
+
         Log.d("BlocksTrace", "Start...")
+
+    }
+
+    private fun endSlardarTrace() {
+        //        throw new IllegalArgumentException("This is for testing slardar");
+        val launchModePair =
+            getDefaultLaunchMode(activity?.getLocalClassName() ?: "");
+        val sLaunchMode = launchModePair.first;
+
+        var isCold = false;
+        if (sLaunchMode == DefaultLaunchMode.CLOD_LAUNCH) {
+            isCold = true;
+        }
+
+        activity?.let {
+            endTrace(
+                if (isCold) LaunchTypeInf.FIRST_INSTALL_COLD_LAUNCH else LaunchTypeInf.NOT_FIRST_INSTALL_COLD_LAUNCH,
+                it::class.java.getName(),
+                20 * 1000
+            )
+        }
     }
 
     private fun initialize(
@@ -138,6 +164,7 @@ class BlocksPerformanceTrace(
             TTFLperformanceMonitoring?.startTrace("ttfl_perf_trace_$traceName")
             TTILperformanceMonitoring?.startTrace("ttil_perf_trace_$traceName")
 
+            startTrace();
             performanceTraceJob = scope.launch(Dispatchers.IO) {
                 perfBlockFlow.collect {
                     if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
@@ -286,6 +313,9 @@ class BlocksPerformanceTrace(
 
         if (state != BlocksPerfState.STATE_SUCCESS) {
             performanceTraceJob?.cancel()
+            endSlardarTrace()
+        } else {
+            LaunchTrace.cancelTrace()
         }
     }
 

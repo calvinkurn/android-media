@@ -25,7 +25,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.bytedance.apm.trace.fps.FpsTracer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -695,6 +697,18 @@ open class HomeRevampFragment :
         setupStatusBar()
         setupHomeRecyclerView()
         initEggDragListener()
+
+        val fpsTracer = FpsTracer("Home Scene", true)
+        homeRecyclerView?.addOnScrollListener(object: OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    fpsTracer.start();
+                }else {
+                    fpsTracer.stop();
+                }
+            }
+        })
         return view
     }
 
