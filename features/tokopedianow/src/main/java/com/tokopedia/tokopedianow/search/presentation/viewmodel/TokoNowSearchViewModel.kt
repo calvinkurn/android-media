@@ -40,18 +40,14 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
-import com.tokopedia.tokopedianow.common.constant.ServiceType
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
-import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -91,7 +87,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -101,9 +96,6 @@ import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -126,7 +118,6 @@ class TokoNowSearchViewModel @Inject constructor(
     private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     private val cartService: CartService,
     private val getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-    private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val remoteConfig: RemoteConfig,
     private val chooseAddressWrapper: ChooseAddressWrapper,
     private val affiliateService: NowAffiliateService,
@@ -266,9 +257,6 @@ class TokoNowSearchViewModel @Inject constructor(
 
     private val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
     val oocOpenScreenTrackingEvent: LiveData<Boolean> = oocOpenScreenTrackingMutableEvent
-
-    private val setUserPreferenceMutableLiveData = SingleLiveEvent<Result<SetUserPreference.SetUserPreferenceData>>()
-    val setUserPreferenceLiveData: LiveData<Result<SetUserPreference.SetUserPreferenceData>> = setUserPreferenceMutableLiveData
 
     private val querySafeMutableLiveData = SingleLiveEvent<QuerySafeModel>()
     val querySafeLiveData: LiveData<QuerySafeModel> = querySafeMutableLiveData
@@ -809,10 +797,6 @@ class TokoNowSearchViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage()) {
-            // show switcher only if service type is 15m
-            if (serviceType == ServiceType.NOW_15M) {
-                add(SwitcherWidgetDataView())
-            }
             addAll(createFooterVisitableList())
         } else {
             add(loadingMoreModel)
@@ -1285,44 +1269,6 @@ class TokoNowSearchViewModel @Inject constructor(
         )
     }
 
-    fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
-        return chooseAddressData.run {
-            val is20mServiceType = service_type == ServiceType.NOW_15M
-            is20mServiceType && !has20mBottomSheetBeenShown && warehouse_id.isValidId()
-        }
-    }
-
-    fun setUserPreference(serviceType: String) {
-        launchCatchError(
-            block = {
-                chooseAddressData.let {
-                    val setUserPreference = setUserPreferenceUseCase.execute(it, serviceType)
-                    setUserPreferenceMutableLiveData.postValue(Success(setUserPreference))
-                }
-            },
-            onError = {
-                setUserPreferenceMutableLiveData.postValue(Fail(it))
-            }
-        )
-    }
-
-    fun switchService() {
-        chooseAddressData.let {
-            val currentServiceType = it.service_type
-
-            val serviceType = if (
-                currentServiceType == ServiceType.NOW_15M ||
-                currentServiceType == ServiceType.NOW_OOC
-            ) {
-                ServiceType.NOW_2H
-            } else {
-                ServiceType.NOW_15M
-            }
-
-            setUserPreference(serviceType)
-        }
-    }
-
     fun createProductRecommendationRequestParam(
         pageName: String
     ) = GetRecommendationRequestParam(
@@ -1548,11 +1494,7 @@ class TokoNowSearchViewModel @Inject constructor(
 
     private fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
         val broadMatchVisitableList = createBroadMatchVisitableList()
-        return broadMatchVisitableList + if (serviceType == NOW_15M) {
-            listOf()
-        } else {
-            listOf(CTATokopediaNowHomeDataView())
-        }
+        return broadMatchVisitableList + listOf(CTATokopediaNowHomeDataView())
     }
 
     private fun getRecomKeywords() = listOf(query)

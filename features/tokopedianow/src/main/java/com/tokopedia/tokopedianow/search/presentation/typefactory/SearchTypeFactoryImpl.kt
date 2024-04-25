@@ -28,7 +28,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
@@ -44,7 +43,6 @@ class SearchTypeFactoryImpl(
     categoryFilterListener: CategoryFilterListener,
     productItemListener: ProductItemListener,
     productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
-    switcherWidgetListener: SwitcherWidgetListener,
     tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener,
     tokoNowEmptyStateNoResultTrackerListener: TokoNowEmptyStateNoResultTrackerListener,
     productRecommendationBindOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
@@ -65,7 +63,6 @@ class SearchTypeFactoryImpl(
     quickFilterListener,
     categoryFilterListener,
     productItemListener,
-    switcherWidgetListener,
     tokoNowEmptyStateNoResultListener,
     tokoNowEmptyStateNoResultTrackerListener,
     feedbackWidgetListener,
