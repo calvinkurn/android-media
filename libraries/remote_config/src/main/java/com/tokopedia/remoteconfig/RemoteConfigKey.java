@@ -326,8 +326,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG = "android_internal_public_version_dialog_config";
 
     public static final String ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG = "android_internal_nakama_version_dialog_config";
-  
-    public static final String ANDROID_CHATBOT_SECURE_IMAGE = "android_chatbot_secure_image";
 
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
