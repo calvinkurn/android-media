@@ -21,6 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class RecommendationCarouselItemViewHolder(view: View, private val listener: RecommendationCarouselListener) : AbstractViewHolder<RecommendationCarouselItemDataModel>(view) {
     private var binding: RecommendationCarouselItemViewHolderBinding? by viewBinding()
     override fun bind(element: RecommendationCarouselItemDataModel) {
+        elementItem = element
         binding?.recommendationItemCard?.applyCarousel()
         binding?.recommendationItemCard?.setProductModel(element.productCardModel)
         binding?.recommendationItemCard?.setThreeDotsOnClickListener {

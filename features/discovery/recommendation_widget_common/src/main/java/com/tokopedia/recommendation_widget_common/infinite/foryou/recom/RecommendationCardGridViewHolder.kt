@@ -32,6 +32,7 @@ class RecommendationCardGridViewHolder constructor(
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(element: RecommendationCardModel) {
+        elementItem = element
         setRecTriggerObject(element)
         setLayout(element)
         productCardImpressionListener(element)

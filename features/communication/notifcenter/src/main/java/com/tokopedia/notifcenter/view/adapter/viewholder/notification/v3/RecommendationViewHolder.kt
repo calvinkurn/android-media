@@ -22,7 +22,7 @@ import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class RecommendationViewHolder constructor(
+class RecommendationViewHolder(
     itemView: View?,
     private val recommendationListener: RecommendationListener?
 ) : AbstractViewHolder<RecommendationUiModel>(itemView), AppLogRecTriggerInterface {
@@ -34,6 +34,7 @@ class RecommendationViewHolder constructor(
     private var recTriggerObject = RecommendationTriggerObject()
 
     override fun bind(element: RecommendationUiModel, payloads: MutableList<Any>) {
+        elementItem = element
         val isWishlisted = payloads.getOrNull(0) as? Boolean ?: return
         element.recommendationItem.isWishlist = isWishlisted
         productCard?.setThreeDotsOnClickListener {

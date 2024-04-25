@@ -41,6 +41,7 @@ class SpecialReleaseRevampItemViewHolder(
     private val binding: HomeComponentSpecialReleaseRevampItemBinding? by viewBinding()
 
     override fun bind(element: SpecialReleaseRevampItemDataModel) {
+        elementItem = element
         binding?.run {
             cardContainer.cardType = CardUnify2.TYPE_BORDER
             cardContainer.animateOnPress = element.cardInteraction

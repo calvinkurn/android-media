@@ -32,6 +32,7 @@ class RecommendationItemViewHolder (
     private var binding: SearchResultRecommendationCardSmallGridBinding? by viewBinding()
 
     override fun bind(recommendationItemDataView: RecommendationItemDataView) {
+        elementItem = recommendationItemDataView
         val view = binding?.root ?: return
         val recommendationItem = recommendationItemDataView.recommendationItem
         val productModel = recommendationItem.toProductCardModel(

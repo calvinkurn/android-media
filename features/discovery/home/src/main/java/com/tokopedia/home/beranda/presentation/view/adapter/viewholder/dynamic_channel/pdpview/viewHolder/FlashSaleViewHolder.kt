@@ -32,6 +32,7 @@ class FlashSaleViewHolder (view: View,
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(home_componentR.id.productCardView) }
     override fun bind(element: FlashSaleDataModel) {
+        elementItem = element
         setLayout(itemView.context, element)
     }
 

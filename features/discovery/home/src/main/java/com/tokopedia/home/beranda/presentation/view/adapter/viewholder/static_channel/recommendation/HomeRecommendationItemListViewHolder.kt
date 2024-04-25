@@ -40,6 +40,7 @@ class HomeRecommendationItemListViewHolder(
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
     override fun bind(element: HomeRecommendationItemDataModel) {
+        elementItem = element
         setLayout(element)
         productCardImpressionListener(element)
         setItemProductCardClickListener(element)
