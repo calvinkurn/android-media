@@ -126,6 +126,7 @@ open class ProductAttachmentUiModel protected constructor(
             playStoreData = attribute.productProfile.playStoreData
             minOrder = attribute.productProfile.minOrder
             remainingStock = attribute.productProfile.remainingStock
+            sold = attribute.productProfile.sold.orEmpty()
             status = attribute.productProfile.status
             wishList = attribute.productProfile.wishList
             images = attribute.productProfile.images
