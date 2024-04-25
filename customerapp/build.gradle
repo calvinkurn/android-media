@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 if(project.hasProperty('enableEmbraceMa')) {
     apply plugin: 'embrace-swazzler'
 }
@@ -247,7 +247,6 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
-        applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = vectorDrawable
