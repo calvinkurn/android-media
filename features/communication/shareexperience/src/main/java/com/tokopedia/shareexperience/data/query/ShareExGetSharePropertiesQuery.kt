@@ -42,7 +42,10 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                   sourceId
                 }
                 generateLinkProperties {
-                  message
+                  messageObject {
+                    message
+                    placeholders
+                  }
                   ogTitle
                   ogDescription
                   ogType

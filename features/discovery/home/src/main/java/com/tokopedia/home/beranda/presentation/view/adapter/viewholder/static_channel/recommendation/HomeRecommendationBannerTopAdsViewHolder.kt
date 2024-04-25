@@ -14,8 +14,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationBannerTopAdsViewHolder(
@@ -46,7 +46,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
     private fun loadImageTopAdsNewQuery(
         recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsUiModel
     ) {
-        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.let { topAdsImageViewModel ->
+        recommendationBannerTopAdsDataModel.topAdsImageUiModel?.let { topAdsImageViewModel ->
             setBannerTopAdsImpressionListener(
                 recommendationBannerTopAdsDataModel,
                 homeRecommendationListener
@@ -74,10 +74,10 @@ class HomeRecommendationBannerTopAdsViewHolder(
                 override fun onViewHint() {
                     TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this::class.java.simpleName,
-                        recommendationBannerTopAdsUiModel.topAdsImageViewModel?.adViewUrl,
+                        recommendationBannerTopAdsUiModel.topAdsImageUiModel?.adViewUrl,
                         "",
                         "",
-                        recommendationBannerTopAdsUiModel.topAdsImageViewModel?.imageUrl,
+                        recommendationBannerTopAdsUiModel.topAdsImageUiModel?.imageUrl,
                         HOME_RECOM_TAB_BANNER
                     )
                     listener.onBannerTopAdsImpress(
@@ -93,10 +93,10 @@ class HomeRecommendationBannerTopAdsViewHolder(
         binding?.homeRecomTopadsImageView?.setOnClickListener {
             TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
-                element.topAdsImageViewModel?.adClickUrl,
+                element.topAdsImageUiModel?.adClickUrl,
                 "",
                 "",
-                element.topAdsImageViewModel?.imageUrl,
+                element.topAdsImageUiModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
             homeRecommendationListener.onBannerTopAdsClick(element.toModel(), bindingAdapterPosition)
@@ -107,7 +107,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
         recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
         appCompatImageView: AppCompatImageView
     ) {
-        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel?.imageUrl?.let {
             appCompatImageView.loadImageRounded(it, TDN_BANNER_ROUNDED.toDpFloat()) {
                 fitCenter()
                 listener(onSuccess = { _, _ ->

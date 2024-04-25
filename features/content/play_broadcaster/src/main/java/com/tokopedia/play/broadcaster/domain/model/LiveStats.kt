@@ -9,20 +9,26 @@ import com.tokopedia.play.broadcaster.data.type.PlaySocketType
  * Created by mzennis on 22/06/20.
  */
 data class LiveStats(
-    @SerializedName("addToCartFmt")
-        val addToCart: String = "",
-    @SerializedName("productSoldQtyFmt")
-        val productSlotQuantity: String = "",
-    @SerializedName("followShopFmt")
-        val followShop: String = "",
-    @SerializedName("likeChannelFmt")
-        val likeChannel: String = "",
-    @SerializedName("visitShopFmt")
-        val visitShop: String = "",
-    @SerializedName("visitPDPFmt")
-        val visitPdp: String = "",
-    @SerializedName("visitChannelFmt")
-        val visitChannel: String = ""
+    @SerializedName("add_to_cart_fmt")
+    val addToCart: String = "",
+    @SerializedName("product_sold_qty_fmt")
+    val productSlotQuantity: String = "",
+    @SerializedName("follow_shop_fmt")
+    val followShop: String = "",
+    @SerializedName("like_channel_fmt")
+    val likeChannel: String = "",
+    @SerializedName("visit_shop_fmt")
+    val visitShop: String = "",
+    @SerializedName("visit_pdp_fmt")
+    val visitPdp: String = "",
+    @SerializedName("visit_channel_fmt")
+    val visitChannel: String = "",
+    @SerializedName("live_concurrent_user_fmt")
+    val liveConcurrentUser: String = "",
+    @SerializedName("estimated_income_fmt")
+    val estimatedIncome: String = "",
+    @SerializedName("timestamp")
+    val timestamp: Long = 0L,
 ): PlaySocketType {
         override val type: PlaySocketEnum get() = PlaySocketEnum.LiveStats
 }
