@@ -40,8 +40,9 @@ class StoriesSettingsRepo @Inject constructor(
                 options = response.data.options.map {
                     StoriesSettingOpt(
                         text = it.copy,
-                        isSelected = it.isDisabled,
-                        optionType = it.optionType
+                        isSelected = !it.isDisabled,
+                        optionType = it.optionType,
+                        isDisabled = false,
                     )
                 },
                 config = StoriesSettingConfig(

@@ -2,7 +2,10 @@ package com.tokopedia.stories.widget.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
 import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
@@ -20,8 +23,9 @@ import kotlinx.coroutines.flow.update
  */
 class StoriesSettingsViewModel @AssistedInject constructor(
     @Assisted private val entryPoint: StoriesSettingsEntryPoint,
-    private val repository: StoriesSettingsRepository
-) : ViewModel() {
+    private val repository: StoriesSettingsRepository,
+    private val storiesChecker: StoriesSettingsChecker,
+    ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
@@ -47,8 +51,16 @@ class StoriesSettingsViewModel @AssistedInject constructor(
 
     private fun getList() {
         viewModelScope.launchCatchError(block = {
+            val isEligible = asyncCatchError(block = {
+                storiesChecker.isEligible()
+            }){ false }
+
+            if (!isEligible.await().orFalse()) {
+//                _event.tryEmit(StoriesSettingEvent.ShowTicker)
+            }
+
             val data = repository.getOptions(entryPoint = entryPoint)
-            _pageInfo.update { data }
+            _pageInfo.update { data.copy(options = data.options.map { it.copy(isDisabled = isEligible.await().orFalse()) }) }
         }) {}
     }
 
@@ -61,7 +73,7 @@ class StoriesSettingsViewModel @AssistedInject constructor(
                         if (option == opt) opt.copy(isSelected = !opt.isSelected) else opt
                     })
                 }
-                _event.emit(StoriesSettingEvent.ClickTrack(option)) //need to update latest
+                _event.emit(StoriesSettingEvent.ClickTrack(option.copy(isSelected = !option.isSelected)))
             } else throw Exception()
         }) {
             _event.emit(StoriesSettingEvent.ShowErrorToaster(it) {

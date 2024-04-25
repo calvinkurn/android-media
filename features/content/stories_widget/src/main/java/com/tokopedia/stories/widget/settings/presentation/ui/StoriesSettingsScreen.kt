@@ -12,9 +12,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
@@ -24,6 +26,7 @@ import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSetti
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 import com.tokopedia.unifycomponents.compose.NestCheckbox
 import com.tokopedia.unifycomponents.compose.NestSwitch
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * @author by astidhiyaa on 3/22/24
@@ -32,12 +35,21 @@ import com.tokopedia.unifycomponents.compose.NestSwitch
 internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
     val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
     val isStoryEnable = pageInfo.options.any { it.isSelected }
+    val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("","", false, false)
     NestTheme(isOverrideStatusBarColor = false) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+                .alpha(if (itemFirst.isDisabled) 0.4f else 1f)
         ) {
+            AndroidView(factory = {
+                Ticker(it).apply {
+                    tickerType = Ticker.TYPE_INFORMATION
+                    tickerTitle = "Fitur Story Otomatis belum tersedia untuk toko kamu."
+                }
+            })
+
             NestTypography(
                 modifier = Modifier.padding(bottom = 16.dp),
                 text = stringResource(id = R.string.stories_settings_header),
@@ -71,13 +83,16 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
                     }
                 }
                 NestSwitch(
+                    isEnabled = itemFirst.isDisabled,
                     isChecked = isStoryEnable,
-                    onCheckedChanged = {
-                        viewModel.onEvent(
-                            StoriesSettingsAction.SelectOption(
-                                pageInfo.options.firstOrNull() ?: return@NestSwitch
+                    onCheckedChanged = { isActive ->
+                        if (isActive != itemFirst.isDisabled) {
+                            viewModel.onEvent(
+                                StoriesSettingsAction.SelectOption(
+                                   itemFirst.copy(isSelected = !itemFirst.isSelected)
+                                )
                             )
-                        )
+                        }
                     }
                 )
             }
@@ -98,8 +113,10 @@ private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSet
             text = item.text,
             textStyle = NestTheme.typography.paragraph3
         )
-        NestCheckbox(isChecked = item.isSelected, onCheckedChange = {
-            onOptionClicked(item)
+        NestCheckbox(isChecked = item.isSelected, onCheckedChange = { isActive ->
+            if (isActive != item.isSelected) {
+                onOptionClicked(item.copy(isSelected = !item.isSelected))
+            }
         })
     }
 }
@@ -107,7 +124,8 @@ private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSet
 data class StoriesSettingOpt(
     val text: String,
     val optionType: String,
-    val isSelected: Boolean
+    val isSelected: Boolean,
+    val isDisabled: Boolean,
 )
 
 data class StoriesSettingConfig(
