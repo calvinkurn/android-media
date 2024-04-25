@@ -54,6 +54,7 @@ import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.DaggerFeedMainComponent
+import com.tokopedia.feedplus.di.FeedInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
@@ -309,12 +310,7 @@ class FeedBaseFragment :
     }
 
     private fun inject() {
-        DaggerFeedMainComponent.factory()
-            .build(
-                activityContext = requireContext(),
-                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent,
-                creationUploaderComponent = CreationUploaderComponentProvider.get(requireContext())
-            ).inject(this)
+        FeedInjector.get(requireActivity()).inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"

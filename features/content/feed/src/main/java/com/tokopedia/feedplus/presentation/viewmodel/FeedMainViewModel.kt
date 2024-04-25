@@ -111,7 +111,6 @@ class FeedMainViewModel @AssistedInject constructor(
         }
 
     init {
-        println("JOE LOG FeedMainViewModel ${tooltipManager}")
         viewModelScope.launch {
             _swipeOnBoardingState
                 .map { it.isEligibleToShow }

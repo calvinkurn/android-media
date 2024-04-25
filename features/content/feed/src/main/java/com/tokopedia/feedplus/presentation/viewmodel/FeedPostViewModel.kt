@@ -129,10 +129,6 @@ class FeedPostViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-     init {
-         println("JOE LOG FeedPostViewModel ${tooltipManager}")
-     }
-
     private val _feedHome = MutableLiveData<Result<FeedModel>?>()
     val feedHome: LiveData<Result<FeedModel>?>
         get() = _feedHome
