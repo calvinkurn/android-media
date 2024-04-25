@@ -7,6 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyConst
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -26,6 +28,7 @@ class DigitalRecommendationUseCaseTest {
 
     private val multiRequestUseCase: MultiRequestGraphqlUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
+    private val remoteConfig: RemoteConfig = mockk()
 
     private lateinit var usecase: DigitalRecommendationUseCase
 
@@ -263,7 +266,7 @@ class DigitalRecommendationUseCaseTest {
 
     @Before
     fun setUp() {
-        usecase = DigitalRecommendationUseCase(multiRequestUseCase, userSession, false)
+        usecase = DigitalRecommendationUseCase(multiRequestUseCase, userSession, remoteConfig)
     }
 
     @ExperimentalCoroutinesApi
@@ -279,6 +282,7 @@ class DigitalRecommendationUseCaseTest {
             throw Throwable("Error fetching")
         }
         coEvery { userSession.phoneNumber } returns "080808080808"
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns false
 
         runTest {
             // when
@@ -327,6 +331,7 @@ class DigitalRecommendationUseCaseTest {
                 false
         )
         coEvery { userSession.phoneNumber } returns "080808080808"
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns false
 
         runTest {
             // when
@@ -372,6 +377,7 @@ class DigitalRecommendationUseCaseTest {
                 false
         )
         coEvery { userSession.phoneNumber } returns "080808080808"
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns false
 
         runTest {
             // when

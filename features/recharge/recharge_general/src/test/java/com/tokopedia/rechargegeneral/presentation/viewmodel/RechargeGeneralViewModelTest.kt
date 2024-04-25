@@ -13,6 +13,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.rechargegeneral.model.*
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,6 +45,9 @@ class RechargeGeneralViewModelTest {
     @RelaxedMockK
     lateinit var getDppoConsentUseCase: GetDppoConsentUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     lateinit var rechargeGeneralViewModel: RechargeGeneralViewModel
 
     @Before
@@ -59,7 +63,7 @@ class RechargeGeneralViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
-            RechargeGeneralViewModel(graphqlRepository, getDppoConsentUseCase, RechargeGeneralMapper(), false, CoroutineTestDispatchersProvider)
+            RechargeGeneralViewModel(graphqlRepository, getDppoConsentUseCase, RechargeGeneralMapper(), remoteConfig, CoroutineTestDispatchersProvider)
     }
 
     @Test

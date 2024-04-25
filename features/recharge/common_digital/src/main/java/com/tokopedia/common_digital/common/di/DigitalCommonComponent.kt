@@ -8,6 +8,7 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,7 +39,6 @@ interface DigitalCommonComponent {
 
     fun coroutineDispatchers(): CoroutineDispatchers
 
-    @DigitalCacheEnablerQualifier
-    fun isEnableGqlCache(): Boolean
+    fun remoteConfig(): RemoteConfig
 }
 

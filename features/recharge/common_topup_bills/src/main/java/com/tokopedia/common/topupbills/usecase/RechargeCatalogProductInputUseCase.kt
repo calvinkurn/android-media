@@ -2,11 +2,12 @@ package com.tokopedia.common.topupbills.usecase
 
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 /**
@@ -14,7 +15,7 @@ import javax.inject.Inject
  */
 class RechargeCatalogProductInputUseCase @Inject constructor(
         private val useCase: GraphqlUseCase<CatalogData.Response>,
-        @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean
+        private val remoteConfig: RemoteConfig
 ) {
     fun execute(
             params: Map<String, Any>,
@@ -25,6 +26,7 @@ class RechargeCatalogProductInputUseCase @Inject constructor(
             setTypeClass(CatalogData.Response::class.java)
             setRequestParams(params)
             setGraphqlQuery(CommonTopupBillsGqlQuery.rechargeCatalogProductInput)
+            val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
             if (isEnableGqlCache) {
                 setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())

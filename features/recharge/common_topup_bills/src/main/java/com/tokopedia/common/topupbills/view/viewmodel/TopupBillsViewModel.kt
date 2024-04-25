@@ -18,7 +18,6 @@ import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavor
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -34,6 +33,8 @@ import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,7 +53,7 @@ class TopupBillsViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
     private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
-    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean,
+    private val remoteConfig: RemoteConfig,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -126,6 +127,7 @@ class TopupBillsViewModel @Inject constructor(
         launch {
             runCatching {
                 val data = withContext(dispatcher.io) {
+                    val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                     val graphqlRequest =
                         GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                     val graphqlCacheStrategy =

@@ -8,7 +8,6 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipMode
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.GraphqlConstant
@@ -27,6 +26,8 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCDppoConsentUimodel
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -40,7 +41,7 @@ class RechargeCCViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository,
     private val getDppoConsentUseCase: GetDppoConsentUseCase,
-    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean
+    private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher) {
 
     var prefixData: RechargeCCCatalogPrefix = RechargeCCCatalogPrefix()
@@ -70,7 +71,7 @@ class RechargeCCViewModel @Inject constructor(
             runCatching {
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[MENU_ID] = menuId.toIntSafely()
-
+                val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                 val data = withContext(dispatcher) {
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
                     val graphqlCacheStrategy = if (isEnableGqlCache) {
@@ -102,6 +103,7 @@ class RechargeCCViewModel @Inject constructor(
                 mapParam[CATEGORY_ID] = categoryId
 
                 val data = withContext(dispatcher) {
+                    val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
                     val graphqlCacheStrategy = if (isEnableGqlCache) {
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
@@ -133,6 +135,7 @@ class RechargeCCViewModel @Inject constructor(
                 mapParam[MENU_ID] = menuId.toIntSafely()
 
                 prefixData = withContext(dispatcher) {
+                    val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
                     val graphqlCacheStrategy = if (isEnableGqlCache) {
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)

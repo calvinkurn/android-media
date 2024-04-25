@@ -1,8 +1,8 @@
 package com.tokopedia.digital.digital_recommendation.domain
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationQuery
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
-import com.tokopedia.digital.digital_recommendation.di.DigitalRecommendationCacheEnablerQualifier
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.graphql.GraphqlConstant
@@ -15,6 +15,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 /**
@@ -23,7 +25,7 @@ import javax.inject.Inject
 class DigitalRecommendationUseCase @Inject constructor(
         private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
         private val userSession: UserSessionInterface,
-        @DigitalRecommendationCacheEnablerQualifier private val isEnableGqlCache: Boolean
+        private val remoteConfig: RemoteConfig
 ) {
     suspend fun execute(page: DigitalRecommendationPage,
                         dgCategories: List<Int>,
@@ -37,6 +39,7 @@ class DigitalRecommendationUseCase @Inject constructor(
                         PARAM_PG_CATEGORY_IDS to pgCategories
                 )
         )
+        val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
         val graphqlCacheStrategy = if (isEnableGqlCache) {
             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
@@ -80,6 +83,7 @@ class DigitalRecommendationUseCase @Inject constructor(
                 PARAM_PG_CATEGORY_IDS to pgCategories
             )
         )
+        val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
         val graphqlCacheStrategy = if (isEnableGqlCache) {
             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())

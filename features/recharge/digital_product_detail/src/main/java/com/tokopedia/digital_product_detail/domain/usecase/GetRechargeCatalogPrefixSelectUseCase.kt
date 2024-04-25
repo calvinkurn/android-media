@@ -2,7 +2,6 @@ package com.tokopedia.digital_product_detail.domain.usecase
 
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,12 +9,14 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetRechargeCatalogPrefixSelectUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
-    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean
+    private val remoteConfig: FirebaseRemoteConfigImpl
 ): GraphqlUseCase<TelcoCatalogPrefixSelect>(graphqlRepository) {
 
     private var params: RequestParams = RequestParams.EMPTY
@@ -26,6 +27,7 @@ class GetRechargeCatalogPrefixSelectUseCase @Inject constructor(
             TelcoCatalogPrefixSelect::class.java,
             params.parameters
         )
+        val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
         val gqlCacheStrategy: GraphqlCacheStrategy.Builder = if (isEnableGqlCache) {
             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME)

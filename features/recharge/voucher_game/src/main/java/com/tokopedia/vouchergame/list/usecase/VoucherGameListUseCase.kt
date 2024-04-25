@@ -1,17 +1,16 @@
 package com.tokopedia.vouchergame.list.usecase
 
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
-import com.tokopedia.vouchergame.list.data.VoucherGameOperator
-import javax.inject.Inject
 
 /**
  * @author by resakemal on 15/08/19
@@ -19,7 +18,7 @@ import javax.inject.Inject
 
 class VoucherGameListUseCase(
     graphqlRepository: GraphqlRepository,
-    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean
+    private val remoteConfig: RemoteConfig
 ): GraphqlUseCase<VoucherGameListData.Response>(graphqlRepository) {
 
     suspend fun getVoucherGameOperators(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean): Result<VoucherGameListData> {
@@ -27,6 +26,7 @@ class VoucherGameListUseCase(
             this.setGraphqlQuery(rawQuery)
             this.setRequestParams(mapParam)
             this.setTypeClass(VoucherGameListData.Response::class.java)
+            val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
             if (isEnableGqlCache) {
                 this.setCacheStrategy(GraphqlCacheStrategy.Builder(if (isForceRefresh) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())

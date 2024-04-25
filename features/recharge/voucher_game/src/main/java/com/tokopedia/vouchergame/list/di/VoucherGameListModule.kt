@@ -1,7 +1,7 @@
 package com.tokopedia.vouchergame.list.di
 
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
 import dagger.Module
 import dagger.Provides
@@ -16,8 +16,8 @@ class VoucherGameListModule {
     @Provides
     fun provideVoucherGameListUseCase(
         graphqlRepository: GraphqlRepository,
-        @DigitalCacheEnablerQualifier isEnableGqlCache: Boolean
+        remoteConfig: RemoteConfig
     ): VoucherGameListUseCase =
-           VoucherGameListUseCase(graphqlRepository, isEnableGqlCache)
+           VoucherGameListUseCase(graphqlRepository, remoteConfig)
 
 }

@@ -12,7 +12,7 @@ import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseC
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
@@ -43,14 +43,13 @@ interface VoucherGameComponent {
 
     fun inject(baseVoucherGameActivity: BaseVoucherGameActivity)
 
-    @DigitalCacheEnablerQualifier
-    fun isEnableGqlCache(): Boolean
-
     @DigitalAddToCartQualifier
     fun restRepository(): RestRepository
 
     fun digitalInterceptor(): DigitalInterceptor
 
     fun networkRouter(): NetworkRouter
+
+    fun remoteConfig(): RemoteConfig
 
 }

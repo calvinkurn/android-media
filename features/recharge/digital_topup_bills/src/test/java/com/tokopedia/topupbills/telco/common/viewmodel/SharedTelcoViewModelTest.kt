@@ -9,6 +9,7 @@ import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -38,10 +39,13 @@ class SharedTelcoViewModelTest {
     @RelaxedMockK
     lateinit var contactDataSource: ContactDataSource
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        telcoViewModel = SharedTelcoViewModel(graphqlRepository, contactDataSource, false, Dispatchers.Unconfined)
+        telcoViewModel = SharedTelcoViewModel(graphqlRepository, contactDataSource, remoteConfig, Dispatchers.Unconfined)
     }
 
     @Test

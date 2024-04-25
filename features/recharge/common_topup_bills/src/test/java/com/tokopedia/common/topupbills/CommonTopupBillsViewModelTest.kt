@@ -38,6 +38,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -75,10 +76,13 @@ class CommonTopupBillsViewModelTest {
     @RelaxedMockK
     lateinit var rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, false, testCoroutineRule.dispatchers)
+        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, remoteConfig, testCoroutineRule.dispatchers)
     }
 
     @Test
@@ -503,7 +507,7 @@ class CommonTopupBillsViewModelTest {
 
     @Test
     fun createExpressCheckoutFieldParam_expressCheckoutInputNotEmpty_isCalled() {
-        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, false, testCoroutineRule.dispatchers), recordPrivateCalls = true)
+        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, remoteConfig, testCoroutineRule.dispatchers), recordPrivateCalls = true)
 
         every { topupBillsViewModelSpyk["createExpressCheckoutFieldParam"](allAny<String>(), allAny<String>()) } returns mapOf<String, String>()
 

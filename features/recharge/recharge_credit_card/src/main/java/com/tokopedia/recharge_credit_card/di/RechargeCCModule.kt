@@ -5,8 +5,6 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
-import com.tokopedia.common_digital.common.di.DigitalCommonScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -117,13 +115,6 @@ class RechargeCCModule {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
-    }
-
-    @Provides
-    @RechargeCCScope
-    @DigitalCacheEnablerQualifier
-    fun provideCacheEnabler(remoteConfig: RemoteConfig): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
     }
 
     fun getUserAgent(): String = AuthHelper.getUserAgent()

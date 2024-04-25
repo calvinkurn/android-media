@@ -91,11 +91,4 @@ class DigitalCommonModule {
         listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
         return listInterceptor
     }
-
-    @Provides
-    @DigitalCommonScope
-    @DigitalCacheEnablerQualifier
-    fun provideCacheEnabler(remoteConfig: RemoteConfig): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
-    }
 }

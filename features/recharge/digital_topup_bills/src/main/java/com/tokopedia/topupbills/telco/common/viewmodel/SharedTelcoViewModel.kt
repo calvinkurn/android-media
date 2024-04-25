@@ -8,7 +8,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.source.ContactDataSource
-import com.tokopedia.common_digital.common.di.DigitalCacheEnablerQualifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -16,6 +15,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -30,7 +31,7 @@ import javax.inject.Inject
 class SharedTelcoViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val contactDataSource: ContactDataSource,
-    @DigitalCacheEnablerQualifier private val isEnableGqlCache: Boolean,
+    private val remoteConfig: RemoteConfig,
     val dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
@@ -94,6 +95,7 @@ class SharedTelcoViewModel @Inject constructor(
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
+                val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                 val graphqlCacheStrategy = if (isEnableGqlCache) {
                     GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME)

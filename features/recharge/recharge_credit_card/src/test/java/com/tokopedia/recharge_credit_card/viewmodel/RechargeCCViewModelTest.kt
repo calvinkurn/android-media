@@ -26,6 +26,7 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCUserPerso
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -56,6 +57,9 @@ class RechargeCCViewModelTest {
     @RelaxedMockK
     lateinit var dppoConsentUseCase: GetDppoConsentUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     lateinit var rechargeCCViewModel: RechargeCCViewModel
 
     @Before
@@ -65,7 +69,8 @@ class RechargeCCViewModelTest {
             graphqlRepository,
             testCoroutineRule.dispatchers.coroutineDispatcher,
             rechargeFavoriteNumberRepo,
-            dppoConsentUseCase
+            dppoConsentUseCase,
+            remoteConfig
         )
     }
 
