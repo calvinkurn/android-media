@@ -13,7 +13,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.settings.setting.data.ShopSettingAccess
 import com.tokopedia.shopadmin.common.util.AccessId
-import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,7 +25,6 @@ class ShopPageSettingViewModel @Inject constructor(
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val authorizeAccessUseCase: Provider<AuthorizeAccessUseCase>,
     private val dispatcherProvider: CoroutineDispatchers,
-    private val storiesChecker: StoriesSettingsChecker,
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
@@ -61,14 +59,9 @@ class ShopPageSettingViewModel @Inject constructor(
                 }
             )
 
-            val isContentEligible = asyncCatchError(dispatcherProvider.io,
-                block = {
-                    storiesChecker.isEligible()
-                }, onError = { false })
-
             // Check for access role
             if (userSessionInterface.isShopOwner) {
-                mShopSettingAccessLiveData.value = Success(ShopSettingAccess(isContentManageAccessAuthorized = isContentEligible.await().orFalse()))
+                mShopSettingAccessLiveData.value = Success(ShopSettingAccess())
                 shopInfo.await()?.let {
                     shopInfoResp.value = Success(it)
                 }
@@ -105,7 +98,7 @@ class ShopPageSettingViewModel @Inject constructor(
                             isInfoAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_INFO] ?: false,
                             isShipmentAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_SHIPMENT] ?: false,
                             isProductManageAccessAuthorized = adminAccessMap[AccessId.PRODUCT_LIST] ?: false,
-                            isContentManageAccessAuthorized = isContentEligible.await() ?: false
+                            isContentManageAccessAuthorized = adminAccessMap[AccessId.CONTENT] ?: false
                         )
                     )
                 )
