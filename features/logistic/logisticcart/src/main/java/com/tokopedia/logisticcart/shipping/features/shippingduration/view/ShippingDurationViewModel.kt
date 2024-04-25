@@ -9,9 +9,11 @@ import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationAnalyticState
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationListState
@@ -30,8 +32,10 @@ class ShippingDurationViewModel @Inject constructor(
     private val stateConverter: RatesResponseStateConverter
 ) : BaseViewModel(Dispatchers.Main) {
     companion object {
-        private const val DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
+        private const val DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE =
+            "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
     }
+
     var shippingData: ShippingRecommendationData? = null
 
     private val _loading = MutableLiveData<Boolean>()
@@ -79,10 +83,14 @@ class ShippingDurationViewModel @Inject constructor(
                             model.shippingDurationUiModels,
                             model.listLogisticPromo,
                             model.productShipmentDetailModel,
+                            model.paidSectionInfoUiModel,
+                            model.freeShippingTicker,
+                            model.topTicker,
                             isOcc
                         )
                     )
-                    _shipmentAnalytic.value = ShippingDurationAnalyticState.AnalyticShippingDuration(model.shippingDurationUiModels)
+                    _shipmentAnalytic.value =
+                        ShippingDurationAnalyticState.AnalyticShippingDuration(model.shippingDurationUiModels)
                     val hasCourierPromo = checkHasCourierPromo(model.shippingDurationUiModels)
                     if (hasCourierPromo) {
                         _shipmentAnalytic.value =
@@ -92,7 +100,9 @@ class ShippingDurationViewModel @Inject constructor(
                         ShippingDurationAnalyticState.AnalyticPromoLogistic(model.listLogisticPromo)
                 } else {
                     _shipmentData.value =
-                        ShippingDurationListState.NoShipmentAvailable(DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE)
+                        ShippingDurationListState.NoShipmentAvailable(
+                            DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE
+                        )
                 }
             } catch (e: Exception) {
                 _loading.value = false
@@ -215,25 +225,39 @@ class ShippingDurationViewModel @Inject constructor(
         shippingDurationUiModels: List<ShippingDurationUiModel>,
         promoUiModel: List<LogisticPromoUiModel>,
         productShipmentDetailModel: ProductShipmentDetailModel?,
+        paidSectionInfoUiModel: PaidSectionInfoUiModel,
+        freeShippingTicker: List<ShipmentTickerModel>,
+        globalShippingTicker: List<ShipmentTickerModel>,
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
+        // TODO map ticker
         val eligibleServices = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }
         if (!isOcc && promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
             initiateShowcase(eligibleServices)
         }
+
+        // paid shipping
         val uiModelList: MutableList<RatesViewModelType> =
             mutableListOf<RatesViewModelType>().apply {
                 addAll(eligibleServices)
             }
 
+        // title paid shipping
+        if (paidSectionInfoUiModel.title.isNotEmpty()) {
+            uiModelList.add(0, paidSectionInfoUiModel)
+        }
+
+        // bebas ongkir
         if (promoUiModel.isNotEmpty()) {
             uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
         }
 
+        // notifier
         if (!isOcc && !eligibleServices.any { it.etaErrorCode == 0 }) {
             uiModelList.add(0, NotifierModel())
         }
 
+        // shipment info
         productShipmentDetailModel?.let {
             uiModelList.add(0, it)
         }
