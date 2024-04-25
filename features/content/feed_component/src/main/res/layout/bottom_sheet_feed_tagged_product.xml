@@ -22,8 +22,8 @@
         android:id="@+id/feed_product_load_more"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:visibility="gone"
         android:layout_margin="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,11 +34,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_tagged_product"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/rv_tagged_product" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tagged_product"
@@ -50,10 +50,10 @@
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mvc_tagged_product"
+        app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_feed_tagged_product" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

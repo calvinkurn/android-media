@@ -1303,7 +1303,6 @@ class FeedPostViewModel @Inject constructor(
 
                 val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
-                    _feedTagProductList.value.products.isNotEmpty() -> _feedTagProductList.value.products
                     else -> emptyList()
                 }
                 val cursor = when {
@@ -1324,7 +1323,6 @@ class FeedPostViewModel @Inject constructor(
                     ProductMapper.transform(it, response.campaign, sourceType)
                 }
 
-                if (isNextPage) throw FeedProductNextPageError //todo: testing purpose
                 val distinctData = (currentList + mappedData).distinctBy { it.id }
                 _feedTagProductList.value = FeedProductPaging(ResultState.Success ,distinctData, response.nextCursor)
             } catch (t: Throwable) {

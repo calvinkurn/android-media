@@ -2,7 +2,10 @@ package com.tokopedia.feed.component.product
 
 import android.os.Bundle
 import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +15,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -41,6 +47,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
@@ -49,7 +56,8 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private var activityId: String = ""
     private var shopId: String = ""
-    private var sourceType : ContentTaggedProductUiModel.SourceType = ContentTaggedProductUiModel.SourceType.Unknown
+    private var sourceType: ContentTaggedProductUiModel.SourceType =
+        ContentTaggedProductUiModel.SourceType.Unknown
 
     private val maxHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
@@ -123,21 +131,22 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private val scrollListener get() = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && isLastItem) {
-                listener?.onFeedProductNextPage(activityId, sourceType)
+    private val scrollListener
+        get() = object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && isLastItem) {
+                    listener?.onFeedProductNextPage(activityId, sourceType)
+                }
+                super.onScrollStateChanged(recyclerView, newState)
             }
-            super.onScrollStateChanged(recyclerView, newState)
         }
-    }
 
-    private val isLastItem : Boolean
+    private val isLastItem: Boolean
         get() {
             val layoutManager = binding.rvTaggedProduct.layoutManager as? LinearLayoutManager
             val position = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
             val numItems: Int = binding.rvTaggedProduct.adapter?.itemCount.orZero()
-            return  position >= numItems - 5 //threshold
+            return position >= numItems - 5 //threshold
         }
 
     private val rvLayoutChangeListener = object : View.OnLayoutChangeListener {
@@ -157,16 +166,35 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private val isListHeightTaller : Boolean
+    private val isListHeightTaller: Boolean
         get() = binding.rvTaggedProduct.height > binding.root.height
 
-    private val errorClickable : ClickableSpan get() {
-        return object : ClickableSpan() {
-            override fun onClick(p0: View) {
-                listener?.onFeedProductNextPage(activityId, sourceType)
+    private val errorClickable: ClickableSpan
+        get() {
+            return object : ClickableSpan() {
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.apply {
+                        isUnderlineText = false
+                        color = MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_GN500)
+                    }
+                }
+
+                override fun onClick(p0: View) {
+                    listener?.onFeedProductNextPage(activityId, sourceType)
+                }
             }
         }
-    }
+
+    private val errorImgSpan: ImageSpan?
+        get() {
+            return getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.REPLAY,
+                unifyprinciplesR.color.Unify_GN500
+            )?.let {
+                ImageSpan(it)
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -278,9 +306,15 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private fun setupError() {
         binding.tvErrorLoadMore.text = buildSpannedString {
-            append("Gagal menampilkan produk lainnya")
-            append("Coba Lagi", errorClickable, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+            append(getString(contentcommonR.string.content_failed_product_load), 0, 32)
+            //setSpan(errorImgSpan, 32, 38, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+            append(
+                getString(contentcommonR.string.feed_content_coba_lagi_text),
+                errorClickable,
+                Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+            )
         }
+        binding.tvErrorLoadMore.movementMethod = LinkMovementMethod.getInstance()
     }
 
     interface Listener {
@@ -304,7 +338,10 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         val productListLiveData: Flow<FeedProductPaging>
 
-        fun onFeedProductNextPage(activityId: String, sourceType : ContentTaggedProductUiModel.SourceType)
+        fun onFeedProductNextPage(
+            activityId: String,
+            sourceType: ContentTaggedProductUiModel.SourceType
+        )
     }
 
     companion object {
