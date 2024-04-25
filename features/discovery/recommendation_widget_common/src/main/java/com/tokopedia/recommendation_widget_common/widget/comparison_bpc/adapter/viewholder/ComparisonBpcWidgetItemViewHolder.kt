@@ -34,6 +34,7 @@ class ComparisonBpcWidgetItemViewHolder(
     val context: Context = view.context
 
     override fun bind(element: ComparisonBpcItemModel) {
+        elementItem = element
         binding?.run {
             productCardView.applyCarousel()
             setLayoutParams(element)

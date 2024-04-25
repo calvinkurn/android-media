@@ -30,6 +30,7 @@ class CarouselProductCardViewHolder (
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
     override fun bind(element: CarouselProductCardDataModel) {
+        elementItem = element
         setLayout(itemView.context, element)
     }
 

@@ -33,6 +33,7 @@ class RecommendationVerticalProductCardViewHolder(
     private val binding = ItemRecomVerticalProductcardBinding.bind(itemView)
 
     override fun bind(element: RecommendationVerticalProductCardModel) {
+        elementItem = element
         setupProductCardLayoutData(element.productModel)
         setupProductCardListener(element)
     }

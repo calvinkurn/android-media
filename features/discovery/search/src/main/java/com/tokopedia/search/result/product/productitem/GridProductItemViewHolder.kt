@@ -34,6 +34,7 @@ class GridProductItemViewHolder(
         get() = binding?.searchProductCardGridReimagine?.video
 
     override fun bind(productItemData: ProductItemDataView) {
+        elementItem = productItemData
         binding?.searchProductCardGridReimagine?.run {
             setProductModel(productCardModel(productItemData))
 

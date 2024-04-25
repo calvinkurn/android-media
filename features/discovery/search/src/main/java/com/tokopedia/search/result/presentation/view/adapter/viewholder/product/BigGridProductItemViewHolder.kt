@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -36,6 +35,8 @@ class BigGridProductItemViewHolder(
 
     override fun bind(productItemData: ProductItemDataView?) {
         if (productItemData == null) return
+        elementItem = productItemData
+
         val productCardView = binding?.productCardView ?: return
 
         val productCardModel =
