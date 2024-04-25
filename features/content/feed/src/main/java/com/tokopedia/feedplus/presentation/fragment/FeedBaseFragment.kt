@@ -25,7 +25,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.PageName
@@ -44,7 +43,6 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPoin
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.model.CreationUploadType
@@ -53,7 +51,6 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
-import com.tokopedia.feedplus.di.DaggerFeedMainComponent
 import com.tokopedia.feedplus.di.FeedInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
@@ -557,13 +554,12 @@ class FeedBaseFragment :
 
                     when (event) {
                         is FeedTooltipEvent.ShowTooltip -> {
-                            /** JOE TODO: show tooltip */
                             binding.tooltip.setTooltipMessage(event.text)
-                            binding.tooltip.animateShow()
+                            binding.tooltip.show()
                             feedMainViewModel.setHasShownTooltip()
                         }
                         is FeedTooltipEvent.DismissTooltip -> {
-                            binding.tooltip.animateHide()
+                            binding.tooltip.hide()
                         }
                     }
 
