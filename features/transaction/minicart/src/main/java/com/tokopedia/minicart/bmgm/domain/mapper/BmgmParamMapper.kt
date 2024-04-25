@@ -89,7 +89,7 @@ object BmgmParamMapper {
         if (qty != null) {
             carts.forEachIndexed { index, it ->
                 val cartDetails = mutableListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
-                it.cartDetails.filter { it.offer.offerId == offerId }.forEach {
+                it.cartDetails.forEach {
                     var products = it.products
                     if (it.offer.offerId == offerId) {
                         products = it.products.map { product ->
@@ -104,6 +104,28 @@ object BmgmParamMapper {
                 }
                 carts[index] = carts[index].copy(cartDetails = ArrayList(cartDetails))
             }
+        }
+
+        return BmGmGetGroupProductTickerParams(
+            carts = carts,
+            source = SOURCE_MINI_CART_BOTTOM_SHEET_NOW
+        )
+    }
+
+    fun getUpdateGwpParam(
+        params: BmGmGetGroupProductTickerParams?,
+        offerId: Long
+    ): BmGmGetGroupProductTickerParams {
+        val carts = params?.carts?.filter { cart ->
+            cart.cartDetails.any { it.offer.offerId == offerId }
+        } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
+
+        carts.forEachIndexed { index, it ->
+            val cartDetails = mutableListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
+            it.cartDetails.filter { it.offer.offerId == offerId }.forEach {
+                cartDetails.add(it)
+            }
+            carts[index] = carts[index].copy(cartDetails = ArrayList(cartDetails))
         }
 
         return BmGmGetGroupProductTickerParams(

@@ -27,6 +27,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper.getUpdateGwpParam
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper.mapParamsFilteredToUpdateGwp
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet.Companion.STATE_PRODUCT_BUNDLE_RECOM_ATC
 import com.tokopedia.minicart.cartlist.MiniCartListGwpUiModelMapper.getGwpErrorState
@@ -726,15 +727,17 @@ class MiniCartViewModel @Inject constructor(
             updateGwpUseCaseJob[offerId]?.cancel()
             updateGwpUseCaseJob[offerId] = launchCatchError(
                 block = {
-                    val paramsToUpdateGwp = mapParamsFilteredToUpdateGwp(
+                    paramsToUpdateGwp = mapParamsFilteredToUpdateGwp(
                         params = paramsToUpdateGwp,
                         offerId = offerId,
                         productId = productId,
                         qty = newQty
                     )
+                    val updateGwpParam = getUpdateGwpParam(paramsToUpdateGwp, offerId)
+
                     _miniCartListBottomSheetUiModel.value = getGwpSuccessState(
                         uiModel = _miniCartListBottomSheetUiModel.value,
-                        response = updateGwpUseCase.invoke(paramsToUpdateGwp)
+                        response = updateGwpUseCase.invoke(updateGwpParam)
                     )
                 },
                 onError = {
