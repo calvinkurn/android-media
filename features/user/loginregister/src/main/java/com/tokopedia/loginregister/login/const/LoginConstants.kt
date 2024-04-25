@@ -30,8 +30,8 @@ object LoginConstants {
 
     object MsSdkKey{
         const val LOGGED = "logged"
-        const val REGISTERED = "registered"
-        const val APPID = "573733"
+        const val REGISTERED: String = "registered"
+        const val APPID: String = "573733"
     }
 
     object OtpType {

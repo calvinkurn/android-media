@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
+import com.tokopedia.media.loader.loadImage
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface

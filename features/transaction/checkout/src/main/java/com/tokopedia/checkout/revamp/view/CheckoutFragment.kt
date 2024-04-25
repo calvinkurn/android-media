@@ -1026,8 +1026,8 @@ class CheckoutFragment :
     }
 
     companion object {
-        private const val MSSDK_APPID = "573733"
-        private const val MSSDK_CHECKOUT = "checkout"
+        private const val MSSDK_APPID: String = "573733"
+        private const val MSSDK_CHECKOUT: String = "checkout"
 
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
 
