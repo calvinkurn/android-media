@@ -49,7 +49,8 @@ class MiniCartGwpGiftViewHolder(
                         )
                     ),
                     pageSource = PageSource.MINICART_NOW,
-                    shopId = element.shopId
+                    shopId = element.shopId,
+                    autoSelectTierChipByTierId = element.tierId
                 )
 
                 setupCtaClickListener(element.ctaText) {
