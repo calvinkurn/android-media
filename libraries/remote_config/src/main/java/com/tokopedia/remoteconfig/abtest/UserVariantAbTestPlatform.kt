@@ -1,30 +1,31 @@
-package com.tokopedia.shop.common.remoteconfig
+package com.tokopedia.remoteconfig.abtest
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shop.common.remoteconfig.data.ShopAbTestInputParamModel
-import com.tokopedia.shop.common.remoteconfig.data.ShopAbTestVariantPojo
-import com.tokopedia.shop.common.remoteconfig.data.ShopRolloutFeatureVariants
+import com.tokopedia.remoteconfig.abtest.data.AbTestUserVariantInputParamModel
+import com.tokopedia.remoteconfig.abtest.data.AbTestUserVariantPojo
+import com.tokopedia.remoteconfig.abtest.data.RolloutUserVariants
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import rx.schedulers.Schedulers
-import java.lang.Exception
-import java.util.*
+import timber.log.Timber
 
-class ShopAbTestPlatform (
+class UserVariantAbTestPlatform(
     context: Context
 ) : RemoteConfig {
     private var irisSession: IrisSession = IrisSession(context)
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
-    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_SHOP_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
-    var editor: SharedPreferences.Editor = sharedPreferences.edit()
-    var requestParams = mapOf<String, Any>()
+    private val sharedPreferences = context.getSharedPreferences(
+        SHARED_PREFERENCE_USER_VARIANT_AB_TEST_PLATFORM,
+        Context.MODE_PRIVATE
+    )
+    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+    private var requestParams = mapOf<String, Any>()
 
     override fun getBoolean(key: String?): Boolean {
         return getBoolean(key, false)
@@ -33,7 +34,11 @@ class ShopAbTestPlatform (
     override fun getBoolean(key: String?, defaultValue: Boolean): Boolean {
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue.toString())
             ?: defaultValue.toString()
-        if (cacheValue.equals(defaultValue.toString(), ignoreCase = true) && cacheValue.isNotEmpty()) {
+        if (cacheValue.equals(
+                defaultValue.toString(),
+                ignoreCase = true
+            ) && cacheValue.isNotEmpty()
+        ) {
             return cacheValue.equals("true", ignoreCase = true)
         }
         return defaultValue
@@ -76,18 +81,30 @@ class ShopAbTestPlatform (
         editor.commit()
     }
 
+    fun setRequestParamsData(listExperimentName: List<String>, shopId: String) {
+        this.requestParams = mapOf(
+            KEY_INPUT to AbTestUserVariantInputParamModel(
+                listExperimentName,
+                shopId,
+                ANDROID_CLIENT_ID.toString()
+            )
+        )
+    }
+
     override fun fetch(listener: RemoteConfig.Listener?) {
-        (requestParams[KEY_INPUT] as? ShopAbTestInputParamModel)?.irisSessionId = irisSession.getSessionId()
-        val graphqlRequest = GraphqlRequest(QUERY, ShopAbTestVariantPojo::class.java, requestParams, false)
+        (requestParams[KEY_INPUT] as? AbTestUserVariantInputParamModel)?.irisSessionId =
+            irisSession.getSessionId()
+        val graphqlRequest =
+            GraphqlRequest(QUERY, AbTestUserVariantPojo::class.java, requestParams, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.createObservable(RequestParams.EMPTY)
             .map { graphqlResponse ->
                 gqlResponseHandler(graphqlResponse)
-                listener?.onComplete(this@ShopAbTestPlatform)
+                listener?.onComplete(this@UserVariantAbTestPlatform)
             }
             .doOnError { error ->
-                Log.d("doOnError", error.toString())
+                Timber.tag("doOnError").d(error.toString())
                 listener?.onError(Exception(error))
             }
             .subscribeOn(Schedulers.io())
@@ -106,17 +123,16 @@ class ShopAbTestPlatform (
             }
     }
 
-    private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): ShopRolloutFeatureVariants {
-        val responseData: ShopAbTestVariantPojo = graphqlResponse.getData(ShopAbTestVariantPojo::class.java)
+    private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): RolloutUserVariants {
+        val responseData: AbTestUserVariantPojo =
+            graphqlResponse.getData(AbTestUserVariantPojo::class.java)
         val featureVariants = responseData.dataRollout.featureVariants
-        val currentTimestamp = Date().time
         if (featureVariants != null) {
             editor.clear()
             for (a in featureVariants) {
                 editor.putString(a.feature, a.variant)
             }
         }
-        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
         editor.commit()
         return responseData.dataRollout
     }
@@ -135,20 +151,7 @@ class ShopAbTestPlatform (
         """
         private const val KEY_INPUT = "input"
         private const val ANDROID_CLIENT_ID = 1
-        private const val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
-        private const val SHARED_PREFERENCE_SHOP_AB_TEST_PLATFORM = "tkpd-shop-ab-test-platform"
-
-        fun createRequestParam(
-            listExperimentName: List<String>,
-            shopId: String
-        ): Map<String, Any> {
-            return mapOf(
-                KEY_INPUT to ShopAbTestInputParamModel(
-                    listExperimentName,
-                    shopId,
-                    ANDROID_CLIENT_ID.toString()
-                )
-            )
-        }
+        private const val SHARED_PREFERENCE_USER_VARIANT_AB_TEST_PLATFORM =
+            "tkpd-user-variant-ab-test-platform"
     }
 }
