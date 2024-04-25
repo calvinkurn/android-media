@@ -32,6 +32,8 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_as_buyer.json"
     private val chatBroadcastWithBuyerPath =
         "success_get_chat_broadcast.json"
+    private val chatBroadcastPromoPath =
+        "broadcast/success_get_broadcast_promo.json"
     private val bannedProductChatWithBuyerPath =
         "success_get_chat_first_page_with_banned_products.json"
     private val chatTickerReminder =
@@ -163,6 +165,11 @@ class GetChatUseCaseStub @Inject constructor(
 
     val autoReplyResponse: GetExistingChatPojo
         get() = alterResponseOf(autoReplyResponsePath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoPath) { response ->
             alterDateToToday(response)
         }
 
