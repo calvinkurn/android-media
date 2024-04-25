@@ -72,7 +72,7 @@ def replaceRepositoriesWith(RepositoryHandler repos, Closure addBits) {
 }
 
 def isContainsTokoOrGoogleRepos(String url, String name) {
-    return url.contains(gcp_artifactory_url) || url.contains(artifactory_url) ||
+    return url.contains(gcp_artifactory_url) ||
             url.contains(urlCourierClient) || url.contains(urlGoto) || url.contains(urlLaku6) ||
             url.contains(urlHansel)
 }
