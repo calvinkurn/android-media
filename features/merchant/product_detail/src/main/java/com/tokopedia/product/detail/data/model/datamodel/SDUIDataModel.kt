@@ -23,7 +23,6 @@ data class SDUIDataModel(
         jsonString = value
     }
 
-
     private fun String.toJSONObject(): JSONObject? = try {
         JSONObject(this)
     } catch (ex: JSONException) {
