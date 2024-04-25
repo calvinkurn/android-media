@@ -89,7 +89,7 @@ object BmgmParamMapper {
         if (qty != null) {
             carts.forEachIndexed { index, it ->
                 val cartDetails = mutableListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
-                it.cartDetails.forEach {
+                it.cartDetails.filter { it.offer.offerId == offerId }.forEach {
                     var products = it.products
                     if (it.offer.offerId == offerId) {
                         products = it.products.map { product ->

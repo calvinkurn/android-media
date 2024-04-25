@@ -11,7 +11,7 @@ object MiniCartListGwpUiModelMapper {
     private fun updateMiniCartProgressiveInfoUiModel(
         response: BmGmGetGroupProductTickerResponse,
         uiModel: MiniCartProgressiveInfoUiModel
-    ): MiniCartProgressiveInfoUiModel? {
+    ): MiniCartProgressiveInfoUiModel {
         return response.getGroupProductTicker.data.multipleData.find { data -> data.bmgmData.offerId == uiModel.offerId }?.run {
             uiModel.copy(
                 message = bmgmData.getOfferMessage(),
@@ -19,7 +19,7 @@ object MiniCartListGwpUiModelMapper {
                 appLink = bmgmData.offerLandingPageLink,
                 state = MiniCartProgressiveInfoUiModel.State.LOADED
             )
-        }
+        } ?: uiModel
     }
 
     private fun updateMiniCartProgressiveInfoUiModel(
@@ -58,7 +58,7 @@ object MiniCartListGwpUiModelMapper {
                 )
             }
         }
-        return uiModel.copy(giftList = emptyList())
+        return uiModel
     }
 
     fun getGwpSuccessState(
