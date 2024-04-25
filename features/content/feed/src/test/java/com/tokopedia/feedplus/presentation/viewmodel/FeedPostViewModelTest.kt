@@ -88,7 +88,9 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -2177,6 +2179,24 @@ class FeedPostViewModelTest {
                 it is FeedCardLivePreviewContentModel && it.playChannelId == "123" -> assert(!it.isLive)
             }
         }
+    }
+
+    /** Tooltip */
+    @Test
+    fun saveScrollPosition_showTooltipByPosition() {
+        coEvery { tooltipManager.showTooltipEvent() } returns Unit
+        coEvery { tooltipManager.isShowTooltip(any()) } answers { arg<Int>(0) == 4 }
+
+        repeat(5) {
+            viewModel.saveScrollPosition(it)
+
+            coVerify(exactly = if (it == 4) 1 else 0) { tooltipManager.showTooltipEvent() }
+        }
+    }
+
+    @Test
+    fun saveScrollPosition_showTooltip_false() {
+
     }
 
     private fun provideDefaultFeedPostMockData() {
