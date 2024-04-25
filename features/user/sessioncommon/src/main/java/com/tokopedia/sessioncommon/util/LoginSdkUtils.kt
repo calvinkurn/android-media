@@ -12,13 +12,16 @@ object LoginSdkUtils {
     private const val RESULT_AUTH_CODE = "auth_code"
     private const val RESULT_ERROR = "error"
 
-    fun redirectToTargetUri(activity: Activity, redirectUrl: String, authCode: String, error: String = "") {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
-        if (authCode.isNotEmpty()) {
-            intent.putExtra(RESULT_AUTH_CODE, authCode)
-        }
-        if (error.isNotEmpty()) {
-            intent.putExtra(RESULT_ERROR, error)
+    fun redirectToTargetUri(activity: Activity, redirectUrl: String, authCode: String, error: String = "", inQuery: Boolean = true) {
+        val finalUrl = if (inQuery) "$redirectUrl&auth_code=$authCode&error=$error" else redirectUrl
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
+        if (!inQuery) {
+            if (authCode.isNotEmpty()) {
+                intent.putExtra(RESULT_AUTH_CODE, authCode)
+            }
+            if (error.isNotEmpty()) {
+                intent.putExtra(RESULT_ERROR, error)
+            }
         }
         activity.removeLoginSdkFlow()
         activity.startActivity(intent)
