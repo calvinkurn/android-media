@@ -5,6 +5,7 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.repository.mockBanner
 import com.tokopedia.home.repository.mockChannels
 import com.tokopedia.home.repository.mockDynamicIcon
+import com.tokopedia.home.repository.mockMission4SquareWidget
 import com.tokopedia.home.repository.mockMissionWidget
 import com.tokopedia.home.repository.mockTicker
 import com.tokopedia.home.repository.mockTodoWidget
@@ -14,6 +15,7 @@ fun mockDynamicPositionComplete() = listOf(
     mockBanner(AtfKey.STATUS_SUCCESS, true),
     mockDynamicIcon(AtfKey.STATUS_SUCCESS, true),
     mockMissionWidget(AtfKey.STATUS_SUCCESS, true),
+    mockMission4SquareWidget(AtfKey.STATUS_SUCCESS, true),
     mockTodoWidget(AtfKey.STATUS_SUCCESS, true),
     mockChannels(AtfKey.STATUS_SUCCESS, true)
 )

@@ -14,8 +14,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_glow_circle_small"
-        android:layout_width="@dimen/dp_148"
-        android:layout_height="@dimen/dp_148"
+        android:layout_width="148dp"
+        android:layout_height="148dp"
         android:layout_gravity="center_horizontal"
         app:srcCompat="@drawable/gf_ic_circle_1" />
 

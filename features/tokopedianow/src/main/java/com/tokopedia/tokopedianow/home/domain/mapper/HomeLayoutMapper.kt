@@ -73,7 +73,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapRe
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingReferralUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
-import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.createSwitcherUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemIndex
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
@@ -180,7 +179,6 @@ object HomeLayoutMapper {
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
-        isLoggedIn: Boolean,
         hasBlockedAddToCart: Boolean,
         tickerList: List<TickerData>
     ) {
@@ -200,8 +198,6 @@ object HomeLayoutMapper {
                 mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
                     add(item)
                 }
-
-                addSwitcherUiModel(layoutResponse, localCacheModel, isLoggedIn)
             }
         }
     }
@@ -518,17 +514,6 @@ object HomeLayoutMapper {
             val layout = (headerUiModel.layout as HomeHeaderUiModel)
                 .copy(warehouses = warehouses)
             add(headerUiModel.copy(layout = layout, state = HomeLayoutItemState.NOT_LOADED))
-        }
-    }
-
-    private fun MutableList<HomeLayoutItemUiModel?>.addSwitcherUiModel(
-        response: HomeLayoutResponse,
-        localCacheModel: LocalCacheModel,
-        isLoggedIn: Boolean
-    ) {
-        if (response.layout == EDUCATIONAL_INFORMATION && isLoggedIn) {
-            val switcherUiModel = createSwitcherUiModel(localCacheModel)
-            switcherUiModel?.let { uiModel -> add(uiModel) }
         }
     }
 

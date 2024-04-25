@@ -336,6 +336,7 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkSA("tokopedia://product/2506450520/?warehouse_id=12345", DF_SELLER_PDP)
         assertEqualDeepLinkSA("tokopedia://product-edu/1", DF_SELLER_PDP)
         assertEqualDeepLinkSA("tokopedia://post-atc/2506450520", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product-webview-bs", DF_SELLER_PDP)
     }
 
     @Test

@@ -82,7 +82,7 @@ fun createEmptyStateLayout(id: String, serviceType: String = "", pageName: Strin
             layoutList.addServerErrorState()
         }
         else -> {
-            layoutList.addEmptyStateNoResult(serviceType)
+            layoutList.addEmptyStateNoResult()
             layoutList.addProductRecommendation(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
         }
     }

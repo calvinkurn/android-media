@@ -615,7 +615,7 @@ object DeeplinkMainApp {
             DLP.startsWith("all-annotation") { deeplink: String ->
                 DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowAllAnnotation(deeplink)
             },
-            DLP.matchPattern("list-belanja") {  _: String ->
+            DLP.matchPattern("list-belanja") { _: String ->
                 ApplinkConstInternalTokopediaNow.SHOPPING_LIST
             }
         ),
@@ -798,12 +798,22 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
         ),
+        "product-preview" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
+        ),
         "product-review" to mutableListOf(
             DLP.startsWith("create") { uri: Uri ->
                 DeeplinkMapperMerchant.getRegisteredNavigationProductReview(uri)
             },
             DLP.matchPattern("bulk-create") { _: String ->
                 ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW
+            }
+        ),
+        "product-webview-bs" to mutableListOf(
+            DLP.matchPattern("") { _:String ->
+                ApplinkConstInternalMarketplace.PRODUCT_WEBVIEW_BS
             }
         ),
         "productar" to mutableListOf(

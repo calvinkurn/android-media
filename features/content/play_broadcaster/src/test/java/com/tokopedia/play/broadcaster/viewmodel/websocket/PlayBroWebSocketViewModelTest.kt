@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.model.websocket.WebSocketUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertEvent
 import com.tokopedia.play.broadcaster.util.assertFalse
@@ -70,41 +71,53 @@ class PlayBroWebSocketViewModelTest {
 
     @Test
     fun `when user received new total view event, then it should emit new total view data`() {
-        val mockTotalViewString = webSocketUiModelBuilder.buildTotalViewString()
-        val mockTotalView = webSocketUiModelBuilder.buildTotalViewModel()
+        val mockTotalView = "123"
+        val mockTotalViewString = webSocketUiModelBuilder.buildReportChannelString(totalViewFmt = mockTotalView)
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
+            channelRepo = mockRepo,
             playBroadcastWebSocket = fakePlayWebSocket,
         )
 
         robot.use {
-            robot.executeViewModelPrivateFunction("startWebSocket")
-            fakePlayWebSocket.fakeEmitMessage(mockTotalViewString)
+            val state = robot.recordState {
+                getAccountConfiguration()
+                robot.executeViewModelPrivateFunction("startWebSocket")
+                fakePlayWebSocket.fakeEmitMessage(mockTotalViewString)
+            }
 
-            val result = robot.getViewModel().observableTotalView.getOrAwaitValue()
-
-            result.assertEqualTo(mockTotalView)
+            state.liveReportSummary.liveStats
+                .filterIsInstance<LiveStatsUiModel.TotalViewer>()
+                .first()
+                .value
+                .assertEqualTo(mockTotalView)
         }
     }
 
     @Test
     fun `when user received new total like event, then it should emit new total like data`() {
-        val mockTotalLikeString = webSocketUiModelBuilder.buildTotalLikeString()
-        val mockTotalLike = webSocketUiModelBuilder.buildTotalLikeModel()
+        val mockTotalLike = "123"
+        val mockTotalLikeString = webSocketUiModelBuilder.buildReportChannelString(totalLikeFmt = mockTotalLike)
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
+            channelRepo = mockRepo,
             playBroadcastWebSocket = fakePlayWebSocket,
         )
 
         robot.use {
-            robot.executeViewModelPrivateFunction("startWebSocket")
-            fakePlayWebSocket.fakeEmitMessage(mockTotalLikeString)
+            val state = robot.recordState {
+                getAccountConfiguration()
+                robot.executeViewModelPrivateFunction("startWebSocket")
+                fakePlayWebSocket.fakeEmitMessage(mockTotalLikeString)
+            }
 
-            val result = robot.getViewModel().observableTotalLike.getOrAwaitValue()
-
-            result.assertEqualTo(mockTotalLike)
+            state.liveReportSummary.liveStats
+                .filterIsInstance<LiveStatsUiModel.Like>()
+                .first()
+                .value
+                .assertEqualTo(mockTotalLike)
         }
     }
 

@@ -69,6 +69,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String POST_ATC = "tokopedia://post-atc/{productId}";
+    String PRODUCT_WEBVIEW_BS = "tokopedia://product-webview-bs";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String PRODUCT_REVIEW_GALLERY = "tokopedia://product/{id}/review/gallery";
@@ -894,5 +895,13 @@ public interface ApplinkConst {
 
     interface Som {
         String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
+    }
+
+    interface ProductPreview {
+        String SHARE_PRODUCT_PREVIEW = "tokopedia://product-preview" +
+                "/%1s" + // productId
+                "?review_id=%2s" +
+                "&attachment_id=%3s" +
+                "&source=%4s";
     }
 }

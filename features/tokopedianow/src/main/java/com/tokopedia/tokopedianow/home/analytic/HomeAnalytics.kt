@@ -26,12 +26,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CAMPAIGN_CODE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROWTH
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_REMOVE_FROM_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROWTH_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS
@@ -119,7 +117,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SINGLE_BUNDLE_PACKAGE_VARIANT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SINGLE_BUNDLE_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SLIDER_BANNER
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SWITCHER_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_CATEGORY
@@ -139,7 +136,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SLIDER_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_USP_WIDGET
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_VIEW_SWITCHER_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_RECOM_HOME_PAGE
@@ -169,8 +165,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_4_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_6_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NULL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_BUNDLING
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_PAGE_SOURCE
@@ -255,8 +249,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             "click selengkapnya on tokonow referral widget - sender"
         const val EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET =
             "view tokonow referral widget - sender"
-        const val EVENT_ACTION_VIEW_SWITCHER_WIDGET = "view switcher widget"
-        const val EVENT_ACTION_CLICK_SWITCHER_WIDGET = "click switcher widget"
         const val EVENT_ACTION_IMPRESSION_LEGO_4 = "impression lego 4 banner"
         const val EVENT_ACTION_CLICK_LEGO_4 = "click lego 4 banner"
         const val EVENT_ACTION_IMPRESSION_LEGO_6 = "impression lego 6 banner"
@@ -286,8 +278,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val HOMEPAGE_TOKONOW = "homepage tokonow"
         const val HOME_WIDGET = "homewidget"
         const val REFERRAL_STATUS = "1"
-        const val NOW2HR = "now2hr"
-        const val NOW15M = "now15"
         const val LEGO_6_BANNER = "lego 6 banner"
         const val LEGO_4_BANNER = "lego 4 - banner"
         const val SLASH_NOW = "/now"
@@ -1606,78 +1596,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         )
         dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
-    }
-
-    /*
-        -- Switcher Widget --
-        Thanos : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/2972
-    */
-
-    private fun getEventLabelSwitcherWidget(
-        userId: String,
-        whIdOrigin: String,
-        whIdDestination: String,
-        isNow15: Boolean
-    ): String {
-        var switcherName = NOW2HR
-        if (isNow15) {
-            switcherName = NOW15M
-        }
-        return "$switcherName - $userId - $whIdOrigin - $whIdDestination"
-    }
-
-    // - 1
-    fun sendImpressSwitcherWidget(
-        userId: String,
-        whIdOrigin: String,
-        whIdDestination: String,
-        isNow15: Boolean
-    ) {
-        Tracker.Builder()
-            .setEvent(EVENT_VIEW_GROWTH_IRIS)
-            .setEventAction(EVENT_ACTION_VIEW_SWITCHER_WIDGET)
-            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(
-                getEventLabelSwitcherWidget(
-                    userId,
-                    whIdOrigin,
-                    whIdDestination,
-                    isNow15
-                )
-            )
-            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
-            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            .setUserId(userId)
-            .setCustomProperty(EVENT_WAREHOUSE_ID, whIdOrigin)
-            .build()
-            .send()
-    }
-
-    // - 2
-    fun sendClickSwitcherWidget(
-        userId: String,
-        whIdOrigin: String,
-        whIdDestination: String,
-        isNow15: Boolean
-    ) {
-        Tracker.Builder()
-            .setEvent(EVENT_CLICK_GROWTH)
-            .setEventAction(EVENT_ACTION_CLICK_SWITCHER_WIDGET)
-            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(
-                getEventLabelSwitcherWidget(
-                    userId,
-                    whIdOrigin,
-                    whIdDestination,
-                    isNow15
-                )
-            )
-            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
-            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            .setUserId(userId)
-            .setCustomProperty(EVENT_WAREHOUSE_ID, whIdOrigin)
-            .build()
-            .send()
     }
 
     /*

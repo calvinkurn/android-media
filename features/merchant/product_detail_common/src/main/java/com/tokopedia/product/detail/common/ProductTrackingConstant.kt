@@ -241,6 +241,8 @@ object ProductTrackingConstant {
 
         const val CLICK_SHARE_REGULER = "general"
         const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
+
+        const val CLICK_EXPAND_PRODUCT_NAME = "click - expand product name"
     }
 
     object Label {
@@ -335,5 +337,6 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
         const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"
         const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
+        const val TRACKER_ID_CLICK_EXPAND_PRODUCT_NAME = "50722"
     }
 }

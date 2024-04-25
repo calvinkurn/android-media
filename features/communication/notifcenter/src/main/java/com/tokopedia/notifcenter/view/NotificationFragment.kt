@@ -67,7 +67,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -116,7 +116,7 @@ class NotificationFragment @Inject constructor(
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "/new-inbox/notif"
     override fun onItemClicked(t: Visitable<*>?) {}
-    override fun isAutoLoadEnabled(): Boolean = true
+    override fun isAutoLoadEnabled(): Boolean = false
 
     override fun onAttachActivity(context: Context?) {
         if (context is NotificationFragmentContainer) {
@@ -133,6 +133,7 @@ class NotificationFragment @Inject constructor(
             }
             containerListener?.role?.let {
                 viewModel.loadFirstPageNotification(it)
+                endlessRecyclerViewScrollListener.resetState()
             }
         }
     }
@@ -427,9 +428,30 @@ class NotificationFragment @Inject constructor(
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
         val hasNext = isInfiniteNotificationScroll(data)
-        renderList(data.items, hasNext)
+
+        // call this function instead of BaseListFragment.renderList to avoid jumping currentPage.
+        // issue: renderList always calls updateScrollListenerState which increment the currentPage number,
+        // while EndlessRecyclerViewScrollListener.loadMoreNextPage increment the number as well.
+        renderNotifList(data.items, hasNext)
+
         if (hasNext) {
             showLoading()
+        }
+    }
+
+    private fun renderNotifList(list: List<Visitable<NotificationTypeFactory>>, hasNextPage: Boolean) {
+        hideLoading()
+        if (isLoadingInitialData) {
+            clearAllData()
+        } else {
+            adapter.clearAllNonDataElement()
+        }
+        adapter.addElement(list)
+
+        if (isListEmpty) {
+            showEmpty()
+        } else {
+            isLoadingInitialData = false
         }
     }
 

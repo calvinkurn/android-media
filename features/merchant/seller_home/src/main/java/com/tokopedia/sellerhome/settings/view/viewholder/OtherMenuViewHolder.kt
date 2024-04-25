@@ -577,5 +577,6 @@ class OtherMenuViewHolder(
         fun onTokoPlusImpressed()
         fun onImpressionTokoMember()
         fun onFinishTransition()
+        fun navigate(appLink: String)
     }
 }

@@ -260,6 +260,9 @@ class LottieBottomNavbar : LinearLayout {
                 override fun onAnimationRepeat(p0: Animator) = Unit
 
                 override fun onAnimationEnd(p0: Animator) {
+                    if (icon.isAnimating) {
+                        icon.pauseAnimation()
+                    }
                     if (selectedItem != index) {
                         bottomMenu.imageEnabledName?.let {
                             iconPlaceholder.setImageResource(it)
@@ -395,7 +398,7 @@ class LottieBottomNavbar : LinearLayout {
 
         if (iconList[selectedItem ?: 0].second) {
             val pair = iconList[selectedItem ?: 0]
-            pair.first.cancelAnimation()
+            pair.first.pauseAnimation()
             menu[selectedItem ?: 0].animToEnabledName?.let {
                 pair.first.setAnimation(it)
                 pair.first.speed = menu[selectedItem ?: 0].animToEnabledSpeed

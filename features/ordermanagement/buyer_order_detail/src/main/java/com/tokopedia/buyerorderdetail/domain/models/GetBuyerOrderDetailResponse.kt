@@ -82,12 +82,6 @@ data class GetBuyerOrderDetailResponse(
             @SerializedName("details")
             @Expose
             val details: Details? = Details(),
-            @SerializedName("has_reso_status")
-            @Expose
-            val hasResoStatus: Boolean? = false,
-            @SerializedName("has_ppp")
-            @Expose
-            val hasInsurance: Boolean? = false,
             @SerializedName("additional_data")
             @Expose
             val additionalData: BomAdditionalData? = null,
@@ -96,7 +90,10 @@ data class GetBuyerOrderDetailResponse(
             val isPof: Boolean? = false,
             @SerializedName("is_plus")
             @Expose
-            val isPlus: Boolean? = false
+            val isPlus: Boolean? = false,
+            @SerializedName("widget")
+            @Expose
+            val widget: Widget? = null
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
@@ -780,6 +777,37 @@ data class GetBuyerOrderDetailResponse(
                     @Expose
                     @SerializedName("product_url")
                     val productUrl: String = ""
+                )
+            }
+
+            data class Widget(
+                @SerializedName("reso_status")
+                @Expose
+                val resoStatus: ResoStatus? = null,
+                @SerializedName("reso_csat")
+                @Expose
+                val resoCsat: ResoCsat? = null,
+                @SerializedName("ppp")
+                @Expose
+                val ppp: Ppp? = null
+            ) {
+                data class ResoStatus(
+                    @SerializedName("show")
+                    @Expose
+                    val show: Boolean = false
+                )
+                data class ResoCsat(
+                    @SerializedName("show")
+                    @Expose
+                    val show: Boolean = false,
+                    @SerializedName("help_url")
+                    @Expose
+                    val helpUrl: String = ""
+                )
+                data class Ppp(
+                    @SerializedName("show")
+                    @Expose
+                    val show: Boolean = false
                 )
             }
         }
