@@ -1,7 +1,6 @@
 code_review_config:
   maintainers:
     - yovie.putra
-
 code_review_rule:
   files:
     - pattern: .*
