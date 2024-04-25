@@ -4,6 +4,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemArmyBinding
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -113,7 +114,7 @@ class ArmyViewHolder(val binding: ItemArmyBinding) : RecyclerView.ViewHolder(bin
             }
 
             if (data.isLast) {
-                vSeparator.gone()
+                vSeparator.invisible()
             } else {
                 vSeparator.visible()
             }

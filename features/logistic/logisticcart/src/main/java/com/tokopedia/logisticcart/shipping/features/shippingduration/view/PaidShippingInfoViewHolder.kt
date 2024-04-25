@@ -3,8 +3,10 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemPaidShippingTitleBinding
 import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class PaidShippingInfoViewHolder(val binding: ItemPaidShippingTitleBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -25,8 +27,16 @@ class PaidShippingInfoViewHolder(val binding: ItemPaidShippingTitleBinding) :
                 iconPaidShippingCollapse.setOnClickListener {
                     listener?.onCollapseClicked(!data.isCollapsed)
                 }
+                iconPaidShippingCollapse.visible()
             } else {
                 iconPaidShippingCollapse.gone()
+            }
+
+            if (data.title.isNotEmpty()) {
+                tvPaidShippingTitle.text = HtmlLinkHelper(root.context, data.title).spannedString
+                tvPaidShippingTitle.visible()
+            } else {
+                tvPaidShippingTitle.gone()
             }
         }
     }
