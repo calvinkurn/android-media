@@ -53,7 +53,7 @@ data class ProductCardCompactUiModel(
 
     fun isOos() = getOosLabelGroup() != null
     fun isFlashSale() = progressBarLabel.isNotBlank() && !isOos()
-    fun isNormal() = !isOos() && !isFlashSale()
+    fun isNormal() = !isOos() && !isFlashSale() && !isPreOrder
 
     fun getPriceLong() = price.filter { it.isDigit() }.toLongOrZero()
 
