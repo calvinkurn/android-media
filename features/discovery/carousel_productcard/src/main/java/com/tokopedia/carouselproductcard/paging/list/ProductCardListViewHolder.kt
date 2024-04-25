@@ -7,6 +7,7 @@ import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingItemLayoutBinding
 import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -26,7 +27,16 @@ internal class ProductCardListViewHolder(
         }
     }
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(element: ProductCardListDataView) {
+        this.elementItem = element
+
         binding?.carouselPagingProductCardListView?.setProductModel(element.productCardModel)
         binding?.carouselPagingProductCardListView?.setImageProductViewHintListener(
             element,

@@ -8,6 +8,7 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -32,7 +33,15 @@ class RecommendationVerticalProductCardViewHolder(
 
     private val binding = ItemRecomVerticalProductcardBinding.bind(itemView)
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(element: RecommendationVerticalProductCardModel) {
+        this.elementItem = element
         setupProductCardLayoutData(element.productModel)
         setupProductCardListener(element)
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -26,7 +27,15 @@ class RecomCarouselProductCardViewHolder (view: View,
     }
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
     override fun bind(element: RecomCarouselProductCardDataModel) {
+        this.elementItem = element
         setLayout(element)
         setupListener(itemView.context, element)
     }

@@ -7,6 +7,7 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
@@ -33,7 +34,15 @@ class GridProductItemViewHolder(
     override val videoPlayer: VideoPlayer?
         get() = binding?.searchProductCardGridReimagine?.video
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(productItemData: ProductItemDataView) {
+        this.elementItem = productItemData
         binding?.searchProductCardGridReimagine?.run {
             setProductModel(productCardModel(productItemData))
 

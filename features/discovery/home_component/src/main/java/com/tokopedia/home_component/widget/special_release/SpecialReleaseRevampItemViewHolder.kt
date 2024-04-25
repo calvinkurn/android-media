@@ -12,6 +12,7 @@ import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevam
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -40,7 +41,15 @@ class SpecialReleaseRevampItemViewHolder(
 
     private val binding: HomeComponentSpecialReleaseRevampItemBinding? by viewBinding()
 
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
+
     override fun bind(element: SpecialReleaseRevampItemDataModel) {
+        this.elementItem = element
         binding?.run {
             cardContainer.cardType = CardUnify2.TYPE_BORDER
             cardContainer.animateOnPress = element.cardInteraction
