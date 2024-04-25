@@ -162,8 +162,6 @@ class CheckoutPromoProcessor @Inject constructor(
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         if (isOneClickShipment) {
             promoRequest.cartType = "ocs"
-        } else if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
-            promoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
         } else {
             promoRequest.cartType = CartConstant.PARAM_DEFAULT
         }
@@ -255,11 +253,7 @@ class CheckoutPromoProcessor @Inject constructor(
         }
         validateUsePromoRequest.orders = listOrderItem
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
-            validateUsePromoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
-        } else {
-            validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
-        }
+        validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
         validateUsePromoRequest.skipApply = 0
         validateUsePromoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
         if (isTradeIn) {
