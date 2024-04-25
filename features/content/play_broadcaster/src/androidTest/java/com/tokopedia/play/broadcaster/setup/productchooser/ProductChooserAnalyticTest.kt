@@ -4,15 +4,15 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
-import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.play.broadcaster.helper.containsEventAction
-import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.play.broadcaster.helper.containsEventAction
+import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -42,6 +42,10 @@ class ProductChooserAnalyticTest {
             extraCommission = false,
             pinStatus = PinProductUiModel.Empty,
             number = "",
+            shopName = "",
+            shopBadge = "",
+            ratingFmt = "",
+            countSoldFmt = ""
         )
     }
 
@@ -49,7 +53,7 @@ class ProductChooserAnalyticTest {
         ProductTagSectionUiModel(
             name = "Section Test",
             campaignStatus = CampaignStatus.Ongoing,
-            products = mockSelectedProducts,
+            products = mockSelectedProducts
         )
     )
 
@@ -61,14 +65,14 @@ class ProductChooserAnalyticTest {
     init {
         coEvery { mockRepo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
             dataList = mockSelectedProducts,
-            hasNextPage = false,
+            hasNextPage = false
         )
     }
 
     private fun createRobot() = ProductChooserRobot {
         productSetupViewModel(
             productSectionList = mockProductSections,
-            repo = mockRepo,
+            repo = mockRepo
         )
     }
 

@@ -15,17 +15,11 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.product.picker.R as contentproductpickerR
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.content.product.picker.seller.analytic.manager.EtalaseListAnalyticManager
 import com.tokopedia.content.product.picker.seller.analytic.manager.ProductChooserAnalyticManager
-import com.tokopedia.content.product.picker.ProductSetupFragment
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
@@ -35,8 +29,13 @@ import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -49,6 +48,7 @@ import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.empty_state.R as empty_stateR
 
 /**
@@ -78,6 +78,10 @@ class ProductChooserIdGenerator {
             extraCommission = false,
             pinStatus = PinProductUiModel.Empty,
             number = "",
+            shopName = "",
+            shopBadge = "",
+            ratingFmt = "",
+            countSoldFmt = ""
         )
     )
 
@@ -132,7 +136,7 @@ class ProductChooserIdGenerator {
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
                 isNumerationShown = isNumerationShown,
-                fetchCommissionProduct = fetchCommissionProduct,
+                fetchCommissionProduct = fetchCommissionProduct
             )
         }
     }
@@ -152,7 +156,7 @@ class ProductChooserIdGenerator {
 
                         override fun getSelectedAccount(): ContentAccountUiModel {
                             return ContentAccountUiModel.Empty.copy(
-                                type = ContentCommonUserType.TYPE_SHOP,
+                                type = ContentCommonUserType.TYPE_SHOP
                             )
                         }
 
@@ -205,7 +209,7 @@ class ProductChooserIdGenerator {
                 ProductSummaryBottomSheet(
                     mockk(relaxed = true),
                     mockk(relaxed = true),
-                    mockk(relaxed = true),
+                    mockk(relaxed = true)
                 )
             },
             ProductSortBottomSheet::class.java to {
