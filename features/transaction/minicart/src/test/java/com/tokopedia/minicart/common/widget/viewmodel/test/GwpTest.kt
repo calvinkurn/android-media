@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
 import com.tokopedia.cartcommon.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
@@ -24,6 +25,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
@@ -190,7 +192,7 @@ class GwpTest {
         val offerId = getMiniCartResponse.data.availableSection.availableGroup.first().cartDetails.first().cartDetailInfo.bmgmData.offerId
 
         // update cart and automatically update gwp when the process success updated
-        viewModel.updateCart(offerId)
+        viewModel.updateCart(offerId = offerId, productId = "1920796612", newQty = 3)
 
         val resultErrorUiModel = getGwpErrorState(
             uiModel = baseUiModel,
@@ -200,18 +202,28 @@ class GwpTest {
         assertNotEquals(baseUiModel, viewModel.miniCartListBottomSheetUiModel.value)
         assertEquals(resultErrorUiModel, viewModel.miniCartListBottomSheetUiModel.value)
 
+        viewModel.updateCart(offerId = 345, productId = "1920796612", newQty = 2)
+
         // stub updateGwp with data response
         stubUpdateGwpResponse(updateGwpResponse)
 
         // get mini cart list ui model and set gwp params
         viewModel.refreshGwpWidget(offerId)
 
+        val expectedGetTickerParam = DataProvider.provideExpectedGetProductTickerParam()
+
+        verifyGetGroupProductTickerParam(expectedGetTickerParam)
+
         val resultSuccessUiModel = getGwpSuccessState(
-            uiModel = baseUiModel,
+            uiModel = viewModel.miniCartListBottomSheetUiModel.value,
             response = updateGwpResponse
         )
 
         assertNotEquals(baseUiModel, viewModel.miniCartListBottomSheetUiModel.value)
         assertEquals(resultSuccessUiModel, viewModel.miniCartListBottomSheetUiModel.value)
+    }
+
+    private fun verifyGetGroupProductTickerParam(expectedGetTickerParam: BmGmGetGroupProductTickerParams) {
+        coVerify { updateGwpUseCase.invoke(expectedGetTickerParam) }
     }
 }

@@ -93,52 +93,148 @@
                         "cart_id":"2838232325",
                         "selected_unavailable_action_link":"",
                         "cart_detail_info":{
-                            "cart_detail_type":"BMGM",
-                            "bmgm": {
-                                "offer_id": 123,
-                                "offer_type_id": 133,
-                                "offer_name": "Summer Sale",
-                                "offer_icon": "left icon",
-                                "offer_message": [
-                                   "Yay, kamu dapat potongan Rp120 rb"
-                                ],
-                                "offer_landing_page_link": "/offer-landing-page/1?warehouseID=12",
-                                "total_discount": 50000,
-                                "offer_json_data":"",
-                                "offer_status":1,
-                                "is_tier_achieved": false,
-                                "tier_product": [
-                                    {
-                                        "tier_id": 5,
-                                        "tier_message": "",
-                                        "tier_discount_text": "diskon 25%",
-                                        "tier_discount_amount": 65000,
-                                        "price_before_benefit": 1100000,
-                                        "price_after_benefit": 1035000,
-                                        "benefit_wording": "",
-                                        "action_wording": "",
-                                        "benefit_quantity": 1,
-                                        "products_benefit": [
-                                            {
-                                                "product_id": "12345",
-                                                "quantity": 2,
-                                                "product_name": "gift1",
-                                                "product_cache_image_url": "bmgm",
-                                                "original_price": 10000,
-                                                "final_price": 0
-                                            },
-                                            {
-                                                "product_id": "12345",
-                                                "quantity": 5,
-                                                "product_name": "gift2",
-                                                "product_cache_image_url": "bmgm",
-                                                "original_price": 10000,
-                                                "final_price": 0
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
+                           "cart_detail_type":"BMGM",
+                           "bmgm":{
+                              "offer_id":123,
+                              "offer_type_id":133,
+                              "offer_name":"Summer Sale",
+                              "offer_icon":"left icon",
+                              "offer_message":[
+                                 "Yay, kamu dapat potongan Rp120 rb"
+                              ],
+                              "offer_landing_page_link":"/offer-landing-page/1?warehouseID=12",
+                              "total_discount":50000,
+                              "offer_json_data":"{key:value}",
+                              "offer_status":1,
+                              "is_tier_achieved":false,
+                              "tier_product":[
+                                 {
+                                    "tier_id":5,
+                                    "tier_message":"",
+                                    "tier_discount_text":"diskon 25%",
+                                    "tier_discount_amount":65000,
+                                    "price_before_benefit":1100000,
+                                    "price_after_benefit":1035000,
+                                    "benefit_wording":"",
+                                    "action_wording":"",
+                                    "benefit_quantity":1,
+                                    "products_benefit":[
+                                       {
+                                          "product_id":"12345",
+                                          "quantity":2,
+                                          "product_name":"gift1",
+                                          "product_cache_image_url":"bmgm",
+                                          "original_price":10000,
+                                          "final_price":0
+                                       },
+                                       {
+                                          "product_id":"12345",
+                                          "quantity":5,
+                                          "product_name":"gift2",
+                                          "product_cache_image_url":"bmgm",
+                                          "original_price":10000,
+                                          "final_price":0
+                                       }
+                                    ]
+                                 }
+                              ]
+                           }
+                        },
+                        "errors":[
+
+                        ],
+                        "products":[
+                           {
+                              "product_id":1920796612,
+                              "product_weight":100,
+                              "product_quantity":1,
+                              "product_name":"PDP D4G1NG G1L1NG V4R 4LL ST0CK 1 - 4",
+                              "product_image":{
+                                 "image_src_100_square":"https://images.tokopedia.net/img/cache/100-square/hDjmkQ/2021/6/14/56448a31-a55b-4563-8d67-0695990cacf1.jpg"
+                              },
+                              "variant_description_detail":{
+                                 "variant_name":[
+                                    "4"
+                                 ],
+                                 "variant_description":"4"
+                              },
+                              "product_warning_message":"Sisa 1",
+                              "slash_price_label":"",
+                              "product_original_price":0,
+                              "initial_price":1000,
+                              "product_price":1000,
+                              "product_information":[
+
+                              ],
+                              "product_notes":"",
+                              "product_min_order":1,
+                              "product_max_order":30000,
+                              "product_invenage_value":1,
+                              "product_switch_invenage":1,
+                              "parent_id":1920777155,
+                              "wholesale_price":[
+
+                              ],
+                              "campaign_id":0,
+                              "product_tracker_data":{
+                                 "attribution":""
+                              },
+                              "warehouse_id":11491038,
+                              "category_id":5071,
+                              "category":""
+                           }
+                        ]
+                     },
+                     {
+                        "cart_id":"2838232325",
+                        "selected_unavailable_action_link":"",
+                        "cart_detail_info":{
+                           "cart_detail_type":"BMGM",
+                           "bmgm":{
+                              "offer_id":345,
+                              "offer_type_id":133,
+                              "offer_name":"Summer Sale",
+                              "offer_icon":"left icon",
+                              "offer_message":[
+                                 "Yay, kamu dapat potongan Rp120 rb"
+                              ],
+                              "offer_landing_page_link":"/offer-landing-page/1?warehouseID=12",
+                              "total_discount":50000,
+                              "offer_json_data":"{key:value}",
+                              "offer_status":1,
+                              "is_tier_achieved":false,
+                              "tier_product":[
+                                 {
+                                    "tier_id":5,
+                                    "tier_message":"",
+                                    "tier_discount_text":"diskon 25%",
+                                    "tier_discount_amount":65000,
+                                    "price_before_benefit":1100000,
+                                    "price_after_benefit":1035000,
+                                    "benefit_wording":"",
+                                    "action_wording":"",
+                                    "benefit_quantity":1,
+                                    "products_benefit":[
+                                       {
+                                          "product_id":"12345",
+                                          "quantity":2,
+                                          "product_name":"gift1",
+                                          "product_cache_image_url":"bmgm",
+                                          "original_price":10000,
+                                          "final_price":0
+                                       },
+                                       {
+                                          "product_id":"12345",
+                                          "quantity":5,
+                                          "product_name":"gift2",
+                                          "product_cache_image_url":"bmgm",
+                                          "original_price":10000,
+                                          "final_price":0
+                                       }
+                                    ]
+                                 }
+                              ]
+                           }
                         },
                         "errors":[
 
