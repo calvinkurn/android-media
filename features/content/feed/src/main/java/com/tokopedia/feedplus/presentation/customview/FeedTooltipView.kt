@@ -37,6 +37,8 @@ class FeedTooltipView @JvmOverloads constructor(
 
     private var xLocation by mutableStateOf(0)
 
+    private var text by mutableStateOf("")
+
     private val xOffset = derivedStateOf {
         val locationOnScreen = getLocationOnScreen()
         xLocation - locationOnScreen.x
@@ -46,9 +48,13 @@ class FeedTooltipView @JvmOverloads constructor(
         this.xLocation = xLocation
     }
 
+    fun setTooltipMessage(text: String) {
+        this.text = text
+    }
+
     @Composable
     override fun Content() {
-        FeedTooltip(text = "Perlengkapan Medis lagi rame!", offsetX = xOffset.value.toFloat())
+        FeedTooltip(text = text, offsetX = xOffset.value.toFloat())
     }
 }
 

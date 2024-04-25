@@ -62,6 +62,7 @@ import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
+import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
@@ -279,7 +280,7 @@ class FeedBaseFragment :
         observeFeedTabData()
 
         observeEvent()
-
+        observeTooltip()
         observeUpload()
     }
 
@@ -544,6 +545,27 @@ class FeedBaseFragment :
                         }
 
                         else -> {}
+                    }
+
+                    feedMainViewModel.consumeEvent(event)
+                }
+            }
+        }
+    }
+
+    private fun observeTooltip() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.tooltipEvent.collect { event ->
+                    if (event == null) return@collect
+
+                    when (event) {
+                        is FeedTooltipEvent.ShowTooltip -> {
+                            /** JOE TODO: show tooltip */
+                            binding.tooltip.setTooltipMessage(event.text)
+                            binding.tooltip.show()
+                            feedMainViewModel.setHasShownTooltip()
+                        }
                     }
 
                     feedMainViewModel.consumeEvent(event)
