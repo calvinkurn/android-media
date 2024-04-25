@@ -132,7 +132,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/topchat_chatroom_background_dot_seaprator"/>
+            android:background="@drawable/topchat_chatroom_background_dot_separator"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/topchat_chatroom_tv_product_compact_horizontal_sold"
