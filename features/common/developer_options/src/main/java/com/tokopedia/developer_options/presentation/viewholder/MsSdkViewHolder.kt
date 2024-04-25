@@ -26,7 +26,7 @@ class MsSdkViewHolder(
         val btn = itemView.findViewById<UnifyButton>(R.id.mssdk_dev_btn)
         btn.setOnClickListener {
             itemView.context.apply {
-//                DevOpsTracker.trackEntryEvent(DevopsFeature.PRODUCT_DETAIL_DEV)
+                DevOpsTracker.trackEntryEvent(DevopsFeature.MSSDK_DEV)
                 val intent = Intent(this, MsSdkOptionActivity::class.java)
                 startActivity(intent)
             }
