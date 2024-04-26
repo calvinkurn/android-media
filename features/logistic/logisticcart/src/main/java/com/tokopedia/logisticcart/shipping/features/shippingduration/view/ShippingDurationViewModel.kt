@@ -13,7 +13,7 @@ import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentTicker
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerPosition
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationAnalyticState
@@ -226,7 +226,7 @@ class ShippingDurationViewModel @Inject constructor(
         promoUiModel: List<LogisticPromoUiModel>,
         productShipmentDetailModel: ProductShipmentDetailModel?,
         paidSectionInfoUiModel: PaidSectionInfoUiModel,
-        tickers: List<ShipmentTickerModel>,
+        tickers: ShipmentTicker?,
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
         // TODO map ticker
@@ -251,10 +251,12 @@ class ShippingDurationViewModel @Inject constructor(
         if (promoUiModel.isNotEmpty()) {
             uiModelList.addAll(
                 0,
-                promoUiModel + tickers.filter { it.position == ShipmentTickerPosition.FREE_SHIPPING } + listOf<RatesViewModelType>(
-                    DividerModel()
-                )
+                promoUiModel
             )
+            tickers?.filter(ShipmentTickerPosition.FREE_SHIPPING)?.run {
+                uiModelList.add(0, this)
+            }
+            uiModelList.add(DividerModel())
         }
 
         // notifier

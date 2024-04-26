@@ -17,5 +17,5 @@ class ShippingRecommendationData(
     var scheduleDeliveryData: ScheduleDeliveryData? = null,
     var productShipmentDetailModel: ProductShipmentDetailModel? = null,
     var paidSectionInfoUiModel: PaidSectionInfoUiModel = PaidSectionInfoUiModel(),
-    var tickers: List<ShipmentTickerModel> = listOf()
+    var tickers: ShipmentTicker? = null
 ) : Parcelable

@@ -5,6 +5,20 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+data class ShipmentTicker(
+    val tickers: List<ShipmentTickerModel>
+) : Parcelable, RatesViewModelType {
+    fun filter(filterPosition: ShipmentTickerPosition): ShipmentTicker? {
+        val filtered = this.tickers.filter { it.position == filterPosition }
+        return if (filtered.isNotEmpty()) {
+            ShipmentTicker(filtered)
+        } else {
+            null
+        }
+    }
+}
+
+@Parcelize
 data class ShipmentTickerModel(
     val title: String = "",
     val type: Int = Ticker.TYPE_ANNOUNCEMENT,
@@ -12,7 +26,7 @@ data class ShipmentTickerModel(
     val actionLabel: String = "",
     val position: ShipmentTickerPosition? = null,
     val actionType: ShipmentTickerActionType? = null
-) : Parcelable, RatesViewModelType
+) : Parcelable
 
 enum class ShipmentTickerPosition(val key: String) {
     FREE_SHIPPING("free_shipping")

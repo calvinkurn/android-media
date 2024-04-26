@@ -15,6 +15,7 @@ import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
 import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentTicker
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerActionType
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerPosition
@@ -79,8 +80,8 @@ class ShippingDurationConverter @Inject constructor() {
         return shippingRecommendationData
     }
 
-    private fun convertShipmentTicker(tickers: List<RatesTickerData>): List<ShipmentTickerModel> {
-        return tickers.map {
+    private fun convertShipmentTicker(tickers: List<RatesTickerData>): ShipmentTicker? {
+        val data = tickers.map {
             val type: Int = when (it.tickerType) {
                 TICKER_INFO_TYPE -> Ticker.TYPE_ANNOUNCEMENT
                 TICKER_WARNING_TYPE -> Ticker.TYPE_WARNING
@@ -114,6 +115,11 @@ class ShippingDurationConverter @Inject constructor() {
                 description = it.content,
                 title = it.title
             )
+        }
+        return if (data.isNotEmpty()) {
+            ShipmentTicker(data)
+        } else {
+            null
         }
     }
 
