@@ -43,7 +43,7 @@ constructor(
     message: String,
     val broadcastBlastId: String,
     source: String,
-    val isHideBanner: Boolean,
+    var isHideBanner: Boolean,
     val broadcastCtaUrl: String?,
     val broadcastCtaText: String?,
     val broadcastCtaLabel: String?
@@ -132,6 +132,7 @@ constructor(
         attributes.campaignLabel?.let {
             this.campaignLabel = it
         }
+        this.isHideBanner = attributes.isHideBanner
     }
 
     override fun syncError() {
