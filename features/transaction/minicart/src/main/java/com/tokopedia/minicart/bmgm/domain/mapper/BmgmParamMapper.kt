@@ -76,13 +76,12 @@ object BmgmParamMapper {
             } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
     )
 
-    fun mapParamsFilteredToUpdateGwp(
-        params: BmGmGetGroupProductTickerParams?,
+    fun BmGmGetGroupProductTickerParams.mapParamsFilteredToUpdateGwp(
         offerId: Long,
         productId: String?,
         qty: Int?
     ): BmGmGetGroupProductTickerParams {
-        val carts = params?.carts?.filter { cart ->
+        val carts = carts.filter { cart ->
             cart.cartDetails.any { it.offer.offerId == offerId }
         } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
 
@@ -106,17 +105,16 @@ object BmgmParamMapper {
             }
         }
 
-        return BmGmGetGroupProductTickerParams(
+        return copy(
             carts = carts,
             source = SOURCE_MINI_CART_BOTTOM_SHEET_NOW
         )
     }
 
-    fun getUpdateGwpParam(
-        params: BmGmGetGroupProductTickerParams?,
+    fun BmGmGetGroupProductTickerParams.getUpdateGwpParam(
         offerId: Long
     ): BmGmGetGroupProductTickerParams {
-        val carts = params?.carts?.filter { cart ->
+        val carts = carts.filter { cart ->
             cart.cartDetails.any { it.offer.offerId == offerId }
         } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
 

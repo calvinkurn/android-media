@@ -727,13 +727,9 @@ class MiniCartViewModel @Inject constructor(
             updateGwpUseCaseJob[offerId]?.cancel()
             updateGwpUseCaseJob[offerId] = launchCatchError(
                 block = {
-                    paramsToUpdateGwp = mapParamsFilteredToUpdateGwp(
-                        params = paramsToUpdateGwp,
-                        offerId = offerId,
-                        productId = productId,
-                        qty = newQty
-                    )
-                    val updateGwpParam = getUpdateGwpParam(paramsToUpdateGwp, offerId)
+                    paramsToUpdateGwp = paramsToUpdateGwp
+                        .mapParamsFilteredToUpdateGwp(offerId, productId, newQty)
+                    val updateGwpParam = paramsToUpdateGwp.getUpdateGwpParam(offerId)
 
                     _miniCartListBottomSheetUiModel.value = getGwpSuccessState(
                         uiModel = _miniCartListBottomSheetUiModel.value,
