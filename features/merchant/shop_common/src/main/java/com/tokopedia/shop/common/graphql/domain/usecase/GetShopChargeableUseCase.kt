@@ -75,7 +75,6 @@ class GetShopChargeableUseCase @Inject constructor(
         """
 
         private const val PARAM_SHOP_ID = "shopId"
-        private const val PARAM_USER_ID = "userId"
         private const val PARAM_SHOP_TIER = "shopTier"
         private const val PARAM_TOTAL_TRANSACTION_SUCCESS = "totalTransactionSuccess"
     }
