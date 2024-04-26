@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.vertical
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.recommendation_widget_common.widget.vertical.tracking.RecommendationVerticalTracking
 
@@ -13,6 +14,7 @@ data class RecommendationVerticalProductCardModel(
     val trackingModel: RecommendationWidgetTrackingModel,
     val componentName: String = "",
     val widgetTracking: RecommendationVerticalTracking?,
+    val source: RecommendationWidgetSource?,
 ) : RecommendationVerticalVisitable {
     override fun type(typeFactory: RecommendationVerticalTypeFactory): Int {
         return typeFactory.type(this)

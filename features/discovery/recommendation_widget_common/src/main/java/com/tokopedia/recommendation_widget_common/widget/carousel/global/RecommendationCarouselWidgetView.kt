@@ -10,7 +10,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SlideTrackObject
-import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
@@ -158,7 +157,8 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductShowAppLog(
                     productRecommendation.asProductTrackModel(
-                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                        additionalParam = model.source?.appLogAdditionalParam
                     )
                 )
             }
@@ -194,7 +194,8 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductClickAppLog(
                     productRecommendation.asProductTrackModel(
-                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                        additionalParam = model.source?.appLogAdditionalParam
                     )
                 )
 
