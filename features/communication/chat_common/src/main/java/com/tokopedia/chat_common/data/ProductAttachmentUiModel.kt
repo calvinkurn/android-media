@@ -215,10 +215,6 @@ open class ProductAttachmentUiModel protected constructor(
         return wishList
     }
 
-    fun isProductActive(): Boolean {
-        return status == statusActive
-    }
-
     fun isProductArchived(): Boolean {
         return status == statusArchived
     }

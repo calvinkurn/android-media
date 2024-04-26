@@ -74,11 +74,10 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
-            !productAttachment.isUpcomingCampaign &&
-            productAttachment.remainingStock < 1
+            !productAttachment.isUpcomingCampaign
         ) {
             labelGroupList.add(
                 ProductCardModel.LabelGroup(
@@ -151,7 +150,7 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
             !productAttachment.isUpcomingCampaign &&
