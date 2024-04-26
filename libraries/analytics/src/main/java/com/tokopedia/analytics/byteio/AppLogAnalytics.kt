@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
+import com.tokopedia.analytics.btm.InitBtmSdk
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
@@ -237,6 +238,7 @@ object AppLogAnalytics {
             EventsSenderUtils.setEventsSenderEnable("573733", true, application)
             EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
         }
+        InitBtmSdk.init(application)
         Timber.d(
             """(%s) 
             |AppLog dId: ${AppLog.getDid()} 
