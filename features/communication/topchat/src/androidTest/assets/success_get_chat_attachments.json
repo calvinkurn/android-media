@@ -62,6 +62,16 @@
         "isActual": true
       },
       {
+        "id": 77000069,
+        "type": 1,
+        "attributes": "{\"is_hide_banner\":true,\"url\":\"https://www.tokopedia.com/10973651_serba_kopi?bc_target\u003dbroadcast-shop\",\"image_url\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"wording_end_state\":\"Campaign \\\"Koleksi Spesial\\\" telah berakhir. Nantikan campaign berikutnya, ya!\",\"is_campaign\":true,\"status_campaign\":4,\"start_date\":\"1714034580\",\"end_date\":\"1714120980\",\"campaign_label\":\"Rilisan Spesial berakhir dalam\"}",
+        "fallback": {
+          "message": "",
+          "html": ""
+        },
+        "isActual": true
+      },
+      {
         "id": 77000000,
         "type": 1,
         "attributes": "{\"url\":\"https://www.tokopedia.com/10973651_serba_kopi?bc_target\u003dbroadcast-shop\",\"image_url\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"wording_end_state\":\"Campaign \\\"Koleksi Spesial\\\" telah berakhir. Nantikan campaign berikutnya, ya!\",\"is_campaign\":true,\"status_campaign\":4,\"start_date\":\"1714034580\",\"end_date\":\"1714120980\",\"campaign_label\":\"Rilisan Spesial berakhir dalam\"}",

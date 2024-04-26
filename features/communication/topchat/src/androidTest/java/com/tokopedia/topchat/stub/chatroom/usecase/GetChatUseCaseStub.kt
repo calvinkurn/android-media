@@ -34,6 +34,8 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_broadcast.json"
     private val chatBroadcastPromoPath =
         "broadcast/promo/success_get_broadcast_promo.json"
+    private val chatBroadcastPromoWithHiddenBannerPath =
+        "broadcast/promo/success_get_broadcast_promo_with_hidden_banner.json"
     private val chatBroadcastPromoWithoutBannerPath =
         "broadcast/promo/success_get_broadcast_promo_without_banner.json"
     private val chatBroadcastPromoWithFinishCountdownPath =
@@ -188,6 +190,11 @@ class GetChatUseCaseStub @Inject constructor(
 
     val broadcastPromoBuyerResponse: GetExistingChatPojo
         get() = alterResponseOf(chatBroadcastPromoPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithHiddenBannerBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithHiddenBannerPath) { response ->
             alterDateToToday(response)
         }
 

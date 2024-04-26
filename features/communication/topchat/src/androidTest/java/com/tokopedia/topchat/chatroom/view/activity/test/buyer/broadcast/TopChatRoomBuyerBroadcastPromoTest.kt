@@ -166,6 +166,24 @@ class TopChatRoomBuyerBroadcastPromoTest : TopchatRoomTest() {
     }
 
     @Test
+    fun assert_broadcast_promo_with_hidden_banner() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadcastPromoWithHiddenBannerBuyerResponse
+        chatAttachmentUseCase.response = chatAttachmentResponse
+
+        // When
+        launchChatRoomActivity()
+        stubIntents()
+
+        // Then
+        Thread.sleep(10000)
+        broadcastResult {
+            assertNewBroadcastBanner(1, not(isDisplayed()))
+            assertNewBroadcastCountdown(1, "Campaign \"Koleksi Spesial\" telah berakhir. Nantikan campaign berikutnya, ya!")
+        }
+    }
+
+    @Test
     fun assert_broadcast_promo_without_banner() {
         // Given
         getChatUseCase.response = getChatUseCase.broadcastPromoWithoutBannerBuyerResponse
