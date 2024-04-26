@@ -259,7 +259,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             SlardarInit.INSTANCE.initApm(this);
             SlardarInit.INSTANCE.initNpth(this, SLARDAR_AID, getSlardarChannel(),
                     getUserSession().getUserId());
-            SlardarInit.INSTANCE.startApm(SLARDAR_AID, getSlardarChannel());
+            SlardarInit.INSTANCE.startApm(SLARDAR_AID, getSlardarChannel(), userSession.getUserId());
         }
     }
 

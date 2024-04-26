@@ -6,7 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.utils.TdnHelper
-import com.tokopedia.topads.sdk.widget.TdnBannerView
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TdnBannerView
 import com.tokopedia.unifycomponents.toPx
 
 class NotificationTopAdsBannerViewHolder constructor(

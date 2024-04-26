@@ -264,9 +264,9 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
                     price = bottomNavUiModel.price.finalPrice,
                     index = "1",
                     customFields = mapOf(
-                        "category_id" to categoryId,
-                        "shop_id" to bottomNavUiModel.shop.id,
-                        "shop_name" to bottomNavUiModel.shop.name,
+                        Key.categoryId to categoryId,
+                        Key.itemShopId to bottomNavUiModel.shop.id,
+                        Key.itemShopName to bottomNavUiModel.shop.name,
                     )
                 )
             ),
@@ -284,6 +284,39 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
             eventAction = "click - variant bottomsheet atc entry point",
             eventLabel = "$currentTab - $productId",
             mainAppTrackerId = "50428",
+            customFields = mapOf(Key.productId to productId)
+        )
+    }
+
+    override fun onClickBottomNav(model: BottomNavUiModel) {
+        var categoryId = ""
+        var itemCategory = ""
+        model.categoryTree.forEachIndexed { index, categoryTree ->
+            categoryId += if (index != 0) " / " else "" + categoryTree.id
+            itemCategory += if (index != 0) " / " else "" + categoryTree.name
+        }
+        analyticManager.sendEEProduct(
+            event = Event.selectContent,
+            eventAction = "click - bottom nav",
+            eventLabel = productId,
+            itemList = "/product detail page - unified content viewing",
+            products = listOf(
+                ContentEnhanceEcommerce.Product(
+                    itemId = productId,
+                    itemName = model.title,
+                    itemBrand = "",
+                    itemCategory = itemCategory,
+                    itemVariant = model.hasVariant.toString(),
+                    price = model.price.finalPrice,
+                    index = "1",
+                    customFields = mapOf(
+                        Key.categoryId to categoryId,
+                        Key.itemShopId to model.shop.id,
+                        Key.itemShopName to model.shop.name,
+                    )
+                )
+            ),
+            mainAppTrackerId = "50664",
             customFields = mapOf(Key.productId to productId)
         )
     }

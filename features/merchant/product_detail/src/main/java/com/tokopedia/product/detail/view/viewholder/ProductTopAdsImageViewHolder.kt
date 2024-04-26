@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.topads.sdk.utils.TdnHelper
-import com.tokopedia.topads.sdk.widget.TdnBannerView
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TdnBannerView
 
 class ProductTopAdsImageViewHolder(
     val view: View,

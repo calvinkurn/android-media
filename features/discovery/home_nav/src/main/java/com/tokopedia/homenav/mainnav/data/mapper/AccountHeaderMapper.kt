@@ -8,7 +8,6 @@ import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFiltere
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateDataModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.user.session.UserSessionInterface
@@ -84,7 +83,8 @@ class AccountHeaderMapper(
                             shopId =  it.info.shopId,
                             shopOrderCount = getTotalOrderCount(notificationPojo),
                             isError = false,
-                            isLoading = false
+                            isLoading = false,
+                            isShopPending = it.reserveStatusInfo.isShopPending()
                     )
                 }
 

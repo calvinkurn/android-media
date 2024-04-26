@@ -6,6 +6,8 @@ package com.tokopedia.content.analytic
 object EventCategory {
     const val groupChatRoom = "groupchat room"
     const val unifiedFeed = "unified feed"
+
+    const val playBroadcast = "play broadcast"
     const val playBroadcastShort = "play broadcast short"
 
     const val browseFeed = "feed browse page"
