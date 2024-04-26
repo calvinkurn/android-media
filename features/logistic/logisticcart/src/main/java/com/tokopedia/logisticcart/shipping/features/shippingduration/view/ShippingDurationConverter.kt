@@ -18,10 +18,10 @@ import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerActionType
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerPosition
-import com.tokopedia.logisticcart.shipping.model.ShipmentTickerType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.unifycomponents.ticker.Ticker
 import javax.inject.Inject
 
 /**
@@ -81,11 +81,11 @@ class ShippingDurationConverter @Inject constructor() {
 
     private fun convertShipmentTicker(tickers: List<RatesTickerData>): List<ShipmentTickerModel> {
         return tickers.map {
-            val type: ShipmentTickerType = when (it.tickerType) {
-                TICKER_INFO_TYPE -> ShipmentTickerType.ANNOUNCEMENT
-                TICKER_WARNING_TYPE -> ShipmentTickerType.WARNING
-                TICKER_ERROR_TYPE -> ShipmentTickerType.ERROR
-                else -> ShipmentTickerType.ANNOUNCEMENT
+            val type: Int = when (it.tickerType) {
+                TICKER_INFO_TYPE -> Ticker.TYPE_ANNOUNCEMENT
+                TICKER_WARNING_TYPE -> Ticker.TYPE_WARNING
+                TICKER_ERROR_TYPE -> Ticker.TYPE_ERROR
+                else -> Ticker.TYPE_ANNOUNCEMENT
             }
             val action: ShipmentTickerActionType? = when (it.tickerAction.type) {
                 TICKER_ACTION_WEB -> {

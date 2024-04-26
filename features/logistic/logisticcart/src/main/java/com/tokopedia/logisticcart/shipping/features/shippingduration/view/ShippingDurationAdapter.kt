@@ -15,6 +15,7 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 
 /**
@@ -56,6 +57,8 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         is DividerModel -> DividerViewHolder.LAYOUT
         is ProductShipmentDetailModel -> ProductShipmentDetailViewHolder.LAYOUT
         is PaidSectionInfoUiModel -> PaidShippingInfoViewHolder.LAYOUT
+        // todo harusnya ngirim satu wrapper class lg biar bisa dapet List<ShipmentTickerModel>
+        is ShipmentTickerModel -> PaidShippingInfoViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
@@ -92,6 +95,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
             PaidShippingInfoViewHolder.LAYOUT -> PaidShippingInfoViewHolder(
                 ItemPaidShippingTitleBinding.inflate(inflater, parent, false)
+            )
+
+            ShipmentTickerViewHolder.LAYOUT -> ShipmentTickerViewHolder(
+                ItemNotifierBinding.inflate(inflater, parent, false)
             )
 
             else -> ShippingDurationViewHolder(
