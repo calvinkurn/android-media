@@ -33,6 +33,8 @@ object AppUpdateManagerWrapper {
     private var KEY_LAST_TIME_SHOW_FLEXIBLE_UPDATE = "inapp_last_time_show_flexible_update"
     private const val ANDROID_CUSTOMER_APP_UPDATE = "android_customer_app_update"
     private const val ANDROID_SELLER_APP_UPDATE = "android_seller_app_update"
+    private const val START_UPDATE_FALSE = "start_update_false"
+    private const val DL_SUCCESS = "dl_success"
 
     private var LOG_UPDATE_TYPE_FLEXIBLE = "flexible"
     private var LOG_UPDATE_TYPE_IMMEDIATE = "immediate"
@@ -45,7 +47,7 @@ object AppUpdateManagerWrapper {
             appUpdateManager = AppUpdateManagerFactory.create(appContext)
             appUpdateManager!!.registerListener {
                 if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                    InAppUpdateLogUtil.logStatusDownload("-", "dl_success")
+                    InAppUpdateLogUtil.logStatusDownload("-", DL_SUCCESS)
                     LocalBroadcastManager.getInstance(appContext).sendBroadcast(Intent(INAPP_UPDATE))
                 }
             }
@@ -86,7 +88,7 @@ object AppUpdateManagerWrapper {
                 val message: String = getProgressMessage(appContext, it.installStatus())
                 onProgress(message)
                 if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                    InAppUpdateLogUtil.logStatusDownload(LOG_UPDATE_TYPE_FLEXIBLE, "dl_success")
+                    InAppUpdateLogUtil.logStatusDownload(LOG_UPDATE_TYPE_FLEXIBLE, DL_SUCCESS)
                     LocalBroadcastManager.getInstance(appContext).sendBroadcast(Intent(INAPP_UPDATE))
                 }
             } else {
@@ -95,7 +97,7 @@ object AppUpdateManagerWrapper {
                     if (activityObj != null && !activityObj.isFinishing) {
                         val successTriggerUpdate = doFlexibleUpdate(activityObj, it)
                         if (successTriggerUpdate != null && !successTriggerUpdate) {
-                            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
+                            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, START_UPDATE_FALSE)
                             onError()
                         }
                     }
@@ -189,7 +191,7 @@ object AppUpdateManagerWrapper {
             if (activityObj != null && !activityObj.isFinishing) {
                 val successTriggerUpdate = doImmediateUpdate(activityObj, it)
                 if (!successTriggerUpdate) {
-                    InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
+                    InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, START_UPDATE_FALSE)
                     onError()
                 }
             }
