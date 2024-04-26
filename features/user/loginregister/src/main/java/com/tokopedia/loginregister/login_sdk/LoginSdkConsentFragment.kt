@@ -28,6 +28,7 @@ import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientName
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
 import com.tokopedia.usecase.coroutines.Fail
@@ -68,6 +69,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
 
         viewBinding?.btnLoginConsent?.setOnClickListener {
             viewBinding?.btnLoginConsent?.isLoading = true
+            LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("click")
             viewModel.authorizeSdk(
                 clientId = arguments?.getString("client_id") ?: "",
                 redirectUri = redirectUrl,
@@ -111,6 +113,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                         if (it.data.showConsent) {
                             setUI(it.data)
                         } else {
+                            LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("click")
                             viewModel.authorizeSdk(
                                 clientId = arguments?.getString("client_id") ?: "",
                                 redirectUri = redirectUrl,
@@ -131,9 +134,11 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             viewBinding?.btnLoginConsent?.isLoading = false
             when (it) {
                 is Success -> {
+                    LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("success")
                     redirectToTargetUri(requireActivity(), it.data.redirectUri, it.data.code)
                 }
                 is Fail -> {
+                    LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("failed - ${it.throwable.message}")
                     redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error")
                 }
             }
@@ -148,6 +153,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                             clientId = arguments?.getString("client_id") ?: "",
                             scopes = arguments?.getString("scopes") ?: ""
                         )
+                        LoginSdkAnalytics.sendViewTokopediaSsoPageEvent(it.data.appName)
                     } else {
                         redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
                     }
@@ -225,6 +231,12 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                 listOf("Syarat dan ketentuan", "Kebijakan Privasi"),
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             ) {
+                if (it == "Syarat dan ketentuan") {
+                    LoginSdkAnalytics.sendClickOnButtonSyaratDanKetentuanTokopediaEvent()
+                }
+                if (it == "Kebijakan Privasi") {
+                    LoginSdkAnalytics.sendClickOnButtonKebijakanPrivasiTokopediaEvent()
+                }
 
             }
 
@@ -233,7 +245,12 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                 listOf("Syarat dan ketentuan", "Kebijakan Privasi"),
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             ) {
-
+                if (it == "Syarat dan ketentuan") {
+                    LoginSdkAnalytics.sendClickOnButtonSyaratDanKetentuanEvent(requireContext().getClientName())
+                }
+                if (it == "Kebijakan Privasi") {
+                    LoginSdkAnalytics.sendClickOnButtonKebijakanPrivasiEvent(requireContext().getClientName())
+                }
             }
         }
     }

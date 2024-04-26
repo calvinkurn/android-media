@@ -7,6 +7,7 @@ import androidx.fragment.app.commit
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.sessioncommon.util.LoginSdkUtils
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientName
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.removeLoginSdkFlow
 import com.tokopedia.user.session.UserSession
 
@@ -55,6 +56,7 @@ class LoginSdkActivity : LoginActivity() {
     }
 
     override fun onBackPressed() {
+        LoginSdkAnalytics.sendClickOnButtonBackEvent(getClientName())
         LoginSdkUtils.redirectToTargetUri(
             activity = this,
             redirectUrl = intent?.extras?.getString("redirect_uri") ?: "",
