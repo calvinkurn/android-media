@@ -159,7 +159,10 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color", "text_color_mode"])
+    @SerializedName(
+        "font_color",
+        alternate = ["text_color", "benefit_text_color", "text_color_mode"]
+    )
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -670,7 +673,7 @@ data class DataItem(
     var topLevelTab: TopLevelTab = UnknownTab
 ) {
 
-    var gtmItemName:String = ""
+    var gtmItemName: String = ""
         get() = getGtmItemNameReplaceTab()
 
     val leftMargin: Int
@@ -715,7 +718,15 @@ data class DataItem(
         return labelsGroupList?.find { it.position == position }
     }
 
-    private fun getGtmItemNameReplaceTab():String{
-        return _gtmItemName?.replace("#MEGA_TAB_VALUE", tabName.orEmpty()) ?: ""
+    private fun getGtmItemNameReplaceTab(): String {
+        val tabReplaceWith = if (tabName?.isNotEmpty() == true && tabName != "Component") {
+            tabName ?: ""
+        } else {
+            topLevelTab.name
+        }
+        return _gtmItemName?.replace(
+            "#MEGA_TAB_VALUE",
+            tabReplaceWith
+        ) ?: ""
     }
 }
