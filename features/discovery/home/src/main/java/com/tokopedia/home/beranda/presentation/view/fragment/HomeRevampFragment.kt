@@ -337,6 +337,7 @@ open class HomeRevampFragment :
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
         private const val DEFAULT_BLOCK_SIZE = 6
+        private const val FPS_TRACER_HOME = "Home Scene"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -698,17 +699,7 @@ open class HomeRevampFragment :
         setupHomeRecyclerView()
         initEggDragListener()
 
-        val fpsTracer = FpsTracer("Home Scene", true)
-        homeRecyclerView?.addOnScrollListener(object: OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
-                    fpsTracer.start();
-                }else {
-                    fpsTracer.stop();
-                }
-            }
-        })
+        homeRecyclerView?.bindFpsTracer(FPS_TRACER_HOME)
         return view
     }
 
