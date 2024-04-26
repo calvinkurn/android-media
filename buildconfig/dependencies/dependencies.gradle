@@ -155,7 +155,7 @@ ext {
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.13'
     nestPrinciplesVersion = '1.0.7'
-    nestComponentsVersion = '1.0.17'
+    nestComponentsVersion = '1.0.18'
 
     gradlePlugin = [
             crashlytics                     : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
