@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/input_label"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_info_black"
+        app:srcCompat="@drawable/common_ic_info_black"
         tools:ignore="contentDescription"
         tools:visibility="visible" />
 
