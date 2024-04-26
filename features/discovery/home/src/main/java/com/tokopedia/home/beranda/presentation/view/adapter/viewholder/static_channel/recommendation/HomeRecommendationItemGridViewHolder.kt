@@ -45,6 +45,7 @@ class HomeRecommendationItemGridViewHolder(
             onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
         )
     }
+
     override fun bind(element: HomeRecommendationItemDataModel) {
         this.elementItem = element
         setLayout(element)

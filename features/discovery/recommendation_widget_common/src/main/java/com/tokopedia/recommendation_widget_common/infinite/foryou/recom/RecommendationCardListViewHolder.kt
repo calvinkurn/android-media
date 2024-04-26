@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds

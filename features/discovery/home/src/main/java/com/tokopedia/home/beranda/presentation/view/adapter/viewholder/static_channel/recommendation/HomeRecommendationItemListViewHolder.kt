@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.home.R
@@ -46,6 +45,7 @@ class HomeRecommendationItemListViewHolder(
             onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
         )
     }
+
     override fun bind(element: HomeRecommendationItemDataModel) {
         this.elementItem = element
         setLayout(element)

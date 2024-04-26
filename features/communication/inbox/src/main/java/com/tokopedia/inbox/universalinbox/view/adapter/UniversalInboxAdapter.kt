@@ -46,8 +46,6 @@ class UniversalInboxAdapter(
             UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
             UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
         }
-
-        holder.setRecyclerView(recyclerView)
         return holder
     }
 

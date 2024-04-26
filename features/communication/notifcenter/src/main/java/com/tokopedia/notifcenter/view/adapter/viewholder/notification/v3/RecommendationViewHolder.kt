@@ -42,7 +42,6 @@ class RecommendationViewHolder(
     }
 
     override fun bind(element: RecommendationUiModel, payloads: MutableList<Any>) {
-        this.elementItem = element
         val isWishlisted = payloads.getOrNull(0) as? Boolean ?: return
         element.recommendationItem.isWishlist = isWishlisted
         productCard?.setThreeDotsOnClickListener {
@@ -51,6 +50,7 @@ class RecommendationViewHolder(
     }
 
     override fun bind(element: RecommendationUiModel) {
+        this.elementItem = element
         setRecTriggerObject(element.recommendationItem)
         bindProductCardUi(element)
         bindProductCardImpression(element)
