@@ -375,8 +375,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
     //Atur konten toko
     override fun onClickContent() {
-        whenRoleAuthorized(shopSettingAccess.isContentManageAccessAuthorized) {
-            RouteManager.route(activity, ApplinkConst.CONTENT_SETTINGS)
-        }
+        RouteManager.route(activity, ApplinkConst.CONTENT_SETTINGS)
     }
 }

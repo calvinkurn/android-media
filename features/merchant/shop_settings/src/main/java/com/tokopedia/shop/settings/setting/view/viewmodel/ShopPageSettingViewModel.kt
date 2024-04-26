@@ -98,7 +98,7 @@ class ShopPageSettingViewModel @Inject constructor(
                             isInfoAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_INFO] ?: false,
                             isShipmentAccessAuthorized = adminAccessMap[AccessId.SHOP_SETTING_SHIPMENT] ?: false,
                             isProductManageAccessAuthorized = adminAccessMap[AccessId.PRODUCT_LIST] ?: false,
-                            isContentManageAccessAuthorized = adminAccessMap[AccessId.CONTENT] ?: false
+                            isContentManageAccessAuthorized = adminAccessMap[AccessId.CONTENT] ?: true
                         )
                     )
                 )
