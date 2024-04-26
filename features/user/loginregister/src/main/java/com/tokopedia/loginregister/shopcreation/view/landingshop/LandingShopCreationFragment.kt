@@ -314,7 +314,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
             } else {
-                goToPhoneShopCreation(userProfileCompletionData.phone)
+                showVerifyPhoneNoDialog(userProfileCompletionData.phone)
             }
         } else {
             goToPhoneShopCreation()
