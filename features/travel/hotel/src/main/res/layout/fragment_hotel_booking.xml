@@ -110,7 +110,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_loading_image" />
+                    app:srcCompat="@drawable/common_ic_loading_image" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
