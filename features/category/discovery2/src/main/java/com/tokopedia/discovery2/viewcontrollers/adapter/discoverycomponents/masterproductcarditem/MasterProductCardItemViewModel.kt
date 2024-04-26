@@ -366,7 +366,8 @@ class MasterProductCardItemViewModel(
         return if (
             components.name == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
             components.name == ComponentNames.ProductCardCarouselItem.componentName ||
-            components.name == ComponentNames.ShopOfferHeroBrandProductItem.componentName
+            components.name == ComponentNames.ShopOfferHeroBrandProductItem.componentName ||
+            components.name == ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
         ) {
             getComponent(components.parentComponentId, components.pageEndPoint)?.let {
                 if (!it.parentSectionId.isNullOrEmpty() && it.isBackgroundPresent) {

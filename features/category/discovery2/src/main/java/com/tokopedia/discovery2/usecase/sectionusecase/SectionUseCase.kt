@@ -182,9 +182,15 @@ class SectionUseCase @Inject constructor(
                         }
 
                         ComponentNames.ShopOfferHeroBrand.componentName -> {
+                            val subComponentName = if (comp.properties?.cardType.equals("V1", true)) {
+                                ComponentNames.ShopOfferHeroBrandProductItem.componentName
+                            } else {
+                                ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
+                            }
+
                             DiscoveryDataMapper().mapListToComponentList(
                                 comp.data,
-                                ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                                subComponentName,
                                 comp.properties,
                                 creativeName,
                                 parentSectionId = comp.parentSectionId

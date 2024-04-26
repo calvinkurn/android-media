@@ -248,7 +248,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             productCardName == ComponentNames.ProductCardCarouselItemReimagine.componentName ||
             productCardName == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName ||
             productCardName == ComponentNames.ProductCardCarouselItemListReimagine.componentName ||
-            productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
+            productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName ||
+            productCardName == ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
         ) {
             masterProductCardGridView?.let {
                 it.applyCarousel()
