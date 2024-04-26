@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
+import com.bytedance.android.btm.api.BtmSDK
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -300,6 +301,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         } catch (e: Throwable) {
             onApplinkParseError(e)
         }
+        //TODO:
+        BtmSDK.registerBtmPageOnCreate(this,"a0.b2333",null)
 
         productDetailComponent = initializeComponent()
         productDetailComponent?.inject(this)
