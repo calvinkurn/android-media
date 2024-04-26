@@ -209,7 +209,7 @@ class PaymentProcessorTest {
             state = CheckoutPaymentWidgetState.Normal,
             logoUrl = "imageUrl",
             title = "name",
-            installmentText = "Pilih periode pembayaran"
+            installmentText = "Pilih Lama Pembayaran"
         ), result)
     }
 
