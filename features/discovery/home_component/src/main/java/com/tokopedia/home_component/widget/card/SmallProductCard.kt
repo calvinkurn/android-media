@@ -32,15 +32,15 @@ class SmallProductCard @JvmOverloads constructor(
 
     fun setData(model: SmallProductModel) {
         // mandatory
-        useCompatPadding(model.ribbon)
+        useCompatPadding(model.ribbon())
 
-        setupRibbon(model.ribbon)
+        setupRibbon(model.ribbon())
         renderStockBar(model.stockBar)
-        renderCardContainer(model.ribbon)
+        renderCardContainer(model.ribbon())
         setupProductBannerImage(model.bannerImageUrl)
 
-        binding.txtTitle.shouldTypographyStyleApplied(model.title)
-        binding.txtSubtitle.shouldTypographyStyleApplied(model.subtitle)
+        binding.txtTitle.shouldTypographyStyleApplied(model.title())
+        binding.txtSubtitle.shouldTypographyStyleApplied(model.subtitle())
     }
 
     private fun renderStockBar(data: SmallProductModel.StockBar) {

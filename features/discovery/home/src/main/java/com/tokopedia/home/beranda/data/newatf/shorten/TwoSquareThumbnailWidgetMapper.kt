@@ -22,32 +22,18 @@ object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetU
             position = widget.position,
             header = widget.header,
             data = widget.grids.mapIndexed { index, grid ->
-                val labelGroup = grid.labelGroup.associateBy { it.position }
-                val ribbon = labelGroup[Keys.RIBBON]
-
-                fun ribbon(): SmallProductModel.Ribbon.Type {
-                    return if (ribbon?.type == Default.RIBBON_RED) {
-                        SmallProductModel.Ribbon.Type.Red
-                    } else {
-                        SmallProductModel.Ribbon.Type.Gold
-                    }
-                }
+                val labelGroup = grid.labelGroup.associate { it.position to it.title }
 
                 ItemThumbnailWidgetUiModel(
                     tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(channel, grid),
                     verticalPosition = verticalPosition,
                     cardPosition = index,
-                    card = createSmallProductCardModel(grid, grid.labelGroup.toList()).copy(
-                        ribbon = SmallProductModel.Ribbon(
-                            text = ribbon?.title.orEmpty(),
-                            type = ribbon()
-                        )
-                    ),
-                    pageName = labelGroup[Keys.PAGE_NAME]?.title.orEmpty(),
-                    gridId = labelGroup[Keys.GRID_ID]?.title.orEmpty(),
+                    card = createSmallProductCardModel(grid, grid.labelGroup.toList()),
+                    pageName = labelGroup[Keys.PAGE_NAME].orEmpty(),
+                    gridId = labelGroup[Keys.GRID_ID].orEmpty(),
                     url = grid.url,
                     appLink = grid.applink,
-                    campaignCode = labelGroup[Keys.CAMPAIGN_CODE]?.title.orEmpty(),
+                    campaignCode = labelGroup[Keys.CAMPAIGN_CODE].orEmpty(),
                 )
             }
         )

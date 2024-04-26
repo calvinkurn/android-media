@@ -20,8 +20,6 @@ object TwoSquareProductWidgetMapper : BaseShortenWidgetMapper<ProductWidgetUiMod
             position = widget.position,
             header = widget.header,
             data = widget.grids.map { grid ->
-                // val labelGroup = grid.labelGroup.associateBy { it.position }
-
                 ItemProductWidgetUiModel(
                     card = createSmallProductCardModel(grid, grid.labelGroup.toList()),
                     tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid)
