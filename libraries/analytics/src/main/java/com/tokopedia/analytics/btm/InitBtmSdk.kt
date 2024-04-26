@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.bytedance.android.btm.api.BtmSDK
+import com.bytedance.android.btm.api.depend.IALogDepend
 import com.bytedance.android.btm.api.depend.IAppLogDepend
 import com.bytedance.android.btm.api.depend.ILogDepend
 import com.bytedance.android.btm.api.depend.ISettingDepend
@@ -15,8 +16,10 @@ import com.bytedance.applog.AppLog
 import timber.log.Timber
 
 object InitBtmSdk {
+    private const val TAG = "InitBtmSDK"
 
     fun init(context: Context) {
+        Timber.tag(TAG).i("-------init-------")
         BtmSDK.init(BtmSDKBuilder().apply {
             app = context.applicationContext as Application
             appIds = arrayOf(AppLog.getAppId())
@@ -37,6 +40,27 @@ object InitBtmSdk {
                     model.event?.let {
                         AppLog.onEventV3(it, model.params)
                     }
+                }
+            }
+            aLogDepend = object : IALogDepend {
+                override fun v(tag: String, msg: String) {
+                    Timber.tag(tag).v(msg)
+                }
+
+                override fun i(tag: String, msg: String) {
+                    Timber.tag(tag).i(msg)
+                }
+
+                override fun d(tag: String, msg: String) {
+                    Timber.tag(tag).d(msg)
+                }
+
+                override fun w(tag: String, msg: String) {
+                    Timber.tag(tag).w(msg)
+                }
+
+                override fun e(tag: String, msg: String) {
+                    Timber.tag(tag).e(msg)
                 }
             }
             logDepend = object : ILogDepend {
@@ -63,8 +87,7 @@ object InitBtmSdk {
 
             settingDepend = object : ISettingDepend {
                 override fun getSetting(): String? {
-                    //TODO  JC notice, deploy firebase settings for btm
-                    return ""
+                    return Settings
                 }
 
                 override fun registerUpdateCallback(callback: OnSettingUpdateCallback) {
@@ -108,3 +131,30 @@ object InitBtmSdk {
     }
 
 }
+
+
+const val Settings = """
+    {
+    "bugfix": {
+        "fix_bcm_description_big_size": 0,
+        "fix_fe_register_resume": 2,
+        "fix_register_page_when_no_resume": 0
+    },
+    "feature": {
+        "aLog": 1,
+        "add_token_in_chain": 1,
+        "bcm_check_switch": True,
+        "check_event_switch": 1,
+        "enable_bcm_report": 1,
+        "fe_switch": True,
+        "remove_enter_page": 1,
+        "show_id_chain_switch": 2,
+        "unknown_dialog_frag_switch": 0
+    },
+    "optimize": {
+        "enable_btm_page_show_opt": 1,
+        "enable_event_btm_map": 1
+    },
+    "sdk_switch": 1
+}
+"""
