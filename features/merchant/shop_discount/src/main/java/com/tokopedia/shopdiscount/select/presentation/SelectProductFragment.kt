@@ -427,7 +427,7 @@ class SelectProductFragment : BaseDaggerFragment() {
     }
 
     private fun findVpsPackage(benefits: List<ShopBenefit.Benefit>): ShopBenefit.Benefit? {
-        return benefits.firstOrNull { it.packageId.toInt() > ZERO }
+        return benefits.firstOrNull()
     }
 
     private fun handleTickerAppearance(selectedProductCount: Int) {
