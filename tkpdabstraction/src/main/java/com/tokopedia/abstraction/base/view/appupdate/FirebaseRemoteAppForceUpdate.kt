@@ -40,11 +40,11 @@ class FirebaseRemoteAppForceUpdate(context: Context) : ApplicationUpdate {
     private fun generateDetailUpdate(dataUpdateApp: DataUpdateApp): DetailUpdate {
         val detailUpdate = DetailUpdate()
         detailUpdate.isInAppUpdateEnabled = dataUpdateApp.isInappUpdateEnabled
-        if (dataUpdateApp.isIsForceEnabled && GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionForceUpdate) {
+        if (isForceEnabled(dataUpdateApp)) {
             detailUpdate.latestVersionCode = dataUpdateApp.latestVersionForceUpdate.toLong()
             detailUpdate.isNeedUpdate = true
             detailUpdate.isForceUpdate = true
-        } else if (dataUpdateApp.isIsOptionalEnabled && GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionOptionalUpdate) {
+        } else if (isOptionalEnabled(dataUpdateApp)) {
             detailUpdate.latestVersionCode = dataUpdateApp.latestVersionForceUpdate.toLong()
             detailUpdate.isNeedUpdate = true
             detailUpdate.isForceUpdate = false
@@ -55,5 +55,13 @@ class FirebaseRemoteAppForceUpdate(context: Context) : ApplicationUpdate {
         detailUpdate.updateMessage = dataUpdateApp.message
         detailUpdate.updateLink = dataUpdateApp.link
         return detailUpdate
+    }
+
+    private fun isForceEnabled(dataUpdateApp: DataUpdateApp): Boolean {
+        return dataUpdateApp.isIsForceEnabled && GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionForceUpdate
+    }
+
+    private fun isOptionalEnabled(dataUpdateApp: DataUpdateApp): Boolean {
+        return dataUpdateApp.isIsOptionalEnabled && GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionOptionalUpdate
     }
 }
