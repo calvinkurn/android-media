@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -83,6 +85,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -423,12 +427,6 @@ open class ChatListInboxFragment :
                 }
             }
         )
-        viewModel.isWhitelistTopBot.observe(
-            viewLifecycleOwner,
-            Observer { isWhiteListTopBot ->
-                chatFilter?.updateIsWhiteListTopBot(isWhiteListTopBot)
-            }
-        )
         viewModel.isChatAdminEligible.observe(
             viewLifecycleOwner,
             Observer { result ->
@@ -463,6 +461,21 @@ open class ChatListInboxFragment :
                 if (tickerChatListIndex == RecyclerView.NO_POSITION) {
                     setChatListTickerBuyer(result.data)
                     setChatListTickerSeller(result.data)
+                }
+            }
+        }
+        observeWhitelist()
+    }
+
+    private fun observeWhitelist() {
+        lifecycleScope.launch {
+            withStarted {
+                launch {
+                    viewModel.isWhitelistTopBot.collectLatest {
+                        it?.let {
+                            chatFilter?.updateIsWhiteListTopBot(it)
+                        }
+                    }
                 }
             }
         }

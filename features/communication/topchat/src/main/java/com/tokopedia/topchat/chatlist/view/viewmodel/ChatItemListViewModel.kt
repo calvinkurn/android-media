@@ -29,7 +29,6 @@ import com.tokopedia.topchat.chatlist.domain.pojo.TopChatListFilterEnum
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
-import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatBlastSellerMetaDataUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
@@ -56,6 +55,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
@@ -136,8 +136,8 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
-    private val _isWhitelistTopBot = MutableLiveData<Boolean>()
-    val isWhitelistTopBot: LiveData<Boolean>
+    private val _isWhitelistTopBot = MutableStateFlow<Boolean?>(null)
+    val isWhitelistTopBot: StateFlow<Boolean?>
         get() = _isWhitelistTopBot
 
     private val _isChatAdminEligible = MutableLiveData<Result<Boolean>>()

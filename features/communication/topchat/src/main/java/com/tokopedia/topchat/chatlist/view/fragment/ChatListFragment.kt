@@ -98,7 +98,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -1135,14 +1134,6 @@ class ChatListFragment :
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             if (sightTag == PARAM_TAB_SELLER) {
                 context?.let { UpdateShopActiveWorker.execute(it) }
-            }
-        }
-    }
-
-    private fun observeChatFilter() {
-        lifecycleScope.launchWhenStarted {
-            chatItemListViewModel.chatListFilterUiState.collectLatest {
-
             }
         }
     }
