@@ -26,8 +26,6 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     protected T elementItem;
     public int visibilityPercentage = 0;
 
-    public RecyclerView rvHolder;
-
     /*
     This method is used to bind the view holder when only some parts of the model is changed.
     This way, the view holder won't be fully bind, you can control which part of it to re-bind.
@@ -61,10 +59,6 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     @Override
     public void onViewDetachedFromWindow(int visiblePercentage) {}
-
-    public void setRecyclerView(RecyclerView recyclerView) {
-        this.rvHolder = recyclerView;
-    }
 
     public void onViewDetachedFromWindow(@Nullable T element, int visiblePercentage) {}
 

@@ -15,8 +15,6 @@ open class PercentageScrollListener : OnScrollListener() {
 
     private val globalVisibleRect = Rect()
 
-    private val LOCK = Any()
-
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
     }
@@ -27,30 +25,28 @@ open class PercentageScrollListener : OnScrollListener() {
     }
 
     private fun setVisiblePercentageOnScrollChanged(recyclerView: RecyclerView) {
-        synchronized(LOCK) {
-            val layoutManager = recyclerView.layoutManager
+        val layoutManager = recyclerView.layoutManager
 
-            val firstPosition = when (layoutManager) {
-                is StaggeredGridLayoutManager -> layoutManager.findFirstVisibleItemPositions(null).minOrNull()
-                is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
-                else -> (layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
-            } ?: return
+        val firstPosition = when (layoutManager) {
+            is StaggeredGridLayoutManager -> layoutManager.findFirstVisibleItemPositions(null).minOrNull()
+            is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+            else -> (layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+        } ?: return
 
-            val lastPosition = when (layoutManager) {
-                is StaggeredGridLayoutManager -> layoutManager.findLastVisibleItemPositions(null).maxOrNull()
-                is GridLayoutManager -> layoutManager.findLastVisibleItemPosition()
-                else -> (layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
-            } ?: return
+        val lastPosition = when (layoutManager) {
+            is StaggeredGridLayoutManager -> layoutManager.findLastVisibleItemPositions(null).maxOrNull()
+            is GridLayoutManager -> layoutManager.findLastVisibleItemPosition()
+            else -> (layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
+        } ?: return
 
-            if (firstPosition == RecyclerView.NO_POSITION || lastPosition == RecyclerView.NO_POSITION) {
-                return
-            }
+        if (firstPosition == RecyclerView.NO_POSITION || lastPosition == RecyclerView.NO_POSITION) {
+            return
+        }
 
-            recyclerView.getGlobalVisibleRect(globalVisibleRect)
+        recyclerView.getGlobalVisibleRect(globalVisibleRect)
 
-            for (pos in firstPosition..lastPosition) {
-                setItemViewVisiblePercentage(layoutManager, pos, recyclerView, globalVisibleRect)
-            }
+        for (pos in firstPosition..lastPosition) {
+            setItemViewVisiblePercentage(layoutManager, pos, recyclerView, globalVisibleRect)
         }
     }
 
@@ -76,7 +72,8 @@ fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, bindingA
 
     if (itemView == null || recyclerView == null) return 0
 
-    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener ?: return 0
+    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener
+        ?: return 0
 
     val globalVisibleRect = Rect()
 
@@ -99,7 +96,7 @@ fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect, globalVis
     val visibleViewArea = visibleWidth * visibleHeight
 
     // Ensure that the visible area is non-negative
-    val visibleArea = max(0, (visibleViewArea))
+    val visibleArea = max(0, visibleViewArea)
 
     val totalArea = itemView.width * itemView.height
 

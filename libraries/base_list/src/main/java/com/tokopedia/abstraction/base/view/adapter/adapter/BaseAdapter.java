@@ -42,9 +42,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = onCreateViewItem(parent, viewType);
-        AbstractViewHolder viewHolder = adapterTypeFactory.createViewHolder(view, viewType);
-        viewHolder.setRecyclerView(recyclerView);
-        return viewHolder;
+        return adapterTypeFactory.createViewHolder(view, viewType);
     }
 
     @Override

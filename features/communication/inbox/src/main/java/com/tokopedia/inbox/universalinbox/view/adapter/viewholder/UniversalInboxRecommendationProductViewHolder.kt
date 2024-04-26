@@ -3,7 +3,6 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.adapter.getViewAreaPercentage
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -17,7 +16,6 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
-import com.tokopedia.kotlin.extensions.view.addOnScrollChangedListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -42,10 +40,6 @@ class UniversalInboxRecommendationProductViewHolder(
         setRecTriggerObject(uiModel.recommendationItem)
 
         binding?.inboxProductRecommendation?.run {
-
-            addOnScrollChangedListener {
-                setVisiblePercentage(getViewAreaPercentage(rvHolder, binding?.inboxProductRecommendation, bindingAdapterPosition))
-            }
 
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))
             setImageProductViewHintListener(

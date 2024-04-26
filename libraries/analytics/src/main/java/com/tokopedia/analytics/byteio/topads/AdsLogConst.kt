@@ -33,9 +33,6 @@ object AdsLogConst {
         const val PRODUCT_ID = "product_id"
         const val MALL_CARD_TYPE = "mall_card_type"
 
-        // todo need to confirm, how to get the value of session_info
-        const val SESSION_INFO = "session_info"
-
         // todo need to confirm, how to get the value of size_percent
         const val SIZE_PERCENT = "size_percent"
         const val CHANNEL = "channel"
