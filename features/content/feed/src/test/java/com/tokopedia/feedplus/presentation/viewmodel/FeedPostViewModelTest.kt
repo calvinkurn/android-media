@@ -2194,11 +2194,6 @@ class FeedPostViewModelTest {
         }
     }
 
-    @Test
-    fun saveScrollPosition_showTooltip_false() {
-
-    }
-
     private fun provideDefaultFeedPostMockData() {
         coEvery { repository.getPost(any(), any(), any(), any()) } returns getDummyFeedModel()
         viewModel.fetchFeedPosts("")
