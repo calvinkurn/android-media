@@ -33,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="@id/reminder_recommendation_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/reminder_recommendation_title"
-        app:srcCompat="@drawable/ic_close_white"
+        app:srcCompat="@drawable/common_ic_close_white"
         android:contentDescription="@string/content_desc_reminder" />
 
     <com.tokopedia.unifycomponents.CardUnify2
