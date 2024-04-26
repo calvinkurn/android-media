@@ -7,6 +7,12 @@ apply plugin: 'kotlin-parcelize'
 android{
     namespace 'com.tokopedia.loginregister'
     testNamespace 'com.tokopedia.loginregister.test'
+
+    packagingOptions {
+        exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
+    }
+
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         multiDexEnabled true
