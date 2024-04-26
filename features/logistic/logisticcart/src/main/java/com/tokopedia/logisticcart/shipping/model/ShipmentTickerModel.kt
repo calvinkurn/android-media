@@ -9,11 +9,16 @@ data class ShipmentTickerModel(
     val type: ShipmentTickerType = ShipmentTickerType.ANNOUNCEMENT,
     val description: String = "",
     val actionLabel: String = "",
+    val position: ShipmentTickerPosition? = null,
     val actionType: ShipmentTickerActionType? = null
 ) : Parcelable, RatesViewModelType
 
 enum class ShipmentTickerType {
     ANNOUNCEMENT, WARNING, ERROR
+}
+
+enum class ShipmentTickerPosition(val key: String) {
+    FREE_SHIPPING("free_shipping")
 }
 
 @Parcelize

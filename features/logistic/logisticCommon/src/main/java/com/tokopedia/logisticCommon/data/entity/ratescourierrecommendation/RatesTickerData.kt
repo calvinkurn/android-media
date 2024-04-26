@@ -3,21 +3,25 @@ package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation
 import com.google.gson.annotations.SerializedName
 
 data class RatesTickerData(
-    @SerializedName("TickerAction")
+    @SerializedName("actions")
     val tickerAction: RatesTickerAction = RatesTickerAction(),
-    @SerializedName("TickerType")
+    @SerializedName("type")
     val tickerType: String = "",
-    @SerializedName("Content")
+    @SerializedName("text")
     val content: String = "",
-    @SerializedName("Title")
-    val title: String = ""
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("position")
+    val position: String = ""
 )
 
 data class RatesTickerAction(
-    @SerializedName("AppURL")
+    @SerializedName("app_url")
     val appUrl: String = "",
-    @SerializedName("Label")
+    @SerializedName("label")
     val label: String = "",
-    @SerializedName("WebURL")
+    @SerializedName("type")
+    val type: String = "",
+    @SerializedName("web_url")
     val webUrl: String = ""
 )

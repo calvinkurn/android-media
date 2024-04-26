@@ -311,25 +311,15 @@ internal fun ratesQuery() = """
             label_text
           }
           tickers {
-            top {
-                TickerAction {
-                    AppURL
-                    Label
-                    WebURL
-                }
-                TickerType
-                Content
-                Title
-            }
-            bottom {
-                TickerAction {
-                    AppURL
-                    Label
-                    WebURL
-                }
-                TickerType
-                Content
-                Title
+            type
+            position
+            title
+            text
+            actions {
+                label
+                type
+                app_url
+                web_url
             }
           }
           services {

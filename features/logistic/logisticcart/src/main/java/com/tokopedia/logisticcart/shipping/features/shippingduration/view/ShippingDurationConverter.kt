@@ -17,6 +17,7 @@ import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerActionType
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentTickerPosition
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -32,6 +33,8 @@ class ShippingDurationConverter @Inject constructor() {
         private const val TICKER_INFO_TYPE = "info"
         private const val TICKER_WARNING_TYPE = "warning"
         private const val TICKER_ERROR_TYPE = "danger"
+        private const val TICKER_ACTION_WEB = "link"
+        private const val TICKER_ACTION_APPLINK = "applink"
     }
 
     fun convertModel(ratesData: RatesData?): ShippingRecommendationData {
@@ -69,11 +72,8 @@ class ShippingDurationConverter @Inject constructor() {
                 // paid section title section
                 shippingRecommendationData.paidSectionInfoUiModel = convertPaidSectionModel(ratesData.ratesDetailData.paidSectionInfo)
 
-                // global ticker
-                shippingRecommendationData.topTicker = convertShipmentTicker(ratesData.ratesDetailData.tickers.top)
-
                 // bottom ticker
-                shippingRecommendationData.freeShippingTicker = convertShipmentTicker(ratesData.ratesDetailData.tickers.bottom)
+                shippingRecommendationData.tickers = convertShipmentTicker(ratesData.ratesDetailData.tickers)
             }
         }
         return shippingRecommendationData
@@ -87,18 +87,29 @@ class ShippingDurationConverter @Inject constructor() {
                 TICKER_ERROR_TYPE -> ShipmentTickerType.ERROR
                 else -> ShipmentTickerType.ANNOUNCEMENT
             }
-            val action: ShipmentTickerActionType? = it.tickerAction.run {
-                if (appUrl.isNotEmpty()) {
-                    ShipmentTickerActionType.AppUrl(appUrl)
-                } else if (webUrl.isNotEmpty()) {
-                    ShipmentTickerActionType.WebUrl(webUrl)
-                } else {
+            val action: ShipmentTickerActionType? = when (it.tickerAction.type) {
+                TICKER_ACTION_WEB -> {
+                    ShipmentTickerActionType.WebUrl(it.tickerAction.webUrl)
+                }
+                TICKER_ACTION_APPLINK -> {
+                    ShipmentTickerActionType.AppUrl(it.tickerAction.appUrl)
+                }
+                else -> {
+                    null
+                }
+            }
+            val position: ShipmentTickerPosition? = when (it.position) {
+                ShipmentTickerPosition.FREE_SHIPPING.key -> {
+                    ShipmentTickerPosition.FREE_SHIPPING
+                }
+                else -> {
                     null
                 }
             }
             ShipmentTickerModel(
                 type = type,
                 actionType = action,
+                position = position,
                 actionLabel = it.tickerAction.label,
                 description = it.content,
                 title = it.title

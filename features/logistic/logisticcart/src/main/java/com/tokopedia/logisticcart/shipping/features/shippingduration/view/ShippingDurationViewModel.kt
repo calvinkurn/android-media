@@ -14,6 +14,7 @@ import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentTickerPosition
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationAnalyticState
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationListState
@@ -84,8 +85,7 @@ class ShippingDurationViewModel @Inject constructor(
                             model.listLogisticPromo,
                             model.productShipmentDetailModel,
                             model.paidSectionInfoUiModel,
-                            model.freeShippingTicker,
-                            model.topTicker,
+                            model.tickers,
                             isOcc
                         )
                     )
@@ -226,8 +226,7 @@ class ShippingDurationViewModel @Inject constructor(
         promoUiModel: List<LogisticPromoUiModel>,
         productShipmentDetailModel: ProductShipmentDetailModel?,
         paidSectionInfoUiModel: PaidSectionInfoUiModel,
-        freeShippingTicker: List<ShipmentTickerModel>,
-        globalShippingTicker: List<ShipmentTickerModel>,
+        tickers: List<ShipmentTickerModel>,
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
         // TODO map ticker
@@ -250,7 +249,12 @@ class ShippingDurationViewModel @Inject constructor(
 
         // bebas ongkir
         if (promoUiModel.isNotEmpty()) {
-            uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+            uiModelList.addAll(
+                0,
+                promoUiModel + tickers.filter { it.position == ShipmentTickerPosition.FREE_SHIPPING } + listOf<RatesViewModelType>(
+                    DividerModel()
+                )
+            )
         }
 
         // notifier
