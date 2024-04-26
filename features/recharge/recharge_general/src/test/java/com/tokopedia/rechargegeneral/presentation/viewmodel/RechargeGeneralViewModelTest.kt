@@ -14,6 +14,7 @@ import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.rechargegeneral.model.*
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -84,6 +85,7 @@ class RechargeGeneralViewModelTest {
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns true
 
         rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
@@ -110,8 +112,9 @@ class RechargeGeneralViewModelTest {
         val gqlResponseNull = GraphqlResponse(result, errors, false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseNull
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns false
 
-        rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams, false, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
         assert(actualData is Fail)
     }
@@ -120,7 +123,7 @@ class RechargeGeneralViewModelTest {
     fun getOperatorCluster_Fail_ErrorResponse() {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
-        rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams, true, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
         assert(actualData is Fail)
     }
