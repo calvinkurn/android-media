@@ -55,12 +55,8 @@ class StoriesSettingsViewModel @AssistedInject constructor(
                 storiesChecker.isEligible()
             }){ false }
 
-            if (!isEligible.await().orFalse()) {
-//                _event.tryEmit(StoriesSettingEvent.ShowTicker)
-            }
-
             val data = repository.getOptions(entryPoint = entryPoint)
-            _pageInfo.update { data.copy(options = data.options.map { it.copy(isDisabled = isEligible.await().orFalse()) }) }
+            _pageInfo.update { data.copy(config = data.config.copy(isEligible = isEligible.await().orFalse()), options = data.options.map { it.copy(isDisabled = !isEligible.await().orFalse()) }) }
         }) {}
     }
 

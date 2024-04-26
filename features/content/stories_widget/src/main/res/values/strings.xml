@@ -4,4 +4,5 @@
     <string name="stories_settings_page_header">Atur Konten Toko</string>
     <string name="stories_settings_item_header">Konten</string>
     <string name="stories_settings_item_body">Atur konten toko</string>
-</resources>
+    <string name="stories_ticker_title">Fitur Story Otomatis belum tersedia untuk toko kamu.</string>
+    </resources>

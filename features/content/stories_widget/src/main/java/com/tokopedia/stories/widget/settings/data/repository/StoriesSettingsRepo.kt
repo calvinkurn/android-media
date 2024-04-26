@@ -48,7 +48,8 @@ class StoriesSettingsRepo @Inject constructor(
                 config = StoriesSettingConfig(
                     articleCopy = response.data.config.copy,
                     articleAppLink = response.data.config.appLink,
-                    articleWebLink = response.data.config.webLink
+                    articleWebLink = response.data.config.webLink,
+                    isEligible = false,
                 )
             )
         }

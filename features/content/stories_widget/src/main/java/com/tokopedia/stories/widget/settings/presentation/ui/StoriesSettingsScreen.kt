@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,20 +37,23 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
     val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
     val isStoryEnable = pageInfo.options.any { it.isSelected }
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("","", false, false)
+    val ctx = LocalContext.current
+
     NestTheme(isOverrideStatusBarColor = false) {
+        if (!pageInfo.config.isEligible) {
+            AndroidView(factory = {
+                Ticker(it).apply {
+                    tickerType = Ticker.TYPE_INFORMATION
+                    tickerTitle = ctx.getString(R.string.stories_ticker_title)
+                }
+            })
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .alpha(if (itemFirst.isDisabled) 0.4f else 1f)
+                .alpha(if (!pageInfo.config.isEligible) 0.4f else 1f)
         ) {
-            AndroidView(factory = {
-                Ticker(it).apply {
-                    tickerType = Ticker.TYPE_INFORMATION
-                    tickerTitle = "Fitur Story Otomatis belum tersedia untuk toko kamu."
-                }
-            })
-
             NestTypography(
                 modifier = Modifier.padding(bottom = 16.dp),
                 text = stringResource(id = R.string.stories_settings_header),
@@ -131,7 +135,8 @@ data class StoriesSettingOpt(
 data class StoriesSettingConfig(
     val articleCopy: String,
     val articleAppLink: String,
-    val articleWebLink: String
+    val articleWebLink: String,
+    val isEligible : Boolean,
 )
 
 data class StoriesSettingsPageUiModel(
@@ -142,7 +147,7 @@ data class StoriesSettingsPageUiModel(
         val Empty
             get() = StoriesSettingsPageUiModel(
                 options = emptyList(),
-                config = StoriesSettingConfig("", "", "")
+                config = StoriesSettingConfig("", "", "", false)
             )
     }
 }

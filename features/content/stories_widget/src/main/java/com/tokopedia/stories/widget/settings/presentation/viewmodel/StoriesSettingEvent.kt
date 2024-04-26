@@ -16,8 +16,6 @@ sealed interface StoriesSettingEvent {
     ) : StoriesSettingEvent
 
     data class ClickTrack(val option: StoriesSettingOpt) : StoriesSettingEvent
-
-//    object ShowTicker : StoriesSettingEvent
 }
 
 sealed class StoriesSettingsAction {

@@ -135,7 +135,6 @@ object SellerSettingsList {
                 context.getString(sellermenuR.string.seller_menu_header_body),
                 eventActionSuffix = SettingTrackingConstant.SETTINGS,
                 type = MenuItemType.CONTENT,
-                iconUnify = IconUnify.IMAGE
             ) {
                RouteManager.route(context, ApplinkConst.CONTENT_SETTINGS)
             },
