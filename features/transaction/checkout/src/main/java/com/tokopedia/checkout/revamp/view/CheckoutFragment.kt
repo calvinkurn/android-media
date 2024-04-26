@@ -2985,9 +2985,6 @@ class CheckoutFragment :
                 ),
                 REQUEST_CODE_PAYMENT_TOP_UP
             )
-    //                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
-    //                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
-    //                }
         }
     }
 
