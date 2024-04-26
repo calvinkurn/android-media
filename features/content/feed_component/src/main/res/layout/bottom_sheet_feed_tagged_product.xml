@@ -29,9 +29,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_tagged_product" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_error_load_more"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/layout_error_load_more"
+        layout="@layout/layout_feed_product_reload"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:visibility="gone"
