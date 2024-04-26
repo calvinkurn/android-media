@@ -313,9 +313,7 @@ class BlocksPerformanceTrace(
 
         if (state != BlocksPerfState.STATE_SUCCESS) {
             performanceTraceJob?.cancel()
-            endSlardarTrace()
-        } else {
-            LaunchTrace.cancelTrace()
+            cancelTrace()
         }
     }
 
@@ -345,6 +343,7 @@ class BlocksPerformanceTrace(
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
         Log.d("BlocksTrace", "TTIL: " + summaryModel.get().ttil())
+        endSlardarTrace()
     }
 
     private fun trackFirebase() {
