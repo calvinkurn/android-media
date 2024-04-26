@@ -205,6 +205,7 @@ class RechargeGeneralViewModelTest {
         rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
         rechargeGeneralViewModel.productListJob?.cancel()
         val actualData = rechargeGeneralViewModel.productList.value
+        println("actualData: $actualData")
         assertTrue(actualData == null)
     }
 
