@@ -37,6 +37,7 @@ class CarouselProductCardViewHolder (
             onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
         )
     }
+
     override fun bind(element: CarouselProductCardDataModel) {
         this.elementItem = element
         setLayout(itemView.context, element)

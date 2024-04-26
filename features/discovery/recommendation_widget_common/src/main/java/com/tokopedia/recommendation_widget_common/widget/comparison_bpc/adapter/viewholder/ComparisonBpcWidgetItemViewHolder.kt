@@ -40,6 +40,7 @@ class ComparisonBpcWidgetItemViewHolder(
             onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
         )
     }
+
     override fun bind(element: ComparisonBpcItemModel) {
         this.elementItem = element
         binding?.run {

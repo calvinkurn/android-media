@@ -25,9 +25,7 @@ internal class ProductCardListViewHolder(
             layoutParams.width = util.getItemWidth()
             binding?.carouselPagingProductCardListView?.layoutParams = layoutParams
         }
-    }
 
-    init {
         itemView.addOnAttachStateChangeListener(
             onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
             onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }

@@ -15,6 +15,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
@@ -33,6 +34,13 @@ class UniversalInboxRecommendationProductViewHolder(
 
     private val binding: UniversalInboxRecommendationProductItemBinding? by viewBinding()
     private var recTriggerObject = RecommendationTriggerObject()
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+        )
+    }
 
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
         this.elementItem = uiModel
@@ -96,10 +104,7 @@ class UniversalInboxRecommendationProductViewHolder(
         element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
     }
 
-    override fun onViewDetachedFromWindow(
-        element: UniversalInboxRecommendationUiModel?,
-        visiblePercentage: Int
-    ) {
+    override fun onViewDetachedFromWindow(element: UniversalInboxRecommendationUiModel?, visiblePercentage: Int) {
         element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
         setVisiblePercentage(Int.ZERO)
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.analytics.byteio.topads
 
 import android.content.Context
+import android.os.SystemClock
 import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -17,8 +18,6 @@ import org.json.JSONObject
  * @see https://bytedance.sg.larkoffice.com/docx/IJW6dwOlPoEMEnxySgvlRBlCgNh
  */
 object AppLogTopAds {
-
-    private var lastClickTimestamp = System.currentTimeMillis()
 
     /**
      * @param context Context
@@ -57,7 +56,7 @@ object AppLogTopAds {
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
 
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, getSystemBootTime())
 
                 putTag(pageName)
             }
@@ -99,7 +98,7 @@ object AppLogTopAds {
                     adsLogShowModel.logExtra
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, System.currentTimeMillis().toString())
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, getSystemBootTime())
 
                 putTag(pageName)
             }
@@ -114,7 +113,6 @@ object AppLogTopAds {
         context: Context,
         adsLogRealtimeClickModel: AdsLogRealtimeClickModel
     ) {
-        val timeStamp = System.currentTimeMillis()
         val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
 
         AppLogAnalytics.send(
@@ -143,14 +141,14 @@ object AppLogTopAds {
                 )
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
-                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, timeStamp.toString())
+                put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, getSystemBootTime())
 
                 putTag(pageName)
             }
         )
-        lastClickTimestamp = timeStamp
     }
 
+    private fun getSystemBootTime(): String = (System.currentTimeMillis() - SystemClock.elapsedRealtime()).toString()
 
     private fun getEnterFrom(): String {
         val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
@@ -189,7 +187,7 @@ object AppLogTopAds {
     }
 
     private fun JSONObject.putNetworkType(context: Context) {
-        val networkType = NetworkUtils.getNetworkTypeDetail(context)
-        put(AdsLogConst.Param.NT, networkType)
+        val networkType = NetworkUtils.getNetworkType(context)
+        put(AdsLogConst.Param.NT, networkType.value)
     }
 }

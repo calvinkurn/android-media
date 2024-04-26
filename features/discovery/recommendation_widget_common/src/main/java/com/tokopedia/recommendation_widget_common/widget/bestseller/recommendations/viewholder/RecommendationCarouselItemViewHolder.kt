@@ -28,6 +28,7 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
             onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
         )
     }
+
     override fun bind(element: RecommendationCarouselItemDataModel) {
         this.elementItem = element
         binding?.recommendationItemCard?.applyCarousel()

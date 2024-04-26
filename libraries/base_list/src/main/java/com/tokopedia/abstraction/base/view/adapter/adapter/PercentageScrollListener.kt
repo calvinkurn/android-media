@@ -14,6 +14,7 @@ import kotlin.math.roundToInt
 open class PercentageScrollListener : OnScrollListener() {
 
     private val globalVisibleRect = Rect()
+    private val itemVisibleRect = Rect()
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
@@ -56,8 +57,6 @@ open class PercentageScrollListener : OnScrollListener() {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i) as? IAdsViewHolderTrackListener
             ?: return
 
-        val itemVisibleRect = Rect()
-
         itemView.getGlobalVisibleRect(itemVisibleRect)
 
         val visibleAreaPercentage = getCalculateVisibleViewArea(itemView, itemVisibleRect, globalVisibleRect)
@@ -68,12 +67,16 @@ open class PercentageScrollListener : OnScrollListener() {
     }
 }
 
-fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, bindingAdapterPosition: Int): Int {
+
+//todo will be removed
+fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, visiblePercentage: Int): Int {
 
     if (itemView == null || recyclerView == null) return 0
 
-    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener
-        ?: return 0
+//    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener
+//        ?: return 0
+
+    val rootView = itemView.rootView
 
     val globalVisibleRect = Rect()
 
@@ -84,9 +87,7 @@ fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, bindingA
 
     val visibleArea = getCalculateVisibleViewArea(itemView, itemVisibleRect, globalVisibleRect)
 
-    val prevValue = viewHolder.visiblePercentage
-
-    return if (visibleArea > 0) max(prevValue, visibleArea) else 100
+    return if (visibleArea > 0) max(visiblePercentage, visibleArea) else 100
 }
 
 fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect, globalVisibleRect: Rect): Int {
