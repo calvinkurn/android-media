@@ -38,7 +38,6 @@ data class ItemMissionWidgetUiModel(
     val shopId: String,
     val isTopAds: Boolean,
     val isCarousel: Boolean,
-    val verticalPosition: Int,
 ) : ShortenVisitable by ItemShortenVisitable(ItemTwoSquareType.Mission.value) {
 
     fun isProduct(): Boolean {
