@@ -258,6 +258,11 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.Navigate(appLink))
     }
 
+    fun forceResumeStories(selectedGroup: Int) {
+        entryPointTestCase(selectedGroup)
+        viewModel.submitAction(StoriesUiAction.ResumeStories(forceResume = true))
+    }
+
     private fun <T> getPrivateField(name: String): T {
         val field = viewModel.javaClass.getDeclaredField(name)
         field.isAccessible = true

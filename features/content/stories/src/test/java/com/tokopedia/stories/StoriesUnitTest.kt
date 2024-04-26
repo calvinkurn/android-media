@@ -719,6 +719,22 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when user back to stories and video should resume to play`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.forceResumeStories(selectedGroup)
+
+            val actualEvent = robot.getViewModel().mDetail.event
+            actualEvent.assertEqualTo(StoriesDetailItemUiEvent.RESUME)
+        }
+    }
+
+    @Test
     fun `when stories open and collect impression group`() {
         val selectedGroup = 0
         val selectedDetail = 0
