@@ -9,7 +9,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponent2squareProductWidgetBinding
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
-import com.tokopedia.home_component.viewholders.shorten.viewholder.item.PartialItemWidgetAdapter
+import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemContentCardAdapter
 import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -21,7 +21,7 @@ class ProductWidgetViewHolder(
 ) : AbstractViewHolder<ProductWidgetUiModel>(view) {
 
     private val binding: GlobalComponent2squareProductWidgetBinding? by viewBinding()
-    private var mAdapter: PartialItemWidgetAdapter? = null
+    private var mAdapter: ItemContentCardAdapter? = null
 
     init {
         if (pool != null) {
@@ -39,7 +39,7 @@ class ProductWidgetViewHolder(
     }
 
     private fun setupRecyclerView() {
-        mAdapter = PartialItemWidgetAdapter(ItemTwoSquareType.Product, listener)
+        mAdapter = ItemContentCardAdapter(ItemTwoSquareType.Product, listener)
         binding?.lstProductCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
         binding?.lstProductCard?.adapter = mAdapter
         binding?.lstProductCard?.setHasFixedSize(true)

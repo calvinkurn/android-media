@@ -24,6 +24,7 @@ data class ProductWidgetUiModel(
 data class ItemProductWidgetUiModel(
     val card: SmallProductModel,
     val tracker: ChannelTracker,
+    val verticalPosition: Int
 ) : ShortenVisitable by ShortenVisitable.ItemShortenVisitable(ItemTwoSquareType.Product.value) {
 
     val impression = ImpressHolder()

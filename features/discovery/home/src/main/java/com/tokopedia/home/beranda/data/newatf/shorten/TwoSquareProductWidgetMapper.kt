@@ -11,7 +11,8 @@ object TwoSquareProductWidgetMapper : BaseShortenWidgetMapper<ProductWidgetUiMod
 
     override fun map(
         data: DynamicHomeChannel,
-        channel: DynamicHomeChannel.Channels?
+        channel: DynamicHomeChannel.Channels?,
+        verticalPosition: Int
     ): ProductWidgetUiModel? {
         val widget = widget(data, channel) ?: return null
 
@@ -22,7 +23,8 @@ object TwoSquareProductWidgetMapper : BaseShortenWidgetMapper<ProductWidgetUiMod
             data = widget.grids.map { grid ->
                 ItemProductWidgetUiModel(
                     card = createSmallProductCardModel(grid, grid.labelGroup.toList()),
-                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(grid)
+                    tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(channel, grid),
+                    verticalPosition = verticalPosition
                 )
             }
         )
