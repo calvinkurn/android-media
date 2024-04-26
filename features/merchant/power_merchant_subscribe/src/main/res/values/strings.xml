@@ -117,17 +117,19 @@
     <string name="pm_not_eligible_niv_term_description"><![CDATA[Tokomu harus mendapatkan pendapatan <b>Rp%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!]]></string>
     <string name="pm_benefits_that_you_can_get">Keuntungan yang bisa kamu dapatkan</string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro_new_seller">Berbagai keuntungan eksklusif Power Merchant PRO:</string>
-    <string name="pm_get_exclusive_benefit_of_being_pm_pro">Tingkatkan performa toko sesuai target dan nikmati keuntungannya!</string>
+    <string name="pm_get_exclusive_benefit_of_being_pm_pro">Tingkatkan Performa Toko sesuai target &amp; nikmati keuntungannya!</string>
+    <string name="pm_keep_being_of_pm_pro">Pertahankan Performa Toko dan nikmati keuntungannya!</string>
     <string name="pm_pro_general_benefit_1">Badge PM PRO untuk tingkatkan kepercayaan</string>
     <string name="pm_pro_general_benefit_2">Promo eksklusif untukmu</string>
     <string name="pm_pro_general_benefit_3">Berpotensi mendapatkan lebih banyak kunjungan</string>
-
     <string name="pm_deactivation_bottom_sheet_message">*Berdasarkan data di bulan Desember 2022 - Januari 2023.</string>
     <string name="pm_pm_deactivation_be_rm_tnc">Agar pengajuan terkirim, Lanjut ke Pengajuan dan beri masukan.</string>
     <string name="pm_stop_pm">Berhenti dari PM</string>
     <string name="pm_regular_merchant">Regular Merchant</string>
     <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_pro_upgrade_description">Sebagai Power Merchant PRO, kamu bisa dapat:</string>
+    <string name="pm_pro_notupgrade_description">Sebagai Power Merchant PRO, kamu mendapatkan:</string>
+    <string name="pm_pro_shop_achivement">Pencapaian tokomu hari ini</string>
     <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
     <string name="pm_moderated_shop_ticker_description">Kamu bisa daftar Power Merchant jika toko kembali aktif.</string>
     <string name="pm_bottom_sheet_moderated_shop_title">Proses bergabung tidak bisa \ndilanjutkan</string>

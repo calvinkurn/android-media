@@ -71,9 +71,8 @@ class ShopGradeWidget(
                     stepInActive(badgePmPro, textPmPro)
                 }
                 isPmProAdvance || isPmProExpert || isPmProUltimate -> {
-                    stepInActive(badgePmNew)
+                    stepInActive(badgePmNew, textPmProNew)
                     separatorNew.stepSeparatorInActive()
-                    textPmPro.setWeight(Typography.BOLD)
                 }
             }
         }
