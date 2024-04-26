@@ -23,7 +23,7 @@ object TrackRecommendationMapper {
         enterMethod: EnterMethod? = null,
         tabName: String = "",
         tabPosition: Int = -1,
-        additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
+        additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.toString(),

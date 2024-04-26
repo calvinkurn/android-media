@@ -2,8 +2,9 @@ package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.AppLogParam
 
-sealed class AppLogAdditionalParam {
-    abstract val parameters: Map<String, Any>
+sealed interface AppLogAdditionalParam {
+    val parameters: Map<String, Any>
+        get() = hashMapOf()
 
     data class PDP(
         val parentProductId: String = "",
@@ -11,7 +12,7 @@ sealed class AppLogAdditionalParam {
         val parentRequestId: String = "",
         val firstTrackId: String = "",
         val firstSourcePage: String = "",
-    ): AppLogAdditionalParam() {
+    ): AppLogAdditionalParam {
         override val parameters: Map<String, Any>
             get() = hashMapOf(
                 AppLogParam.PARENT_PRODUCT_ID to parentProductId,
@@ -22,5 +23,5 @@ sealed class AppLogAdditionalParam {
             )
     }
 
-    class None(override val parameters: Map<String, Any> = hashMapOf()) : AppLogAdditionalParam()
+    object None : AppLogAdditionalParam
 }

@@ -7,7 +7,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 data class InfiniteProductUiModel(
     val recommendationItem: RecommendationItem,
-    val appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None()
+    val appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None
 ) : InfiniteRecommendationUiModel {
 
     override val isFullSpan: Boolean = false
