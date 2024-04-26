@@ -63,6 +63,7 @@ class TopChatRoomBroadcastCountdownView : LinearLayout {
             bindLabelBackgroundColor(banner)
             bindStartDate(banner)
             bindCountDown(banner)
+            bindCountdownTimerColor()
         } else {
             hide()
         }
@@ -107,6 +108,10 @@ class TopChatRoomBroadcastCountdownView : LinearLayout {
             else -> unifyprinciplesR.color.Unify_RN600
         }
         setBackgroundResource(colorRes)
+    }
+
+    private fun bindCountdownTimerColor() {
+        countdown?.timerVariant = TimerUnifySingle.VARIANT_GENERAL
     }
 
     private fun bindStartDate(banner: ImageAnnouncementUiModel) {
