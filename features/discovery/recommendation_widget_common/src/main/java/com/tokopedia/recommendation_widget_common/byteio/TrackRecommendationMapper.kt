@@ -19,7 +19,6 @@ object TrackRecommendationMapper {
     fun RecommendationItem.asProductTrackModel(
         isCache: Boolean = false,
         entranceForm: EntranceForm,
-        enterMethod: EnterMethod? = null,
         tabName: String = "",
         tabPosition: Int = -1,
     ): AppLogRecommendationProductModel {
@@ -38,7 +37,6 @@ object TrackRecommendationMapper {
             tabName = tabName,
             tabPosition = tabPosition,
             rate = ratingAverage.toFloatOrZero(),
-            enterMethod = enterMethod?.str,
             volume = countSold,
             originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
             salesPrice = priceInt.toFloat(),
@@ -47,7 +45,6 @@ object TrackRecommendationMapper {
 
     fun RecommendationCardModel.asProductTrackModel(
         isCache: Boolean = false,
-        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
@@ -73,7 +70,6 @@ object TrackRecommendationMapper {
             position = position,
             volume = recommendationProductItem.countSold,
             rate = productCardModel.countSoldRating.toFloatOrZero(),
-            enterMethod = enterMethod?.str,
         )
     }
 
@@ -87,7 +83,6 @@ object TrackRecommendationMapper {
 
     fun BannerTopAdsModel.asCardTrackModel(
         isCache: Boolean = false,
-        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = cardId,
@@ -103,13 +98,11 @@ object TrackRecommendationMapper {
             shopId = topAdsImageUiModel?.shopId.orEmpty(),
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             position = position,
-            enterMethod = enterMethod?.str,
         )
     }
 
     fun ContentCardModel.asCardTrackModel(
         isCache: Boolean = false,
-        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = id,
@@ -125,13 +118,11 @@ object TrackRecommendationMapper {
             shopId = shopId,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             position = position,
-            enterMethod = enterMethod?.str,
         )
     }
 
     fun PlayCardModel.asCardTrackModel(
         isCache: Boolean = false,
-        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = cardId,
@@ -149,7 +140,6 @@ object TrackRecommendationMapper {
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             sourcePageType = SourcePageType.VIDEO,
             position = position,
-            enterMethod = enterMethod?.str,
         )
     }
 }

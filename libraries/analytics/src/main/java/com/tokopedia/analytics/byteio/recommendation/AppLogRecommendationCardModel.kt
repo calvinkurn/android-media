@@ -36,7 +36,6 @@ data class AppLogRecommendationCardModel(
     val originalPrice: Float,
     val salesPrice: Float,
     val sourcePageType: String,
-    val enterMethod: String?,
     val authorId: String,
 ) {
 
@@ -103,7 +102,6 @@ data class AppLogRecommendationCardModel(
             rate: Float = 0f,
             originalPrice: Float = 0f,
             salesPrice: Float = 0f,
-            enterMethod: String? = null,
             sourcePageType: String = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)?.toString().orEmpty(),
             authorId: String = "",
         ): AppLogRecommendationCardModel {
@@ -128,7 +126,6 @@ data class AppLogRecommendationCardModel(
                 rate = rate,
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
-                enterMethod = enterMethod,
                 sourcePageType = sourcePageType,
                 authorId = authorId.zeroAsEmpty(),
             )
