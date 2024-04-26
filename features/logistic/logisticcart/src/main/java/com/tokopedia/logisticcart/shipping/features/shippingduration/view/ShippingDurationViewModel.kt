@@ -283,8 +283,7 @@ class ShippingDurationViewModel @Inject constructor(
                     model.listLogisticPromo,
                     model.productShipmentDetailModel,
                     model.paidSectionInfoUiModel,
-                    model.freeShippingTicker,
-                    model.topTicker,
+                    model.tickers,
                     isOcc
                 )
             )
