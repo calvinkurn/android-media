@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.navigation.domain.GetNewBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.model.Notification
+import com.tokopedia.navigation.presentation.type.TabType
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.usecase.GetHomeBottomNavigationUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,6 +27,13 @@ internal class MainParentViewModel @Inject constructor(
 
     private val _dynamicBottomNav = MutableLiveData<List<BottomNavBarUiModel>>(emptyList())
     val dynamicBottomNav: LiveData<List<BottomNavBarUiModel>> by this::_dynamicBottomNav
+
+    var isRecurringAppLink = false
+
+    fun hasTabType(type: TabType): Boolean {
+//        TODO()
+        return false
+    }
 
     fun fetchNotificationData() {
         if (!userSession.isLoggedIn) return

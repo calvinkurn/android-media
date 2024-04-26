@@ -6,7 +6,7 @@
         tools:replace="android:resizeableActivity"
         android:resizeableActivity="true">
         <activity
-            android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
+            android:name="com.tokopedia.navigation.presentation.activity.NewMainParentActivity"
             android:label="Tokopedia"
             android:launchMode="singleTask"
             android:exported="true"

@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.NewMainParentActivity;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment;
 
@@ -15,6 +16,8 @@ import dagger.Component;
 public interface GlobalNavComponent {
 
     void inject(MainParentActivity activity);
+
+    void inject(NewMainParentActivity activity);
 
     void inject(InboxFragment fragment);
 

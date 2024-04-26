@@ -58,6 +58,11 @@
     <string name="navigation_home_label_longpress_bayar">Tagihan</string>
     <string name="navigation_home_label_longpress_jual">Jual</string>
 
+    <string name="navigation_home_label_shortcut_search">Cari</string>
+    <string name="navigation_home_label_shortcut_wishlist">Wishlist</string>
+    <string name="navigation_home_label_shortcut_pay">Tagihan</string>
+    <string name="navigation_home_label_shortcut_sell">Jual</string>
+
     <string name="filter">Filter</string>
     <string name="wishlist_check_cart">LIHAT</string>
 

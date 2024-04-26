@@ -28,6 +28,10 @@ android {
         multiDexEnabled true
         testInstrumentationRunner 'com.tokopedia.test.application.environment.InstrumentationTestRunner'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
