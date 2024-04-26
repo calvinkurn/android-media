@@ -1,11 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
-import android.annotation.SuppressLint
-import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.core.analytics.nishikino.model.Campaign
-import com.tokopedia.home_component.visitable.shorten.ItemDealsWidgetUiModel
-import com.tokopedia.home_component.visitable.shorten.ItemMissionWidgetUiModel
-import com.tokopedia.home_component.visitable.shorten.MissionWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -17,8 +12,8 @@ object TwoSquareWidgetTracking : BaseTrackerConst() {
     private const val EVENT_ACTION_CLICK_CHEVRON = "click view all chevron on dynamic channel 2 square"
     private const val ITEM_ID_PROMOTION_FORMAT = "%s_%s_0_"
 
-    fun impressCardDeals(data: ItemDealsWidgetUiModel, position: Int, userid: String): Map<String, Any> {
-        return impressCard(data.channelId, data.headerName, position, userid, data.gridId, data.creativeName, data.campaignCode)
+    fun impressCardDeals(data: ItemThumbnailWidgetUiModel, position: Int, userid: String): Map<String, Any> {
+        return impressCard(data.tracker.channelId, data.tracker.headerName, position, userid, data.gridId, data.tracker.creativeName, data.campaignCode)
     }
 
     private fun impressCard(channelId : String, headerName : String, position: Int, userid: String,
@@ -42,8 +37,8 @@ object TwoSquareWidgetTracking : BaseTrackerConst() {
         return trackingBuilder.build()
     }
 
-    fun clickCardDeals(data: ItemDealsWidgetUiModel, position: Int, userid: String) : Map<String, Any> {
-        return clickCard(data.channelId, data.headerName, position, userid, data.gridId, data.creativeName, data.campaignCode)
+    fun clickCardDeals(data: ItemThumbnailWidgetUiModel, position: Int, userid: String) : Map<String, Any> {
+        return clickCard(data.tracker.channelId, data.tracker.headerName, position, userid, data.gridId, data.tracker.creativeName, data.campaignCode)
     }
 
     private fun clickCard(channelId : String, headerName : String, position: Int, userid: String,
