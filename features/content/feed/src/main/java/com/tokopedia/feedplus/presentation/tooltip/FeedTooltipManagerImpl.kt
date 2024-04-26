@@ -39,7 +39,7 @@ class FeedTooltipManagerImpl @Inject constructor(
          * 1. app displays the 4th content
          * 2. user hasn't seen the tooltip for a specific period in this month.
          */
-        if (contentPosition != 1) return false
+        if (contentPosition != 3) return false
 
         val lastTimeShownDate = tooltipPreferences.getLastTimeSearchTooltipShown()
 
