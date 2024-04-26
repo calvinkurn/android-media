@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ -f ".remoteX/custom/custom_before_exec.sh" ]; then
+> ".remoteX/custom/custom_before_exec.sh"
+printf """#!/bin/bash
+echo 'custom before exec by remote'
+cd $1
+curDirName=`pwd`
+\n
+if [ -f "$curDirName/settings.gradle" ]; then
+sed -i 's|apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"||g' settings.gradle
+sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"||g' settings.gradle
+fi""" >> .remoteX/custom/custom_before_exec.sh
+fi
+./remote -ci ./gradlew assembleLiveDevDebug --stacktrace -p customerapp
