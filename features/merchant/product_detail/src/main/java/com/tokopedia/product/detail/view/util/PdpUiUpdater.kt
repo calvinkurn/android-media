@@ -56,6 +56,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
@@ -69,6 +70,7 @@ import com.tokopedia.product.detail.data.model.gwp.asUiModel
 import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
 import com.tokopedia.product.detail.data.model.promoprice.getPromoStyleByProductId
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
+import com.tokopedia.product.detail.data.model.sdui.SDUIData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -613,6 +615,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 promoPriceStyle = it.promoPriceStyle,
                 freeOngkirImgUrl = boeImageUrl
             )
+
+            updateSDUI(sduiList =  it.sdui)
         }
     }
 
@@ -1515,6 +1519,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateOnExpandProductName() {
         updateData(ProductDetailConstant.PRODUCT_CONTENT, false) {
             basicContentMap?.data?.productNameCollapsed = false
+        }
+    }
+
+    private fun updateSDUI(sduiList: List<SDUIData>) {
+        sduiList.forEach {
+            val componentName = it.name
+            val component = mapOfData[componentName] as? SDUIDataModel ?: return@forEach
+            mapOfData[componentName] = component.newInstance().apply {
+                val jsonString = it.data.firstOrNull()?.template ?: ""
+                updateJson(jsonString)
+            }
         }
     }
 }
