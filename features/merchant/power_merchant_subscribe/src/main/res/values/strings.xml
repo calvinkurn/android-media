@@ -11,7 +11,7 @@
     <string name="pm_label_cancellation_questionnaire_intro_title">Agar pengajuanmu terkirim, beri masukan untuk layanan Power Merchant, yuk!</string>
 
     <string name="power_merchant_register_now">Gabung Sekarang</string>
-    <string name="power_merchant_benefit_learn_more">Pelajari Selengkapnya</string>
+    <string name="power_merchant_benefit_learn_more">Pelajari Selengkapnya ></string>
     <string name="power_merchant_performance_tips">Tips Tingkatkan Performa</string>
     <string name="power_merchant_max_score">/100</string>
     <string name="power_merchant_status_label">Status Power Merchant:</string>
@@ -59,6 +59,8 @@
     <string name="pm_desc_shop_score_term_new_seller_before_30_days">Proyeksi skor tokomu %s</string>
     <string name="pm_title_shop_score_term_new_seller_after_30_days"><![CDATA[Proyeksi Skor Toko: <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_desc_shop_score_term_new_seller_after_30_days">Batas min. skor 70</string>
+    <string name="pm_title_data_verification_term">Verifikasi data diri</string>
+    <string name="pm_desc_data_verification_term">Agar bisa jadi Power Merchant PRO</string>
 
     <string name="pm_kyc_verify_ktp">Verifikasi data diri dengan KTP</string>
     <string name="pm_kyc_verified">Data Diri Terverifikasi</string>
@@ -104,7 +106,7 @@
     <string name="pm_all_questionnaire_must_be_answered">Anda belum menjawab semua pertanyaan</string>
     <string name="pm_pro_number_of_order"><![CDATA[Produk Terjual: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_number_of_order"><![CDATA[Pesanan Selesai: <font color=\"%1$s\">%2$s</font>]]></string>
-    <string name="pm_number_of_minimum_order">Min. %1$s pesanan dalam 30 hari terakhir</string>
+    <string name="pm_number_of_minimum_order">Min. %1$s dalam 30 hari terakhir</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_niv_threshold_term">Min. %1$s dalam 30 hari terakhir</string>
     <string name="pm_niv_threshold_term_membership">Target: min. %1$s dalam 90 hari terakhir</string>
@@ -176,7 +178,7 @@
     <string name="pm_power_merchant_step_pro_expert">Expert</string>
     <string name="pm_power_merchant_step_pro_ultimate">Ultimate</string>
     <string name="pm_fee_service">Biaya Layanan</string>
-    <string name="pm_learn_fee_service">Pelajari detail biaya per kategori</string>
+    <string name="pm_learn_fee_service">Lihat detail biaya per kategori</string>
 
     <string name="pm_active_shop_score_description">Batas min. skor %1$d</string>
 
