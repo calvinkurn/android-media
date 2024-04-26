@@ -40,9 +40,5 @@ data class ItemMissionWidgetUiModel(
     val isCarousel: Boolean,
 ) : ShortenVisitable by ItemShortenVisitable(ItemTwoSquareType.Mission.value) {
 
-    fun isProduct(): Boolean {
-        return tracker.productId.isNotBlank() && tracker.productId != "0"
-    }
-
     val impression = ImpressHolder()
 }
