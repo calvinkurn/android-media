@@ -2,11 +2,13 @@ package com.tokopedia.feedplus.presentation.manager
 
 import android.content.Context
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.content.test.util.assertFalse
 import com.tokopedia.content.test.util.assertTrue
 import com.tokopedia.feedplus.data.sharedpref.FeedTooltipPreferences
 import com.tokopedia.feedplus.presentation.model.FeedDate
 import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
 import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManagerImpl
 import com.tokopedia.unit.test.dispatcher.UnconfinedTestDispatchers
 import io.mockk.coEvery
@@ -48,7 +50,7 @@ class FeedTooltipManagerTest {
             context = mockContext,
             tooltipPreferences = tooltipPreferences,
             uiEventManager = uiEventManager,
-            dispatchers = dispatchers,
+            dispatchers = dispatchers
         )
     }
 
@@ -113,5 +115,24 @@ class FeedTooltipManagerTest {
         tooltipManager.clearTooltipEvent(eventId)
 
         coVerify(exactly = 1) { uiEventManager.clearEvent(eventId) }
+    }
+
+    @Test
+    fun `test feed tooltip category`() {
+        for (i in 1..31) {
+            val category = FeedSearchTooltipCategory.getByDay(i)
+
+            if (i <= 6) {
+                category.assertEqualTo(FeedSearchTooltipCategory.UserAffinity)
+            } else if (i <= 12) {
+                category.assertEqualTo(FeedSearchTooltipCategory.Creator)
+            } else if (i <= 18) {
+                category.assertEqualTo(FeedSearchTooltipCategory.Story)
+            } else if (i <= 24) {
+                category.assertEqualTo(FeedSearchTooltipCategory.Trending)
+            } else {
+                category.assertEqualTo(FeedSearchTooltipCategory.Promo)
+            }
+        }
     }
 }
