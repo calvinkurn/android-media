@@ -27,6 +27,7 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCUserPerso
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -86,6 +87,7 @@ class RechargeCCViewModelTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns true
 
         // when
         rechargeCCViewModel.getListBank("", 0)
@@ -158,6 +160,7 @@ class RechargeCCViewModelTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns true
 
         // when
         rechargeCCViewModel.getMenuDetail("", "169")
@@ -223,6 +226,7 @@ class RechargeCCViewModelTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns true
         // when
         rechargeCCViewModel.getPrefixes("", "169")
 

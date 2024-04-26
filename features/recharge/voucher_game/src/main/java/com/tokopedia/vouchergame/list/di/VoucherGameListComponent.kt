@@ -1,6 +1,5 @@
 package com.tokopedia.vouchergame.list.di
 
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.vouchergame.common.di.VoucherGameComponent
 import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
 import dagger.Component
