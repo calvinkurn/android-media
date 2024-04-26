@@ -214,7 +214,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         componentType
                         data {
                           linkType
-                          linkID
+                          link
                           ctaText
                           ctaLink
                           ratio
@@ -299,7 +299,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         imageUrl
                         desktopImageUrl
                         linkType
-                        linkID
+                        link
                         Name
                       }
                     }                 
