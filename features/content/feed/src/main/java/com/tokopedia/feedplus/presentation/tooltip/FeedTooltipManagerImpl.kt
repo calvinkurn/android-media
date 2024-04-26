@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedplus.data.sharedpref.FeedTooltipPreferences
 import com.tokopedia.feedplus.di.FeedMainScope
+import com.tokopedia.feedplus.presentation.model.FeedDate
 import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.kotlin.extensions.view.toDate
 import kotlinx.coroutines.delay
@@ -24,6 +25,8 @@ class FeedTooltipManagerImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : FeedTooltipManager {
 
+    private val currentDate = FeedDate.getCurrentDate()
+
     override val tooltipEvent: Flow<FeedTooltipEvent?>
         get() = uiEventManager.event
 
@@ -36,26 +39,23 @@ class FeedTooltipManagerImpl @Inject constructor(
          * 1. app displays the 4th content
          * 2. user hasn't seen the tooltip for a specific period in this month.
          */
-        if (contentPosition != 3) return false
+        if (contentPosition != 1) return false
 
-        val lastTimeShown = tooltipPreferences.getLastTimeSearchTooltipShown()
+        val lastTimeShownDate = tooltipPreferences.getLastTimeSearchTooltipShown()
 
-        if (lastTimeShown == 0L) return true
+        if (lastTimeShownDate.isEmpty) return true
+        if (lastTimeShownDate == currentDate) return false
 
-        val lastTimeShownCalendar = getCalendar(lastTimeShown.toDate())
-        val currentCalendar = getCalendar(System.currentTimeMillis().toDate())
-
-        val lastTimeShownCategory = FeedSearchTooltipCategory.getByDay(lastTimeShownCalendar.getDayOfMonth())
-        val currentCategory = FeedSearchTooltipCategory.getByDay(currentCalendar.getDayOfMonth())
+        val lastTimeShownCategory = FeedSearchTooltipCategory.getByDay(lastTimeShownDate.day)
+        val currentCategory = FeedSearchTooltipCategory.getByDay(currentDate.day)
 
         if (lastTimeShownCategory != currentCategory) return true
 
-        return currentCalendar.getMonth() != lastTimeShownCalendar.getMonth() || currentCalendar.getYear() != lastTimeShownCalendar.getYear()
+        return lastTimeShownDate.month != currentDate.month || lastTimeShownDate.year != currentDate.year
     }
 
     override suspend fun showTooltipEvent() {
-        val currentCalendar = getCalendar(System.currentTimeMillis().toDate())
-        val currentCategory = FeedSearchTooltipCategory.getByDay(currentCalendar.getDayOfMonth())
+        val currentCategory = FeedSearchTooltipCategory.getByDay(currentDate.day)
 
         uiEventManager.emitEvent(FeedTooltipEvent.ShowTooltip(context.getString(currentCategory.text)))
 
@@ -65,29 +65,11 @@ class FeedTooltipManagerImpl @Inject constructor(
     }
 
     override fun setHasShownTooltip() {
-        tooltipPreferences.setLastTimeSearchTooltipShown(System.currentTimeMillis())
+        tooltipPreferences.setLastTimeSearchTooltipShown(currentDate)
     }
 
     override suspend fun clearTooltipEvent(id: Long) {
         uiEventManager.clearEvent(id)
-    }
-
-    private fun getCalendar(date: Date): Calendar {
-        return Calendar.getInstance().apply {
-            time = date
-        }
-    }
-
-    private fun Calendar.getDayOfMonth(): Int {
-        return get(Calendar.DAY_OF_MONTH)
-    }
-
-    private fun Calendar.getMonth(): Int {
-        return get(Calendar.MONTH)
-    }
-
-    private fun Calendar.getYear(): Int {
-        return get(Calendar.YEAR)
     }
 
     companion object {

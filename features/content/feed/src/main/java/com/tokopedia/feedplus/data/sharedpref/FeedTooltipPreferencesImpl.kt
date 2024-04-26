@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.data.sharedpref
 import android.content.Context
 import androidx.core.content.edit
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.feedplus.presentation.model.FeedDate
 import javax.inject.Inject
 
 /**
@@ -14,13 +15,13 @@ class FeedTooltipPreferencesImpl @Inject constructor(
 
     private val sharedPref = context.getSharedPreferences(FEED_TOOLTIP_PREFERENCES, Context.MODE_PRIVATE)
 
-    override fun getLastTimeSearchTooltipShown(): Long {
-        return sharedPref.getLong(KEY_LAST_TIME_SEARCH_TOOLTIP_SHOWN, 0L)
+    override fun getLastTimeSearchTooltipShown(): FeedDate {
+        return FeedDate(sharedPref.getString(KEY_LAST_TIME_SEARCH_TOOLTIP_SHOWN, "").orEmpty())
     }
 
-    override fun setLastTimeSearchTooltipShown(timeMillis: Long) {
+    override fun setLastTimeSearchTooltipShown(date: FeedDate) {
         sharedPref.edit(true) {
-            putLong(KEY_LAST_TIME_SEARCH_TOOLTIP_SHOWN, timeMillis)
+            putString(KEY_LAST_TIME_SEARCH_TOOLTIP_SHOWN, date.date)
         }
     }
 
