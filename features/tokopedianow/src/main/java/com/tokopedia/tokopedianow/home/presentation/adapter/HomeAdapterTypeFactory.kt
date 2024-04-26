@@ -65,7 +65,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemShimmeringUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
@@ -94,7 +93,6 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestTitleVie
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSwitcherViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemShimmeringViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.HomeClaimCouponWidgetItemListener
@@ -123,7 +121,6 @@ class HomeAdapterTypeFactory(
     private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocListener? = null,
     private val homeQuestSequenceWidgetListener: HomeQuestSequenceWidgetListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
-    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
     private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
     private val playWidgetCoordinator: PlayWidgetCoordinator? = null,
@@ -175,7 +172,6 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeQuestWidgetUiModel): Int = HomeQuestWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestTitleUiModel): Int = HomeQuestTitleViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int = HomeQuestAllClaimedWidgetViewHolder.LAYOUT
-    override fun type(uiModel: HomeSwitcherUiModel): Int = HomeSwitcherViewHolder.LAYOUT
     override fun type(uiModel: HomeLeftCarouselAtcUiModel): Int = HomeLeftCarouselAtcViewHolder.LAYOUT
     override fun type(uiModel: HomePlayWidgetUiModel): Int = HomePlayWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeClaimCouponWidgetItemUiModel): Int = HomeClaimCouponWidgetItemViewHolder.LAYOUT
@@ -230,7 +226,6 @@ class HomeAdapterTypeFactory(
             HomeQuestWidgetViewHolder.LAYOUT -> HomeQuestWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
-            HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
             HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(
                 itemView = view,
                 homeLeftCarouselAtcCallback = homeLeftCarouselAtcListener,
