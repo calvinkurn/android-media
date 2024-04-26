@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -18,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.generateTheme
@@ -242,6 +245,7 @@ class PartialButtonActionView private constructor(
 
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
         renderTopChat(unavailableButton)
+        buttonListener.onButtonsShowed(cartTypeData?.availableButtons.orEmpty().take(2))
     }
 
     private fun renderNormalButtonCartRedirection() = with(binding) {

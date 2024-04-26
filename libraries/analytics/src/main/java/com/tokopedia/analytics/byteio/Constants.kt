@@ -213,6 +213,12 @@ object EventName {
     const val SLIDE_BAR = "tiktokec_slide_bar"
     const val CART_ENTRANCE_SHOW = "tiktokec_cart_entrance_show"
     const val CART_ENTRANCE_CLICK = "tiktokec_cart_entrance_click"
+
+    //region https://bytedance.sg.larkoffice.com/sheets/YVaGsNyMfhqbjzt7HJvlH4FIgof
+    const val PDP_BUTTON_SHOW = "tiktokec_button_show"
+    const val PDP_BUTTON_CLICK = "tiktokec_button_click"
+    const val PDP_BUTTON_CLICK_COMPLETED = "tiktokec_confirm_sku"
+    //endregion
 }
 
 object ActionType {
@@ -264,4 +270,57 @@ object AppLogParam {
     val ENTER_METHOD_SEE_MORE
         get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"
+    const val SOURCE_CONTENT_ID = "source_content_id"
+}
+
+data class ButtonShowAnalyticData(
+    val buttonName: ButtonName,
+    val productId: String,
+    val isSingleSku: Boolean,
+    val buyType: BuyType
+) {
+    enum class ButtonName(val value: String) {
+        BUY_NOW("buy now")
+    }
+
+    enum class BuyType(val value: Int) {
+        OCS(3)
+    }
+}
+
+data class ButtonClickAnalyticData(
+    val buttonName: ButtonName,
+    val productId: String,
+    val isSingleSku: Boolean,
+    val buyType: BuyType
+) {
+    enum class ButtonName(val value: String) {
+        BUY_NOW("buy now")
+    }
+
+    enum class BuyType(val value: Int) {
+        OCS(3)
+    }
+}
+
+data class ButtonClickCompletedAnalyticData(
+    val productId: String,
+    val isSingleSku: Boolean,
+    val skuId: String,
+    val quantity: String,
+    val productType: ProductType,
+    val originalPrice: String,
+    val salePrice: String,
+    val followStatus: FollowStatus,
+    val buyType: BuyType,
+    val cartId: String,
+) {
+    enum class FollowStatus(val value: Int) {
+        UNFOLLOWED(0),
+        FOLLOWED(3)
+    }
+
+    enum class BuyType(val value: Int) {
+        OCS(3)
+    }
 }

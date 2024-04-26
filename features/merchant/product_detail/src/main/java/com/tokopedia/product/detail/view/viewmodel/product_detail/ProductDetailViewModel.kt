@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -8,6 +7,9 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.analytics.byteio.ButtonClickAnalyticData
+import com.tokopedia.analytics.byteio.ButtonClickCompletedAnalyticData
+import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -598,6 +600,58 @@ class ProductDetailViewModel @Inject constructor(
             salePrice = data?.finalPrice.orZero(),
             skuId = data?.basic?.productID.orEmpty(),
             addSkuNum = data?.basic?.minOrder.orZero(),
+        )
+    }
+
+    fun getStickyButtonShowTrackData(cartType: String): ButtonShowAnalyticData? {
+        return ButtonShowAnalyticData(
+            buttonName = when (cartType) {
+                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.ButtonName.BUY_NOW
+                else -> return null
+            },
+            productId = getProductInfoP1?.parentProductId ?: return null,
+            isSingleSku = isSingleSku,
+            buyType = when (cartType) {
+                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.BuyType.OCS
+                else -> return null
+            }
+        )
+    }
+
+    fun getStickyButtonClickTrackData(cartType: String): ButtonClickAnalyticData? {
+        return ButtonClickAnalyticData(
+            buttonName = when (cartType) {
+                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonClickAnalyticData.ButtonName.BUY_NOW
+                else -> return null
+            },
+            productId = getProductInfoP1?.parentProductId ?: return null,
+            isSingleSku = isSingleSku,
+            buyType = when (cartType) {
+                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonClickAnalyticData.BuyType.OCS
+                else -> return null
+            }
+        )
+    }
+
+    fun getStickyButtonClickCompletedTrackData(buttonActionType: Int, cartData: AddToCartDataModel): ButtonClickCompletedAnalyticData? {
+        return ButtonClickCompletedAnalyticData(
+            productId = getProductInfoP1?.parentProductId ?: return null,
+            isSingleSku = isSingleSku,
+            skuId = cartData.data.productId,
+            quantity = cartData.data.quantity.toString(),
+            productType = getProductInfoP1?.productType ?: return null,
+            originalPrice = getProductInfoP1?.originalPrice.orZero().toString(),
+            salePrice = getProductInfoP1?.finalPrice.orZero().toString(),
+            followStatus = if (p2Login.value?.isFollow.orZero() == 0) {
+                ButtonClickCompletedAnalyticData.FollowStatus.UNFOLLOWED
+            } else {
+                ButtonClickCompletedAnalyticData.FollowStatus.FOLLOWED
+            },
+            buyType = when (buttonActionType) {
+                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickCompletedAnalyticData.BuyType.OCS
+                else -> return null
+            },
+            cartId = cartData.data.cartId
         )
     }
 

@@ -108,6 +108,8 @@ class PartialAtcButtonView private constructor(
         val availableButton = cartRedirectionData?.availableButtons ?: listOf()
         val unavailableButton = cartRedirectionData?.unavailableButtons ?: listOf()
 
+        buttonListener.onButtonShowed(availableButton.map { it.cartType }.take(2))
+
         btnChat?.run {
             shouldShowWithAction(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton) {
                 setOnClickListener {
@@ -191,6 +193,7 @@ class PartialAtcButtonView private constructor(
 interface PartialAtcButtonListener {
     fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
     fun onChatButtonClick()
+    fun onButtonShowed(buttonCartTypes: List<String>)
 
     // Listener for fallback button
     fun addToCartClick(buttonText: String)

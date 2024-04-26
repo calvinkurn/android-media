@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +38,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
-import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -525,6 +523,7 @@ class AtcVariantBottomSheet :
                 when (it) {
                     is Success -> {
                         onSuccessTransaction(it.data)
+                        trackOnButtonClickCompleted(it.data)
                         dismissAfterAtc()
                     }
 
@@ -887,6 +886,10 @@ class AtcVariantBottomSheet :
         goToTopChat()
     }
 
+    override fun onButtonShowed(buttonCartTypes: List<String>) {
+        trackOnButtonsShowed(buttonCartTypes)
+    }
+
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         val productIdPreviousPage = sharedViewModel.aggregatorParams.value?.productId ?: ""
@@ -1023,6 +1026,8 @@ class AtcVariantBottomSheet :
             if (openShipmentBottomSheetWhenError()) return@let
 
             showWaitingIndicator(action = buttonAction)
+
+            trackOnButtonClick(buttonAction)
 
             viewModel.hitAtc(
                 buttonAction,
@@ -1290,6 +1295,25 @@ class AtcVariantBottomSheet :
 
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
         }
+    }
+
+    private fun trackOnButtonsShowed(buttonCartTypes: List<String>) {
+        buttonCartTypes.forEach(::trackOnButtonShowed)
+    }
+
+    private fun trackOnButtonShowed(cartType: String) {
+        val analyticData = viewModel.getStickyButtonShowTrackData(cartType) ?: return
+        AppLogPdp.sendButtonShow(analyticData)
+    }
+
+    private fun trackOnButtonClick(buttonAction: Int) {
+        val analyticData = viewModel.getStickyButtonClickTrackData(buttonAction = buttonAction) ?: return
+        AppLogPdp.sendButtonClick(analyticData)
+    }
+
+    private fun trackOnButtonClickCompleted(data: AddToCartDataModel) {
+        val analyticData = viewModel.getStickyButtonClickCompletedTrackData(buttonActionType, data) ?: return
+        AppLogPdp.sendButtonClickCompleted(analyticData)
     }
 }
 

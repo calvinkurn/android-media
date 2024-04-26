@@ -5,6 +5,7 @@ import android.app.Application
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
+import com.tokopedia.analytics.byteio.AppLogParam.AUTHOR_ID
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
@@ -14,6 +15,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_CONTENT_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
@@ -134,6 +136,7 @@ object AppLogAnalytics {
             it.addSourceModulePdp()
 //            it.addEnterMethod()
             it.addEnterMethodPdp()
+            it.addSourceContentId()
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
@@ -210,6 +213,10 @@ object AppLogAnalytics {
             getLastDataBeforeCurrent(ENTER_METHOD)
         else getLastData(ENTER_METHOD)
         put(ENTER_METHOD, enterMethod)
+    }
+
+    internal fun JSONObject.addSourceContentId() {
+        put(SOURCE_CONTENT_ID, getLastData(SOURCE_CONTENT_ID))
     }
 
     fun lastTwoIsHavingHash(hash: Int): Boolean {

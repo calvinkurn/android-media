@@ -157,6 +157,7 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantR
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -3492,6 +3493,8 @@ open class ProductDetailFragment :
             return
         }
 
+        trackOnButtonClickCompleted(result)
+
         when (buttonActionType) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 if (result.data.success == 0) {
@@ -4884,6 +4887,7 @@ open class ProductDetailFragment :
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         viewModel.buttonActionText = buttonText
         val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
+        trackOnButtonClick(cartType)
         doAtc(atcKey)
     }
 
@@ -4899,6 +4903,10 @@ open class ProductDetailFragment :
         }
         actionButtonView.showLoading()
         viewModel.deleteProductInCart(viewModel.getProductInfoP1?.basic?.productID ?: "")
+    }
+
+    override fun onButtonsShowed(buttons: List<AvailableButton>) {
+        trackOnButtonsShowed(buttons)
     }
 
     override fun updateQuantityNonVarTokoNow(
@@ -6450,5 +6458,24 @@ open class ProductDetailFragment :
         bundle.keySet().forEach {
             affiliateSubIds!![it] = bundle.getString(it, "")
         }
+    }
+
+    private fun trackOnButtonsShowed(buttons: List<AvailableButton>) {
+        buttons.forEach(::trackOnButtonShowed)
+    }
+
+    private fun trackOnButtonShowed(button: AvailableButton) {
+        val analyticData = viewModel.getStickyButtonShowTrackData(button.cartType) ?: return
+        AppLogPdp.sendButtonShow(analyticData)
+    }
+
+    private fun trackOnButtonClick(cartType: String) {
+        val analyticData = viewModel.getStickyButtonClickTrackData(cartType = cartType) ?: return
+        AppLogPdp.sendButtonClick(analyticData)
+    }
+
+    private fun trackOnButtonClickCompleted(cartData: AddToCartDataModel) {
+        val analyticData = viewModel.getStickyButtonClickCompletedTrackData(buttonActionType, cartData) ?: return
+        AppLogPdp.sendButtonClickCompleted(analyticData)
     }
 }

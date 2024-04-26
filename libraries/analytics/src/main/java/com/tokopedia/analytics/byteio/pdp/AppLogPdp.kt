@@ -24,8 +24,11 @@ import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.ButtonClickAnalyticData
+import com.tokopedia.analytics.byteio.ButtonClickCompletedAnalyticData
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
+import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.SubmitOrderResult
 import com.tokopedia.analytics.byteio.TAG
@@ -218,6 +221,52 @@ object AppLogPdp {
             it.put("sku_id", model.skuId)
         })
     }
+
+    //region https://bytedance.sg.larkoffice.com/sheets/YVaGsNyMfhqbjzt7HJvlH4FIgof
+    fun sendButtonShow(analyticData: ButtonShowAnalyticData) {
+        AppLogAnalytics.send(EventName.PDP_BUTTON_SHOW, JSONObject().apply {
+            addPage()
+            addEntranceInfo()
+            put("button_name", analyticData.buttonName.value)
+            put("product_id", analyticData.productId)
+            put("is_single_sku", analyticData.isSingleSku.intValue)
+            put("buy_type", analyticData.buyType.value)
+        })
+    }
+
+    fun sendButtonClick(analyticData: ButtonClickAnalyticData) {
+        AppLogAnalytics.send(EventName.PDP_BUTTON_CLICK, JSONObject().apply {
+            addPage()
+            addEntranceInfo()
+            put("button_name", analyticData.buttonName.value)
+            put("product_id", analyticData.productId)
+            put("is_single_sku", analyticData.isSingleSku.intValue)
+            put("buy_type", analyticData.buyType.value)
+        })
+    }
+
+    fun sendButtonClickCompleted(analyticData: ButtonClickCompletedAnalyticData) {
+        AppLogAnalytics.send(EventName.PDP_BUTTON_CLICK_COMPLETED, JSONObject().apply {
+            addPage()
+            addEntranceForm()
+            addTrackId()
+            addSourcePageType()
+            addEnterFromInfo()
+            addEntranceInfo()
+            put(AppLogParam.AUTHOR_ID, getLastData(AppLogParam.AUTHOR_ID))
+            put("product_id", analyticData.productId)
+            put("is_single_sku", analyticData.isSingleSku.intValue)
+            put("sku_id", analyticData.skuId)
+            put("quantity", analyticData.quantity)
+            put("product_type", analyticData.productType.type)
+            put("original_price", analyticData.originalPrice)
+            put("sale_price", analyticData.salePrice)
+            put("follow_status", analyticData.followStatus.value)
+            put("buy_type", analyticData.buyType.value)
+            put("cart_id", analyticData.buyType.value)
+        })
+    }
+    //endregion
 
     fun sendSubmitOrderResult(buyType: String, model: SubmitOrderResult) {
         AppLogAnalytics.send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
