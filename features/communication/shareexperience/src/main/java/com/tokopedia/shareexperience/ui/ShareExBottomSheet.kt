@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
 import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
@@ -43,6 +43,7 @@ import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import com.tokopedia.shareexperience.ui.util.ShareExMediaCleanupStorageWorker
 import com.tokopedia.shareexperience.ui.util.copyTextToClipboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
@@ -212,7 +213,10 @@ class ShareExBottomSheet :
 
     private suspend fun observeShortLinkUiState() {
         viewModel.channelIntentUiState.collect {
-            viewBinding?.shareexLayoutLoading?.showWithCondition(it.isLoading)
+            if (it.isLoading) {
+                viewBinding?.shareexLayoutLoading?.show()
+                viewBinding?.shareexLoader?.type = LoaderUnify.TYPE_CIRCULAR
+            }
             /**
              * If loading, then do nothing
              * If error then do logging

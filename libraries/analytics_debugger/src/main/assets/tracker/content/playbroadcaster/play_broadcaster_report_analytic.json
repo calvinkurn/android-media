@@ -1,0 +1,116 @@
+{
+  "readme": "Play Broadcaster - Beautification Analytic",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - estimasi pendapatan coachmark",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50351|50374)"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - top area",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50352|50375)"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - information bottomsheet",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50353|50376)"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - estimasi pendapatan card bottomsheet",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50354|50377)"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - estimasi pendapatan icon",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50355|50378)"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - estimasi pendapatan bottomsheet",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50356|50379)"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - estimasi pendapatan info icon bottomsheet",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50357|50380)"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - estimasi pendapatan explanation bottomsheet",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50358|50381)"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - estimasi pendapatan error bottomsheet",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50359|50382)"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - estimasi pendapatan icon card",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - .* - .* - (user|seller)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "(50360|50383)"
+    }
+  ]
+}

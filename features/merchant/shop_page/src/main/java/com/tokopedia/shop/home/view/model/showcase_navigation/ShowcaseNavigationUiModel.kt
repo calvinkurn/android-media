@@ -16,6 +16,7 @@ data class ShowcaseNavigationUiModel(
         viewAllCtaAppLink = "",
         cornerShape = ShowcaseCornerShape.ROUNDED_CORNER
     ),
+    var lastTabIndexSelected: Int = 0,
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetNameEnum.SHOWCASE_NAVIGATION_BANNER.value,
