@@ -46,6 +46,7 @@ import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -397,6 +398,7 @@ open class ProductDetailFragment :
 
         private const val DEBOUNCE_CLICK = 750
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
+        private const val FPS_TRACER_PDP = "Product Detail Scene"
 
         fun newInstance(
             productId: String? = null,
@@ -691,6 +693,8 @@ open class ProductDetailFragment :
 
         setPDPDebugMode()
         trackVerticalScroll()
+
+        getRecyclerView()?.bindFpsTracer(FPS_TRACER_PDP)
     }
 
     private fun onClickDynamicOneLinerPromo() {

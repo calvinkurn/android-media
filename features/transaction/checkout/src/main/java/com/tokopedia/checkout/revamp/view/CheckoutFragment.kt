@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -558,6 +559,13 @@ class CheckoutFragment :
                 }
 
                 is CheckoutPageState.Success -> {
+
+                    val appID = MSSDK_APPID
+                    val mgr = MSManagerUtils.get(appID)
+                    mgr?.let {
+                        mgr.report(MSSDK_CHECKOUT)
+                    }
+
                     hideLoading()
                     updateLocalCacheAddressData(it.cartShipmentAddressFormData.groupAddress.first().userAddress)
                     binding.globalErrorCheckout.isVisible = false
@@ -2993,6 +3001,9 @@ class CheckoutFragment :
     }
 
     companion object {
+
+        private const val MSSDK_APPID: String = "573733"
+        private const val MSSDK_CHECKOUT: String = "checkout"
 
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
 
