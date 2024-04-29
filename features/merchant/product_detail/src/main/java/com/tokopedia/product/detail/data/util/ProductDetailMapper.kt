@@ -1302,6 +1302,7 @@ object ProductDetailMapper {
             stockWording = data.stock.stockWording,
             isVariant = data.variant.isVariant,
             productName = data.name,
+            productNameCollapsed= true,
             isShowPrice = data.isShowPrice
         )
         return OngoingCampaignUiModel(

@@ -4,9 +4,9 @@ import com.tokopedia.inbox.universalinbox.stub.common.util.AndroidFileUtil
 import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMiscMapper
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder.Companion.DIMEN_ID
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
-import com.tokopedia.topads.sdk.TopAdsConstants
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import javax.inject.Inject
 
 class UniversalInboxMiscMapperStub @Inject constructor() : UniversalInboxMiscMapper() {
@@ -25,10 +25,10 @@ class UniversalInboxMiscMapperStub @Inject constructor() : UniversalInboxMiscMap
 
     private fun mapToTopAdsViewModel(
         responseBanner: TopAdsBannerResponse
-    ): List<TopAdsImageViewModel> {
-        val list = ArrayList<TopAdsImageViewModel>()
+    ): List<TopAdsImageUiModel> {
+        val list = ArrayList<TopAdsImageUiModel>()
         responseBanner.topadsDisplayBannerAdsV3.bannerListData?.forEach { data ->
-            val model = TopAdsImageViewModel()
+            val model = TopAdsImageUiModel()
             val image = getImageById(data.banner?.images)
             with(model) {
                 bannerId = data.id
