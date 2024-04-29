@@ -5,7 +5,6 @@ import android.widget.Toast
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
-import com.tokopedia.config.GlobalConfig
 
 object AppLogFirstTrackId {
 
@@ -104,15 +103,13 @@ object AppLogFirstTrackId {
     }
 
     fun showToast(activity: Activity) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            if (_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) == PageName.PDP) {
-                Toast.makeText(
-                    activity.applicationContext,
-                    "First Track Id = $firstTrackId\n" +
-                        "First Page Source = $firstSourcePage",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        if (_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) == PageName.PDP) {
+            Toast.makeText(
+                activity.applicationContext,
+                "First Track Id = $firstTrackId\n" +
+                    "First Page Source = $firstSourcePage",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
