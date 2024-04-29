@@ -395,29 +395,13 @@ class ProfileInfoTracker @Inject constructor() {
 
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4103
-    // Tracker ID: 45544
-    fun sendClickOnGotoProfileEntryPointEvent() {
-        Tracker.Builder()
-            .setEvent(EVENT_CLICK_ACCOUNT_IRIS)
-            .setEventAction(ACTION_CLICK_GOTO_PROFILE_ENTRY_POINT)
-            .setEventCategory(CATEGORY_INFO_PROFILE)
-            .setEventLabel("")
-            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45544)
-            .setBusinessUnit(BUSSINESS_UNIT)
-            .setCurrentSite(CURRENT_SITE)
-            .build()
-            .send()
-    }
-
-
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4103
     // Tracker ID: 45929
-    fun sendViewOnInfoProfilePageEvent (eventLabel: String) {
+    fun sendViewOnInfoProfilePageEvent () {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_ON_INFO_PROFILE_PAGE)
             .setEventCategory(CATEGORY_INFO_PROFILE)
-            .setEventLabel(eventLabel)
+            .setEventLabel("")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45929)
             .setBusinessUnit(BUSSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)
@@ -460,7 +444,6 @@ class ProfileInfoTracker @Inject constructor() {
         const val ACTION_CLOSE_BOTTOM_SHEET_CHANGE_BIRTHDAY = "close bottomsheet change birthday"
         const val ACTION_CLICK_LIHAT_HALAMAN = "click on button lihat halaman"
 
-        const val LABEL_M1 = "m1"
         const val LABEL_CLICK = "click"
         const val LABEL_SUCCESS = "success"
         const val LABEL_FAILED = "failed"
@@ -477,6 +460,7 @@ class ProfileInfoTracker @Inject constructor() {
         const val LABEL_PERSONAL_INFO = "info pribadi"
         const val LABEL_BOTTOMSHEET = "bottomsheet"
         const val LABEL_POPUP = "popup"
+        const val LABEL_ENTRY_POINT_APPLOG_DEVICE_ID = "applogdeviceid"
 
         const val BUSSINESS_UNIT = "user platform"
         const val CURRENT_SITE = "tokopediamarketplace"

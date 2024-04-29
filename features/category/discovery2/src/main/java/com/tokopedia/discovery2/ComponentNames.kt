@@ -27,8 +27,8 @@ enum class ComponentNames(val componentName: String) {
     TabsIconItem("tabs_icon_item"),
 
     // Tabs With Image or Text
-    TabsImage("tabs_image"),
-    TabsImageItem("tabs_image_item"),
+    PlainTab("plain_tab"),
+    PlainTabItem("tabs_image_item"),
 
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
@@ -172,5 +172,12 @@ enum class ComponentNames(val componentName: String) {
     ShopOfferHeroBrand("shop_offer_hero_brand"),
     ShopOfferHeroBrandProductItem("shop_offer_hero_brand_product_item"),
     ShopOfferSupportingBrand("shop_offer_supporting_brand"),
-    ShopOfferSupportingBrandItem("shop_offer_supporting_brand_item")
+    ShopOfferSupportingBrandItem("shop_offer_supporting_brand_item"),
+
+    AutomateCoupon("automate_coupon"),
+    SingleAutomateCoupon("single_automate_coupon"),
+    GridAutomateCoupon("grid_automate_coupon"),
+    GridAutomateCouponItem("grid_automate_coupon_item"),
+    CarouselAutomateCoupon("carousel_automate_coupon"),
+    CarouselAutomateCouponItem("carousel_automate_coupon_item")
 }

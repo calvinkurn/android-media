@@ -96,7 +96,6 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
                 false
             )
             adapter = showCaseAdapter
-            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
 
         showCaseAdapter.submit(showcases)

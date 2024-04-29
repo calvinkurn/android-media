@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingHorizontal="12dp"
+    android:textColor="@color/Unify_NN600"
+    app:typographyType="paragraph_3"
+    app:typographyWeight="reguler">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="@id/image_product"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_product" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_product"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toRightOf="@id/checkbox_product"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginTop="0dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_product_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/text_subsidy_status"
+        app:layout_constraintLeft_toRightOf="@id/image_product"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_product"
+        app:layout_constraintVertical_bias="0"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        tools:text="Product name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_variant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/text_subsidy_status"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="@id/text_product_name"
+        app:layout_constraintRight_toLeftOf="@id/vertical_divider"
+        app:layout_constraintTop_toTopOf="@id/text_subsidy_status"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        tools:text="Variant Name" />
+
+    <View
+        android:id="@+id/vertical_divider"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="6dp"
+        android:background="@drawable/sd_vertical_divider"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/text_subsidy_status"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/text_variant_name"
+        app:layout_constraintRight_toLeftOf="@id/text_subsidy_status"
+        app:layout_constraintTop_toTopOf="@id/text_subsidy_status"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        tools:text="Variant name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_subsidy_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toRightOf="@id/vertical_divider"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_product_name"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        tools:text="Disubsidi sebagian" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_product_price_discounted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@id/text_variant_name"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_subsidy_status"
+        app:layout_constraintVertical_bias="0"
+        app:typographyWeight="bold"
+        tools:text="Rp340.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        app:labelType="highlight_light_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="@id/text_product_price_discounted"
+        app:layout_constraintLeft_toRightOf="@id/text_product_price_discounted"
+        app:layout_constraintRight_toLeftOf="@id/text_product_price_original"
+        app:layout_constraintTop_toBottomOf="@id/text_product_price_discounted"
+        tools:text="25%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_product_price_original"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/label_discount"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/label_discount"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/label_discount"
+        app:typographyWeight="reguler"
+        tools:text="Rp340.000" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:backgroundTint="@color/Unify_NN200"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_discount"
+        app:layout_constraintVertical_bias="1" />
+</androidx.constraintlayout.widget.ConstraintLayout>

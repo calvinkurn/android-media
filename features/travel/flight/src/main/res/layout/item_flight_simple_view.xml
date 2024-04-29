@@ -40,6 +40,6 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_arrow_right_default"
+        app:srcCompat="@drawable/common_ic_arrow_right_default"
         tools:visibility="visible" />
 </LinearLayout>

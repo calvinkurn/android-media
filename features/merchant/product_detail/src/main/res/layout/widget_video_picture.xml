@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_pager_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -23,14 +22,39 @@
         app:layout_constraintBottom_toBottomOf="@+id/pdp_view_pager"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.product.detail.view.widget.AutoCollapseLabel
-        android:id="@+id/txt_anim_label_recommendation"
+    <ViewStub
+        android:id="@+id/txt_anim_label_recommendation_stub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout="@layout/widget_video_picture_label_anim"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@+id/pdp_view_pager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/txt_anim_label" />
+
+    <com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnailView
+        android:id="@+id/liveThumbnailView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintStart_toStartOf="@id/liveBadgeView"
+        app:layout_constraintEnd_toEndOf="@id/liveBadgeView"
+        app:layout_constraintBottom_toTopOf="@id/liveBadgeView" />
+
+    <com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
+        android:id="@+id/liveBadgeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/liveIndicatorGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="liveBadgeView, liveThumbnailView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

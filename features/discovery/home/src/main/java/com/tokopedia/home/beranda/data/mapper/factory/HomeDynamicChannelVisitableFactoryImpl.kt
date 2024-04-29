@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.mapper.ChannelModelMapper
+import com.tokopedia.home_component.mapper.CouponWidgetMapper
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
@@ -37,7 +38,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class HomeDynamicChannelVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
     val remoteConfig: RemoteConfig,
-    private val homeDefaultDataSource: HomeDefaultDataSource
 ) : HomeDynamicChannelVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
@@ -91,24 +91,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
         useDefaultWhenEmpty: Boolean,
         startPosition: Int
     ): HomeDynamicChannelVisitableFactory {
-        var dynamicChannelList = mutableListOf<DynamicHomeChannel.Channels>()
-        if ((
-                homeChannelData?.dynamicHomeChannel == null ||
-                    homeChannelData?.dynamicHomeChannel?.channels == null ||
-                    homeChannelData?.dynamicHomeChannel?.channels?.isEmpty() == true
-                ) && useDefaultWhenEmpty
-        ) {
-            homeDefaultDataSource
-            dynamicChannelList =
-                homeDefaultDataSource.createDefaultHomeDynamicChannel().channels as MutableList<DynamicHomeChannel.Channels>
-        } else if (homeChannelData?.dynamicHomeChannel?.channels?.isNotEmpty() == true) {
-            dynamicChannelList =
-                homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
-        }
-        dynamicChannelList.forEachIndexed { index, channel ->
+        homeChannelData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index + startPosition
             setDynamicChannelPromoName(position, channel)
-            if (channel.origami.isNotEmpty() && remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME, true)) {
+            if (channel.origami.isNotEmpty() && remoteConfig.getBoolean(
+                    RemoteConfigKey.ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME,
+                    true
+                )
+            ) {
                 createOrigamiChannel(channel, position)
                 return@forEachIndexed
             }
@@ -272,12 +262,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_RELEASE_REVAMP -> {
                     createSpecialReleaseRevamp(channel, position)
                 }
-
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_SHOP_FLASH_SALE -> {
                     createShopFlashSale(channel, position)
                 }
+
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_3_AUTO -> {
                     createLego3Auto(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_COUPON_WIDGET -> {
+                    createCouponWidget(channel, position)
                 }
             }
         }
@@ -294,11 +287,24 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 OrigamiSDUIDataModel(
                     channel.origami,
                     channel.id,
-                    mappingCampaignWidgetComponent(channel, isCache, position) as? CampaignWidgetDataModel
+                    mappingCampaignWidgetComponent(
+                        channel,
+                        isCache,
+                        position
+                    ) as? CampaignWidgetDataModel
                 )
             )
-        }else{
-            visitableList.add(OrigamiSDUIDataModel(channel.origami, channel.id))
+        } else {
+            visitableList.add(
+                OrigamiSDUIDataModel(
+                    channel.origami,
+                    channel.id,
+                    channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                        channel,
+                        position
+                    )
+                )
+            )
         }
     }
 
@@ -315,8 +321,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 )
             )
         )
-        if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty() &&
-            !HomeComponentFeatureFlag.isUsingNewLegoTracking(remoteConfig)) {
+        if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
+                .isNotEmpty() &&
+            !HomeComponentFeatureFlag.isUsingNewLegoTracking(remoteConfig)
+        ) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
@@ -1148,6 +1156,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 )
             )
         }
+    }
+
+    private fun createCouponWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val model = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        visitableList.add(CouponWidgetMapper.map(model))
     }
 
     private fun createTodoWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {

@@ -8,21 +8,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
-import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
-import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
-import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.databinding.BottomSheetUserProductPickerBinding
 import com.tokopedia.content.product.picker.seller.model.PriceUnknown
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
-import com.tokopedia.content.product.picker.databinding.BottomSheetUserProductPickerBinding
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +34,7 @@ import javax.inject.Inject
  */
 class ProductPickerUserBottomSheet @Inject constructor(
     private val dialogCustomizer: ContentDialogCustomizer,
-    private val analytic: ContentProductTagAnalytic,
+    private val analytic: ContentProductTagAnalytic
 ) : BaseProductSetupBottomSheet() {
 
     private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.content_product_picker_50_dp) ?: 0 }
@@ -62,7 +63,7 @@ class ProductPickerUserBottomSheet @Inject constructor(
                             commission = 0L,
                             extraCommission = false,
                             pinStatus = PinProductUiModel.Empty,
-                            number = "",
+                            number = ""
                         )
                     }
                 )
@@ -220,8 +221,11 @@ class ProductPickerUserBottomSheet @Inject constructor(
                     is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = it.error.message,
-                            bottomMargin = offsetToaster
+                            bottomMargin = offsetToaster,
+                            customErrMessage = requireContext().getCustomErrorMessage(
+                                throwable = it.error,
+                                defaultMessage = getString(R.string.product_chooser_error_save)
+                            )
                         )
                     }
                     else -> {}

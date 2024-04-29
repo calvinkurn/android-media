@@ -106,3 +106,7 @@ inline fun <reified T> Any.assertType(
 
     whenType(this as T)
 }
+
+infix fun <T : Any> T.equalTo(expected: T) {
+    this.assertEqualTo(expected)
+}

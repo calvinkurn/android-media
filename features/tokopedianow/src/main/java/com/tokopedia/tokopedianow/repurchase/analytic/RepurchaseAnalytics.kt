@@ -59,7 +59,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getEco
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.hitCommonTracker
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_ADD_TO_CART
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_DATE_FILTER
@@ -488,7 +488,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
 
         val dataLayer = createGeneralDataLayer(
             event = EVENT_ADD_TO_CART,
-            action = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_ADD_TO_CART,
+            action = CategoryTracking.Action.EVENT_ACTION_CLICK_ADD_TO_CART,
             label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
             userId = userId
         ).apply {
@@ -511,7 +511,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     ) {
         val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_GROCERIES,
-            action = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET,
+            action = CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET,
             label = "$warehouseId - $productIdTriggered",
             userId = userId
         ).apply {
@@ -531,7 +531,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     ) {
         val dataLayer = createGeneralDataLayer(
             event = TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES,
-            action = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE,
+            action = CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE,
             label = "$warehouseId - $productIdTriggered",
             userId = userId
         ).apply {

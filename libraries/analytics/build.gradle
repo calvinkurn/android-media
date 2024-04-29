@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -31,8 +31,10 @@ dependencies {
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp
     }
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -60,12 +62,35 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
-    testImplementation rootProject.ext.testDependencies.mockitorCore
+
+    // applog
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
+    implementation rootProject.ext.appLogDependencies.sampling
+    implementation rootProject.ext.appLogDependencies.compress
+    implementation rootProject.ext.appLogDependencies.monitor
+    implementation rootProject.ext.appLogDependencies.encrypt
+    implementation rootProject.ext.appLogDependencies.baseLibsUtility
+    implementation rootProject.ext.appLogDependencies.businessALog
+    implementation rootProject.ext.appLogDependencies.androidALog
+    implementation rootProject.ext.appLogDependencies.bdNetworkTag
+    debugImplementation rootProject.ext.appLogDependencies.bdTrackerEtVerify // debugOnly
+
+    // ttnet
+    implementation rootProject.ext.ttnetDependencies.chromiumCronet
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.ttnetDependencies.boringSsl
+    implementation rootProject.ext.ttnetDependencies.cppShared
+
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.json
+    testImplementation rootProject.ext.testDependencies.mockk
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+
+    implementation rootProject.ext.slardarDependencies.commonMonitor
 }
 
 project.ext {

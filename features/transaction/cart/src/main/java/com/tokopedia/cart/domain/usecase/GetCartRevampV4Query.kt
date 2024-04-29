@@ -145,6 +145,7 @@ const val CART_REVAMP_V4_QUERY =
                   }
                   group_shop_v2_cart {
                     cart_string_order
+                    order_metadata
                     shop {
                       shop_ticker
                       maximum_weight_wording
@@ -260,6 +261,7 @@ const val CART_REVAMP_V4_QUERY =
                         }
                       }
                       products {
+                          product_metadata
                           add_ons_product {
                             data {
                                 id
@@ -412,6 +414,28 @@ const val CART_REVAMP_V4_QUERY =
                           variant_description
                         }
                         bundle_ids
+                        product_label {
+                          label_type
+                          label_detail {
+                            timer {
+                              expired_time
+                              server_time
+                            }
+                            asset_label {
+                              image_asset {
+                                image_label
+                              }
+                              text_asset {
+                                square_icon
+                                label
+                                font_color
+                                background_start_color
+                                background_end_color
+                                line_color
+                              }
+                            }
+                          }
+                        }
                       }
                       errors
                       messages

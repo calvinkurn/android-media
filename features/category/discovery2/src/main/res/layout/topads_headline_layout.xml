@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+    <com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
         android:id="@+id/topads_headline_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

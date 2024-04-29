@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.orderextension.presentation.bottomsheet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +22,6 @@ import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensio
 import com.tokopedia.sellerorder.orderextension.presentation.util.SingleClick.doSomethingBeforeTime
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import java.util.*
 
 class SomBottomSheetOrderExtensionRequest(
@@ -88,12 +86,6 @@ class SomBottomSheetOrderExtensionRequest(
         if (data.completed) {
             super.dismiss()
         } else {
-            (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
-                BOTTOM_SHEET_GAP_DEFAULT.toPx(),
-                Int.ZERO,
-                BOTTOM_SHEET_GAP_DEFAULT.toPx(),
-                BOTTOM_SHEET_GAP_DEFAULT.toPx()
-            )
             super.show()
         }
     }

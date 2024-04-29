@@ -32,6 +32,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.QUERY_PARAM_WA
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.list.view.PaymentListingActivity
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
@@ -84,7 +86,6 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -120,7 +121,6 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivit
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
-import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
@@ -514,9 +514,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-            RemoteConfigInstance.getInstance().abTestPlatform
-        ).isRevamp()
+        viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager().isRevamp()
         viewModel.usePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
             RemoteConfigInstance.getInstance().abTestPlatform
         ).enableNewInterface()
@@ -894,15 +892,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     handleAtcError(it)
                 }
                 is OccGlobalEvent.AtcSuccess -> {
-                    progressDialog?.dismiss()
-                    binding.loaderContent.animateGone()
-                    view?.let { v ->
-                        if (it.message.isNotBlank()) {
-                            Toaster.build(v, it.message).show()
+                    if (it.shouldGoToCheckoutPage) {
+                        goToCheckoutPage(it)
+                    } else {
+                        progressDialog?.dismiss()
+                        binding.loaderContent.animateGone()
+                        view?.let { v ->
+                            if (it.message.isNotBlank()) {
+                                Toaster.build(v, it.message).show()
+                            }
                         }
+                        setSourceFromPDP()
+                        refresh()
                     }
-                    setSourceFromPDP()
-                    refresh()
                 }
                 is OccGlobalEvent.Prompt -> {
                     progressDialog?.dismiss()
@@ -1267,6 +1269,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         binding.globalError.animateShow()
     }
 
+    private fun goToCheckoutPage(atcSuccess: OccGlobalEvent.AtcSuccess) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+        intent.putExtra(CheckoutConstant.EXTRA_ATC_OCC_MESSAGE, atcSuccess.message)
+        startActivity(intent)
+        activity?.finish()
+    }
+
     private fun atcOcc(productIds: String) {
         viewModel.atcOcc(productIds)
     }
@@ -1486,8 +1495,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     }
 
     private fun getOrderProductCardListener(): OrderProductCard.OrderProductCardListener = object : OrderProductCard.OrderProductCardListener {
-        override fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean) {
-            viewModel.updateProduct(product, productIndex, shouldReloadRates)
+        override fun onProductChange(
+            product: OrderProduct,
+            productIndex: Int,
+            shouldReloadRates: Boolean,
+            shouldUpdateActionMetadata: Boolean
+        ) {
+            viewModel.updateProduct(product, productIndex, shouldReloadRates, shouldUpdateActionMetadata)
         }
 
         override fun forceUpdateCart() {

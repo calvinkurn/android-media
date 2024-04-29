@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.recipedetail.domain.model.TokoNowGetRecipe
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.BookmarkUiModel
@@ -49,6 +49,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
         onGetShopId_thenReturn(firstShopId, secondShopId)
         onGetWarehouseId_thenReturn(warehouseId)
+        onGetWarehouses_thenReturn(warehouses)
         onGetAddressData_thenReturn(addressResponse)
         onGetRecipe_thenReturn(response = recipeResponse)
 
@@ -59,7 +60,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         verifyGetRecipeUseCaseCalled(
             recipeId = recipeId,
             slug = slug,
-            warehouseId = warehouseId
+            warehouses = warehouses
         )
     }
 
@@ -102,6 +103,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
         onGetShopId_thenReturn(shopId)
         onGetWarehouseId_thenReturn(warehouseId)
+        onGetWarehouses_thenReturn(warehouses)
         onGetIsOutOfCoverage_thenReturn(outOfCoverage)
         onGetRecipe_thenReturn(response = recipeResponse)
         onGetIsLoggedIn_thenReturn(isLoggedIn = true)
@@ -225,7 +227,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         verifyGetRecipeUseCaseCalled(
             recipeId = recipeId,
             slug = slug,
-            warehouseId = warehouseId
+            warehouses = warehouses
         )
 
         viewModel.isBookmarked
@@ -260,6 +262,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
         onGetShopId_thenReturn(shopId)
         onGetWarehouseId_thenReturn(warehouseId)
+        onGetWarehouses_thenReturn(warehouses)
         onGetIsOutOfCoverage_thenReturn(outOfCoverage)
         onGetRecipe_thenReturn(response = recipeResponse)
         onGetIsLoggedIn_thenReturn(isLoggedIn = true)
@@ -382,7 +385,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         verifyGetRecipeUseCaseCalled(
             recipeId = recipeId,
             slug = slug,
-            warehouseId = warehouseId
+            warehouses = warehouses
         )
 
         viewModel.isBookmarked
@@ -415,6 +418,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
         onGetShopId_thenReturn(shopId)
         onGetWarehouseId_thenReturn(warehouseId)
+        onGetWarehouses_thenReturn(warehouses)
         onGetIsOutOfCoverage_thenReturn(outOfCoverage)
         onGetRecipe_thenReturn(response = recipeResponse)
 
@@ -463,7 +467,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         verifyGetRecipeUseCaseCalled(
             recipeId = recipeId,
             slug = slug,
-            warehouseId = warehouseId
+            warehouses = warehouses
         )
 
         viewModel.isBookmarked

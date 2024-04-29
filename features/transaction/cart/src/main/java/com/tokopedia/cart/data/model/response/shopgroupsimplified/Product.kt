@@ -94,5 +94,9 @@ data class Product(
         @SerializedName("bundle_ids")
         val bundleIds: List<String> = emptyList(),
         @SerializedName("add_ons_product")
-        val addOn: AddOn = AddOn()
+        val addOn: AddOn = AddOn(),
+        @SerializedName("product_metadata")
+        val productMetadata: String = "",
+        @SerializedName("product_label")
+        val productLabel: ProductLabel = ProductLabel()
 )

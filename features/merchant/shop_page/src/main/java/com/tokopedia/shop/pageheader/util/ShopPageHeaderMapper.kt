@@ -126,12 +126,22 @@ object ShopPageHeaderMapper {
         shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
     ): ShopPageColorSchema {
         return ShopPageColorSchema(
-            listColorSchema = listColorSchema.map {
-                ShopPageColorSchema.ColorSchema(
-                    it.name,
-                    it.type,
-                    getHexColor(it.name, it.value, shopPageColorSchemaDefaultConfigColor)
-                )
+            listColorSchema = if (listColorSchema.isEmpty()) {
+                shopPageColorSchemaDefaultConfigColor.map {
+                    ShopPageColorSchema.ColorSchema(
+                        it.key.value,
+                        "",
+                        it.value
+                    )
+                }
+            } else {
+                listColorSchema.map {
+                    ShopPageColorSchema.ColorSchema(
+                        it.name,
+                        it.type,
+                        getHexColor(it.name, it.value, shopPageColorSchemaDefaultConfigColor)
+                    )
+                }
             }
         )
     }
@@ -149,8 +159,8 @@ object ShopPageHeaderMapper {
     }
 
     /**
-     * This function check whether hexStringValue is formatted like #212121-20
-     * If it's match the format, then it will convert it to string hex with opacity (e.g. #33212121)
+     * This function check whether hexStringValue is formatted like 212121-20
+     * If it's match the format, then it will convert it to string hex with opacity (e.g. 33212121)
      * otherwise it will return current hexStringValue
      */
     private fun parseFormattedHexString(hexStringValue: String): String {

@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.DividerUnify
@@ -22,9 +22,9 @@ class OwocProductViewHolder(
     itemView: View?,
     private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
 ) : AbstractViewHolder<OwocProductListUiModel.ProductUiModel>(itemView),
-    BmgmAddOnViewHolder.Listener,
-    BmgmAddOnSummaryViewHolder.Delegate.Mediator,
-    BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
+    AddOnViewHolder.Listener,
+    AddOnSummaryViewHolder.Delegate.Mediator,
+    AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
     companion object {
         val LAYOUT = R.layout.item_owoc_product_list_item
@@ -80,7 +80,7 @@ class OwocProductViewHolder(
     override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
     }
 
-    override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+    override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
     }
 
     override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
@@ -96,7 +96,7 @@ class OwocProductViewHolder(
         return recyclerviewPoolListener.parentPool
     }
 
-    override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
+    override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
         return this
     }
 

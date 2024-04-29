@@ -19,6 +19,10 @@ class RevampShipmentActivity : ShipmentActivity() {
             leasingId,
             pageSource,
             isPlusSelected,
+            arrayListOf(),
+            "",
+            "",
+            "",
             bundle
         )
         return checkoutFragment

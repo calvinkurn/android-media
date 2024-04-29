@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.automatecoupon.Layout
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -25,11 +26,11 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TAB_DEFAULT_BACKGROUND
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -131,7 +132,7 @@ class DiscoveryPageDataMapper(
         when (component.name) {
             ComponentNames.Tabs.componentName,
             ComponentNames.TabsIcon.componentName,
-            ComponentNames.TabsImage.componentName,
+            ComponentNames.PlainTab.componentName,
             ComponentNames.FlashSaleTokoTab.componentName -> listComponents.addAll(
                 parseTab(component, position)
             )
@@ -251,12 +252,16 @@ class DiscoveryPageDataMapper(
                 )
             }
 
+            ComponentNames.AutomateCoupon.componentName -> {
+                parseAutomateCoupon(component, listComponents)
+            }
+
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
-    private fun getFiltersFromQuery(component: ComponentsItem) {
+    private fun getFiltersFromQuery(component: ComponentsItem, queryParameterMapWithRpc: Map<String, String>) {
         for ((key, value) in queryParameterMapWithRpc) {
             val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
             if (adjustedValue.isNotEmpty()) {
@@ -400,8 +405,9 @@ class DiscoveryPageDataMapper(
 
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
 
-        if (checkImageAvailableOnPlainTab(component)) {
-            component.name = ComponentNames.TabsImage.componentName
+        val hasPlainBackground = component.properties?.background == TAB_DEFAULT_BACKGROUND
+        if (component.name == ComponentNames.Tabs.componentName && hasPlainBackground) {
+            component.name = ComponentNames.PlainTab.componentName
         }
 
         listComponents.add(component)
@@ -479,23 +485,6 @@ class DiscoveryPageDataMapper(
         }
 
         return listComponents
-    }
-
-    private fun checkImageAvailableOnPlainTab(component: ComponentsItem): Boolean {
-        if (component.properties?.background != TAB_DEFAULT_BACKGROUND) return false
-
-        var isUnifyTabWithImage = false
-
-        component.data?.let {
-            loop@ for (data in it) {
-                isUnifyTabWithImage = !data.tabActiveImageUrl.isNullOrEmpty() &&
-                    !data.tabInactiveImageUrl.isNullOrEmpty()
-
-                if (isUnifyTabWithImage) break@loop
-            }
-        }
-
-        return isUnifyTabWithImage
     }
 
     private fun generateTabIdentifier(
@@ -780,7 +769,7 @@ class DiscoveryPageDataMapper(
                 )
             }
         } else {
-            val updatedComponents = parseFestiveFlashSaleTab(componentsItem?.filter { !it.isTargetedTabComponent })
+            val updatedComponents = parseSectionChildren(componentsItem)
 
             if (updatedComponents.isNotEmpty()) {
                 listComponents.first().setComponentsItem(updatedComponents)
@@ -825,6 +814,37 @@ class DiscoveryPageDataMapper(
         }
     }
 
+    private fun parseSectionChildren(components: List<ComponentsItem>?): List<ComponentsItem> {
+        val nonTargetedTabComponent = components?.filter { !it.isTargetedTabComponent }
+        val parsedChildrenComponent = nonTargetedTabComponent.orEmpty().toMutableList()
+
+        if (parsedChildrenComponent.hasFlashSaleTab()) {
+            val parsedComponent = parseFestiveFlashSaleTab(parsedChildrenComponent)
+            parsedChildrenComponent.clear()
+            parsedChildrenComponent.addAll(parsedComponent)
+        }
+
+        if (parsedChildrenComponent.hasAutomateCoupon()) {
+            val parsedComponent = parseFestiveAutomateCoupon(parsedChildrenComponent)
+            parsedChildrenComponent.clear()
+            parsedChildrenComponent.addAll(parsedComponent)
+        }
+
+        return parsedChildrenComponent
+    }
+
+    private fun List<ComponentsItem>?.hasFlashSaleTab(): Boolean {
+        return this?.find {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            } != null
+    }
+
+    private fun List<ComponentsItem>?.hasAutomateCoupon(): Boolean {
+        return this?.find {
+            it.name == ComponentNames.AutomateCoupon.componentName
+        } != null
+    }
+
     private fun parseFestiveFlashSaleTab(componentsItem: List<ComponentsItem>?): List<ComponentsItem> {
         val flashSaleTab = componentsItem
             ?.find {
@@ -847,6 +867,22 @@ class DiscoveryPageDataMapper(
                         updatedComponentItems.add(component)
                     }
                 }
+            }
+        } ?: run {
+            updatedComponentItems.addAll(componentsItem.orEmpty())
+        }
+
+        return updatedComponentItems
+    }
+
+    private fun parseFestiveAutomateCoupon(componentsItem: List<ComponentsItem>?): List<ComponentsItem> {
+        val updatedComponentItems = arrayListOf<ComponentsItem>()
+
+        componentsItem?.forEach {
+            if (it.name == ComponentNames.AutomateCoupon.componentName) {
+                parseAutomateCoupon(it, updatedComponentItems)
+            } else {
+                updatedComponentItems.add(it)
             }
         }
 
@@ -872,10 +908,12 @@ class DiscoveryPageDataMapper(
     private fun handleQuickFilter(component: ComponentsItem) {
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
 
-        if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
+        val isQueryParameterAvailable = queryParameterMapWithRpc.isNotEmpty() || queryParameterMapWithoutRpc.isNotEmpty()
+        if (!component.isSelectedFiltersFromQueryApplied && isQueryParameterAvailable) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
-                component
+                component,
+                queryParameterMapWithRpc + queryParameterMapWithoutRpc
             )
         }
 
@@ -906,6 +944,34 @@ class DiscoveryPageDataMapper(
             .construct(query, component.pagePath)
 
         parameter?.run { component.searchParameter = SearchParameter(this) }
+    }
+
+    private fun parseAutomateCoupon(
+        component: ComponentsItem,
+        listComponents: ArrayList<ComponentsItem>
+    ) {
+        val layout = component.data?.firstOrNull()?.couponLayout
+        layout?.let {
+            Layout.valueOf(it.asCamelCase())
+            val componentName = when (Layout.valueOf(it.asCamelCase())) {
+                Layout.Single -> ComponentNames.SingleAutomateCoupon.componentName
+                Layout.Double -> ComponentNames.GridAutomateCoupon.componentName
+                Layout.Carousel -> ComponentNames.CarouselAutomateCoupon.componentName
+            }
+
+            val uniqueId = "${it}_${component.id}"
+            val parsedComponent = component.copy(
+                id = uniqueId,
+                name = componentName,
+                parentComponentName = ComponentNames.AutomateCoupon.componentName
+            )
+            listComponents.add(parsedComponent)
+            setComponent(uniqueId, component.pageEndPoint, parsedComponent)
+        }
+    }
+
+    companion object {
+        private const val TAB_DEFAULT_BACKGROUND = "plain"
     }
 }
 

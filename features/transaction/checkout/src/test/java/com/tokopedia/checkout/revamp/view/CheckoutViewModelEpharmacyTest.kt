@@ -13,12 +13,14 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -235,6 +237,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -278,6 +281,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -325,6 +329,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -374,6 +379,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -426,6 +432,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -434,7 +441,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
         coEvery { epharmacyUseCase.executeOnBackground() } returns
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(null,
+                        null,
                         null,
                         null,
                         null,
@@ -503,6 +511,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -511,7 +520,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
         coEvery { epharmacyUseCase.executeOnBackground() } returns
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(null,
+                        null,
                         null,
                         null,
                         listOf(),
@@ -582,6 +592,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -593,11 +604,14 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
                         null,
                         null,
+                        null,
+                        null,
                         listOf(
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 null,
                                 null,
-                                "1",
+                                null,
+                                1,
                                 null,
                                 null,
                                 null,
@@ -672,6 +686,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -680,6 +695,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
                         null,
                         null,
                         listOf(
@@ -691,6 +708,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 null,
                                 null,
                                 listOf(null),
+                                null,
                                 null
                             )
                         ),
@@ -762,6 +780,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -771,6 +790,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
                         null,
                         null,
                         listOf(
@@ -792,6 +813,9 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 null,
                                                 null,
                                                 null,
+                                                null,
+                                                null,
+                                                null,
                                                 null
                                             )
                                         ),
@@ -802,6 +826,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                         null
                                     )
                                 ),
+                                null,
                                 null
                             )
                         ),
@@ -873,6 +898,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -882,6 +908,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
                         null,
                         null,
                         listOf(
@@ -903,6 +931,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                         null
                                     )
                                 ),
+                                null,
                                 null
                             )
                         ),
@@ -974,6 +1003,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -983,6 +1013,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
+                        null,
                         null,
                         null,
                         listOf(
@@ -1004,6 +1036,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                         null
                                     )
                                 ),
+                                null,
                                 null
                             )
                         ),
@@ -1050,9 +1083,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -1069,9 +1105,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -1096,13 +1135,16 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 ),
                                 consultationSource = null,
                                 prescriptionSource = null,
-                                prescriptionCTA = null
+                                prescriptionCTA = null,
+                                ticker = null
                             )
                         ),
                         attachmentPageTickerText = null,
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
-                        papPrimaryCTA = null
+                        papPrimaryCTA = null,
+                        checkoutFlow = null,
+                        userCartContent = null
                     )
                 )
             )
@@ -1150,6 +1192,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1223,18 +1266,24 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             ),
                                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
                                                 productId = 2150389389,
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -1259,13 +1308,16 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 ),
                                 consultationSource = null,
                                 prescriptionSource = null,
-                                prescriptionCTA = null
+                                prescriptionCTA = null,
+                                ticker = null
                             )
                         ),
                         attachmentPageTickerText = null,
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
-                        papPrimaryCTA = null
+                        papPrimaryCTA = null,
+                        checkoutFlow = null,
+                        userCartContent = null
                     )
                 )
             )
@@ -1321,6 +1373,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1414,18 +1467,24 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             ),
                                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
                                                 productId = 2150389388,
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -1442,9 +1501,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -1469,7 +1531,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 ),
                                 consultationSource = null,
                                 prescriptionSource = null,
-                                prescriptionCTA = null
+                                prescriptionCTA = null,
+                                ticker = null
                             ),
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 epharmacyGroupId = "124",
@@ -1482,18 +1545,24 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             ),
                                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
                                                 productId = 2150389386,
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -1531,7 +1600,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 ),
                                 consultationSource = null,
                                 prescriptionSource = null,
-                                prescriptionCTA = null
+                                prescriptionCTA = null,
+                                ticker = null
                             ),
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 epharmacyGroupId = "125",
@@ -1544,18 +1614,24 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             ),
                                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
                                                 productId = 2150389385,
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
+                                                cartId = 0,
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = "1"
+                                                quantity = "1",
+                                                qtyComparison = null,
+                                                price = 3.0
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -1580,13 +1656,16 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 ),
                                 consultationSource = null,
                                 prescriptionSource = null,
-                                prescriptionCTA = null
+                                prescriptionCTA = null,
+                                ticker = null
                             )
                         ),
                         attachmentPageTickerText = null,
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
-                        papPrimaryCTA = null
+                        papPrimaryCTA = null,
+                        checkoutFlow = null,
+                        userCartContent = null
                     )
                 )
             )
@@ -1667,6 +1746,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1877,6 +1957,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1916,9 +1997,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
+                                0,
                                 "",
                                 "",
-                                "1"
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         null,
@@ -2019,6 +2103,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2151,6 +2236,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2190,9 +2276,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
+                                0,
                                 "",
                                 "",
-                                "1"
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         "asdf",
@@ -2293,6 +2382,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2332,9 +2422,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 0.0,
                                 "",
                                 2150389388,
+                                0,
                                 "",
                                 "",
-                                "1"
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         "6554231",
@@ -2435,6 +2528,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2524,9 +2618,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2543,9 +2640,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2617,6 +2717,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2691,18 +2792,24 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             ),
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
                                 productId = 2150389388,
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2719,9 +2826,12 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2749,18 +2859,24 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             ),
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
                                 productId = 2150389386,
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2801,18 +2917,24 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             ),
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
                                 productId = 2150389385,
                                 isEthicalDrug = true,
                                 itemWeight = 0.0,
                                 name = "",
+                                cartId = 0,
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2894,6 +3016,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -3026,6 +3149,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -3063,6 +3187,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -3101,6 +3226,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -3139,6 +3265,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -3177,6 +3304,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()

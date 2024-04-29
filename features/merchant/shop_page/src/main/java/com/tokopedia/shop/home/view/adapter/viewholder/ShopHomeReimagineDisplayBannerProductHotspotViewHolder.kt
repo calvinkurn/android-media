@@ -2,7 +2,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,10 +15,12 @@ import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
 import com.tokopedia.shop.common.view.model.ImageHotspotData
@@ -29,6 +30,7 @@ import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopWidgetProductHotspotAdapter
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -43,8 +45,12 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.shop_home_display_banner_product_hotspot_view_holder_layout
-        private const val MAX_VISIBLE_ITEM_CAROUSEL = 3
         private const val DEFAULT_RATIO = "1:1"
+        private const val RV_HORIZONTAL_PADDING = 16
+        private const val INT_TWO = 2
+        private const val ONE_ITEM_PADDING_MULTIPLIER = 2
+        private const val TWO_ITEM_PADDING_MULTIPLIER = 3
+        private const val MORE_THAN_TWO_ITEM_PADDING_MULTIPLIER = 4
     }
 
     interface Listener {
@@ -243,8 +249,43 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
             carouselLayoutManager?.let {
                 setupFlingListener(this, it)
             }
+            configRvHeight(uiModel)
         }
-        updateRecyclerViewHeightBasedOnFirstChild()
+    }
+
+    /**
+     * Need to calculate rv height manually before render to prevent jumpy scroll by finding rv item
+     * height using it's width and ratio
+     * rvHeight = (rvItem width without horizontal padding) * ratioDenominator / ratioNumerator
+     * multiplier differences:
+     * - ONE_ITEM_PADDING_MULTIPLIER: used for only rv with 1 item since we're adding horizontal padding to rv item
+     * - TWO_ITEM_PADDING_MULTIPLIER: used for only rv with 2 items since we're adding half of horizontal padding to rv item
+     *   and another horizontal padding to rv
+     * - MORE_THAN_TWO_ITEM_PADDING_MULTIPLIER: used for only rv with more that 2 items since we're adding horizontal padding to both rv item and rv
+     */
+    private fun configRvHeight(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
+        recyclerViewProductHotspot?.apply {
+            val numerator = getIndexRatio(uiModel, Int.ZERO)
+            val denominator = getIndexRatio(uiModel, Int.ONE)
+            val rvItemWidth = when (uiModel.data.size.orZero()) {
+                Int.ONE -> {
+                    getScreenWidth() - (RV_HORIZONTAL_PADDING.toPx() * ONE_ITEM_PADDING_MULTIPLIER)
+                }
+
+                INT_TWO -> {
+                    getScreenWidth() - (RV_HORIZONTAL_PADDING.toPx() * TWO_ITEM_PADDING_MULTIPLIER)
+                }
+
+                else -> {
+                    getScreenWidth() - (RV_HORIZONTAL_PADDING.toPx() * MORE_THAN_TWO_ITEM_PADDING_MULTIPLIER)
+                }
+            }
+            layoutParams?.height = rvItemWidth * denominator / numerator
+        }
+    }
+
+    private fun getIndexRatio(data: ShopWidgetDisplayBannerProductHotspotUiModel, index: Int): Int {
+        return data.header.ratio.split(":").getOrNull(index)?.toIntOrNull() ?: Int.ONE
     }
 
     private fun setupFlingListener(
@@ -261,21 +302,6 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
 
     private fun isCircularRvLayout(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel): Boolean {
         return uiModel.data.size > 2
-    }
-
-    private fun updateRecyclerViewHeightBasedOnFirstChild() {
-        recyclerViewProductHotspot?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    val firstChildHeight = recyclerViewProductHotspot.findViewHolderForAdapterPosition(
-                        Int.ZERO
-                    )?.itemView?.height.orZero()
-                    val lp = recyclerViewProductHotspot.layoutParams
-                    lp?.height = firstChildHeight
-                    recyclerViewProductHotspot.layoutParams = lp
-                    recyclerViewProductHotspot.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
     }
 
     override fun onBubbleViewClicked(

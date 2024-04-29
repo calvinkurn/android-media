@@ -2,6 +2,7 @@ package com.tokopedia.shopdiscount.manage.presentation.list
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -15,7 +16,8 @@ class ProductAdapter(
     private val onUpdateDiscountButtonClicked: (Product) -> Unit,
     private val onOverflowMenuClicked: (Product) -> Unit,
     private val onVariantInfoClicked : (Product, Int) -> Unit,
-    private val onProductSelectionChange : (Product, Boolean) -> Unit
+    private val onProductSelectionChange : (Product, Boolean) -> Unit,
+    private val onSubsidyInformationClicked : (Product) -> Unit
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
     private var products: MutableList<Product> = mutableListOf()
@@ -47,6 +49,7 @@ class ProductAdapter(
                 onOverflowMenuClicked,
                 onVariantInfoClicked,
                 onProductSelectionChange,
+                onSubsidyInformationClicked,
                 isLoading
             )
         }

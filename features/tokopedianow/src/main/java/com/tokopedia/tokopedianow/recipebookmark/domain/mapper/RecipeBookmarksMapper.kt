@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.recipebookmark.domain.mapper
 
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeUiModel
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 
 object RecipeBookmarksMapper {
     private const val MAX_TAGS_DISPLAYED = 4
@@ -43,13 +43,13 @@ object RecipeBookmarksMapper {
     }
 
     fun List<GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Data.Recipe>.mapResponseToUiModelList(): List<RecipeUiModel> {
-        return map { response ->
+        return mapIndexed { index, response ->
             RecipeUiModel(
                 id = response.id,
                 title = response.title,
                 portion = response.portion,
                 duration = response.duration,
-                tags =  mapTag(response.tags),
+                tags = mapTag(response.tags),
                 picture = response.images?.firstOrNull()?.urlOriginal.orEmpty(),
                 appUrl = response.appUrl
             )

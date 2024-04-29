@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -122,15 +121,15 @@ class PartialProductItemViewHolder(
         }
     }
 
-    private fun goToProductSnapshotPage() {
+    private fun onProductCardClicked() {
         element.let {
-            if (it.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-                navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
+            if (it.productUrl.isNotBlank()) {
+                navigator.openProductUrl(it.productUrl)
                 BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
             } else {
                 showToaster(
-                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice)
-                        .orEmpty()
+                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(),
+                    context?.getString(R.string.buyer_order_detail_oke).orEmpty()
                 )
             }
         }
@@ -179,11 +178,17 @@ class PartialProductItemViewHolder(
         }
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(message: String, actionText: String) {
         itemView?.parent?.parent?.parent?.let {
             if (it is View) {
                 if (message.isNotBlank()) {
-                    Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                    Toaster.buildWithAction(
+                        view = it,
+                        text = message,
+                        duration = Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_NORMAL,
+                        actionText = actionText
+                    ).show()
                 }
             }
         }
@@ -216,7 +221,7 @@ class PartialProductItemViewHolder(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.itemBomDetailProductViewStub -> goToProductSnapshotPage()
+            R.id.itemBomDetailProductViewStub -> onProductCardClicked()
             R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
             R.id.btnShareProduct -> openShareBottomSheet()
         }
@@ -229,8 +234,6 @@ class PartialProductItemViewHolder(
     interface ProductViewListener {
         fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
         fun onProductImpressed(product: ProductListUiModel.ProductUiModel)
-        fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean)
-        fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String)
     }
 
     interface ShareProductBottomSheetListener {

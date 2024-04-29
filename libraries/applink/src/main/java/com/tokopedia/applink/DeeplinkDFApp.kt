@@ -35,6 +35,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FEEDBACK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_PDP
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_SHOP_PAGE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SHOP_SETTINGS_SELLER_APP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_STORIES_CREATION
@@ -82,6 +83,7 @@ import com.tokopedia.applink.model.DFPHost
 import com.tokopedia.applink.model.DFPPath
 import com.tokopedia.applink.model.DFPSchemeToDF
 import com.tokopedia.applink.model.PathType
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -191,7 +193,24 @@ object DeeplinkDFApp {
         DF_SELLER_TALK to getDfSellerTalk(),
         DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
         DF_SELLER_PDP to getDfSellerPdp(),
-        DF_STORIES_CREATION to getDfStoriesCreationSellerApp()
+        DF_STORIES_CREATION to getDfStoriesCreationSellerApp(),
+        DF_SELLER_SHOP_PAGE to getDfSellerShopPage()
+    )
+
+    private fun getDfSellerShopPage() = mutableListOf(
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/home"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/info"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/review"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/product"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/feed"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/note"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page-product-list/.*/etalase/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-info/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/widget/voucher/shop_id/.*/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/widget/operational-hour/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-favourites"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/shop-favourites"),
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -423,6 +442,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/cancellationrequest", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/order", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/$PATH_SELLER_PARTIAL_ORDER_FULFILLMENT", SELLER_ORDER),
+        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH}", SELLER_ORDER),
 
         // editshipping
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-settings-shipping"),
@@ -497,6 +517,15 @@ object DeeplinkDFApp {
             DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
         ),
 
+        // Dynamic CSAT
+        DFP(
+            INTERNAL,
+            HOST_TICKET,
+            PathType.PATH,
+            "/csat",
+            OPERATIONAL_CONTACT_US
+        ),
+
         // telephony_masking
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/telephony-masking")
     )
@@ -544,7 +573,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/sort-filter"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/date-filter"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATH, "/search"),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category/l1"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category/l2"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATH, "/repurchase-page"),
@@ -568,7 +596,9 @@ object DeeplinkDFApp {
             PathType.PATTERN,
             "/recipe/similar-product-bottomsheet"
         ),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication")
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/all-annotation"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/list-belanja")
     )
 
     private fun getDfTravel() = mutableListOf(
@@ -610,7 +640,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/change-name", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-completion", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/edit-profile-info", USER_PROFILE_SETTINGS),
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-management", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/webview-kyc", USER_PROFILE_SETTINGS),
 
         // settingbank
@@ -707,7 +736,8 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/.*/"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-edu/.*/"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/post-atc/.*/")
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/post-atc/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-webview-bs"),
     )
 
     private fun getDfStoriesCreationMainApp() = mutableListOf(

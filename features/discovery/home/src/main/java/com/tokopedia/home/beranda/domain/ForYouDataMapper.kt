@@ -32,26 +32,27 @@ object ForYouDataMapper {
             affinityLabel = affinityLabel,
             shopId = shopId,
             categoryPersona = categoryPersona,
-            tabName = tabName,
+            tabName = tabName
         )
     }
 
     fun HomeRecommendationBannerTopAdsOldDataModel.toModel(): BannerOldTopAdsModel {
         return BannerOldTopAdsModel(
-            topAdsImageViewModel = topAdsImageViewModel,
+            topAdsImageUiModel = topAdsImageUiModel,
             position = position,
-            bannerType = bannerType,
+            bannerType = bannerType
         )
     }
 
     fun HomeRecommendationBannerTopAdsUiModel.toModel(): BannerTopAdsModel {
         return BannerTopAdsModel(
-            topAdsImageViewModel = topAdsImageViewModel,
+            topAdsImageUiModel = topAdsImageUiModel,
             cardId = cardId,
             layoutCard = layoutCard,
             layoutItem = layoutItem,
             categoryId = categoryId,
-            position = position
+            position = position,
+            pageName = pageName
         )
     }
 
@@ -64,6 +65,7 @@ object ForYouDataMapper {
                 imageUrl = recommendationProductItem.imageUrl,
                 recommendationType = recommendationProductItem.recommendationType,
                 priceInt = recommendationProductItem.priceInt,
+                slashedPriceInt = recommendationProductItem.slashedPriceInt,
                 freeOngkirIsActive = recommendationProductItem.freeOngkirIsActive,
                 labelGroup = recommendationProductItem.labelGroup.map {
                     RecommendationCardModel.ProductItem.LabelGroup(
@@ -80,11 +82,24 @@ object ForYouDataMapper {
                 clickUrl = recommendationProductItem.clickUrl,
                 isWishlist = recommendationProductItem.isWishlist,
                 wishListUrl = recommendationProductItem.wishListUrl,
+                shop = recommendationProductItem.shop.let {
+                    RecommendationCardModel.ProductItem.Shop(
+                        id = it.id,
+                        applink = it.applink,
+                        city = it.city,
+                        domain = it.domain,
+                        imageUrl = it.imageUrl,
+                        name = it.name,
+                        reputation = it.reputation,
+                        url = it.url
+                    )
+                }
             ),
             pageName = pageName,
             layoutName = layoutName,
             position = position,
             tabName = tabName,
+            appLog = appLog,
         )
     }
 
@@ -100,8 +115,12 @@ object ForYouDataMapper {
                 playChannelId = playVideoTrackerUiModel.playChannelId,
                 layoutCard = playVideoTrackerUiModel.layoutCard,
                 layoutItem = playVideoTrackerUiModel.layoutItem,
-                categoryId = playVideoTrackerUiModel.categoryId,
+                categoryId = playVideoTrackerUiModel.categoryId
             ),
+            isAds = isAds,
+            shopId = shopId,
+            pageName = pageName,
+            position = position
         )
     }
 
@@ -121,6 +140,10 @@ object ForYouDataMapper {
                 title = labelState.title,
                 textColor = labelState.textColor
             ),
+            position = position,
+            isAds = isAds,
+            shopId = shopId,
+            pageName = pageName,
         )
     }
 }

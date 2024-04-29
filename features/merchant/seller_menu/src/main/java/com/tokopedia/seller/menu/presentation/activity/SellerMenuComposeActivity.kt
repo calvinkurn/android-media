@@ -145,9 +145,8 @@ class SellerMenuComposeActivity : BaseSellerMenuActivity() {
                 goToPowerMerchantSubscribe(true)
                 sellerMenuTracker.sendEventClickShopSettingNew()
             }
-            SellerMenuActionClick.POWER_MERCHANT_INACTIVE -> {
-                goToPowerMerchantSubscribe(false)
-                sellerMenuTracker.sendEventClickShopType()
+            SellerMenuActionClick.POWER_MERCHANT_KYC -> {
+                goToPmPage()
             }
             SellerMenuActionClick.OFFICIAL_STORE -> {
                 sellerMenuTracker.sendEventClickShopSettingNew()
@@ -201,6 +200,10 @@ class SellerMenuComposeActivity : BaseSellerMenuActivity() {
                 // No-op
             }
         }
+    }
+
+    private fun goToPmPage() {
+        RouteManager.route(this, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
     }
 
     private fun onReloading(isLoading: Boolean) {

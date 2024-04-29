@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 if(project.hasProperty('enableEmbraceMa')) {
     apply plugin: 'embrace-swazzler'
 }
@@ -35,6 +35,14 @@ def isNakamaVersion() {
         return "true"
     }
     return "false"
+}
+
+def getStoreChannel() {
+    if (project.hasProperty('storeChannel')) {
+        return project.property('storeChannel')
+    } else {
+        return 'googleplay'
+    }
 }
 
 def isPreInstall() {
@@ -120,6 +128,7 @@ android {
         pickFirst '**/x86_64/libc++_shared.so'
         pickFirst '**/x86/libjsc.so'
         pickFirst '**/armeabi-v7a/libjsc.so'
+        pickFirst "**/libc++_shared.so"
     }
     testOptions {
         unitTests.all {
@@ -183,6 +192,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
+            buildConfigField "String", "STORE_CHANNEL", "\"\""
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
@@ -217,6 +227,7 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
+            buildConfigField "String", "STORE_CHANNEL", "\"${getStoreChannel()}\""
             buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             multiDexKeepProguard file('multidex-config.pro')
@@ -237,7 +248,6 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
-        applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = vectorDrawable
@@ -334,6 +344,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
     implementation projectOrAar(rootProject.ext.features.addOnGifting)
     implementation projectOrAar(rootProject.ext.features.appCommon)
+    implementation projectOrAar(rootProject.ext.libraries.keys)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
@@ -380,6 +391,28 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
+
+    implementation rootProject.ext.msSdkDependencies.msSdk
+    implementation rootProject.ext.msSdkDependencies.sdkMonitor
+    implementation rootProject.ext.appLogDependencies.baseLibsUtility
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.msSdkDependencies.keva
+    implementation rootProject.ext.appLogDependencies.encrypt
+    implementation rootProject.ext.msSdkDependencies.network
+    implementation rootProject.ext.appLogDependencies.businessALog
+    implementation rootProject.ext.msSdkDependencies.cronet
+    implementation rootProject.ext.msSdkDependencies.networkOk3
+    implementation rootProject.ext.msSdkDependencies.librarian
+    implementation rootProject.ext.appLogDependencies.androidALog
+    implementation rootProject.ext.msSdkDependencies.apmUtil
+    implementation rootProject.ext.msSdkDependencies.serviceManager
+    implementation rootProject.ext.msSdkDependencies.serviceManagerAnnotation
+    implementation rootProject.ext.msSdkDependencies.ssRetrofit2
+    implementation rootProject.ext.msSdkDependencies.platformThread
+    implementation rootProject.ext.msSdkDependencies.wsChannel
+    implementation rootProject.ext.msSdkDependencies.apmApi
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
+
     implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation rootProject.ext.miscDependencies.embraceSdk
     implementation rootProject.ext.miscDependencies.exoPlayerCore

@@ -73,6 +73,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
+    //Communication
+    implementation projectOrAar(rootProject.ext.features.shareexperience)
+
     //Content
     implementation projectOrAar(rootProject.ext.features.play)
     implementation projectOrAar(rootProject.ext.features.kol)
@@ -146,7 +149,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.notifCenter)
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.topchat)
-    implementation projectOrAar(rootProject.ext.features.otp)
+    implementation projectOrAar(rootProject.ext.features.verification)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
     implementation projectOrAar(rootProject.ext.features.inbox)

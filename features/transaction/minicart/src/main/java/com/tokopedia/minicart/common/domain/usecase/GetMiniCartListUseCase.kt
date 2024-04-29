@@ -26,15 +26,23 @@ class GetMiniCartListUseCase @Inject constructor(
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false) {
+    fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false, source: MiniCartSource? = null) {
+        val usecase = source?.usecase
+
+        val additionalParams = mutableMapOf(
+            PARAM_KEY_SHOP_IDS to shopIds,
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+            PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
+            PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
+        )
+
+        if (usecase != null) {
+            additionalParams[PARAM_KEY_USE_CASE] = usecase
+        }
+
         params = mapOf(
             PARAM_KEY_LANG to PARAM_VALUE_ID,
-            PARAM_KEY_ADDITIONAL to mapOf(
-                PARAM_KEY_SHOP_IDS to shopIds,
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
-                PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
-            )
+            PARAM_KEY_ADDITIONAL to additionalParams
         )
     }
 
@@ -141,6 +149,36 @@ class GetMiniCartListUseCase @Inject constructor(
                         }
                       }
                       cart_details {
+                        cart_detail_info {
+                          cart_detail_type
+                          bmgm {
+                            offer_id
+                            offer_icon
+                            offer_message
+                            offer_landing_page_link
+                            offer_json_data
+                            is_tier_achieved
+                            tier_product {
+                              tier_id
+                              benefit_wording
+                              action_wording
+                              list_product {
+                                product_id
+                                warehouse_id
+                                quantity
+                                price_before_benefit
+                                price_after_benefit
+                                cart_id
+                              }
+                              products_benefit {
+                                product_id
+                                product_name
+                                product_cache_image_url
+                                quantity
+                              }
+                            }
+                          }
+                        }
                         errors
                         bundle_detail { 
                           bundle_id

@@ -1,12 +1,16 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
 import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
@@ -29,6 +33,8 @@ data class BroadMatchDataView(
     val actualKeyword: String = "",
     val cardButton: BroadMatchCardButton = BroadMatchCardButton(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
+    val byteIOTrackingData: ByteIOTrackingData,
+    val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
 ) : ImpressHolder(),
     Visitable<ProductListTypeFactory>,
     VerticalSeparable,
@@ -40,7 +46,8 @@ data class BroadMatchDataView(
         componentId = componentId,
         applink = applink,
         dimension90 = dimension90,
-    ) {
+    ),
+    ByteIORanking by byteIORanking {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
@@ -61,6 +68,34 @@ data class BroadMatchDataView(
         }
     }
 
+    override fun setRank(value: Int) {
+        byteIORanking.setRank(value)
+
+        broadMatchItemDataViewList.forEachIndexed { index, broadMatchItemDataView ->
+            broadMatchItemDataView.setRank(value)
+            broadMatchItemDataView.setItemRank(index)
+        }
+    }
+
+    fun asByteIOSearchResult(aladdinButtonType: String?) =
+        AppLogSearch.SearchResult(
+            imprId = byteIOTrackingData.imprId,
+            searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
+            searchResultId = getRank().toString(),
+            listItemId = null,
+            itemRank = null,
+            listResultType = null,
+            productID = "",
+            searchKeyword = byteIOTrackingData.keyword,
+            tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+            rank = getRank(),
+            isAd = false,
+            isFirstPage = byteIOTrackingData.isFirstPage,
+            shopId = null,
+            aladdinButtonType = aladdinButtonType,
+        )
+
     companion object {
 
         fun create(
@@ -70,6 +105,7 @@ data class BroadMatchDataView(
             trackingOption: Int,
             actualKeyword: String,
             externalReference: String,
+            byteIOTrackingData: ByteIOTrackingData,
         ): BroadMatchDataView = BroadMatchDataView(
             keyword = otherRelated.keyword,
             url = otherRelated.url,
@@ -81,7 +117,8 @@ data class BroadMatchDataView(
                     index + 1,
                     otherRelated.keyword,
                     dimension90,
-                    externalReference
+                    externalReference,
+                    byteIOTrackingData,
                 )
             },
             dimension90 = dimension90,
@@ -89,6 +126,7 @@ data class BroadMatchDataView(
             componentId = otherRelated.componentId,
             trackingOption = trackingOption,
             actualKeyword = actualKeyword,
+            byteIOTrackingData = byteIOTrackingData,
         )
 
         fun createList(
@@ -96,6 +134,7 @@ data class BroadMatchDataView(
             externalReference: String,
             addTopSeparator: Boolean,
             deduplication: Deduplication,
+            byteIOTrackingData: ByteIOTrackingData,
         ): List<BroadMatchDataView> {
             val options = carousel.options
             return options.mapIndexedNotNull { index, option ->
@@ -105,6 +144,7 @@ data class BroadMatchDataView(
                     externalReference,
                     determineCarouselSeparator(index, addTopSeparator, options.lastIndex),
                     deduplication,
+                    byteIOTrackingData,
                 )
             }
         }
@@ -115,6 +155,7 @@ data class BroadMatchDataView(
             externalReference: String,
             verticalSeparator: VerticalSeparator,
             deduplication: Deduplication,
+            byteIOTrackingData: ByteIOTrackingData,
         ): BroadMatchDataView? {
             val productList = deduplication.removeDuplicate(option.product)
 
@@ -133,11 +174,13 @@ data class BroadMatchDataView(
                         option,
                         index,
                         externalReference,
+                        byteIOTrackingData,
                     )
                 },
                 trackingOption = option.trackingOption,
                 cardButton = BroadMatchCardButton.create(option.cardButton),
                 verticalSeparator = verticalSeparator,
+                byteIOTrackingData = byteIOTrackingData,
             )
         }
 
@@ -162,6 +205,7 @@ data class BroadMatchDataView(
             trackingOption: Int,
             actualKeyword: String,
             externalReference: String,
+            byteIOTrackingData: ByteIOTrackingData,
         ): BroadMatchDataView = BroadMatchDataView(
             keyword = otherRelated.keyword,
             url = otherRelated.url,
@@ -173,7 +217,8 @@ data class BroadMatchDataView(
                     index + 1,
                     otherRelated.keyword,
                     dimension90,
-                    externalReference
+                    externalReference,
+                    byteIOTrackingData,
                 )
             },
             dimension90 = dimension90,
@@ -181,6 +226,7 @@ data class BroadMatchDataView(
             componentId = otherRelated.componentID,
             trackingOption = trackingOption,
             actualKeyword = actualKeyword,
+            byteIOTrackingData = byteIOTrackingData,
         )
     }
 }

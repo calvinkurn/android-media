@@ -29,7 +29,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.InflateException;
@@ -64,6 +63,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -91,12 +93,14 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 import com.tokopedia.webview.jsinterface.PartnerWebAppInterface;
 import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
+import com.tokopedia.webview.verification.util.SmsBroadcastReceiver;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -112,7 +116,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String TOKOPEDIA_COM = ".tokopedia.com";
 
     public TkpdWebView webView;
-    ProgressBar progressBar;
+    protected ProgressBar progressBar;
     private SwipeToRefresh swipeRefreshLayout;
     private GlobalError globalError;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
@@ -129,6 +133,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
     private static final String GOFOOD_LINK = "https://gofood.link/";
+    private static final String PAYLATER_OTP_VERIF_LINK = "paylater/acquisition/otp-verification";
+    private static final String OTP_CODE = "otpCode";
+    private static final String URL_PARAM = "?url=";
     private static final String OPEN_CONTACT_PICKER_APPLINK = "tokopedia://open-contact-picker";
 
     String mJsHciCallbackFuncName;
@@ -148,7 +155,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static String ENABLE_WEBVIEW_REFRESH_TOKEN_FLOW = "android_enable_webview_refresh_token";
 
     private static final String SCHEME_INTENT = "intent";
-    private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
+    private static final String PATH_WEBVIEW_BACK = "back";
+    private static final String PARAM_WEBVIEW_BACK = "tokopedia://" + PATH_WEBVIEW_BACK;
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
@@ -176,6 +184,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private RemoteConfig remoteConfig;
 
     private PageLoadLogger pageLoadLogger;
+
+    private SmsBroadcastReceiver smsBroadcastReceiver;
+
+    private SmsRetrieverClient smsRetriever;
+
+    private Boolean isSmsRegistered = false;
 
     /**
      * return the url to load in the webview
@@ -722,6 +736,32 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
+    public void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
+        progressBar.setVisibility(View.GONE);
+        WebViewLoggerKt.logWebReceivedError(getActivity(), webView, failingUrl, String.valueOf(errorCode), description);
+        if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
+                description.contains(ERR_INTERNET_DISCONNECTED) &&
+                globalError != null && swipeRefreshLayout != null) {
+            webView.clearView();
+            globalError.setActionClickListener(new Function1<View, Unit>() {
+                @Override
+                public Unit invoke(View view) {
+                    reloadPage();
+                    return Unit.INSTANCE;
+                }
+            });
+            globalError.setVisibility(View.VISIBLE);
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+            }
+        } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
+            routeToNativeBrowser(webUrl);
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+        }
+    }
+
     class MyWebViewClient extends WebViewClient {
         @Override
         public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
@@ -729,6 +769,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Activity activityInstance = getActivity();
             if (activityInstance instanceof BaseSimpleWebViewActivity) {
                 ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
+            }
+            if (url.contains(PAYLATER_OTP_VERIF_LINK) && !url.contains(OTP_CODE)) {
+                startSmsListener();
+            } else {
+                if (getActivity() != null && isSmsRegistered) {
+                    getActivity().unregisterReceiver(smsBroadcastReceiver);
+                    isSmsRegistered = false;
+                }
             }
         }
 
@@ -855,30 +903,29 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             messageMap.put("web_url", webUrl);
             ServerLogger.log(Priority.P1, "WEBVIEW_ERROR_RESPONSE", messageMap);
         }
-    }
 
-    private void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
-        progressBar.setVisibility(View.GONE);
-        WebViewLoggerKt.logWebReceivedError(getActivity(), webView, failingUrl, String.valueOf(errorCode), description);
-        if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
-                description.contains(ERR_INTERNET_DISCONNECTED) &&
-                globalError != null && swipeRefreshLayout != null) {
-            webView.clearView();
-            globalError.setActionClickListener(new Function1<View, Unit>() {
-                @Override
-                public Unit invoke(View view) {
-                    reloadPage();
-                    return Unit.INSTANCE;
-                }
-            });
-            globalError.setVisibility(View.VISIBLE);
-            if (swipeRefreshLayout != null) {
-                swipeRefreshLayout.setVisibility(View.GONE);
-            }
-        } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
-            routeToNativeBrowser(webUrl);
-            if (getActivity() != null) {
-                getActivity().finish();
+        private void startSmsListener() {
+            if (getContext() != null && !isSmsRegistered) {
+                smsBroadcastReceiver = new SmsBroadcastReceiver();
+                smsRetriever = SmsRetriever.getClient(getContext());
+                Task<Void> task = smsRetriever.startSmsRetriever();
+                task.addOnSuccessListener(aVoid -> {
+                    isSmsRegistered = true;
+                    if (getActivity() == null) return;
+                    smsBroadcastReceiver.register(getActivity(), otpCode -> {
+                        String currentUrl = webView.getUrl();
+                        if (currentUrl != null && currentUrl.contains(PAYLATER_OTP_VERIF_LINK)) {
+                            String newUrl = Uri.parse(currentUrl).buildUpon()
+                                    .appendQueryParameter(OTP_CODE, otpCode).build().toString();
+
+                            RouteManager.route(getContext(), ApplinkConst.GOTO_KYC_WEBVIEW+URL_PARAM+newUrl);
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
+                        }
+                    });
+                });
+                task.addOnFailureListener(e -> {});
             }
         }
     }
@@ -967,11 +1014,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
             routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE, queryParam, headerText);
             return true;
-        } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
-                && getActivity() != null) {
+        } else if (getActivity() != null && uri.getHost().equalsIgnoreCase(PATH_WEBVIEW_BACK)) {
             if (getActivity().isTaskRoot()) {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
             } else {
+                Set<String> queryNames = uri.getQueryParameterNames();
+                if (!queryNames.isEmpty()) {
+                    Intent data = new Intent();
+                    for (String queryName: queryNames) {
+                        String queryValue = uri.getQueryParameter(queryName);
+                        if (queryValue != null && !queryValue.isBlank()) {
+                            data.putExtra(queryName, queryValue);
+                        }
+                    }
+                    getActivity().setResult(RESULT_OK, data);
+                }
                 getActivity().finish();
             }
             return true;

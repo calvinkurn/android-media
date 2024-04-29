@@ -1,8 +1,10 @@
 package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.search.di.qualifier.SearchContext
-import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
+import com.tokopedia.search.result.domain.model.SearchCouponModel
+import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
@@ -12,6 +14,7 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.decodeQueryParameter
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -20,7 +23,7 @@ class InspirationCarouselViewDelegate @Inject constructor(
     searchParameterProvider: SearchParameterProvider,
     @SearchContext
     context: Context,
-    private val trackingQueue: TrackingQueue,
+    private val trackingQueue: TrackingQueue
 ) : InspirationCarouselView,
     QueryKeyProvider by queryKeyProvider,
     SearchParameterProvider by searchParameterProvider,
@@ -36,6 +39,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
     override fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
@@ -47,9 +57,18 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
-    override fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
+    override fun trackEventClickInspirationCarouselGridItem(
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         val data =
             InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                 product,
@@ -57,6 +76,12 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        AppLogSearch.eventSearchResultClick(
+            product.asByteIOSearchResult("")
+        )
+
+        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
@@ -67,6 +92,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultClick(
+//            product.asByteIOSearchResult("")
+//        )
+//
+//        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
@@ -78,9 +110,18 @@ class InspirationCarouselViewDelegate @Inject constructor(
         val trackingQueue = trackingQueue
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
-    override fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
+    override fun trackEventClickInspirationCarouselChipsItem(
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         val data =
             InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                 product,
@@ -88,16 +129,27 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        AppLogSearch.eventSearchResultClick(
+            product.asByteIOSearchResult("")
+        )
+
+        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {
         InspirationCarouselTracking.trackCarouselClickSeeAll(queryKey, option)
     }
 
+    override fun trackEventCtaCouponItem(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget) {
+        dataView.handleClickCouponTracking(TrackApp.getInstance().gtm, item)
+    }
+
     override fun openLink(applink: String, url: String) {
-        if (applink.isNotEmpty())
+        if (applink.isNotEmpty()) {
             openApplink(context, applink.decodeQueryParameter())
-        else
+        } else {
             openApplink(context, url)
+        }
     }
 }

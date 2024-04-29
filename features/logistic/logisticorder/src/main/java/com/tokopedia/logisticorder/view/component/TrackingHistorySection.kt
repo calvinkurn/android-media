@@ -35,6 +35,7 @@ import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.date.DateUtil
@@ -71,7 +72,9 @@ fun TrackingHistoryItem(
     isLast: Boolean,
     seeProofOfDelivery: (proof: ProofModel) -> Unit
 ) {
-    ConstraintLayout {
+    ConstraintLayout(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         val (day, time, description, courier, circle, line, pod, endSpacing) = createRefs()
         val circleColor = if (isFirst) NestTheme.colors.GN._500 else NestTheme.colors.NN._50
         Box(
@@ -92,11 +95,12 @@ fun TrackingHistoryItem(
         }
         NestTypography(
             modifier = Modifier
-                .fillMaxWidth()
                 .constrainAs(day) {
                     start.linkTo(circle.end, margin = 8.dp)
+                    end.linkTo(time.start)
                     top.linkTo(circle.top)
                     bottom.linkTo(circle.bottom)
+                    width = Dimension.fillToConstraints
                 },
             text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", trackHistoryModel.date),
             textStyle = NestTheme.typography.heading5.copy(color = if (isFirst) NestTheme.colors.GN._500 else NestTheme.colors.NN._950)
@@ -112,11 +116,13 @@ fun TrackingHistoryItem(
 
         NestTypography(
             modifier = Modifier
-                .fillMaxWidth()
                 .constrainAs(description) {
+                    end.linkTo(parent.end)
                     start.linkTo(day.start)
                     top.linkTo(day.bottom, margin = 5.dp)
-                },
+                    width = Dimension.fillToConstraints
+                }
+                .tag("tracking_history"),
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950),
             text = HtmlLinkHelper(
                 LocalContext.current,
@@ -129,6 +135,8 @@ fun TrackingHistoryItem(
                 .fillMaxWidth()
                 .constrainAs(courier) {
                     start.linkTo(day.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
                     top.linkTo(description.bottom, margin = 5.dp)
                     visibility =
                         if (trackHistoryModel.partnerName.isNotEmpty()) Visibility.Visible else Visibility.Gone
@@ -137,10 +145,12 @@ fun TrackingHistoryItem(
             text = "Kurir: ${trackHistoryModel.partnerName}"
         )
         Spacer(
-            modifier = Modifier.height(4.dp).constrainAs(endSpacing) {
-                top.linkTo(pod.bottom)
-                start.linkTo(day.start)
-            }
+            modifier = Modifier
+                .height(4.dp)
+                .constrainAs(endSpacing) {
+                    top.linkTo(pod.bottom)
+                    start.linkTo(day.start)
+                }
         )
         Box(
             Modifier
@@ -164,6 +174,7 @@ fun TrackingHistoryItem(
                     visibility =
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 }
+                .tag("img_proof")
                 .clickable { seeProofOfDelivery(trackHistoryModel.proof) },
             source = ImageSource.Remote(
                 trackHistoryModel.proof.imageUrl,
@@ -213,7 +224,11 @@ private fun InvalidTrackingNotes(modifier: Modifier) {
 
 @Composable
 private fun InvalidTrackingNotesItem(text: String) {
-    Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.Top) {
+    Row(
+        Modifier.padding(top = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.Top
+    ) {
         Box(
             modifier = Modifier
                 .size(8.dp, 8.dp)
@@ -246,7 +261,7 @@ private fun TrackingHistoryNormalPreview() {
             TrackHistoryModel(
                 dateTime = "2021-11-12 22:38:55",
                 date = "2021-11-12",
-                status = "Pesanan dalam perjalanan",
+                status = "Kurir Toped sudah ditugaskan dan pesananan akan segera diantar ke pembeli",
                 city = "Bandung",
                 time = "22:38:55",
                 partnerName = "JNT",
@@ -255,7 +270,7 @@ private fun TrackingHistoryNormalPreview() {
             TrackHistoryModel(
                 dateTime = "2021-11-12 22:38:55",
                 date = "2021-11-12",
-                status = "Pesanan dalam perjalanan",
+                status = "Pesanan sampai di sorting center JAKARTA SELATAN HUB  ",
                 city = "Bandung",
                 time = "22:38:55",
                 partnerName = "JNT"
@@ -263,7 +278,7 @@ private fun TrackingHistoryNormalPreview() {
             TrackHistoryModel(
                 dateTime = "2021-11-10 22:38:55",
                 date = "2021-11-10",
-                status = "Pesanan telah di pickup",
+                status = "Pesanan dalam perjalanan",
                 city = "Surabaya",
                 time = "22:38:55"
             )

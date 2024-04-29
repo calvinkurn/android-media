@@ -8,8 +8,10 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartItemHolderData(
+    var identifier: String = "",
     var cartString: String = "",
     var cartStringOrder: String = "",
+    var orderMetadata: String = "",
     var actionsData: List<Action> = emptyList(),
     var isError: Boolean = false,
     var errorType: String = "",
@@ -104,9 +106,13 @@ data class CartItemHolderData(
     // AddOns Product
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
+    // Cart Product Label
+    var cartProductLabelData: CartProductLabelData = CartProductLabelData(),
+
     // BMGM
     var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
-    var showBmGmBottomDivider: Boolean = false
+    var showBmGmBottomDivider: Boolean = false,
+    var productMetadata: String = ""
 ) : ImpressHolder() {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0

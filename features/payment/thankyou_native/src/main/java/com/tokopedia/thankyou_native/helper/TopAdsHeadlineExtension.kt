@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.fragment.ThankYouBaseFragment
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
 
 fun Context.getTopAdsHeadlinesView(): TopAdsHeadlineView {
     return LayoutInflater.from(this)

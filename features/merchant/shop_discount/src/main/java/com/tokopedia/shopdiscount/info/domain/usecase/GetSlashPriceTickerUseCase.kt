@@ -46,6 +46,12 @@ class GetSlashPriceTickerUseCase @Inject constructor(
                   error_code
                 }
                 tickers
+                tickerUnificationConfig{
+                    TickerUnificationTarget{
+                        Type
+                        Values
+                    }
+                }
               }
             }
         """

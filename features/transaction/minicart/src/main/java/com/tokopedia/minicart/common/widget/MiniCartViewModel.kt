@@ -19,12 +19,20 @@ import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataR
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper.getUpdateGwpParam
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper.mapParamsFilteredToUpdateGwp
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet.Companion.STATE_PRODUCT_BUNDLE_RECOM_ATC
+import com.tokopedia.minicart.cartlist.MiniCartListGwpUiModelMapper.getGwpErrorState
+import com.tokopedia.minicart.cartlist.MiniCartListGwpUiModelMapper.getGwpLoadingState
+import com.tokopedia.minicart.cartlist.MiniCartListGwpUiModelMapper.getGwpSuccessState
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
@@ -54,9 +62,11 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 class MiniCartViewModel @Inject constructor(
     private val executorDispatchers: CoroutineDispatchers,
@@ -70,6 +80,7 @@ class MiniCartViewModel @Inject constructor(
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
     private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
     private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper,
+    private val updateGwpUseCase: BmGmGetGroupProductTickerUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(executorDispatchers.main) {
 
@@ -77,7 +88,11 @@ class MiniCartViewModel @Inject constructor(
         const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
         const val DEFAULT_PERCENTAGE = 100.0
         const val DEFAULT_WEIGHT = 1000.0f
+        const val DEFAULT_OFFER_ID = 0L
     }
+
+    private val updateGwpUseCaseJob: HashMap<Long, Job> = hashMapOf()
+    private var paramsToUpdateGwp: BmGmGetGroupProductTickerParams = BmGmGetGroupProductTickerParams()
 
     // Global Data
     private val _currentShopIds = MutableLiveData<List<String>>()
@@ -229,7 +244,7 @@ class MiniCartViewModel @Inject constructor(
 
     fun getCartList(isFirstLoad: Boolean = false) {
         val shopIds = getShopIds()
-        getMiniCartListUseCase.setParams(shopIds)
+        getMiniCartListUseCase.setParams(shopIds = shopIds, source = currentSource)
         getMiniCartListUseCase.execute(
             onSuccess = {
                 setMiniCartABTestData(
@@ -427,6 +442,7 @@ class MiniCartViewModel @Inject constructor(
                 data = miniCartData
             )
         } else {
+            paramsToUpdateGwp = BmgmParamMapper.mapParamsToUpdateGwp(miniCartData.data.availableSection)
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
 
@@ -657,7 +673,11 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    fun updateCart() {
+    fun updateCart(
+        offerId: Long = DEFAULT_OFFER_ID,
+        productId: String = "",
+        newQty: Int? = null
+    ) {
         val source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         val miniCartProductUiModels = mutableListOf<UpdateCartRequest>()
         val visitables = getVisitables()
@@ -690,7 +710,53 @@ class MiniCartViewModel @Inject constructor(
         }
         updateCartUseCase.setParams(miniCartProductUiModels, source)
         // No-op for booth onSuccess & onError
-        updateCartUseCase.execute(onSuccess = {}, onError = {})
+        updateCartUseCase.execute(
+            onSuccess = {
+                updateGwpWidget(offerId, productId, newQty)
+            },
+            onError = { /* do nothing */ }
+        )
+    }
+
+    private fun getBmGmGroupProductTicker(
+        offerId: Long,
+        productId: String? = null,
+        newQty: Int? = null
+    ) {
+        if (offerId > DEFAULT_OFFER_ID) {
+            updateGwpUseCaseJob[offerId]?.cancel()
+            updateGwpUseCaseJob[offerId] = launchCatchError(
+                block = {
+                    paramsToUpdateGwp = paramsToUpdateGwp
+                        .mapParamsFilteredToUpdateGwp(offerId, productId, newQty)
+                    val updateGwpParam = paramsToUpdateGwp.getUpdateGwpParam(offerId)
+
+                    _miniCartListBottomSheetUiModel.value = getGwpSuccessState(
+                        uiModel = _miniCartListBottomSheetUiModel.value,
+                        response = updateGwpUseCase.invoke(updateGwpParam)
+                    )
+                },
+                onError = {
+                    _miniCartListBottomSheetUiModel.value = getGwpErrorState(
+                        uiModel = _miniCartListBottomSheetUiModel.value,
+                        offerId = offerId
+                    )
+                }
+            )
+        }
+    }
+
+    private fun updateGwpWidget(offerId: Long, productId: String, newQty: Int?) {
+        getBmGmGroupProductTicker(offerId, productId, newQty)
+    }
+
+    fun refreshGwpWidget(offerId: Long) {
+        _miniCartListBottomSheetUiModel.value = getGwpLoadingState(
+            uiModel = _miniCartListBottomSheetUiModel.value,
+            offerId = offerId
+        )
+
+        getBmGmGroupProductTicker(offerId)
     }
 
     fun goToCheckout(observer: Int) {

@@ -114,6 +114,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     countTalk
                     rating
                   }
+                  weightWording
                 }
                 components {
                   name
@@ -137,6 +138,12 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         iconText
                         bottomsheetTitle
                         recommendation
+                      }
+                      liveIndicator {
+                        isLive
+                        channelID
+                        applink
+                        mediaURL
                       }
                       videos {
                         source
@@ -508,6 +515,19 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         b
                       }
                     }
+                    ... on pdpDataComponentDynamicOneLinerVariant {
+                      name
+                      text
+                      applink
+                      separator
+                      icon
+                      status
+                      chevronPos
+                      padding {
+                        t
+                        b
+                      }
+                    }
                     ... on pdpDataProductDetailMediaComponent {
                       title
                       description
@@ -533,6 +553,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                                 appLink
                             }
                         }
+                    }
+                    ... on pdpDataComponentSDUIDivKit {
+                        template 
                     }
                   }
                 }

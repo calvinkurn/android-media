@@ -15,7 +15,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -24,6 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ClaimCouponItemViewModelTest {
 
     @get:Rule
@@ -47,7 +49,7 @@ class ClaimCouponItemViewModelTest {
     @Throws(Exception::class)
     fun setUp() {
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
         every { componentsItem.data } returns null
         coEvery { application.applicationContext } returns context
     }
@@ -61,6 +63,7 @@ class ClaimCouponItemViewModelTest {
     fun `test for application`() {
         assert(viewModel.application === application)
     }
+
     @Test
     fun `test for componentData`() {
         assert(viewModel.getComponentData().value === componentsItem)

@@ -15,6 +15,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
@@ -225,7 +226,7 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
         verify {
             inspirationListAtcView.trackItemClick(expectedTrackData)
-            inspirationListAtcView.trackAddToCart(expectedTrackData)
+            inspirationListAtcView.trackAddToCart(expectedTrackData, expectedProduct)
         }
     }
 
@@ -436,6 +437,7 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         val dummyInspirationListPostAtc: SearchInspirationCarousel =
             inspirationListPostAtc.jsonToObject()
         return InspirationListPostAtcDataView.InspirationListPostAtcDataViewMapper.convertToInspirationListPostAtcDataView(
+            ByteIOTrackingData(),
             InspirationCarouselDataView.Option.Product(),
             dummyInspirationListPostAtc.data[0]
         )

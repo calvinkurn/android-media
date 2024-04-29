@@ -28,7 +28,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -111,8 +110,10 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.network.R as networkR
+import androidx.appcompat.R as appcompatR
 import com.tokopedia.sessioncommon.R as sessioncommonR
+import com.tokopedia.network.R as networkR
+
 
 /**
  * @author by nisie on 10/24/18.
@@ -1380,7 +1381,6 @@ class RegisterInitialFragment :
         registerPushNotif()
         submitIntegrityApi()
 
-        ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
         if (viewBinding?.registerInputView?.textValue?.isNotBlank() == true) {
             userSession.autofillUserData = viewBinding?.registerInputView?.textValue
         }
@@ -1469,7 +1469,7 @@ class RegisterInitialFragment :
                 viewBinding?.registerInputView?.setAdapterInputEmailPhone(
                     ArrayAdapter(
                         it,
-                        androidx.appcompat.R.layout.select_dialog_item_material,
+                        appcompatR.layout.select_dialog_item_material,
                         phoneNumbers
                     )
                 ) { v, hasFocus ->
@@ -1517,7 +1517,7 @@ class RegisterInitialFragment :
     }
 
     private fun logoutGoogleAccountIfExist() {
-        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(requireContext())
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 

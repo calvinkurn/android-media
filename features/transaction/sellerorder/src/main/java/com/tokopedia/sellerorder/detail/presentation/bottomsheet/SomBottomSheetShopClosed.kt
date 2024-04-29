@@ -22,12 +22,16 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import java.util.*
 
 class SomBottomSheetShopClosed(
-        context: Context,
-        private val childFragmentManager: FragmentManager,
-        private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
-        private var orderId: String,
-        private val listener: SomRejectOrderBottomSheetListener
-) : SomBaseRejectOrderBottomSheet<BottomsheetShopClosedBinding>(context, LAYOUT, SomConsts.TITLE_ATUR_TOKO_TUTUP) {
+    context: Context,
+    private val childFragmentManager: FragmentManager,
+    private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
+    private var orderId: String,
+    private val listener: SomRejectOrderBottomSheetListener
+) : SomBaseRejectOrderBottomSheet<BottomsheetShopClosedBinding>(
+    context = context,
+    childViewsLayoutResourceId = LAYOUT,
+    bottomSheetTitle = SomConsts.TITLE_ATUR_TOKO_TUTUP
+) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_shop_closed

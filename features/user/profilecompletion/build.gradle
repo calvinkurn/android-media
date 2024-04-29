@@ -33,8 +33,6 @@ android {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.scpAuth)
-
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
@@ -48,7 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    implementation projectOrAar(rootProject.ext.features.otp)
+    implementation projectOrAar(rootProject.ext.features.verification)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.interceptors)
@@ -116,6 +114,14 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
+
+    // ttnet
+    implementation rootProject.ext.ttnetDependencies.chromiumCronet
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.ttnetDependencies.boringSsl
+    implementation rootProject.ext.ttnetDependencies.cppShared
+
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
 }
 
 project.ext {

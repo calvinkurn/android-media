@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactory
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.BUYER_TAG
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.OFFICIAL_TAG
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.SELLER_ROLE
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.SELLER_TAG
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.STATE_CHAT_READ
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.STATE_CHAT_UNREAD
@@ -26,6 +27,7 @@ data class ItemChatListPojo(
 
     val label: String get() = attributes?.label ?: ""
     val tag: String get() = attributes?.contact?.tag ?: ""
+    val role: String get() = attributes?.contact?.role ?: ""
     val lastReplyTime: Long get() = attributes?.lastReplyTimestamp ?: 0
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
     val lastReplyTimeMillis: Long get() = lastReplyTimeStr.toLongOrZero()
@@ -105,5 +107,9 @@ data class ItemChatListPojo(
 
     fun markAsInactive() {
         this.isActive = false
+    }
+
+    fun isSeller(): Boolean {
+        return attributes?.contact?.role == SELLER_ROLE
     }
 }

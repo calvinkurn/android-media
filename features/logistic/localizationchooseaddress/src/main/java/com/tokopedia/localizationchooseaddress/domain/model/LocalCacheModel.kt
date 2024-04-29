@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
 import kotlinx.parcelize.Parcelize
 
@@ -63,8 +62,6 @@ data class LocalCacheModel(
 ) {
     companion object {
         const val OOC_WAREHOUSE_ID = "0"
-        const val SERVICE_TYPE_15M = "15m"
-        const val SERVICE_TYPE_20M = "20m"
     }
 
     /**
@@ -80,18 +77,8 @@ data class LocalCacheModel(
             }
         }
 
-    fun isNow15Available(): Boolean {
-        val now15Warehouse = warehouses.find { it.service_type == SERVICE_TYPE_15M }
-        val now15WarehouseId = now15Warehouse?.warehouse_id.orZero()
-        return now15WarehouseId != 0L
-    }
-
     fun isOutOfCoverage(): Boolean {
         return warehouse_id.isBlank() || warehouse_id == OOC_WAREHOUSE_ID
-    }
-
-    fun getServiceType(): String {
-        return if (service_type == SERVICE_TYPE_15M) SERVICE_TYPE_20M else service_type
     }
 
     val warehouse_ids: List<String>

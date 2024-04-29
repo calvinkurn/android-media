@@ -31,7 +31,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         setOrientation()
 
         if(savedInstanceState == null) {
-            attachFragment()
+            loadLayout()
         }
     }
 
@@ -103,11 +103,15 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         }
     }
 
-    private fun attachFragment() {
+    open fun attachFragment() {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container, getFragment())
             .commit()
+    }
+
+    open fun loadLayout() {
+        attachFragment()
     }
 
     abstract fun getFragment(): Fragment

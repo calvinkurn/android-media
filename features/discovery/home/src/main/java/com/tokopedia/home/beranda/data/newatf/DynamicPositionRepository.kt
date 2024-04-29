@@ -1,15 +1,12 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -17,7 +14,6 @@ import javax.inject.Inject
  */
 @HomeScope
 class DynamicPositionRepository @Inject constructor(
-    private val homeDispatcher: CoroutineDispatchers,
     private val atfDao: AtfDao,
     private val atfDataRepository: HomeAtfRepository,
     private val atfMapper: AtfMapper
@@ -45,7 +41,7 @@ class DynamicPositionRepository @Inject constructor(
     val flow: Flow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
         if (cache != null && remote != null) {
             if (remote.positionEquals(cache)) {
-                // if remote position same with cache, 
+                // if remote position same with cache,
                 // populate cache data to remote position
                 remote.copyAtfContentsFrom(cache)
             } else if (remote.isDataError()) {
@@ -62,26 +58,15 @@ class DynamicPositionRepository @Inject constructor(
                 // to re-fetch every ATF components data from remote
                 remote.copy(needToFetchComponents = true)
             }
+        } else if (remote != null) {
+            // if remote comes faster than cache, need to fetch each data
+            remote.copy(needToFetchComponents = true)
         } else {
             cache
         }
     }
 
-    /**
-     * Get cached and remote data in parallel
-     */
-    suspend fun getData() {
-        coroutineScope {
-            launch(homeDispatcher.io) {
-                getCachedData()
-            }
-            launch(homeDispatcher.io) {
-                getRemoteData()
-            }
-        }
-    }
-
-    private suspend fun getCachedData() {
+    suspend fun getCachedData() {
         val cachedData = AtfDataList(
             listAtfData = atfDao.getAtfDynamicPosition().map(atfMapper::mapCacheToDomainAtfData),
             isCache = true,
