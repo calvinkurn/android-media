@@ -25,7 +25,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unifyprinciples.R as unifyR
 

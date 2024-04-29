@@ -112,12 +112,13 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
+        android:maxLines="@integer/pdp_product_name_collapsed_max_lines"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_2"
-        tools:text="Simple Minimalistic Ergonomic White Chair" />
+        tools:text="Simple Minimalistic Ergonomic White Chair Simple Minimalistic Ergonomic White Chair Simple Minimalistic Ergonomic White Chair Simple Minimalistic Ergonomic White Chair" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_stock_available"

@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
@@ -28,8 +29,6 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class ShopHomeShowcaseListBaseWidgetViewHolder(
     itemView: View,
     private var childWidgetAdapter: ShopHomeShowcaseListWidgetAdapter,
-    private var layoutManagerType: Int,
-    private var gridColumnSize: Int,
     private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeShowcaseListSliderUiModel>(itemView) {
 
@@ -70,10 +69,10 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
 
     init {
         initView()
-        initRecyclerView()
     }
 
     override fun bind(element: ShopHomeShowcaseListSliderUiModel) {
+        initRecyclerView(element)
         tvCarouselTitle?.apply {
             val title = element.header.title
             text = title
@@ -122,26 +121,39 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
         recyclerView = viewBinding?.rvShowcaseListWidget
     }
 
-    private fun initRecyclerView() {
+    private fun initRecyclerView(element: ShopHomeShowcaseListSliderUiModel) {
         recyclerView?.apply {
             isNestedScrollingEnabled = false
             setHasFixedSize(true)
-            layoutManager = when (layoutManagerType) {
-                LAYOUT_TYPE_LINEAR_HORIZONTAL -> {
-                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            when(element.name){
+                WidgetNameEnum.SHOWCASE_SLIDER_SMALL.value,
+                WidgetNameEnum.SHOWCASE_SLIDER_MEDIUM.value -> {
+                    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 }
-                LAYOUT_TYPE_GRID_HORIZONTAL -> {
-                    GridLayoutManager(context, gridColumnSize, GridLayoutManager.HORIZONTAL, false)
+                WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value -> {
+                    layoutManager = GridLayoutManager(context, LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE, GridLayoutManager.HORIZONTAL, false)
                 }
-                LAYOUT_TYPE_GRID_VERTICAL -> {
-                    object : GridLayoutManager(context, gridColumnSize, GridLayoutManager.VERTICAL, false) {
+                WidgetNameEnum.SHOWCASE_GRID_SMALL.value -> {
+                    layoutManager = object : GridLayoutManager(context, LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE, GridLayoutManager.VERTICAL, false) {
                         // disable scroll if vertical grid column type
                         override fun canScrollVertically(): Boolean {
                             return false
                         }
                     }
                 }
-                else -> LinearLayoutManager(context, layoutManagerType, false)
+                WidgetNameEnum.SHOWCASE_GRID_MEDIUM.value,
+                WidgetNameEnum.SHOWCASE_GRID_BIG.value -> {
+                    layoutManager = object : GridLayoutManager(context, LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE, GridLayoutManager.VERTICAL, false) {
+                        // disable scroll if vertical grid column type
+                        override fun canScrollVertically(): Boolean {
+                            return false
+                        }
+                    }
+                }
+
+                else -> {
+                    -1
+                }
             }
             adapter = childWidgetAdapter
             setRecycledViewPool(recyclerviewPoolListener.parentPool)

@@ -2,8 +2,8 @@ package com.tokopedia.play.broadcaster.ui.state
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
@@ -37,6 +37,7 @@ data class ChannelSummaryUiState(
 
 data class LiveReportUiState(
     val trafficMetricsResult: NetworkResult<List<TrafficMetricUiModel>>,
+    val trafficMetricHighlight: NetworkResult<List<LiveStatsUiModel>>,
 )
 
 data class TagUiState(
