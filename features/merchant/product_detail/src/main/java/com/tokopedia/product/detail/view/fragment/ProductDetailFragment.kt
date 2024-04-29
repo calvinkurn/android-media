@@ -1914,7 +1914,7 @@ open class ProductDetailFragment :
         applink: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
-        AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(recommendationWidget.pageName))
+        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_PAGE_NAME_FORMAT.format(recommendationWidget.pageName))
         ProductDetailTracking.Click.eventClickSeeMoreRecomWidget(
             recommendationWidget,
             pageName,
