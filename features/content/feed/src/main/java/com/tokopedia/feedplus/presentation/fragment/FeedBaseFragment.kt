@@ -727,6 +727,7 @@ class FeedBaseFragment :
         }
 
         binding.containerFeedTopNav.searchTooltip.setOnClickTooltip {
+            binding.containerFeedTopNav.searchTooltip.hide()
             tooltipAnalytics.clickSearchTooltip()
             goToFeedBrowse(meta.browseApplink)
         }
