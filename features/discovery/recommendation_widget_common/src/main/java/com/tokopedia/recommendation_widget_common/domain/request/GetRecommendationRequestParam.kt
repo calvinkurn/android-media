@@ -56,34 +56,6 @@ data class GetRecommendationRequestParam(
         return requestMap
     }
 
-    fun toViewToViewGqlRequest(): Map<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-
-        requestMap[PRODUCT_CARD_VERSION] = getProductCardReimagineVersion()
-        requestMap[PAGE_NUMBER] = pageNumber
-        requestMap[QUERY_PARAM] = queryParam
-        if (userId != 0) {
-            requestMap[USER_ID] = userId
-        }
-        if (productIds.isNotEmpty())
-            requestMap[PRODUCT_IDS] = TextUtils.join(",", productIds)
-        if (categoryIds.isNotEmpty())
-            requestMap[CATEGORY_IDS] = TextUtils.join(",", categoryIds)
-        if (xSource.isNotEmpty()) requestMap[X_SOURCE] = xSource
-        if (xDevice.isNotEmpty()) requestMap[X_DEVICE] = xDevice
-        if (criteriaThematicIDs.isNotEmpty()) {
-            requestMap[CRITERIA_THEMATIC_IDS] = criteriaThematicIDs.joinToString(",")
-        }
-
-        if(refreshType != RefreshType.UNKNOWN) {
-            requestMap[REFRESH_TYPE] = refreshType.value.toString()
-        }
-        if(bytedanceSessionId.isNotEmpty()) {
-            requestMap[CURRENT_SESSION_ID] = bytedanceSessionId
-        }
-        return requestMap
-    }
-
     private fun getProductCardReimagineVersion(): Int {
         val shouldReimagineEnabled = ProductCardExperiment.isReimagine()
         return if (shouldReimagineEnabled && hasNewProductCardEnabled) {
