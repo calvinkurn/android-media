@@ -30,6 +30,8 @@ import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam
 import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
 import com.tokopedia.campaign.data.request.GetOfferingProductListRequestParam
+import com.tokopedia.campaign.data.request.OfferingNowInfoParam
+import com.tokopedia.campaign.data.request.WarehouseParam
 import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -196,6 +198,7 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private fun getOfferingInfoForBuyerRequestParam(): GetOfferingInfoForBuyerRequestParam {
         return GetOfferingInfoForBuyerRequestParam(
+            requestHeader = createGetOfferingInfoRequestHeader(),
             offerIds = currentState.offerIds,
             shopIds = if (currentState.shopData.shopId.isMoreThanZero()) {
                 listOf(currentState.shopData.shopId)
@@ -230,6 +233,7 @@ class OfferLandingPageViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val param = GetOfferingProductListRequestParam(
+                    requestHeader = createGetOfferingProductListRequestHeader(),
                     offerIds = currentState.offerIds,
                     productAnchor = GetOfferingProductListRequestParam.ProductAnchor(
                         currentState.warehouseIds
@@ -487,5 +491,24 @@ class OfferLandingPageViewModel @Inject constructor(
         }
 
         return tierGifts
+    }
+
+    private fun createGetOfferingInfoRequestHeader(): GetOfferingInfoForBuyerRequestParam.RequestHeader {
+        return GetOfferingInfoForBuyerRequestParam.RequestHeader(
+            nowInfo = OfferingNowInfoParam(createWarehousesParam())
+        )
+    }
+
+    private fun createGetOfferingProductListRequestHeader(): GetOfferingProductListRequestParam.RequestHeader {
+        return GetOfferingProductListRequestParam.RequestHeader(
+            nowInfo = OfferingNowInfoParam(createWarehousesParam()),
+            shopId = currentState.shopData.shopId
+        )
+    }
+
+    private fun createWarehousesParam(): List<WarehouseParam> {
+        return currentState.localCacheModel?.warehouses.orEmpty().map {
+            WarehouseParam(it.warehouse_id, it.service_type)
+        }
     }
 }

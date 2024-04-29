@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_cost_payment_fee_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Total Biaya Jasa Aplikasi" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_checkout_cost_payment_fee"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/tv_checkout_cost_payment_fee_title"
+        app:layout_constraintStart_toEndOf="@id/tv_checkout_cost_payment_fee_title"
+        app:layout_constraintTop_toTopOf="@id/tv_checkout_cost_payment_fee_title" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_checkout_cost_payment_fee"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:constraint_referenced_ids="tv_checkout_cost_payment_fee_slashed_value,tv_checkout_cost_payment_fee_value"
+        app:flow_horizontalAlign="end"
+        app:flow_horizontalBias="1"
+        app:flow_horizontalGap="4dp"
+        app:flow_horizontalStyle="packed"
+        app:flow_maxElementsWrap="2"
+        app:flow_verticalBias="0"
+        app:flow_verticalGap="4dp"
+        app:flow_wrapMode="chain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_checkout_cost_payment_fee"
+        app:layout_constraintTop_toTopOf="@id/tv_checkout_cost_payment_fee_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_cost_payment_fee_slashed_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN400"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp2.910.000,00" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_cost_payment_fee_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp2.905.000,00" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

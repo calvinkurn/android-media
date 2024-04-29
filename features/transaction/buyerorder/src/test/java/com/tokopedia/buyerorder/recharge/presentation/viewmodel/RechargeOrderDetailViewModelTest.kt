@@ -6,6 +6,8 @@ import com.tokopedia.buyerorder.recharge.data.response.RechargeEmoneyVoidRespons
 import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
+import com.tokopedia.common_digital.common.data.model.RechargeSetFailData
+import com.tokopedia.common_digital.common.usecase.RechargeSetFailUseCase
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -14,10 +16,14 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -28,11 +34,15 @@ import org.junit.runners.JUnit4
 /**
  * @author by furqan on 08/11/2021
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class RechargeOrderDetailViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: RechargeOrderDetailViewModel
@@ -42,6 +52,7 @@ class RechargeOrderDetailViewModelTest {
     private val getRecommendationUseCaseCoroutine: GetRecommendationUseCase = mockk()
     private val bestSellerMapper: BestSellerMapper = mockk()
     private val recommendationUseCase: DigitalRecommendationUseCase = mockk()
+    private val rechargeSetFailUseCase: RechargeSetFailUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -51,7 +62,8 @@ class RechargeOrderDetailViewModelTest {
             getRecommendationUseCaseCoroutine,
             bestSellerMapper,
             recommendationUseCase,
-            dispatcher
+            rechargeSetFailUseCase,
+            testCoroutineRule.dispatchers
         )
     }
 
@@ -446,5 +458,35 @@ class RechargeOrderDetailViewModelTest {
         viewModel.voidEmoneyData(orderId)
         // then
         assertEquals(error, (viewModel.emoneyVoidResponse.value as Fail).throwable)
+    }
+
+    @Test
+    fun executeCancelOrder_shouldReturnSuccess() = runTest {
+        // given
+        coEvery {
+            rechargeSetFailUseCase(any())
+        } returns RechargeSetFailData(RechargeSetFailData.RechargeSetOrderToFail(RechargeSetFailData.RechargeSetOrderToFail.Attributes(-1, -1, true, "")))
+
+        // when
+        viewModel.executeCancelOrder(-1)
+        advanceUntilIdle()
+
+        // then
+        assert(viewModel.rechargeSetFailResult.value is Success)
+        assert((viewModel.rechargeSetFailResult.value as Success<RechargeSetFailData>).data.rechargeSetOrderToFail.attributes.isSuccess)
+    }
+
+    @Test
+    fun executeCancelOrder_shouldReturnFail() {
+        // given
+        coEvery {
+            rechargeSetFailUseCase(any())
+        } throws Exception()
+
+        // when
+        viewModel.executeCancelOrder(-1)
+
+        // then
+        assert(viewModel.rechargeSetFailResult.value is Fail)
     }
 }

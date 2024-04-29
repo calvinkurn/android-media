@@ -11,10 +11,10 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -24,6 +24,8 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
+import com.tokopedia.checkoutpayment.R as checkoutpaymentR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class OrderPriceSummaryBottomSheetRobot {
 
@@ -136,12 +138,12 @@ class OrderPriceSummaryBottomSheetRobot {
     }
 
     fun assertPaymentFeeBottomSheetInfo(tooltipTitle: String, tooltipInfo: String) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_title)).check(matches(withText(tooltipTitle)))
-        onView(withId(R.id.tv_info)).check(matches(withText(tooltipInfo)))
+        onView(withId(unifycomponentsR.id.bottom_sheet_title)).check(matches(withText(tooltipTitle)))
+        onView(withId(checkoutpaymentR.id.tv_info)).check(matches(withText(tooltipInfo)))
     }
 
     fun closeBottomSheet() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(object : ViewAction {
+        onView(withId(unifycomponentsR.id.bottom_sheet_close)).perform(object : ViewAction {
             override fun getConstraints(): Matcher<View> = ViewMatchers.isClickable()
 
             override fun getDescription(): String = "Force click close bottom sheet"

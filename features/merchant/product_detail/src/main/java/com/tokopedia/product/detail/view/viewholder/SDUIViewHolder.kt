@@ -39,8 +39,6 @@ class SDUIViewHolder(
 
     private var element: SDUIDataModel? = null
 
-    private var sduiView: View? = null
-
     override fun bind(element: SDUIDataModel) {
         loadSDUIWidget(element)
     }
@@ -53,7 +51,7 @@ class SDUIViewHolder(
     }
 
     private fun createAndAddSDUIView(element: SDUIDataModel) {
-        if (sduiView != null) return
+        if (!element.shouldRefreshUI) return
         val jsonObject = element.jsonObject ?: return
         val templateJSON = jsonObject.optJSONObject("templates") ?: return
         val cardJson = jsonObject.getJSONObject("card") ?: return
@@ -75,8 +73,9 @@ class SDUIViewHolder(
             callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
 
+        binding.sduiViewContainer.removeAllViews()
         binding.sduiViewContainer.addView(view)
-        this.sduiView = view
+        element.shouldRefreshUI = false
     }
 
 

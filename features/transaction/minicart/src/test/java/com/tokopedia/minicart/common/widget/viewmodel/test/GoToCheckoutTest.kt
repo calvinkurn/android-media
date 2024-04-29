@@ -10,6 +10,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -48,6 +49,7 @@ class GoToCheckoutTest {
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase = mockk()
     private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase = mockk()
     private val addToCartBundleUseCase: AddToCartBundleUseCase = mockk()
+    private val updateGwpUseCase: BmGmGetGroupProductTickerUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
 
     @get: Rule
@@ -67,6 +69,7 @@ class GoToCheckoutTest {
             addToCartOccMultiUseCase,
             miniCartListUiModelMapper,
             miniCartChatListUiModelMapper,
+            updateGwpUseCase,
             userSession
         )
     }

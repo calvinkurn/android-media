@@ -11,6 +11,7 @@ import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailA
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailActionButtonModel
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by furqan on 02/11/2021
@@ -36,7 +37,7 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
                     button.setMargin(
                         0,
                         root.context.resources.getDimensionPixelSize(
-                            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+                            unifyprinciplesR.dimen.unify_space_8
                         ),
                         0,
                         0
@@ -58,9 +59,11 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
         if (actionButton.buttonType.equals(PRIMARY_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
             button.buttonVariant = UnifyButton.Variant.FILLED
+            listener?.onViewPrimaryButton(actionButton.name)
         } else if (actionButton.buttonType.equals(SECONDARY_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
             button.buttonVariant = UnifyButton.Variant.GHOST
+            listener?.onViewSecondaryButton(actionButton.name)
         } else if (actionButton.buttonType.equals(DISABLED_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
             button.buttonVariant = UnifyButton.Variant.FILLED
@@ -69,10 +72,16 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
 
         button.setOnClickListener {
             listener?.onActionButtonClicked(actionButton)
-            if (!actionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
-                onActionButtonClicked(context, actionButton.uri)
-            } else {
-                listener?.onVoidButtonClicked()
+            when {
+                actionButton.mappingUri.equals(MAPPING_URI_VOID, true) -> {
+                    listener?.onVoidButtonClicked()
+                }
+                actionButton.mappingUri.equals(MAPPING_URI_CANCEL_ORDER, true) -> {
+                    listener?.onCancelOrderButtonClicked()
+                }
+                else -> {
+                    onActionButtonClicked(context, actionButton.uri)
+                }
             }
         }
 
@@ -97,12 +106,16 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
     interface ActionListener {
         fun onActionButtonClicked(actionButton: RechargeOrderDetailActionButtonModel)
         fun onVoidButtonClicked()
+        fun onViewPrimaryButton(buttonName: String)
+        fun onViewSecondaryButton(buttonName: String)
+        fun onCancelOrderButtonClicked()
     }
 
     companion object {
         val LAYOUT = R.layout.item_order_detail_recharge_action_button_section
 
         const val MAPPING_URI_VOID = "void"
+        const val MAPPING_URI_CANCEL_ORDER = "cancel_order"
 
         private const val PRIMARY_BUTTON_TYPE = "primary"
         private const val SECONDARY_BUTTON_TYPE = "secondary"

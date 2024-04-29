@@ -15,9 +15,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bytedance.apm.trace.fps.FpsTracer
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -206,6 +208,8 @@ class HomeRecommendationFragment :
         initListeners()
         observeStateFlow()
         observeLiveData()
+
+        recyclerView?.bindFpsTracer(FPS_TRACER_HOME_RECOM)
     }
 
     override fun onPause() {
@@ -967,6 +971,8 @@ class HomeRecommendationFragment :
 
         private const val MAX_RECYCLED_VIEWS = 20
         private const val BASE_POSITION = 10
+
+        private const val FPS_TRACER_HOME_RECOM = "Home Recommendation Scene"
 
         fun newInstance(
             tabIndex: Int,

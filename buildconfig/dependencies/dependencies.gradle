@@ -133,7 +133,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.35'
     unifyPrinciplesVersion = '1.4.18'
-    unifyComponentsVersion = '1.2.58-rc01'
+    unifyComponentsVersion = '1.2.59'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.9'
@@ -155,7 +155,7 @@ ext {
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.13'
     nestPrinciplesVersion = '1.0.7'
-    nestComponentsVersion = '1.0.17'
+    nestComponentsVersion = '1.0.18'
 
     gradlePlugin = [
             crashlytics                     : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -542,7 +542,7 @@ ext {
 
     appLogVersion = "5.6.9-bugfix.6"
     frameworkCoreEncryptVersion = "1.2.2"
-    baseLibsUtilityVersion = "2.0.11"
+    baseLibsUtilityVersion = "2.0.13-rc.0"
     bdNetworkTagVersion = "0.0.1-alpha.2-support"
 
     appLogDependencies = [
@@ -557,6 +557,23 @@ ext {
         encrypt           : "com.bytedance.frameworks.core:encrypt:$frameworkCoreEncryptVersion",
         baseLibsUtility   : "com.bytedance.frameworks.baselib:utility:$baseLibsUtilityVersion",
         bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
+    ]
+
+    msSdkDependencies = [
+            msSdk : "com.bytedance.mobsec.metasec:ov:5.0.0-alpha.124@aar",
+            sdkMonitor : "com.bytedance.frameworks.core:sdk_monitor:2.0.42-rc.5-tt@aar",
+            keva : "com.bytedance.keva:keva:1.6.9@aar",
+            network        : "com.bytedance.frameworks.baselib:network:4.1.120.3-dut@aar",
+            cronet : "com.bytedance.frameworks.baselib:network-cronet:4.1.120.3-dut@aar",
+            networkOk3        : "com.bytedance.frameworks.baselib:network-ok3:4.1.120.3-dut@aar",
+            librarian        : "com.bytedance.librarian:librarian:0.1.6@aar",
+            apmUtil : "com.bytedance.frameworks.apm:util:5.0.20.1-rc.101-ttp@aar",
+            serviceManager        : "com.bytedance.news.common:service-manager:1.0.3:@aar",
+            serviceManagerAnnotation        : "com.bytedance.news.common:service-manager-annotation:1.0.0",
+            ssRetrofit2 : "com.bytedance.thirdparty:ss-retrofit2:4.1.120.3-dut@aar",
+            platformThread        : "com.bytedance.platform:thread:1.0.20@aar",
+            wsChannel : "com.bytedance.common:wschannel:1.5.4-pp@aar",
+            apmApi        : "com.bytedance.frameworks.core:apm_api:5.0.18-rc.1@aar",
     ]
 
     libra = [
