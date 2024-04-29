@@ -97,31 +97,8 @@ open class PercentageScrollListener : OnScrollListener() {
         val prevValue = viewHolder.visiblePercentage
 
         viewHolder.setVisiblePercentage(max(prevValue, visibleAreaPercentage))
-        percentText?.text = "${visibleAreaPercentage}%"
+        percentText?.text = "${viewHolder.visiblePercentage}%"
     }
-}
-
-
-//todo will be removed
-fun getViewAreaPercentage(recyclerView: RecyclerView?, itemView: View?, visiblePercentage: Int): Int {
-
-    if (itemView == null || recyclerView == null) return 0
-
-//    val viewHolder = recyclerView.findViewHolderForAdapterPosition(bindingAdapterPosition) as? IAdsViewHolderTrackListener
-//        ?: return 0
-
-    val rootView = itemView.rootView
-
-    val globalVisibleRect = Rect()
-
-    recyclerView.getGlobalVisibleRect(globalVisibleRect)
-    val itemVisibleRect = Rect()
-
-    itemView.getGlobalVisibleRect(itemVisibleRect)
-
-    val visibleArea = getCalculateVisibleViewArea(itemView, itemVisibleRect, globalVisibleRect)
-
-    return if (visibleArea > 0) max(visiblePercentage, visibleArea) else 100
 }
 
 fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect, globalVisibleRect: Rect): Int {
