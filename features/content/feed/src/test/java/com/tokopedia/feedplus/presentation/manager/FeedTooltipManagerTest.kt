@@ -94,6 +94,15 @@ class FeedTooltipManagerTest {
     }
 
     @Test
+    fun `isShowTooltip - something went wrong or error - false`() {
+        val exception = Exception("Error parsing")
+        coEvery { tooltipPreferences.getLastTimeSearchTooltipShown() } throws exception
+
+        tooltipManager.isShowTooltip(eligibleContentPosition).assertFalse()
+    }
+
+
+    @Test
     fun `showTooltipEvent - should trigger both show & dismiss tooltip`() = runTest(dispatchers.coroutineDispatcher) {
         tooltipManager.showTooltipEvent()
 
