@@ -12,6 +12,7 @@ import android.os.Process
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.widget.Scroller
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +21,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
+import com.ss.android.larksso.CallBackData
+import com.ss.android.larksso.IGetDataCallback
+import com.ss.android.larksso.LarkSSO
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -41,6 +45,7 @@ import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizat
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
 import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.SSOAuthorizationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
@@ -70,13 +75,15 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
 
+
 /**
  * @author Said Faisal on 24/11/2021
  */
 
 class DeveloperOptionActivity :
     BaseActivity(),
-    DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
+    DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener,
+    SSOAuthorizationViewHolder.LoginSSOListener {
 
     companion object {
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
@@ -146,7 +153,8 @@ class DeveloperOptionActivity :
                 authorizeListener = this,
                 branchListener = getBranchListener(),
                 userIdListener = userIdListener(),
-                shopIdListener = shopIdListener()
+                shopIdListener = shopIdListener(),
+                this
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -437,6 +445,8 @@ class DeveloperOptionActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d("TESS",data?.data.toString())
+        LarkSSO.inst().parseIntent(this, data)
         when (requestCode) {
             LOGIN_HELPER_REQUEST_CODE -> {
                 this.setResult(Activity.RESULT_OK)
@@ -519,4 +529,46 @@ class DeveloperOptionActivity :
             showToaster("Wrong password !! Please ask Android representative")
         }
     }
+
+    override fun onClickLogin() {
+        val scopeList = ArrayList<String>()
+        scopeList.add("contact:user.id:readonly")
+        val builder = LarkSSO.Builder().setAppId("cli_a6a8acbf677e900e")
+            .setServer("Lark")
+            .setChallengeMode(true)
+            .setForceWeb(false)
+            .setEnv("normal")
+            .setContext(this)
+
+        LarkSSO.inst().startSSOVerify(builder, object : IGetDataCallback {
+            override fun onSuccess(callBackData: CallBackData) {
+                Toast.makeText(
+                    this@DeveloperOptionActivity,
+                    "Auth success, code is:" + callBackData.code + ",codeVerifier is:" + callBackData.codeVerifier,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            override fun onError(callBackData: CallBackData) {
+                Toast.makeText(
+                    this@DeveloperOptionActivity,
+                    "Auth Failed, errorCode is" + callBackData.code + ",codeVerifier is:" + callBackData.codeVerifier,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LarkSSO.inst().parseIntent(this, intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        LarkSSO.inst().parseIntent(this, intent)
+    }
+
+
 }

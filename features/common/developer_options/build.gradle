@@ -80,6 +80,8 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+
+    implementation 'com.ss.android.larksso:larksso:1.1.5'
     implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
 
 }
