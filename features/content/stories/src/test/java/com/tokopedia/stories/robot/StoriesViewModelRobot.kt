@@ -263,6 +263,10 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.ResumeStories(forceResume = true))
     }
 
+    fun testShowVariantSheet(product: ContentTaggedProductUiModel) {
+        viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
+    }
+
     private fun <T> getPrivateField(name: String): T {
         val field = viewModel.javaClass.getDeclaredField(name)
         field.isAccessible = true

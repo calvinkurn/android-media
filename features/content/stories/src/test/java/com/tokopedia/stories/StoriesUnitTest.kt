@@ -1414,4 +1414,23 @@ class StoriesUnitTest {
             coVerify(exactly = 1) { mockRepository.setHasSeenManualStoriesDurationCoachmark() }
         }
     }
+
+    @Test
+    fun `when user trigger variant sheet, events should contains UiEvent ShowVariantSheet`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            val events = robot.recordEvent {
+                robot.entryPointTestCase(selectedGroup)
+                robot.testShowVariantSheet(product)
+            }
+
+            events.last().assertType<StoriesUiEvent.ShowVariantSheet> {}
+        }
+    }
 }
