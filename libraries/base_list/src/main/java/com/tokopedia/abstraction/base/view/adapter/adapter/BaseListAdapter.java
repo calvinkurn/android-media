@@ -23,6 +23,7 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
             LoadingModel.class, LoadingMoreModel.class});
 
     private OnAdapterInteractionListener<T> onAdapterInteractionListener;
+
     public BaseListAdapter(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory);
     }
