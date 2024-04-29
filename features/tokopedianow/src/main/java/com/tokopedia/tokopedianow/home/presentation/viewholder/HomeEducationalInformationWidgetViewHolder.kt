@@ -13,13 +13,10 @@ import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_FREE_SHIPPING_DAR
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_GUARANTEED_QUALITY_DARK_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_GUARANTEED_QUALITY_LIGHT_MODE
-import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_STOCK_AVAILABLE_DARK_MODE
-import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_STOCK_AVAILABLE_LIGHT_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_TIME_DARK_MODE
 import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_TIME_LIGHT_MODE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_DURATION_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
@@ -27,6 +24,7 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeEducationalInf
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeEducationalInformationWidgetViewHolder(
     itemView: View,
@@ -64,8 +62,7 @@ class HomeEducationalInformationWidgetViewHolder(
 
     private fun ItemTokopedianowHomeEducationalInformationWidgetBinding.setDurationText(serviceType: String) {
         getServiceTypeRes(
-            key = EDU_WIDGET_DURATION_RESOURCE_ID,
-            serviceType = serviceType
+            key = EDU_WIDGET_DURATION_RESOURCE_ID
         )?.let {
             tpTime.text = getString(it)
         }
@@ -73,8 +70,7 @@ class HomeEducationalInformationWidgetViewHolder(
 
     private fun ItemTokopedianowHomeEducationalInformationWidgetBinding.setSelectedProductFreeShippingText(serviceType: String) {
         getServiceTypeRes(
-            key = EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID,
-            serviceType = serviceType
+            key = EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID
         )?.let {
             tpSelectedProductFreeShipping.text = getString(it)
         }
@@ -92,11 +88,11 @@ class HomeEducationalInformationWidgetViewHolder(
     ) {
         if (root.context.isDarkMode()) {
             iuTime.setImageUrl(IMG_USP_NOW_TIME_DARK_MODE)
-            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_USP_NOW_STOCK_AVAILABLE_DARK_MODE  else IMG_USP_NOW_FREE_SHIPPING_DARK_MODE)
+            iuSelectedProductFreeShipping.setImageUrl(IMG_USP_NOW_FREE_SHIPPING_DARK_MODE)
             iuGuaranteedQuality.setImageUrl(IMG_USP_NOW_GUARANTEED_QUALITY_DARK_MODE)
         } else {
             iuTime.setImageUrl(IMG_USP_NOW_TIME_LIGHT_MODE)
-            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_USP_NOW_STOCK_AVAILABLE_LIGHT_MODE  else IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE)
+            iuSelectedProductFreeShipping.setImageUrl(IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE)
             iuGuaranteedQuality.setImageUrl(IMG_USP_NOW_GUARANTEED_QUALITY_LIGHT_MODE)
         }
     }
@@ -127,7 +123,7 @@ class HomeEducationalInformationWidgetViewHolder(
     private fun ItemTokopedianowHomeEducationalInformationWidgetBinding.setChevronDefault() {
         val unifyColor = ContextCompat.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_GN500
         )
 
         sivChevronDown.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(

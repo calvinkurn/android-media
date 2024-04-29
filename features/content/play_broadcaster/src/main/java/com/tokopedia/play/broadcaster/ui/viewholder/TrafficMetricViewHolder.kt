@@ -19,6 +19,8 @@ class TrafficMetricViewHolder(
 
     fun bind(metric: TrafficMetricUiModel) {
         with(binding) {
+            iconMetric.setImage(metric.type.iconRes)
+
             tvItemPlaySummaryDescription.text = MethodChecker.fromHtml(getString(metric.type.label))
             tvItemPlaySummaryCountInfo.text = metric.count
 

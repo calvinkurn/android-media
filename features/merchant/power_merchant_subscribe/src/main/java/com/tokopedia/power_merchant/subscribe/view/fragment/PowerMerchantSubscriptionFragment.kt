@@ -15,12 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.*
+import com.tokopedia.gm.common.constant.PMConstant.SELLER_EDU
+import com.tokopedia.gm.common.constant.PMConstant.SELLER_PACKAGENAME
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
@@ -194,6 +198,37 @@ open class PowerMerchantSubscriptionFragment :
                 it,
                 ApplinkConstInternalGlobal.WEBVIEW,
                 Constant.Url.PM_SERVICE_FEE
+            )
+        }
+    }
+
+    override fun showAdsPromo() {
+        context?.let {
+            if (!GlobalConfig.isSellerApp()) {
+                val isSellerAppInstalled = it.isAppInstalled(SELLER_PACKAGENAME)
+                if (isSellerAppInstalled) {
+                    openCentralizedPromo()
+                } else {
+                    openSellerEdu()
+                }
+            }else{
+                openCentralizedPromo()
+            }
+        }
+    }
+
+    private fun openCentralizedPromo() {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.SellerApp.CENTRALIZED_PROMO)
+        }
+    }
+
+    private fun openSellerEdu() {
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                SELLER_EDU
             )
         }
     }
@@ -691,15 +726,10 @@ open class PowerMerchantSubscriptionFragment :
         }
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
-        widgets.add(getCurrentShopGradeBenefit(data))
-        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro &&
-            isPmActive
-        if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
             getUpgradePmProWidget(getShopGradeWidgetData(data), data)?.let {
                 widgets.add(it)
             }
-        }
         if (isRegularMerchant) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(
@@ -710,11 +740,10 @@ open class PowerMerchantSubscriptionFragment :
             )
         }
         widgets.add(WidgetDividerUiModel)
+        widgets.add(WidgetShopExploreUiModel())
+        widgets.add(WidgetDividerUiModel)
         widgets.add(WidgetFeeServiceUiModel(pmBasicInfo?.shopInfo?.shopScore.orZero()))
-        if (isAutoExtendEnabled) {
-            widgets.add(WidgetDividerUiModel)
-            widgets.add(WidgetPMDeactivateUiModel)
-        }
+        widgets.add(WidgetDividerUiModel)
         recyclerView?.visible()
         adapter.clearAllElements()
         renderList(widgets, false)

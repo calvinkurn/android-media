@@ -5,7 +5,7 @@ import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
