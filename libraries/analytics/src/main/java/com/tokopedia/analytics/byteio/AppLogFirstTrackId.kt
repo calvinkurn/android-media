@@ -103,12 +103,14 @@ object AppLogFirstTrackId {
 
     fun showToast(activity: Activity) {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            Toast.makeText(
-                activity.applicationContext,
-                "First Track Id = $firstTrackId\n" +
-                    "First Page Source = $firstSourcePage",
-                Toast.LENGTH_SHORT
-            ).show()
+            if(_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) == PageName.PDP) {
+                Toast.makeText(
+                    activity.applicationContext,
+                    "First Track Id = $firstTrackId\n" +
+                        "First Page Source = $firstSourcePage",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
