@@ -61,8 +61,10 @@ object AppLogFirstTrackId {
                 if (trackId.isEmpty() || sourcePageType.isEmpty()) {
                     break
                 } else {
-                    _firstTrackId = trackId
-                    _firstSourcePage = sourcePageType
+                    synchronized(this) {
+                        _firstTrackId = trackId
+                        _firstSourcePage = sourcePageType
+                    }
                 }
             } else {
                 break
@@ -103,7 +105,7 @@ object AppLogFirstTrackId {
 
     fun showToast(activity: Activity) {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            if(_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) == PageName.PDP) {
+            if (_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) == PageName.PDP) {
                 Toast.makeText(
                     activity.applicationContext,
                     "First Track Id = $firstTrackId\n" +
