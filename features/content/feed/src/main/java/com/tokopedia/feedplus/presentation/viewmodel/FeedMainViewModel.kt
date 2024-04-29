@@ -16,6 +16,7 @@ import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
 import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -109,6 +110,9 @@ class FeedMainViewModel @AssistedInject constructor(
                 null
             }
         }
+
+    val currentTooltipCategory: FeedSearchTooltipCategory
+        get() = tooltipManager.currentCategory
 
     init {
         viewModelScope.launch {

@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -54,8 +55,17 @@ class FeedTooltipView @JvmOverloads constructor(
         this.xLocation = xLocation
     }
 
-    fun setTooltipMessage(text: String) {
-        this.text = text
+    fun setTooltipMessage(category: FeedSearchTooltipCategory) {
+        val textRes = when (category) {
+            FeedSearchTooltipCategory.UserAffinity -> feedplusR.string.feed_search_tooltip_user_affinity
+            FeedSearchTooltipCategory.Creator -> feedplusR.string.feed_search_tooltip_creator
+            FeedSearchTooltipCategory.Story -> feedplusR.string.feed_search_tooltip_story
+            FeedSearchTooltipCategory.Trending -> feedplusR.string.feed_search_tooltip_trending_and_viral_video
+            FeedSearchTooltipCategory.Promo -> feedplusR.string.feed_search_tooltip_promo
+            else -> return
+        }
+
+        this.text = context.getString(textRes)
     }
 
     fun setOnClickTooltip(onClick: () -> Unit) {

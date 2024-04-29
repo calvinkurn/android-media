@@ -557,11 +557,11 @@ class FeedBaseFragment :
                     when (event) {
                         is FeedTooltipEvent.ShowTooltip -> {
                             if (binding.containerFeedTopNav.btnFeedBrowse.isVisible) {
-                                binding.containerFeedTopNav.searchTooltip.setTooltipMessage(event.text)
+                                binding.containerFeedTopNav.searchTooltip.setTooltipMessage(event.category)
                                 binding.containerFeedTopNav.searchTooltip.show()
                                 feedMainViewModel.setHasShownTooltip()
 
-                                tooltipAnalytics.impressSearchTooltip()
+                                tooltipAnalytics.impressSearchTooltip(feedMainViewModel.currentTooltipCategory)
                             }
                         }
                         is FeedTooltipEvent.DismissTooltip -> {
@@ -728,7 +728,8 @@ class FeedBaseFragment :
 
         binding.containerFeedTopNav.searchTooltip.setOnClickTooltip {
             binding.containerFeedTopNav.searchTooltip.hide()
-            tooltipAnalytics.clickSearchTooltip()
+            tooltipAnalytics.clickSearchTooltip(feedMainViewModel.currentTooltipCategory)
+
             goToFeedBrowse(meta.browseApplink)
         }
 

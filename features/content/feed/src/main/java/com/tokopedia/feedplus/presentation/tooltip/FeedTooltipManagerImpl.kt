@@ -19,13 +19,14 @@ import javax.inject.Inject
  * Created by Jonathan Darwin on 24 April 2024
  */
 class FeedTooltipManagerImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val tooltipPreferences: FeedTooltipPreferences,
     private val uiEventManager: UiEventManager<FeedTooltipEvent>,
     private val dispatchers: CoroutineDispatchers,
 ) : FeedTooltipManager {
 
     private val currentDate = FeedDate.getCurrentDate()
+
+    override val currentCategory = FeedSearchTooltipCategory.getByDay(currentDate.day)
 
     override val tooltipEvent: Flow<FeedTooltipEvent?>
         get() = uiEventManager.event
@@ -49,7 +50,6 @@ class FeedTooltipManagerImpl @Inject constructor(
             if (lastTimeShownDate == currentDate) return false
 
             val lastTimeShownCategory = FeedSearchTooltipCategory.getByDay(lastTimeShownDate.day)
-            val currentCategory = FeedSearchTooltipCategory.getByDay(currentDate.day)
 
             if (lastTimeShownCategory != currentCategory) return true
 
@@ -60,9 +60,7 @@ class FeedTooltipManagerImpl @Inject constructor(
     }
 
     override suspend fun showTooltipEvent() {
-        val currentCategory = FeedSearchTooltipCategory.getByDay(currentDate.day)
-
-        uiEventManager.emitEvent(FeedTooltipEvent.ShowTooltip(context.getString(currentCategory.text)))
+        uiEventManager.emitEvent(FeedTooltipEvent.ShowTooltip(currentCategory))
 
         withContext(dispatchers.default) { delay(SHOW_TOOLTIP_DURATION) }
 

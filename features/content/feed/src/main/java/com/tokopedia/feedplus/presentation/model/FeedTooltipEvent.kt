@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.content.common.util.UiEvent
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
 import java.util.*
 
 /**
@@ -10,7 +11,7 @@ sealed class FeedTooltipEvent : UiEvent {
 
     override val id: Long = UUID.randomUUID().mostSignificantBits
     data class ShowTooltip(
-        val text: String,
+        val category: FeedSearchTooltipCategory,
     ) : FeedTooltipEvent()
 
     object DismissTooltip : FeedTooltipEvent()

@@ -10,6 +10,8 @@ interface FeedTooltipManager {
 
     val tooltipEvent: Flow<FeedTooltipEvent?>
 
+    val currentCategory: FeedSearchTooltipCategory
+
     fun isShowTooltip(contentPosition: Int): Boolean
 
     suspend fun showTooltipEvent()
