@@ -179,7 +179,7 @@ class OtherMenuViewHolder(
 
     fun setShopTransactionData(transaction: PMTransactionDataUiModel) {
         val isOS = userSession.isShopOfficialStore
-        val shouldShowTransaction = !isOS && transaction.totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION_VISIBLE
+        val shouldShowTransaction = !isOS && transaction.totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION_VISIBLE && transaction.canBeShown
         secondaryInfoRecyclerView?.post {
             if (shouldShowTransaction) {
                 secondaryInfoAdapter.setShopTransactionData(transaction)

@@ -478,17 +478,21 @@ class OtherMenuViewModel @Inject constructor(
             _totalTransactionData.value = SettingResponseState.SettingSuccess(
                 PMTransactionDataUiModel(
                     totalTransaction = shopTransaction,
-                    isChargeable = shopChargeableStatus
+                    isChargeable = shopChargeableStatus,
+                    canBeShown = true
                 )
             )
         }, onError = {
-            _totalTransactionData.value = SettingResponseState.SettingSuccess(
-                PMTransactionDataUiModel(
-                    totalTransaction = shopTransaction,
-                    isChargeable = false
-                )
-            )
+            removeTotalTransactionData()
         })
+    }
+
+    private fun removeTotalTransactionData() {
+        _totalTransactionData.value = SettingResponseState.SettingSuccess(
+            PMTransactionDataUiModel(
+                canBeShown = false
+            )
+        )
     }
 
     private fun getShopBadgeData() {
@@ -568,6 +572,7 @@ class OtherMenuViewModel @Inject constructor(
             },
             onError = {
                 _userShopInfoLiveData.value = SettingResponseState.SettingError(it)
+                removeTotalTransactionData()
             }
         )
     }
