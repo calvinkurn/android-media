@@ -79,7 +79,6 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
@@ -145,11 +144,9 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductCar
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
-import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeHeaderViewHolder.HomeHeaderListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestFinishedWidgetViewHolder
@@ -261,7 +258,6 @@ class TokoNowHomeFragment :
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
-                homeQuestSequenceWidgetListener = createQuestCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
@@ -1452,8 +1448,7 @@ class TokoNowHomeFragment :
             val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
             val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
             val removeAbleWidgets = listOf(
-                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
-                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity))
             )
             viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets)
         }
@@ -1462,8 +1457,7 @@ class TokoNowHomeFragment :
     private fun getHomeLayout() {
         localCacheModel?.let {
             val removeAbleWidgets = listOf(
-                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
-                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity))
             )
             viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
@@ -1740,10 +1734,6 @@ class TokoNowHomeFragment :
 
             override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
         }
-    }
-
-    private fun createQuestCallback(): HomeQuestSequenceWidgetListener {
-        return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
 
     private fun createSlideBannerCallback(): BannerComponentCallback? {

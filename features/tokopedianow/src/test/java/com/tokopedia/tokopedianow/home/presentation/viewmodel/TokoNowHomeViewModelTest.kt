@@ -21,7 +21,6 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -54,8 +53,6 @@ import com.tokopedia.tokopedianow.data.createLoadingState
 import com.tokopedia.tokopedianow.data.createMiniCartSimplifier
 import com.tokopedia.tokopedianow.data.createPlayWidgetChannel
 import com.tokopedia.tokopedianow.data.createPlayWidgetUiModel
-import com.tokopedia.tokopedianow.data.createQuestWidgetList
-import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
 import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -79,8 +76,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
@@ -501,199 +496,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetCategoryListUseCaseCalled(warehouses = warehouses)
         verifyCategoryMenuItem(expectedCategoryItem)
-    }
-
-    @Test
-    fun `when getting data quest list should run successfully with empty list result`() {
-        // set mock data
-        val successCode = "200"
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
-        onGetQuestWidgetList_thenReturn(createQuestWidgetListEmpty(code = successCode))
-
-        // fetch homeLayout
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        // verify use case called and response
-        verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(null)
-    }
-
-    @Test
-    fun `when getting data quest list should return error code not two hundred`() {
-        // set mock data
-        val errorCode = "12231"
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
-        onGetQuestWidgetList_thenReturn(createQuestWidgetListEmpty(code = errorCode))
-
-        // fetch homeLayout
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        // prepare model for expectedResult
-        val expectedQuestWidgetItem = HomeQuestSequenceWidgetUiModel(
-            id = MAIN_QUEST,
-            state = HomeLayoutItemState.NOT_LOADED
-        )
-
-        // verify use case called and response
-        verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(expectedQuestWidgetItem)
-    }
-
-    @Test
-    fun `when getting data quest list should run successfully with quest list data`() {
-        // set mock data
-        val successCode = "200"
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
-        onGetQuestWidgetList_thenReturn(createQuestWidgetList(successCode))
-
-        // fetch homeLayout
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        // prepare model for expectedResult
-        val expectedQuestWidgeItem = HomeQuestSequenceWidgetUiModel(
-            id = MAIN_QUEST,
-            state = HomeLayoutItemState.LOADED,
-            questList = listOf(
-                HomeQuestWidgetUiModel(
-                    id = "1233",
-                    status = "Idle",
-                    currentProgress = 0f,
-                    totalProgress = 0f
-                )
-            )
-        )
-
-        // verify use case called and response
-        verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(expectedQuestWidgeItem)
-    }
-
-    @Test
-    fun `when getting data quest list should throw an exception and remove the widget`() {
-        // set mock data
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
-        onGetQuestWidgetList_thenReturn(Exception())
-
-        // fetch homeLayout
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        // verify use case called and response
-        verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(null)
-    }
-
-    @Test
-    fun `when getting data quest list should run, fetch quest list again and give the success result`() {
-        // set the code here to make it error and need to refresh
-        var code = "12300"
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
-        onGetQuestWidgetList_thenReturn(createQuestWidgetList(code))
-
-        // fetch homeLayout
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        // set the code to make it success and get the list
-        code = "200"
-        onGetQuestWidgetList_thenReturn(createQuestWidgetList(code))
-
-        // put home sequence ui model as param and re-fetch quest list
-        viewModel.refreshQuestList()
-
-        // prepare model for expectedResult
-        val expectedQuestWidgetItem = HomeQuestSequenceWidgetUiModel(
-            id = MAIN_QUEST,
-            state = HomeLayoutItemState.LOADED,
-            questList = listOf(
-                HomeQuestWidgetUiModel(
-                    id = "1233",
-                    status = "Idle",
-                    currentProgress = 0f,
-                    totalProgress = 0f
-                )
-            )
-        )
-
-        // verify use case called and response
-        verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(expectedQuestWidgetItem)
-    }
-
-    @Test
-    fun `when getting data quest list should run, fetch quest list again, throw an exception and remove the widget`() {
-        // set mock data
-        val successCode = "200"
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly())
-        onGetQuestWidgetList_thenReturn(createQuestWidgetList(successCode))
-
-        // fetch homeLayout
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        // set quest widget list to throw an exception
-        onGetQuestWidgetList_thenReturn(Exception())
-
-        // put home sequence ui model as param and re-fetch quest list
-        viewModel.refreshQuestList()
-
-        // verify use case called and response
-        verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetQuestWidgetListUseCaseCalled()
-        verifyQuestWidgetItem(null)
-    }
-
-    @Test
-    fun `given layout list does NOT contain quest ui model when refreshQuestList should NOT call use case`() {
-        val layoutList = listOf(
-            HomeLayoutResponse(
-                id = "2222",
-                layout = "banner_carousel_v2",
-                header = Header(
-                    name = "Banner Tokonow",
-                    serverTimeUnix = 0
-                ),
-                token = "==aff1ed" // Dummy token
-            )
-        )
-
-        onGetHomeLayoutData_thenReturn(layoutList)
-
-        // fetch homeLayout
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-
-        viewModel.refreshQuestList()
-
-        verifyGetQuestWidgetListUseCaseNotCalled()
     }
 
     @Test
