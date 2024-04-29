@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +39,7 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.noRippleClickable
+import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 /**
  * @author by astidhiyaa on 23/11/23
@@ -119,6 +121,7 @@ private fun RenderContent(
 
     ConstraintLayout(
         modifier = Modifier
+            .testTag(stringResource(id = contentproductpreviewR.string.product_prev_test_tag_navigation_container))
             .fillMaxWidth()
             .wrapContentHeight()
             .background(NestTheme.colors.NN._0)
@@ -174,7 +177,7 @@ private fun RenderContent(
             isEnabled = isBtnEnable,
             isClickable = isBtnEnable,
             modifier = Modifier
-                .testTag("ATC Product Preview")
+                .testTag(stringResource(id = contentproductpreviewR.string.product_prev_test_tag_atc_button))
                 .constrainAs(atcBtn) {
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
