@@ -211,6 +211,8 @@ open class PowerMerchantSubscriptionFragment :
                 } else {
                     openSellerEdu()
                 }
+            }else{
+                openCentralizedPromo()
             }
         }
     }
