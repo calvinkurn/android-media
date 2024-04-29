@@ -357,7 +357,7 @@ class ProductPreviewFragment @Inject constructor(
                 shopId = model.shop.id,
                 productId = viewModel.productPreviewSource.productId,
                 startActivitResult = { intent, resultCode ->
-                    startActivityForResult(intent, resultCode)
+                    router.route(requireActivity(), intent, resultCode)
                 }
             )
         } else {
