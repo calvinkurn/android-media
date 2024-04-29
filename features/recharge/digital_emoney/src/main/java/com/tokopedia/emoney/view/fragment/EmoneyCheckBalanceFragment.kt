@@ -378,7 +378,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             context?.let { context ->
                 sendLogDebugBCAFlazz(it)
             }
-        })
+        }
+        )
     }
 
     private fun processGen2BCA(isoDep: IsoDep, MID: String, TID: String, bRawPublicKey: String,
