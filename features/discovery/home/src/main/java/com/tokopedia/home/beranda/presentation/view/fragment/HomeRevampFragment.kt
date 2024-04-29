@@ -25,7 +25,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.bytedance.apm.trace.fps.FpsTracer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -336,6 +338,7 @@ open class HomeRevampFragment :
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
         private const val DEFAULT_BLOCK_SIZE = 6
+        private const val FPS_TRACER_HOME = "Home Scene"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -696,6 +699,8 @@ open class HomeRevampFragment :
         setupStatusBar()
         setupHomeRecyclerView()
         initEggDragListener()
+
+        homeRecyclerView?.bindFpsTracer(FPS_TRACER_HOME)
         return view
     }
 

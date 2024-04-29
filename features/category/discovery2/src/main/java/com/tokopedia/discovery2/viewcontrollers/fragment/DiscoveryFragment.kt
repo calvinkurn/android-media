@@ -291,7 +291,8 @@ open class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
-    var currentTabPosition: Int? = null
+    // current index of navigation tab in the page.
+    private var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
         private set
     private var isFromForcedNavigation = false
@@ -2663,5 +2664,14 @@ open class DiscoveryFragment :
 
     override fun getPageName(): String {
         return pageInfoHolder?.label?.trackingPagename.orEmpty()
+    }
+
+    fun setCurrentTabPosition(tabPosition: Int) {
+        currentTabPosition = tabPosition
+        val tabPositionString = tabPosition.toString()
+        discoComponentQuery?.let {
+            it[ACTIVE_TAB] = tabPositionString
+        }
+        arguments?.putString(ACTIVE_TAB, tabPositionString)
     }
 }

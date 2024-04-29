@@ -39,7 +39,7 @@ class PMProBenefitAdapter(
         fun bind(item: PMProBenefitUiModel) {
             with(binding) {
                 if (item.imgUrl.isBlank()) {
-                    icPmPotentialItem.setImage(item.icon)
+                    icPmPotentialItem.setImageResource(item.icon)
                 } else {
                     icPmPotentialItem.loadImage(item.imgUrl)
                 }

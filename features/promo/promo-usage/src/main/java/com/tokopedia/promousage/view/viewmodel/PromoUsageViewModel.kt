@@ -1836,7 +1836,7 @@ class PromoUsageViewModel @Inject constructor(
                     val param = ClearCacheAutoApplyStackParam.create(
                         clearPromoRequest.copy(
                             serviceId = PromoUsageClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                            isOcc = validateUsePromoRequest.cartType == CheckoutConstant.PARAM_OCC_MULTI,
+                            isOcc = validateUsePromoRequest.cartType == CheckoutConstant.PARAM_OCC_MULTI || validateUsePromoRequest.cartType == CheckoutConstant.PARAM_NEW_OCC,
                             orderData = ClearPromoOrderData(
                                 codes = tempGlobalPromoCodes,
                                 orders = tempClearPromoOrders

@@ -50,6 +50,11 @@
             android:label="@string/pdp_dev_option_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".presentation.activity.MsSdkOptionActivity"
+            android:label="@string/mssdk_dev"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <activity
             android:name=".applink.presentation.activity.AppLinkListActivity"
