@@ -15,22 +15,20 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.baselist.R
 import com.tokopedia.config.GlobalConfig
+import java.lang.StringBuilder
 import kotlin.math.max
 import kotlin.math.roundToInt
 
 open class PercentageScrollListener : OnScrollListener() {
 
-    private val globalVisibleRect = Rect()
-    private val itemVisibleRect = Rect()
+    private val globalVisibleRect by lazy { Rect() }
+    private val itemVisibleRect by lazy { Rect() }
     private val set = ConstraintSet()
     private var percentText: TextView? = null
 
-    private val DEV_OPT_ON_PERCENT_VIEW_ENABLED = "DEV_OPT_ON_PERCENT_VIEW_ENABLED"
-    private val IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED = "IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED"
-
-    private fun isPercentViewEnabled(context: Context): Boolean {
-        val cache = context.getSharedPreferences(DEV_OPT_ON_PERCENT_VIEW_ENABLED, Context.MODE_PRIVATE)
-        return cache.getBoolean(IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED, false)
+    companion object {
+        const val DEV_OPT_ON_PERCENT_VIEW_ENABLED = "DEV_OPT_ON_PERCENT_VIEW_ENABLED"
+        const val IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED = "IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED"
     }
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -38,12 +36,11 @@ open class PercentageScrollListener : OnScrollListener() {
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        super.onScrolled(recyclerView, dx, dy)
         setVisiblePercentageOnScrollChanged(recyclerView)
     }
 
-    private fun addDebugView(v: View){
-        if(GlobalConfig.isAllowDebuggingTools() && isPercentViewEnabled(v.context)) {
+    private fun addDebugView(v: View) {
+        if (GlobalConfig.isAllowDebuggingTools() && isPercentViewEnabled(v.context)) {
             val layout = v as? ConstraintLayout ?: return
             percentText = layout.findViewById(R.id.percent_text_view)
             if (percentText == null) {
@@ -80,11 +77,11 @@ open class PercentageScrollListener : OnScrollListener() {
         recyclerView.getGlobalVisibleRect(globalVisibleRect)
 
         for (pos in firstPosition..lastPosition) {
-            setItemViewVisiblePercentage(layoutManager, pos, recyclerView, globalVisibleRect)
+            setItemViewVisiblePercentage(layoutManager, pos, recyclerView)
         }
     }
 
-    private fun setItemViewVisiblePercentage(layoutManager: RecyclerView.LayoutManager?, i: Int, recyclerView: RecyclerView, globalVisibleRect: Rect) {
+    private fun setItemViewVisiblePercentage(layoutManager: RecyclerView.LayoutManager?, i: Int, recyclerView: RecyclerView) {
         val itemView = layoutManager?.findViewByPosition(i) ?: return
         addDebugView(itemView)
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i) as? IAdsViewHolderTrackListener
@@ -97,7 +94,8 @@ open class PercentageScrollListener : OnScrollListener() {
         val prevValue = viewHolder.visiblePercentage
 
         viewHolder.setVisiblePercentage(max(prevValue, visibleAreaPercentage))
-        percentText?.text = "${viewHolder.visiblePercentage}%"
+
+        setPercentageViewText(viewHolder.visiblePercentage, percentText)
     }
 }
 
@@ -119,4 +117,19 @@ fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect, globalVis
     }
 
     return visibleAreaPercentage
+}
+
+private fun isPercentViewEnabled(context: Context): Boolean {
+    val cache = context.getSharedPreferences(PercentageScrollListener.DEV_OPT_ON_PERCENT_VIEW_ENABLED, Context.MODE_PRIVATE)
+    return cache.getBoolean(PercentageScrollListener.IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED, false)
+}
+
+private fun setPercentageViewText(visiblePercentage: Int, textView: TextView?) {
+    val isPercentViewEnabled = textView?.context?.let { isPercentViewEnabled(it) } == true
+    if (GlobalConfig.isAllowDebuggingTools() && isPercentViewEnabled) {
+        val visiblePercentageStr = StringBuilder(visiblePercentage.toString()).append("%").toString()
+        if (textView?.text != visiblePercentageStr) {
+            textView?.text = visiblePercentageStr
+        }
+    }
 }
