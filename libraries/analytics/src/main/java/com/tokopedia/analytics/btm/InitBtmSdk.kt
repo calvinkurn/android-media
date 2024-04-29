@@ -126,7 +126,7 @@ object InitBtmSdk {
 //            }
         })
         BtmSDK.getDepend().addUnknownWhiteClass(
-            "com.ss.android.ugc.aweme.splash.SplashActivity"
+
         )
     }
 

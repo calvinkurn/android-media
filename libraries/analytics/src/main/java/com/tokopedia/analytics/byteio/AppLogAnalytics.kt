@@ -238,7 +238,6 @@ object AppLogAnalytics {
             EventsSenderUtils.setEventsSenderEnable("573733", true, application)
             EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
         }
-        InitBtmSdk.init(application)
         Timber.d(
             """(%s) 
             |AppLog dId: ${AppLog.getDid()} 

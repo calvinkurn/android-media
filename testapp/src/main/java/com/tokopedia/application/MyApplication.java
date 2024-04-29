@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
+import com.tokopedia.analytics.btm.InitBtmSdk;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
@@ -227,6 +228,11 @@ public class MyApplication extends BaseMainApplication
         TokoChatConnection.init(this, false);
 
         UserSession userSession = new UserSession(this);
+        initBTMSDK();
+    }
+
+    private void initBTMSDK(){
+        InitBtmSdk.INSTANCE.init(this);
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
