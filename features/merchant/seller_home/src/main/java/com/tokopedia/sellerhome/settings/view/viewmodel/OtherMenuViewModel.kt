@@ -468,9 +468,9 @@ class OtherMenuViewModel @Inject constructor(
         })
     }
 
-    private fun getShopChargeableStatus(shopInfo: UserShopInfoWrapper.UserShopInfoUiModel?) {
-        val shopTier = shopInfo?.shopTier ?: INVALID_INT
-        val shopTransaction = shopInfo?.totalTransaction ?: INVALID_INT.toLong()
+    private fun getShopChargeableStatus(shopInfo: UserShopInfoWrapper.UserShopInfoUiModel) {
+        val shopTier = shopInfo.shopTier
+        val shopTransaction = shopInfo.totalTransaction
         launchCatchError(block = {
             val shopChargeableStatus = withContext(dispatcher.io) {
                 getShopChargeableUseCase.execute(userSession.shopId, shopTier, shopTransaction)
