@@ -1784,6 +1784,27 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check setting notif push notification appLink then should return tokopedia internal setting push notification in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=push_notification"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_PUSH_NOTIFICATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting notif email appLink then should return tokopedia internal setting notif email in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=email"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_EMAIL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting notif sms appLink then should return tokopedia internal setting notif sms in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=sms"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_SMS, expectedDeepLink)
+    }
+
+    @Test
     fun `check content detail appLink then should return tokopedia internal content detail in customerapp`() {
         val expectedDeepLink =
             "${ApplinkConsInternalHome.HOME_NAVIGATION}?TAB_POSITION=1&ARGS_FEED_SOURCE_ID=123"
