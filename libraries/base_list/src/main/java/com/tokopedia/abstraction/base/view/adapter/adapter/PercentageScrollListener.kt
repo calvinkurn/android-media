@@ -47,11 +47,11 @@ open class PercentageScrollListener : OnScrollListener() {
         recyclerView.getGlobalVisibleRect(globalVisibleRect)
 
         for (pos in firstPosition..lastPosition) {
-            setItemViewVisiblePercentage(layoutManager, pos, recyclerView, globalVisibleRect)
+            setItemViewVisiblePercentage(layoutManager, pos, recyclerView)
         }
     }
 
-    private fun setItemViewVisiblePercentage(layoutManager: RecyclerView.LayoutManager?, i: Int, recyclerView: RecyclerView, globalVisibleRect: Rect) {
+    private fun setItemViewVisiblePercentage(layoutManager: RecyclerView.LayoutManager?, i: Int, recyclerView: RecyclerView) {
         val itemView = layoutManager?.findViewByPosition(i) ?: return
 
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i) as? IAdsViewHolderTrackListener
