@@ -9,6 +9,8 @@ import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -38,10 +40,13 @@ class SharedTelcoViewModelTest {
     @RelaxedMockK
     lateinit var contactDataSource: ContactDataSource
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        telcoViewModel = SharedTelcoViewModel(graphqlRepository, contactDataSource, Dispatchers.Unconfined)
+        telcoViewModel = SharedTelcoViewModel(graphqlRepository, contactDataSource, remoteConfig, Dispatchers.Unconfined)
     }
 
     @Test
@@ -119,6 +124,7 @@ class SharedTelcoViewModelTest {
         result[TelcoCatalogPrefixSelect::class.java] = catalogPrefixSelect
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false) } returns true
 
         // when
         telcoViewModel.getPrefixOperator("", 2)
