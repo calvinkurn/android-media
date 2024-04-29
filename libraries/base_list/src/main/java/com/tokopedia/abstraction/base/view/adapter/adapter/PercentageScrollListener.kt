@@ -52,7 +52,7 @@ open class PercentageScrollListener : OnScrollListener() {
                 layout.addView(percentText)
                 set.clone(layout)
                 set.connect(percentText!!.id, ConstraintSet.TOP, layout.id, ConstraintSet.TOP, 0)
-                set.connect(percentText!!.id, ConstraintSet.BOTTOM, layout.id, ConstraintSet.BOTTOM, 0)
+                set.connect(percentText!!.id, ConstraintSet.RIGHT, layout.id, ConstraintSet.RIGHT, 0)
                 set.applyTo(layout)
             }
         }
