@@ -14,6 +14,7 @@ import com.tokopedia.unit.test.dispatcher.UnconfinedTestDispatchers
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.mockkObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -25,10 +26,8 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class FeedTooltipManagerTest {
 
-    private val mockContext = mockk<Context>(relaxed = true)
     private val tooltipPreferences: FeedTooltipPreferences = mockk(relaxed = true)
     private val uiEventManager: UiEventManager<FeedTooltipEvent> = mockk(relaxed = true)
-    private val mockFeedDateCompanion: FeedDate.Companion = mockk(relaxed = true)
     private val dispatchers = UnconfinedTestDispatchers
 
     private val eligibleContentPosition = 3
@@ -37,17 +36,15 @@ class FeedTooltipManagerTest {
     private val diffPeriodWithToday = "2024-05-01"
     private val sameDayDiffMonth = "2024-05-26"
     private val sameDayMonthDiffYear = "2025-04-26"
-    private val tooltipMessage = "pokemon"
 
     private lateinit var tooltipManager: FeedTooltipManagerImpl
 
     @Before
     fun setUp() {
-        coEvery { mockContext.getString(any()) } returns tooltipMessage
-        coEvery { mockFeedDateCompanion.getCurrentDate() } returns FeedDate(today)
+        mockkObject(FeedDate.Companion)
+        coEvery { FeedDate.getCurrentDate() } returns FeedDate(today)
 
         tooltipManager = FeedTooltipManagerImpl(
-            context = mockContext,
             tooltipPreferences = tooltipPreferences,
             uiEventManager = uiEventManager,
             dispatchers = dispatchers
@@ -106,7 +103,7 @@ class FeedTooltipManagerTest {
     fun `showTooltipEvent - should trigger both show & dismiss tooltip`() = runTest(dispatchers.coroutineDispatcher) {
         tooltipManager.showTooltipEvent()
 
-        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedTooltipEvent.ShowTooltip(tooltipMessage)) }
+        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedTooltipEvent.ShowTooltip(FeedSearchTooltipCategory.Promo)) }
         coVerify(exactly = 1) { uiEventManager.emitEvent(FeedTooltipEvent.DismissTooltip) }
     }
 

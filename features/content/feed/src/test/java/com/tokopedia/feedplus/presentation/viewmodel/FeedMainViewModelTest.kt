@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
 import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.network.exception.MessageErrorException
@@ -496,7 +497,7 @@ class FeedMainViewModelTest {
     /** Tooltip */
     @Test
     fun consumeEventTooltip() {
-        val event = FeedTooltipEvent.ShowTooltip("pokemon")
+        val event = FeedTooltipEvent.ShowTooltip(FeedSearchTooltipCategory.Promo)
 
         coEvery { tooltipManager.clearTooltipEvent(event.id) } returns Unit
 
