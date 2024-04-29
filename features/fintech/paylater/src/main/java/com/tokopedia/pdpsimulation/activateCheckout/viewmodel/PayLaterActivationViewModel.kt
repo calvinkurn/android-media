@@ -201,13 +201,23 @@ class PayLaterActivationViewModel @Inject constructor(
                 )
             )
         else {
-            occRedirectionUrl =
-                UriUtil.buildUri(
-                    ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
-                    gatewayToChipMap[selectedGatewayId]?.paymentGatewayCode ?: "",
-                    selectedTenureSelected,
-                    "fintech"
-                )
+            if (addToCartOcc.isNewCheckoutPaymentPage()) {
+                occRedirectionUrl =
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                        gatewayToChipMap[selectedGatewayId]?.paymentGatewayCode ?: "",
+                        selectedTenureSelected,
+                        "fintech"
+                    )
+            } else {
+                occRedirectionUrl =
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                        gatewayToChipMap[selectedGatewayId]?.paymentGatewayCode ?: "",
+                        selectedTenureSelected,
+                        "fintech"
+                    )
+            }
             _addToCartLiveData.value = Success(addToCartOcc)
 
         }

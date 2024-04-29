@@ -44,6 +44,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

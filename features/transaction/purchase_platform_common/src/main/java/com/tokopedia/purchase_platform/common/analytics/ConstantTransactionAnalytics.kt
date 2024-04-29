@@ -454,6 +454,9 @@ object ConstantTransactionAnalytics {
         // BELI PAKAI PROMO
         const val VIEW_OCC_BELI_PAKAI_PROMO = "view occ beli pakai promo"
 
+        // CHECKOUT PAYMENT
+        const val CLICK_TENURE_OPTIONS = "payment - click tenure options"
+
         // Variant Editor
         const val VIEW_VARIANT_EDITOR = "view variant editor"
         const val CLICK_VARIANT_EDITOR = "click variant editor"
@@ -649,6 +652,11 @@ object ConstantTransactionAnalytics {
 
         // Cart - Recent View
         const val VIEW_PRODUCT_LAST_SEEN = "19738"
+
+        // Checkout Payment
+        const val VIEW_PAYMENT_WIDGET = "50674"
+        const val CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION = "50675"
+        const val CLICK_TENURE_OPTIONS = "50676"
 
         // Variant
         const val VIEW_VARIANT_EDITOR = "50683"

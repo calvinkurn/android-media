@@ -7,6 +7,8 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
+const val FEATURE_TYPE_OCC_MULTI_NON_TOKONOW = 1
+const val FEATURE_TYPE_OCC_MULTI_TOKONOW = 11
 
 data class CheckoutRequest(
     @SerializedName("carts")
@@ -33,8 +35,17 @@ data class CheckoutRequest(
     val fingerprintSupport: String,
     @SerializedName("fingerprint_publickey")
     val fingerprintPublickey: String,
+    @SerializedName("payment")
+    val payment: Payment = Payment(),
     @SerializedName("tracker")
     val tracker: String
+)
+
+data class Payment(
+    @SerializedName("mode")
+    val mode: Int = 0, // 0 = instant payment, 1 = scrooge payment page
+    @SerializedName("gateway_code")
+    val gatewayCode: String = ""
 )
 
 data class Carts(

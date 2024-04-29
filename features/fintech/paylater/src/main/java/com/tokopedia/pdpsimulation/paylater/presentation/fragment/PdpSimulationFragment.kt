@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -143,13 +144,22 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun setSuccessProductCart() {
-        RouteManager.route(context,UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
-            payLaterViewModel.cardDetailSelected?.gatewayDetail?.paymentGatewayCode ?: "",
-            payLaterViewModel.cardDetailSelected?.tenure.toString()?:"",
-            "fintech"
-        ))
+    private fun setSuccessProductCart(data: AddToCartOccMultiDataModel) {
+        if (data.isNewCheckoutPaymentPage()) {
+            RouteManager.route(context, UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                payLaterViewModel.cardDetailSelected?.gatewayDetail?.paymentGatewayCode ?: "",
+                payLaterViewModel.cardDetailSelected?.tenure.toString() ?: "",
+                "fintech"
+            ))
+        } else {
+            RouteManager.route(context, UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                payLaterViewModel.cardDetailSelected?.gatewayDetail?.paymentGatewayCode ?: "",
+                payLaterViewModel.cardDetailSelected?.tenure.toString() ?: "",
+                "fintech"
+            ))
+        }
     }
 
     private fun openInstallmentBottomSheet(detail: Detail) {
@@ -209,7 +219,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         payLaterViewModel.addToCartLiveData.observe(viewLifecycleOwner)
         {
             when (it) {
-                is Success -> setSuccessProductCart()
+                is Success -> setSuccessProductCart(it.data)
                 is Fail -> setFailProductCart(it.throwable)
             }
         }
