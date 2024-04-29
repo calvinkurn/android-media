@@ -717,13 +717,11 @@ class FeedBaseFragment :
 
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
             feedNavigationAnalytics.sendClickBrowseIconEvent()
-            if (!userSession.isLoggedIn) {
-                openBrowseLoginResult.launch(
-                    RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
-                )
-            } else {
-                openAppLink.launch(meta.browseApplink)
-            }
+            goToFeedBrowse(meta.browseApplink)
+        }
+
+        binding.containerFeedTopNav.searchTooltip.setOnClickTooltip {
+            goToFeedBrowse(meta.browseApplink)
         }
 
         binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
@@ -896,6 +894,16 @@ class FeedBaseFragment :
         ContentCreationBottomSheet
             .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
+    }
+
+    private fun goToFeedBrowse(appLink: String) {
+        if (!userSession.isLoggedIn) {
+            openBrowseLoginResult.launch(
+                RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+            )
+        } else {
+            openAppLink.launch(appLink)
+        }
     }
 
     private fun showJustLoggedInToaster() {

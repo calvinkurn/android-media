@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.noRippleClickable
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.feedplus.R as feedplusR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -42,6 +43,8 @@ class FeedTooltipView @JvmOverloads constructor(
 
     private var text by mutableStateOf("")
 
+    private var onClick by mutableStateOf({})
+
     private val xOffset = derivedStateOf {
         val locationOnScreen = getLocationOnScreen()
         xLocation - locationOnScreen.x
@@ -53,6 +56,10 @@ class FeedTooltipView @JvmOverloads constructor(
 
     fun setTooltipMessage(text: String) {
         this.text = text
+    }
+
+    fun setOnClickTooltip(onClick: () -> Unit) {
+        this.onClick = onClick
     }
 
     override fun setVisibility(visibility: Int) {
@@ -101,7 +108,11 @@ class FeedTooltipView @JvmOverloads constructor(
 
     @Composable
     override fun Content() {
-        FeedTooltip(text = text, offsetX = xOffset.value.toFloat())
+        FeedTooltip(
+            text = text,
+            offsetX = xOffset.value.toFloat(),
+            onClick = onClick,
+        )
     }
 }
 
@@ -109,25 +120,28 @@ class FeedTooltipView @JvmOverloads constructor(
 private fun FeedTooltip(
     text: String,
     offsetX: Float,
+    onClick: () -> Unit,
 ) {
     val anchorColor = colorResource(id = feedplusR.color.feed_dms_tooltip_background)
 
     Box(
-        Modifier.drawWithCache {
-            onDrawBehind {
-                translate(
-                    left = offsetX - 6.dp.toPx(),
-                    top = 2.dp.toPx()
-                ) {
-                    rotate(45f, pivot = Offset(6.dp.toPx(), 6.dp.toPx())) {
-                        drawRoundRect(
-                            color = anchorColor,
-                            cornerRadius = CornerRadius(2.dp.toPx(), 2.dp.toPx()),
-                            size = Size(width = 12.dp.toPx(), height = 12.dp.toPx()),
-                        )
+        modifier = Modifier
+            .noRippleClickable(onClick)
+            .drawWithCache {
+                onDrawBehind {
+                    translate(
+                        left = offsetX - 6.dp.toPx(),
+                        top = 2.dp.toPx()
+                    ) {
+                        rotate(45f, pivot = Offset(6.dp.toPx(), 6.dp.toPx())) {
+                            drawRoundRect(
+                                color = anchorColor,
+                                cornerRadius = CornerRadius(2.dp.toPx(), 2.dp.toPx()),
+                                size = Size(width = 12.dp.toPx(), height = 12.dp.toPx()),
+                            )
+                        }
                     }
                 }
-            }
         }
     ) {
         TextContainer(
@@ -162,5 +176,9 @@ private fun TextContainer(
 @Composable
 @Preview
 private fun FeedTooltipPreview() {
-    FeedTooltip(text = "Perlengkapan Medis lagi rame!", 20f)
+    FeedTooltip(
+        text = "Perlengkapan Medis lagi rame!",
+        offsetX = 20f,
+        onClick = {},
+    )
 }
