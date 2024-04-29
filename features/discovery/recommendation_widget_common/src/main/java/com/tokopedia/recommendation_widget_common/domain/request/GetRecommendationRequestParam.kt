@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 
@@ -50,6 +51,8 @@ data class GetRecommendationRequestParam(
             requestMap[REFRESH_TYPE] = refreshType.value.toString()
         }
         requestMap[CURRENT_SESSION_ID] = bytedanceSessionId
+        requestMap[ENTER_FROM] = AppLogAnalytics.getEnterFrom()
+        requestMap[SOURCE_PAGE_TYPE] = AppLogAnalytics.getSourcePageType()
         return requestMap
     }
 
@@ -106,6 +109,8 @@ data class GetRecommendationRequestParam(
         private const val CRITERIA_THEMATIC_IDS = "criteriaThematicIDs"
         private const val REFRESH_TYPE = "refreshType"
         private const val CURRENT_SESSION_ID = "currentSessionID"
+        private const val ENTER_FROM = "enter_from"
+        private const val SOURCE_PAGE_TYPE = "source_page_type"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0

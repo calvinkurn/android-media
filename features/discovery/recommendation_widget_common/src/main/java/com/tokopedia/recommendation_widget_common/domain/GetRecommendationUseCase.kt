@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.domain
 
 import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -97,6 +98,8 @@ constructor(
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         params.putString(REFRESH_TYPE, byteIoParam.refreshType.value.toString())
         params.putString(CURRENT_SESSION_ID, byteIoParam.bytedanceSessionId)
+        params.putString(ENTER_FROM, AppLogAnalytics.getEnterFrom())
+        params.putString(SOURCE_PAGE_TYPE, AppLogAnalytics.getSourcePageType())
         return params
     }
 
@@ -168,6 +171,8 @@ constructor(
         private const val PARAM_CARD_REIMAGINE = "productCardVersion"
         private const val REFRESH_TYPE = "refreshType"
         private const val CURRENT_SESSION_ID = "currentSessionID"
+        private const val ENTER_FROM = "enter_from"
+        private const val SOURCE_PAGE_TYPE = "source_page_type"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0
