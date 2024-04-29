@@ -13,6 +13,8 @@ import com.bytedance.android.btm.api.model.BtmSDKBuilder
 import com.bytedance.android.btm.api.model.EventModelV1
 import com.bytedance.android.btm.api.model.EventModelV3
 import com.bytedance.applog.AppLog
+import com.bytedance.applog.IEventObserver
+import org.json.JSONObject
 import timber.log.Timber
 
 object InitBtmSdk {
@@ -36,7 +38,7 @@ object InitBtmSdk {
                     }
                     var modelV3 = EventModelV3(model.event, model.params)
                     modelV3 = BtmSDK.addBtmEventParam(modelV3)
-                    Log.d("BtmDev event", modelV3.event + " -> " + modelV3.params)
+                    Log.d(TAG, modelV3.event + " -> " + modelV3.params)
                     model.event?.let {
                         AppLog.onEventV3(it, model.params)
                     }
@@ -126,10 +128,33 @@ object InitBtmSdk {
 //            }
         })
         BtmSDK.getDepend().addUnknownWhiteClass(
-
+            
         )
+        AppLog.addEventObserver(appLogEventListener)
     }
 
+    private val appLogEventListener = object : IEventObserver {
+        override fun onEvent(
+            category: String,
+            tag: String,
+            label: String?,
+            value: Long,
+            extValue: Long,
+            extJson: String?
+        ) {
+            val modelV1 = EventModelV1(
+                null, category, tag, label, value, extValue, true, JSONObject(extJson ?: ""), true
+            )
+            BtmSDK.addBtmEventParam(modelV1)
+        }
+
+        override fun onEventV3(event: String, params: JSONObject?) {
+            BtmSDK.addBtmEventParam(EventModelV3(event, params))
+        }
+
+        override fun onMiscEvent(logType: String, params: JSONObject?) {
+        }
+    }
 }
 
 
