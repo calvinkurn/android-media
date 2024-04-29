@@ -541,7 +541,7 @@ open class BuyerOrderDetailFragment :
                 }
 
                 else -> {
-                    //no op
+                    // no op
                 }
             }
         }
@@ -674,7 +674,7 @@ open class BuyerOrderDetailFragment :
                 stickyActionButton?.hideSavingWidget()
             }
             else -> {
-                //noop
+                // noop
             }
         }
     }
@@ -684,8 +684,10 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
-        val savingWidgetData = (uiState.savingsWidgetUiState as?
-                SavingsWidgetUiState.Success)?.data
+        val savingWidgetData = (
+            uiState.savingsWidgetUiState as?
+                SavingsWidgetUiState.Success
+            )?.data
 
         if (savingWidgetData == null) {
             stickyActionButton?.hideSavingWidget()
@@ -1111,6 +1113,11 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
+        if (isUsingShareEx()) {
+            initializeShareEx(element)
+            return
+        }
+
         BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId, userSession.userId)
         val universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(object : ShareBottomsheetListener {
@@ -1171,6 +1178,30 @@ open class BuyerOrderDetailFragment :
             this@BuyerOrderDetailFragment
         )
         BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
+    }
+
+    private fun isUsingShareEx(): Boolean {
+        return true
+//        val rollenceKey = "rollence_key_tmp"
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+//            rollenceKey,
+//            ""
+//        ) == rollenceKey
+    }
+
+    private fun initializeShareEx(element: ProductListUiModel.ProductUiModel) {
+        val DUMMY_APPLINK = "tokopedia://share?" +
+            "product_id=2151019476" +
+            "&page_type=1" +
+            "&default_url=${element.productUrl}" +
+            "&label_action_click_share_icon=" +
+            "&label_action_click_close_icon=" +
+            "&label_action_click_channel=" +
+            "&label_impression_bottomsheet=" +
+            "&utm_campaign="
+
+        val intent = RouteManager.getIntent(context, DUMMY_APPLINK)
+        startActivityForResult(intent, 123)
     }
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
