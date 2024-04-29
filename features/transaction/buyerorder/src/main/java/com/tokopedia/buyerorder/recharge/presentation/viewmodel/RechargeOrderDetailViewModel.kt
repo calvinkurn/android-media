@@ -9,6 +9,8 @@ import com.tokopedia.buyerorder.recharge.data.response.RechargeEmoneyVoidRespons
 import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailModel
+import com.tokopedia.common_digital.common.data.model.RechargeSetFailData
+import com.tokopedia.common_digital.common.usecase.RechargeSetFailUseCase
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,6 +21,8 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -30,6 +34,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
     private val getRecommendationUseCaseCoroutine: GetRecommendationUseCase,
     private val bestSellerMapper: BestSellerMapper,
     private val recommendationUseCase: DigitalRecommendationUseCase,
+    private val rechargeSetFailUseCase: RechargeSetFailUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -48,6 +53,10 @@ class RechargeOrderDetailViewModel @Inject constructor(
     private val _emoneyVoidResponse = MutableLiveData<Result<RechargeEmoneyVoidResponse>>()
     val emoneyVoidResponse: LiveData<Result<RechargeEmoneyVoidResponse>>
         get() = _emoneyVoidResponse
+
+    private val _rechargeSetFailResult = MutableLiveData<Result<RechargeSetFailData>>()
+    val rechargeSetFailResult: LiveData<Result<RechargeSetFailData>>
+        get() = _rechargeSetFailResult
 
     fun resetOrderDetailData() {
         _orderDetailData.value = null
@@ -134,6 +143,19 @@ class RechargeOrderDetailViewModel @Inject constructor(
         }
     }
 
+    fun executeCancelOrder(orderId: Int) {
+        launch {
+            runCatching {
+                val result = rechargeSetFailUseCase(orderId)
+                result.isNeedRefresh = true
+                delay(CANCEL_ORDER_DELAY)
+                _rechargeSetFailResult.postValue(Success(result))
+            }.onFailure {
+                _rechargeSetFailResult.postValue(Fail(it))
+            }
+        }
+    }
+
     companion object {
         private const val FIRST_POSITION = 1
         private const val SECOND_POSITION = 2
@@ -141,6 +163,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
 
         private const val TOPADS_PAGE_NAME = "dg_order_details"
         private const val TOPADS_SOURCE = "digital"
-    }
 
+        private const val CANCEL_ORDER_DELAY = 500L
+    }
 }
