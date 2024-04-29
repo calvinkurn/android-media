@@ -32,6 +32,7 @@ import com.tokopedia.developer_options.presentation.model.LoginHelperUiModel
 import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
+import com.tokopedia.developer_options.presentation.model.PercentViewUiModel
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
 import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
@@ -91,6 +92,7 @@ import com.tokopedia.developer_options.presentation.viewholder.LoginHelperViewHo
 import com.tokopedia.developer_options.presentation.viewholder.NetworkLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.OpenScreenRecorderViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.PdpDevViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.PercentVisibleViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.PlayWebSocketSseLoggingViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.RandomizeTokenViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.RemoteConfigEditorViewHolder
@@ -197,6 +199,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
     override fun type(uiModel: FpiMonitoringUiModel): Int = EnableFpiMonitoringViewHolder.LAYOUT
     override fun type(uiModel: BannerEnvironmentUiModel): Int = BannerEnvironmentViewHolder.LAYOUT
+    override fun type(uiModel: PercentViewUiModel): Int = PercentVisibleViewHolder.LAYOUT
 
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
@@ -260,6 +263,7 @@ class DeveloperOptionTypeFactoryImpl(
             UserIdViewHolder.LAYOUT -> UserIdViewHolder(view, userIdListener)
             ShopIdViewHolder.LAYOUT -> ShopIdViewHolder(view, shopIdListener)
             BannerEnvironmentViewHolder.LAYOUT -> BannerEnvironmentViewHolder(view)
+            PercentVisibleViewHolder.LAYOUT -> PercentVisibleViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
