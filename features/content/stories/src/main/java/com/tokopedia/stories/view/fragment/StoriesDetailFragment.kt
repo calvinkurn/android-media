@@ -837,10 +837,6 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    override fun onSeePerformance(view: StoriesThreeDotsBottomSheet) {
-        //Todo(): route to performance page
-    }
-
     override fun onProductActionClicked(
         action: StoriesProductAction,
         product: ContentTaggedProductUiModel,
