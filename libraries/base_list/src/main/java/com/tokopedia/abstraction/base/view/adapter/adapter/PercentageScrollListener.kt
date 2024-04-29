@@ -95,9 +95,7 @@ open class PercentageScrollListener : OnScrollListener() {
 
         viewHolder.setVisiblePercentage(max(prevValue, visibleAreaPercentage))
 
-        val newVisiblePercentage = viewHolder.visiblePercentage
-
-        setPercentageViewText(newVisiblePercentage, percentText)
+        setPercentageViewText(viewHolder.visiblePercentage, percentText)
     }
 }
 
