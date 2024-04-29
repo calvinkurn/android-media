@@ -3,8 +3,9 @@ code_review_config:
     - yovie.putra
 code_review_rule:
   files:
-    - pattern: .*
+    - pattern: /features/user/loginregister/.*
       reviewers:
         - rama.putra
         - yovie.putra
+        - yoris.prayogo
       required_approvals: 1
