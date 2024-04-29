@@ -1430,18 +1430,16 @@ class PlayViewModel @AssistedInject constructor(
     private fun startWebSocket(channelId: String) {
         socketJob?.cancel()
         socketJob = viewModelScope.launch {
-            val socketCredential = getSocketCredential()
-
             if (!isActive) return@launch
             connectWebSocket(
                 channelId = channelId,
-                socketCredential = socketCredential,
+                socketCredential = getSocketCredential(),
                 warehouseId = _warehouseInfo.value.warehouseId
             )
 
             playChannelWebSocket.listenAsFlow()
                 .collect {
-                    handleWebSocketResponse(it, channelId, socketCredential)
+                    handleWebSocketResponse(it, channelId)
                 }
         }
     }
@@ -1756,7 +1754,7 @@ class PlayViewModel @AssistedInject constructor(
     }
     //endregion
 
-    private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String, socketCredential: SocketCredential) {
+    private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String) {
         when (response) {
             is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message, channelId)
             is WebSocketAction.Closed -> {
@@ -1764,7 +1762,7 @@ class PlayViewModel @AssistedInject constructor(
                 if (reason is WebSocketClosedReason.Error) {
                     playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
 
-                    connectWebSocket(channelId, warehouseId = _warehouseInfo.value.warehouseId, socketCredential)
+                    connectWebSocket(channelId, warehouseId = _warehouseInfo.value.warehouseId, getSocketCredential())
                 }
             }
         }

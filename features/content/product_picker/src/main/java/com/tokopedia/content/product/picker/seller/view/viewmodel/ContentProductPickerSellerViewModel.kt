@@ -420,7 +420,9 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
     }
 
     private fun handleSyncSelectedProduct() {
-        _selectedProductList.value = _productTagSectionList.value.flatMap { it.products }
+        _selectedProductList.update {
+            _productTagSectionList.value.flatMap { it.products }
+        }
     }
 
     private suspend fun getProductTagSummary() {

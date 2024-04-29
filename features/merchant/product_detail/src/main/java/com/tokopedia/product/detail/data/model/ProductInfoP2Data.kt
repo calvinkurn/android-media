@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount.Companion.asUiModel
 import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
+import com.tokopedia.product.detail.data.model.sdui.SDUIData
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
@@ -33,6 +34,8 @@ import com.tokopedia.product.detail.data.model.shop_review.asUiModel
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
+import com.tokopedia.product.detail.data.model.variant_wishlist.ProductVariantWishlistResponse
+import com.tokopedia.product.detail.data.model.variant_wishlist.asUiModel
 import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -186,7 +189,15 @@ data class ProductInfoP2Data(
 
     @SerializedName("onelinerVariant")
     @Expose
-    val dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse> = listOf()
+    val dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse> = listOf(),
+
+    @SerializedName("productVariantWishlist")
+    @Expose
+    val productVariantWishlist: List<ProductVariantWishlistResponse> = listOf(),
+
+    @SerializedName("sdui")
+    @Expose
+    val sdui: List<SDUIData> = emptyList()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -231,5 +242,7 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     bmgm = bmgm,
     gwp = gwp,
     promoPriceStyle = promoPriceStyle,
-    dynamicOneLinerVariant = dynamicOneLinerVariant
+    dynamicOneLinerVariant = dynamicOneLinerVariant,
+    wishlistVariant = productVariantWishlist.asUiModel(),
+    sdui = sdui
 )

@@ -3,16 +3,16 @@ package com.tokopedia.search.result.product.tdn
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import timber.log.Timber
 import javax.inject.Inject
 
 @SearchScope
 class TopAdsImageViewPresenterDelegate @Inject constructor() {
-    private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
+    private var topAdsImageUiModelList = mutableListOf<TopAdsImageUiModel>()
 
-    fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
-        this.topAdsImageViewModelList = topAdsImageViewModelList.toMutableList()
+    fun setTopAdsImageViewModelList(topAdsImageUiModelList: List<TopAdsImageUiModel>) {
+        this.topAdsImageUiModelList = topAdsImageUiModelList.toMutableList()
     }
 
     fun processTopAdsImageViewModel(
@@ -20,9 +20,9 @@ class TopAdsImageViewPresenterDelegate @Inject constructor() {
         action: (Int, Visitable<*>) -> Unit,
         logAction: (Exception) -> Unit,
     ) {
-        if (topAdsImageViewModelList.isEmpty()) return
+        if (topAdsImageUiModelList.isEmpty()) return
 
-        val topAdsImageViewModelIterator = topAdsImageViewModelList.iterator()
+        val topAdsImageViewModelIterator = topAdsImageUiModelList.iterator()
 
         while (topAdsImageViewModelIterator.hasNext()) {
             val data = topAdsImageViewModelIterator.next()

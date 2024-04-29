@@ -40,7 +40,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
@@ -49,7 +48,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCount
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
@@ -59,7 +57,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.Product
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProgressBarViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.SwitcherWidgetViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 
@@ -71,7 +68,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val quickFilterListener: QuickFilterListener,
     protected val categoryFilterListener: CategoryFilterListener,
     protected val productItemListener: ProductItemListener,
-    protected val switcherWidgetListener: SwitcherWidgetListener,
     private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val tokoNowEmptyStateNoResultTrackerListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultTrackerListener? = null,
     private val feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener,
@@ -122,8 +118,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
 
     override fun type(progressBarDataView: ProgressBarDataView): Int = ProgressBarViewHolder.LAYOUT
-
-    override fun type(switcherWidgetDataView: SwitcherWidgetDataView): Int = SwitcherWidgetViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowFeedbackWidgetUiModel): Int = TokoNowFeedbackWidgetViewHolder.LAYOUT
 
@@ -180,10 +174,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             TokoNowProductRecommendationViewHolder.LAYOUT -> TokoNowProductRecommendationViewHolder(
                 itemView = view,
                 listener = productRecommendationListener
-            )
-            SwitcherWidgetViewHolder.LAYOUT -> SwitcherWidgetViewHolder(
-                itemView = view,
-                listener = switcherWidgetListener
             )
             ProgressBarViewHolder.LAYOUT -> ProgressBarViewHolder(view)
             TokoNowFeedbackWidgetViewHolder.LAYOUT -> TokoNowFeedbackWidgetViewHolder(

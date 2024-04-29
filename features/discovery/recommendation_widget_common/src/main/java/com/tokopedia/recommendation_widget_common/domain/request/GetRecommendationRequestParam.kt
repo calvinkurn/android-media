@@ -2,7 +2,7 @@ package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
-import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 
 data class GetRecommendationRequestParam(
     val pageNumber: Int = 1,
@@ -19,6 +19,8 @@ data class GetRecommendationRequestParam(
     val shopIds: List<String> = listOf(),
     val criteriaThematicIDs: List<String> = listOf(),
     var hasNewProductCardEnabled: Boolean = false,
+    val refreshType: RefreshType = RefreshType.UNKNOWN,
+    val bytedanceSessionId: String = "",
 ) {
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
@@ -43,6 +45,11 @@ data class GetRecommendationRequestParam(
         if (criteriaThematicIDs.isNotEmpty()) {
             requestMap[CRITERIA_THEMATIC_IDS] = criteriaThematicIDs.joinToString(",")
         }
+
+        if(refreshType != RefreshType.UNKNOWN) {
+            requestMap[REFRESH_TYPE] = refreshType.value.toString()
+        }
+        requestMap[CURRENT_SESSION_ID] = bytedanceSessionId
         return requestMap
     }
 
@@ -63,6 +70,13 @@ data class GetRecommendationRequestParam(
         if (xDevice.isNotEmpty()) requestMap[X_DEVICE] = xDevice
         if (criteriaThematicIDs.isNotEmpty()) {
             requestMap[CRITERIA_THEMATIC_IDS] = criteriaThematicIDs.joinToString(",")
+        }
+
+        if(refreshType != RefreshType.UNKNOWN) {
+            requestMap[REFRESH_TYPE] = refreshType.value.toString()
+        }
+        if(bytedanceSessionId.isNotEmpty()) {
+            requestMap[CURRENT_SESSION_ID] = bytedanceSessionId
         }
         return requestMap
     }
@@ -90,6 +104,8 @@ data class GetRecommendationRequestParam(
         private const val SHOP_IDS = "shopIDs"
         private const val PRODUCT_CARD_VERSION = "productCardVersion"
         private const val CRITERIA_THEMATIC_IDS = "criteriaThematicIDs"
+        private const val REFRESH_TYPE = "refreshType"
+        private const val CURRENT_SESSION_ID = "currentSessionID"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0

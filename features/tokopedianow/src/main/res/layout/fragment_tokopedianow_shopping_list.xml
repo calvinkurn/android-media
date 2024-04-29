@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/Unify_Background">
+
+    <View
+        android:id="@+id/v_status_bar_background"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_gravity="top"
+        android:background="@color/Unify_GN500"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/nav_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        android:translationZ="3dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_status_bar_background"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeTitle"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true" />
+
+    <FrameLayout
+        android:id="@+id/sticky_top_check_all_layout"
+        android:background="@color/Unify_Background"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
+        android:translationZ="3dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/nav_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include
+            android:id="@+id/sticky_top_check_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/item_tokopedianow_shopping_list_top_check_all" />
+
+    </FrameLayout>
+
+    <com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
+        android:id="@+id/str_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_shopping_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:descendantFocusability="beforeDescendants" />
+
+    </com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout>
+
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/fbu_back_to_top"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:translationZ="3dp"
+        app:fbSize="medium"
+        app:fbType="back_to_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/str_refresh_layout" />
+
+    <com.tokopedia.tokopedianow.common.view.BottomBulkAtcView
+        android:id="@+id/bottom_bulk_atc_view"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.tokopedia.minicart.common.widget.MiniCartWidget
+        android:id="@+id/mini_cart_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

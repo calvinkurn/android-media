@@ -18,6 +18,7 @@ import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.RD_TIKTOKEC_MEANINGFUL_RENDERED
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH_RESULT_CLICK
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH_RESULT_SHOW
@@ -59,6 +60,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_POSITI
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_RESULT_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SHOP_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.START_TO_NOW
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SUG_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.TOKEN_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_CONTENT
@@ -87,6 +89,7 @@ object AppLogSearch {
         const val SEARCH_RESULT_SHOW = "search_result_show"
         const val SEARCH_RESULT_CLICK = "search_result_click"
         const val CHOOSE_SEARCH_FILTER = "choose_search_filter"
+        const val RD_TIKTOKEC_MEANINGFUL_RENDERED = "rd_tiktokec_meaningful_rendered"
     }
 
     object ParamKey {
@@ -131,6 +134,7 @@ object AppLogSearch {
         const val IS_AD = "is_ad"
         const val PRODUCT_ID = "product_id"
         const val DEFAULT_SEARCH_KEYWORD = "default_search_keyword"
+        const val START_TO_NOW = "start_to_now"
     }
 
     object ParamValue {
@@ -158,6 +162,9 @@ object AppLogSearch {
         const val CLICK_FAVORITE_BUTTON = "click_favourite_button"
         const val CLICK_MORE_FINDALIKE = "click_more_findalike"
         const val CLICK_SHOP_NAME = "click_shop_name"
+        const val CLICK_ADD_TO_CART = "click_add_to_cart"
+        const val CLICK_SEE_MORE = "click_see_more"
+        const val CLICK_CARD_SEE_MORE = "click_card_see_more"
         const val SORT_RELEVANCE = "sort_relevance"
         const val SORT_REVIEW = "sort_review"
         const val SORT_PRICE_ASC = "sort_price_asc"
@@ -417,6 +424,24 @@ object AppLogSearch {
             AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultId)
             listItemId?.let { AppLogAnalytics.putPageData(LIST_ITEM_ID, it) }
         }
+    }
+
+    data class Performance(
+        val startToNowMilis: Long,
+        val enterMethod: String
+    ){
+        fun json() = JSONObject(
+            buildMap {
+                put(START_TO_NOW, startToNowMilis)
+                put(ENTER_METHOD, enterMethod)
+            }
+        ).apply {
+            addPage()
+        }
+    }
+
+    fun eventPerformanceTracking(performance: Performance){
+        AppLogAnalytics.send(RD_TIKTOKEC_MEANINGFUL_RENDERED, performance.json())
     }
 
     data class ChooseSearchFilter(

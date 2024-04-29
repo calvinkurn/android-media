@@ -111,16 +111,18 @@ class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
     }
 
     private fun observeOvoTopUpUrl() {
-        viewModel.ovoTopUpUrl.observe(viewLifecycleOwner, {
+        viewModel.ovoTopUpUrl.observe(viewLifecycleOwner) {
             when (it) {
                 is OccState.Success -> {
                     loadWebView(Uri.parse(it.data).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString())
                 }
+
                 is OccState.Failed -> {
                     it.getFailure()?.let { failure ->
                         handleError(failure.throwable)
                     }
                 }
+
                 else -> {
                     binding?.apply {
                         progressBar.visible()
@@ -129,7 +131,7 @@ class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
                     }
                 }
             }
-        })
+        }
     }
 
     private fun loadWebView(url: String) {

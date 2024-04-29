@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 apply plugin: 'com.google.firebase.crashlytics'
 if(project.hasProperty('enableEmbraceSa')) {
     apply plugin: 'embrace-swazzler'
@@ -54,6 +54,7 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
         exclude "**/module-info.class"
+        pickFirst "**/libc++_shared.so"
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -119,7 +120,6 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
-        applicationId "com.tokopedia.sellerapp"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         resConfigs "en", "id"
@@ -231,7 +231,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.contactUs)
-    implementation projectOrAar(rootProject.ext.features.otp)
+    implementation projectOrAar(rootProject.ext.features.verification)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.saldodetails)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
@@ -284,6 +284,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.creationCommon)
     implementation projectOrAar(rootProject.ext.features.contentProductPicker)
     implementation projectOrAar(rootProject.ext.features.filter)
+    implementation projectOrAar(rootProject.ext.features.productPreview)
 
     implementation projectOrAar(rootProject.ext.features.additional_check)
     implementation projectOrAar(rootProject.ext.features.reviewCommon)

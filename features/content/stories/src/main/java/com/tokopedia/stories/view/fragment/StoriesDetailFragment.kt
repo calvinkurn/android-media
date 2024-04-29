@@ -305,7 +305,7 @@ class StoriesDetailFragment @Inject constructor(
 
                     curr?.let {
                         it.detailItems.getOrNull(it.selectedDetailPosition)?.let { item ->
-                            handleVideoPlayState(item, currState.timerStatus)
+                            handleVideoPlayState(item, currState.timerStatus, it.selectedGroupId)
                         }
                     }
                 }
@@ -462,7 +462,7 @@ class StoriesDetailFragment @Inject constructor(
 
         renderAuthor(currentItem)
         renderNudge(prevItem, currentItem)
-        renderMedia(currentItem.content, currentItem.status)
+        renderMedia(currentItem.content, currentItem.status, state.selectedGroupId)
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
@@ -471,7 +471,8 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderMedia(
         content: StoriesItemContent,
-        status: StoryStatus
+        status: StoryStatus,
+        selectedGroupId: String
     ) {
         when (content.type) {
             Image -> {
@@ -499,7 +500,7 @@ class StoriesDetailFragment @Inject constructor(
                 renderStoryBasedOnStatus(status) {
                     showVideoContent()
                     showVideoLoading()
-                    renderVideoMedia(content)
+                    renderVideoMedia(content, selectedGroupId)
                     hideError()
                 }
             }
@@ -901,7 +902,7 @@ class StoriesDetailFragment @Inject constructor(
         binding.layoutStoriesContent.containerVideoStoriesContent.show()
     }
 
-    private fun renderVideoMedia(content: StoriesItemContent) {
+    private fun renderVideoMedia(content: StoriesItemContent, selectedGroupId: String) {
         context?.let {
             if (_videoPlayer == null) {
                 _videoPlayer = StoriesExoPlayer(it)
@@ -943,10 +944,10 @@ class StoriesDetailFragment @Inject constructor(
             binding.layoutStoriesContent.playerStoriesDetailContent.player = videoPlayer.exoPlayer
 
             if (currentPlayingVideoUrl != content.data) {
-                videoPlayer.start(content.data)
+                videoPlayer.start(content.data, selectedGroupId)
                 currentPlayingVideoUrl = content.data
             } else if (!videoPlayer.exoPlayer.isPlaying) {
-                videoPlayer.resume(shouldReset = true)
+                videoPlayer.resume(shouldReset = true, selectedGroupId)
             }
         }
     }
@@ -977,11 +978,13 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo) {
+    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo, selectedGroupId: String) {
         if (_videoPlayer == null) return
 
         when {
-            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> videoPlayer.resume()
+            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> {
+                videoPlayer.resume(activeGroupId = selectedGroupId)
+            }
             state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
         }
     }

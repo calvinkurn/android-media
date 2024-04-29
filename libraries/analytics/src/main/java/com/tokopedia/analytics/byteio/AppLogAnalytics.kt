@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
-import android.graphics.pdf.PdfDocument.Page
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -182,18 +181,18 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addSourceModulePdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getLastDataExactStep(SOURCE_MODULE, 2)
+            getDataLast(SOURCE_MODULE, 2)
         } else {
-            getLastDataExactStep(SOURCE_MODULE)
+            getDataLast(SOURCE_MODULE)
         }
         put(SOURCE_MODULE, sourceModule)
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getLastDataExactStep(ENTER_METHOD, 2)
+            getDataLast(ENTER_METHOD, 2)
         } else {
-            getLastDataExactStep(ENTER_METHOD)
+            getDataLast(ENTER_METHOD)
         }
         put(ENTER_METHOD, sourceModule)
     }
@@ -207,7 +206,10 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        put(ENTER_METHOD, getLastDataBeforeCurrent(ENTER_METHOD))
+        val enterMethod = if(pageDataList.size > 1)
+            getLastDataBeforeCurrent(ENTER_METHOD)
+        else getLastData(ENTER_METHOD)
+        put(ENTER_METHOD, enterMethod)
     }
 
     fun lastTwoIsHavingHash(hash: Int): Boolean {
@@ -310,6 +312,18 @@ object AppLogAnalytics {
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
+    /**
+     * To update the previous page data (current page index - 1)
+     * For example: if the current page data is a bottom sheet,
+     * then it will be useless to put any data there
+     * since the bottom sheet will be dismissed when navigating to the next page.
+     * Putting the data in the previous page data will fix the issue.
+     */
+    fun putPreviousPageData(key: String, value: Any) {
+        val secondToLastData = _pageDataList.getOrNull(_pageDataList.lastIndex - 1)
+        secondToLastData?.put(key, value)
+    }
+
     fun removePageData(key: String) {
         _pageDataList.lastOrNull()?.remove(key)
     }
@@ -331,10 +345,10 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getLastDataExactStep(key: String, step: Int = 1): Any? {
+    fun getDataLast(key: String, step: Int = 1): Any? {
         val idx = _pageDataList.lastIndex - step
         val map = _pageDataList.getOrNull(idx)
-        return map?.getOrDefault(key, null)
+        return map?.get(key)
     }
 
     fun getLastDataBeforeCurrent(key: String): Any? {
@@ -494,13 +508,51 @@ object AppLogAnalytics {
                         if (buyType == AtcBuyType.ATC) {
                             j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
                         } else {
-                            j.put(ENTRANCE_INFO, generateEntranceInfoJson())
+                            j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutOcc())
                         }
 
                     })
                 }
             })
         }.toString()
+    }
+
+    /**
+     * This method should be refactored to the normal getEntranceInfoJson, this is separated
+     * to minimize changes and avoid regression during hotfix
+     * */
+    internal fun getEntranceInfoJsonForCheckoutOcc(): JSONObject {
+        return JSONObject().also {
+            it.addEnterFromInfo()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addTrackId()
+            it.put(IS_AD, getLastData(IS_AD))
+            it.addRequestId()
+            it.put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE))
+            it.put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD))
+            it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
+            it.put(SEARCH_ID, getLastData(SEARCH_ID))
+            it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
+            it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+        }
+    }
+
+    private fun getPreviousDataFrom(name: String, key: String): Any? {
+        if (_pageDataList.isEmpty()) return null
+        var idx = _pageDataList.lastIndex
+        var start = false
+        while (idx >= 0) {
+            val map = _pageDataList[idx]
+            if (map.containsKey(key) && start) {
+                return map[key]
+            }
+            if (map[PAGE_NAME] == name) {
+                start = true
+            }
+            idx--
+        }
+        return null
     }
 
     fun getSourcePreviousPage(): String? {
