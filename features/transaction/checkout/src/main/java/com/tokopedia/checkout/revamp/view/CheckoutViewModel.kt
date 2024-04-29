@@ -121,6 +121,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.GlobalScope
@@ -3156,16 +3157,47 @@ class CheckoutViewModel @Inject constructor(
         return checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(cartStringGroup))
     }
 
-    fun setProductNote(note: String, position: Int) {
+    fun setProductNote(
+        note: String,
+        position: Int
+    ) {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+
+            val updateCartResult = cartProcessor.updateCart(
+                cartProcessor.generateUpdateCartRequest(listData.value),
+                UPDATE_CART_SOURCE_NOTES,
+                cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment())
+            )
+
+            val checkoutItems = listData.value.toMutableList()
+            val product = checkoutItems[position] as CheckoutProductModel
+            if (!updateCartResult.isSuccess) {
+                pageState.value = CheckoutPageState.Normal
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update-cart"
+                    )
+                )
+                return@launch
+            } else {
+                pageState.value = CheckoutPageState.Normal
+                var showLottie = true
+                if (note.isBlank()) showLottie = false
+                checkoutItems[position] = product.copy(noteToSeller = note, shouldShowLottieNotes = showLottie)
+                listData.value = checkoutItems
+            }
+        }
+    }
+
+    fun hideNoteLottie(position: Int) {
         val checkoutItems = listData.value.toMutableList()
         val product = checkoutItems[position] as CheckoutProductModel
-        checkoutItems[position] = product.copy(noteToSeller = note)
+        checkoutItems[position] = product.copy(shouldShowLottieNotes = false)
         listData.value = checkoutItems
-
-        viewModelScope.launch(dispatchers.immediate) {
-            // fire & forget
-            cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), UPDATE_CART_SOURCE_NOTES, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
-        }
     }
 
     private fun shouldGetPayment(items: List<CheckoutItem>): Boolean {

@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -106,8 +108,11 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -169,6 +174,8 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Avail
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheet
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -183,6 +190,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -1388,8 +1396,54 @@ class CheckoutFragment :
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId)
     }
 
-    override fun onEditProductNote(note: String, position: Int) {
-        viewModel.setProductNote(note, position)
+    override fun onNoteClicked(product: CheckoutProductModel, bindingAdapterPosition: Int) {
+        val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
+            CartNoteBottomSheetData(
+                productName = product.name,
+                productImage = product.imageUrl,
+                variant = product.variant,
+                note = product.noteToSeller
+            )
+        )
+        cartNoteBottomSheet.setListener {
+            viewModel.setProductNote(it, bindingAdapterPosition)
+        }
+        if (cartNoteBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+        cartNoteBottomSheet.show(childFragmentManager, CartNoteBottomSheet.TAG)
+    }
+
+    override fun onShowLottieNotes(
+        buttonChangeNote: ImageUnify,
+        buttonChangeNoteLottie: LottieAnimationView,
+        bindingAdapterPosition: Int
+    ) {
+        buttonChangeNote.gone()
+        buttonChangeNoteLottie.show()
+        if (!buttonChangeNoteLottie.isAnimating) {
+            buttonChangeNoteLottie.playAnimation()
+            buttonChangeNoteLottie.addAnimatorListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {
+                    // no-op
+                    buttonChangeNote.gone()
+                }
+
+                override fun onAnimationEnd(p0: Animator) {
+                    buttonChangeNoteLottie.gone()
+                    buttonChangeNote.visible()
+                    viewModel.hideNoteLottie(bindingAdapterPosition)
+                }
+
+                override fun onAnimationCancel(p0: Animator) {
+                    buttonChangeNoteLottie.gone()
+                    buttonChangeNote.visible()
+                    viewModel.hideNoteLottie(bindingAdapterPosition)
+                }
+
+                override fun onAnimationRepeat(p0: Animator) {
+                    // no-op
+                }
+            })
+        }
     }
 
     private fun onUpdateResultAddOnProductLevelBottomSheet(data: Intent?) {

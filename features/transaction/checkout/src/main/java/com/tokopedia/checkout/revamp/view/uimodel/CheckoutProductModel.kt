@@ -29,6 +29,7 @@ data class CheckoutProductModel(
     val weightActual: Double = 0.0,
     val quantity: Int = 0,
     val noteToSeller: String = "",
+    val shouldShowLottieNotes: Boolean = false,
     val imageUrl: String = "",
     val cashback: String = "",
     val preOrderDurationDay: Int = 0,
