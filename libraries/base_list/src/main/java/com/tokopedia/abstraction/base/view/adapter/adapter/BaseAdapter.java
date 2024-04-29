@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
@@ -28,7 +27,8 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     protected LoadingModel loadingModel = new LoadingModel();
     protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
-    protected RecyclerView recyclerView;
+
+    private PercentageScrollListener scrollListener = new PercentageScrollListener();
 
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
@@ -47,12 +47,12 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
+        recyclerView.addOnScrollListener(scrollListener);
     }
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        this.recyclerView = null;
+        recyclerView.removeOnScrollListener(scrollListener);
     }
 
     protected View onCreateViewItem(ViewGroup parent, int viewType) {
