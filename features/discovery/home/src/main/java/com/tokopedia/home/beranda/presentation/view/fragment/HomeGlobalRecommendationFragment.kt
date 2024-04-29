@@ -489,7 +489,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
         sendProductClickAppLog(model.asProductTrackModel())
-        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_PAGE_NAME_FORMAT.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
+        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -578,7 +578,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(model.asCardTrackModel())
-        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_PAGE_NAME_FORMAT.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
+        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
                 model.topAdsImageUiModel,
@@ -638,7 +638,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         sendCardClickAppLog(item.asCardTrackModel())
-        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_PAGE_NAME_FORMAT.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
+        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -652,7 +652,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
         sendCardClickAppLog(element.asCardTrackModel())
-        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_PAGE_NAME_FORMAT.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
+        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
             position,

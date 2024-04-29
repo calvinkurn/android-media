@@ -204,7 +204,7 @@ class RecommendationCarouselWidgetView :
     private fun seeMoreClickListener(model: RecommendationCarouselModel) =
         object : CarouselProductCardListener.OnSeeMoreClickListener {
             override fun onSeeMoreClick() {
-                AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_PAGE_NAME_FORMAT.format(model.widget.pageName))
+                AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(model.widget.pageName))
                 model.widgetTracking?.sendEventSeeAll()
                 RouteManager.route(context, model.widget.seeMoreAppLink)
             }
@@ -229,7 +229,7 @@ class RecommendationCarouselWidgetView :
     private fun headerViewListener(model: RecommendationCarouselModel) =
         object : RecommendationHeaderListener {
             override fun onSeeAllClick(link: String) {
-                AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_PAGE_NAME_FORMAT.format(model.widget.pageName))
+                AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(model.widget.pageName))
                 model.widgetTracking?.sendEventSeeAll()
                 RouteManager.route(context, link)
             }

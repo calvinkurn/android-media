@@ -261,7 +261,7 @@ object AppLogParam {
     const val IS_SHADOW = "is_shadow"
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
     const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
-    val ENTER_METHOD_PAGE_NAME_FORMAT
+    val ENTER_METHOD_FMT_PAGENAME
         get() = "${AppLogAnalytics.getPageName()}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"
 }
