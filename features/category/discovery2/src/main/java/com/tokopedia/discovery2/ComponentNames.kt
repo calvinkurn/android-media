@@ -58,17 +58,23 @@ enum class ComponentNames(val componentName: String) {
     ProductCardCarouselItemListReimagine("product_card_carousel_item_list_reimagine"),
 
     // Product Card Sprint Sale
+    @Deprecated(message = "According to the BE team, this component is no longer used")
     ProductCardSprintSale("product_card_sprint_sale"),
+    @Deprecated(message = "According to the BE team, this component is no longer used")
     ProductCardSprintSaleItem("product_card_sprint_sale_item"),
 
     // Reimagine
+    @Deprecated(message = "According to the BE team, this component is no longer used")
     ProductCardSprintSaleItemReimagine("product_card_sprint_sale_item_reimagine"),
 
     // Product Card Horizontal Sprint Sale
+    @Deprecated(message = "According to the BE team, this component is no longer used")
     ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
+    @Deprecated(message = "According to the BE team, this component is no longer used")
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
 
     // Reimagine
+    @Deprecated(message = "According to the BE team, this component is no longer used")
     ProductCardSprintSaleCarouselItemReimagine("product_card_sprint_sale_carousel_item_reimagine"),
 
     ProductListEmptyState("product_list_empty_state"),
