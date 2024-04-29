@@ -1310,6 +1310,8 @@ class FeedPostViewModel @Inject constructor(
                     else -> ""
                 }
 
+                if (isNextPage && cursor.isEmpty()) return@launch
+
                 val response = withContext(dispatchers.io) {
                     feedXGetActivityProductsUseCase(
                         feedXGetActivityProductsUseCase.getFeedDetailParam(
