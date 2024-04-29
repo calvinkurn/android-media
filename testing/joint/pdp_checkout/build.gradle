@@ -5,6 +5,11 @@ android {
     namespace 'com.tokopedia.pdpCheckout.testing'
     testNamespace 'com.tokopedia.pdpCheckout.testing.test'
 
+    packagingOptions {
+        exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
+    }
+
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
