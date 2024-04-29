@@ -39,20 +39,24 @@ class FeedTooltipManagerImpl @Inject constructor(
          * 1. app displays the 4th content
          * 2. user hasn't seen the tooltip for a specific period in this month.
          */
-        if (contentPosition != 3) return false
-        if (currentDate.isEmpty) return false
+        try {
+            if (contentPosition != 3) return false
+            if (currentDate.isEmpty) return false
 
-        val lastTimeShownDate = tooltipPreferences.getLastTimeSearchTooltipShown()
+            val lastTimeShownDate = tooltipPreferences.getLastTimeSearchTooltipShown()
 
-        if (lastTimeShownDate.isEmpty) return true
-        if (lastTimeShownDate == currentDate) return false
+            if (lastTimeShownDate.isEmpty) return true
+            if (lastTimeShownDate == currentDate) return false
 
-        val lastTimeShownCategory = FeedSearchTooltipCategory.getByDay(lastTimeShownDate.day)
-        val currentCategory = FeedSearchTooltipCategory.getByDay(currentDate.day)
+            val lastTimeShownCategory = FeedSearchTooltipCategory.getByDay(lastTimeShownDate.day)
+            val currentCategory = FeedSearchTooltipCategory.getByDay(currentDate.day)
 
-        if (lastTimeShownCategory != currentCategory) return true
+            if (lastTimeShownCategory != currentCategory) return true
 
-        return lastTimeShownDate.month != currentDate.month || lastTimeShownDate.year != currentDate.year
+            return lastTimeShownDate.month != currentDate.month || lastTimeShownDate.year != currentDate.year
+        } catch (_: Throwable) {
+            return false
+        }
     }
 
     override suspend fun showTooltipEvent() {

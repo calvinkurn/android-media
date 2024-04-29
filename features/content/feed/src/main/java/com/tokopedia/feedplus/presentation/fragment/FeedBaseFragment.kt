@@ -50,6 +50,7 @@ import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
+import com.tokopedia.feedplus.analytics.FeedTooltipAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
@@ -117,6 +118,9 @@ class FeedBaseFragment :
 
     @Inject
     lateinit var contentCreationAnalytics: ContentCreationAnalytics
+
+    @Inject
+    lateinit var tooltipAnalytics: FeedTooltipAnalytics
 
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
@@ -556,6 +560,8 @@ class FeedBaseFragment :
                                 binding.containerFeedTopNav.searchTooltip.setTooltipMessage(event.text)
                                 binding.containerFeedTopNav.searchTooltip.show()
                                 feedMainViewModel.setHasShownTooltip()
+
+                                tooltipAnalytics.impressSearchTooltip()
                             }
                         }
                         is FeedTooltipEvent.DismissTooltip -> {
@@ -721,6 +727,7 @@ class FeedBaseFragment :
         }
 
         binding.containerFeedTopNav.searchTooltip.setOnClickTooltip {
+            tooltipAnalytics.clickSearchTooltip()
             goToFeedBrowse(meta.browseApplink)
         }
 
