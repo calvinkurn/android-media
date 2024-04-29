@@ -18,6 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.globalerror.compose.NestGlobalError
+import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
@@ -34,74 +37,90 @@ import com.tokopedia.unifycomponents.ticker.Ticker
  */
 @Composable
 internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
-    val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
-    val isStoryEnable = pageInfo.options.any { it.isSelected }
-    val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("","", false, false)
-    val ctx = LocalContext.current
-
     NestTheme(isOverrideStatusBarColor = false) {
-        if (!pageInfo.config.isEligible) {
-            AndroidView(factory = {
-                Ticker(it).apply {
-                    tickerType = Ticker.TYPE_INFORMATION
-                    tickerTitle = ctx.getString(R.string.stories_ticker_title)
-                }
-            })
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .alpha(if (!pageInfo.config.isEligible) 0.4f else 1f)
-        ) {
-            NestTypography(
-                modifier = Modifier.padding(bottom = 16.dp),
-                text = stringResource(id = R.string.stories_settings_header),
-                textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold)
-            )
-            Row {
-                NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier.padding(end = 12.dp))
-                Column {
-                    NestTypography(
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        text = pageInfo.options.firstOrNull()?.text.orEmpty(),
-                        textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
-                    )
-                    NestTypography(
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        text = pageInfo.config.articleCopy,
-                        textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
-                    )
-                    NestTypography(
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        text = stringResource(id = R.string.stories_settings_body),
-                        textStyle = NestTheme.typography.paragraph3
-                    )
-
-                    LazyColumn {
-                        items(pageInfo.options.drop(1)) { item ->
-                            SettingOptItem(item) {
-                                viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
-                            }
-                        }
-                    }
-                }
-                NestSwitch(
-                    isEnabled = itemFirst.isDisabled,
-                    isChecked = isStoryEnable,
-                    onCheckedChanged = { isActive ->
-                        if (isActive != itemFirst.isDisabled) {
-                            viewModel.onEvent(
-                                StoriesSettingsAction.SelectOption(
-                                   itemFirst.copy(isSelected = !itemFirst.isSelected)
-                                )
-                            )
-                        }
-                    }
-                )
-            }
+        val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
+        when (val state = pageInfo.state){
+            ResultState.Success -> StoriesSettingsSuccess(viewModel = viewModel, pageInfo = pageInfo)
+            is ResultState.Fail -> StoriesSettingsError(error = state.error, viewModel = viewModel)
+            else -> {}
         }
     }
+}
+
+@Composable
+private fun StoriesSettingsSuccess(pageInfo: StoriesSettingsPageUiModel, viewModel: StoriesSettingsViewModel) {
+    val isStoryEnable = pageInfo.options.any { it.isSelected }
+    val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("","", false, false)
+
+    val ctx = LocalContext.current
+
+    if (!pageInfo.config.isEligible) {
+        AndroidView(factory = {
+            Ticker(it).apply {
+                tickerType = Ticker.TYPE_INFORMATION
+                tickerTitle = ctx.getString(R.string.stories_ticker_title)
+            }
+        })
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .alpha(if (!pageInfo.config.isEligible) 0.4f else 1f)
+    ) {
+        NestTypography(
+            modifier = Modifier.padding(bottom = 16.dp),
+            text = stringResource(id = R.string.stories_settings_header),
+            textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold)
+        )
+        Row {
+            NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier.padding(end = 12.dp))
+            Column {
+                NestTypography(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = pageInfo.options.firstOrNull()?.text.orEmpty(),
+                    textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
+                )
+                NestTypography(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = pageInfo.config.articleCopy,
+                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+                )
+                NestTypography(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = stringResource(id = R.string.stories_settings_body),
+                    textStyle = NestTheme.typography.paragraph3
+                )
+
+                LazyColumn {
+                    items(pageInfo.options.drop(1)) { item ->
+                        SettingOptItem(item) {
+                            viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                        }
+                    }
+                }
+            }
+            NestSwitch(
+                isEnabled = itemFirst.isDisabled,
+                isChecked = isStoryEnable,
+                onCheckedChanged = { isActive ->
+                    if (isActive != itemFirst.isDisabled) {
+                        viewModel.onEvent(
+                            StoriesSettingsAction.SelectOption(
+                                itemFirst.copy(isSelected = !itemFirst.isSelected)
+                            )
+                        )
+                    }
+                }
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsViewModel) {
+    NestGlobalError(type = NestGlobalErrorType.NoConnection) {}
 }
 
 @Composable
@@ -141,13 +160,15 @@ data class StoriesSettingConfig(
 
 data class StoriesSettingsPageUiModel(
     val options: List<StoriesSettingOpt>,
-    val config: StoriesSettingConfig
+    val config: StoriesSettingConfig,
+    val state: ResultState,
 ) {
     companion object {
         val Empty
             get() = StoriesSettingsPageUiModel(
                 options = emptyList(),
-                config = StoriesSettingConfig("", "", "", false)
+                config = StoriesSettingConfig("", "", "", false),
+                state = ResultState.Loading,
             )
     }
 }

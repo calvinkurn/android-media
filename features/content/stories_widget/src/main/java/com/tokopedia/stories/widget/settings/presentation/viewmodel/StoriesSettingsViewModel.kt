@@ -2,6 +2,7 @@ package com.tokopedia.stories.widget.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -56,8 +57,10 @@ class StoriesSettingsViewModel @AssistedInject constructor(
             }){ false }
 
             val data = repository.getOptions(entryPoint = entryPoint)
-            _pageInfo.update { data.copy(config = data.config.copy(isEligible = isEligible.await().orFalse()), options = data.options.map { it.copy(isDisabled = !isEligible.await().orFalse()) }) }
-        }) {}
+            _pageInfo.update { data.copy(state = ResultState.Success, config = data.config.copy(isEligible = isEligible.await().orFalse()), options = data.options.map { it.copy(isDisabled = !isEligible.await().orFalse()) }) }
+        }) {
+            _pageInfo.update { data -> data.copy(state = ResultState.Fail(it)) }
+        }
     }
 
     private fun updateOption(option: StoriesSettingOpt) {

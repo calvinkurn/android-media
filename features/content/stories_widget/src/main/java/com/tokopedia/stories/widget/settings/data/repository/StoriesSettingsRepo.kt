@@ -1,6 +1,7 @@
 package com.tokopedia.stories.widget.settings.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingConfig
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
 import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
@@ -50,7 +51,8 @@ class StoriesSettingsRepo @Inject constructor(
                     articleAppLink = response.data.config.appLink,
                     articleWebLink = response.data.config.webLink,
                     isEligible = false,
-                )
+                ),
+                state = ResultState.Success
             )
         }
 
