@@ -3001,7 +3001,6 @@ class CheckoutFragment :
     }
 
     companion object {
-
         private const val MSSDK_APPID: String = "573733"
         private const val MSSDK_CHECKOUT: String = "checkout"
 
