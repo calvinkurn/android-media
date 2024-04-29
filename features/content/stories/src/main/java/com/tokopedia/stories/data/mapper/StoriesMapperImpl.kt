@@ -217,7 +217,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
      * https://www.tokopedia.com/stories/{authorType}/{shopId/userId}/statistic/{storyId} -> use tokopedia web
      */
     private fun buildPerformanceLink(author: StoryAuthor, storyId: String) =
-        "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%stories%2F${author.type}%2F${author.id}%2Fstatistic%2F$storyId"
+        "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%stories%2F${author.type.type}%2F${author.id}%2Fstatistic%2F$storyId"
 
     companion object {
         private const val DEFAULT_DURATION = 7 * 1000
