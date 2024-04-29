@@ -149,20 +149,6 @@
       "eventLabel": ""
     },
     {
-      "eventAction": "click promo section with promo (?:applied|not applied)",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": ".*",
-      "eventLabel": ".*"
-    },
-    {
-      "eventAction": "view promo already applied in order summary list",
-      "eventCategory": "order summary",
-      "event": "viewCheckoutExpressIris",
-      "sessionIris": ".*",
-      "eventLabel": ""
-    },
-    {
       "eventAction": "view promo (?:released|decreased) after adjust item",
       "eventCategory": "order summary",
       "event": "viewCheckoutExpressIris",

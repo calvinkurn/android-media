@@ -24,6 +24,28 @@ object PMActiveTermHelper {
             getShopScoreTerm(context, shopInfo, isPmProSelected),
             getTotalOrderTerm(context, shopInfo),
             getNetItemValueTerm(context, shopInfo),
+            getVerificationTerm(context, shopInfo),
+        )
+    }
+
+    private fun getVerificationTerm(
+        context: Context,
+        shopInfo: PMShopInfoUiModel
+    ): PmActiveTermUiModel.Kyc {
+        val isEligible = shopInfo.isKyc
+        val (resDrawableIcon, isChecked) = getResDrawableIcon(
+            shopInfo,
+            isEligible
+        )
+        val title = context.getString(R.string.pm_title_data_verification_term)
+        val description = context.getString(R.string.pm_desc_data_verification_term)
+        return PmActiveTermUiModel.Kyc(
+            title = title,
+            descriptionHtml = description,
+            resDrawableIcon = resDrawableIcon,
+            clickableText = null,
+            appLinkOrUrl = null,
+            isChecked = isChecked
         )
     }
 
@@ -251,11 +273,11 @@ object PMActiveTermHelper {
                 description = context.getString(
                     R.string.pm_pro_general_benefit_2
                 ),
-                icon = IconUnify.PROMO_ADS
+                icon = R.drawable.ic_pm_shop_promo_icon
             ),
             PMProBenefitUiModel(
                 description = context.getString(R.string.pm_pro_general_benefit_3),
-                icon = IconUnify.PROMO
+                icon = R.drawable.ic_pm_search_discovery_icon
             )
         )
     }

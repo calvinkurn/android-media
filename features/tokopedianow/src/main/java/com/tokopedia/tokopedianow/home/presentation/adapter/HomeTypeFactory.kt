@@ -12,12 +12,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestAllClaimedWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
@@ -29,11 +24,6 @@ interface HomeTypeFactory {
     fun type(uiModel: HomeLoadingStateUiModel): Int
     fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int
     fun type(uiModel: HomeProgressBarUiModel): Int
-    fun type(uiModel: HomeQuestSequenceWidgetUiModel): Int
-    fun type(uiModel: HomeQuestWidgetUiModel): Int
-    fun type(uiModel: HomeQuestTitleUiModel): Int
-    fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int
-    fun type(uiModel: HomeSwitcherUiModel): Int
     fun type(uiModel: HomeLeftCarouselAtcUiModel): Int
     fun type(uiModel: HomePlayWidgetUiModel): Int
     fun type(uiModel: HomeClaimCouponWidgetItemUiModel): Int

@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.converter
 
+import com.tokopedia.checkout.domain.model.cartshipmentform.AdditionalFeature
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
@@ -189,7 +190,8 @@ class CheckoutDataConverter @Inject constructor() {
                     groupShop,
                     username,
                     receiverName,
-                    addOnWordingModel
+                    addOnWordingModel,
+                    cartShipmentAddressFormData.additionalFeature
                 )
                 products.addAll(productList)
                 cartItemIndex += productList.size
@@ -360,7 +362,8 @@ class CheckoutDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String,
-        addOnOrderLevelModel: AddOnGiftingWordingModel
+        addOnOrderLevelModel: AddOnGiftingWordingModel,
+        additionalFeature: AdditionalFeature
     ): List<CheckoutProductModel> {
         var counterIndex = index
         return groupShopV2.products.map { product ->
@@ -372,7 +375,8 @@ class CheckoutDataConverter @Inject constructor() {
                 username,
                 receiverName,
                 addOnOrderLevelModel,
-                groupShopV2
+                groupShopV2,
+                additionalFeature
             )
             counterIndex += 1
             cartItem
@@ -387,7 +391,8 @@ class CheckoutDataConverter @Inject constructor() {
         username: String,
         receiverName: String,
         addOnWordingModel: AddOnGiftingWordingModel,
-        groupShopV2: GroupShopV2
+        groupShopV2: GroupShopV2,
+        additionalFeature: AdditionalFeature
     ): CheckoutProductModel {
         val ppp = product.purchaseProtectionPlanData
         return CheckoutProductModel(
@@ -399,9 +404,12 @@ class CheckoutDataConverter @Inject constructor() {
             cartId = product.cartId,
             productId = product.productId,
             productCatId = product.productCatId.toLong(),
+            lastLevelCategory = product.lastLevelCategory,
+            categoryIdentifier = product.categoryIdentifier,
             name = product.productName,
             shopId = groupShopV2.shop.shopId.toString(),
             shopName = product.shopName,
+            shopTier = groupShopV2.shop.shopTypeInfoData.shopTier,
             imageUrl = product.productImageSrc200Square,
             price = if (product.productWholesalePrice != 0.0) product.productWholesalePrice else product.productPrice,
             isWholesalePrice = product.productWholesalePrice != 0.0,
@@ -487,7 +495,9 @@ class CheckoutDataConverter @Inject constructor() {
             bmgmIconUrl = product.bmgmIconUrl,
             bmgmTotalDiscount = product.bmgmTotalDiscount,
             bmgmTierProductList = product.bmgmTierProductList,
-            shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER
+            shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER,
+            enableNoteEdit = additionalFeature.isEnableNoteEdit,
+            enableQtyEdit = additionalFeature.isEnableQtyEdit
         )
     }
 
@@ -525,6 +535,7 @@ class CheckoutDataConverter @Inject constructor() {
                 weight = benefit.weight,
                 weightActual = benefit.weightActual,
                 shopId = product.shopId,
+                cartStringOrder = product.cartStringOrder,
                 headerText = bmgmTier.benefitWording,
                 shouldShowHeader = index == 0,
                 sumOfCheckoutProductsQuantity = totalProductsQuantityInOffer,

@@ -30,6 +30,7 @@ import com.tokopedia.campaign.data.response.OfferProductListResponse
 import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
@@ -442,7 +443,7 @@ class OfferLandingPageViewModelTest {
     @Test
     fun `when handleTapTier is called, should get minicartData and map it to tier gift list accordingly`() {
         runBlockingTest {
-            //Given
+            // Given
             val selectedTier = Tier()
             val offerInfo = OfferInfoForBuyerUiModel()
             val tierGifts = listOf(
@@ -452,16 +453,17 @@ class OfferLandingPageViewModelTest {
                             productId = 982480,
                             quantity = 100
                         )
-                    ), tierId = 0
+                    ),
+                    tierId = 0
                 )
             )
             val expected = Success(SelectedTierData(selectedTier, offerInfo, tierGifts))
             mockGetMiniCartUseCaseGqlCall()
 
-            //When
+            // When
             viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
 
-            //Then
+            // Then
             val actual = viewModel.tierGifts.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -470,15 +472,15 @@ class OfferLandingPageViewModelTest {
     @Test
     fun `when handleTapTier is returning error, should set error data accordingly`() {
         runBlockingTest {
-            //Given
+            // Given
             val selectedTier = Tier()
             val offerInfo = OfferInfoForBuyerUiModel()
             mockErrorGetMiniCartUseCaseGqlCall()
 
-            //When
+            // When
             viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
 
-            //Then
+            // Then
             val actual = viewModel.tierGifts.getOrAwaitValue()
             assert(actual is Fail)
         }
@@ -734,6 +736,40 @@ class OfferLandingPageViewModelTest {
         } returns null
         viewModel.saveBmgmImageToPhoneStorage(context, "")
         assert(viewModel.bmgmImagePath.value == null)
+    }
+
+    @Test
+    fun `given warehouses, when getOfferingInfo is called, should set uiState data accordingly`() {
+        runBlocking {
+            // Given
+            val localCacheModel = LocalCacheModel(
+                warehouses = listOf(
+                    LocalWarehouseModel(
+                        warehouse_id = 12512,
+                        service_type = "2h"
+                    )
+                )
+            )
+            val expected =
+                Success(getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse()))
+            mockGetOfferingInfoForBuyerGqlCall()
+
+            // When
+            viewModel.processEvent(
+                OlpEvent.SetInitialUiState(
+                    offerIds = listOf(120L),
+                    shopIds = 6551456L,
+                    productIds = listOf(28192L),
+                    warehouseIds = listOf(20192L),
+                    localCacheModel = localCacheModel
+                )
+            )
+            viewModel.processEvent(OlpEvent.GetOfferingInfo)
+
+            // Then
+            val actual = viewModel.offeringInfo.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
     }
 
     private fun getDummyUiStateData(): OlpUiState =

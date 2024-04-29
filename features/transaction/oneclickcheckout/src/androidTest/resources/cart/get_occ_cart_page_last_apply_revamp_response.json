@@ -1028,7 +1028,13 @@
                     }
                   ],
                   "sp_ids": []
-                }
+                },
+                "user_group_metadata": [
+                  {
+                    "key": "promo_revamp_ab_test_user_group",
+                    "value": "variant_a"
+                  }
+                ]
               }
             },
             "error_default": {

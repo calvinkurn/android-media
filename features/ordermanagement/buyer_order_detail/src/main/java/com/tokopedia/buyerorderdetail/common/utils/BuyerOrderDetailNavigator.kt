@@ -93,14 +93,6 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun goToProductSnapshotPage(orderId: String, orderDetailId: String) {
-        val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
-        val intent = RouteManager.getIntent(activity, appLinkSnapShot)
-        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, false)
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
-        applyTransition()
-    }
-
     fun goToCallingPage(phoneNumber: String) {
         val bottomSheetMaskingPhoneNumber =
             MaskingPhoneNumberBottomSheet.newInstance(phoneNumber)
@@ -249,5 +241,9 @@ class BuyerOrderDetailNavigator(
         }
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM)
         applyTransition()
+    }
+
+    fun openProductUrl(url: String) {
+        openAppLink(url, true)
     }
 }
