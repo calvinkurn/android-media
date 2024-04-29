@@ -1,10 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.adapter;
 
 import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -13,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,22 +23,9 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
             LoadingModel.class, LoadingMoreModel.class});
 
     private OnAdapterInteractionListener<T> onAdapterInteractionListener;
-    private PercentageScrollListener scrollListener = new PercentageScrollListener();
 
     public BaseListAdapter(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory);
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        recyclerView.addOnScrollListener(scrollListener);
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        recyclerView.removeOnScrollListener(scrollListener);
     }
 
     public BaseListAdapter(F baseListAdapterTypeFactory, OnAdapterInteractionListener<T> onAdapterInteractionListener) {
