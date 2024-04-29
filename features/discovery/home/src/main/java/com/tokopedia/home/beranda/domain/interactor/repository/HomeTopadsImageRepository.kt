@@ -2,8 +2,8 @@ package com.tokopedia.home.beranda.domain.interactor.repository
 
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import dagger.Lazy
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class HomeTopadsImageRepository @Inject constructor(
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>
         )
-    : HomeRepository<ArrayList<TopAdsImageViewModel>> {
+    : HomeRepository<ArrayList<TopAdsImageUiModel>> {
 
     companion object {
         const val VERTICAL: String = "vertical"
@@ -31,7 +31,7 @@ class HomeTopadsImageRepository @Inject constructor(
         const val TOP_ADS_PAGE = "topadsPage"
     }
 
-    override suspend fun getRemoteData(bundle: Bundle): ArrayList<TopAdsImageViewModel> {
+    override suspend fun getRemoteData(bundle: Bundle): ArrayList<TopAdsImageUiModel> {
         val page = bundle.getString(TOP_ADS_PAGE, TOP_ADS_PAGE_DEFAULT)
         val type = bundle.getString(TOP_ADS_BANNER_TYPE, HORIZONTAL)
         return topAdsImageViewUseCase.get().getImageData(
@@ -58,7 +58,7 @@ class HomeTopadsImageRepository @Inject constructor(
         )
     }
 
-    override suspend fun getCachedData(bundle: Bundle): ArrayList<TopAdsImageViewModel> {
+    override suspend fun getCachedData(bundle: Bundle): ArrayList<TopAdsImageUiModel> {
         return arrayListOf()
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
@@ -14,7 +15,6 @@ import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAna
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 

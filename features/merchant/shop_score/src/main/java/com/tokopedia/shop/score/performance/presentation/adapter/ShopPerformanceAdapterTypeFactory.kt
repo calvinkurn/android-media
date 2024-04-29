@@ -4,13 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.CardPotentialPMBenefitViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemDetailPerformanceViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemHeaderShopPerformanceViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemLevelScoreProjectViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemPMPotentialPMProViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemProtectedParameterSectionViewHolder
-import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemRMPotentialPMProViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemReactivatedComebackViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemShopPerformanceErrorViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemStatusPMProPotentiallyDowngradedViewHolder
@@ -38,8 +36,6 @@ import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerfo
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionPMPotentialPMProUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
 import com.tokopedia.shop.score.performance.presentation.model.TickerReactivatedUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
@@ -62,10 +58,6 @@ class ShopPerformanceAdapterTypeFactory(
 
     override fun type(itemStatusRMUiModel: ItemStatusRMUiModel): Int {
         return ItemStatusRMViewHolder.LAYOUT
-    }
-
-    override fun type(itemRMPotentialPMBenefitUIModel: SectionRMPotentialPMBenefitUiModel): Int {
-        return CardPotentialPMBenefitViewHolder.LAYOUT
     }
 
     override fun type(itemStatusPMUiModel: ItemStatusPMUiModel): Int {
@@ -94,10 +86,6 @@ class ShopPerformanceAdapterTypeFactory(
 
     override fun type(viewModel: LoadingModel?): Int {
         return ShopPerformanceShimmerViewHolder.LAYOUT
-    }
-
-    override fun type(sectionRMPMProBenefitUIModel: SectionRMPotentialPMProUiModel): Int {
-        return ItemRMPotentialPMProViewHolder.LAYOUT
     }
 
     override fun type(sectionPMPotentialPMProUiModel: SectionPMPotentialPMProUiModel): Int {
@@ -144,10 +132,6 @@ class ShopPerformanceAdapterTypeFactory(
                 parent,
                 shopPerformanceListener
             )
-            CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(
-                parent,
-                shopPerformanceListener
-            )
             ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(
                 parent,
                 shopPerformanceListener
@@ -169,10 +153,7 @@ class ShopPerformanceAdapterTypeFactory(
                 shopPerformanceListener
             )
             ItemLevelScoreProjectViewHolder.LAYOUT -> ItemLevelScoreProjectViewHolder(parent)
-            ItemRMPotentialPMProViewHolder.LAYOUT -> ItemRMPotentialPMProViewHolder(
-                parent,
-                shopPerformanceListener
-            )
+
             ItemStatusPMProViewHolder.LAYOUT -> ItemStatusPMProViewHolder(
                 parent,
                 shopPerformanceListener
