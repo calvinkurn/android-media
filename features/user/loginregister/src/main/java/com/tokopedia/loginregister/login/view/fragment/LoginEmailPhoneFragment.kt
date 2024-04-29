@@ -1332,6 +1332,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+                        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
                         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                         it.startActivity(intent)
                         it.finish()
