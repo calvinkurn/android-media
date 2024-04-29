@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
@@ -100,7 +101,7 @@ class ShopOfferHeroBrandViewModel(
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         dataItem,
                         component.name,
-                        component.properties?.cardType
+                        component.properties.isReimagineProductCardInBackground()
                     )
                 )
             }

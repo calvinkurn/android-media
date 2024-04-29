@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
@@ -91,7 +92,7 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         dataItem,
                         components.name,
-                        components.properties?.cardType
+                        components.properties.isReimagineProductCardInBackground()
                     )
                 )
             }

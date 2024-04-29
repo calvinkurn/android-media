@@ -64,7 +64,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
 
                 ComponentNames.ProductCardRevamp.componentName -> {
                     if (componentProperties?.template == Constant.ProductTemplate.LIST) {
-                        if (componentProperties.cardType.equals("V1", true)) {
+                        if (componentProperties.isOldVersionCardType()) {
                             DiscoveryDataMapper().mapListToComponentList(
                                 componentData,
                                 ComponentNames.MasterProductCardItemList.componentName,
@@ -131,7 +131,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
 
                 ComponentNames.ProductCardCarousel.componentName -> {
                     if (componentProperties?.template == Constant.ProductTemplate.LIST) {
-                        if (componentProperties.cardType.equals("V1", true)) {
+                        if (componentProperties.isOldVersionCardType()) {
                             DiscoveryDataMapper().mapListToComponentList(
                                 componentData,
                                 ComponentNames.ProductCardCarouselItemList.componentName,
@@ -223,8 +223,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                     )
 
                 ComponentNames.ShopOfferHeroBrand.componentName -> {
-                    val subComponentName =
-                        if (componentProperties.isOldVersionCardType()) {
+                    val subComponentName = if (componentProperties.isOldVersionCardType()) {
                         ComponentNames.ShopOfferHeroBrandProductItem.componentName
                     } else {
                         ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
@@ -251,5 +250,5 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         return Pair(list, additionalInfo)
     }
 
-    private fun Properties?.isOldVersionCardType() = this?.cardType.equals("V1", true)
+    private fun Properties?.isOldVersionCardType() = this?.getCardType() == Properties.CardType.OLD_VERSION
 }

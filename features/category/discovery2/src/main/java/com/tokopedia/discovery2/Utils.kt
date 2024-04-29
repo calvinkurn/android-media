@@ -26,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MoveAction
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
@@ -847,6 +848,15 @@ class Utils {
                 }
             })
             this.startAnimation(animOut)
+        }
+
+        fun Properties?.isOldProductCardType(): Boolean {
+            val cardType = this?.getCardType() ?: Properties.CardType.OLD_VERSION
+            return cardType == Properties.CardType.OLD_VERSION
+        }
+
+        fun Properties?.isReimagineProductCardInBackground(): Boolean {
+            return this?.getCardType() == Properties.CardType.NEW_VERSION_WITH_BACKGROUND
         }
     }
 }

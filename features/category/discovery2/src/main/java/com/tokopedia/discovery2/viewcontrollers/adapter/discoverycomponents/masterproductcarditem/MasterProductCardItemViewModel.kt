@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackingMapper
@@ -89,7 +90,7 @@ class MasterProductCardItemViewModel(
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         productData,
                         components.name,
-                        components.properties?.cardType,
+                        components.properties.isReimagineProductCardInBackground(),
                         getNotifyText(productData.notifyMe)
                     )
             }
@@ -393,9 +394,5 @@ class MasterProductCardItemViewModel(
                 scrollToSimilarProductComponentID.value = targetCompId
             }
         }
-    }
-
-    fun getProductCardType(): String {
-        return components.properties?.cardType ?: "v1"
     }
 }
