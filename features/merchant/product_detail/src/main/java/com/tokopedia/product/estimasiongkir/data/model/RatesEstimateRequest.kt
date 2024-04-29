@@ -29,7 +29,8 @@ data class RatesEstimateRequest(
     val boMetadata: String = "",
     val productMetadata: String = "",
     val categoryId: String = "",
-    val isScheduled: Boolean = false
+    val isScheduled: Boolean = false,
+    val weightWording: String = ""
 ) {
     companion object {
         const val KG_TEXT = "kilo"
@@ -39,12 +40,4 @@ data class RatesEstimateRequest(
     fun getWeightRequest(): Float {
         return if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight / 1000)
     }
-
-    fun getWeightTxt(): String = "${productWeight.numberFormatted()} ${
-    if (productWeightUnit.toLowerCase() == KG) {
-        KG_TEXT
-    } else {
-        GRAM_TEXT
-    }
-    }"
 }

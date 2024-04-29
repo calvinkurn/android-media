@@ -95,13 +95,17 @@ object SlardarInit {
             .build())
         initBuilder.maxValidPageLoadTimeMs(20 * 1000.toLong())
         initBuilder.enableDeviceInfoOnPerfData(true)
+        if (GlobalConfig.DEBUG) {
+            initBuilder.debugMode(true)
+        }
         Apm.getInstance().init(context.applicationContext, initBuilder.build())
     }
 
     /**
      * can be invoke after app launched since it may cost time
      */
-    fun startApm(aid: String, channel: String) {
+    @Suppress("SwallowedException")
+    fun startApm(aid: String, channel: String, userId: String) {
         val builder = ApmStartConfig.builder()
 //        val headerInfo: JSONObject = AppLog.getHeader() // todo better copy
         builder.blockDetectOnlySampled(true)
@@ -148,7 +152,7 @@ object SlardarInit {
         builder.useDefaultTTNetImpl(true)
         builder.dynamicParams(object : IDynamicParams {
             override fun getCommonParams(): Map<String, String> {
-                return mapOf()
+                return mutableMapOf()
             }
 
             override fun getSessionId(): String {
@@ -156,7 +160,11 @@ object SlardarInit {
             }
 
             override fun getUid(): Long {
-                return 0 // todo return your real uid
+                return try {
+                    userId.toLong()
+                } catch (e: Exception) {
+                    0L
+                }
             }
         })
         builder.queryParams {
@@ -174,6 +182,7 @@ object SlardarInit {
 //            ApmContext.setDebugMode(true)
 //            SDKContext.setDebugMode(true)
 //        }
+
     }
 
     private fun commonParams(aid: String, channel: String): MutableMap<String, String> {

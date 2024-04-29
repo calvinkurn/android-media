@@ -11,7 +11,6 @@ import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingPropert
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.data.automatecoupon.ClaimFailure
-import com.tokopedia.discovery2.databinding.CarouselAutomateCouponItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -25,7 +24,7 @@ class CarouselAutomateCouponItemViewHolder(
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val binding = CarouselAutomateCouponItemLayoutBinding.bind(itemView)
+    private val couponView = itemView.findViewById<AutomateCouponListView>(R.id.couponView)
 
     private var viewModel: ListAutomateCouponItemViewModel? = null
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -39,11 +38,11 @@ class CarouselAutomateCouponItemViewHolder(
 
         lifecycleOwner?.let { lifeCycle ->
             viewModel?.getCouponModel()?.observe(lifeCycle) {
-                binding.renderCoupon(it)
+                renderCoupon(it)
             }
 
             viewModel?.getCTAState()?.observe(lifeCycle) { ctaState ->
-                binding.couponView.setState(mapToCTAHandler(ctaState))
+                couponView.setState(mapToCTAHandler(ctaState))
             }
 
             viewModel?.shouldShowErrorClaimCouponToaster()?.observe(lifeCycle) { reason ->
@@ -61,7 +60,7 @@ class CarouselAutomateCouponItemViewHolder(
         }
     }
 
-    private fun CarouselAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponUiModel) {
+    private fun renderCoupon(model: AutomateCouponUiModel) {
         val handler = mapToCTAHandler(model.ctaState)
 
         couponView.apply {

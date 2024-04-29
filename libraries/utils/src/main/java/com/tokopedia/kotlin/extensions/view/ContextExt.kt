@@ -2,6 +2,7 @@ package com.tokopedia.kotlin.extensions.view
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import androidx.annotation.ColorRes
@@ -21,15 +22,15 @@ fun Context.getResDrawable(@DrawableRes drawable: Int): Drawable? {
 }
 
 fun Context.dpToPx(dp: Int): Float = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        dp.toFloat(),
-        resources.displayMetrics
+    TypedValue.COMPLEX_UNIT_DIP,
+    dp.toFloat(),
+    resources.displayMetrics
 )
 
 fun Context.pxToDp(px: Int): Float = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_PX,
-        px.toFloat(),
-        resources.displayMetrics
+    TypedValue.COMPLEX_UNIT_PX,
+    px.toFloat(),
+    resources.displayMetrics
 )
 
 /**
@@ -45,4 +46,10 @@ fun Context?.whenAlive(predicate: (Context) -> Unit) {
             predicate(this)
         }
     }
+}
+
+fun Context.getStatusBarHeight(): Int {
+    val rect = Rect()
+    (this as? Activity)?.window?.decorView?.getWindowVisibleDisplayFrame(rect)
+    return rect.top
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
@@ -160,7 +161,10 @@ class InspirationCarouselViewHolder(
             channelHeader = element.convertToChannelHeader(),
             listener = object : HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
-                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(
+                        option,
+                        CLICK_SEE_MORE,
+                    )
                 }
             },
             maxLines = SEARCH_PAGE_RESULT_MAX_LINE
@@ -490,7 +494,7 @@ class InspirationCarouselViewHolder(
 
     private fun bindSeeAllButtonListener(option: InspirationCarouselDataView.Option) {
         binding?.inspirationCarouselSeeAllButton?.setOnClickListener {
-            inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+            inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option, CLICK_SEE_MORE)
         }
     }
 

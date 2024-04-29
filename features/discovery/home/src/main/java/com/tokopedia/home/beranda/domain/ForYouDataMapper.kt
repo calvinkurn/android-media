@@ -38,7 +38,7 @@ object ForYouDataMapper {
 
     fun HomeRecommendationBannerTopAdsOldDataModel.toModel(): BannerOldTopAdsModel {
         return BannerOldTopAdsModel(
-            topAdsImageViewModel = topAdsImageViewModel,
+            topAdsImageUiModel = topAdsImageUiModel,
             position = position,
             bannerType = bannerType
         )
@@ -46,7 +46,7 @@ object ForYouDataMapper {
 
     fun HomeRecommendationBannerTopAdsUiModel.toModel(): BannerTopAdsModel {
         return BannerTopAdsModel(
-            topAdsImageViewModel = topAdsImageViewModel,
+            topAdsImageUiModel = topAdsImageUiModel,
             cardId = cardId,
             layoutCard = layoutCard,
             layoutItem = layoutItem,

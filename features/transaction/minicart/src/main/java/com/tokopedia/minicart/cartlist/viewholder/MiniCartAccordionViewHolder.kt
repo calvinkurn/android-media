@@ -9,8 +9,7 @@ import com.tokopedia.minicart.databinding.ItemMiniCartAccordionBinding
 class MiniCartAccordionViewHolder(
     private val viewBinding: ItemMiniCartAccordionBinding,
     private val listener: MiniCartListActionListener
-) :
-    AbstractViewHolder<MiniCartAccordionUiModel>(viewBinding.root) {
+) : AbstractViewHolder<MiniCartAccordionUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_accordion

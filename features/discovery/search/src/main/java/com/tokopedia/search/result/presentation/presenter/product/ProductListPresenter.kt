@@ -51,7 +51,6 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
-import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactoryImpl
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
@@ -319,6 +318,10 @@ class ProductListPresenter @Inject constructor(
         } else {
             searchProductLoadMore(searchParameter)
         }
+    }
+
+    override fun getIsLocalSearch(): Boolean {
+        return isLocalSearch()
     }
 
     private fun searchProductLoadMore(searchParameter: Map<String, Any>) {
@@ -638,6 +641,13 @@ class ProductListPresenter @Inject constructor(
             UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>),
             throwable
         )
+        performanceMonitoring?.run {
+            stopPreparePagePerformanceMonitoring()
+            stopNetworkRequestPerformanceMonitoring()
+            stopRenderPerformanceMonitoring()
+        }
+        byteIOTrackingDataFactoryImpl.renew("", "")
+        view.sendTrackingByteIO(false)
     }
 
     private fun loadDataSubscriberOnNext(
@@ -659,7 +669,10 @@ class ProductListPresenter @Inject constructor(
 
         safeSearchPresenter.setUserProfileDob(searchProductModel.userDOB)
 
-        byteIOTrackingDataFactoryImpl.renew(searchProductModel.requestId)
+        byteIOTrackingDataFactoryImpl.renew(
+            searchProductModel.requestId,
+            searchProductModel.searchId,
+        )
 
         val productDataView = createFirstProductDataView(searchProductModel)
 
@@ -1281,7 +1294,7 @@ class ProductListPresenter @Inject constructor(
         )
 
         if (productDataView.redirectApplink.isBlank())
-            view.sendTrackingByteIO()
+            view.sendTrackingByteIO(true)
     }
 
     private fun createGeneralSearchTrackingEventCategory() =

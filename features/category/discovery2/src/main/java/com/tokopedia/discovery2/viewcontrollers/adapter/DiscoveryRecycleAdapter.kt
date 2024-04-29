@@ -8,22 +8,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoveryext.UIWidgetUninitializedException
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcardemptystate.ContentCardEmptyStateViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -40,9 +30,8 @@ class DiscoveryRecycleAdapter(
     companion object {
         private var noOfObject = 0
     }
-
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
-    private var componentList: ArrayList<ComponentsItem> = ArrayList()
+    private var _componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get(
         (
             DiscoveryListViewModel::class.java.canonicalName
@@ -50,6 +39,8 @@ class DiscoveryRecycleAdapter(
             ) + noOfObject++,
         DiscoveryListViewModel::class.java
     )
+    val componentList: ArrayList<ComponentsItem>
+        get() = _componentList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
         val itemView: View =
@@ -64,11 +55,10 @@ class DiscoveryRecycleAdapter(
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         try {
-            if (componentList.size <= position) {
+            if (_componentList.size <= position) {
                 // tmp code need this handling to handle multithread enviorment
                 return
             }
-            setViewSpanType(holder, componentList[position].properties?.template)
             if (mCurrentHeader?.first == position && mCurrentHeader?.second?.itemViewType == getItemViewType(
                     position
                 ) &&
@@ -82,7 +72,7 @@ class DiscoveryRecycleAdapter(
                 with(
                     viewHolderListModel.getViewHolderModel(
                         DiscoveryHomeFactory.createViewModel(getItemViewType(position)),
-                        componentList[position],
+                        _componentList[position],
                         position
                     )
                 ) {
@@ -91,39 +81,23 @@ class DiscoveryRecycleAdapter(
             }
         } catch (e: UIWidgetUninitializedException) {
             e.componentName =
-                "${componentList[position].name ?: ""} - ${componentList[position].pageEndPoint ?: ""}"
+                "${_componentList[position].name ?: ""} - ${_componentList[position].pageEndPoint ?: ""}"
             val map = mutableMapOf<String, String>()
             map["type"] = "log"
             map["err"] = "uiWidgetComponent not initialized"
-            map["page"] = componentList[position].pageEndPoint ?: ""
-            map["compName"] = componentList[position].name ?: ""
+            map["page"] = _componentList[position].pageEndPoint
+            map["compName"] = _componentList[position].name.orEmpty()
             ServerLogger.log(Priority.P2, "DISCO_DAGGER_VALIDATION", map)
             Utils.logException(e)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (componentList.size <= position) {
+        if (_componentList.size <= position) {
             return 0
         }
-        val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
+        val id = DiscoveryHomeFactory.getComponentId(_componentList[position].name)
         return id ?: 0
-    }
-
-    override fun getItemId(position: Int): Long {
-        if (componentList[position].name == ComponentNames.ShopOfferSupportingBrandItem.componentName) {
-            return componentList[position].data?.firstOrNull()?.shopId?.toLongOrNull()
-                ?: super.getItemId(position)
-        }
-
-        if (componentList.isEmpty() || position >= componentList.size ||
-            componentList[position].data.isNullOrEmpty() ||
-            componentList[position].data?.firstOrNull()?.productId.isNullOrEmpty()
-        ) {
-            return super.getItemId(position)
-        }
-        return componentList[position].data?.firstOrNull()?.productId?.toLongOrNull()
-            ?: super.getItemId(position)
     }
 
     fun <T : DiscoveryBaseViewModel> getFirstViewModel(
@@ -133,10 +107,9 @@ class DiscoveryRecycleAdapter(
     }
 
     fun addDataList(dataList: List<ComponentsItem>) {
-        componentList.clear()
+        _componentList.clear()
         clearListViewModel()
-        componentList.addAll(dataList)
-
+        _componentList.addAll(dataList)
         submitList(dataList)
     }
 
@@ -148,7 +121,7 @@ class DiscoveryRecycleAdapter(
 
     fun getTabItem(): DiscoveryBaseViewModel? {
         var tabsIndex = 0
-        componentList.forEachIndexed { index, item ->
+        _componentList.forEachIndexed { index, item ->
             if (item.name == ComponentNames.Tabs.componentName) {
                 tabsIndex = index
                 return@forEachIndexed
@@ -172,23 +145,6 @@ class DiscoveryRecycleAdapter(
             super.onViewDetachedFromWindow(holder)
         } catch (e: UninitializedPropertyAccessException) {
             Utils.logException(e)
-        }
-    }
-
-    private fun setViewSpanType(holder: AbstractViewHolder, template: String?) {
-        val layoutParams = holder.itemView.layoutParams
-        if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            layoutParams.isFullSpan = when (holder) {
-                is CalendarWidgetItemViewHolder -> false
-                is ShimmerCalendarViewHolder -> false
-                is ShopBannerInfiniteItemViewHolder -> false
-                is ShopCardItemViewHolder -> false
-                is ContentCardItemViewHolder -> false
-                is ContentCardEmptyStateViewHolder -> false
-                is MasterProductCardItemViewHolder -> template == LIST
-                is ShimmerProductCardViewHolder -> template == LIST
-                else -> true
-            }
         }
     }
 

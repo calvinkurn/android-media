@@ -48,4 +48,5 @@
 
     <!--Play Widget Carousel-->
     <dimen name="play_widget_carousel_distance_before_scale">200dp</dimen>
+    <dimen name="play_widget_carousel_corner_radius">4dp</dimen>
 </resources>
