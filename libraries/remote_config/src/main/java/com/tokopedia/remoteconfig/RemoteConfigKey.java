@@ -319,6 +319,8 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR = "android_enable_new_quantity_editor_cart";
 
+    public static final String ANDROID_ENABLE_CHECKOUT_PAYMENT = "android_enable_checkout_payment";
+
     public static final String ANDROID_INTERNAL_TEST_UPDATE_CONFIG = "android_internal_test_update_config";
 
     public static final String ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG = "android_internal_public_version_dialog_config";

@@ -3514,7 +3514,11 @@ open class ProductDetailFragment :
 
             ProductDetailCommonConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
-                goToOneClickCheckout()
+                if (result.isOccNewCheckoutPage) {
+                    goToCheckout()
+                } else {
+                    goToOneClickCheckout()
+                }
             }
 
             ProductDetailCommonConstant.BUY_BUTTON -> {
@@ -3613,6 +3617,16 @@ open class ProductDetailFragment :
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
         startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
+    private fun goToCheckout() {
+        val p1 = viewModel.getProductInfoP1 ?: return
+        val selectedPromoCodes = p1.data.promoPrice.promoCodes.mapIntoPromoExternalAutoApply()
+
+        ProductCartHelper.goToCheckoutWithAutoApplyPromo(
+            (context as ProductDetailActivity),
+            ArrayList(selectedPromoCodes)
+        )
     }
 
     private fun goToCartCheckout(cartId: String) {
