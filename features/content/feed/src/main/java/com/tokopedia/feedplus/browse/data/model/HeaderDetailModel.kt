@@ -2,7 +2,7 @@ package com.tokopedia.feedplus.browse.data.model
 
 import com.tokopedia.content.common.model.FeedXHeaderBrowse
 
-class HeaderDetailModel(
+data class HeaderDetailModel(
     val title: String,
     val isShowSearchBar: Boolean,
     val searchBarPlaceholder: String,

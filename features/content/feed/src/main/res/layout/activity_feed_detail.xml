@@ -29,11 +29,10 @@
 
     </LinearLayout>
 
-    <com.tokopedia.header.HeaderUnify
+    <com.tokopedia.feedplus.browse.presentation.view.FeedSearchHeaderView
         android:id="@+id/feed_detail_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unify_header_is_show_back_button="true"
-        app:unify_header_transparent_mode="true" />
+        app:isTransparent="true" />
 
 </FrameLayout>

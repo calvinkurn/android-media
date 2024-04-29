@@ -32,9 +32,11 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(
         val isClearable = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isClearable, false)
         val isShowShadow = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isShowShadow, true)
         val withSearchbar = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_withSearchbar, false)
+        val isTransparent = styledAttribute.getBoolean(feedplusR.styleable.FeedSearchHeaderView_isTransparent, false)
         styledAttribute.recycle()
 
         binding.headerUnify.isShowShadow = isShowShadow
+        binding.headerUnify.transparentMode = isTransparent
 
         if (withSearchbar) initSearchBar(isClearable)
     }
