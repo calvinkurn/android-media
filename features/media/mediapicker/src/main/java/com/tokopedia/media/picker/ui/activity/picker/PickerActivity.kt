@@ -457,6 +457,8 @@ open class PickerActivity :
     }
 
     override fun onGalleryTabSelected(isDirectClick: Boolean) {
+        if (viewModel.isOnVideoRecording.value == true) return
+
         navigateToGalleryPage()
 
         if (isDirectClick) {
