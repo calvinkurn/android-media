@@ -6,7 +6,10 @@ data class BottomNavBarUiModel(
     val type: BottomNavBarItemType,
     val jumper: BottomNavBarJumper?,
     val assets: Map<String, BottomNavBarAsset>,
-)
+    val discoId: DiscoId,
+) {
+    val uniqueId = BottomNavItemId(type, discoId)
+}
 
 data class BottomNavBarJumper(
     val id: Int,
@@ -16,16 +19,28 @@ data class BottomNavBarJumper(
     val toInitialAsset: BottomNavBarAsset,
 )
 
-@JvmInline
-value class BottomNavBarItemType(val value: String) {
 
+fun BottomNavItemId(type: BottomNavBarItemType, discoId: DiscoId = DiscoId.Empty): BottomNavItemId {
+    return BottomNavItemId("${type.value}_${discoId.value}")
+}
+@JvmInline
+value class BottomNavItemId(val value: String) {
+    val type: BottomNavBarItemType
+        get() = BottomNavBarItemType(value.split("_")[0])
+
+    val discoId: DiscoId
+        get() = DiscoId(value.split("_")[1])
+}
+
+@JvmInline
+value class DiscoId(val value: String) {
     companion object {
-        val Home = BottomNavBarItemType("home")
-        val Feed = BottomNavBarItemType("feed")
-        val DiscoPage = BottomNavBarItemType("discopage")
-        val Wishlist = BottomNavBarItemType("wishlist")
+        val Empty = DiscoId("")
     }
 }
+
+@JvmInline
+value class BottomNavBarItemType(val value: String)
 
 sealed interface BottomNavBarAsset {
 

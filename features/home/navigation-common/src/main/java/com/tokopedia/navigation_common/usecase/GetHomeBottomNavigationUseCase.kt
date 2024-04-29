@@ -7,6 +7,7 @@ import com.tokopedia.navigation_common.model.bottomnav.GetHomeBottomNavigationRe
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
+import com.tokopedia.navigation_common.ui.DiscoId
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -40,6 +41,7 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
                                 imageType
                             }
                         }
+                        discoID
                     }
                 }
             }
@@ -60,7 +62,8 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
                         "lottie" -> BottomNavBarAsset.Lottie(it.imageUrl)
                         else -> error("Not supported for type $type")
                     }
-                }
+                },
+                discoId = DiscoId(data.discoId)
             )
         }
     }

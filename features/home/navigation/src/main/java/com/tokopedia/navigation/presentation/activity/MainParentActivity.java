@@ -716,6 +716,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void configureNavigationBarBasedOnFragment(Fragment fragment) {
         boolean isForceDarkMode = getIsFragmentForceDarkModeNavigationBar(fragment);
         bottomNavigation.forceDarkMode(isForceDarkMode);

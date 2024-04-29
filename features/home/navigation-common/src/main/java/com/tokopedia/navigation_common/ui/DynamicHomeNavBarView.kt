@@ -12,7 +12,9 @@ import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.navigation_common.databinding.ItemBottomNavbarBinding
 import com.tokopedia.navigation_common.util.LottieCacheManager
+import com.tokopedia.navigation_common.util.inDarkMode
 import com.tokopedia.navigation_common.util.isDeviceAnimationDisabled
+import com.tokopedia.unifyprinciples.NestShadow.isDarkMode
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.navigation_common.R as navigation_commonR
 
@@ -37,8 +39,22 @@ class DynamicHomeNavBarView : LinearLayout {
 
     private val cacheManager = LottieCacheManager(context)
 
+    private var mIsForceDarkMode = false
+    private val isDarkMode: Boolean
+        get() = if (mIsForceDarkMode) true else context.isDarkMode()
+
+    private val darkModeContext: Context = context.inDarkMode
+
+    private val uiModeAwareContext
+        get() = if (isDarkMode) darkModeContext else context
+
+    private var mSelectedItemId: BottomNavItemId? = null
+
+    private val modelMap = mutableMapOf<BottomNavItemId, BottomNavBarUiModel>()
+
     init {
         super.setOrientation(HORIZONTAL)
+        refresh()
     }
 
     override fun setOrientation(orientation: Int) {
@@ -46,34 +62,40 @@ class DynamicHomeNavBarView : LinearLayout {
     }
 
     fun setModelList(modelList: List<BottomNavBarUiModel>) {
+        modelMap.clear()
+        modelMap.putAll(modelList.associateBy { it.uniqueId })
         buildMenu(modelList)
-        select(BottomNavBarItemType.Home)
+
+        val firstModel = modelList.firstOrNull() ?: return
+        select(mSelectedItemId ?: firstModel.uniqueId)
     }
 
-    fun select(type: BottomNavBarItemType) {
-        var childToBeSelected: View? = null
+    fun select(itemId: BottomNavItemId) {
+        val model = modelMap[itemId] ?: return
+        mListener?.onItemSelected(this, model, mSelectedItemId == itemId)
+        mSelectedItemId = itemId
+        rebindAllItems(itemId)
+    }
 
-        run selectChild@ {
-            children.forEach {
-                val stateHolder = it.stateHolder ?: return@forEach
-                if (stateHolder.model.type != type) return@forEach
-                childToBeSelected = it
-                return@selectChild
-            }
-        }
-
-        childToBeSelected?.let { selectInternal(it) }
+    fun forceDarkMode(shouldDarkMode: Boolean) {
+        mIsForceDarkMode = shouldDarkMode
+        refresh()
     }
 
     fun setListener(listener: Listener?) {
         mListener = listener
     }
 
-    private fun selectInternal(view: View) {
+    private fun refresh() {
+        bindBackground()
+        rebindAllItems()
+    }
+
+    private fun rebindAllItems(selectedItemId: BottomNavItemId? = mSelectedItemId) {
         children.forEach {
             val stateHolder = it.stateHolder ?: return@forEach
             val binding = runCatching { ItemBottomNavbarBinding.bind(it) }.getOrNull() ?: return@forEach
-            binding.bindModel(stateHolder, it == view)
+            binding.bindModel(stateHolder, selectedItemId == stateHolder.model.uniqueId)
         }
     }
 
@@ -114,8 +136,7 @@ class DynamicHomeNavBarView : LinearLayout {
         ivIcon.bindAsset(model, isSelected, prevIsSelected)
         tvTitle.bindText(model, isSelected)
 
-        mListener?.onItemSelected(root, model, isSelected == true && prevIsSelected == true)
-        root.setOnClickListener { select(model.type) }
+        root.setOnClickListener { select(model.uniqueId) }
 
         updateState(stateHolder.copy(isSelected = isSelected))
     }
@@ -127,23 +148,32 @@ class DynamicHomeNavBarView : LinearLayout {
     private val View.stateHolder: StateHolder?
         get() = tag as? StateHolder
 
+    //TODO("Handle dark mode in a better way")
     private fun LottieAnimationView.bindAsset(
         model: BottomNavBarUiModel,
         isSelected: Boolean?,
         prevIsSelected: Boolean?
     ) {
+        val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
         val asset = when {
-            isSelected == null -> model.assets[ASSET_STATIC_INACTIVE_LIGHT]
-            isSelected == prevIsSelected -> null
-            context.isDeviceAnimationDisabled() -> {
+            isSelected == null -> model.assets[if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT]
+            context.isDeviceAnimationDisabled() || isSelected == prevIsSelected -> {
                 model.assets[
-                    if (isSelected) ASSET_STATIC_ACTIVE_LIGHT
-                    else ASSET_STATIC_INACTIVE_LIGHT
+                    if (isSelected) {
+                        if (isDarkMode) ASSET_STATIC_ACTIVE_DARK else ASSET_STATIC_ACTIVE_LIGHT
+                    }
+                    else {
+                        if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT
+                    }
                 ]
             }
             else -> {
                 run {
-                    val assetId = if (isSelected) ASSET_ANIM_ACTIVE_LIGHT else ASSET_ANIM_INACTIVE_LIGHT
+                    val assetId = if (isSelected) {
+                        if (isDarkMode) ASSET_ANIM_ACTIVE_DARK else ASSET_ANIM_ACTIVE_LIGHT
+                    } else {
+                        if (isDarkMode) ASSET_ANIM_INACTIVE_DARK else ASSET_ANIM_INACTIVE_LIGHT
+                    }
                     val asset = model.assets[assetId]
                     val isCached = asset?.let { cacheManager.isUrlCached(it.url) } ?: false
 
@@ -152,8 +182,12 @@ class DynamicHomeNavBarView : LinearLayout {
                         asset?.let { cacheManager.cacheFromUrl(it.url) }
 
                         model.assets[
-                            if (isSelected) ASSET_STATIC_ACTIVE_LIGHT
-                            else ASSET_STATIC_INACTIVE_LIGHT
+                            if (isSelected) {
+                                if (isDarkMode) ASSET_STATIC_ACTIVE_DARK else ASSET_STATIC_ACTIVE_LIGHT
+                            }
+                            else {
+                                if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT
+                            }
                         ]
                     }
                 }
@@ -175,10 +209,16 @@ class DynamicHomeNavBarView : LinearLayout {
         text = model.title
         setTextColor(
             ContextCompat.getColor(
-                context,
+                uiModeAwareContext,
                 if (isSelected == true) unifyprinciplesR.color.Unify_GN500
                 else navigation_commonR.color.dynamic_bottom_navbar_item_title
             )
+        )
+    }
+
+    private fun bindBackground() {
+        setBackgroundColor(
+            ContextCompat.getColor(uiModeAwareContext, unifyprinciplesR.color.Unify_NN0)
         )
     }
 
@@ -187,10 +227,15 @@ class DynamicHomeNavBarView : LinearLayout {
         private const val ASSET_STATIC_ACTIVE_LIGHT = "selected_icon_light_mode"
         private const val ASSET_ANIM_INACTIVE_LIGHT = "inactive_icon_light_mode"
         private const val ASSET_ANIM_ACTIVE_LIGHT = "active_icon_light_mode"
+
+        private const val ASSET_STATIC_INACTIVE_DARK = "unselected_icon_dark_mode"
+        private const val ASSET_STATIC_ACTIVE_DARK = "selected_icon_dark_mode"
+        private const val ASSET_ANIM_INACTIVE_DARK = "inactive_icon_dark_mode"
+        private const val ASSET_ANIM_ACTIVE_DARK = "active_icon_dark_mode"
     }
 
     interface Listener {
-        fun onItemSelected(view: View, model: BottomNavBarUiModel, isReselected: Boolean)
+        fun onItemSelected(view: DynamicHomeNavBarView, model: BottomNavBarUiModel, isReselected: Boolean)
     }
 
     data class StateHolder(

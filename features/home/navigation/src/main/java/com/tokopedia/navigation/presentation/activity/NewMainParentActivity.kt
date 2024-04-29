@@ -31,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver
 import com.tokopedia.abstraction.base.view.model.InAppCallback
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -65,8 +66,10 @@ import com.tokopedia.navigation.databinding.ActivityMainParentBinding
 import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
 import com.tokopedia.navigation.presentation.di.GlobalNavModule
+import com.tokopedia.navigation.presentation.model.BottomNavHomeId
+import com.tokopedia.navigation.presentation.model.BottomNavHomeType
+import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
-import com.tokopedia.navigation.presentation.type.TabType
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -76,6 +79,11 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
+import com.tokopedia.navigation_common.ui.BottomNavBarItemType
+import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
+import com.tokopedia.navigation_common.ui.BottomNavItemId
+import com.tokopedia.navigation_common.ui.DiscoId
+import com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.telemetry.ITelemetryActivity
@@ -160,11 +168,6 @@ class NewMainParentActivity : BaseActivity(),
     private var notification: Notification? = null
 
     private var isUserFirstTimeLogin = false
-
-    /**
-     * The home tab is the default tab
-     */
-    private val homeTabType = TabType(TAB_TYPE_HOME)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //changes for triggering unittest checker
@@ -361,7 +364,8 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     override fun currentVisibleFragment(): String {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return ""
     }
 
     override fun getTelemetrySectionName(): String {
@@ -385,7 +389,7 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     override fun onHomeCoachMarkFinished() {
-        TODO()
+//        TODO()
     }
 
     override fun setForYouToHomeMenuTabSelected() {
@@ -444,26 +448,26 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     private fun startSelectedPagePerformanceMonitoring() {
-        val tabType = getTabTypeFromIntent()
-        if (tabType == homeTabType) startHomePerformanceMonitoring()
+        val tabId = getTabIdFromIntent()
+        if (tabId == BottomNavHomeId) startHomePerformanceMonitoring()
     }
 
     private fun startMainParentPerformanceMonitoring() {
         PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
     }
 
-    private fun getTabTypeFromIntent(): TabType {
-        return intent?.extras?.let(::getTabTypeFromIntentExtras)
-            ?: intent?.data?.let(::getTabTypeFromQueryParameter)
-            ?: homeTabType
+    private fun getTabIdFromIntent(): BottomNavItemId {
+        return intent?.extras?.let(::getTabIdFromIntentExtras)
+            ?: intent?.data?.let(::getTabIdFromQueryParameter)
+            ?: BottomNavHomeId
     }
 
-    private fun getTabTypeFromIntentExtras(extras: Bundle): TabType {
-        return TabType(extras.getString(ARGS_TAB_TYPE, TAB_TYPE_HOME))
+    private fun getTabIdFromIntentExtras(extras: Bundle): BottomNavItemId {
+        return BottomNavItemId(extras.getString(ARGS_TAB_ID, TAB_TYPE_HOME))
     }
 
-    private fun getTabTypeFromQueryParameter(data: Uri): TabType {
-        return TabType(data.getQueryParameter(ARGS_TAB_TYPE) ?: TAB_TYPE_HOME)
+    private fun getTabIdFromQueryParameter(data: Uri): BottomNavItemId {
+        return BottomNavItemId(data.getQueryParameter(ARGS_TAB_ID) ?: TAB_TYPE_HOME)
     }
 
     private fun initDownloadManagerDialog() {
@@ -496,6 +500,7 @@ class NewMainParentActivity : BaseActivity(),
         checkAppLinkCouponCode(intent)
         showSelectedPage()
 
+        setupBottomNavigation()
 //        populateBottomNavigationView()
 //        bottomNavigation.setMenuClickListener(this)
 //        bottomNavigation.setHomeForYouMenuClickListener(this)
@@ -555,12 +560,12 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     private fun showSelectedPage() {
-        val tabType = run {
-            val tabTypeFromIntent = getTabTypeFromIntent()
-            if (viewModel.hasTabType(tabTypeFromIntent)) tabTypeFromIntent
-            else homeTabType
+        val tabId = run {
+            val tabIdFromIntent = getTabIdFromIntent()
+            if (viewModel.hasTabType(tabIdFromIntent.type)) tabIdFromIntent
+            else BottomNavHomeId
         }
-        val fragment = getFragmentByType(tabType) ?: return
+        val fragment = getFragmentById(tabId) ?: return
 
         run feedPlusArguments@{
             if (!fragment::class.java.name.equals(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, true)) return@feedPlusArguments
@@ -571,25 +576,24 @@ class NewMainParentActivity : BaseActivity(),
             }.onFailure { it.printStackTrace() }
         }
 
-        selectFragment(fragment)
+        selectFragment(fragment, tabId)
     }
 
-    private fun getFragmentByType(type: TabType): Fragment? {
+    private fun getFragmentById(id: BottomNavItemId): Fragment? {
 //        TODO()
 //        return HomeInternalRouter.getHomeFragment(
 //            intent.getBooleanExtra(SCROLL_RECOMMEND_LIST, false)
 //        )
-        return RouteManager.instantiateFragment(
-            this,
-            FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT,
-            intent.extras
-        )
+        return supportFragmentManager.findFragmentByTag(id.value) ?: run createFragment@{
+            val fragmentCreator = supportedMainFragments[id.type] ?: return null
+            supportFragmentManager.fragmentCreator(this, id.discoId)
+        }
     }
 
-    private fun selectFragment(fragment: Fragment) {
+    private fun selectFragment(fragment: Fragment, itemId: BottomNavItemId) {
         configureStatusBarBasedOnFragment(fragment)
         configureNavigationBarBasedOnFragment(fragment)
-        openFragment(fragment)
+        openFragment(fragment, itemId)
         setBadgeNotificationCounter(fragment)
     }
 
@@ -601,10 +605,9 @@ class NewMainParentActivity : BaseActivity(),
         }
     }
 
-    //TODO()
     private fun configureNavigationBarBasedOnFragment(fragment: Fragment) {
         val isForceDarkMode = isFragmentForceDarkModeNavigationBar(fragment)
-//        binding.dynamicNavbar.forceDarkMode(isForceDarkMode)
+        binding.dynamicNavbar.forceDarkMode(isForceDarkMode)
 
         val lineColorRes =
             if (isForceDarkMode) navigationR.color.navigation_dms_line_bottom_nav_darkmode else unifyprinciplesR.color.Unify_NN50
@@ -646,16 +649,44 @@ class NewMainParentActivity : BaseActivity(),
         return (fragment as? FragmentListener)?.isForceDarkModeNavigationBar ?: false
     }
 
-    private fun openFragment(fragment: Fragment) {
-//        TODO()
+    private fun openFragment(fragment: Fragment, itemId: BottomNavItemId) {
+        val activeFragment = getCurrentActiveFragment()
+        if (activeFragment == fragment) return
+
         supportFragmentManager.commit {
-            replace(binding.container.id, fragment)
+            run hideActiveFragment@{
+                if (activeFragment == null) return@hideActiveFragment
+                hide(activeFragment)
+                FragmentLifecycleObserver.onFragmentUnSelected(activeFragment)
+            }
+            if (!fragment.isAdded) {
+                add(binding.container.id, fragment, itemId.value)
+            }
+            run showFragment@{
+                show(fragment)
+                FragmentLifecycleObserver.onFragmentSelected(fragment)
+            }
         }
     }
 
     private fun getCurrentActiveFragment(): Fragment? {
 //        TODO()
-        return supportFragmentManager.findFragmentById(binding.container.id)
+        return supportFragmentManager.fragments.firstOrNull {
+            it.isAdded && it.isVisible
+        }
+    }
+
+    private fun setupBottomNavigation() {
+        binding.dynamicNavbar.setListener(object : DynamicHomeNavBarView.Listener {
+            override fun onItemSelected(
+                view: DynamicHomeNavBarView,
+                model: BottomNavBarUiModel,
+                isReselected: Boolean
+            ) {
+                val fragment = getFragmentById(model.uniqueId)
+                fragment?.let { selectFragment(it, model.uniqueId) }
+            }
+        })
     }
 
     private fun sendOpenHomeEvent(): Boolean {
@@ -880,10 +911,14 @@ class NewMainParentActivity : BaseActivity(),
         }
     }
 
+    private fun BottomNavBarItemType.getTag(discoId: DiscoId): String {
+        return "tag_${value}_$discoId"
+    }
+
     companion object {
-        private const val ARGS_TAB_TYPE = "tab_type"
+        private const val ARGS_TAB_ID = "tab_id"
         private const val ARGS_HAS_RUN_ON_RESUME_PLT = "has_run_on_resume_plt"
-        private const val SCROLL_RECOMMEND_LIST = "recommend_list"
+        internal  const val SCROLL_RECOMMEND_LIST = "recommend_list"
 
         private const val TAB_TYPE_HOME = "home"
 

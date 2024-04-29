@@ -28,8 +28,8 @@ data class GetHomeBottomNavigationResponse(
         @SerializedName("jumper")
         val jumper: Jumper = Jumper(),
 
-        @SerializedName("pathUrl")
-        val pathUrl: String = "",
+        @SerializedName("discoID")
+        val discoId: String = "",
     )
 
     data class Image(
@@ -58,8 +58,5 @@ data class GetHomeBottomNavigationResponse(
 
         @SerializedName("imageList")
         val imageList: List<Image> = emptyList(),
-
-        @SerializedName("pathUrl")
-        val pathUrl: String = "",
     )
 }
