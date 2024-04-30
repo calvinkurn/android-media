@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.orderextension.presentation.delegate
 import com.tokopedia.sellerorder.orderextension.presentation.bottomsheet.SomBottomSheetOrderExtensionRequest
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 
+@Suppress("LateinitUsage")
 class SomBottomSheetOrderExtensionRequestManagerImpl : ISomBottomSheetOrderExtensionRequestManager {
     override var somBottomSheetOrderExtensionRequest: SomBottomSheetOrderExtensionRequest? = null
 
