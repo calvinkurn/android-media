@@ -8,14 +8,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 object DeeplinkMapperNotifSetting {
 
-    private const val DEEPLINK_FORMAT = "%s?type=%s"
-
     fun getNotifSettingInternalDeepLink(type: NotifSettingType): String {
-        return getDeeplinkByType(type)
-    }
-
-    private fun getDeeplinkByType(type: NotifSettingType): String {
-        return String.format(DEEPLINK_FORMAT, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING, type.value)
+        return if (type.value.isBlank()) {
+            ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+        } else {
+            ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING + "?type=" + type.value
+        }
     }
 }
 
