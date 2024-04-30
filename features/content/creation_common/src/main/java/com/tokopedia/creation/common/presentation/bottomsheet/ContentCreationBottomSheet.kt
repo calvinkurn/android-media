@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
@@ -24,7 +22,6 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
-import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 06/09/23
@@ -51,6 +48,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         isHideable = true
         isSkipCollapseState = true
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
+        showHeader = false
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -62,6 +60,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                 ContentCreationView(
                     creationConfig = creationList.value,
                     selectedItem = selectedCreation.value,
+                    isOwner = shouldShowPerformanceAction,
                     onImpressBottomSheet = {
                         analytics?.eventImpressionContentCreationBottomSheet(
                             viewModel.authorType,
@@ -84,6 +83,25 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     },
                     onRetryClicked = {
                         viewModel.fetchConfig(widgetSource)
+                    },
+                    onCloseClicked = {
+                        dismiss()
+                    },
+                    onSeePerformanceClicked = {
+                        analytics?.eventClickPerformanceDashboard(
+                            viewModel.authorType,
+                            widgetSource
+                        )
+                        RouteManager.route(
+                            requireContext(),
+                            viewModel.getPerformanceDashboardApplink()
+                        )
+                    },
+                    onSettingsClicked = {
+                        RouteManager.route(
+                            requireContext(),
+                            ApplinkConst.CONTENT_SETTINGS
+                        )
                     }
                 )
             }
@@ -95,7 +113,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderHeaderView()
+        //renderHeaderView()
     }
 
     private fun renderHeaderView() {
@@ -114,11 +132,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     )
                 }
             }
-            /**
-             *
-             * TODO: custom header
-             * setAction(it.getDrawable(com.tokopedia.resources.common.R.drawable.bg_animated_action_counter_plus_24)) { _ -> }
-             */
             viewModel.fetchConfig(widgetSource, creationConfig)
         }
     }
