@@ -14,6 +14,7 @@ import com.tkpd.atcvariant.util.AtcCommonMapper.asSuccess
 import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanSaya
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tkpd.atcvariant.view.viewmodel.sub_viewmodel.AtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
@@ -37,7 +38,6 @@ import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
@@ -82,7 +82,9 @@ class AtcVariantViewModel @Inject constructor(
     private val deleteCartUseCase: DeleteCartUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val remoteConfig: RemoteConfig
-) : ViewModel() {
+) : ViewModel(),
+    GetVariantDataMediator,
+    IAtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel by AtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel() {
 
     companion object {
         private const val INITIAL_POSITION_SHIMMERING = 99L
@@ -150,7 +152,11 @@ class AtcVariantViewModel @Inject constructor(
 
     private var isShopOwner: Boolean = false
 
-    fun getActivityResultData(): ProductVariantResult = variantActivityResult
+    init {
+        registerAtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel(mediator = this)
+    }
+
+    override fun getActivityResultData(): ProductVariantResult = variantActivityResult
 
     // updated with the previous page data as well
     fun getVariantAggregatorData(): ProductVariantAggregatorUiData? {
@@ -234,7 +240,7 @@ class AtcVariantViewModel @Inject constructor(
         return remoteConfig.getBoolean(REMOTE_CONFIG_NEW_VARIANT_LOG, true)
     }
 
-    fun getVariantData(): ProductVariant? {
+    override fun getVariantData(): ProductVariant? {
         return aggregatorData?.variantData
     }
 
@@ -243,7 +249,7 @@ class AtcVariantViewModel @Inject constructor(
      * if user already choose 2, the result will be sometng like this (warna, merah), (ukuran,L)
      * if user only choose 1 level of 2, the result will be like (warna,merah), (ukuran,0)
      */
-    fun getSelectedOptionIds(): MutableMap<String, String>? {
+    override fun getSelectedOptionIds(): MutableMap<String, String>? {
         val variantDataModel = (_initialData.value as? Success)?.data?.firstOrNull {
             it is VariantComponentDataModel
         } as? VariantComponentDataModel
@@ -821,25 +827,5 @@ class AtcVariantViewModel @Inject constructor(
 
     fun atcAnimationEnd() = viewModelScope.launch {
         _atcAnimationEnded.emit(true)
-    }
-
-    inner class CartRedirectionButtonsByteIOTrackerViewModel : ICartRedirectionButtonsByteIOTrackerViewModel by com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModel() {
-        init {
-            registerCartRedirectionButtonsByteIOTrackerViewModel(Mediator())
-        }
-
-        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerViewModel.Mediator {
-            override fun getParentProductId() = getVariantData()?.parentId
-            override fun isSingleSku() = getVariantData()?.children?.size == 1
-            override fun getSkuId() = getSelectedVariant()?.productId
-            override fun getProductMinOrder() = getSelectedVariant()?.getFinalMinOrder()
-            override fun getProductType() = getSelectedVariant()?.productType
-            override fun getProductOriginalPrice() = getSelectedVariant()?.finalMainPrice
-            override fun getProductSalePrice() = getSelectedVariant()?.finalPrice
-            override fun isFollowShop() = getActivityResultData().isFollowShop
-            private fun getSelectedVariant() = getVariantData()?.getChildByOptionId(
-                getSelectedOptionIds()?.values.orEmpty().toList()
-            )
-        }
     }
 }

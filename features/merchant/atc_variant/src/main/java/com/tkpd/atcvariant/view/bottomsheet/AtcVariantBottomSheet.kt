@@ -67,7 +67,9 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_C
 import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTracker
 import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTracker
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
@@ -115,7 +117,9 @@ class AtcVariantBottomSheet :
     PartialAtcButtonListener,
     PartialButtonShopFollowersListener,
     AtcVariantBottomSheetListener,
-    HasComponent<AtcVariantComponent> {
+    HasComponent<AtcVariantComponent>,
+    ICartRedirectionButtonsByteIOTracker.Mediator,
+    ICartRedirectionButtonsByteIOTracker by CartRedirectionButtonsByteIOTracker() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -125,9 +129,6 @@ class AtcVariantBottomSheet :
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AtcVariantViewModel::class.java)
-    }
-    private val cartRedirectionButtonsByteIOTrackerDelegate by lazyThreadSafetyNone {
-        CartRedirectionButtonsByteIOTracker()
     }
 
     private val sharedViewModel by lazy {
@@ -172,6 +173,7 @@ class AtcVariantBottomSheet :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+        registerCartRedirectionButtonsByteIOTracker(mediator = this)
     }
 
     override fun onCreateView(
@@ -528,7 +530,7 @@ class AtcVariantBottomSheet :
                 when (it) {
                     is Success -> {
                         onSuccessTransaction(it.data)
-                        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClickCompleted(it.data)
+                        trackOnButtonClickCompleted(it.data)
                         dismissAfterAtc()
                     }
 
@@ -896,7 +898,7 @@ class AtcVariantBottomSheet :
     }
 
     override fun onButtonShowed(buttonCartTypes: List<String>) {
-        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonsShowed(buttonCartTypes)
+        trackOnButtonsShowed(buttonCartTypes)
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
@@ -1036,7 +1038,7 @@ class AtcVariantBottomSheet :
 
             showWaitingIndicator(action = buttonAction)
 
-            cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClick(buttonAction)
+            trackOnButtonClick(buttonAction)
 
             viewModel.hitAtc(
                 buttonAction,
@@ -1306,20 +1308,9 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTracker by com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTracker() {
-        private val _viewModel by lazyThreadSafetyNone {
-            viewModel.CartRedirectionButtonsByteIOTrackerViewModel()
-        }
+    override fun getCartRedirectionButtonsByteIOTrackerViewModel() = viewModel
 
-        init {
-            registerCartRedirectionButtonsByteIOTracker(Mediator())
-        }
-
-        private inner class Mediator : ICartRedirectionButtonsByteIOTracker.Mediator {
-            override fun getCartRedirectionButtonsByteIOTrackerViewModel() = _viewModel
-            override fun getCartRedirectionButtonsByteIOTrackerActionType() = buttonActionType
-        }
-    }
+    override fun getCartRedirectionButtonsByteIOTrackerActionType() = buttonActionType
 }
 
 interface AtcVariantBottomSheetListener {
