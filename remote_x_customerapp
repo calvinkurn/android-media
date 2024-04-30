@@ -1,9 +1,14 @@
 #!/bin/bash
 
 if [ -f ".remoteX/custom/custom_before_exec.sh" ]; then
+ > ".remoteX/custom/custom_before_exec.sh"
 printf """
-chmod +x before_exec_customerapp.sh
-./before_exec_customerapp.sh
+echo 'custom before exec by remote'
+cd $1
+curDirName=`pwd`
+ls
+chmod +x before_exec.sh
+./before_exec.sh customerapp
 """ >> .remoteX/custom/custom_before_exec.sh
 fi
 ./remote -ci ./gradlew packageLiveDevDebugUniversalApk -p customerapp --stacktrace
