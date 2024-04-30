@@ -9,7 +9,9 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -25,9 +27,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.bytedance.apm.trace.fps.FpsTracer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -41,9 +41,9 @@ import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.search.AppLogSearch
-import com.tokopedia.analytics.performance.perf.*
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -1916,7 +1916,9 @@ open class HomeRevampFragment :
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
                     if (isSuccessRegister && getUserSession().isLoggedIn) {
-                        gotoNewUserZonePage()
+                        val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                        activity?.startActivity(intentHome)
+                        activity?.finish()
                     }
                 }
             }
