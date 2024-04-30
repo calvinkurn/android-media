@@ -8,6 +8,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
@@ -18,7 +19,6 @@ import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterce
 import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before

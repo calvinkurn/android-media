@@ -17,6 +17,8 @@ import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralDppoConsentUiModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +30,7 @@ class RechargeGeneralViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val getDppoConsentUseCase: GetDppoConsentUseCase,
     private val rechargeGeneralMapper: RechargeGeneralMapper,
+    private val remoteConfig: RemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) :
     BaseViewModel(dispatcher.io) {
@@ -48,8 +51,9 @@ class RechargeGeneralViewModel @Inject constructor(
 
     fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, nullErrorMessage: String) {
         launchCatchError(block = {
+            val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud || !isEnableGqlCache) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)

@@ -3,6 +3,7 @@ package com.tokopedia.buyerorder.recharge.presentation.utils
 import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -13,12 +14,12 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
     fun eventOpenScreen(screenName: String) {
         val map = mapOf(
-                Keys.EVENT_NAME to EventName.OPEN_SCREEN,
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-                Keys.IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
-                Keys.USER_ID to userSession.userId,
-                Keys.SCREEN_NAME to screenName
+            Keys.EVENT_NAME to EventName.OPEN_SCREEN,
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
+            Keys.IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
+            Keys.USER_ID to userSession.userId,
+            Keys.SCREEN_NAME to screenName
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -26,12 +27,12 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
     fun eventClickSeeInvoice(categoryName: String, operatorName: String) {
         val map = mapOf(
-                Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
-                Keys.EVENT_ACTION to EventAction.CLICK_SEE_INVOICE,
-                Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-                Keys.EVENT_LABEL to "$categoryName - $operatorName",
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
+            Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
+            Keys.EVENT_ACTION to EventAction.CLICK_SEE_INVOICE,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $operatorName",
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -39,34 +40,15 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
     fun eventClickCopyButton(categoryName: String, operatorName: String) {
         val map = mapOf(
-                Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
-                Keys.EVENT_ACTION to EventAction.CLICK_COPY_BUTTON,
-                Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-                Keys.EVENT_LABEL to "$categoryName - $operatorName",
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
+            Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
+            Keys.EVENT_ACTION to EventAction.CLICK_COPY_BUTTON,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $operatorName",
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
-
-    fun eventClickActionButton(categoryName: String, operatorName: String,
-                               buttonName: String, eventAction: String,
-                               isFeatureButton: Boolean = false) {
-        val map = mutableMapOf(
-                Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
-                Keys.EVENT_ACTION to eventAction,
-                Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-                Keys.EVENT_LABEL to "$categoryName - $operatorName - $buttonName",
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
-        )
-
-        if (isFeatureButton) {
-            map[Keys.USER_ID] = userSession.userId
-        }
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
     fun eventTopAdsImpression(data: RecommendationItem) {
@@ -82,7 +64,8 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                EventName.VIEW_ITEM_LIST, bundle
+            EventName.VIEW_ITEM_LIST,
+            bundle
         )
     }
 
@@ -100,63 +83,189 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                EventName.SELECT_CONTENT, bundle
+            EventName.SELECT_CONTENT,
+            bundle
         )
     }
 
-    fun eventViewVoidPopup(categoryName: String, productId: String) {
-        val map = mutableMapOf(
-            Keys.EVENT_NAME to EventName.VIEW_DIGITAL_IRIS,
-            Keys.EVENT_ACTION to EventAction.VIEW_VOID_POPUP,
-            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-            Keys.EVENT_LABEL to "$categoryName - $productId",
-            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to userSession.userId
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 28223
+    fun sendViewVoidPopupEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.VIEW_DIGITAL_IRIS)
+            .setEventAction(EventAction.VIEW_VOID_POPUP)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.VIEW_VOID_POPUP)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
-    fun eventVoidPopupClickBatalkan(categoryName: String, productId: String) {
-        val map = mutableMapOf(
-            Keys.EVENT_NAME to EventName.CLICK_DIGITAL,
-            Keys.EVENT_ACTION to EventAction.CLICK_BATALKAN_VOID_POPUP,
-            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-            Keys.EVENT_LABEL to "$categoryName - $productId",
-            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to userSession.userId
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 28227
+    fun sendClickKembaliVoidPopupEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_KEMBALI_VOID_POPUP)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_KEMBALI_VOID_POPUP)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
-    fun eventVoidPopupClickKembali(categoryName: String, productId: String) {
-        val map = mutableMapOf(
-            Keys.EVENT_NAME to EventName.CLICK_DIGITAL,
-            Keys.EVENT_ACTION to EventAction.CLICK_KEMBALI_VOID_POPUP,
-            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-            Keys.EVENT_LABEL to "$categoryName - $productId",
-            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to userSession.userId
-        )
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 28224
+    fun sendClickBatalkanVoidPopupEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_BATALKAN_VOID_POPUP)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_BATALKAN_VOID_POPUP)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
 
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 50618
+    fun sendImpressionPrimaryButtonEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.VIEW_DIGITAL_IRIS)
+            .setEventAction(EventAction.IMPRESSION_PRIMARY_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.IMPRESSION_PRIMARY_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 50619
+    fun sendImpressionSecondaryButtonEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.VIEW_DIGITAL_IRIS)
+            .setEventAction(EventAction.IMPRESSION_SECONDARY_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.IMPRESSION_SECONDARY_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 1559
+    fun sendClickPrimaryButtonEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_PRIMARY_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_PRIMARY_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 1560
+    fun sendClickSecondaryButtonEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_SECONDARY_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_SECONDARY_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/272
+    // Tracker ID: 19558
+    fun sendClickOnFeatureButtonEvent(
+        categoryName: String,
+        productId: String,
+        buttonName: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $buttonName"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_CHECKOUT)
+            .setEventAction(EventAction.CLICK_FEATURE_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_FEATURE_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
     private fun mapTopAdsProduct(data: RecommendationItem): Bundle =
-            Bundle().apply {
-                putString(Keys.INDEX, data.position.toString())
-                putString(Keys.ITEM_BRAND, "")
-                putString(Keys.ITEM_CATEGORY, data.categoryBreadcrumbs)
-                putString(Keys.ITEM_ID, data.productId.toString())
-                putString(Keys.ITEM_NAME, data.name)
-                putString(Keys.ITEM_VARIANT, "")
-                putString(Keys.PRICE, data.priceInt.toString())
-            }
-
+        Bundle().apply {
+            putString(Keys.INDEX, data.position.toString())
+            putString(Keys.ITEM_BRAND, "")
+            putString(Keys.ITEM_CATEGORY, data.categoryBreadcrumbs)
+            putString(Keys.ITEM_ID, data.productId.toString())
+            putString(Keys.ITEM_NAME, data.name)
+            putString(Keys.ITEM_VARIANT, "")
+            putString(Keys.PRICE, data.priceInt.toString())
+        }
 
     class Keys {
         companion object {
@@ -182,6 +291,7 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             const val ITEM_NAME = "item_name"
             const val ITEM_VARIANT = "item_variant"
             const val PRICE = "price"
+            const val TRACKER_ID = "trackerId"
         }
     }
 
@@ -202,8 +312,6 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         companion object {
             const val CLICK_SEE_INVOICE = "click lihat invoice"
             const val CLICK_COPY_BUTTON = "click copy button"
-            const val CLICK_PRIMARY_BUTTON = "click primary button"
-            const val CLICK_SECONDARY_BUTTON = "click secondary button"
             const val CLICK_FEATURE_BUTTON = "click on feature button"
 
             const val IMPRESSION_PRODUCT = "impression product"
@@ -211,7 +319,12 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
             const val VIEW_VOID_POPUP = "view void popup"
             const val CLICK_BATALKAN_VOID_POPUP = "click batalkan void popup"
-            const val CLICK_KEMBALI_VOID_POPUP= "click kembali void popup"
+            const val CLICK_KEMBALI_VOID_POPUP = "click kembali void popup"
+
+            const val CLICK_PRIMARY_BUTTON = "click primary button"
+            const val CLICK_SECONDARY_BUTTON = "click secondary button"
+            const val IMPRESSION_PRIMARY_BUTTON = "impression primary button"
+            const val IMPRESSION_SECONDARY_BUTTON = "impression secondary button"
         }
     }
 
@@ -226,4 +339,16 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         }
     }
 
+    class TrackerId {
+        companion object {
+            const val VIEW_VOID_POPUP = "28223"
+            const val CLICK_BATALKAN_VOID_POPUP = "28224"
+            const val CLICK_KEMBALI_VOID_POPUP = "28227"
+            const val CLICK_PRIMARY_BUTTON = "1559"
+            const val CLICK_SECONDARY_BUTTON = "1560"
+            const val CLICK_FEATURE_BUTTON = "19558"
+            const val IMPRESSION_PRIMARY_BUTTON = "50618"
+            const val IMPRESSION_SECONDARY_BUTTON = "50619"
+        }
+    }
 }
