@@ -41,7 +41,7 @@ object TwoThumbnailSquareTrackingMapper {
             requestId = tracker.requestId,
             recSessionId = tracker.recSessionId,
             recParams = tracker.recParams,
-            shopId = tracker.shopId,
+            shopId = "",
             itemOrder = tracker.itemOrder,
             entranceForm = tracker.entranceForm,
             enterMethod = enterMethod,
