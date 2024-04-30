@@ -31,6 +31,7 @@ import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSetti
 import com.tokopedia.unifycomponents.compose.NestCheckbox
 import com.tokopedia.unifycomponents.compose.NestSwitch
 import com.tokopedia.unifycomponents.ticker.Ticker
+import java.net.UnknownHostException
 
 /**
  * @author by astidhiyaa on 3/22/24
@@ -118,7 +119,11 @@ private fun StoriesSettingsSuccess(pageInfo: StoriesSettingsPageUiModel, viewMod
 
 @Composable
 private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsViewModel) {
-    NestGlobalError(type = NestGlobalErrorType.NoConnection) {}
+    val (text, type, action) = when (error) {
+        is UnknownHostException -> Triple(stringResource(id = R.string.stories_settings_page_header), NestGlobalErrorType.NoConnection, {})
+        else -> Triple("", NestGlobalErrorType.PageNotFound) { viewModel.onEvent( StoriesSettingsAction.FetchPageInfo)}
+    }
+    NestGlobalError(type = type, secondaryActionText = text) { action() }
 }
 
 @Composable
