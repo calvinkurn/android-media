@@ -14,6 +14,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.view.adapter.FilterMenuAdapter
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class FilterMenu : BottomSheetUnify() {
 
@@ -43,7 +44,7 @@ class FilterMenu : BottomSheetUnify() {
     private fun changeCloseButtonColour() {
         context?.let { ctx ->
             val color =
-                MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                MethodChecker.getColor(ctx, unifyprinciplesR.color.Unify_NN600)
             bottomSheetClose.drawable?.apply {
                 mutate()
                 setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
@@ -64,7 +65,7 @@ class FilterMenu : BottomSheetUnify() {
         setChild(menuView)
     }
 
-    fun setOnItemMenuClickListener(onClick: (TopchatItemMenu, Int) -> Unit) {
+    fun setOnItemMenuClickListener(onClick: (TopchatItemMenu) -> Unit) {
         menuAdapter.setOnItemMenuClickListener(onClick)
     }
 
