@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
@@ -243,7 +244,7 @@ class HomeRecommendationCardMapper @Inject constructor(
             layoutName,
             (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
             tabName,
-            appLog.toAppLogModel(recommendationCard.recParam),
+            appLog.toAppLogModel(recommendationCard.recParam)
         )
     }
 

@@ -290,7 +290,8 @@ object DynamicChannelComponentMapper {
             badges = shopBadges,
             expiredTime = expiredTime,
             categoryBreadcrumbs = categoryBreadcrumbs,
-            position = index
+            position = index,
+            recommendationAdsLog = RecommendationAdsLog(creativeID, logExtra)
         )
     }
 

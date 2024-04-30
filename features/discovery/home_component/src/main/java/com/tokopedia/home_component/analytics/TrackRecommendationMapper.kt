@@ -9,6 +9,7 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object TrackRecommendationMapper {
     const val MISSION_MODULE_NAME = "mission"
@@ -58,10 +59,9 @@ object TrackRecommendationMapper {
 
     fun ChannelGrid.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(refer,
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "", AdsLogRealtimeClickModel.AdExtraData(
+            recommendationAdsLog.logExtra.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogRealtimeClickModel.AdExtraData(
             productId = id,
             productName = name,
         ))
@@ -69,10 +69,8 @@ object TrackRecommendationMapper {
 
     fun ChannelGrid.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
         return AdsLogShowOverModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "",
+            recommendationAdsLog.logExtra.toLongOrZero(),
+            recommendationAdsLog.logExtra,
             AdsLogShowOverModel.AdExtraData(
                 productId = id,
                 productName = name,
@@ -82,10 +80,9 @@ object TrackRecommendationMapper {
 
     fun ChannelGrid.asAdsLogShowModel(): AdsLogShowModel {
         return AdsLogShowModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "", AdsLogShowModel.AdExtraData(
+            recommendationAdsLog.logExtra.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowModel.AdExtraData(
             productId = id,
             productName = name,
         ))

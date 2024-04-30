@@ -50,10 +50,9 @@ object TrackRecommendationMapper {
 
     fun RecommendationCardModel.ProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(refer,
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "", AdsLogRealtimeClickModel.AdExtraData(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogRealtimeClickModel.AdExtraData(
             productId = id,
             productName = name,
         ))
@@ -61,10 +60,9 @@ object TrackRecommendationMapper {
 
     fun RecommendationCardModel.ProductItem.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
         return AdsLogShowOverModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "", AdsLogShowOverModel.AdExtraData(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowOverModel.AdExtraData(
             productId = id,
             sizePercent = visiblePercentage.toString(),
             productName = name,
@@ -73,10 +71,8 @@ object TrackRecommendationMapper {
 
     fun RecommendationCardModel.ProductItem.asAdsLogShowModel(): AdsLogShowModel {
         return AdsLogShowModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "",
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
             AdsLogShowModel.AdExtraData(productId = id, productName = name)
         )
     }
