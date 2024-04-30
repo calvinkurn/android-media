@@ -4,13 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.analytics.sendEventRealtimeClickAdsByteIo
-import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
-import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentFlashSaleBinding
 import com.tokopedia.home_component.decoration.FlashSaleCarouselDecoration
@@ -125,32 +121,6 @@ class FlashSaleViewHolder(
                             }
                             flashSaleWidgetListener?.onProductCardClicked(element.channelModel, it, it.applink)
                         }
-                    }
-
-                    override fun onAreaClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
-                        val channelGrid = element.channelModel.channelGrids.getOrNull(bindingAdapterPosition) ?: return
-                        channelGrid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
-                    }
-
-                    override fun onProductImageClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
-                        val channelGrid = element.channelModel.channelGrids.getOrNull(bindingAdapterPosition) ?: return
-                        channelGrid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
-                    }
-
-                    override fun onSellerInfoClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
-                        val channelGrid = element.channelModel.channelGrids.getOrNull(bindingAdapterPosition) ?: return
-                        channelGrid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
-                    }
-                },
-                carouselProductCardOnItemViewListener = object : CarouselProductCardListener.OnViewListener {
-                    override fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val channelGrid = element.channelModel.channelGrids.getOrNull(carouselProductCardPosition) ?: return
-                        channelGrid.sendEventShowAdsByteIo(itemView.context)
-                    }
-
-                    override fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int) {
-                        val channelGrid = element.channelModel.channelGrids.getOrNull(carouselProductCardPosition) ?: return
-                        channelGrid.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
                     }
                 },
                 carouselViewAllCardData = CarouselViewAllCardData(
