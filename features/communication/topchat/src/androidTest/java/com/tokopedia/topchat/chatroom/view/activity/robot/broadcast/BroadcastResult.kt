@@ -255,6 +255,39 @@ object BroadcastResult {
         }
     }
 
+    fun assertNewBroadcastFlashSaleProductCarousel(
+        position: Int,
+        totalItem: Int
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_flashsale_product, isDisplayed())
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_flashsale_rv, isDisplayed())
+        }
+        onView(withId(R.id.topchat_chatroom_broadcast_flashsale_rv)).check(matches(withTotalItem(totalItem)))
+    }
+
+    fun assertNewBroadcastFlashSaleProductCarouselItem(
+        position: Int,
+        @IdRes viewId: Int,
+        matcher: Matcher<View>
+    ) {
+        onView(
+            withRecyclerView(R.id.topchat_chatroom_broadcast_flashsale_rv).atPositionOnView(
+                position,
+                viewId
+            )
+        ).check(matches(matcher))
+    }
+
+    fun assertNewBroadcastFlashSaleWithoutProduct(
+        position: Int
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_flashsale_product, isDisplayed())
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_flashsale_rv, not(isDisplayed()))
+        }
+    }
+
     fun assertNewBroadcastVoucherHeader(
         position: Int,
         matcher: Matcher<View>
@@ -273,17 +306,6 @@ object BroadcastResult {
         }
     }
 
-    fun assertNewBroadcastPromoVoucherCarousel(
-        position: Int,
-        totalItem: Int
-    ) {
-        generalResult {
-            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_promo_voucher, isDisplayed())
-            assertViewInRecyclerViewAt(position, R.id.topchat_broadcast_rv_voucher, isDisplayed())
-        }
-        onView(withId(R.id.topchat_broadcast_rv_voucher)).check(matches(withTotalItem(totalItem)))
-    }
-
     fun assertNewBroadcastPromoVoucher(
         position: Int,
         matcher: Matcher<View>
@@ -293,7 +315,26 @@ object BroadcastResult {
         }
     }
 
-    fun assertNewBroadcastPromoVoucher(
+    fun assertNewBroadcastFlashSaleVoucher(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_flashsale_voucher, matcher)
+        }
+    }
+
+    fun assertNewBroadcastVoucherCarousel(
+        position: Int,
+        totalItem: Int
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.topchat_broadcast_rv_voucher, isDisplayed())
+        }
+        onView(withId(R.id.topchat_broadcast_rv_voucher)).check(matches(withTotalItem(totalItem)))
+    }
+
+    fun assertNewBroadcastVoucher(
         position: Int,
         @IdRes viewId: Int,
         matcher: Matcher<View>
@@ -306,7 +347,7 @@ object BroadcastResult {
         ).check(matches(matcher))
     }
 
-    fun assertNewBroadcastPromoSingleVoucher(
+    fun assertNewBroadcastSingleVoucher(
         position: Int
     ) {
         generalResult {
@@ -314,7 +355,7 @@ object BroadcastResult {
         }
     }
 
-    fun assertNewBroadcastPromoTimeStamp(
+    fun assertNewBroadcastTimeStamp(
         position: Int,
         timeStamp: String
     ) {

@@ -131,17 +131,18 @@ class TopChatRoomBuyerBroadcastPromoTest : TopchatRoomTest() {
 
             assertNewBroadcastVoucherHeader(1, withText("Makin hemat pakai kupon ini"))
             assertNewBroadcastVoucherDesc(1, withText("Kupon bisa dipilih lewat keranjang, tanpa perlu salin kode."))
-            assertNewBroadcastPromoVoucherCarousel(1, 2)
+            assertNewBroadcastPromoVoucher(1, isDisplayed())
+            assertNewBroadcastVoucherCarousel(1, 2)
 
-            assertNewBroadcastPromoVoucher(0, promousageR.id.promo_tv_type_mini_card, withText("Cashback"))
-            assertNewBroadcastPromoVoucher(0, promousageR.id.promo_tv_title_mini_card, withText("Rp50 rb"))
-            assertNewBroadcastPromoVoucher(0, promousageR.id.promo_tv_desc_mini_card, withText("Min. belanja Rp250 rb"))
+            assertNewBroadcastVoucher(0, promousageR.id.promo_tv_type_mini_card, withText("Cashback"))
+            assertNewBroadcastVoucher(0, promousageR.id.promo_tv_title_mini_card, withText("Rp50 rb"))
+            assertNewBroadcastVoucher(0, promousageR.id.promo_tv_desc_mini_card, withText("Min. belanja Rp250 rb"))
 
-            assertNewBroadcastPromoVoucher(1, promousageR.id.promo_tv_type_mini_card, withText("Bebas Ongkir"))
-            assertNewBroadcastPromoVoucher(1, promousageR.id.promo_tv_title_mini_card, withText("Rp20 rb"))
-            assertNewBroadcastPromoVoucher(1, promousageR.id.promo_tv_desc_mini_card, withText("Min. belanja Rp50 rb"))
+            assertNewBroadcastVoucher(1, promousageR.id.promo_tv_type_mini_card, withText("Bebas Ongkir"))
+            assertNewBroadcastVoucher(1, promousageR.id.promo_tv_title_mini_card, withText("Rp20 rb"))
+            assertNewBroadcastVoucher(1, promousageR.id.promo_tv_desc_mini_card, withText("Min. belanja Rp50 rb"))
 
-            assertNewBroadcastPromoTimeStamp(1, "12:00")
+            assertNewBroadcastTimeStamp(1, "12:00")
         }
 
         // When
@@ -176,7 +177,6 @@ class TopChatRoomBuyerBroadcastPromoTest : TopchatRoomTest() {
         stubIntents()
 
         // Then
-        Thread.sleep(10000)
         broadcastResult {
             assertNewBroadcastBanner(1, not(isDisplayed()))
             assertNewBroadcastCountdown(1, "Campaign \"Koleksi Spesial\" telah berakhir. Nantikan campaign berikutnya, ya!")
@@ -365,7 +365,7 @@ class TopChatRoomBuyerBroadcastPromoTest : TopchatRoomTest() {
         broadcastResult {
             assertNewBroadcastVoucherHeader(1, withText("Makin hemat pakai kupon ini"))
             assertNewBroadcastVoucherDesc(1, withText("Kupon bisa dipilih lewat keranjang, tanpa perlu salin kode."))
-            assertNewBroadcastPromoSingleVoucher(1)
+            assertNewBroadcastSingleVoucher(1)
 
             generalResult {
                 assertViewInRecyclerViewAt(1, promousageR.id.promo_tv_type_mini_card, withText("Cashback"))

@@ -60,4 +60,32 @@ object BroadcastRobot {
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }
+
+    fun clickBroadcastFlashSaleProduct(position: Int) {
+        scrollBroadcastFlashSaleProduct(position)
+        Thread.sleep(100)
+        onView(
+            withRecyclerView(R.id.topchat_chatroom_broadcast_flashsale_rv).atPositionOnView(
+                position,
+                R.id.topchat_chatroom_broadcast_flashsale_product_card
+            )
+        ).perform(click())
+    }
+
+    fun clickBroadcastFlashSaleSeeMore(position: Int) {
+        scrollBroadcastFlashSaleProduct(position)
+        Thread.sleep(100)
+        onView(
+            withRecyclerView(R.id.topchat_chatroom_broadcast_flashsale_rv).atPositionOnView(
+                position,
+                R.id.topchat_chatroom_broadcast_see_more_card
+            )
+        ).perform(click())
+    }
+
+    fun scrollBroadcastFlashSaleProduct(position: Int) {
+        onView(withId(R.id.topchat_chatroom_broadcast_flashsale_rv)).perform(
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
 }
