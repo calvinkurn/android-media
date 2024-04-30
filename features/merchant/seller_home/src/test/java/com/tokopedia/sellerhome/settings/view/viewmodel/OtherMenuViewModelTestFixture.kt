@@ -4,18 +4,20 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.seller.menu.common.domain.usecase.*
+import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetTotalTokoMemberUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
-import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsAutoAdsUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsShopInfoUseCase
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.shop.common.graphql.domain.usecase.GetShopChargeableUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -30,6 +32,9 @@ abstract class OtherMenuViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getTokoPlusBadgeUseCase: GetTokoPlusBadgeUseCase
+
+    @RelaxedMockK
+    lateinit var getShopChargeableUseCase: GetShopChargeableUseCase
 
     @RelaxedMockK
     lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
@@ -98,6 +103,7 @@ abstract class OtherMenuViewModelTestFixture {
             OtherMenuViewModel(
                 coroutineTestRule.dispatchers,
                 getTokoPlusBadgeUseCase,
+                getShopChargeableUseCase,
                 getShopOperationalUseCase,
                 getShopCreatedInfoUseCase,
                 balanceInfoUseCase,

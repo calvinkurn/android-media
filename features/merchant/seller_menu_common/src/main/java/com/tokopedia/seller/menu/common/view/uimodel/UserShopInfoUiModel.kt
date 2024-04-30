@@ -6,7 +6,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 
 data class UserShopInfoWrapper(
     val shopType: ShopType?,
-    val userShopInfoUiModel: UserShopInfoUiModel? = UserShopInfoUiModel()
+    val userShopInfoUiModel: UserShopInfoUiModel = UserShopInfoUiModel()
 ) {
     data class UserShopInfoUiModel(
         var isBeforeOnDate: Boolean = false,
