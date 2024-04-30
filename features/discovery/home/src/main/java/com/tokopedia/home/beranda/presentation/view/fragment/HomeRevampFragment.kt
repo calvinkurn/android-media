@@ -1911,17 +1911,6 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
-
-            REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-                    if (isSuccessRegister && getUserSession().isLoggedIn) {
-                        val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
-                        activity?.startActivity(intentHome)
-                        activity?.finish()
-                    }
-                }
-            }
         }
     }
 
