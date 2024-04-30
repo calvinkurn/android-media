@@ -233,7 +233,7 @@
             android:id="@+id/tvCaptVerification"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryTextColor"
+            android:textColor="@color/Unify_NN1000"
             app:layout_constraintBottom_toBottomOf="@+id/btnStartVerification"
             app:layout_constraintEnd_toStartOf="@+id/btnStartVerification"
             app:layout_constraintStart_toStartOf="parent"
