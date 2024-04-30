@@ -3,16 +3,10 @@ package com.tokopedia.home_component.widget.special_release
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.home_component.analytics.sendEventRealtimeClickAdsByteIo
-import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
-import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -22,7 +16,6 @@ import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 
 /**
@@ -41,13 +34,6 @@ class SpecialReleaseRevampItemViewHolder(
 
     private val binding: HomeComponentSpecialReleaseRevampItemBinding? by viewBinding()
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(element: SpecialReleaseRevampItemDataModel) {
         this.elementItem = element
         binding?.run {
@@ -56,15 +42,6 @@ class SpecialReleaseRevampItemViewHolder(
             renderShop(element)
             renderProduct(element)
         }
-    }
-
-    override fun onViewAttachedToWindow(element: SpecialReleaseRevampItemDataModel?) {
-        element?.grid.sendEventShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: SpecialReleaseRevampItemDataModel?, visiblePercentage: Int) {
-        element?.grid.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     private fun HomeComponentSpecialReleaseRevampItemBinding.renderShop(element: SpecialReleaseRevampItemDataModel) {
@@ -161,18 +138,6 @@ class SpecialReleaseRevampItemViewHolder(
                     element.grid.position,
                     element.grid.applink
                 )
-            }
-
-            override fun onAreaClicked(v: View) {
-                element.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
-            }
-
-            override fun onProductImageClicked(v: View) {
-                element.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
-            }
-
-            override fun onSellerInfoClicked(v: View) {
-                element.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
             }
         }
         productCard.run {

@@ -279,12 +279,11 @@ class CarouselPagingProductCardView: ConstraintLayout {
         fun onItemImpress(groupModel: CarouselPagingGroupModel, itemPosition: Int)
         fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int)
 
-        fun onAreaClick(groupModel: CarouselPagingGroupModel, itemPosition: Int)
-        fun onSellerInfoClick(groupModel: CarouselPagingGroupModel, itemPosition: Int)
-        fun onProductImageClick(groupModel: CarouselPagingGroupModel, itemPosition: Int)
+        fun onAreaClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
+        fun onSellerInfoClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
+        fun onProductImageClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
 
-        fun onViewAttachedToWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int)
-        fun onViewDetachedFromWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int, visiblePercentage: Int)
-
+        fun onViewAttachedToWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
+        fun onViewDetachedFromWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int, visiblePercentage: Int) {}
     }
 }
