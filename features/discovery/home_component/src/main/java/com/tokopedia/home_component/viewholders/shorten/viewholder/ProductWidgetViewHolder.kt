@@ -10,9 +10,15 @@ import com.tokopedia.home_component.databinding.GlobalComponent2squareProductWid
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemContentCardAdapter
-import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
+import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.home_component_header.util.DateHelper
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 
 class ProductWidgetViewHolder(
     view: View,
@@ -34,8 +40,13 @@ class ProductWidgetViewHolder(
     override fun bind(element: ProductWidgetUiModel?) {
         if (element == null) return
 
-        binding?.txtHeader?.text = element.header.name
+        setupWidgetHeader(element.header)
         mAdapter?.submitList(element.data)
+    }
+
+    private fun setupWidgetHeader(header: ChannelHeader) {
+        binding?.txtHeader?.text = header.name
+        handleCountdownTimer(header, ::shouldShowRetryWhenCampaignTimeout)
     }
 
     private fun setupRecyclerView() {
@@ -43,6 +54,37 @@ class ProductWidgetViewHolder(
         binding?.lstProductCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
         binding?.lstProductCard?.adapter = mAdapter
         binding?.lstProductCard?.setHasFixedSize(true)
+    }
+
+    private fun handleCountdownTimer(header: ChannelHeader, onTimerFinished: () -> Unit) {
+        if (header.expiredTime.isEmpty()) {
+            binding?.timerCountdown?.gone()
+            return
+        }
+
+        val expiredTime = DateHelper.getExpiredTime(header.expiredTime)
+        val hasExpired = DateHelper.isExpired(header.serverTimeOffset, expiredTime)
+        if (!hasExpired) {
+            binding?.timerCountdown?.show()
+            binding?.timerCountdown?.run {
+                isShowClockIcon = false
+                timerVariant = TimerUnifySingle.VARIANT_MAIN
+                timerFormat = TimerUnifySingle.FORMAT_HOUR
+                targetDate = Calendar.getInstance().apply {
+                    val currentDate = Date()
+                    val currentMillisecond: Long = currentDate.time + header.serverTimeOffset
+                    val timeDiff = expiredTime.time - currentMillisecond
+                    add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
+                    add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
+                    add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
+                }
+                onFinish = { onTimerFinished() }
+            }
+        }
+    }
+
+    private fun shouldShowRetryWhenCampaignTimeout() {
+        binding?.retryContainer?.root?.show()
     }
 
     companion object {
