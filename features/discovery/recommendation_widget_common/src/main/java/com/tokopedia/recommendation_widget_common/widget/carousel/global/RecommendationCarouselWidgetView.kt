@@ -20,8 +20,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetCarouselLayoutBinding
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetCarouselLayoutBinding
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
@@ -206,7 +206,10 @@ class RecommendationCarouselWidgetView :
     private fun seeMoreClickListener(model: RecommendationCarouselModel) =
         object : CarouselProductCardListener.OnSeeMoreClickListener {
             override fun onSeeMoreClick() {
-                AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(model.widget.pageName))
+                AppLogAnalytics.putPageData(
+                    AppLogParam.ENTER_METHOD,
+                    AppLogParam.ENTER_METHOD_SEE_MORE.format(model.widget.pageName)
+                )
                 model.widgetTracking?.sendEventSeeAll()
                 RouteManager.route(context, model.widget.seeMoreAppLink)
             }
@@ -231,7 +234,10 @@ class RecommendationCarouselWidgetView :
     private fun headerViewListener(model: RecommendationCarouselModel) =
         object : RecommendationHeaderListener {
             override fun onSeeAllClick(link: String) {
-                AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(model.widget.pageName))
+                AppLogAnalytics.putPageData(
+                    AppLogParam.ENTER_METHOD,
+                    AppLogParam.ENTER_METHOD_SEE_MORE.format(model.widget.pageName)
+                )
                 model.widgetTracking?.sendEventSeeAll()
                 RouteManager.route(context, link)
             }

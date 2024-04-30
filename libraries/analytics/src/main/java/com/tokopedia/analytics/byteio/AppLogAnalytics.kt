@@ -256,6 +256,10 @@ object AppLogAnalytics {
         Timber.d("Push _pageDataList: ${_pageDataList.printForLog()}")
     }
 
+    fun removeLastPageData() {
+
+    }
+
     /**
      * To remove last page data
      */
@@ -448,26 +452,32 @@ object AppLogAnalytics {
         requestId: String? = null
     ) {
         entranceForm?.let {
-            putPageData(ENTRANCE_FORM, entranceForm)
+            putPageDataAndFirstTrackId(ENTRANCE_FORM, entranceForm)
         }
         enterMethod?.let {
-            putPageData(ENTER_METHOD, enterMethod)
+            putPageDataAndFirstTrackId(ENTER_METHOD, enterMethod)
         }
         sourceModule?.let {
-            putPageData(SOURCE_MODULE, sourceModule)
+            putPageDataAndFirstTrackId(SOURCE_MODULE, sourceModule)
         }
         isAd?.let {
-            putPageData(IS_AD, isAd)
+            putPageDataAndFirstTrackId(IS_AD, isAd)
         }
         trackId?.let {
-            putPageData(TRACK_ID, trackId)
+            putPageDataAndFirstTrackId(TRACK_ID, trackId)
         }
         sourcePageType?.let {
-            putPageData(SOURCE_PAGE_TYPE, sourcePageType)
+            putPageDataAndFirstTrackId(SOURCE_PAGE_TYPE, sourcePageType)
         }
         requestId?.let {
-            putPageData(REQUEST_ID, requestId)
+            putPageDataAndFirstTrackId(REQUEST_ID, requestId)
         }
+    }
+
+    private fun putPageDataAndFirstTrackId(key: String, value: Any) {
+        _pageDataList.lastOrNull()?.put(key, value)
+        AppLogFirstTrackId.putPageData(key, value)
+        Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
     fun removeGlobalParam() {

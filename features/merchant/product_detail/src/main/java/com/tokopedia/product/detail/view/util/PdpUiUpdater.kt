@@ -49,8 +49,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
@@ -190,9 +188,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productArData: ArButtonDataModel?
         get() = mapOfData[ProductDetailConstant.AR_BUTTON] as? ArButtonDataModel
 
-    private val verticalRecommendationItems =
-        mutableListOf<ProductRecommendationVerticalDataModel>()
-
     val otherOffers: ProductCustomInfoTitleDataModel?
         get() = mapOfData[ProductDetailConstant.OTHER_OFFERS] as? ProductCustomInfoTitleDataModel
 
@@ -305,7 +300,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
         if (loadInitialData) {
             updateVerticalRecommendationWidget(productId)
-            verticalRecommendationItems.clear()
         }
     }
 
@@ -870,25 +864,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVerticalRecommendationData(data: RecommendationWidget) {
-        updateData(data.pageName) {
-            (mapOfData[data.pageName] as? ProductRecommendationVerticalPlaceholderDataModel)?.apply {
-                if (recomWidgetData?.currentPage != data.currentPage) {
-                    verticalRecommendationItems.addAll(getItemDataModels())
-                }
-                recomWidgetData = data
-            }
-        }
-    }
-
-    fun getVerticalRecommendationPlaceholder(pageName: String) =
-        mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel
-
-    fun getVerticalRecommendationNextPage(pageName: String): Int? {
-        val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
-        return dataModel?.recomWidgetData?.nextPage
-    }
-
     fun removeComponentP2Data(it: ProductInfoP2UiData) {
         if (it.ratesEstimate.isEmpty()) {
             removeComponent(ProductDetailConstant.SHIPMENT_V2)
@@ -1299,22 +1274,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             .values
             .toMutableList()
             .adjustAPlusMedia(aPlusContentExpanded)
-            .addVerticalRecommendation()
             .toList()
-    }
-
-    private fun MutableList<DynamicPdpDataModel>.addVerticalRecommendation(): MutableList<DynamicPdpDataModel> {
-        val indexVerticalRecommendation = indexOfLast {
-            it is ProductRecommendationVerticalPlaceholderDataModel
-        }
-
-        if (indexVerticalRecommendation != -1) {
-            verticalRecommendationItems.forEachIndexed { index, item ->
-                item.position = index + 1
-            }
-            addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
-        }
-        return this
     }
 
     private fun MutableList<DynamicPdpDataModel>.adjustAPlusMedia(

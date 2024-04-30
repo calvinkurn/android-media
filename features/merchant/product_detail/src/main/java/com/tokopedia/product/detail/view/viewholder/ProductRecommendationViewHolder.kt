@@ -198,7 +198,10 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductClickAppLog(
-                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
+                        productRecommendation.asProductTrackModel(
+                            entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                            additionalParam = listener.getAppLogAdditionalParam()
+                        )
                     )
 
                     view.context?.run {

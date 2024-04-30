@@ -772,6 +772,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val getDynamicProductInfoP1 = ProductDetailMapper
             .mapToDynamicProductDetailP1(this)
             .copy(cacheState = cacheState, isCampaign = isCampaign)
+        val hasInfiniteRecommendation =
+            components.any { it.type == ProductDetailConstant.PRODUCT_LIST_VERTICAL }
         val initialLayoutData =
             ProductDetailMapper.mapIntoVisitable(components, getDynamicProductInfoP1)
                 .filterNot {
@@ -784,9 +786,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val p1VariantData = ProductDetailMapper
             .mapVariantIntoOldDataClass(this)
         return ProductDetailDataModel(
-            layoutData = getDynamicProductInfoP1,
+            layoutData = getDynamicProductInfoP1.copy(hasInfiniteRecommendation = hasInfiniteRecommendation),
             listOfLayout = initialLayoutData,
-            variantData = p1VariantData
+            variantData = p1VariantData,
         )
     }
 

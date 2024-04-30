@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.loginregister.shopcreation.view.KycBridgingViewModel
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
 import dagger.Binds
 import dagger.Module
@@ -26,4 +27,9 @@ abstract class ShopCreationViewModelModule {
     @IntoMap
     @ViewModelKey(ShopCreationViewModel::class)
     internal abstract fun shopCreationViewModel(viewModel: ShopCreationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(KycBridgingViewModel::class)
+    internal abstract fun kycBridgingViewModel(viewModel: KycBridgingViewModel): ViewModel
 }
