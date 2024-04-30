@@ -33,6 +33,6 @@
     <!-- RM Transaction -->
     <string name="seller_rm_transaction_title">Jumlah transaksi</string>
     <string name="seller_transaction_not_chargeable">Bebeas biaya layanan untuk %d transaksi pertama.</string>
-    <string name="seller_transaction_chargeable">Di atas %s transaksi akan dikenakan biaya layanan.</string>
+    <string name="seller_transaction_chargeable">Di atas %d transaksi akan dikenakan biaya layanan.</string>
 
 </resources>
