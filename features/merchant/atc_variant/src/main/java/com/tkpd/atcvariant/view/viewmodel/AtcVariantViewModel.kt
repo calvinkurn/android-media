@@ -15,9 +15,6 @@ import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanS
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.analytics.byteio.ButtonClickAnalyticData
-import com.tokopedia.analytics.byteio.ButtonClickCompletedAnalyticData
-import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -40,6 +37,8 @@ import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModelDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModelDelegate
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
@@ -825,63 +824,23 @@ class AtcVariantViewModel @Inject constructor(
         _atcAnimationEnded.emit(true)
     }
 
-    fun getStickyButtonShowTrackData(cartType: String): ButtonShowAnalyticData? {
-        return ButtonShowAnalyticData(
-            buttonName = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.ButtonName.BUY_NOW
-                else -> return null
-            },
-            productId = getVariantData()?.parentId ?: return null,
-            isSingleSku = getVariantData()?.children?.size == 1,
-            buyType = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.BuyType.OCS
-                else -> return null
-            }
-        )
-    }
+    inner class CartRedirectionButtonsByteIOTrackerViewModel : ICartRedirectionButtonsByteIOTrackerViewModelDelegate by CartRedirectionButtonsByteIOTrackerViewModelDelegate() {
+        init {
+            register(Mediator())
+        }
 
-    fun getStickyButtonClickTrackData(buttonAction: Int): ButtonClickAnalyticData? {
-        return ButtonClickAnalyticData(
-            buttonName = when (buttonAction) {
-                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickAnalyticData.ButtonName.BUY_NOW
-                else -> return null
-            },
-            productId = getVariantData()?.parentId ?: return null,
-            isSingleSku = getVariantData()?.children?.size == 1,
-            buyType = when (buttonAction) {
-                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickAnalyticData.BuyType.OCS
-                else -> return null
-            }
-        )
-    }
-
-    fun getStickyButtonClickCompletedTrackData(
-        buttonActionType: Int,
-        data: AddToCartDataModel
-    ): ButtonClickCompletedAnalyticData? {
-        val variantData = getVariantData() ?: return null
-        val selectedChild = variantData.getChildByOptionId(
-            getSelectedOptionIds()?.values.orEmpty().toList()
-        ) ?: return null
-
-        return ButtonClickCompletedAnalyticData(
-            productId = variantData.parentId,
-            isSingleSku = variantData.children.size == 1,
-            skuId = data.data.productId,
-            quantity = data.data.quantity.toString(),
-            productType = selectedChild.productType,
-            originalPrice = selectedChild.finalMainPrice.toString(),
-            salePrice = selectedChild.finalPrice.toString(),
-            followStatus = if (getActivityResultData().isFollowShop) {
-                ButtonClickCompletedAnalyticData.FollowStatus.FOLLOWED
-            } else {
-                ButtonClickCompletedAnalyticData.FollowStatus.UNFOLLOWED
-            },
-            buyType = when (buttonActionType) {
-                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickCompletedAnalyticData.BuyType.OCS
-                else -> return null
-            },
-            cartId = data.data.cartId
-        )
+        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerViewModelDelegate.Mediator {
+            override fun getParentProductId() = getVariantData()?.parentId
+            override fun isSingleSku() = getVariantData()?.children?.size == 1
+            override fun getSkuId() = getSelectedVariant()?.productId
+            override fun getProductMinOrder() = getSelectedVariant()?.getFinalMinOrder()
+            override fun getProductType() = getSelectedVariant()?.productType
+            override fun getProductOriginalPrice() = getSelectedVariant()?.finalMainPrice
+            override fun getProductSalePrice() = getSelectedVariant()?.finalPrice
+            override fun isFollowShop() = getActivityResultData().isFollowShop
+            private fun getSelectedVariant() = getVariantData()?.getChildByOptionId(
+                getSelectedOptionIds()?.values.orEmpty().toList()
+            )
+        }
     }
 }

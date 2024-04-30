@@ -53,6 +53,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
@@ -66,6 +67,9 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_C
 import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModelDelegate
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
@@ -123,6 +127,9 @@ class AtcVariantBottomSheet :
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AtcVariantViewModel::class.java)
+    }
+    private val cartRedirectionButtonsByteIOTrackerDelegate by lazyThreadSafetyNone {
+        CartRedirectionButtonsByteIOTracker()
     }
 
     private val sharedViewModel by lazy {
@@ -523,7 +530,7 @@ class AtcVariantBottomSheet :
                 when (it) {
                     is Success -> {
                         onSuccessTransaction(it.data)
-                        trackOnButtonClickCompleted(it.data)
+                        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClickCompleted(it.data)
                         dismissAfterAtc()
                     }
 
@@ -887,7 +894,7 @@ class AtcVariantBottomSheet :
     }
 
     override fun onButtonShowed(buttonCartTypes: List<String>) {
-        trackOnButtonsShowed(buttonCartTypes)
+        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonsShowed(buttonCartTypes)
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
@@ -1027,7 +1034,7 @@ class AtcVariantBottomSheet :
 
             showWaitingIndicator(action = buttonAction)
 
-            trackOnButtonClick(buttonAction)
+            cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClick(buttonAction)
 
             viewModel.hitAtc(
                 buttonAction,
@@ -1297,23 +1304,19 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun trackOnButtonsShowed(buttonCartTypes: List<String>) {
-        buttonCartTypes.forEach(::trackOnButtonShowed)
-    }
+    private inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTrackerDelegate by CartRedirectionButtonsByteIOTrackerDelegate() {
+        private val _viewModel by lazyThreadSafetyNone {
+            viewModel.CartRedirectionButtonsByteIOTrackerViewModel()
+        }
 
-    private fun trackOnButtonShowed(cartType: String) {
-        val analyticData = viewModel.getStickyButtonShowTrackData(cartType) ?: return
-        AppLogPdp.sendButtonShow(analyticData)
-    }
+        init {
+            register(Mediator())
+        }
 
-    private fun trackOnButtonClick(buttonAction: Int) {
-        val analyticData = viewModel.getStickyButtonClickTrackData(buttonAction = buttonAction) ?: return
-        AppLogPdp.sendButtonClick(analyticData)
-    }
-
-    private fun trackOnButtonClickCompleted(data: AddToCartDataModel) {
-        val analyticData = viewModel.getStickyButtonClickCompletedTrackData(buttonActionType, data) ?: return
-        AppLogPdp.sendButtonClickCompleted(analyticData)
+        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerDelegate.Mediator {
+            override fun getViewModel() = _viewModel
+            override fun getButtonActionType() = buttonActionType
+        }
     }
 }
 

@@ -7,9 +7,6 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
-import com.tokopedia.analytics.byteio.ButtonClickAnalyticData
-import com.tokopedia.analytics.byteio.ButtonClickCompletedAnalyticData
-import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -46,6 +43,8 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModelDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModelDelegate
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.media.Media
@@ -112,11 +111,11 @@ import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
@@ -600,58 +599,6 @@ class ProductDetailViewModel @Inject constructor(
             salePrice = data?.finalPrice.orZero(),
             skuId = data?.basic?.productID.orEmpty(),
             addSkuNum = data?.basic?.minOrder.orZero(),
-        )
-    }
-
-    fun getStickyButtonShowTrackData(cartType: String): ButtonShowAnalyticData? {
-        return ButtonShowAnalyticData(
-            buttonName = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.ButtonName.BUY_NOW
-                else -> return null
-            },
-            productId = getProductInfoP1?.parentProductId ?: return null,
-            isSingleSku = isSingleSku,
-            buyType = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.BuyType.OCS
-                else -> return null
-            }
-        )
-    }
-
-    fun getStickyButtonClickTrackData(cartType: String): ButtonClickAnalyticData? {
-        return ButtonClickAnalyticData(
-            buttonName = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonClickAnalyticData.ButtonName.BUY_NOW
-                else -> return null
-            },
-            productId = getProductInfoP1?.parentProductId ?: return null,
-            isSingleSku = isSingleSku,
-            buyType = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonClickAnalyticData.BuyType.OCS
-                else -> return null
-            }
-        )
-    }
-
-    fun getStickyButtonClickCompletedTrackData(buttonActionType: Int, cartData: AddToCartDataModel): ButtonClickCompletedAnalyticData? {
-        return ButtonClickCompletedAnalyticData(
-            productId = getProductInfoP1?.parentProductId ?: return null,
-            isSingleSku = isSingleSku,
-            skuId = cartData.data.productId,
-            quantity = cartData.data.quantity.toString(),
-            productType = getProductInfoP1?.productType ?: return null,
-            originalPrice = getProductInfoP1?.originalPrice.orZero().toString(),
-            salePrice = getProductInfoP1?.finalPrice.orZero().toString(),
-            followStatus = if (p2Login.value?.isFollow.orZero() == 0) {
-                ButtonClickCompletedAnalyticData.FollowStatus.UNFOLLOWED
-            } else {
-                ButtonClickCompletedAnalyticData.FollowStatus.FOLLOWED
-            },
-            buyType = when (buttonActionType) {
-                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickCompletedAnalyticData.BuyType.OCS
-                else -> return null
-            },
-            cartId = cartData.data.cartId
         )
     }
 
@@ -1592,4 +1539,21 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun isAPlusContentExpanded() = aPlusContentExpanded
+
+    inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTrackerViewModelDelegate by CartRedirectionButtonsByteIOTrackerViewModelDelegate() {
+        init {
+            register(Mediator())
+        }
+
+        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerViewModelDelegate.Mediator {
+            override fun getParentProductId() = getProductInfoP1?.parentProductId
+            override fun isSingleSku(): Boolean = isSingleSku
+            override fun getSkuId() = getProductInfoP1?.basic?.productID
+            override fun getProductMinOrder() = getProductInfoP1?.basic?.minOrder
+            override fun getProductType() = getProductInfoP1?.productType
+            override fun getProductOriginalPrice() = getProductInfoP1?.originalPrice
+            override fun getProductSalePrice() = getProductInfoP1?.finalPrice
+            override fun isFollowShop() = p2Login.value?.isFollow.orZero() != 0
+        }
+    }
 }

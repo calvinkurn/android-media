@@ -263,7 +263,7 @@ object AppLogPdp {
             put("sale_price", analyticData.salePrice)
             put("follow_status", analyticData.followStatus.value)
             put("buy_type", analyticData.buyType.value)
-            put("cart_id", analyticData.buyType.value)
+            put("cart_id", analyticData.cartId)
         })
     }
     //endregion

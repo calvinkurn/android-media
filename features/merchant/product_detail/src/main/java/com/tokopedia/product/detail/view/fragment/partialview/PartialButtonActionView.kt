@@ -245,7 +245,7 @@ class PartialButtonActionView private constructor(
             .orEmpty()
             .take(CART_REDIRECTION_BUTTON_COUNT)
         renderNormalButtonCartRedirection(buttonToRender)
-        buttonListener.onButtonsShowed(buttonToRender)
+        buttonListener.onButtonsShowed(buttonToRender.map { it.cartType })
 
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
         renderTopChat(unavailableButton)

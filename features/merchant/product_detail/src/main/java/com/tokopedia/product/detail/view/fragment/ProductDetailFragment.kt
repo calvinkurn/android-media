@@ -153,11 +153,12 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDelegate
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
-import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -521,6 +522,9 @@ open class ProductDetailFragment :
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ProductDetailViewModel::class.java]
+    }
+    private val cartRedirectionButtonsByteIOTrackerDelegate by lazyThreadSafetyNone {
+        CartRedirectionButtonsByteIOTracker()
     }
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
@@ -3493,7 +3497,7 @@ open class ProductDetailFragment :
             return
         }
 
-        trackOnButtonClickCompleted(result)
+        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClickCompleted(result)
 
         when (buttonActionType) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
@@ -4887,7 +4891,7 @@ open class ProductDetailFragment :
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         viewModel.buttonActionText = buttonText
         val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-        trackOnButtonClick(cartType)
+        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClick(cartType)
         doAtc(atcKey)
     }
 
@@ -4905,8 +4909,8 @@ open class ProductDetailFragment :
         viewModel.deleteProductInCart(viewModel.getProductInfoP1?.basic?.productID ?: "")
     }
 
-    override fun onButtonsShowed(buttons: List<AvailableButton>) {
-        trackOnButtonsShowed(buttons)
+    override fun onButtonsShowed(cartTypes: List<String>) {
+        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonsShowed(cartTypes)
     }
 
     override fun updateQuantityNonVarTokoNow(
@@ -6460,22 +6464,18 @@ open class ProductDetailFragment :
         }
     }
 
-    private fun trackOnButtonsShowed(buttons: List<AvailableButton>) {
-        buttons.forEach(::trackOnButtonShowed)
-    }
+    private inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTrackerDelegate by CartRedirectionButtonsByteIOTrackerDelegate() {
+        private val _viewModel by lazyThreadSafetyNone {
+            viewModel.CartRedirectionButtonsByteIOTracker()
+        }
 
-    private fun trackOnButtonShowed(button: AvailableButton) {
-        val analyticData = viewModel.getStickyButtonShowTrackData(button.cartType) ?: return
-        AppLogPdp.sendButtonShow(analyticData)
-    }
+        init {
+            register(Mediator())
+        }
 
-    private fun trackOnButtonClick(cartType: String) {
-        val analyticData = viewModel.getStickyButtonClickTrackData(cartType = cartType) ?: return
-        AppLogPdp.sendButtonClick(analyticData)
-    }
-
-    private fun trackOnButtonClickCompleted(cartData: AddToCartDataModel) {
-        val analyticData = viewModel.getStickyButtonClickCompletedTrackData(buttonActionType, cartData) ?: return
-        AppLogPdp.sendButtonClickCompleted(analyticData)
+        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerDelegate.Mediator {
+            override fun getViewModel() = _viewModel
+            override fun getButtonActionType() = buttonActionType
+        }
     }
 }
