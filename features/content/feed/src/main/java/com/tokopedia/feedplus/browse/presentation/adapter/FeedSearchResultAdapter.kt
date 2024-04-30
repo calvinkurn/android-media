@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
+import com.tokopedia.content.common.util.WindowSizeClass
+import com.tokopedia.content.common.util.WindowWidthSizeClass
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
@@ -8,10 +10,16 @@ import kotlinx.coroutines.CoroutineScope
 
 internal class FeedSearchResultAdapter(
     coroutineScope: CoroutineScope,
-    inspirationCardListener: InspirationCardViewHolder.Item.Listener
+    sizeClass: WindowSizeClass,
+    inspirationCardListener: InspirationCardViewHolder.Item.Listener,
 ): FeedBrowseItemAdapter<List<FeedSearchResultContent>>(
     scope = coroutineScope,
     inspirationCardListener = inspirationCardListener,
+    spanCount = when (sizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 2
+        WindowWidthSizeClass.Medium -> 3
+        WindowWidthSizeClass.Expanded -> 4
+    }
 ) {
 
     fun setShimmer() {

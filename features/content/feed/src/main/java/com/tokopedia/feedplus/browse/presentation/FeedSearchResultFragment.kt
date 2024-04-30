@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
@@ -63,6 +64,7 @@ internal class FeedSearchResultFragment @Inject constructor(
     private val adapter: FeedSearchResultAdapter by lazyThreadSafetyNone {
         FeedSearchResultAdapter(
             this.viewLifecycleOwner.lifecycleScope,
+            requireActivity().calculateWindowSizeClass(),
             cardListener
         )
     }
