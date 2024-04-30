@@ -118,7 +118,7 @@ object AppLogFirstTrackId {
     }
 
     fun showToast(activity: Activity) {
-        if (_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) == PageName.PDP) {
+        if (additionalPageName.contains(_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) ?: "")) {
             Toast.makeText(
                 activity.applicationContext,
                 "First Track Id = $firstTrackId\n" +
