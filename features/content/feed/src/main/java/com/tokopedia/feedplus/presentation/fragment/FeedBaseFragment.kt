@@ -69,6 +69,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -556,7 +557,7 @@ class FeedBaseFragment :
 
                     when (event) {
                         is FeedTooltipEvent.ShowTooltip -> {
-                            if (binding.containerFeedTopNav.btnFeedBrowse.isVisible) {
+                            if (binding.containerFeedTopNav.btnFeedBrowse.isVisible && !mOnboarding?.hasCoachMark.orFalse()) {
                                 binding.containerFeedTopNav.searchTooltip.setTooltipMessage(event.category)
                                 binding.containerFeedTopNav.searchTooltip.show()
                                 feedMainViewModel.setHasShownTooltip()
