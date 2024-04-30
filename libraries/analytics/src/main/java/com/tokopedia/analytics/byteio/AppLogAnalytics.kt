@@ -148,6 +148,10 @@ object AppLogAnalytics {
         put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
     }
 
+    internal fun JSONObject.addAuthorId() {
+        put(AUTHOR_ID, getLastData(AUTHOR_ID))
+    }
+
     private fun generateEntranceInfoCartJson(): JSONObject {
         return JSONObject().also {
             it.put(ENTER_FROM_INFO, getEnterFromBeforeCart())

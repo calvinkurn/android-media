@@ -1,6 +1,7 @@
 package com.tokopedia.analytics.byteio.pdp
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addAuthorId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
@@ -253,7 +254,7 @@ object AppLogPdp {
             addSourcePageType()
             addEnterFromInfo()
             addEntranceInfo()
-            put(AppLogParam.AUTHOR_ID, getLastData(AppLogParam.AUTHOR_ID))
+            addAuthorId()
             put("product_id", analyticData.productId)
             put("is_single_sku", analyticData.isSingleSku.intValue)
             put("sku_id", analyticData.skuId)
