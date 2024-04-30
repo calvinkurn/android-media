@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.widget.Toast
+import com.tokopedia.analytics.byteio.AppLogParam.IS_ADDITIONAL
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
@@ -67,6 +68,12 @@ object AppLogFirstTrackId {
             ) {
                 val trackId = getDataFromPreviousPage(TRACK_ID, i)
                 val sourcePageType = getDataFromPreviousPage(SOURCE_PAGE_TYPE, i)
+                val isCheckout = getDataFromPreviousPage(IS_ADDITIONAL, i) == "checkout"
+
+                if (isCheckout) {
+                    continue
+                }
+
                 if (trackId.isEmpty() || sourcePageType.isEmpty()) {
                     break
                 } else {
@@ -74,11 +81,6 @@ object AppLogFirstTrackId {
                         _firstTrackId = trackId
                         _firstSourcePage = sourcePageType
                     }
-                }
-
-                val previousPageName = getDataFromPreviousPage(PAGE_NAME, i)
-                if (additionalPageName.contains(previousPageName)) {
-                    break
                 }
             } else {
                 break

@@ -249,6 +249,7 @@ object AppLogParam {
     const val SLIDE_TYPE = "slide_type"
     const val SOURCE_MODULE = "source_module"
     const val SOURCE_PAGE_TYPE = "source_page_type"
+    const val IS_ADDITIONAL = "is_additional"
     const val SOURCE_PREVIOUS_PAGE = "source_previous_page"
     const val TRACK_ID = "track_id"
     const val REC_PARAMS = "rec_params"
