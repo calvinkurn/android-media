@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Properties
@@ -109,7 +110,9 @@ class ShopOfferHeroBrandViewModel(
         this._productMaxHeight.value = productCardModels.getMaxHeightForGridView(
             context = application.applicationContext,
             coroutineDispatcher = Dispatchers.Default,
-            productImageWidth = PRODUCT_IMAGE_WIDTH.toPx()
+            productImageWidth = PRODUCT_IMAGE_WIDTH.toPx(),
+            isReimagine = !component.properties.isOldProductCardType(),
+            useCompatPadding = true
         )
     }
 

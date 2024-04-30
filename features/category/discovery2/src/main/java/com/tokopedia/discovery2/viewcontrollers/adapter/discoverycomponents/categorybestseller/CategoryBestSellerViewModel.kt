@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
@@ -98,7 +99,14 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
             }
         }
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-        maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
+        val maxHeightForGridView = productCardModelArray.getMaxHeightForGridView(
+            context = application.applicationContext,
+            coroutineDispatcher = Dispatchers.Default,
+            productImageWidth = productImageWidth,
+            isReimagine = !components.properties.isOldProductCardType(),
+            useCompatPadding = true
+        )
+        maxHeightProductCard.postValue(maxHeightForGridView)
     }
 
     private fun getProductList(): ArrayList<ComponentsItem>? {
