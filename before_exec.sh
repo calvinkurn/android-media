@@ -1,3 +1,4 @@
+#!/bin/bash
 # change config to bits
 if grep 'resRepo=tokopedia' "gradle.properties"; then
   echo "changing resRepo to bits.."
