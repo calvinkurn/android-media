@@ -1,6 +1,10 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartPaymentRequest
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest
@@ -19,15 +23,19 @@ import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -42,6 +50,7 @@ class CheckoutCartProcessor @Inject constructor(
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val changeShippingAddressGqlUseCase: Lazy<ChangeShippingAddressGqlUseCase>,
     private val releaseBookingUseCase: Lazy<ReleaseBookingUseCase>,
+    private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val helper: CheckoutDataHelper,
     private val dispatchers: CoroutineDispatchers
 ) {
@@ -57,7 +66,8 @@ class CheckoutCartProcessor @Inject constructor(
         isPlusSelected: Boolean,
         isReloadData: Boolean,
         isReloadAfterPriceChangeHigher: Boolean,
-        shipmentAction: String
+        shipmentAction: String,
+        listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>
     ): CheckoutPageState {
         return withContext(dispatchers.io) {
             try {
@@ -80,7 +90,8 @@ class CheckoutCartProcessor @Inject constructor(
                     isReloadAfterPriceChangeHigher,
                     isOneClickShipment,
                     isTradeIn,
-                    isTradeInDropOff
+                    isTradeInDropOff,
+                    listPromoExternalAutoApplyCode
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -95,7 +106,8 @@ class CheckoutCartProcessor @Inject constructor(
         isReloadAfterPriceChangeHigher: Boolean,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInDropOff: Boolean
+        isTradeInDropOff: Boolean,
+        listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>
     ): CheckoutPageState {
         if (cartShipmentAddressFormData.isError) {
             if (cartShipmentAddressFormData.isOpenPrerequisiteSite) {
@@ -123,7 +135,8 @@ class CheckoutCartProcessor @Inject constructor(
                 userAddress,
                 isOneClickShipment,
                 isTradeIn,
-                isTradeInDropOff
+                isTradeInDropOff,
+                listPromoExternalAutoApplyCode
             )
         }
     }
@@ -133,7 +146,8 @@ class CheckoutCartProcessor @Inject constructor(
         userAddress: UserAddress?,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInDropOff: Boolean
+        isTradeInDropOff: Boolean,
+        listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>
     ): CheckoutPageState {
         when (cartShipmentAddressFormData.errorCode) {
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
@@ -152,7 +166,7 @@ class CheckoutCartProcessor @Inject constructor(
                 return if (userAddress == null) {
                     CheckoutPageState.EmptyData
                 } else {
-                    CheckoutPageState.Success(cartShipmentAddressFormData)
+                    CheckoutPageState.Success(injectPromoExternalAutoApply(cartShipmentAddressFormData, listPromoExternalAutoApplyCode))
                 }
             }
 
@@ -171,6 +185,26 @@ class CheckoutCartProcessor @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun injectPromoExternalAutoApply(cartShipmentAddressFormData: CartShipmentAddressFormData, listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>): CartShipmentAddressFormData {
+        if (listPromoExternalAutoApplyCode.isEmpty()) {
+            return cartShipmentAddressFormData
+        }
+        val groupShop = cartShipmentAddressFormData.groupAddress.firstOrNull()?.groupShop?.firstOrNull()
+        val (listGlobalVoucher, listMerchantVoucher) = listPromoExternalAutoApplyCode.partition { it.type != TYPE_PROMO_MV }
+        val newLastApply = cartShipmentAddressFormData.lastApplyData.copy(
+            codes = listGlobalVoucher.map { it.code },
+            voucherOrders = listMerchantVoucher.map {
+                LastApplyVoucherOrdersItemUiModel(
+                    code = it.code,
+                    uniqueId = groupShop?.groupShopData?.firstOrNull()?.cartStringOrder ?: "",
+                    cartStringGroup = groupShop?.cartString ?: "",
+                    type = TYPE_PROMO_MV
+                )
+            }
+        )
+        return cartShipmentAddressFormData.copy(lastApplyData = newLastApply)
     }
 
     suspend fun changeShippingAddress(
@@ -383,6 +417,71 @@ class CheckoutCartProcessor @Inject constructor(
             }
         }
     }
+
+    suspend fun updateCart(params: List<UpdateCartRequest>, source: String, paymentRequest: UpdateCartPaymentRequest?): UpdateCartResult {
+        return withContext(dispatchers.io) {
+            try {
+                updateCartUseCase.get().setParams(params, source, paymentRequest)
+                val response = updateCartUseCase.get().executeOnBackground()
+                if (response.data.status) {
+                    return@withContext UpdateCartResult(true)
+                }
+                return@withContext UpdateCartResult(
+                    false,
+                    toasterMessage = response.data.error,
+                    toasterActionMessage = if (response.data.toasterAction.showCta) response.data.toasterAction.text else ""
+                )
+            } catch (e: Exception) {
+                Timber.d(e)
+                return@withContext UpdateCartResult(
+                    false,
+                    throwable = e
+                )
+            }
+        }
+    }
+
+    fun generateUpdateCartRequest(checkoutItems: List<CheckoutItem>): List<UpdateCartRequest> {
+        val updateCartRequestList = ArrayList<UpdateCartRequest>()
+        for (checkoutItem in checkoutItems) {
+            if (checkoutItem is CheckoutProductModel) {
+                val updateCartRequest = UpdateCartRequest().apply {
+                    productId = checkoutItem.productId.toString()
+                    cartId = checkoutItem.cartId.toString()
+                    notes = checkoutItem.noteToSeller
+                    quantity = checkoutItem.quantity
+                    bundleInfo = BundleInfo().apply {
+                        bundleId = checkoutItem.bundleId.toZeroStringIfNullOrBlank()
+                        bundleGroupId = checkoutItem.bundleGroupId.toZeroStringIfNullOrBlank()
+                        bundleQty = checkoutItem.bundleQuantity
+                    }
+                }
+                updateCartRequestList.add(updateCartRequest)
+            }
+        }
+        return updateCartRequestList
+    }
+
+    fun generateUpdateCartPaymentRequest(payment: CheckoutPaymentModel?): UpdateCartPaymentRequest? {
+        val paymentData = payment?.data?.paymentWidgetData?.firstOrNull()
+        if (paymentData != null) {
+            val selectedTenure = paymentData.installmentPaymentData.selectedTenure
+            return UpdateCartPaymentRequest(
+                paymentData.gatewayCode,
+                selectedTenure,
+                payment.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.optionId ?: "",
+                paymentData.metadata
+            )
+        }
+        return UpdateCartPaymentRequest()
+    }
+
+    companion object {
+        const val UPDATE_CART_SOURCE_CHECKOUT = "checkout"
+        const val UPDATE_CART_SOURCE_NOTES = "update_notes"
+        const val UPDATE_CART_SOURCE_PAYMENT = "update_payment"
+        const val UPDATE_CART_SOURCE_CHECKOUT_OPEN_PROMO = "saf_coupon_list"
+    }
 }
 
 data class ChangeAddressResult(
@@ -390,3 +489,12 @@ data class ChangeAddressResult(
     val toasterMessage: String = "",
     val throwable: Throwable? = null
 )
+
+data class UpdateCartResult(
+    val isSuccess: Boolean,
+    val toasterMessage: String = "",
+    val toasterActionMessage: String = "",
+    val throwable: Throwable? = null
+)
+
+private const val TYPE_PROMO_MV = "mv"

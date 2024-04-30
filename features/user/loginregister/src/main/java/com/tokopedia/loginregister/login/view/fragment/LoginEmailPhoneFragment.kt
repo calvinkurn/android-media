@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
+import com.tokopedia.media.loader.loadImage
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
@@ -27,6 +28,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -107,7 +109,6 @@ import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
@@ -1105,6 +1106,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
+
+
+                val appID = LoginConstants.MsSdkKey.APPID
+                val mgr = MSManagerUtils.get(appID)
+                mgr?.let {
+                    mgr.report(LoginConstants.MsSdkKey.LOGGED)
+                }
                 analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister, isLoginAfterSq)
 
                 if (isFromChooseAccount) {

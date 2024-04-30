@@ -30,7 +30,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginTop="@dimen/margin_small"
-                tools:src="@drawable/info_icon" />
+                tools:src="@drawable/common_ic_info_black" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txt_product_name"

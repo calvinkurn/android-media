@@ -48,7 +48,26 @@
             android:layout_height="match_parent"
             android:padding="0.8dp"
             android:scaleType="centerCrop"
+            tools:visibility="visible"
             tools:srcCompat="@tools:sample/avatars" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_retry"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:srcCompat="@drawable/ic_retry_image_send" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/image_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -62,7 +81,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:visibility="visible"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
         </FrameLayout>
 

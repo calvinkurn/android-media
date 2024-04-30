@@ -135,8 +135,6 @@ open class ShopHomeAdapterTypeFactory(
     private val bmsmWidgetListener: BmsmWidgetEventListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
-    private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
-    private var showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return when (baseShopHomeWidgetUiModel.name) {
@@ -163,21 +161,11 @@ open class ShopHomeAdapterTypeFactory(
             WidgetNameEnum.PRODUCT_BUNDLE_SINGLE.value,
             WidgetNameEnum.PRODUCT_BUNDLE_MULTIPLE.value -> ShopHomeProductBundleParentWidgetViewHolder.LAYOUT
             WidgetNameEnum.SHOWCASE_SLIDER_SMALL.value,
-            WidgetNameEnum.SHOWCASE_SLIDER_MEDIUM.value -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
-            WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value -> {
-                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
-                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
-                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
-            }
-            WidgetNameEnum.SHOWCASE_GRID_SMALL.value -> {
-                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
-                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE
-                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
-            }
+            WidgetNameEnum.SHOWCASE_SLIDER_MEDIUM.value,
+            WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value,
+            WidgetNameEnum.SHOWCASE_GRID_SMALL.value,
             WidgetNameEnum.SHOWCASE_GRID_MEDIUM.value,
             WidgetNameEnum.SHOWCASE_GRID_BIG.value -> {
-                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
-                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
                 return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
             WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value -> {
@@ -498,8 +486,6 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT -> ShopHomeShowcaseListBaseWidgetViewHolder(
                 parent,
                 ShopHomeShowcaseListWidgetAdapter(showcaseListWidgetListener = shopHomeShowcaseListWidgetListener),
-                showcaseWidgetLayoutType,
-                showcaseWidgetGridColumnSize,
                 recyclerviewPoolListener
             )
             ProductGridListPlaceholderViewHolder.LAYOUT -> ProductGridListPlaceholderViewHolder(parent)

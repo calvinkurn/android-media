@@ -122,7 +122,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
                     ctaLink = "tokopedia://product/1444",
-                    linkId = 0,
+                    linkId = "0",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
                     isShowProductInfo = false
                 )
@@ -355,7 +355,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.FEATURED_PRODUCT,
                     isShowProductInfo = true
                 )
@@ -424,7 +424,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.FEATURED_PRODUCT,
                     isShowProductInfo = showProductInfo
                 )
@@ -488,7 +488,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
                     isShowProductInfo = showProductInfo
                 )
@@ -553,7 +553,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.SHOWCASE,
                     isShowProductInfo = showProductInfo
                 )
@@ -617,7 +617,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.SHOWCASE,
                     isShowProductInfo = showProductInfo
                 )
@@ -681,7 +681,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.SHOWCASE,
                     isShowProductInfo = false
                 )
@@ -746,7 +746,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.SHOWCASE,
                     isShowProductInfo = false
                 )
@@ -779,7 +779,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "",
                     ctaLink = "",
-                    linkId = 8,
+                    linkId = "8",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
                     isShowProductInfo = true
                 )
@@ -801,7 +801,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
                     ctaLink = "tokopedia://product/1444",
-                    linkId = 0,
+                    linkId = "0",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
                     isShowProductInfo = false
                 )
@@ -873,7 +873,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 BannerProductGroupUiModel.Tab.ComponentList.Data(
                     imageUrl = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
                     ctaLink = "tokopedia://product/1444",
-                    linkId = 0,
+                    linkId = "0",
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
                     isShowProductInfo = false
                 )
