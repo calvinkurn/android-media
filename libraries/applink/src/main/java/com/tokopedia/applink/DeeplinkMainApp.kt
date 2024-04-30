@@ -1030,13 +1030,13 @@ object DeeplinkMainApp {
         ),
         "settings" to mutableListOf(
             DLP.matchPattern("notification") { _: String ->
-                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.Default)
+                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink()
             },
             DLP.matchPattern("notification/push_notification") { _: String ->
                 DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.PushNotification)
             },
             DLP.matchPattern("notification/email") { _: String ->
-                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.Email)
+                DeeplinkMapperNotifSetting.getEmailNotifSettingInternalDeepLink()
             },
             DLP.matchPattern("notification/sms") { _: String ->
                 DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.Sms)

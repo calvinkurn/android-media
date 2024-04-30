@@ -1,5 +1,6 @@
 package com.tokopedia.applink.notifsetting
 
+import android.annotation.SuppressLint
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 /**
@@ -8,7 +9,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 object DeeplinkMapperNotifSetting {
 
-    fun getNotifSettingInternalDeepLink(type: NotifSettingType): String {
+    @SuppressLint("PII Data Exposure")
+    fun getEmailNotifSettingInternalDeepLink(): String {
+        return getNotifSettingInternalDeepLink(NotifSettingType.Email)
+    }
+
+    fun getNotifSettingInternalDeepLink(type: NotifSettingType = NotifSettingType.Default): String {
         return if (type.value.isBlank()) {
             ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
         } else {
