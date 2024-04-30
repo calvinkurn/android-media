@@ -2237,12 +2237,32 @@ code_review_rule:
         - rico.harisin
       required_approvals: 1
     - pattern: /features/promo/scp_rewards.*
+      reviewers:
+        - nabilla.sabbaha
+        - habibi
+        - rama.putra
+        - yoris.prayogo
       required_approvals: 1
     - pattern: /features/promo/scp_rewards_common.*
+      reviewers:
+        - nabilla.sabbaha
+        - habibi
+        - rama.putra
+        - yoris.prayogo
       required_approvals: 1
     - pattern: /features/promo/scp_rewards_widgets.*
+      reviewers:
+        - nabilla.sabbaha
+        - habibi
+        - rama.putra
+        - yoris.prayogo
       required_approvals: 1
     - pattern: /features/promo/scp_rewards_touchpoints.*
+      reviewers:
+        - nabilla.sabbaha
+        - habibi
+        - rama.putra
+        - yoris.prayogo
       required_approvals: 1
     - pattern: /features/promo/gamification.*
       reviewers:
