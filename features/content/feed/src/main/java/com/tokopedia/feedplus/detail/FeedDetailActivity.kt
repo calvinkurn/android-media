@@ -17,6 +17,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.presentation.FeedLocalSearchActivity
 import com.tokopedia.feedplus.databinding.ActivityFeedDetailBinding
+import com.tokopedia.feedplus.detail.analytic.FeedDetailAnalytic
 import com.tokopedia.feedplus.detail.di.DaggerFeedDetailComponent
 import com.tokopedia.feedplus.presentation.callback.FeedUiActionListener
 import com.tokopedia.feedplus.presentation.callback.FeedUiListener
@@ -48,6 +49,8 @@ class FeedDetailActivity : BaseActivity() {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject lateinit var router: Router
+
+    @Inject lateinit var analytic: FeedDetailAnalytic
 
     private var _binding: ActivityFeedDetailBinding? = null
     private val binding: ActivityFeedDetailBinding
@@ -145,6 +148,8 @@ class FeedDetailActivity : BaseActivity() {
                     if (it.isShowSearchBar) {
                         binding.feedDetailHeader.post {
                             binding.feedDetailHeader.setFeedSearchBar {
+                                analytic.clickSearchBar()
+
                                 val intent = router.getIntent(this@FeedDetailActivity, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
                                 intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
                                 startActivity(intent)
