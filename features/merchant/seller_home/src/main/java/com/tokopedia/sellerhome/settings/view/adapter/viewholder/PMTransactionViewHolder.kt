@@ -30,6 +30,7 @@ class PMTransactionViewHolder(
         val LAYOUT_RES = R.layout.item_sah_new_other_shop_transaction
         private const val TRANSACTION_FORMAT = "%s/" + Constant.ShopStatus.MAX_TRANSACTION
         private const val REACH_MAX_FREE_TRANSACTION = ">" + Constant.ShopStatus.MAX_TRANSACTION
+        private const val DIMEN_14 = 14
     }
 
     private val successGroup: Group? =
@@ -69,7 +70,7 @@ class PMTransactionViewHolder(
         val iconColor = itemView.context.getResColor(
             unifyprinciplesR.color.Unify_NN900
         )
-        val iconSize = itemView.context.dpToPx(14)
+        val iconSize = itemView.context.dpToPx(DIMEN_14)
         titleTextView?.setUnifyDrawableEnd(
             iconId = IconUnify.INFORMATION,
             colorIcon = iconColor,
