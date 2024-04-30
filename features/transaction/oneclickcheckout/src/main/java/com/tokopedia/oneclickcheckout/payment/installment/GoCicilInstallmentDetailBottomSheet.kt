@@ -3,12 +3,12 @@ package com.tokopedia.oneclickcheckout.payment.installment
 import android.content.Context
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetGocicilInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemGocicilInstallmentDetailBinding
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData

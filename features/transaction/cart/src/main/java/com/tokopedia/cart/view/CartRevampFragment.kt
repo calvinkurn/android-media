@@ -77,7 +77,6 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.analytics.CartBuyAgainAnalytics
 import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheet
 import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheetListener
-import com.tokopedia.cart.view.bottomsheet.CartNoteBottomSheet
 import com.tokopedia.cart.view.bottomsheet.CartOnBoardingBottomSheet
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.compose.CartBuyAgainFloatingButtonView
@@ -108,7 +107,6 @@ import com.tokopedia.cart.view.uimodel.CartGlobalEvent
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartMainCoachMarkUiModel
-import com.tokopedia.cart.view.uimodel.CartNoteBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartPurchaseBenefitData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
@@ -198,6 +196,8 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheet
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest

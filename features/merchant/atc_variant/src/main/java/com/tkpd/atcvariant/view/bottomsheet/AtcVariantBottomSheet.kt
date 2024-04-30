@@ -601,7 +601,7 @@ class AtcVariantBottomSheet :
             }
 
             ProductDetailCommonConstant.OCC_BUTTON -> {
-                goToOcc(result.data.productId)
+                goToOcc(result.data.productId, result)
             }
 
             ProductDetailCommonConstant.BUY_BUTTON -> {
@@ -614,7 +614,7 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun goToOcc(productId: String) {
+    private fun goToOcc(productId: String, atcResult: AddToCartDataModel) {
         val aggregatorData = viewModel.getVariantAggregatorData() ?: return
         val selectedPromoCodes =
             aggregatorData
@@ -624,10 +624,14 @@ class AtcVariantBottomSheet :
                 ?.promoCodes
                 ?.mapIntoPromoExternalAutoApply() ?: arrayListOf()
 
-        ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
-            getAtcActivity(),
-            ArrayList(selectedPromoCodes)
-        )
+        if (atcResult.isOccNewCheckoutPage) {
+            ProductCartHelper.goToCheckoutWithAutoApplyPromo(getAtcActivity(), ArrayList(selectedPromoCodes))
+        } else {
+            ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
+                getAtcActivity(),
+                ArrayList(selectedPromoCodes)
+            )
+        }
     }
 
     private fun trackSuccessAtc(cartId: String) {

@@ -46,6 +46,7 @@ import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -399,6 +400,7 @@ open class ProductDetailFragment :
 
         private const val DEBOUNCE_CLICK = 750
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
+        private const val FPS_TRACER_PDP = "Product Detail Scene"
 
         fun newInstance(
             productId: String? = null,
@@ -696,6 +698,8 @@ open class ProductDetailFragment :
 
         setPDPDebugMode()
         trackVerticalScroll()
+
+        getRecyclerView()?.bindFpsTracer(FPS_TRACER_PDP)
     }
 
     private fun onClickDynamicOneLinerPromo() {
@@ -3517,7 +3521,11 @@ open class ProductDetailFragment :
 
             ProductDetailCommonConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
-                goToOneClickCheckout()
+                if (result.isOccNewCheckoutPage) {
+                    goToCheckout()
+                } else {
+                    goToOneClickCheckout()
+                }
             }
 
             ProductDetailCommonConstant.BUY_BUTTON -> {
@@ -3616,6 +3624,16 @@ open class ProductDetailFragment :
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
         startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
+    private fun goToCheckout() {
+        val p1 = viewModel.getProductInfoP1 ?: return
+        val selectedPromoCodes = p1.data.promoPrice.promoCodes.mapIntoPromoExternalAutoApply()
+
+        ProductCartHelper.goToCheckoutWithAutoApplyPromo(
+            (context as ProductDetailActivity),
+            ArrayList(selectedPromoCodes)
+        )
     }
 
     private fun goToCartCheckout(cartId: String) {

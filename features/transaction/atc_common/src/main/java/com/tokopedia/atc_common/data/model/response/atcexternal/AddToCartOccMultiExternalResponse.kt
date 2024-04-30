@@ -22,7 +22,9 @@ data class OccMultiExternalDataResponse(
     @SerializedName("success")
     val success: Int = 0,
     @SerializedName("carts")
-    val data: List<AddToCartOccMultiExternalDataResponse> = emptyList()
+    val data: List<AddToCartOccMultiExternalDataResponse> = emptyList(),
+    @SerializedName("next_page")
+    val nextPage: Int = 0
 )
 
 data class AddToCartOccMultiExternalDataResponse(

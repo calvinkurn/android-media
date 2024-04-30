@@ -57,6 +57,8 @@ class PartialAtcButtonView private constructor(
         val onSuccessGetCartType =
             cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton(onSuccessGetCartType, isShopOwner, isProductBuyable, cartTypeData)
+        btnBuy.isParallelLoading = btnBuy.isVisible && btnAtc.isVisible
+        btnAtc.isParallelLoading = btnBuy.isVisible && btnAtc.isVisible
     }
 
     fun showLoading() {

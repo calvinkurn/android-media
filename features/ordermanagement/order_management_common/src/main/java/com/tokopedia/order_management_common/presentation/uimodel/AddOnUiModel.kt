@@ -19,6 +19,7 @@ data class AddOnSummaryUiModel(
         val quantity: Int,
         val addonsId: String,
         val addOnsName: String,
+        val addOnsUrl: String,
         val type: String = String.EMPTY,
         val addOnsThumbnailUrl: String,
         val toStr: String,

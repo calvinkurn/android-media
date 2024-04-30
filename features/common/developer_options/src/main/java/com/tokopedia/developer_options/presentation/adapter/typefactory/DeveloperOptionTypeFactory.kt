@@ -25,6 +25,7 @@ import com.tokopedia.developer_options.presentation.model.JourneyLogOnNotificati
 import com.tokopedia.developer_options.presentation.model.LeakCanaryUiModel
 import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
 import com.tokopedia.developer_options.presentation.model.LoginHelperUiModel
+import com.tokopedia.developer_options.presentation.model.MsSdkUiModel
 import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
@@ -74,6 +75,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ForceCrashUiModel): Int
     fun type(uiModel: ForceLogoutUiModel): Int
     fun type(uiModel: RandomizeAccessTokenUiModel): Int
+    fun type(uiModel: MsSdkUiModel): Int
     fun type(uiModel: SendFirebaseCrashExceptionUiModel): Int
     fun type(uiModel: OpenScreenRecorderUiModel): Int
     fun type(uiModel: NetworkLogOnNotificationUiModel): Int

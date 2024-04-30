@@ -7,6 +7,8 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -39,4 +41,11 @@ class BuyerOrderDetailModule {
     fun provideMultiRequestGraphqlUseCase(
         graphqlRepository: GraphqlRepository
     ): MultiRequestGraphqlUseCase = MultiRequestGraphqlUseCase(graphqlRepository)
+
+
+    @BuyerOrderDetailScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
 }

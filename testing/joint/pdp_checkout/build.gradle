@@ -5,6 +5,11 @@ android {
     namespace 'com.tokopedia.pdpCheckout.testing'
     testNamespace 'com.tokopedia.pdpCheckout.testing.test'
 
+    packagingOptions {
+        exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
+    }
+
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -44,6 +49,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
