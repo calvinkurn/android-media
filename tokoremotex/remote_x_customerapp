@@ -7,8 +7,8 @@ echo 'custom before exec by remote'
 cd \$1
 curDirName=\`pwd\`
 \n
-chmod +x before_exec.sh
-./before_exec.sh sellerapp
+chmod +x tokoremotex/before_exec.sh
+./tokoremotex/before_exec.sh customerapp
 """ >> .remoteX/custom/custom_before_exec.sh
 fi
-./remote -ci ./gradlew packageLiveDevDebugUniversalApk -p sellerapp --stacktrace
+./remote -ci ./gradlew packageLiveDevDebugUniversalApk -p customerapp --stacktrace
