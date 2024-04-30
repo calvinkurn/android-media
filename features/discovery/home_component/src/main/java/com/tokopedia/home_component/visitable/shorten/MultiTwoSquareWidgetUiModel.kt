@@ -49,6 +49,7 @@ data class MultiTwoSquareWidgetUiModel(
 
             map[data.mission?.position.orZero()] = data.mission
             map[data.thumbnail?.position.orZero()] = data.thumbnail
+            map[data.product?.position.orZero()] = data.product
 
             return map.entries
                 .sortedBy { it.key }
