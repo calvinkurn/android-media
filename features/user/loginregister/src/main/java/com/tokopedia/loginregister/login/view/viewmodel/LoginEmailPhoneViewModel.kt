@@ -28,8 +28,6 @@ import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
-import com.tokopedia.loginregister.shopcreation.data.ShopStatus
-import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
 import com.tokopedia.loginregister.login_sdk.data.SdkAuthorizeParam
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
@@ -39,6 +37,8 @@ import com.tokopedia.loginregister.login_sdk.data.ValidateClientParam
 import com.tokopedia.loginregister.login_sdk.usecase.AuthorizeSdkUseCase
 import com.tokopedia.loginregister.login_sdk.usecase.LoginSdkConsentUseCase
 import com.tokopedia.loginregister.login_sdk.usecase.ValidateClientUseCase
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
+import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -555,7 +555,11 @@ class LoginEmailPhoneViewModel @Inject constructor(
                         codeChallenge = codeChallenge
                     )
                 )
-                mutableAuthorizeResponse.value = Success(result.data)
+                if (result.data.isSuccess) {
+                    mutableAuthorizeResponse.value = Success(result.data)
+                } else {
+                    mutableAuthorizeResponse.value = Fail(MessageErrorException(result.data.error))
+                }
             } catch (e: Exception) {
                 mutableAuthorizeResponse.value = Fail(e)
             }
