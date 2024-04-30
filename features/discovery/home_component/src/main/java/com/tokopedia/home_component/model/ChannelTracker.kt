@@ -27,6 +27,10 @@ data class ChannelTracker(
     val recommendationType: String,
     val buType: String,
 
+    // Additional
+    val listName: String = "",
+    val listNum: String = "0",
+
     // GTM
     val channelId: String,
     val channelName: String,
@@ -37,4 +41,10 @@ data class ChannelTracker(
     fun isProduct() = productId.isNotEmpty() && productId != "0"
 
     fun sourceModule() = "${sourceModuleType}_${PageName.HOME}_outer_${recomPageName}_module"
+
+    fun getProperShopId() = if (isProduct()) shopId else ""
+
+    fun isAdsAsInt() = if (isTopAds) 1 else 0
+
+    fun alwaysOnRemote() = 0
 }
