@@ -45,4 +45,8 @@
 
     </RelativeLayout>
 
+    <include
+        android:id="@+id/retry_container"
+        layout="@layout/global_component_2square_retry_button" />
+
 </com.tokopedia.unifycomponents.CardUnify2>
