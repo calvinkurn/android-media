@@ -134,7 +134,7 @@ data class AppLogRecommendationProductModel(
             cardName: String = CardName.REC_GOODS_CARD,
             isTrackAsHorizontalSourceModule : Boolean = false,
             isEligibleForRecTrigger: Boolean = false,
-            additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
+            additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = getProductId(productId, parentProductId),

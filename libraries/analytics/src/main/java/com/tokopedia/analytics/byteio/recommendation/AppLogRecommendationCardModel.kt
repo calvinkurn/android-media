@@ -107,7 +107,7 @@ data class AppLogRecommendationCardModel(
             enterMethod: String? = null,
             sourcePageType: String = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)?.toString().orEmpty(),
             authorId: String = "",
-            additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
+            additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardId = cardId,
