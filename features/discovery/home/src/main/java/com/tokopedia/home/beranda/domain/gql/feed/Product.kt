@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 
 data class Product(
     @SerializedName("id") @Expose
@@ -113,7 +112,7 @@ data class Product(
             trackerImageUrl = trackerImageUrl,
             clickUrl = clickUrl,
             isWishlist = isWishlist,
-            wishListUrl = wishlistUrl,
+            wishListUrl = wishlistUrl
         )
     }
 
