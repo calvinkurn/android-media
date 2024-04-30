@@ -7,17 +7,14 @@ import android.graphics.drawable.GradientDrawable
 import android.util.Size
 import android.view.View
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -61,20 +58,22 @@ suspend fun Context.getBitmapFromUrl(
     size: Size? = null,
     cacheStrategy: DiskCacheStrategy = DiskCacheStrategy.NONE,
 ): Bitmap? = suspendCancellableCoroutine { cont ->
-    url.getBitmapFromUrl(this, properties = {
-        size?.let {
-            overrideSize(Resize(size.width, size.height))
-        }
-        setCacheStrategy(MediaCacheStrategy.Companion.mapTo(cacheStrategy))
-        listener(
-            onSuccess = { bitmap, _ ->
-                cont.resume(bitmap)
-            },
-            onError = {
-                cont.resume(null)
+    CoroutineScope(Dispatchers.IO).launch {
+        url.getBitmapFromUrl(this@getBitmapFromUrl, properties = {
+            size?.let {
+                overrideSize(Resize(size.width, size.height))
             }
-        )
-    })
+            setCacheStrategy(MediaCacheStrategy.Companion.mapTo(cacheStrategy))
+            listener(
+                onSuccess = { bitmap, _ ->
+                    cont.resume(bitmap)
+                },
+                onError = {
+                    cont.resume(null)
+                }
+            )
+        })
+    }
 }
 
 fun View.setGradientAnimBackground(colorArray: List<String>) {
