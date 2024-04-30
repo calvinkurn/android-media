@@ -1,0 +1,8 @@
+package com.tokopedia.product.detail.view.viewmodel.product_detail
+
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDataProvider
+import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
+
+interface IPdpCartRedirectionButtonsByteIOTrackerDataProvider: ICartRedirectionButtonsByteIOTrackerDataProvider {
+    fun registerPdpCartRedirectionButtonsByteIOTrackerDataProvider(mediator: GetProductDetailDataMediator)
+}

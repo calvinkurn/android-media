@@ -1,17 +1,16 @@
-package com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel
+package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModel
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.ICartRedirectionButtonsByteIOTrackerSubViewModel
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerDataProvider
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDataProvider
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 
-class CartRedirectionButtonsByteIOTrackerSubViewModel :
-    ICartRedirectionButtonsByteIOTrackerSubViewModel,
-    ICartRedirectionButtonsByteIOTrackerViewModel by CartRedirectionButtonsByteIOTrackerViewModel() {
+class PdpCartRedirectionButtonsByteIOTrackerDataProvider :
+    IPdpCartRedirectionButtonsByteIOTrackerDataProvider,
+    ICartRedirectionButtonsByteIOTrackerDataProvider by CartRedirectionButtonsByteIOTrackerDataProvider() {
 
-    override fun registerCartRedirectionButtonsByteIOTrackerSubViewModel(mediator: GetProductDetailDataMediator) {
-        registerCartRedirectionButtonsByteIOTrackerViewModel(object : ICartRedirectionButtonsByteIOTrackerViewModel.Mediator {
+    override fun registerPdpCartRedirectionButtonsByteIOTrackerDataProvider(mediator: GetProductDetailDataMediator) {
+        registerCartRedirectionButtonsByteIOTrackerDataProvider(object : ICartRedirectionButtonsByteIOTrackerDataProvider.Mediator {
             override fun getParentProductId() = mediator.getP1()?.parentProductId
             override fun isSingleSku() = if (mediator.getP1()?.isProductVariant() == false) true
             else mediator.getVariant()?.children?.size == 1

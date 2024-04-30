@@ -1,0 +1,7 @@
+package com.tkpd.atcvariant.view.viewmodel
+
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDataProvider
+
+interface IAtcVariantCartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsByteIOTrackerDataProvider {
+    fun registerAtcVariantCartRedirectionButtonsByteIOTrackerDataProvider(mediator: GetVariantDataMediator)
+}

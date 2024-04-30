@@ -10,7 +10,7 @@ interface ICartRedirectionButtonsByteIOTracker {
     fun trackOnButtonClickCompleted(data: AddToCartDataModel)
 
     interface Mediator {
-        fun getCartRedirectionButtonsByteIOTrackerViewModel(): ICartRedirectionButtonsByteIOTrackerViewModel
+        fun getCartRedirectionButtonsByteIOTrackerViewModel(): ICartRedirectionButtonsByteIOTrackerDataProvider
         fun getCartRedirectionButtonsByteIOTrackerActionType(): Int
     }
 }

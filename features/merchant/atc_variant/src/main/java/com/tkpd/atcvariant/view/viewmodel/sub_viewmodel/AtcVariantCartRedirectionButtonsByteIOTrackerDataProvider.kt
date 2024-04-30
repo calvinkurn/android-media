@@ -1,15 +1,15 @@
 package com.tkpd.atcvariant.view.viewmodel.sub_viewmodel
 
 import com.tkpd.atcvariant.view.viewmodel.GetVariantDataMediator
-import com.tkpd.atcvariant.view.viewmodel.IAtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModel
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModel
+import com.tkpd.atcvariant.view.viewmodel.IAtcVariantCartRedirectionButtonsByteIOTrackerDataProvider
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerDataProvider
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDataProvider
 
-class AtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel :
-    IAtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel,
-    ICartRedirectionButtonsByteIOTrackerViewModel by CartRedirectionButtonsByteIOTrackerViewModel() {
-    override fun registerAtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel(mediator: GetVariantDataMediator) {
-        registerCartRedirectionButtonsByteIOTrackerViewModel(object : ICartRedirectionButtonsByteIOTrackerViewModel.Mediator {
+class AtcVariantCartRedirectionButtonsByteIOTrackerDataProvider :
+    IAtcVariantCartRedirectionButtonsByteIOTrackerDataProvider,
+    ICartRedirectionButtonsByteIOTrackerDataProvider by CartRedirectionButtonsByteIOTrackerDataProvider() {
+    override fun registerAtcVariantCartRedirectionButtonsByteIOTrackerDataProvider(mediator: GetVariantDataMediator) {
+        registerCartRedirectionButtonsByteIOTrackerDataProvider(object : ICartRedirectionButtonsByteIOTrackerDataProvider.Mediator {
             override fun getParentProductId() = mediator.getVariantData()?.parentId
             override fun isSingleSku() = mediator.getVariantData()?.children?.size == 1
             override fun getSkuId() = getSelectedVariant()?.productId

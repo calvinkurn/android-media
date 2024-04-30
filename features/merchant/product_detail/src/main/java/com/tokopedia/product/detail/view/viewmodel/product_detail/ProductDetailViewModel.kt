@@ -97,7 +97,6 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
-import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.CartRedirectionButtonsByteIOTrackerSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ThumbnailVariantSubViewModel
@@ -194,7 +193,7 @@ class ProductDetailViewModel @Inject constructor(
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
     GetProductDetailDataMediator,
-    ICartRedirectionButtonsByteIOTrackerSubViewModel by CartRedirectionButtonsByteIOTrackerSubViewModel() {
+    IPdpCartRedirectionButtonsByteIOTrackerDataProvider by PdpCartRedirectionButtonsByteIOTrackerDataProvider() {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -378,7 +377,7 @@ class ProductDetailViewModel @Inject constructor(
 
     init {
         iniQuantityFlow()
-        registerCartRedirectionButtonsByteIOTrackerSubViewModel(mediator = this)
+        registerPdpCartRedirectionButtonsByteIOTrackerDataProvider(mediator = this)
     }
 
     fun onFinishAnimation() {

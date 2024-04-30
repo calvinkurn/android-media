@@ -14,7 +14,7 @@ import com.tkpd.atcvariant.util.AtcCommonMapper.asSuccess
 import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanSaya
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
-import com.tkpd.atcvariant.view.viewmodel.sub_viewmodel.AtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel
+import com.tkpd.atcvariant.view.viewmodel.sub_viewmodel.AtcVariantCartRedirectionButtonsByteIOTrackerDataProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
@@ -84,7 +84,7 @@ class AtcVariantViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig
 ) : ViewModel(),
     GetVariantDataMediator,
-    IAtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel by AtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel() {
+    IAtcVariantCartRedirectionButtonsByteIOTrackerDataProvider by AtcVariantCartRedirectionButtonsByteIOTrackerDataProvider() {
 
     companion object {
         private const val INITIAL_POSITION_SHIMMERING = 99L
@@ -153,7 +153,7 @@ class AtcVariantViewModel @Inject constructor(
     private var isShopOwner: Boolean = false
 
     init {
-        registerAtcVariantCartRedirectionButtonsByteIOTrackerSubViewModel(mediator = this)
+        registerAtcVariantCartRedirectionButtonsByteIOTrackerDataProvider(mediator = this)
     }
 
     override fun getActivityResultData(): ProductVariantResult = variantActivityResult
