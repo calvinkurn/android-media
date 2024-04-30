@@ -8,9 +8,8 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.feedplus.browse.di.DaggerFeedBrowseComponent
+import com.tokopedia.feedplus.browse.di.FeedBrowseInjector
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -39,10 +38,7 @@ class FeedSearchResultActivity: BaseActivity() {
     }
 
     private fun inject() {
-        DaggerFeedBrowseComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        FeedBrowseInjector.get(this).inject(this)
     }
 
     @SuppressLint("DeprecatedMethod")

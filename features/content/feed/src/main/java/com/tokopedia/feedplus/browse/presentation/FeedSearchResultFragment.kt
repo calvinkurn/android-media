@@ -149,7 +149,7 @@ internal class FeedSearchResultFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.resultRv.removeOnScrollListener(loadMoreListener)
+        binding.rvSearchResult.removeOnScrollListener(loadMoreListener)
 
         _binding = null
     }
@@ -171,7 +171,7 @@ internal class FeedSearchResultFragment @Inject constructor(
             }
         }
 
-        binding.resultRv.let {
+        binding.rvSearchResult.let {
             val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
                 spanSizeLookup = adapter.getSpanSizeLookup()
             }
@@ -296,12 +296,12 @@ internal class FeedSearchResultFragment @Inject constructor(
     }
 
     private fun showResult() {
-        binding.resultRv.show()
+        binding.rvSearchResult.show()
         binding.errorView.hide()
     }
 
     private fun showError() {
-        binding.resultRv.hide()
+        binding.rvSearchResult.hide()
         binding.errorView.show()
     }
 

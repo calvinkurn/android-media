@@ -22,15 +22,6 @@ import dagger.multibindings.IntoMap
 internal abstract class FeedBrowseBindModule {
 
     /**
-     * Repository
-     */
-    @ActivityScope
-    @Binds
-    abstract fun bindRepository(
-        feedBrowseRepositoryImpl: FeedBrowseRepositoryImpl
-    ): FeedBrowseRepository
-
-    /**
      * Fragment
      */
     @Binds
