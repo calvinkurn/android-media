@@ -4,9 +4,10 @@ import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
+@Suppress("LateinitUsage")
 class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTracker {
 
-    private var _mediator: ICartRedirectionButtonsByteIOTracker.Mediator? = null
+    private lateinit var _mediator: ICartRedirectionButtonsByteIOTracker.Mediator
     override fun registerCartRedirectionButtonsByteIOTracker(mediator: ICartRedirectionButtonsByteIOTracker.Mediator) {
         _mediator = mediator
     }
@@ -16,34 +17,36 @@ class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTracker
     }
 
     override fun trackOnButtonClick(buttonAction: Int) {
-        _mediator?.getCartRedirectionButtonsByteIOTrackerViewModel()?.run {
-            val analyticData = getButtonClickTrackData(buttonAction = buttonAction) ?: return
-            AppLogPdp.sendButtonClick(analyticData)
-        }
+        val analyticData = _mediator
+            .getCartRedirectionButtonsByteIOTrackerViewModel()
+            .getButtonClickTrackData(buttonAction = buttonAction) ?: return
+        AppLogPdp.sendButtonClick(analyticData)
     }
 
     override fun trackOnButtonClick(cartType: String) {
         when (cartType) {
-            ProductDetailCommonConstant.KEY_OCS_BUTTON -> trackOnButtonClick(ProductDetailCommonConstant.OCS_BUTTON)
+            ProductDetailCommonConstant.KEY_OCS_BUTTON -> trackOnButtonClick(
+                ProductDetailCommonConstant.OCS_BUTTON
+            )
         }
     }
 
     override fun trackOnButtonClickCompleted(data: AddToCartDataModel) {
-        _mediator?.run {
+        with(_mediator) {
             getCartRedirectionButtonsByteIOTrackerViewModel().run {
-                val analyticData = getButtonClickCompletedTrackData(getCartRedirectionButtonsByteIOTrackerActionType(), data) ?: return
+                val analyticData = getButtonClickCompletedTrackData(
+                    getCartRedirectionButtonsByteIOTrackerActionType(),
+                    data
+                ) ?: return
                 AppLogPdp.sendButtonClickCompleted(analyticData)
             }
-        }
-        _mediator?.getCartRedirectionButtonsByteIOTrackerViewModel()?.run {
-
         }
     }
 
     private fun trackOnButtonShowed(cartType: String) {
-        _mediator?.getCartRedirectionButtonsByteIOTrackerViewModel()?.run {
-            val analyticData = getButtonShowTrackData(cartType) ?: return
-            AppLogPdp.sendButtonShow(analyticData)
-        }
+        val analyticData = _mediator
+            .getCartRedirectionButtonsByteIOTrackerViewModel()
+            .getButtonShowTrackData(cartType) ?: return
+        AppLogPdp.sendButtonShow(analyticData)
     }
 }
