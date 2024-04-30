@@ -43,8 +43,6 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModelDelegate
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModelDelegate
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.media.Media
@@ -99,6 +97,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.CartRedirectionButtonsByteIOTrackerSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ThumbnailVariantSubViewModel
@@ -194,7 +193,8 @@ class ProductDetailViewModel @Inject constructor(
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
-    GetProductDetailDataMediator {
+    GetProductDetailDataMediator,
+    ICartRedirectionButtonsByteIOTrackerSubViewModel by CartRedirectionButtonsByteIOTrackerSubViewModel() {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -372,10 +372,13 @@ class ProductDetailViewModel @Inject constructor(
 
     override fun getP2(): ProductInfoP2UiData? = p2Data.value
 
+    override fun getP2Login(): ProductInfoP2Login? = p2Login.value
+
     override fun getVariant(): ProductVariant? = variantData
 
     init {
         iniQuantityFlow()
+        registerCartRedirectionButtonsByteIOTrackerSubViewModel(mediator = this)
     }
 
     fun onFinishAnimation() {
@@ -1539,21 +1542,4 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun isAPlusContentExpanded() = aPlusContentExpanded
-
-    inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTrackerViewModelDelegate by CartRedirectionButtonsByteIOTrackerViewModelDelegate() {
-        init {
-            register(Mediator())
-        }
-
-        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerViewModelDelegate.Mediator {
-            override fun getParentProductId() = getProductInfoP1?.parentProductId
-            override fun isSingleSku(): Boolean = isSingleSku
-            override fun getSkuId() = getProductInfoP1?.basic?.productID
-            override fun getProductMinOrder() = getProductInfoP1?.basic?.minOrder
-            override fun getProductType() = getProductInfoP1?.productType
-            override fun getProductOriginalPrice() = getProductInfoP1?.originalPrice
-            override fun getProductSalePrice() = getProductInfoP1?.finalPrice
-            override fun isFollowShop() = p2Login.value?.isFollow.orZero() != 0
-        }
-    }
 }

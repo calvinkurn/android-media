@@ -67,9 +67,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_C
 import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerDelegate
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDelegate
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModelDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTracker
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
@@ -1308,18 +1306,18 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTrackerDelegate by CartRedirectionButtonsByteIOTrackerDelegate() {
+    private inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTracker by com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTracker() {
         private val _viewModel by lazyThreadSafetyNone {
             viewModel.CartRedirectionButtonsByteIOTrackerViewModel()
         }
 
         init {
-            register(Mediator())
+            registerCartRedirectionButtonsByteIOTracker(Mediator())
         }
 
-        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerDelegate.Mediator {
-            override fun getViewModel() = _viewModel
-            override fun getButtonActionType() = buttonActionType
+        private inner class Mediator : ICartRedirectionButtonsByteIOTracker.Mediator {
+            override fun getCartRedirectionButtonsByteIOTrackerViewModel() = _viewModel
+            override fun getCartRedirectionButtonsByteIOTrackerActionType() = buttonActionType
         }
     }
 }

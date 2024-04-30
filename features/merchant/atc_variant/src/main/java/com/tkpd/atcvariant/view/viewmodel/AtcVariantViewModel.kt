@@ -37,8 +37,7 @@ import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModelDelegate
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModelDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerViewModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
@@ -824,12 +823,12 @@ class AtcVariantViewModel @Inject constructor(
         _atcAnimationEnded.emit(true)
     }
 
-    inner class CartRedirectionButtonsByteIOTrackerViewModel : ICartRedirectionButtonsByteIOTrackerViewModelDelegate by CartRedirectionButtonsByteIOTrackerViewModelDelegate() {
+    inner class CartRedirectionButtonsByteIOTrackerViewModel : ICartRedirectionButtonsByteIOTrackerViewModel by com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerViewModel() {
         init {
-            register(Mediator())
+            registerCartRedirectionButtonsByteIOTrackerViewModel(Mediator())
         }
 
-        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerViewModelDelegate.Mediator {
+        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerViewModel.Mediator {
             override fun getParentProductId() = getVariantData()?.parentId
             override fun isSingleSku() = getVariantData()?.children?.size == 1
             override fun getSkuId() = getSelectedVariant()?.productId

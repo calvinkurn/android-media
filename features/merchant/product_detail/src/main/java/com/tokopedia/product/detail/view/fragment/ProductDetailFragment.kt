@@ -154,8 +154,8 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTrackerDelegate
-import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTrackerDelegate
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTracker
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTracker
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -394,7 +394,9 @@ open class ProductDetailFragment :
     ScreenShotListener,
     PlayWidgetListener,
     PdpComponentCallbackMediator,
-    PdpCallbackDelegate by PdpCallbackDelegateImpl() {
+    PdpCallbackDelegate by PdpCallbackDelegateImpl(),
+    ICartRedirectionButtonsByteIOTracker.Mediator,
+    ICartRedirectionButtonsByteIOTracker by CartRedirectionButtonsByteIOTracker() {
 
     companion object {
 
@@ -524,9 +526,6 @@ open class ProductDetailFragment :
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ProductDetailViewModel::class.java]
-    }
-    private val cartRedirectionButtonsByteIOTrackerDelegate by lazyThreadSafetyNone {
-        CartRedirectionButtonsByteIOTracker()
     }
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
@@ -943,6 +942,7 @@ open class ProductDetailFragment :
         assignDeviceId()
         loadData()
         registerCallback(mediator = this)
+        registerCartRedirectionButtonsByteIOTracker(mediator = this)
         initializeShareEx()
     }
 
@@ -3501,7 +3501,7 @@ open class ProductDetailFragment :
             return
         }
 
-        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClickCompleted(result)
+        trackOnButtonClickCompleted(result)
 
         when (buttonActionType) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
@@ -4909,7 +4909,7 @@ open class ProductDetailFragment :
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         viewModel.buttonActionText = buttonText
         val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonClick(cartType)
+        trackOnButtonClick(cartType)
         doAtc(atcKey)
     }
 
@@ -4928,7 +4928,7 @@ open class ProductDetailFragment :
     }
 
     override fun onButtonsShowed(cartTypes: List<String>) {
-        cartRedirectionButtonsByteIOTrackerDelegate.trackOnButtonsShowed(cartTypes)
+        trackOnButtonsShowed(cartTypes)
     }
 
     override fun updateQuantityNonVarTokoNow(
@@ -6482,18 +6482,7 @@ open class ProductDetailFragment :
         }
     }
 
-    private inner class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTrackerDelegate by CartRedirectionButtonsByteIOTrackerDelegate() {
-        private val _viewModel by lazyThreadSafetyNone {
-            viewModel.CartRedirectionButtonsByteIOTracker()
-        }
+    override fun getCartRedirectionButtonsByteIOTrackerViewModel() = viewModel
 
-        init {
-            register(Mediator())
-        }
-
-        private inner class Mediator : ICartRedirectionButtonsByteIOTrackerDelegate.Mediator {
-            override fun getViewModel() = _viewModel
-            override fun getButtonActionType() = buttonActionType
-        }
-    }
+    override fun getCartRedirectionButtonsByteIOTrackerActionType() = buttonActionType
 }

@@ -6,11 +6,11 @@ import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
-class CartRedirectionButtonsByteIOTrackerViewModelDelegate: ICartRedirectionButtonsByteIOTrackerViewModelDelegate {
+class CartRedirectionButtonsByteIOTrackerViewModel: ICartRedirectionButtonsByteIOTrackerViewModel {
 
-    private var _mediator: ICartRedirectionButtonsByteIOTrackerViewModelDelegate.Mediator? = null
+    private var _mediator: ICartRedirectionButtonsByteIOTrackerViewModel.Mediator? = null
 
-    override fun register(mediator: ICartRedirectionButtonsByteIOTrackerViewModelDelegate.Mediator) {
+    override fun registerCartRedirectionButtonsByteIOTrackerViewModel(mediator: ICartRedirectionButtonsByteIOTrackerViewModel.Mediator) {
         _mediator = mediator
     }
 

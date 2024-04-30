@@ -6,8 +6,8 @@ import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 
-interface ICartRedirectionButtonsByteIOTrackerViewModelDelegate {
-    fun register(mediator: Mediator)
+interface ICartRedirectionButtonsByteIOTrackerViewModel {
+    fun registerCartRedirectionButtonsByteIOTrackerViewModel(mediator: Mediator)
     fun getButtonShowTrackData(cartType: String): ButtonShowAnalyticData?
     fun getButtonClickTrackData(buttonAction: Int): ButtonClickAnalyticData?
     fun getButtonClickCompletedTrackData(buttonActionType: Int, data: AddToCartDataModel): ButtonClickCompletedAnalyticData?
