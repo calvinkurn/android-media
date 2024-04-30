@@ -29,9 +29,9 @@
 /features/discovery/home_page_banner                    @tokopedia/android-miniondave-dev
 /features/merchant/brandlist/                           @tokopedia/android-miniondave-dev
 /features/discovery/video_widget/             @tokopedia/android-miniondave-dev
-/features/user/fcm_common/                              @tokopedia/android-miniondave-dev
-/libraries/cm_push_notifications/						@tokopedia/android-miniondave-dev
-/features/user/notif-troubleshooter/                    @tokopedia/android-miniondave-dev
+/features/user/fcm_common/                              @tokopedia/android-minionstuart-dev
+/libraries/cm_push_notifications/						@tokopedia/android-minionstuart-dev
+/features/user/notif-troubleshooter/                    @tokopedia/android-minionstuart-dev
 /features/user/settingnotif/                    		@tokopedia/android-minionstuart-dev
 
 /features/watch/                                        @tokopedia/android-core-dev
