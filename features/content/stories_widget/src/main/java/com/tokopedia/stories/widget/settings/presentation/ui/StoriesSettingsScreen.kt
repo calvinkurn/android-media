@@ -106,9 +106,7 @@ private fun StoriesSettingsSuccess(pageInfo: StoriesSettingsPageUiModel, viewMod
                 onCheckedChanged = { isActive ->
                     if (isActive != itemFirst.isDisabled) {
                         viewModel.onEvent(
-                            StoriesSettingsAction.SelectOption(
-                                itemFirst.copy(isSelected = !itemFirst.isSelected)
-                            )
+                            StoriesSettingsAction.SelectOption(itemFirst)
                         )
                     }
                 }
@@ -138,7 +136,7 @@ private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSet
         )
         NestCheckbox(isChecked = item.isSelected, onCheckedChange = { isActive ->
             if (isActive != item.isSelected) {
-                onOptionClicked(item.copy(isSelected = !item.isSelected))
+                onOptionClicked(item)
             }
         })
     }
