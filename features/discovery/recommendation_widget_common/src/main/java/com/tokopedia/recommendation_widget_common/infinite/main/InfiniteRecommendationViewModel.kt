@@ -31,7 +31,7 @@ class InfiniteRecommendationViewModel @Inject constructor(
 
     private var currentPage = DEFAULT_CURRENT_PAGE
     private var nextPage = DEFAULT_NEXT_PAGE
-    private var appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None()
+    private var appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None
 
     fun init(
         appLogAdditionalParam: AppLogAdditionalParam,

@@ -157,7 +157,8 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductShowAppLog(
                     productRecommendation.asProductTrackModel(
-                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                        additionalParam = model.source?.appLogAdditionalParam
                     )
                 )
             }
@@ -193,7 +194,8 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductClickAppLog(
                     productRecommendation.asProductTrackModel(
-                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                        additionalParam = model.source?.appLogAdditionalParam
                     )
                 )
 

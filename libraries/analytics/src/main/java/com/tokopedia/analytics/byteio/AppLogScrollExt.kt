@@ -32,7 +32,7 @@ data class SlideTrackObject(
     val moduleName: String = "",
     val barName: String = "",
     val shopId: String = "",
-    val additionalParams: AppLogAdditionalParam = AppLogAdditionalParam.None(),
+    val additionalParams: AppLogAdditionalParam = AppLogAdditionalParam.None,
 )
 
 /**
@@ -45,7 +45,7 @@ data class RecommendationTriggerObject(
     val moduleName: String = "",
     val listName: String = "",
     val listNum: Int = -1,
-    val additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None(),
+    val additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
 )
 
 class VerticalTrackScrollListener(
