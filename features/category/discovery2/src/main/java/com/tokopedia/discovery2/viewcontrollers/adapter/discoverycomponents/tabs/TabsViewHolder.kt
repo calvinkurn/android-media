@@ -343,7 +343,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 }
                 tabsViewModel.onTabClick()
                 val tabPosition = tab.position.inc()
-                mFragment.currentTabPosition = tabPosition
+                mFragment.setCurrentTabPosition(tabPosition)
                 trackTabsGTMStatus(tab)
                 tabsViewModel.switchThematicHeaderData(tabPosition)
             }

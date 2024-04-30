@@ -51,7 +51,10 @@ data class CartShipmentAddressFormData(
     var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData(),
     var shipmentPlatformFee: ShipmentPlatformFeeData = ShipmentPlatformFeeData(),
     var listSummaryAddons: List<ShipmentSummaryAddOnData> = emptyList(),
-    var paymentLevelAddOnsPositions: List<Long> = emptyList()
+    var paymentLevelAddOnsPositions: List<Long> = emptyList(),
+    var additionalFeature: AdditionalFeature = AdditionalFeature(),
+    var paymentWidget: PaymentWidget = PaymentWidget(),
+    var cartType: String = ""
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>
@@ -78,5 +81,8 @@ data class CartShipmentAddressFormData(
         const val NO_ERROR = 0
         const val ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS = 3
         const val ERROR_CODE_TO_OPEN_ADDRESS_LIST = 4
+
+        const val CART_TYPE_OCC = "occ"
+        const val CART_TYPE_NORMAL = "normal"
     }
 }

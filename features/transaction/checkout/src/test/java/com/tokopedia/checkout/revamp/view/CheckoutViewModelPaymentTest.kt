@@ -11,6 +11,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
@@ -18,6 +19,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
@@ -54,6 +56,7 @@ class CheckoutViewModelPaymentTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -92,6 +95,7 @@ class CheckoutViewModelPaymentTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -139,6 +143,7 @@ class CheckoutViewModelPaymentTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(dynamicPlatformFee = ShipmentPaymentFeeModel(fee = 1000.0, minRange = 1.0, maxRange = 10000.0)),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -187,6 +192,7 @@ class CheckoutViewModelPaymentTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(dynamicPlatformFee = ShipmentPaymentFeeModel(fee = 1000.0)),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -230,6 +236,7 @@ class CheckoutViewModelPaymentTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(dynamicPlatformFee = ShipmentPaymentFeeModel(fee = 1000.0)),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()

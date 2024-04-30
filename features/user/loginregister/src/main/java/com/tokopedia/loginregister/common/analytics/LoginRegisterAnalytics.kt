@@ -3,7 +3,10 @@ package com.tokopedia.loginregister.common.analytics
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
@@ -518,6 +521,7 @@ class LoginRegisterAnalytics @Inject constructor(
 
 
     fun eventSuccessLogin(actionLoginMethod: String, isFromRegister: Boolean, isWithSq: Boolean) {
+
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> {
                 if (!isFromRegister) {

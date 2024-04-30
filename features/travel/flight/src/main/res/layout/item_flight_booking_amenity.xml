@@ -35,6 +35,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_check"
+        app:srcCompat="@drawable/common_ic_check"
         tools:visibility="visible" />
 </RelativeLayout>
