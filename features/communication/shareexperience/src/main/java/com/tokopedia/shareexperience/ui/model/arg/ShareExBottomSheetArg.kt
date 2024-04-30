@@ -23,6 +23,8 @@ class ShareExBottomSheetArg private constructor(
     val shopId: String,
     val campaignId: String,
     val generalId: String,
+    val contentId: String,
+    val origin: String,
 
     /**
      * Mandatory field
@@ -49,6 +51,8 @@ class ShareExBottomSheetArg private constructor(
         private var generalId: String? = null
         private var selectedChip: String? = null
         private var defaultImageUrl: String? = null
+        private var contentId: String? = null
+        private var origin: String? = null
 
         fun withProductId(productId: String) = apply {
             this.productId = productId
@@ -74,6 +78,14 @@ class ShareExBottomSheetArg private constructor(
             this.generalId = generalId
         }
 
+        fun withContentId(contentId: String) = apply {
+            this.contentId = contentId
+        }
+
+        fun withOrigin(origin: String) = apply {
+            this.origin = origin
+        }
+
         fun withSelectedChip(selectedChip: String) = apply {
             this.selectedChip = selectedChip
         }
@@ -94,6 +106,8 @@ class ShareExBottomSheetArg private constructor(
                 shopId = shopId.orEmpty(),
                 campaignId = campaignId.orEmpty(),
                 generalId = generalId.orEmpty(),
+                contentId = contentId.orEmpty(),
+                origin = origin.orEmpty(),
 
                 selectedChip = selectedChip.orEmpty(),
                 defaultImageUrl = defaultImageUrl.orEmpty()
@@ -107,6 +121,7 @@ class ShareExBottomSheetArg private constructor(
             ShareExPageTypeEnum.REVIEW -> reviewId
             ShareExPageTypeEnum.SHOP -> shopId
             ShareExPageTypeEnum.DISCOVERY -> campaignId
+            ShareExPageTypeEnum.PLAY -> contentId
             else -> generalId
         }
     }

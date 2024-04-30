@@ -13,6 +13,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExLiveBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExOthersBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExReviewBottomSheetRequest
@@ -123,6 +124,14 @@ class ShareExLoadingDialog(
                     pageType = arg.pageTypeEnum.valueInt,
                     reviewId = arg.reviewId,
                     attachmentId = arg.attachmentId
+                )
+            }
+            ShareExPageTypeEnum.PLAY -> {
+                // TODO: adjust the value
+                ShareExLiveBottomSheetRequest(
+                    pageType = arg.pageTypeEnum.valueInt,
+                    contentId = "",
+                    origin = ""
                 )
             }
             else -> {

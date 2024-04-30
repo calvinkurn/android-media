@@ -12,7 +12,8 @@ enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     PDP("pdp", 1),
     REVIEW("review", 2),
     SHOP("shop", 3),
-    DISCOVERY("discovery", 4);
+    DISCOVERY("discovery", 4),
+    PLAY("play", 5);
 
     companion object {
         fun fromValue(value: String): ShareExPageTypeEnum {
