@@ -58,7 +58,7 @@ class TopChatRoomBroadcastFlashSaleProductViewHolder(
     }
 
     private fun setListener() {
-        binding?.root?.setOnClickListener {
+        binding?.topchatChatroomBroadcastFlashsaleProductCard?.setOnClickListener {
             val banner = broadcastUiModel.banner
             if (banner != null) {
                 productListener.onClickBroadcastProduct(
