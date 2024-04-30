@@ -194,6 +194,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     is_leasing_product
                   }
                   group_shop_v2_saf {
+                    disabled_features
                     cart_string_order
                     shop {
                       shop_id

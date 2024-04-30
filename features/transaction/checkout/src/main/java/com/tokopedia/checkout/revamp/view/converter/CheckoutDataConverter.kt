@@ -496,7 +496,7 @@ class CheckoutDataConverter @Inject constructor() {
             bmgmTotalDiscount = product.bmgmTotalDiscount,
             bmgmTierProductList = product.bmgmTierProductList,
             shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER,
-            enableNoteEdit = additionalFeature.isEnableNoteEdit,
+            enableNoteEdit = additionalFeature.isEnableNoteEdit && !groupShopV2.disabledFeatures.isNoteEditDisabledFeatures,
             enableQtyEdit = additionalFeature.isEnableQtyEdit
         )
     }

@@ -34,6 +34,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ChosenPayment
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
+import com.tokopedia.checkout.domain.model.cartshipmentform.DisabledFeatures
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
@@ -600,7 +601,8 @@ class ShipmentMapper @Inject constructor() {
             GroupShopV2(
                 it.cartStringOrder,
                 shop,
-                products
+                products,
+                mapDisabledFeatures(it.disabledFeatures)
             )
         } to if (hasErrorProduct) firstProductErrorIndex else -1
     }
@@ -1414,6 +1416,19 @@ class ShipmentMapper @Inject constructor() {
             }
         }
         return additionalFeature
+    }
+
+    private fun mapDisabledFeatures(disabledFeatures: List<String>): DisabledFeatures {
+        val disabledFeature = DisabledFeatures()
+        for (feature in disabledFeatures) {
+            if (feature.equals(AdditionalFeature.QTY_EDIT, ignoreCase = true)) {
+                disabledFeature.isQtyEditDisabledFeatures = true
+            }
+            if (feature.equals(AdditionalFeature.NOTE_EDIT, ignoreCase = true)) {
+                disabledFeature.isNoteEditDisabledFeatures = true
+            }
+        }
+        return disabledFeature
     }
 
     private fun mapPaymentWidget(response: PaymentWidgetResponse): PaymentWidget {
