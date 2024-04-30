@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/topchat_chatroom_broadcast_see_more_tv"
+            app:layout_constraintBottom_toTopOf="@id/topchat_chatroom_broadcast_see_more_tv"
             app:layout_constraintVertical_chainStyle="packed"
             app:srcCompat="@drawable/ic_product_action_see_more_arrow_normal_352" />
 
