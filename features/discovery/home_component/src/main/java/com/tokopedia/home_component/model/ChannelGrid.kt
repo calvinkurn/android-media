@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 
 
 data class ChannelGrid(
@@ -53,4 +54,5 @@ data class ChannelGrid(
     val param: String = "",
     val expiredTime: String = "",
     val position: Int = -1,
+    val recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
 ): ImpressHolder()

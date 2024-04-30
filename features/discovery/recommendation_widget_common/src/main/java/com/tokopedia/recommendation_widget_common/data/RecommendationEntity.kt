@@ -141,6 +141,9 @@ data class RecommendationEntity(
         @SerializedName("recParam")
         val recParam: String = ""
 
+        @SerializedName("adsLog")
+        val adsLog: AdsLog = AdsLog()
+
         @SerializedName("countSold")
         val countSold: Int = 0
 
@@ -227,6 +230,13 @@ data class RecommendationEntity(
             @SerializedName("imageUrl")
             val imageUrl: String = ""
         }
+
+        data class AdsLog(
+            @SerializedName("creativeID")
+            val creativeID: String = "",
+            @SerializedName("logExtra")
+            val logExtra: String = "",
+        )
     }
 
     data class RecommendationData(
