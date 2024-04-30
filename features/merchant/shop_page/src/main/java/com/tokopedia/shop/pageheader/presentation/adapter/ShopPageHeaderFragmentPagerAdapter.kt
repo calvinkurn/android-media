@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
@@ -197,7 +198,9 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 iconUrl.isUrlPng() -> {
                     binding.shopPageDynamicTabViewIcon.apply {
                         show()
-                        setImageUrl(iconUrl)
+                        loadImage(iconUrl){
+                            centerInside()
+                        }
                         isEnabled = true
                     }
                 }

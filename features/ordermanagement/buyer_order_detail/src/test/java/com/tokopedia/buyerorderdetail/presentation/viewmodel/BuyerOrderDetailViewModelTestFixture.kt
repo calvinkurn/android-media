@@ -8,6 +8,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -180,6 +182,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     orderId = "556574",
                     orderDetailId = "2150865420",
                     productName = "Power Bank Original - Pink",
+                    productUrl = "",
                     thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
                     price = 75000.00,
                     productPriceText = "Rp 75.000",
@@ -198,6 +201,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     orderId = "556575",
                     orderDetailId = "2150865421",
                     productName = "Power Bank Original - Blue",
+                    productUrl = "",
                     thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
                     price = 85000.00,
                     productPriceText = "Rp 85.000",
@@ -280,7 +284,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every { additionalData } returns additionalEpharmacyData
         },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        getBrcCsatWidgetRequestState: GetBrcCsatWidgetRequestState = GetBrcCsatWidgetRequestState.Complete.Success(mockk(relaxed = true))
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -303,7 +308,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         ),
                         GetP1DataRequestState.Complete(
                             GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
-                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
+                            GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult),
+                            getBrcCsatWidgetRequestState
                         )
                     )
                 )
@@ -335,7 +341,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     ),
                     GetP1DataRequestState.Complete(
                         GetOrderResolutionRequestState.Complete.Error(throwable),
-                        GetInsuranceDetailRequestState.Complete.Error(throwable)
+                        GetInsuranceDetailRequestState.Complete.Error(throwable),
+                        GetBrcCsatWidgetRequestState.Complete.Error(throwable)
                     )
                 )
             )

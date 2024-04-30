@@ -20,7 +20,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.Recommen
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.topads.sdk.domain.model.ImageShop
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import dagger.Lazy
 import javax.inject.Inject
 
@@ -85,7 +85,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                     categoryId = card.categoryID,
                                     position = actualPosition,
                                     cardId = card.id,
-                                    topAdsImageViewModel = mapToTopAdsImageViewModel(
+                                    topAdsImageUiModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
                                     ),
                                     pageName = getHomeRecommendationCard.pageName,
@@ -226,12 +226,12 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         }
     }
 
-    private fun mapToTopAdsImageViewModel(adsBannerItemResponse: AdsBanner): TopAdsImageViewModel {
+    private fun mapToTopAdsImageViewModel(adsBannerItemResponse: AdsBanner): TopAdsImageUiModel {
         val adsBanner = adsBannerItemResponse.banner
         val imageShop = adsBannerItemResponse.banner.shop.image
         val imageBanner = adsBannerItemResponse.banner.bannerImages.firstOrNull()
 
-        return TopAdsImageViewModel(
+        return TopAdsImageUiModel(
             bannerId = adsBannerItemResponse.id,
             bannerName = adsBanner.name,
             position = adsBanner.position.toIntSafely(),

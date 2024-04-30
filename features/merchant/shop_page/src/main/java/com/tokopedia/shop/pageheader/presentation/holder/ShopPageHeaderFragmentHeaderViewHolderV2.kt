@@ -86,8 +86,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentHeaderViewHolderV2(
     private val viewBinding: ShopHeaderFragmentTabContentBinding?,
@@ -197,7 +197,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     fun setSgcPlaySection(
         listWidgetShopData: List<ShopPageHeaderWidgetUiModel>,
-        shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
+        shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?
     ) {
         val shopSgcPlayData = getShopSgcPlayData(listWidgetShopData)
         val modelComponent =
@@ -216,7 +216,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 )
                 shopPagePlayWidgetListener?.onStartLiveStreamingClicked(
                     modelComponent,
-                    shopSgcPlayData,
+                    shopSgcPlayData
                 )
             }
             shopHeaderConfig?.let {
@@ -568,7 +568,10 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 removeCompoundDrawableFollowButton()
                 text = ""
             }
-            isLoading = isShowLoading
+            // To ensure change isLoading state after UnifyButton already laid out and rendered in the viewport.
+            post {
+                isLoading = isShowLoading
+            }
             setOnClickListener {
                 if (!isLoading) {
                     listenerHeader?.onFollowButtonClicked()
@@ -682,7 +685,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
-        val htmlDescription  = if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+        val htmlDescription = if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
             generateShopModerateTickerDescription(statusMessage)
         } else {
             statusMessage

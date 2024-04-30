@@ -12,12 +12,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
-
-    buildTypes {
-        release {
-            minifyEnabled true
-        }
-    }
 }
 
 buildscript {

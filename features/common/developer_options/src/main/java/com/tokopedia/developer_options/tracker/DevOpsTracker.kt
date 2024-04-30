@@ -58,6 +58,7 @@ internal enum class DevopsFeature {
     LOGIN_HELPER,
     ENABLE_DEVOPS_ON_NOTIF,
     PRODUCT_DETAIL_DEV,
+    MSSDK_DEV,
     SYSTEM_APPS,
     NON_SYSTEM_APPS,
     RESET_ONBOARDING,

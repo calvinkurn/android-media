@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -29,12 +30,16 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
 import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
-import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant.ROLLENCE_KYC_SHOP_CREATION
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
-import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
+import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,6 +47,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Ade Fulki on 2019-12-09.
@@ -89,16 +95,12 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initView()
+        shopCreationViewModel.getShopStatus()
     }
 
     override fun onStart() {
         super.onStart()
         shopCreationAnalytics.trackScreen(screenName)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initButtonListener()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -119,6 +121,14 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             else -> {
                 hideLoading()
                 super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+    }
+
+    private fun openKycBridgePage() {
+        activity?.let {
+            if (it is LandingShopCreationActivity) {
+                it.switchToKycBridgeFragment()
             }
         }
     }
@@ -160,12 +170,24 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun initButtonListener() {
         viewBinding?.btnContinue?.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
-            if (userIsLoggedIn()) {
-                goToShopAdminRedirection()
+            if (isForceKycEnabkled()) {
+                if (!ShopCreationUtils.isShopPending(requireContext())) {
+                    checkPrimaryButtonRedirection()
+                } else {
+                    openKycBridgePage()
+                }
             } else {
-                showLoading()
-                goToPhoneShopCreation()
+                checkPrimaryButtonRedirection()
             }
+        }
+    }
+
+    private fun checkPrimaryButtonRedirection() {
+        if (userIsLoggedIn()) {
+            goToShopAdminRedirection()
+        } else {
+            showLoading()
+            goToPhoneShopCreation()
         }
     }
 
@@ -243,6 +265,40 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         }
+
+        shopCreationViewModel.shopStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShopStatus.NotRegistered -> {
+                    ShopCreationUtils.storeShopStatus(requireContext(), isShopPending = false)
+                }
+                is ShopStatus.Pending -> {
+                    ShopCreationUtils.storeShopStatus(requireContext(), isShopPending = true)
+                } else -> {}
+            }
+            initButtonListener()
+        }
+    }
+
+    private fun showVerifyPhoneNoDialog(phoneNo: String) {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.verify_phone_dialog_title))
+                setDescription(it.getString(R.string.verify_phone_dialog_subtitle))
+                setPrimaryCTAText(it.getString(R.string.verify_phone_dialog_primary_btn))
+                setSecondaryCTAText(it.getString(R.string.verify_phone_dialog_secondary_btn))
+                setPrimaryCTAClickListener {
+                    goToPhoneShopCreation(phoneNo)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    hideLoading()
+                    dismiss()
+                }
+                setOnDismissListener {
+                    hideLoading()
+                }
+            }.show()
+        }
     }
 
     private fun onSuccessGetProfileInfo(userProfileCompletionData: UserProfileCompletionData) {
@@ -255,7 +311,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 } else {
                     if (userSession.hasShop())
                         shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
-                    else goToShopName()
+                    else {
+                        goToShopName()
+                    }
                 }
             } else {
                 goToPhoneShopCreation(userProfileCompletionData.phone)
@@ -318,7 +376,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     it,
                     Toaster.toasterLength,
                     Toaster.TYPE_ERROR
-                )
+                ).show()
             }
         }
         goToShopPage(userSession.shopId)
@@ -347,12 +405,24 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToShopName() {
-        activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
-            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            it.startActivity(intent)
-            it.finish()
+        // Force user to go to kyc flow
+        if (isForceKycEnabkled()) {
+            openKycBridgePage()
+        } else {
+            activity?.let {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                it.startActivity(intent)
+                it.finish()
+            }
         }
+    }
+
+    private fun isForceKycEnabkled(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KYC_SHOP_CREATION,
+            ""
+        )?.isNotEmpty() == true
     }
 
     private fun goToShopLogistic() {
@@ -383,7 +453,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             viewBinding?.scrollView?.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
             )
         }
@@ -412,6 +482,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         private const val REQUEST_CODE_NAME_SHOP_CREATION = 100
         private const val REQUEST_CODE_PHONE_SHOP_CREATION = 101
+        private const val REQUEST_CODE_FORCE_KYC = 102
 
         private const val DEFAULT_SHOP_ID_NOT_OPEN = "0"
 
