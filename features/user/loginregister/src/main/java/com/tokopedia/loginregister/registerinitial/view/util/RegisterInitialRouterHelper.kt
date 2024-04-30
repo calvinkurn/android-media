@@ -35,9 +35,10 @@ class RegisterInitialRouterHelper @Inject constructor() {
         return intent
     }
 
-    fun goToLoginPage(context: Activity) {
+    fun goToLoginPage(context: Activity, callbackRegister: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         context.startActivity(intent)
         context.finish()

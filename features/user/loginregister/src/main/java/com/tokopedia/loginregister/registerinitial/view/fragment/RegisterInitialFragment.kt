@@ -371,7 +371,7 @@ class RegisterInitialFragment :
                         )
                     }
                     registerAnalytics.trackClickTopSignInButton()
-                    registerInitialRouter.goToLoginPage(activity)
+                    registerInitialRouter.goToLoginPage(activity, callbackRegister)
                 }
             }
         }
