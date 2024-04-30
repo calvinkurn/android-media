@@ -7,7 +7,6 @@ import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingItemLayoutBinding
 import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -25,11 +24,6 @@ internal class ProductCardListViewHolder(
             layoutParams.width = util.getItemWidth()
             binding?.carouselPagingProductCardListView?.layoutParams = layoutParams
         }
-
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
     }
 
     override fun bind(element: ProductCardListDataView) {
@@ -47,26 +41,7 @@ internal class ProductCardListViewHolder(
             override fun onClick(v: View) {
                 element.listener.onItemClick(element.group, element.productIndex)
             }
-
-            override fun onAreaClicked(v: View) {
-                element.listener.onAreaClick(element.group, element.productIndex)
-            }
-
-            override fun onProductImageClicked(v: View) {
-                element.listener.onProductImageClick(element.group, element.productIndex)
-            }
-
-            override fun onSellerInfoClicked(v: View) {
-                element.listener.onSellerInfoClick(element.group, element.productIndex)
-            }
         })
-    }
-    override fun onViewAttachedToWindow(element: ProductCardListDataView?) {
-        element?.listener?.onViewAttachedToWindow(element.group, element.productIndex)
-    }
-
-    override fun onViewDetachedFromWindow(element: ProductCardListDataView?, visiblePercentage: Int) {
-        element?.listener?.onViewDetachedFromWindow(element.group, element.productIndex, visiblePercentage)
     }
 
     override fun onViewRecycled() {
