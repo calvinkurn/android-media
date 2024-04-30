@@ -23,7 +23,7 @@ data class ProductWidgetUiModel(
 
 data class ItemProductWidgetUiModel(
     val card: SmallProductModel,
-    val tracker: ChannelTracker,
+    val tracker: ChannelTracker = ChannelTracker(),
     val verticalPosition: Int
 ) : ShortenVisitable by ShortenVisitable.ItemShortenVisitable(ItemTwoSquareType.Product.value) {
 
