@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.R as abstractionR
 typealias ParentActivity = UserNotificationSettingActivity
 
 class UserNotificationSettingActivity : BaseSimpleActivity(),
-        SettingTypeFragment.SettingTypeContract {
+    SettingTypeFragment.SettingTypeContract {
 
     private var fragmentContainer: FrameLayout? = null
 
@@ -68,16 +68,13 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
 
     @SuppressLint("PII Data Exposure")
     private fun handleAppLink(uri: Uri) {
-        when (uri.getQueryParameter(TYPE)){
+        when (uri.getQueryParameter(TYPE)) {
+            NotifSettingType.Email.value -> openEmailSetting()
+            NotifSettingType.Sms.value -> openSmsSetting()
             NotifSettingType.PushNotification.value -> {
                 openPushNotificationFiled(GlobalConfig.isSellerApp())
             }
-            NotifSettingType.Email.value -> {
-                openEmailSetting()
-            }
-            NotifSettingType.Sms.value -> {
-                openSmsSetting()
-            }
+
             else -> {
                 val isPushNotif = uri.getQueryParameter(PUSH_NOTIFICATION_PAGE) != null
                 if (isPushNotif) {
@@ -112,7 +109,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     private fun getNotificationFragment(): Fragment {
         val openSellerSetting = intent.extras?.getBoolean(EXTRA_OPEN_SELLER_NOTIF) ?: false
 
-        return if(openSellerSetting) {
+        return if (openSellerSetting) {
             val dataView = SettingTypeDataView(
                 icon = R.drawable.ic_notifsetting_notification,
                 name = R.string.settingnotif_dialog_info_title,
