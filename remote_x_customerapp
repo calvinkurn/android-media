@@ -1,21 +1,9 @@
 #!/bin/bash
 
 if [ -f ".remoteX/custom/custom_before_exec.sh" ]; then
-> ".remoteX/custom/custom_before_exec.sh"
-printf """#!/bin/bash
-echo 'custom before exec by remote'
-cd $1
-curDirName=`pwd`
-\n
-# change config to bits
-if grep -q \'^resRepo=tokopedia$\' \"gradle.properties\"; then
-  sed -i \'\' \'s/resRepo=tokopedia/resRepo=bits/g\' \"gradle.properties\"
-fi
-
-if [ -f \"$curDirName/settings.gradle\" ]; then
-sed -i 's|apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"||g' settings.gradle
-sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"||g' settings.gradle
-fi
+printf """
+chmod +x before_exec_customerapp.sh
+./before_exec_customerapp.sh
 """ >> .remoteX/custom/custom_before_exec.sh
 fi
 ./remote -ci ./gradlew packageLiveDevDebugUniversalApk -p customerapp --stacktrace
