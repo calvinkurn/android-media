@@ -1,14 +1,11 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.model.DevOptsAuthorizationUiModel
 import com.tokopedia.developer_options.presentation.model.SSOAuthorizationUiModel
-import com.tokopedia.encryption.security.sha256
-import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class SSOAuthorizationViewHolder(
@@ -21,9 +18,10 @@ class SSOAuthorizationViewHolder(
     }
 
     override fun bind(element: SSOAuthorizationUiModel?) {
+        val iconLark = ContextCompat.getDrawable(itemView.context, R.drawable.ic_lark)
         val btn = itemView.findViewById<UnifyButton>(R.id.btnLoginSSO)
+        btn.setDrawable(iconLark, UnifyButton.DrawablePosition.LEFT)
         btn.setOnClickListener {
-
             itemView.context.apply {
                 listener.onClickLogin()
             }

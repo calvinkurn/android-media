@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:gravity="center"
-        android:text="Login SSO"
+        android:text="@string/text_login_by_lark"
         android:layout_marginBottom="10dp"
         app:unifyButtonType="main"
         app:unifyButtonSize="medium"/>

@@ -12,7 +12,6 @@ import android.os.Process
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.widget.Scroller
 import android.widget.TextView
 import android.widget.Toast
@@ -74,6 +73,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
+import com.tokopedia.keys.R as keysR
 
 
 /**
@@ -91,6 +91,7 @@ class DeveloperOptionActivity :
         private const val RV_DEFAULT_POSITION = 0
         private const val RV_CACHE_SIZE = 20
         private const val LOGIN_HELPER_REQUEST_CODE = 789
+        private const val LOGIN_SSO_REQUEST_CODE = 0
         private const val DEV_OPT_PASSWORD_CONFIG_EXPIRATION = 0L
 
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
@@ -298,6 +299,7 @@ class DeveloperOptionActivity :
         adapter.setValueIsAuthorized(loggedIn)
         adapter.initializeList()
         adapter.setDefaultItem()
+
     }
 
     private fun handleUri(uri: Uri) {
@@ -445,7 +447,6 @@ class DeveloperOptionActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("TESS",data?.data.toString())
         LarkSSO.inst().parseIntent(this, data)
         when (requestCode) {
             LOGIN_HELPER_REQUEST_CODE -> {
@@ -531,9 +532,7 @@ class DeveloperOptionActivity :
     }
 
     override fun onClickLogin() {
-        val scopeList = ArrayList<String>()
-        scopeList.add("contact:user.id:readonly")
-        val builder = LarkSSO.Builder().setAppId("cli_a6a8acbf677e900e")
+        val builder = LarkSSO.Builder().setAppId(getString(keysR.string.sso_lark_key))
             .setServer("Lark")
             .setChallengeMode(true)
             .setForceWeb(false)
@@ -542,17 +541,25 @@ class DeveloperOptionActivity :
 
         LarkSSO.inst().startSSOVerify(builder, object : IGetDataCallback {
             override fun onSuccess(callBackData: CallBackData) {
-                Toast.makeText(
-                    this@DeveloperOptionActivity,
-                    "Auth success, code is:" + callBackData.code + ",codeVerifier is:" + callBackData.codeVerifier,
-                    Toast.LENGTH_LONG
-                ).show()
+                loginSession.setLoginSession(callBackData.codeVerifier)
+                loginSession.setLoginSSO()
+                adapter.setValueIsAuthorized(true)
+                adapter.initializeList()
+                adapter.setDefaultItem()
+                showToaster("You are authorized !!")
+                Intent(this@DeveloperOptionActivity,DeveloperOptionActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(this)
+                }
+                this@DeveloperOptionActivity.finish()
+
             }
 
             override fun onError(callBackData: CallBackData) {
                 Toast.makeText(
                     this@DeveloperOptionActivity,
-                    "Auth Failed, errorCode is" + callBackData.code + ",codeVerifier is:" + callBackData.codeVerifier,
+                    "Auth Failed, errorCode is ${callBackData.code}",
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -568,6 +575,7 @@ class DeveloperOptionActivity :
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         LarkSSO.inst().parseIntent(this, intent)
+
     }
 
 

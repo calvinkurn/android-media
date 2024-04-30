@@ -254,7 +254,7 @@ class DeveloperOptionAdapter(
             defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
-//            removeWidget(SSOAuthorizationUiModel::class.java)
+            removeWidget(SSOAuthorizationUiModel::class.java)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
         }
 
