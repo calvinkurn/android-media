@@ -61,13 +61,19 @@ class StoriesUnitTest {
         source = "shop-entrypoint",
         sourceId = "1234"
     )
+    private val argsWidget = StoriesArgsModel(
+        authorId = "123",
+        authorType = "shop",
+        source = "browse_widget",
+        sourceId = "1234"
+    )
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
     private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
-    private fun getStoriesRobot() = StoriesViewModelRobot(
+    private fun getStoriesRobot(isWidget: Boolean = false) = StoriesViewModelRobot(
         dispatchers = testDispatcher,
-        args = args,
+        args = if (isWidget) argsWidget else args,
         repository = mockRepository,
         userSession = mockUserSession,
         sharedPref = mockSharedPref
@@ -1431,6 +1437,20 @@ class StoriesUnitTest {
             }
 
             events.last().assertType<StoriesUiEvent.ShowVariantSheet> {}
+        }
+    }
+
+    @Test
+    fun `when stories source request coming from browse widget, group show cannot be shown`() {
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns StoriesDetail()
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns StoriesUiModel()
+
+        getStoriesRobot(true).use { robot ->
+            val state = robot.recordState {
+                mainDataTestCase(0)
+            }
+
+            state.canShowGroup.assertFalse()
         }
     }
 }
