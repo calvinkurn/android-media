@@ -32,6 +32,7 @@ data class SmallProductModel(
         return Pair(
             labelGroup?.title.orEmpty(),
             TextStyle(
+                url = labelGroup?.url.orEmpty(),
                 isBold = labelGroup?.isTextBold() == true,
                 textColor = labelGroup?.textColor().orEmpty(),
                 shouldRenderHtmlFormat = labelGroup?.hashTextFormat() == false
@@ -55,6 +56,7 @@ data class SmallProductModel(
     data class TextStyle(
         val isBold: Boolean = false,
         val textColor: String = "",
+        val url: String = "",
         val shouldRenderHtmlFormat: Boolean = false
     )
 

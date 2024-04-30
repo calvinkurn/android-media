@@ -13,6 +13,7 @@
     <string name="content_desc_lego_image">image lego item</string>
 
     <string name="content_desc_icon_image">Image Icon</string>
+    <string name="content_desc_icon_campaign_small_card">Icon Campaign</string>
     <string name="content_desc_reminder">reminder image</string>
 
     <string name="content_desc_mix_left">Image</string>

@@ -5,11 +5,14 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.view.marginStart
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.WidgetSmallProductCardBinding
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
@@ -102,8 +105,26 @@ class SmallProductCard @JvmOverloads constructor(
         this?.text = if (style.shouldRenderHtmlFormat) HtmlUtil.fromHtml(title) else title
         this?.setWeight(if (style.isBold) Typography.BOLD else Typography.REGULAR)
 
+        shouldHandleCampaignIconVisibility(style)
+
         if (style.textColor.isNotEmpty()) {
             this?.setTextColor(Color.parseColor(style.textColor))
         }
+    }
+
+    private fun shouldHandleCampaignIconVisibility(style: SmallProductModel.TextStyle) {
+        if (style.url.isEmpty()) {
+            hideCampaignIcon()
+            return
+        }
+
+        binding.icCampaign.show()
+        binding.icCampaign.loadImage(style.url)
+        binding.txtTitle.setCustomMargin(MarginArea.Start(2.toPx()))
+    }
+
+    private fun hideCampaignIcon() {
+        binding.icCampaign.hide()
+        binding.txtTitle.setCustomMargin(MarginArea.Start(0))
     }
 }
