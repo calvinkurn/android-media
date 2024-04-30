@@ -25,6 +25,8 @@ object AppLogFirstTrackId {
 
     private val _pdpPageDataList = ArrayList<HashMap<String, Any>>()
 
+    private val additionalPageName = listOf(PageName.CART)
+
     private fun appendPdpDataList(maps: HashMap<String, Any>) {
         _pdpPageDataList.add(maps)
     }
@@ -46,15 +48,23 @@ object AppLogFirstTrackId {
 
     fun updateFirstTrackId() {
         val currentPage = getCurrentData() ?: return
-        firstTrackId = ""
-        firstSourcePage = ""
+        synchronized(this) {
+            firstTrackId = ""
+            firstSourcePage = ""
+        }
 
-        if (currentPage[PAGE_NAME] != PageName.PDP) {
+        val containAdditionalPageName = additionalPageName.contains(currentPage[PAGE_NAME])
+
+        if (currentPage[PAGE_NAME] != PageName.PDP &&
+            !containAdditionalPageName
+        ) {
             return
         }
 
         for (i in _pdpPageDataList.size - 1 downTo 0) {
-            if (_pdpPageDataList[i][PAGE_NAME] == PageName.PDP) {
+            if (_pdpPageDataList[i][PAGE_NAME] == PageName.PDP ||
+                additionalPageName.contains(_pdpPageDataList[i][PAGE_NAME])
+            ) {
                 val trackId = getDataFromPreviousPage(TRACK_ID, i)
                 val sourcePageType = getDataFromPreviousPage(SOURCE_PAGE_TYPE, i)
                 if (trackId.isEmpty() || sourcePageType.isEmpty()) {
@@ -64,6 +74,11 @@ object AppLogFirstTrackId {
                         _firstTrackId = trackId
                         _firstSourcePage = sourcePageType
                     }
+                }
+
+                val previousPageName = getDataFromPreviousPage(PAGE_NAME, i)
+                if (additionalPageName.contains(previousPageName)) {
+                    break
                 }
             } else {
                 break
