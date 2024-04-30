@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import com.tokopedia.feedplus.databinding.ViewFeedSearchHeaderLayoutBinding
+import com.tokopedia.feedplus.presentation.uiview.FeedSearchBar
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.feedplus.R as feedplusR
@@ -38,7 +38,7 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(
         binding.headerUnify.isShowShadow = isShowShadow
         binding.headerUnify.transparentMode = isTransparent
 
-        if (withSearchbar) initSearchBar(isClearable)
+        if (withSearchbar) setSearchBar(isClearable)
     }
 
     /**
@@ -72,7 +72,7 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(
         showSoftKeyboard()
     }
 
-    fun initSearchBar(isClearable: Boolean, searchPlaceholder: String = "") {
+    fun setSearchBar(isClearable: Boolean, searchPlaceholder: String = "") {
         SearchBarUnify(context).also { searchbar ->
             searchbar.isClearable = isClearable
             searchbar.showIcon = isClearable
@@ -88,6 +88,13 @@ class FeedSearchHeaderView(context: Context, attrs: AttributeSet) : FrameLayout(
                 true
             }
         }
+    }
+
+    fun setFeedSearchBar(onClick: () -> Unit) {
+        val searchBar = FeedSearchBar(context)
+        searchBar.setOnSearchBarClicked(onClick)
+
+        binding.headerUnify.customView(searchBar)
     }
 
     private fun showSoftKeyboard() {

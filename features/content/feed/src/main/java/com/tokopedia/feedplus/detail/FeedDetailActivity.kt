@@ -144,19 +144,10 @@ class FeedDetailActivity : BaseActivity() {
                 viewModel.headerDetail.collectLatest {
                     if (it.isShowSearchBar) {
                         binding.feedDetailHeader.post {
-                            binding.feedDetailHeader.initSearchBar(
-                                isClearable = false,
-                                searchPlaceholder = it.searchBarPlaceholder.ifEmpty { getString(R.string.feed_local_search_page_text_placeholder_fallback) }
-                            )
-
-                            binding.feedDetailHeader.setSearchbarFocusListener { view, focusState ->
-                                if (focusState) {
-                                    val intent = router.getIntent(this@FeedDetailActivity, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
-                                    intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
-                                    startActivity(intent)
-                                }
-
-                                view.clearFocus()
+                            binding.feedDetailHeader.setFeedSearchBar {
+                                val intent = router.getIntent(this@FeedDetailActivity, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
+                                intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
+                                startActivity(intent)
                             }
                         }
                     } else {
