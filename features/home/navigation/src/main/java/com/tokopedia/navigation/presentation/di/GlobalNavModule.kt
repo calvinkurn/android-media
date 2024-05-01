@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -75,10 +76,5 @@ class GlobalNavModule {
     @Provides
     fun provideLottieCacheManager(context: Context): LottieCacheManager {
         return LottieCacheManager(context)
-    }
-
-    @Provides
-    fun provideWeakReferenceContext(context: Context): WeakReference<Context> {
-        return WeakReference(context)
     }
 }

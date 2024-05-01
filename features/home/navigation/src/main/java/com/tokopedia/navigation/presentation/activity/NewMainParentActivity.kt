@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleO
 import com.tokopedia.abstraction.base.view.model.InAppCallback
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -123,6 +124,9 @@ class NewMainParentActivity :
 
     @Inject
     lateinit var assetPreloadManager: Lazy<AssetPreloadManager>
+
+    @Inject
+    lateinit var dispatchers: CoroutineDispatchers
 
     private val pltPerformanceCallback by lazy {
         PageLoadTimePerformanceCallback(
@@ -443,17 +447,9 @@ class NewMainParentActivity :
         }
 
         viewModel.nextDynamicBottomNav.observe(this) { bottomNavList ->
-            bottomNavList.forEach {
-                it.assets.values.forEach { asset ->
-                    when (asset) {
-                        is BottomNavBarAsset.Lottie -> {
-                            assetPreloadManager.get().preloadLottieAsset(asset.url)
-                        }
-                        is BottomNavBarAsset.Image -> {
-                            assetPreloadManager.get().preloadImage(asset.url)
-                        }
-                    }
-                }
+            if (bottomNavList == null) return@observe
+            lifecycleScope.launch {
+                assetPreloadManager.get().preloadByCacheTask(bottomNavList)
             }
         }
     }

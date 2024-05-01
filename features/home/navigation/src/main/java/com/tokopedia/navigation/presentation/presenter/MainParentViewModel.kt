@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.navigation.domain.GetHomeBottomNavigationUseCase
 import com.tokopedia.navigation.domain.GetNewBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.model.Notification
+import com.tokopedia.navigation.util.CompletableTask
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,8 +30,8 @@ internal class MainParentViewModel @Inject constructor(
     private val _dynamicBottomNav = MutableLiveData<List<BottomNavBarUiModel>>(emptyList())
     val dynamicBottomNav: LiveData<List<BottomNavBarUiModel>> by this::_dynamicBottomNav
 
-    private val _nextDynamicBottomNav = MutableLiveData<List<BottomNavBarUiModel>>(emptyList())
-    val nextDynamicBottomNav: LiveData<List<BottomNavBarUiModel>> by this::_nextDynamicBottomNav
+    private val _nextDynamicBottomNav = MutableLiveData<CompletableTask<List<BottomNavBarUiModel>>?>(null)
+    val nextDynamicBottomNav: LiveData<CompletableTask<List<BottomNavBarUiModel>>?> by this::_nextDynamicBottomNav
 
     var isRecurringAppLink = false
 
@@ -62,7 +63,7 @@ internal class MainParentViewModel @Inject constructor(
                     GetHomeBottomNavigationUseCase.FromCache(true)
                 )
             }.onSuccess {
-                _dynamicBottomNav.value = it
+                _dynamicBottomNav.value = it.items
             }.onFailure {
                 Log.e("MainParentViewModel", "Fetch NavBar From Cache Failed", it)
             }

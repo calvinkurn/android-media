@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.navigation.util.BottomNavBarItemCacheManager
+import com.tokopedia.navigation.util.CompletableTask
 import com.tokopedia.navigation_common.model.bottomnav.GetHomeBottomNavigationResponse
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class GetHomeBottomNavigationUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val cache: BottomNavBarItemCacheManager
-) : CoroutineUseCase<GetHomeBottomNavigationUseCase.FromCache, List<BottomNavBarUiModel>>(Dispatchers.IO) {
+) : CoroutineUseCase<GetHomeBottomNavigationUseCase.FromCache, CompletableTask<List<BottomNavBarUiModel>>>(Dispatchers.IO) {
 
     override fun graphqlQuery(): String {
         return """
@@ -50,11 +51,11 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
         """
     }
 
-    override suspend fun execute(params: FromCache): List<BottomNavBarUiModel> {
+    override suspend fun execute(params: FromCache): CompletableTask<List<BottomNavBarUiModel>> {
         return if (params.value) {
-            getDataFromCache()
+            CompletableTask(getDataFromCache()) {}
         } else {
-            getDataFromNetwork().also { cache.saveBottomNav(it) }
+            CompletableTask(getDataFromNetwork()) { cache.saveBottomNav(it) }
         }
     }
 
