@@ -13,8 +13,6 @@ import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShipmentTicker
-import com.tokopedia.logisticcart.shipping.model.ShipmentTickerPosition
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationAnalyticState
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationListState
@@ -85,7 +83,6 @@ class ShippingDurationViewModel @Inject constructor(
                             model.listLogisticPromo,
                             model.productShipmentDetailModel,
                             model.paidSectionInfoUiModel,
-                            model.tickers,
                             isOcc
                         )
                     )
@@ -226,7 +223,6 @@ class ShippingDurationViewModel @Inject constructor(
         promoUiModel: List<LogisticPromoUiModel>,
         productShipmentDetailModel: ProductShipmentDetailModel?,
         paidSectionInfoUiModel: PaidSectionInfoUiModel,
-        tickers: ShipmentTicker?,
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
         // TODO map ticker
@@ -247,16 +243,8 @@ class ShippingDurationViewModel @Inject constructor(
             uiModelList.addAll(eligibleServices)
         }
 
-        // bebas ongkir
         if (promoUiModel.isNotEmpty()) {
-            uiModelList.addAll(
-                0,
-                promoUiModel
-            )
-            tickers?.filter(ShipmentTickerPosition.FREE_SHIPPING)?.run {
-                uiModelList.add(0, this)
-            }
-            uiModelList.add(DividerModel())
+            uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
         }
 
         // notifier
@@ -285,7 +273,6 @@ class ShippingDurationViewModel @Inject constructor(
                     model.listLogisticPromo,
                     model.productShipmentDetailModel,
                     model.paidSectionInfoUiModel,
-                    model.tickers,
                     isOcc
                 )
             )

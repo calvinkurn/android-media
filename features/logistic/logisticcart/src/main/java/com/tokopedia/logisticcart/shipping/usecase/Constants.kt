@@ -27,14 +27,6 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         is_collapsed
         label_text
       }
-      tickers {
-        top {
-            text
-        }
-        bottom {
-            text
-        }
-      }
       services {
         service_name
         service_id
@@ -309,18 +301,6 @@ internal fun ratesQuery() = """
           paid_section_info {
             is_collapsed
             label_text
-          }
-          tickers {
-            type
-            position
-            title
-            text
-            actions {
-                label
-                type
-                app_url
-                web_url
-            }
           }
           services {
             service_name

@@ -8,21 +8,15 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Produ
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesTickerData
 import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
 import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentTicker
-import com.tokopedia.logisticcart.shipping.model.ShipmentTickerActionType
-import com.tokopedia.logisticcart.shipping.model.ShipmentTickerModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentTickerPosition
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.unifycomponents.ticker.Ticker
 import javax.inject.Inject
 
 /**
@@ -72,55 +66,9 @@ class ShippingDurationConverter @Inject constructor() {
 
                 // paid section title section
                 shippingRecommendationData.paidSectionInfoUiModel = convertPaidSectionModel(ratesData.ratesDetailData.paidSectionInfo)
-
-                // bottom ticker
-                shippingRecommendationData.tickers = convertShipmentTicker(ratesData.ratesDetailData.tickers)
             }
         }
         return shippingRecommendationData
-    }
-
-    private fun convertShipmentTicker(tickers: List<RatesTickerData>): ShipmentTicker? {
-        val data = tickers.map {
-            val type: Int = when (it.tickerType) {
-                TICKER_INFO_TYPE -> Ticker.TYPE_ANNOUNCEMENT
-                TICKER_WARNING_TYPE -> Ticker.TYPE_WARNING
-                TICKER_ERROR_TYPE -> Ticker.TYPE_ERROR
-                else -> Ticker.TYPE_ANNOUNCEMENT
-            }
-            val action: ShipmentTickerActionType? = when (it.tickerAction.type) {
-                TICKER_ACTION_WEB -> {
-                    ShipmentTickerActionType.WebUrl(it.tickerAction.webUrl)
-                }
-                TICKER_ACTION_APPLINK -> {
-                    ShipmentTickerActionType.AppUrl(it.tickerAction.appUrl)
-                }
-                else -> {
-                    null
-                }
-            }
-            val position: ShipmentTickerPosition? = when (it.position) {
-                ShipmentTickerPosition.FREE_SHIPPING.key -> {
-                    ShipmentTickerPosition.FREE_SHIPPING
-                }
-                else -> {
-                    null
-                }
-            }
-            ShipmentTickerModel(
-                type = type,
-                actionType = action,
-                position = position,
-                actionLabel = it.tickerAction.label,
-                description = it.content,
-                title = it.title
-            )
-        }
-        return if (data.isNotEmpty()) {
-            ShipmentTicker(data)
-        } else {
-            null
-        }
     }
 
     private fun convertPaidSectionModel(paidSectionInfo: PaidSectionInfo): PaidSectionInfoUiModel {

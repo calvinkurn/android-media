@@ -27,8 +27,6 @@ data class RatesDetailData(
     val info: InfoRatesDetailData = InfoRatesDetailData(),
     @SerializedName("error")
     val error: ErrorRatesDetailData = ErrorRatesDetailData(),
-    @SerializedName("tickers")
-    val tickers: List<RatesTickerData> = listOf(),
     @SerializedName("promo_stackings")
     val listPromoStacking: List<PromoStacking> = listOf(),
     @SerializedName("pre_order")

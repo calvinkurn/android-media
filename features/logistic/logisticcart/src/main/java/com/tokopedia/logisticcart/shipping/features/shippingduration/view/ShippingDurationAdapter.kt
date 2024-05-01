@@ -15,7 +15,6 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShipmentTicker
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 
 /**
@@ -57,7 +56,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         is DividerModel -> DividerViewHolder.LAYOUT
         is ProductShipmentDetailModel -> ProductShipmentDetailViewHolder.LAYOUT
         is PaidSectionInfoUiModel -> PaidShippingInfoViewHolder.LAYOUT
-        is ShipmentTicker -> PaidShippingInfoViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
@@ -96,10 +94,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                 ItemPaidShippingTitleBinding.inflate(inflater, parent, false)
             )
 
-            ShipmentTickerViewHolder.LAYOUT -> ShipmentTickerViewHolder(
-                ItemNotifierBinding.inflate(inflater, parent, false)
-            )
-
             else -> ShippingDurationViewHolder(
                 ItemDurationBinding.inflate(inflater, parent, false),
                 cartPosition
@@ -126,8 +120,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                 mData[position] as PaidSectionInfoUiModel,
                 shippingDurationAdapterListener
             )
-
-            is ShipmentTickerViewHolder -> holder.bindData((mData[position] as ShipmentTicker).tickers)
         }
     }
 
