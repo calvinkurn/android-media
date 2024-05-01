@@ -8,47 +8,41 @@ fi
 function comment() {
   if ! grep "//apply from:\"$1\"" "$2"; then
     sed -i "s|apply from:\"$1\"|//apply from:\"$1\"|g" "$2"
+    echo "disabling $1"
   fi
 }
 
 function uncomment() {
   if grep "//apply from:\"$1\"" "$2"; then
       sed -i "s|//apply from:\"$1\"|apply from:\"$1\"|g" "$2"
+      echo "enabling $1"
   fi
 }
 
 if [ -f "settings.gradle" ]; then
-  echo "disabling unused settings.."
+  echo "disabling unused settings for $1.."
+  unused="buildconfig/appcompile/compile-customerapp-pro.gradle"
+  dependencies=""
   if [ "$1" == "customerapp" ]; then
-    unused="buildconfig/appcompile/compile-sellerapp.gradle buildconfig/appcompile/compile-customerapp-pro.gradle buildconfig/appcompile/compile-testapp.gradle"
-    dependencies="buildconfig/appcompile/compile-customerapp.gradle buildconfig/appcompile/compile-libraries.gradle"
-    for unusedDependency in $unused
-    do
-      comment unusedDependency settings.gradle
-    done
-    for dependency in $dependencies
-    do
-      uncomment dependency settings.gradle
-    done
-    echo "done disabling unused settings for customerapp.."
+    unused+="buildconfig/appcompile/compile-sellerapp.gradle buildconfig/appcompile/compile-testapp.gradle"
+    dependencies+="buildconfig/appcompile/compile-customerapp.gradle buildconfig/appcompile/compile-libraries.gradle"
   fi
   if [ "$1" == "sellerapp" ]; then
-      sed -i 's|apply from: "buildconfig/appcompile/compile-customerapp.gradle"||g' settings.gradle
-      sed -i 's|apply from: "buildconfig/appcompile/compile-customerapp_pro.gradle"||g' settings.gradle
-      sed -i 's|apply from: "buildconfig/appcompile/compile-testapp.gradle"||g' settings.gradle
-      if grep '//apply from: "buildconfig/appcompile/compile-sellerapp.gradle"' "settings.gradle"; then
-            sed -i 's|//apply from: "buildconfig/appcompile/compile-sellerapp.gradle"|apply from: "buildconfig/appcompile/compile-sellerapp.gradle"|g' settings.gradle
-          fi
-      echo "done disabling unused settings for sellerapp.."
+    unused+="buildconfig/appcompile/compile-customerapp.gradle buildconfig/appcompile/compile-testapp.gradle"
+    dependencies+="buildconfig/appcompile/compile-sellerapp.gradle buildconfig/appcompile/compile-libraries.gradle"
    fi
    if [ "$1" == "testapp" ]; then
-         sed -i 's|apply from: "buildconfig/appcompile/compile-sellerapp.gradle"||g' settings.gradle
-         sed -i 's|apply from: "buildconfig/appcompile/compile-customerapp_pro.gradle"||g' settings.gradle
-         sed -i 's|apply from: "buildconfig/appcompile/compile-customerapp.gradle"||g' settings.gradle
-         if grep '//apply from: "buildconfig/appcompile/compile-testapp.gradle"' "settings.gradle"; then
-               sed -i 's|//apply from: "buildconfig/appcompile/compile-testapp.gradle"|apply from: "buildconfig/appcompile/compile-testapp.gradle"|g' settings.gradle
-         fi
-         echo "done disabling unused settings for testapp.."
+     unused+="buildconfig/appcompile/compile-customerapp.gradle buildconfig/appcompile/compile-sellerapp.gradle buildconfig/appcompile/compile-libraries.gradle"
+     dependencies+="buildconfig/appcompile/compile-testapp.gradle"
    fi
+   for unusedDependency in $unused
+   do
+     comment "$unusedDependency" settings.gradle
+   done
+   for dependency in $dependencies
+   do
+     uncomment "$dependency" settings.gradle
+   done
+   echo "done disabling unused settings"
 fi
 cat settings.gradle
