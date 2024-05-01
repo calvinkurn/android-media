@@ -28,8 +28,8 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
-import com.tokopedia.unifycomponents.compose.NestCheckbox
-import com.tokopedia.unifycomponents.compose.NestSwitch
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.net.UnknownHostException
 
@@ -101,16 +101,24 @@ private fun StoriesSettingsSuccess(pageInfo: StoriesSettingsPageUiModel, viewMod
                     }
                 }
             }
-            NestSwitch(
-                isEnabled = itemFirst.isDisabled,
-                isChecked = isStoryEnable,
-                onCheckedChanged = { isActive ->
-                    if (isActive != itemFirst.isDisabled) {
-                        viewModel.onEvent(
-                            StoriesSettingsAction.SelectOption(itemFirst)
-                        )
+            AndroidView(
+                factory = { context ->
+                    SwitchUnify(context).apply {
+                        this.isChecked = isChecked
+                        this.isEnabled = isEnabled
+                        this.setOnCheckedChangeListener { view, _->
+                            if (view.isPressed) {
+                                viewModel.onEvent(
+                                    StoriesSettingsAction.SelectOption(itemFirst)
+                                )
+                            }
+                        }
                     }
-                }
+                },
+                update = { switchUnify ->
+                    switchUnify.isEnabled = !itemFirst.isDisabled
+                    switchUnify.isChecked = isStoryEnable
+                },
             )
         }
     }
@@ -139,11 +147,21 @@ private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSet
             text = item.text,
             textStyle = NestTheme.typography.paragraph3
         )
-        NestCheckbox(isChecked = item.isSelected, onCheckedChange = { isActive ->
-            if (isActive != item.isSelected) {
-                onOptionClicked(item)
-            }
-        })
+        AndroidView(
+            factory = { context ->
+                CheckboxUnify(context).apply {
+                    this.setOnCheckedChangeListener { view, _ ->
+                        if (view.isPressed) {
+                            onOptionClicked(item)
+                        }
+                    }
+                }
+            },
+            update = { v ->
+                v.isChecked = item.isSelected
+                v.isEnabled = !item.isDisabled
+            },
+        )
     }
 }
 

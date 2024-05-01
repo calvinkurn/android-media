@@ -67,16 +67,21 @@ class StoriesSettingsViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val response = repository.updateOption(entryPoint = entryPoint, option)
             if (response) {
-                _pageInfo.update { page ->
-                    page.copy(options = page.options.map { opt ->
-                        if (option == opt) opt.copy(isSelected = !opt.isSelected) else opt
-                    })
-                }
+                updatePageOption(option)
                 _event.emit(StoriesSettingEvent.ClickTrack(option.copy(isSelected = !option.isSelected)))
             } else throw Exception()
         }) {
+            updatePageOption(option)
             _event.emit(StoriesSettingEvent.ShowErrorToaster(it) {
                 updateOption(option)
+            })
+        }
+    }
+
+    private fun updatePageOption(option: StoriesSettingOpt){
+        _pageInfo.update { page ->
+            page.copy(options = page.options.map { opt ->
+                if (option.optionType == opt.optionType) opt.copy(isSelected = !opt.isSelected) else opt
             })
         }
     }
