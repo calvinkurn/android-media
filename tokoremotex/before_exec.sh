@@ -54,7 +54,6 @@ if [ -f "settings.gradle" ]; then
     if grep "//apply from: \"buildconfig/appcompile/compile-wearosapp.gradle\"" settings.gradle; then
       sed -i 's|//apply from: \"buildconfig/appcompile/compile-wearosapp.gradle\"|apply from: \"buildconfig/appcompile/compile-wearosapp.gradle\"|g' settings.gradle
     fi
-    # todo
     if [ "$1" == "testapp" ]; then
       if ! grep "//apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"" settings.gradle; then
         sed -i 's|apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"|//apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"|g' settings.gradle
@@ -75,7 +74,7 @@ if [ -f "settings.gradle" ]; then
       if grep "//apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"" settings.gradle; then
         sed -i 's|//apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"|apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"|g' settings.gradle
       fi
-      if ! grep "//apply from: \"buildconfig/appcompile/compile-wearosapp.gradle\"" settings.gradle; then
+      if grep "//apply from: \"buildconfig/appcompile/compile-wearosapp.gradle\"" settings.gradle; then
         sed -i 's|apply from: \"buildconfig/appcompile/compile-wearosapp.gradle\"|//apply from: \"buildconfig/appcompile/compile-wearosapp.gradle\"|g' settings.gradle
       fi
     fi
