@@ -1,16 +1,16 @@
 package com.tokopedia.navigation.presentation.presenter
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.navigation.domain.GetHomeBottomNavigationUseCase
 import com.tokopedia.navigation.domain.GetNewBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.model.Notification
-import com.tokopedia.navigation.presentation.type.TabType
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
-import com.tokopedia.navigation_common.usecase.GetHomeBottomNavigationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,14 +20,17 @@ import javax.inject.Inject
 internal class MainParentViewModel @Inject constructor(
     private val getNotificationUseCase: GetNewBottomNavNotificationUseCase,
     private val getHomeBottomNavigationUseCase: GetHomeBottomNavigationUseCase,
-    private val userSession: UserSessionInterface,
-): ViewModel() {
+    private val userSession: UserSessionInterface
+) : ViewModel() {
 
     private val _notification = MutableStateFlow<Notification?>(null)
     val notification get() = _notification.asLiveData()
 
     private val _dynamicBottomNav = MutableLiveData<List<BottomNavBarUiModel>>(emptyList())
     val dynamicBottomNav: LiveData<List<BottomNavBarUiModel>> by this::_dynamicBottomNav
+
+    private val _nextDynamicBottomNav = MutableLiveData<List<BottomNavBarUiModel>>(emptyList())
+    val nextDynamicBottomNav: LiveData<List<BottomNavBarUiModel>> by this::_nextDynamicBottomNav
 
     var isRecurringAppLink = false
 
@@ -48,11 +51,34 @@ internal class MainParentViewModel @Inject constructor(
     }
 
     fun fetchDynamicBottomNavBar() {
+        fetchBottomNavBarFromCache()
+        fetchBottomNavBarFromNetwork()
+    }
+
+    private fun fetchBottomNavBarFromCache() {
         viewModelScope.launch {
             runCatching {
-                getHomeBottomNavigationUseCase(Unit)
+                getHomeBottomNavigationUseCase(
+                    GetHomeBottomNavigationUseCase.FromCache(true)
+                )
             }.onSuccess {
                 _dynamicBottomNav.value = it
+            }.onFailure {
+                Log.e("MainParentViewModel", "Fetch NavBar From Cache Failed", it)
+            }
+        }
+    }
+
+    private fun fetchBottomNavBarFromNetwork() {
+        viewModelScope.launch {
+            runCatching {
+                getHomeBottomNavigationUseCase(
+                    GetHomeBottomNavigationUseCase.FromCache(false)
+                )
+            }.onSuccess {
+                _nextDynamicBottomNav.value = it
+            }.onFailure {
+                Log.e("MainParentViewModel", "Fetch NavBar From Network Failed", it)
             }
         }
     }

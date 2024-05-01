@@ -65,11 +65,17 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     }
 
     private void initInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
-                .inject(this);
+        DaggerGlobalNavComponent.factory()
+                .create(
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent(),
+                    requireContext()
+                ).inject(this);
+
+//        DaggerGlobalNavComponent.builder()
+//                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+//                .globalNavModule(new GlobalNavModule())
+//                .build()
+//                .inject(this);
     }
 
     @Override

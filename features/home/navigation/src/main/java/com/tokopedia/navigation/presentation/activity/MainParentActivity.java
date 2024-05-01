@@ -605,11 +605,14 @@ public class MainParentActivity extends BaseActivity implements
 
     //MIGRATED
     private void initInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(getApplicationComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
+        DaggerGlobalNavComponent.factory()
+                .create(getApplicationComponent(), this)
                 .inject(this);
+//        DaggerGlobalNavComponent.builder()
+//                .baseAppComponent(getApplicationComponent())
+//                .globalNavModule(new GlobalNavModule())
+//                .build()
+//                .inject(this);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

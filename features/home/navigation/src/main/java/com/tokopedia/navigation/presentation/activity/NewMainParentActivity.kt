@@ -65,11 +65,10 @@ import com.tokopedia.navigation.GlobalNavConstant
 import com.tokopedia.navigation.databinding.ActivityMainParentBinding
 import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
-import com.tokopedia.navigation.presentation.di.GlobalNavModule
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
-import com.tokopedia.navigation.presentation.model.BottomNavHomeType
 import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
+import com.tokopedia.navigation.util.AssetPreloadManager
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -79,10 +78,9 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
-import com.tokopedia.navigation_common.ui.BottomNavBarItemType
+import com.tokopedia.navigation_common.ui.BottomNavBarAsset
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.BottomNavItemId
-import com.tokopedia.navigation_common.ui.DiscoId
 import com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -94,6 +92,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.navigation.R as navigationR
@@ -101,7 +100,8 @@ import com.tokopedia.resources.common.R as resourcescommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("DeprecatedMethod")
-class NewMainParentActivity : BaseActivity(),
+class NewMainParentActivity :
+    BaseActivity(),
     CartNotifyListener,
     RefreshNotificationListener,
     MainParentStatusBarListener,
@@ -110,8 +110,7 @@ class NewMainParentActivity : BaseActivity(),
     ITelemetryActivity,
     InAppCallback,
     HomeCoachmarkListener,
-    HomeBottomNavListener
-{
+    HomeBottomNavListener {
 
     @Inject
     lateinit var viewModelFactory: Lazy<ViewModelFactory>
@@ -121,6 +120,9 @@ class NewMainParentActivity : BaseActivity(),
 
     @Inject
     lateinit var userSession: Lazy<UserSessionInterface>
+
+    @Inject
+    lateinit var assetPreloadManager: Lazy<AssetPreloadManager>
 
     private val pltPerformanceCallback by lazy {
         PageLoadTimePerformanceCallback(
@@ -170,7 +172,7 @@ class NewMainParentActivity : BaseActivity(),
     private var isUserFirstTimeLogin = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //changes for triggering unittest checker
+        // changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring()
         startMainParentPerformanceMonitoring()
         pltPerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS)
@@ -283,7 +285,7 @@ class NewMainParentActivity : BaseActivity(),
         setIntent(intent)
         setDownloadManagerParameter()
         showSelectedPage()
-        //handleAppLinkBottomNavigation(false);
+        // handleAppLinkBottomNavigation(false);
     }
 
     override fun onRequestPermissionsResult(
@@ -323,10 +325,10 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     override fun requestStatusBarDark() {
-        //for tokopedia lightmode, triggered when in top page
-        //for tokopedia darkmode, triggered when not in top page
+        // for tokopedia lightmode, triggered when in top page
+        // for tokopedia darkmode, triggered when not in top page
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            //to trigger white text when tokopedia darkmode not on top page
+            // to trigger white text when tokopedia darkmode not on top page
             requestStatusBarLight()
         } else {
             forceRequestStatusBarDark()
@@ -334,8 +336,8 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     override fun requestStatusBarLight() {
-        //for tokopedia lightmode, triggered when not in top page
-        //for tokopedia darkmode, triggered when in top page
+        // for tokopedia lightmode, triggered when not in top page
+        // for tokopedia darkmode, triggered when in top page
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -381,7 +383,7 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     override fun onNotNeedUpdateInApp() {
-        //noop
+        // noop
     }
 
     override fun onNeedUpdateInApp(detailUpdate: DetailUpdate) {
@@ -405,10 +407,8 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     private fun initInjector() {
-        DaggerGlobalNavComponent.builder()
-            .baseAppComponent(getApplicationComponent())
-            .globalNavModule(GlobalNavModule())
-            .build()
+        DaggerGlobalNavComponent.factory()
+            .create(getApplicationComponent(), this)
             .inject(this)
     }
 
@@ -420,7 +420,7 @@ class NewMainParentActivity : BaseActivity(),
         val intent = this.intent ?: return
         outState.putBoolean(KEY_IS_RECURRING_APPLINK, viewModel.isRecurringAppLink)
 
-        //only save position when feed page is active and remove only if it is not feed
+        // only save position when feed page is active and remove only if it is not feed
 //        boolean isCurrentFragmentFeed = currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE);
 //        if (!isCurrentFragmentFeed) {
 //            if (getIntent().getIntExtra(ARGS_TAB_POSITION, 0) != FEED_MENU) return;
@@ -438,8 +438,23 @@ class NewMainParentActivity : BaseActivity(),
             setBadgeNotificationCounter(activeFragment)
         }
 
-        viewModel.dynamicBottomNav.observe(this) { bottomNav ->
-            binding.dynamicNavbar.setModelList(bottomNav)
+        viewModel.dynamicBottomNav.observe(this) { bottomNavList ->
+            binding.dynamicNavbar.setModelList(bottomNavList)
+        }
+
+        viewModel.nextDynamicBottomNav.observe(this) { bottomNavList ->
+            bottomNavList.forEach {
+                it.assets.values.forEach { asset ->
+                    when (asset) {
+                        is BottomNavBarAsset.Lottie -> {
+                            assetPreloadManager.get().preloadLottieAsset(asset.url)
+                        }
+                        is BottomNavBarAsset.Image -> {
+                            assetPreloadManager.get().preloadImage(asset.url)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -453,7 +468,7 @@ class NewMainParentActivity : BaseActivity(),
     }
 
     private fun startMainParentPerformanceMonitoring() {
-        PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
+        PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY)
     }
 
     private fun getTabIdFromIntent(): BottomNavItemId {
@@ -485,7 +500,7 @@ class NewMainParentActivity : BaseActivity(),
         return paramValue != null && paramValue.equals(DOWNLOAD_MANAGER_PARAM_TRUE, true)
     }
 
-    //TODO()
+    // TODO()
     private fun createView(savedInstanceState: Bundle?) {
         isFirstNavigationImpression = true
         binding = ActivityMainParentBinding.inflate(layoutInflater)
@@ -555,15 +570,18 @@ class NewMainParentActivity : BaseActivity(),
             findViewById(android.R.id.content),
             intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS).orEmpty(),
             Snackbar.LENGTH_INDEFINITE,
-            getString(resourcescommonR.string.general_label_ok),
+            getString(resourcescommonR.string.general_label_ok)
         ) {}
     }
 
     private fun showSelectedPage() {
         val tabId = run {
             val tabIdFromIntent = getTabIdFromIntent()
-            if (viewModel.hasTabType(tabIdFromIntent.type)) tabIdFromIntent
-            else BottomNavHomeId
+            if (viewModel.hasTabType(tabIdFromIntent.type)) {
+                tabIdFromIntent
+            } else {
+                BottomNavHomeId
+            }
         }
         val fragment = getFragmentById(tabId) ?: return
 
@@ -622,9 +640,9 @@ class NewMainParentActivity : BaseActivity(),
         }
     }
 
-    //TODO()
+    // TODO()
     private fun setupStatusBar() {
-        //apply inset to allow recyclerview scrolling behind status bar
+        // apply inset to allow recyclerview scrolling behind status bar
         binding.container.fitsSystemWindows = false
         binding.container.requestApplyInsets()
 
@@ -634,7 +652,7 @@ class NewMainParentActivity : BaseActivity(),
             window.statusBarColor = ContextCompat.getColor(this, unifyprinciplesR.color.Unify_NN0)
         }
 
-        //make full transparent statusBar
+        // make full transparent statusBar
         requestStatusBarLight()
 //        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 //        setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
@@ -695,11 +713,10 @@ class NewMainParentActivity : BaseActivity(),
         return true
     }
 
-    //TODO("Check if DF_ALPHA_TESTING is still required")
+    // TODO("Check if DF_ALPHA_TESTING is still required")
     private fun installDFonBackground() {
         val userSession = this.userSession.get()
         val moduleNameList = buildList {
-
             run loggedInDF@{
                 if (!userSession.isLoggedIn) return@loggedInDF
 
@@ -889,8 +906,11 @@ class NewMainParentActivity : BaseActivity(),
         val win = window
         val winParams = win.attributes
 
-        if (on) winParams.flags = winParams.flags or bits
-        else winParams.flags = winParams.flags and bits.inv()
+        if (on) {
+            winParams.flags = winParams.flags or bits
+        } else {
+            winParams.flags = winParams.flags and bits.inv()
+        }
 
         win.attributes = winParams
     }
@@ -911,14 +931,10 @@ class NewMainParentActivity : BaseActivity(),
         }
     }
 
-    private fun BottomNavBarItemType.getTag(discoId: DiscoId): String {
-        return "tag_${value}_$discoId"
-    }
-
     companion object {
         private const val ARGS_TAB_ID = "tab_id"
         private const val ARGS_HAS_RUN_ON_RESUME_PLT = "has_run_on_resume_plt"
-        internal  const val SCROLL_RECOMMEND_LIST = "recommend_list"
+        internal const val SCROLL_RECOMMEND_LIST = "recommend_list"
 
         private const val TAB_TYPE_HOME = "home"
 

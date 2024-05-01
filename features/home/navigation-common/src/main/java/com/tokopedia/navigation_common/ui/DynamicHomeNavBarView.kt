@@ -2,6 +2,7 @@ package com.tokopedia.navigation_common.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -9,14 +10,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.media.loader.loadImage
+import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.navigation_common.databinding.ItemBottomNavbarBinding
 import com.tokopedia.navigation_common.util.LottieCacheManager
 import com.tokopedia.navigation_common.util.inDarkMode
 import com.tokopedia.navigation_common.util.isDeviceAnimationDisabled
 import com.tokopedia.unifyprinciples.NestShadow.isDarkMode
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.navigation_common.R as navigation_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class DynamicHomeNavBarView : LinearLayout {
 
@@ -65,6 +69,13 @@ class DynamicHomeNavBarView : LinearLayout {
         modelMap.clear()
         modelMap.putAll(modelList.associateBy { it.uniqueId })
         buildMenu(modelList)
+
+        modelList.forEach {
+            it.assets.values.forEach loadAsset@{ asset ->
+                if (asset !is BottomNavBarAsset.Lottie) return@loadAsset
+                cacheManager.preloadFromUrl(asset.url)
+            }
+        }
 
         val firstModel = modelList.firstOrNull() ?: return
         select(mSelectedItemId ?: firstModel.uniqueId)
@@ -130,7 +141,7 @@ class DynamicHomeNavBarView : LinearLayout {
 
     private fun ItemBottomNavbarBinding.bindModel(
         stateHolder: StateHolder,
-        isSelected: Boolean?,
+        isSelected: Boolean?
     ) {
         val (model, prevIsSelected) = stateHolder
         ivIcon.bindAsset(model, isSelected, prevIsSelected)
@@ -148,7 +159,7 @@ class DynamicHomeNavBarView : LinearLayout {
     private val View.stateHolder: StateHolder?
         get() = tag as? StateHolder
 
-    //TODO("Handle dark mode in a better way")
+    // TODO("Handle dark mode in a better way")
     private fun LottieAnimationView.bindAsset(
         model: BottomNavBarUiModel,
         isSelected: Boolean?,
@@ -157,12 +168,12 @@ class DynamicHomeNavBarView : LinearLayout {
         val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
         val asset = when {
             isSelected == null -> model.assets[if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT]
+            !isSelected && prevIsSelected != true -> model.assets[if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT]
             context.isDeviceAnimationDisabled() || isSelected == prevIsSelected -> {
                 model.assets[
                     if (isSelected) {
                         if (isDarkMode) ASSET_STATIC_ACTIVE_DARK else ASSET_STATIC_ACTIVE_LIGHT
-                    }
-                    else {
+                    } else {
                         if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT
                     }
                 ]
@@ -175,17 +186,17 @@ class DynamicHomeNavBarView : LinearLayout {
                         if (isDarkMode) ASSET_ANIM_INACTIVE_DARK else ASSET_ANIM_INACTIVE_LIGHT
                     }
                     val asset = model.assets[assetId]
-                    val isCached = asset?.let { cacheManager.isUrlCached(it.url) } ?: false
+                    val isCached = asset?.let { cacheManager.isUrlLoaded(it.url) } ?: false
 
-                    if (isCached) asset
-                    else {
-                        asset?.let { cacheManager.cacheFromUrl(it.url) }
+                    if (isCached) {
+                        asset
+                    } else {
+                        asset?.let { cacheManager.preloadFromUrl(it.url) }
 
                         model.assets[
                             if (isSelected) {
                                 if (isDarkMode) ASSET_STATIC_ACTIVE_DARK else ASSET_STATIC_ACTIVE_LIGHT
-                            }
-                            else {
+                            } else {
                                 if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT
                             }
                         ]
@@ -194,13 +205,24 @@ class DynamicHomeNavBarView : LinearLayout {
             }
         } ?: return
 
+        Log.d("DynamicHomeNavBarView", "Model: ${model.uniqueId}, isSelected: $isSelected, prevIsSelected: $prevIsSelected, Asset: $asset")
+
+        removeAllAnimatorListeners()
         pauseAnimation()
+        clearImage()
 
         when (asset) {
-            is BottomNavBarAsset.Image -> loadImage(asset.url)
+            is BottomNavBarAsset.Image -> {
+                loadImageWithoutPlaceholderAndError(asset.url) {
+                    setCacheStrategy(MediaCacheStrategy.DATA)
+                }
+            }
             is BottomNavBarAsset.Lottie -> {
-                setAnimationFromUrl(asset.url)
-                playAnimation()
+                LottieCompositionFactory.fromUrl(context, asset.url)
+                    .addListener { composition ->
+                        setComposition(composition)
+                        playAnimation()
+                    }
             }
         }
     }
@@ -210,8 +232,11 @@ class DynamicHomeNavBarView : LinearLayout {
         setTextColor(
             ContextCompat.getColor(
                 uiModeAwareContext,
-                if (isSelected == true) unifyprinciplesR.color.Unify_GN500
-                else navigation_commonR.color.dynamic_bottom_navbar_item_title
+                if (isSelected == true) {
+                    unifyprinciplesR.color.Unify_GN500
+                } else {
+                    navigation_commonR.color.dynamic_bottom_navbar_item_title
+                }
             )
         )
     }
@@ -240,7 +265,7 @@ class DynamicHomeNavBarView : LinearLayout {
 
     data class StateHolder(
         val model: BottomNavBarUiModel,
-        val isSelected: Boolean?,
+        val isSelected: Boolean?
     ) {
         companion object {
             fun init(model: BottomNavBarUiModel): StateHolder {

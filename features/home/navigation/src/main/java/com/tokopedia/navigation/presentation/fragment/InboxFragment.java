@@ -419,11 +419,17 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void intiInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
-                .inject(this);
+        DaggerGlobalNavComponent.factory()
+                .create(
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent(),
+                    requireContext()
+                ).inject(this);
+
+//        DaggerGlobalNavComponent.builder()
+//                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+//                .globalNavModule(new GlobalNavModule())
+//                .build()
+//                .inject(this);
     }
 
     private List<Visitable> getData() {

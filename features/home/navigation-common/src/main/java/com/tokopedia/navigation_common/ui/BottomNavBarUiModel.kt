@@ -1,28 +1,44 @@
 package com.tokopedia.navigation_common.ui
 
+import android.annotation.SuppressLint
+import com.google.gson.annotations.SerializedName
+
 data class BottomNavBarUiModel(
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("id")
     val id: Int,
+    @SerializedName("title")
     val title: String,
+    @SerializedName("type")
     val type: BottomNavBarItemType,
+    @SerializedName("jumper")
     val jumper: BottomNavBarJumper?,
+    @SerializedName("assets")
     val assets: Map<String, BottomNavBarAsset>,
-    val discoId: DiscoId,
+    @SerializedName("discoId")
+    val discoId: DiscoId
 ) {
     val uniqueId = BottomNavItemId(type, discoId)
 }
 
 data class BottomNavBarJumper(
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("id")
     val id: Int,
+    @SerializedName("title")
     val title: String,
+    @SerializedName("toJumperAsset")
     val toJumperAsset: BottomNavBarAsset,
+    @SerializedName("idleAsset")
     val idleAsset: BottomNavBarAsset,
-    val toInitialAsset: BottomNavBarAsset,
+    @SerializedName("toInitialAsset")
+    val toInitialAsset: BottomNavBarAsset
 )
-
 
 fun BottomNavItemId(type: BottomNavBarItemType, discoId: DiscoId = DiscoId.Empty): BottomNavItemId {
     return BottomNavItemId("${type.value}_${discoId.value}")
 }
+
 @JvmInline
 value class BottomNavItemId(val value: String) {
     val type: BottomNavBarItemType
@@ -45,6 +61,7 @@ value class BottomNavBarItemType(val value: String)
 sealed interface BottomNavBarAsset {
 
     val url: String
+
     @JvmInline
     value class Image(override val url: String) : BottomNavBarAsset
 

@@ -9,16 +9,16 @@ class LottieCacheManager(
 
     private val loadedLottieAssets = mutableSetOf<String>()
 
-    fun cacheFromUrls(urls: List<String>) {
-        urls.forEach { cacheFromUrl(it) }
+    fun preloadFromUrls(urls: List<String>) {
+        urls.forEach { preloadFromUrl(it) }
     }
 
-    fun cacheFromUrl(url: String) {
+    fun preloadFromUrl(url: String) {
         LottieCompositionFactory.fromUrl(context, url)
             .addListener { loadedLottieAssets.add(url) }
     }
 
-    fun isUrlCached(url: String): Boolean {
+    fun isUrlLoaded(url: String): Boolean {
         return loadedLottieAssets.contains(url)
     }
 }
