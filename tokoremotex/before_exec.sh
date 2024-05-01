@@ -6,14 +6,14 @@ if grep 'resRepo=tokopedia' "gradle.properties"; then
 fi
 
 function comment() {
-  if ! grep "//apply from:\"$1\"" $2; then
-    sed -i "s|apply from:\"$1\"|//apply from:\"$1\"|g" $2
+  if ! grep "//apply from:\"$1\"" "$2"; then
+    sed -i "s|apply from:\"$1\"|//apply from:\"$1\"|g" "$2"
   fi
 }
 
 function uncomment() {
-  if grep "//apply from:\"$1\"" $2; then
-      sed -i "s|//apply from:\"$1\"|apply from:\"$1\"|g" $2
+  if grep "//apply from:\"$1\"" "$2"; then
+      sed -i "s|//apply from:\"$1\"|apply from:\"$1\"|g" "$2"
   fi
 }
 
