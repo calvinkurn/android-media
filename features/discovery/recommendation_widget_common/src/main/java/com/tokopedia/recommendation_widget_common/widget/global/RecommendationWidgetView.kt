@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
-import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
@@ -182,7 +181,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
                 sessionId = model.appLog.sessionId,
                 requestId = model.appLog.requestId,
                 moduleName = model.metadata.pageName,
-                additionalParam = source?.appLogAdditionalParam ?: AppLogAdditionalParam.None
+                additionalParam = model.appLogAdditionalParam
             )
         }
     }

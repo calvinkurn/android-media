@@ -1,11 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
-import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
-
 sealed interface RecommendationWidgetSource {
     val eventCategory: String
-    val appLogAdditionalParam: AppLogAdditionalParam
-        get() = AppLogAdditionalParam.None
 
     class PDP(
         val anchorProductId: String = "",
@@ -15,8 +11,6 @@ sealed interface RecommendationWidgetSource {
             get() = "pdp"
         override val eventCategory: String
             get() = "product detail page"
-        override val appLogAdditionalParam: AppLogAdditionalParam
-            get() = AppLogAdditionalParam.PDP()
     }
 
     class PDPAfterATC(
