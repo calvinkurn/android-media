@@ -81,8 +81,7 @@ object AppLogFirstTrackId {
                  *  this case only happen when you want to get first_track_id
                  *  in the page that doesn't send track_id
                  */
-                val nextPageName = getDataFromNextPage(PAGE_NAME, i)
-                if (additionalPageName.isContainsOneOfString(nextPageName)) {
+                if (additionalPageName.isContainsOneOfString(pageName)) {
                     continue
                 }
 
@@ -93,6 +92,17 @@ object AppLogFirstTrackId {
                         _firstTrackId = previousTrackId
                         _firstSourcePage = previousSourcePageType
                     }
+                }
+
+
+                /**
+                 * Need to stop the flow if previous page is cart
+                 * especially for cart because the cart can go to pdp
+                 * through recommendation with track_id
+                 */
+                val previousPageName = getDataFromPreviousPage(PAGE_NAME, i)
+                if (additionalPageName.isContainsOneOfString(previousPageName)) {
+                    break
                 }
             } else {
                 break
@@ -158,15 +168,6 @@ object AppLogFirstTrackId {
             _pdpPageDataList[index - 1][key] as? String ?: ""
         }
     }
-
-    private fun getDataFromNextPage(key: String, index: Int): String {
-        return if (index == _pdpPageDataList.size - 1) {
-            _pdpPageDataList[index][key] as? String ?: ""
-        } else {
-            _pdpPageDataList[index + 1][key] as? String ?: ""
-        }
-    }
-
 
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
