@@ -109,7 +109,7 @@ data class SubmitOrderResult(
         @SerializedName("shipping_type")
         val shippingType: String,
         @SerializedName("eta")
-        val eta: String,
+        val eta: String
     ) {
         fun toJsonString(): String = Gson().toJson(this)
     }
@@ -124,8 +124,8 @@ data class CartClickAnalyticsModel(
     val skuNum: Int,
     val ItemCnt: Int,
     val salePriceValue: Double,
-    val discountedAmount: Double,
-    )
+    val discountedAmount: Double
+)
 
 enum class ProductType(val type: Int) {
     AVAILABLE(1),
@@ -314,6 +314,7 @@ data class ButtonClickCompletedAnalyticData(
     val followStatus: FollowStatus,
     val buyType: BuyType,
     val cartId: String,
+    val shopId: String
 ) {
     enum class FollowStatus(val value: Int) {
         UNFOLLOWED(0),

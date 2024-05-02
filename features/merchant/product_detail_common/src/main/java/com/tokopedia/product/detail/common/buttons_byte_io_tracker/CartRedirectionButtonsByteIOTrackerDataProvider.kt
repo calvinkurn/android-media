@@ -7,7 +7,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
 @Suppress("LateinitUsage")
-class CartRedirectionButtonsByteIOTrackerDataProvider: ICartRedirectionButtonsByteIOTrackerDataProvider {
+class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsByteIOTrackerDataProvider {
 
     private lateinit var _mediator: ICartRedirectionButtonsByteIOTrackerDataProvider.Mediator
 
@@ -66,7 +66,8 @@ class CartRedirectionButtonsByteIOTrackerDataProvider: ICartRedirectionButtonsBy
                 ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickCompletedAnalyticData.BuyType.OCS
                 else -> return null
             },
-            cartId = data.data.cartId
+            cartId = data.data.cartId,
+            shopId = data.data.shopId
         )
     }
 }
