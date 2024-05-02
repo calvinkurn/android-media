@@ -1,5 +1,7 @@
 package com.tokopedia.navigation_common.ui
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.RawRes
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Companion.Id
 
 class BottomNavBarAsset {
@@ -39,18 +41,22 @@ class BottomNavBarAsset {
     }
 
     sealed interface Type {
-        val url: String
+        @JvmInline
+        value class Image(val url: String) : Type
 
         @JvmInline
-        value class Image(override val url: String) : Type
+        value class ImageRes(@DrawableRes val res: Int) : Type
 
         @JvmInline
-        value class Lottie(override val url: String) : Type {
+        value class Lottie(val url: String) : Type {
 
             companion object {
                 private val regex = Regex.fromLiteral("https://.*.json")
             }
         }
+
+        @JvmInline
+        value class LottieRes(@RawRes val res: Int) : Type
     }
 
     companion object {

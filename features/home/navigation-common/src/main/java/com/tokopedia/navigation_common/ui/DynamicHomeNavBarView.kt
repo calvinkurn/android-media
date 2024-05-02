@@ -182,7 +182,7 @@ class DynamicHomeNavBarView : LinearLayout {
                     val key = if (isSelected) Key.AnimActive else Key.AnimInactive
                     val variant = if (isDarkMode) Variant.Dark else Variant.Light
                     val assetId = key + variant
-                    val asset = model.assets[assetId]
+                    val asset = model.assets[assetId] as? Type.Lottie
                     val isCached = asset?.let { cacheManager.isUrlLoaded(it.url) } ?: false
 
                     if (isCached) {
@@ -211,6 +211,18 @@ class DynamicHomeNavBarView : LinearLayout {
             }
             is Type.Lottie -> {
                 LottieCompositionFactory.fromUrl(context, asset.url)
+                    .addListener { composition ->
+                        setComposition(composition)
+                        playAnimation()
+                    }
+            }
+            is Type.ImageRes -> {
+                setImageDrawable(
+                    ContextCompat.getDrawable(uiModeAwareContext, asset.res)
+                )
+            }
+            is Type.LottieRes -> {
+                LottieCompositionFactory.fromRawRes(context, asset.res)
                     .addListener { composition ->
                         setComposition(composition)
                         playAnimation()
