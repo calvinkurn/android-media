@@ -131,7 +131,10 @@ object ShopPageHomeMapper {
         isHasOCCButton: Boolean,
         occButtonText: String = "",
         widgetName: String = "",
-        isOverrideTheme: Boolean
+        isOverrideTheme: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isFestivity: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -163,7 +166,14 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                forceLightModeColor = isOverrideTheme
+                forceLightModeColor = false,
+                colorMode = productCardColorHelper.determineProductCardColorMode(
+                    isFestivity = isFestivity,
+                    shouldOverrideTheme = isOverrideTheme,
+                    patternColorType = patternColorType,
+                    backgroundColor = backgroundColor,
+                    makeProductCardTransparent = true
+                )
             )
         } else {
             ProductCardModel(
@@ -178,7 +188,14 @@ object ShopPageHomeMapper {
                     mapToProductCardLabelGroup(it)
                 },
                 hasAddToCartButton = isHasATC,
-                forceLightModeColor = isOverrideTheme
+                forceLightModeColor = false,
+                colorMode = productCardColorHelper.determineProductCardColorMode(
+                    isFestivity = isFestivity,
+                    shouldOverrideTheme = isOverrideTheme,
+                    patternColorType = patternColorType,
+                    backgroundColor = backgroundColor,
+                    makeProductCardTransparent = true
+                )
             )
         }
         return if (isShopPersonalizationWidgetEnableDirectPurchase(

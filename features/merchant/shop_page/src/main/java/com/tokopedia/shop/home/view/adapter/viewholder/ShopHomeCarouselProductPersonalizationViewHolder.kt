@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.Rect
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -31,6 +32,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -86,7 +88,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     ""
                 },
                 element.name,
-                isOverrideTheme = shopHomeListener.isOverrideTheme()
+                isOverrideTheme = shopHomeListener.isOverrideTheme(),
+                patternColorType = shopHomeListener.getPatternColorType(),
+                backgroundColor = shopHomeListener.getBackgroundColor(),
+                isFestivity = element.isFestivity
             )
         }
 
@@ -290,7 +295,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             productCardModelList = carouselProductList,
                             carouselProductCardOnItemAddToCartListener = productAddToCartListener,
                             carouselProductCardOnItemClickListener = productClickListener,
-                            carouselProductCardOnItemImpressedListener = productImpressionListener
+                            carouselProductCardOnItemImpressedListener = productImpressionListener,
+                            customItemDecoration = itemSpacingDecorator
                         )
                         recyclerView?.trackHorizontalScroll(element)
                     }
@@ -308,7 +314,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener,
                             carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
-                            carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
+                            carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
                         )
                     }
                     else -> {
@@ -321,7 +327,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener,
                             carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
-                            carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
+                            carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
+                            customItemDecoration = itemSpacingDecorator
                         )
                         recyclerView?.trackHorizontalScroll(element)
                     }
@@ -345,7 +352,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
                         carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener
+                        carouselProductCardOnItemImpressedListener = productImpressionListener,
+                        customItemDecoration = itemSpacingDecorator
                     )
                     recyclerView?.trackHorizontalScroll(element)
                 }
@@ -372,7 +380,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         carouselProductCardOnItemClickListener = productClickListener,
                         carouselProductCardOnItemImpressedListener = productImpressionListener,
                         carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
-                        carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
+                        carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
+                        customItemDecoration = itemSpacingDecorator
                     )
                     recyclerView?.trackHorizontalScroll(element)
                 }
@@ -520,5 +529,30 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
 
     private fun getScrollPosition(): Int {
         return shopHomeListener.getWidgetCarouselPositionSavedState().get(bindingAdapterPosition)
+    }
+
+    private val itemSpacingDecorator = object : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            val itemPosition = parent.getChildAdapterPosition(view)
+            if (itemPosition == RecyclerView.NO_POSITION) return
+
+            outRect.left = getLeftOffset()
+            outRect.right = getRightOffset()
+        }
+
+        private fun getLeftOffset(): Int {
+            return marginBetweenCard()
+        }
+
+        private fun getRightOffset(): Int {
+            return marginBetweenCard()
+        }
+
+        private fun marginBetweenCard() = 4.toPx()
     }
 }
