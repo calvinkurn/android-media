@@ -53,7 +53,9 @@ object AppLogFirstTrackId {
             firstSourcePage = ""
         }
 
-        val containAdditionalPageName = additionalPageName.contains(currentPage[PAGE_NAME])
+        val containAdditionalPageName = additionalPageName.isContainsOneOfString(
+            (currentPage[PAGE_NAME] as? String ?: "").lowercase()
+        )
 
         if (currentPage[PAGE_NAME] != PageName.PDP &&
             !containAdditionalPageName
@@ -100,7 +102,7 @@ object AppLogFirstTrackId {
 
     private fun List<String>.isContainsOneOfString(pageName: String): Boolean {
         return any {
-            it.contains(pageName)
+            pageName.lowercase().contains(it)
         }
     }
 
