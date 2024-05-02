@@ -47,11 +47,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.header.compose.HeaderActionButton
 import com.tokopedia.header.compose.NestHeader
@@ -108,7 +106,6 @@ import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuComposeViewMod
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
-import java.util.*
 import com.tokopedia.gm.common.R as gmcommonR
 import com.tokopedia.seller.menu.R as sellermenuR
 import com.tokopedia.seller.menu.common.R as sellermenucommonR
@@ -883,34 +880,15 @@ fun SellerMenuShopStatusInfo(
     val shouldShowTransaction = totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION_VISIBLE
     when (val shopType = userShopInfoWrapper.shopType) {
         is RegularMerchant -> {
-            userShopInfoWrapper.userShopInfoUiModel.let {
-
-                val ctaColor = when (shopType) {
-                    is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
-                        NestTheme.colors.GN._500
+            SellerMenuStatusRegular(
+                shouldShowTransaction = shouldShowTransaction,
+                totalTransaction = totalTransaction,
+                pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
+                modifier = modifier
+                    .clickable {
+                        onActionClick(SellerMenuActionClick.POWER_MERCHANT)
                     }
-
-                    is RegularMerchant.Pending -> {
-                        NestTheme.colors.NN._950.copy(
-                            alpha = 0.68f
-                        )
-                    }
-
-                    else -> null
-                }
-
-                SellerMenuStatusRegular(
-                    shouldShowTransaction = shouldShowTransaction,
-                    totalTransaction = totalTransaction,
-                    pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
-                    ctaTextRes = getRmVerificationTextRes(shopType),
-                    ctaColor = ctaColor,
-                    modifier = modifier
-                        .clickable {
-                            onActionClick(SellerMenuActionClick.POWER_MERCHANT)
-                        }
-                )
-            }
+            )
         }
 
         is PowerMerchantStatus -> {
@@ -983,15 +961,6 @@ private fun getPmEligibleIcon(userShopInfoWrapper: UserShopInfoWrapper): Int? {
             ?: userShopInfoWrapper.userShopInfoUiModel.getPowerMerchantEligibleIcon()
     } else {
         null
-    }
-}
-
-private fun getRmVerificationTextRes(shopType: ShopType?): Int? {
-    return when (shopType as? RegularMerchant) {
-        is RegularMerchant.Verified -> sellermenucommonR.string.setting_verifikasi
-        is RegularMerchant.Pending -> sellermenucommonR.string.setting_verified
-        is RegularMerchant.NeedUpgrade -> sellermenuR.string.setting_upgrade
-        else -> null
     }
 }
 
@@ -1468,8 +1437,6 @@ fun SellerMenuStatusRegular(
     shouldShowTransaction: Boolean = false,
     totalTransaction: Long = 0L,
     pmEligibleIcon: Int?,
-    @StringRes ctaTextRes: Int?,
-    ctaColor: Color?,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -1529,23 +1496,6 @@ fun SellerMenuStatusRegular(
                 )
             }
 
-            if (ctaTextRes != null && ctaColor != null) {
-                NestTypography(
-                    text = stringResource(id = ctaTextRes),
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = ctaColor,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .constrainAs(regularMerchantStatus) {
-                            top.linkTo(shopStatusTitle.top)
-                            bottom.linkTo(shopStatusTitle.bottom)
-                            end.linkTo(parent.end)
-                        }
-                )
-            }
-
             TotalTransactionComponent(
                 shouldShowTransaction,
                 totalTransaction,
@@ -1561,7 +1511,11 @@ fun SellerMenuStatusRegular(
 }
 
 @Composable
-fun TotalTransactionComponent(shouldShowTransaction: Boolean, totalTransaction: Long, modifier: Modifier) {
+fun TotalTransactionComponent(
+    shouldShowTransaction: Boolean,
+    totalTransaction: Long,
+    modifier: Modifier
+) {
     if (shouldShowTransaction) {
         ConstraintLayout(
             modifier = modifier
@@ -1863,9 +1817,11 @@ fun SellerMenuStatusOS(
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
     ) {
-        ConstraintLayout(modifier = Modifier
-            .fillMaxHeight()
-            .padding(all = 8.dp)) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(all = 8.dp)
+        ) {
             val (statusText, statusImage) = createRefs()
 
             NestTypography(

@@ -152,21 +152,12 @@ class ShopStatusViewHolder(
             if (icon == null) hide() else show()
             setImage(icon)
         }
-
-        setDescription(
-            sellermenucommonR.string.setting_verifikasi,
-            unifyprinciplesR.color.Unify_GN500
-        )
     }
 
     private fun setRegularMerchantPending() {
         shopStatusEligiblePmIcon?.hide()
 
         shopStatusDescTextView?.isClickable = false
-        setDescription(
-            sellermenucommonR.string.setting_verified,
-            unifyprinciplesR.color.Unify_NN600
-        )
     }
 
     private fun setPowerMerchantLayout(isKyc: Boolean) {
