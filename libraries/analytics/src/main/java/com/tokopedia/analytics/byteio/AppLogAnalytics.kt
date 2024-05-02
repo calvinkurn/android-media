@@ -14,6 +14,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.FIRST_TRACK_ID
 import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.PARENT_PRODUCT_ID
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
@@ -142,6 +143,7 @@ object AppLogAnalytics {
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
             it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
             it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
+            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID))
         }
     }
 
@@ -453,7 +455,8 @@ object AppLogAnalytics {
         isAd: Int? = null,
         trackId: String? = null,
         sourcePageType: String? = null,
-        requestId: String? = null
+        requestId: String? = null,
+        parentProductId: String? = null
     ) {
         entranceForm?.let {
             putPageDataAndFirstTrackId(ENTRANCE_FORM, entranceForm)
@@ -475,6 +478,9 @@ object AppLogAnalytics {
         }
         requestId?.let {
             putPageDataAndFirstTrackId(REQUEST_ID, requestId)
+        }
+        parentProductId?.let {
+            putPageDataAndFirstTrackId(PARENT_PRODUCT_ID, parentProductId)
         }
     }
 

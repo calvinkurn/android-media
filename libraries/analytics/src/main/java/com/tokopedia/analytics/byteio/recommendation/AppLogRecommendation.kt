@@ -65,6 +65,7 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
+            parentProductId = (additionalParam as? AppLogAdditionalParam.PDP)?.parentProductId
         )
     }
 
