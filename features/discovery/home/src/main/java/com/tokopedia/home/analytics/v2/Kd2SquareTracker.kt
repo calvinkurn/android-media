@@ -50,10 +50,10 @@ object Kd2SquareTracker : BaseTrackerConst() {
             eventLabel = "${attribute.channelId} - ${attribute.headerName}",
             promotions = listOf(
                 Promotion(
-                    id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
+                    id = "${attribute.channelId}_${attribute}bannerId_${attribute.categoryId}_${attribute}persoType", // TODO
                     name = "/ - p${position + 1} - dynamic channel 2 square - banner - ${attribute.headerName}",
                     position = (position + 1).toString(),
-                    creative = attribute.attribution
+                    creative = "" //attribute.attribution // TODO
                 )
             )
         )
