@@ -21,8 +21,9 @@ class ItemProductWidgetViewHolder(
 
     fun bind(element: ItemProductWidgetUiModel) {
         binding?.card?.setData(element.card)
-        binding?.card?.setOnClickListener {}
-        binding?.root?.addOnImpression1pxListener(element.impression) {}
+        binding?.card?.setOnClickListener {
+            productWidgetListener.itemProductClicked(element, bindingAdapterPosition)
+        }
     }
 
     companion object {

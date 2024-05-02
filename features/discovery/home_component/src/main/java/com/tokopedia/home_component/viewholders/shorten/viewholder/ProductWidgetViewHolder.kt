@@ -13,6 +13,8 @@ import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemCont
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.DateHelper
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -40,6 +42,7 @@ class ProductWidgetViewHolder(
     override fun bind(element: ProductWidgetUiModel?) {
         if (element == null) return
 
+        widgetImpressionListener(element)
         setupWidgetHeader(element.header)
         mAdapter?.submitList(element.data)
     }
@@ -92,6 +95,14 @@ class ProductWidgetViewHolder(
         binding?.retryContainer?.root?.setOnClickListener {
             listener.retryWidget()
         }
+    }
+
+    private fun widgetImpressionListener(model: ProductWidgetUiModel) {
+        itemView.addOnImpressionListener(model.impression, object : ViewHintListener {
+            override fun onViewHint() {
+                listener.productImpressed(model, bindingAdapterPosition)
+            }
+        })
     }
 
     companion object {

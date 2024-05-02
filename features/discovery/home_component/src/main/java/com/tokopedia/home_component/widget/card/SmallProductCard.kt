@@ -113,14 +113,13 @@ class SmallProductCard @JvmOverloads constructor(
     }
 
     private fun shouldHandleCampaignIconVisibility(style: SmallProductModel.TextStyle) {
-        if (style.url.isEmpty()) {
+        if (style.url.isNotEmpty()) {
+            binding.icCampaign.show()
+            binding.icCampaign.loadImage(style.url)
+            binding.txtTitle.setCustomMargin(MarginArea.Start(2.toPx()))
+        } else {
             hideCampaignIcon()
-            return
         }
-
-        binding.icCampaign.show()
-        binding.icCampaign.loadImage(style.url)
-        binding.txtTitle.setCustomMargin(MarginArea.Start(2.toPx()))
     }
 
     private fun hideCampaignIcon() {
