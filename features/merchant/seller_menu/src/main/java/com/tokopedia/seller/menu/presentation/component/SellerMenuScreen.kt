@@ -117,6 +117,8 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 private const val STATUS_INCUBATE_OS = 6
 private const val TICKER_TYPE_WARNING = "warning"
 private const val TICKER_TYPE_DANGER = "danger"
+private const val TRANSACTION_FORMAT = "%s/" + Constant.ShopStatus.MAX_TRANSACTION
+private const val REACH_MAX_FREE_TRANSACTION = ">" + Constant.ShopStatus.MAX_TRANSACTION
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -877,6 +879,8 @@ fun SellerMenuShopStatusInfo(
     modifier: Modifier,
     onActionClick: (SellerMenuActionClick) -> Unit
 ) {
+    val totalTransaction = userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
+    val shouldShowTransaction = totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION_VISIBLE
     when (val shopType = userShopInfoWrapper.shopType) {
         is RegularMerchant -> {
             userShopInfoWrapper.userShopInfoUiModel?.let {
@@ -898,6 +902,8 @@ fun SellerMenuShopStatusInfo(
                 }
 
                 SellerMenuStatusRegular(
+                    shouldShowTransaction = shouldShowTransaction,
+                    totalTransaction = totalTransaction,
                     pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
                     ctaTextRes = getRmVerificationTextRes(shopType),
                     ctaColor = ctaColor,
@@ -913,14 +919,16 @@ fun SellerMenuShopStatusInfo(
             (userShopInfoWrapper.shopType as? PowerMerchantStatus)?.let { pm ->
                 val periodType = userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
                 val isNewSeller = userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
-                val canUpgrade =
-                    when {
-                        periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO && isNewSeller == false -> true
-                        periodType == Constant.COMMUNICATION_PERIOD_PM_PRO -> false
-                        shopType is PowerMerchantStatus.NotActive -> false
-                        else -> true
-                    }
+                val canUpgrade = when {
+                    periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO && isNewSeller == false -> true
+                    periodType == Constant.COMMUNICATION_PERIOD_PM_PRO -> false
+                    shopType is PowerMerchantStatus.NotActive -> false
+                    else -> true
+                }
+
                 SellerMenuStatusPm(
+                    shouldShowTransaction = shouldShowTransaction,
+                    totalTransaction = totalTransaction,
                     canUpgrade = canUpgrade,
                     modifier = modifier,
                     isKyc = userShopInfoWrapper.userShopInfoUiModel?.isKyc.orFalse(),
@@ -965,6 +973,8 @@ fun SellerMenuShopStatusInfo(
                 userShopInfoWrapper.userShopInfoUiModel?.badge ?: PMProURL.ICON_URL
 
             SellerMenuStatusPmPro(
+                shouldShowTransaction = shouldShowTransaction,
+                totalTransaction = totalTransaction,
                 pmProGradeName = gradeName,
                 backgroundImageUrl = backgroundImageUrl,
                 pmProBadgeUrl = pmProBadgeUrl,
@@ -991,7 +1001,7 @@ private fun getRmStatsTextRes(userShopInfoUiModel: UserShopInfoWrapper.UserShopI
     return if (userShopInfoUiModel.dateCreated.isBlank() || userShopInfoUiModel.isBeforeOnDate) {
         sellermenuR.string.transaction_on_date
     } else {
-        sellermenuR.string.transaction_since_joining
+        sellermenuR.string.total_transaction_label
     }
 }
 
@@ -1494,6 +1504,8 @@ fun SellerMenuOrderSectionItem(
 
 @Composable
 fun SellerMenuStatusRegular(
+    shouldShowTransaction: Boolean = false,
+    totalTransaction: Long = 0L,
     pmEligibleIcon: Int?,
     @StringRes ctaTextRes: Int?,
     ctaColor: Color?,
@@ -1519,7 +1531,8 @@ fun SellerMenuStatusRegular(
                 shopStatusTitle,
                 iconEligiblePm,
                 regularMerchantStatus,
-                dividerSpacer
+                dividerSpacer,
+                transactionComponent
             ) = createRefs()
 
             val leftGuideline = createGuidelineFromStart(16.dp)
@@ -1571,6 +1584,87 @@ fun SellerMenuStatusRegular(
                         }
                 )
             }
+
+            TotalTransactionComponent(
+                shouldShowTransaction,
+                totalTransaction,
+                modifier = Modifier.constrainAs(transactionComponent) {
+                    top.linkTo(shopStatusTitle.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun TotalTransactionComponent(shouldShowTransaction: Boolean, totalTransaction: Long, modifier: Modifier) {
+    if (shouldShowTransaction) {
+        ConstraintLayout(
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            val (divider, tvTransactionLabel, tvTransactions) = createRefs()
+            val totalTransactionFmt = if (totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION) {
+                String.format(TRANSACTION_FORMAT, totalTransaction.toString())
+            } else {
+                REACH_MAX_FREE_TRANSACTION
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_divider_stats_rm),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .constrainAs(divider) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top, margin = 12.dp)
+                    }
+            )
+
+            NestTypography(
+                text = stringResource(id = R.string.total_transaction_label),
+                textStyle = NestTheme.typography.body2.copy(
+                    color = NestTheme.colors.NN._950.copy(
+                        alpha = 0.68f
+                    )
+                ),
+                modifier = Modifier
+                    .constrainAs(tvTransactionLabel) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        top.linkTo(divider.bottom)
+                    }
+                    .padding(
+                        top = 12.dp,
+                        end = 16.dp
+                    )
+            )
+
+            NestTypography(
+                text = totalTransactionFmt,
+                textStyle = NestTheme.typography.body2.copy(
+                    color = NestTheme.colors.NN._950.copy(
+                        alpha = 0.96f
+                    ),
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .padding(
+                        top = 12.dp,
+                        end = 16.dp
+                    )
+                    .constrainAs(tvTransactions) {
+                        top.linkTo(tvTransactionLabel.top)
+                        bottom.linkTo(tvTransactionLabel.bottom)
+                        end.linkTo(parent.end)
+                    }
+            )
         }
     }
 }
@@ -1578,13 +1672,27 @@ fun SellerMenuStatusRegular(
 @Preview
 @Composable
 fun PreviewSellerMenuStatusPm() {
-    SellerMenuStatusPm(false, Modifier, false) {
+//    SellerMenuStatusPm(true, 50, false, Modifier, false) {
+//
+//    }
 
-    }
+//    SellerMenuStatusRegular(
+//        shouldShowTransaction = true,
+//        totalTransaction = 51L,
+//        pmEligibleIcon = IconUnify.BADGE_PM_FILLED,
+//        ctaTextRes = sellermenucommonR.string.setting_verifikasi,
+//        ctaColor = NestTheme.colors.GN._500
+//    )
+//    TotalTransactionComponent(shouldShowTransaction = true, totalTransaction = 51,
+//        Modifier
+//            .fillMaxWidth()
+//            .wrapContentHeight())
 }
 
 @Composable
 fun SellerMenuStatusPm(
+    shouldShowTransaction: Boolean = false,
+    totalTransaction: Long = 0L,
     canUpgrade: Boolean,
     modifier: Modifier,
     isKyc: Boolean,
@@ -1600,21 +1708,22 @@ fun SellerMenuStatusPm(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .height(45.dp)
+            .wrapContentHeight()
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
             .clickable { onActionClick(actionClick) }
     ) {
         ConstraintLayout(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
         ) {
             val (
                 powerMerchantText,
                 powerMerchantStatusText,
                 pmIcon,
                 upgradePMText,
-                kycNotVerified
+                kycNotVerified,
+                transactionComponent
             ) = createRefs()
 
             val middleGuideline = createGuidelineFromStart(40.dp)
@@ -1631,8 +1740,8 @@ fun SellerMenuStatusPm(
                     .widthIn(min = 0.dp)
                     .constrainAs(powerMerchantText) {
                         start.linkTo(middleGuideline)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        top.linkTo(pmIcon.top)
+                        bottom.linkTo(pmIcon.bottom)
                     }
             )
 
@@ -1646,8 +1755,8 @@ fun SellerMenuStatusPm(
                         ),
                         modifier = Modifier
                             .constrainAs(upgradePMText) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
+                                top.linkTo(pmIcon.top)
+                                bottom.linkTo(pmIcon.bottom)
                                 end.linkTo(parent.end)
                             }
                             .padding(end = 16.dp)
@@ -1665,8 +1774,8 @@ fun SellerMenuStatusPm(
                         .background(Color.Transparent)
                         .constrainAs(kycNotVerified) {
                             end.linkTo(powerMerchantStatusText.start)
-                            top.linkTo(powerMerchantStatusText.top)
-                            bottom.linkTo(powerMerchantStatusText.bottom)
+                            top.linkTo(pmIcon.top)
+                            bottom.linkTo(pmIcon.bottom)
                         }
                 )
 
@@ -1679,14 +1788,13 @@ fun SellerMenuStatusPm(
                     modifier = Modifier
                         .widthIn(min = 0.dp)
                         .constrainAs(powerMerchantStatusText) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
+                            top.linkTo(pmIcon.top)
+                            bottom.linkTo(pmIcon.bottom)
                             end.linkTo(parent.end)
                         }
                         .padding(end = 16.dp)
                 )
             }
-
 
             NestIcon(
                 iconId = IconUnify.BADGE_PM_FILLED,
@@ -1699,9 +1807,19 @@ fun SellerMenuStatusPm(
                     .constrainAs(pmIcon) {
                         start.linkTo(parent.start)
                         end.linkTo(middleGuideline)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        linkTo(top = parent.top, bottom = parent.bottom, bias = 0f, bottomMargin = 12.dp, topMargin = 12.dp)
                     }
+            )
+
+            TotalTransactionComponent(
+                shouldShowTransaction,
+                totalTransaction,
+                modifier = Modifier.constrainAs(transactionComponent) {
+                    top.linkTo(pmIcon.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom, margin = 12.dp)
+                }
             )
         }
     }
@@ -1709,6 +1827,8 @@ fun SellerMenuStatusPm(
 
 @Composable
 fun SellerMenuStatusPmPro(
+    shouldShowTransaction: Boolean,
+    totalTransaction: Long,
     pmProGradeName: String?,
     backgroundImageUrl: String,
     pmProBadgeUrl: String,
@@ -1718,14 +1838,14 @@ fun SellerMenuStatusPmPro(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(45.dp)
+            .wrapContentHeight()
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
     ) {
         ConstraintLayout(
             modifier = Modifier
-                .fillMaxHeight()
+                .wrapContentHeight()
                 .fillMaxWidth()
         ) {
             val (
@@ -1733,7 +1853,8 @@ fun SellerMenuStatusPmPro(
                 pmProTextRef,
                 pmProStatusText,
                 pmProIconRef,
-                pmInfoSpacerRef
+                pmInfoSpacerRef,
+                transactionComponent
             ) = createRefs()
 
             NestImage(
@@ -1761,8 +1882,7 @@ fun SellerMenuStatusPmPro(
                     .clip(CircleShape)
                     .border(1.dp, NestTheme.colors.NN._50, CircleShape)
                     .constrainAs(pmProIconRef) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        linkTo(top = parent.top, bottom = parent.bottom, bias = 0f, topMargin = 12.dp, bottomMargin = 12.dp)
                         end.linkTo(pmInfoSpacerRef.end)
                     }
             )
@@ -1778,8 +1898,8 @@ fun SellerMenuStatusPmPro(
                 modifier = Modifier
                     .padding(start = 3.dp)
                     .constrainAs(pmProTextRef) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        top.linkTo(pmProIconRef.top)
+                        bottom.linkTo(pmProIconRef.bottom)
                         start.linkTo(pmInfoSpacerRef.end)
                     }
             )
@@ -1792,10 +1912,21 @@ fun SellerMenuStatusPmPro(
                 ),
                 modifier = Modifier
                     .constrainAs(pmProStatusText) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        top.linkTo(pmProTextRef.top)
+                        bottom.linkTo(pmProTextRef.bottom)
                         start.linkTo(pmProTextRef.end)
                     }
+            )
+
+            TotalTransactionComponent(
+                shouldShowTransaction,
+                totalTransaction,
+                modifier = Modifier.constrainAs(transactionComponent) {
+                    top.linkTo(pmProTextRef.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom, margin = 12.dp)
+                }
             )
         }
     }

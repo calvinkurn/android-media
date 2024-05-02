@@ -27,6 +27,7 @@ import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.Error
@@ -80,6 +81,8 @@ class LoginEmailPhoneViewModelTest {
     val activateUserUseCase = mockk<ActivateUserUseCase>(relaxed = true)
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
+    val getShopStatusUseCase = mockk<GetShopStatusUseCase>(relaxed = true)
+
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val registerCheckFingerprintUseCase = mockk<RegisterCheckFingerprintUseCase>(relaxed = true)
@@ -148,6 +151,7 @@ class LoginEmailPhoneViewModelTest {
             registerCheckFingerprintUseCase,
             loginFingerprintUseCase,
             getTemporaryKeyUseCase,
+            getShopStatusUseCase,
             gotoSeamlessHelper,
             gotoSeamlessPreference,
             userSession,

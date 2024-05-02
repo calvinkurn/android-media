@@ -24,6 +24,8 @@ data class BCAFlazzBody(
     val cardType: String = "",
     @SerializedName("Action")
     val action: Int = 0,
+    @SerializedName("RespCode")
+    val respCode: String = "",
 )
 
 enum class BCAFlazzAction(val action: Int) {

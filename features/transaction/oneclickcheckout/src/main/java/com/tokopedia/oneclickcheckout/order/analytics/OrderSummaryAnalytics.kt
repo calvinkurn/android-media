@@ -534,6 +534,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
     }
 
     fun eventViewPaymentMethod(paymentType: String) {
+        // todo: move?
         val gtmData = getGtmData(
             EventName.VIEW_PP_IRIS,
             EventCategory.ORDER_SUMMARY,
@@ -648,6 +649,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4485
     // Tracker ID: 49899
     fun sendViewOccBeliPakaiPromoEvent(shopId: String, userId: String, isSuccess: Boolean) {
+        // todo: cek?
         val gtmData = getGtmData(
             EventName.VIEW_PG_IRIS,
             EventCategory.ORDER_SUMMARY,

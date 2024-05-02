@@ -60,7 +60,9 @@ import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
@@ -440,7 +442,7 @@ class MainNavViewModel @Inject constructor(
                         val shopName = it.userShopInfo.info.shopName
                         val shopId: String = if (it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
                         val orderCount = getTotalOrderCount(it.notifications)
-                        setUserShopName(shopName, shopId, orderCount)
+                        setUserShopName(shopName, shopId, orderCount, isShopPending = it.userShopInfo.reserveStatusInfo.isShopPending())
                         setAdminData(adminData?.data)
                     }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)

@@ -51,7 +51,7 @@ data class AccountHeaderDataModel(
         const val ERROR_TEXT_SHOP_TRY = "Coba Lagi"
 
         const val DEFAULT_SHOP_ID_NOT_OPEN = "-1"
-        const val DEFAULT_SHOP_ID_NOT_OPEN_TEXT = "Buka Toko Gratis"
+        const val DEFAULT_SHOP_ID_NOT_OPEN_TEXT = "Buka Toko"
 
         private const val WALLET_CODE_PEMUDA = "PEMUDA"
         private const val WALLET_CODE_PEMUDA_POINTS = "PEMUDAPOINTS"
@@ -88,9 +88,10 @@ data class AccountHeaderDataModel(
         shopId: String = "",
         shopOrderCount: Int,
         isError: Boolean = false,
-        isLoading: Boolean = false
+        isLoading: Boolean = false,
+        isShopPending: Boolean
     ) {
-        this.profileSellerDataModel.hasShop = shopId != DEFAULT_SHOP_ID_NOT_OPEN
+        this.profileSellerDataModel.hasShop = !isShopPending && shopId != DEFAULT_SHOP_ID_NOT_OPEN
         this.profileSellerDataModel.isGetShopError = isError
         this.profileSellerDataModel.isGetShopLoading = isLoading
         if (profileSellerDataModel.hasShop) {

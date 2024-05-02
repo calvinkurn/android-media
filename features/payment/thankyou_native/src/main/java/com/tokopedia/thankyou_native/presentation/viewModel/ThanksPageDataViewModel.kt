@@ -28,6 +28,7 @@ import com.tokopedia.thankyou_native.data.mapper.mapChannelToComponent
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
 import com.tokopedia.thankyou_native.domain.repository.DynamicChannelRepository
 import com.tokopedia.thankyou_native.domain.usecase.*
@@ -55,6 +56,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -101,6 +105,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val _membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
     val membershipRegisterData: LiveData<Result<MembershipRegister>> = _membershipRegisterData
 
+//    private val visitableHolder = mutableListOf<Visitable<*>>()
     private val _bottomContentVisitableList = MutableLiveData<List<Visitable<*>>>()
     val bottomContentVisitableList: LiveData<List<Visitable<*>>> = _bottomContentVisitableList
 
@@ -134,43 +139,60 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun checkForGoPayActivation(thanksPageData: ThanksPageData, location: String) {
         fetchWalletBalanceUseCase.cancelJobs()
-        fetchWalletBalanceUseCase.getGoPayBalance {
-            getFeatureEngine(thanksPageData, it, location)
-        }
+        launchCatchError(Dispatchers.IO, {
+            fetchWalletBalanceUseCase.getGoPayBalance {
+                launch(Dispatchers.IO) {
+                    getFeatureEngine(thanksPageData, it, location)
+                }
+            }
+        }, {
+
+        })
     }
 
     @VisibleForTesting
-    fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?, location: String) {
+    suspend fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?, location: String) {
         gyroEngineRequestUseCase.cancelJobs()
-        var queryParamTokomember: TokoMemberRequestParam ? = null
-        gyroEngineRequestUseCase.getFeatureEngineData(
-            thanksPageData,
-            null
-        ) {
-            if (it.success) {
-                it.engineData?.let { featureEngineData ->
-                    _gyroResponseLiveData.value = featureEngineData
 
-                    widgetOrder = getWidgetOrder(featureEngineData)
-
-                    getFlashSaleData(FeatureRecommendationMapper.getChannelId(featureEngineData), location)
-
-                    getFeatureEngineBanner(featureEngineData)?.let { bannerModel ->
-                        _bannerLiveData.value = bannerModel
-                    }
-
-                    val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
-                    if (topAdsRequestParams != null) {
-                        loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
-                    }
-                    if (isTokomemberWidgetShow(it.engineData)) {
-                        queryParamTokomember =
-                            getTokomemberRequestParams(thanksPageData, it.engineData)
-                        queryParamTokomember?.pageType =
-                            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
-                    }
-                    postGyroRecommendation(it.engineData, queryParamTokomember)
+        launchCatchError(Dispatchers.IO, {
+            gyroEngineRequestUseCase.getFeatureEngineData(
+                thanksPageData,
+                null
+            ) {
+                launch(Dispatchers.Default) {
+                    processFeatureEngine(it, location, thanksPageData)
                 }
+            }
+        }, {
+
+        })
+    }
+
+    suspend fun processFeatureEngine(response: ValidateEngineResponse, location: String, thanksPageData: ThanksPageData) {
+        var queryParamTokomember: TokoMemberRequestParam ? = null
+        if (response.success) {
+            response.engineData?.let { featureEngineData ->
+                _gyroResponseLiveData.postValue(featureEngineData)
+
+                widgetOrder = getWidgetOrder(featureEngineData)
+
+                getFlashSaleData(FeatureRecommendationMapper.getChannelId(featureEngineData), location)
+
+                getFeatureEngineBanner(featureEngineData)?.let { bannerModel ->
+                    _bannerLiveData.postValue(bannerModel)
+                }
+
+                val topAdsRequestParams = getTopAdsRequestParams(response.engineData)
+                if (topAdsRequestParams != null) {
+                    loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
+                }
+                if (isTokomemberWidgetShow(response.engineData)) {
+                    queryParamTokomember =
+                        getTokomemberRequestParams(thanksPageData, response.engineData)
+                    queryParamTokomember?.pageType =
+                        PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
+                }
+                postGyroRecommendation(response.engineData, queryParamTokomember)
             }
         }
     }
@@ -289,7 +311,10 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     fun addBottomContentWidget(visitable: Visitable<*>) {
-        orderWidget(_bottomContentVisitableList.value.orEmpty() + visitable)
+        launch {
+            _bottomContentVisitableList.value = _bottomContentVisitableList.value.orEmpty() + visitable
+            orderWidget(_bottomContentVisitableList.value.orEmpty())
+        }
     }
 
     fun setTicker(listTicker: List<TickerData>) {
@@ -305,16 +330,14 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     private fun orderWidget(visitableList: List<Visitable<*>>) {
-        if (widgetOrder.isEmpty()) {
-            _bottomContentVisitableList.value = visitableList
-        } else {
-            _bottomContentVisitableList.value = visitableList.filter {
+        if (widgetOrder.isNotEmpty()) {
+            _bottomContentVisitableList.postValue(visitableList.filter {
                 if (it is MixTopDataModel) widgetOrder.contains(FLASHSALE_TAG)
                 else widgetOrder.contains((it as WidgetTag).tag)
             }.sortedBy {
                 if (it is MixTopDataModel) widgetOrder.indexOf(FLASHSALE_TAG)
                 else widgetOrder.indexOf((it as WidgetTag).tag)
-            }
+            })
         }
     }
 
