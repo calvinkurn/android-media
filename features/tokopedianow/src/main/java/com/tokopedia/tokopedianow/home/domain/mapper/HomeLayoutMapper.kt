@@ -72,6 +72,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmall
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapResponseToProductCarouselChips
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapResponseToProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapResponseToProductRecomOoc
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingReferralUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel

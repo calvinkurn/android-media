@@ -656,7 +656,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 channelId = channelId,
                 questId = questId,
                 isLoading = false,
-                showStartBtn = false,
+                showStartBtn = false
             )
 
             _startQuestResult.postValue(Success(response))
@@ -837,7 +837,7 @@ class TokoNowHomeViewModel @Inject constructor(
         val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
         if (questListResponse.questWidgetList.isEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
             homeLayoutItemList.removeItem(id)
-        }  else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
+        } else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
             homeLayoutItemList.mapQuestReloadWidget(
                 id = id,
                 mainTitle = mainTitle,
@@ -1235,9 +1235,6 @@ class TokoNowHomeViewModel @Inject constructor(
             _atcQuantity.postValue(Success(data))
         }
     }
-
-    private fun getEnableNewQuestWidget() = abTestPlatform
-        .getString(RollenceKey.TOKOPEDIA_NOW_EXPERIMENT) == EXPERIMENT_ENABLED
 
     private fun updateVisitableList() {
         val data = HomeLayoutListUiModel(
