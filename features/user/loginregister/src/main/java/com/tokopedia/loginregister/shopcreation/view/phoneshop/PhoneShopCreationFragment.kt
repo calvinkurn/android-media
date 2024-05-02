@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
@@ -113,10 +114,21 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun checkAutoFill() {
         val paramPhone = activity?.intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_PHONE).orEmpty()
         if (paramPhone.isNotEmpty()) {
+            showLoadingPage(true)
             val phoneNumber = paramPhone.removePrefix("62")
             viewBinding?.textFieldPhone?.textFieldInput?.text = Editable.Factory.getInstance().newEditable(phoneNumber)
             isAutoFill = true
             onButtonContinueClicked()
+        } else {
+            showLoadingPage(false)
+        }
+    }
+
+    private fun showLoadingPage(isShow: Boolean) {
+        viewBinding?.apply {
+            loader.showWithCondition(isShow)
+            toolbarShopCreation.showWithCondition(!isShow)
+            mainView.showWithCondition(!isShow)
         }
     }
 
