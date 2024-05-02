@@ -181,7 +181,7 @@ object ShopPageHomeMapper {
                         isShown = badge.show
                     )
                 },
-                forceLightModeColor = false,
+                forceLightModeColor = isOverrideTheme,
                 colorMode = colorMode
             )
         } else {
@@ -204,7 +204,7 @@ object ShopPageHomeMapper {
                     )
                 },
                 hasAddToCartButton = isHasATC,
-                forceLightModeColor = false,
+                forceLightModeColor = isOverrideTheme,
                 colorMode = colorMode
             )
         }
