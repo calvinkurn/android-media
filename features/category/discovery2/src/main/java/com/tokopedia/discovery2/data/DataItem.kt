@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
@@ -627,6 +628,12 @@ data class DataItem(
     @SerializedName("inactive_text_color")
     val inactiveFontColor: String? = "",
 
+    @SerializedName("topads_creative_id")
+    val topAdsCreativeId: String? = "",
+
+    @SerializedName("topads_log_extra")
+    val topAdsLogExtra: String? = "",
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
@@ -712,10 +719,9 @@ data class DataItem(
 
     fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(refer,
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "", AdsLogRealtimeClickModel.AdExtraData(
+            topAdsCreativeId.toLongOrZero(),
+            topAdsLogExtra.orEmpty(),
+            AdsLogRealtimeClickModel.AdExtraData(
             productId = productId.orEmpty(),
             productName = productName.orEmpty(),
         ))
@@ -723,10 +729,8 @@ data class DataItem(
 
     fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
         return AdsLogShowOverModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "",
+            topAdsCreativeId.toLongOrZero(),
+            topAdsLogExtra.orEmpty(),
             AdsLogShowOverModel.AdExtraData(
                 productId = productId.orEmpty(),
                 productName = productName.orEmpty(),
@@ -736,10 +740,9 @@ data class DataItem(
 
     fun asAdsLogShowModel(): AdsLogShowModel {
         return AdsLogShowModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "", AdsLogShowModel.AdExtraData(
+            topAdsCreativeId.toLongOrZero(),
+            topAdsLogExtra.orEmpty(),
+            AdsLogShowModel.AdExtraData(
             productId = productId.orEmpty(),
             productName = productName.orEmpty(),
         ))
