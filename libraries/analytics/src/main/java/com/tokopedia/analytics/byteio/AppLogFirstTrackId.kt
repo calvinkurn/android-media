@@ -26,7 +26,7 @@ object AppLogFirstTrackId {
     private val _pdpPageDataList = ArrayList<HashMap<String, Any>>()
 
     private val additionalPageName =
-        listOf("shipmentactivity", "ordersummarypage", "sku", "thankyoupage")
+        listOf("shipmentactivity", "ordersummarypage", PageName.SKU, PageName.ORDER_SUBMIT)
 
     private fun appendPdpDataList(maps: HashMap<String, Any>) {
         _pdpPageDataList.add(maps)
