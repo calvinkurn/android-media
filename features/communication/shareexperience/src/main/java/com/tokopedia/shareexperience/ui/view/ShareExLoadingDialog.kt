@@ -127,11 +127,10 @@ class ShareExLoadingDialog(
                 )
             }
             ShareExPageTypeEnum.PLAY -> {
-                // TODO: adjust the value
                 ShareExLiveBottomSheetRequest(
                     pageType = arg.pageTypeEnum.valueInt,
-                    contentId = "",
-                    origin = ""
+                    contentId = arg.contentId,
+                    origin = arg.origin
                 )
             }
             else -> {

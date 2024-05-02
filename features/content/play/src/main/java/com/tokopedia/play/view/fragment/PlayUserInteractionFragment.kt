@@ -1147,7 +1147,7 @@ class PlayUserInteractionFragment @Inject constructor(
                                     labelImpressionBottomSheet = ""
                                 )
                             )
-                                .withContentId("channelId")
+                                .withContentId(event.channelId)
                                 .withOrigin("play")
                                 .build()
                         )
