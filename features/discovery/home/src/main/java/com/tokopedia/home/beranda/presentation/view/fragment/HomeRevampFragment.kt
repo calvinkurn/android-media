@@ -282,7 +282,6 @@ open class HomeRevampFragment :
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN = 131
-        private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -1104,17 +1103,17 @@ open class HomeRevampFragment :
 
     override fun onLoginWidgetClick() {
         LoginWidgetTracking.sendLoginClick()
-        goToLogin(REQUEST_CODE_LOGIN_WIDGET_LOGIN)
+        goToLogin()
     }
 
-    fun goToLogin(requestCode: Int) {
+    fun goToLogin() {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             intent.putExtra(
                 ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER,
                 ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE
             )
-            startActivityForResult(intent, requestCode)
+            startActivity(intent)
         }
     }
 
