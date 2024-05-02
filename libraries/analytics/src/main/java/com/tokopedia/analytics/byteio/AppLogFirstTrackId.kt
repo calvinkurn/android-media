@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.widget.Toast
-import com.tokopedia.analytics.byteio.AppLogParam.IS_ADDITIONAL
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
@@ -26,7 +25,7 @@ object AppLogFirstTrackId {
 
     private val _pdpPageDataList = ArrayList<HashMap<String, Any>>()
 
-    private val additionalPageName = listOf(PageName.CART)
+    private val additionalPageName = listOf("shipmentactivity", "atcvariant", "ordersummarypage")
 
     private fun appendPdpDataList(maps: HashMap<String, Any>) {
         _pdpPageDataList.add(maps)
@@ -40,7 +39,7 @@ object AppLogFirstTrackId {
         } else {
             appendPdpDataList(
                 hashMapOf(
-                    PAGE_NAME to "x",
+                    PAGE_NAME to activity::class.java.simpleName,
                     AppLogParam.ACTIVITY_HASH_CODE to activity.hashCode()
                 )
             )
@@ -63,28 +62,45 @@ object AppLogFirstTrackId {
         }
 
         for (i in _pdpPageDataList.size - 1 downTo 0) {
-            if (_pdpPageDataList[i][PAGE_NAME] == PageName.PDP ||
-                additionalPageName.contains(_pdpPageDataList[i][PAGE_NAME])
+            val currentPageName = _pdpPageDataList[i][PAGE_NAME] as? String ?: ""
+            if (currentPageName == PageName.PDP ||
+                additionalPageName.isContainsOneOfString(currentPageName.lowercase())
             ) {
-                val trackId = getDataFromPreviousPage(TRACK_ID, i)
-                val sourcePageType = getDataFromPreviousPage(SOURCE_PAGE_TYPE, i)
-                val isCheckout = getDataFromPreviousPage(IS_ADDITIONAL, i) == "checkout"
+                val previousTrackId = getDataFromPreviousPage(TRACK_ID, i)
+                val previousSourcePageType = getDataFromPreviousPage(SOURCE_PAGE_TYPE, i)
 
-                if (isCheckout) {
+                /**
+                 * Support page that doesn't have track id due to opening one of additionalPageName
+                 * We need to continue to find first_track_id in checkout
+                 *
+                 *Example:
+                 *  shopPage, pdp1(track_id), pdp2, checkout -> first_track_id should be pdp1
+                 *  pdp2 doesn't have track id, so we continue to find the first_track_id
+                 *  this case only happen when you want to get first_track_id
+                 *  in the page that doesn't send track_id
+                 */
+                val nextPageName = getDataFromNextPage(PAGE_NAME, i)
+                if (additionalPageName.isContainsOneOfString(nextPageName)) {
                     continue
                 }
 
-                if (trackId.isEmpty() || sourcePageType.isEmpty()) {
+                if (previousTrackId.isEmpty() || previousSourcePageType.isEmpty()) {
                     break
                 } else {
                     synchronized(this) {
-                        _firstTrackId = trackId
-                        _firstSourcePage = sourcePageType
+                        _firstTrackId = previousTrackId
+                        _firstSourcePage = previousSourcePageType
                     }
                 }
             } else {
                 break
             }
+        }
+    }
+
+    private fun List<String>.isContainsOneOfString(pageName: String): Boolean {
+        return any {
+            it.contains(pageName)
         }
     }
 
@@ -120,8 +136,9 @@ object AppLogFirstTrackId {
     }
 
     fun showToast(activity: Activity) {
-        if (_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) == PageName.PDP ||
-            additionalPageName.contains(_pdpPageDataList.lastOrNull()?.get(PAGE_NAME) ?: "")
+        val currentPageName = _pdpPageDataList.lastOrNull()?.get(PAGE_NAME) as? String ?: ""
+        if (currentPageName == PageName.PDP ||
+            additionalPageName.isContainsOneOfString(currentPageName)
         ) {
             Toast.makeText(
                 activity.applicationContext,
@@ -137,6 +154,14 @@ object AppLogFirstTrackId {
             _pdpPageDataList[index][key] as? String ?: ""
         } else {
             _pdpPageDataList[index - 1][key] as? String ?: ""
+        }
+    }
+
+    private fun getDataFromNextPage(key: String, index: Int): String {
+        return if (index == _pdpPageDataList.size - 1) {
+            _pdpPageDataList[index][key] as? String ?: ""
+        } else {
+            _pdpPageDataList[index + 1][key] as? String ?: ""
         }
     }
 
