@@ -205,31 +205,18 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun observeOrderExtensionRequestInfo() {
-        orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
-            if (result.message.isNotBlank() || result.throwable != null) {
-                if (result.success) {
-                    showCommonToaster(result.message)
-                } else {
-                    if (result.throwable == null) {
-                        showErrorToaster(result.message)
-                    } else {
-                        result.throwable?.showErrorToaster()
-                    }
-                }
-            }
-            if (result.completed && result.refreshOnDismiss) {
-                shouldRefreshOrderList
-                loadDetail()
-            }
-            onRequestExtensionInfoChanged(result)
-        }
-    }
-
     override fun showBackButton(): Boolean = false
 
     override fun doOnResume() {
         // noop
+    }
+
+    override fun onSuccessRequestOrderExtension(message: String) {
+        if (message.isNotBlank()) {
+            showCommonToaster(message)
+            shouldRefreshOrderList
+            loadDetail()
+        }
     }
 
     fun setOrderIdToShow(orderId: String) {

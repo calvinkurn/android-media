@@ -75,9 +75,7 @@
     <string name="sah_new_other_shop_open">Toko Buka</string>
     <string name="sah_new_other_rm_joined_since">Sejak Bergabung</string>
     <string name="sah_new_other_rm_since_june_fourteenth">Sejak 14 Juni 2021</string>
-    <string name="sah_new_other_rm_since_has_passed">Telah Melewati</string>
-    <string name="sah_new_other_rm_transaction_remaining">%s/100</string>
-    <string name="sah_new_other_rm_total_transaction">%s Transaksi</string>
+    <string name="sah_new_other_rm_transaction_label">Total transaksi</string>
     <string name="sah_new_other_operational_shop_open">Jam Operasional</string>
     <string name="sah_new_other_operational_shop_closed">Toko Libur</string>
     <string name="sah_new_other_operational_shop_weekly_closed">Toko Libur Rutin</string>
