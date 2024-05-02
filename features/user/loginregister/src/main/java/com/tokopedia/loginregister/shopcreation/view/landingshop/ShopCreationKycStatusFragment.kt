@@ -227,7 +227,7 @@ class ShopCreationKycStatusFragment : BaseDaggerFragment() {
 
     private fun launchKyc() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
-            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, "")
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE, ShopCreationConstant.KYC_SHOP_CREATION_SOURCE)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK, "")
             putExtra(ShopCreationConstant.IS_RE_VERIFY, true)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, ShopCreationConstant.OPEN_SHOP_KYC_PROJECT_ID)

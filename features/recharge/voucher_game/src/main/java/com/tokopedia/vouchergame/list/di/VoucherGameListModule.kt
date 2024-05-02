@@ -1,6 +1,7 @@
 package com.tokopedia.vouchergame.list.di
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
 import dagger.Module
 import dagger.Provides
@@ -13,7 +14,10 @@ class VoucherGameListModule {
 
     @VoucherGameListScope
     @Provides
-    fun provideVoucherGameListUseCase(graphqlRepository: GraphqlRepository): VoucherGameListUseCase =
-           VoucherGameListUseCase(graphqlRepository)
+    fun provideVoucherGameListUseCase(
+        graphqlRepository: GraphqlRepository,
+        remoteConfig: RemoteConfig
+    ): VoucherGameListUseCase =
+           VoucherGameListUseCase(graphqlRepository, remoteConfig)
 
 }

@@ -176,11 +176,7 @@ class SellerMenuFragment :
     }
 
     override fun onRMTransactionClicked(totalTransaction: Long) {
-        if (totalTransaction < MAX_RM_TRANSACTION_THRESHOLD) {
-            openRmTransactionBottomSheet(totalTransaction)
-        } else {
-            goToNewMembershipScheme()
-        }
+        openRmTransactionBottomSheet(totalTransaction)
     }
 
     private fun initInjector() {
@@ -378,11 +374,5 @@ class SellerMenuFragment :
 
     private fun openRmTransactionBottomSheet(currentTransactionTotal: Long) {
         RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
-    }
-
-    private fun goToNewMembershipScheme() {
-        context?.let {
-            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
-        }
     }
 }

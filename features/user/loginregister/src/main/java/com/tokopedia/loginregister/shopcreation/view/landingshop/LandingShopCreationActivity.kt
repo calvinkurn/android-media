@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.shopcreation.view.landingshop
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationActivity
 import com.tokopedia.loginregister.R as loginregisterR
 
@@ -48,6 +49,17 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
                 KYC_STATUS_FRAGMENT_TAG
             )
             .commit()
+    }
+
+    override fun onBackPressed() {
+        val list = supportFragmentManager.fragments
+        for (fragment in list) {
+            if (fragment is TkpdBaseV4Fragment && fragment.isVisible() && fragment is ShopCreationKycStatusFragment) {
+                switchToKycBridgeFragment()
+                return
+            }
+        }
+        super.onBackPressed()
     }
 
     companion object {

@@ -669,9 +669,9 @@ open class DiscoveryFragment :
                         )
                 ) {
                     lastVisibleComponent = getComponent(
-                            lastVisibleComponent!!.parentComponentId,
-                            lastVisibleComponent!!.pageEndPoint
-                        )
+                        lastVisibleComponent!!.parentComponentId,
+                        lastVisibleComponent!!.pageEndPoint
+                    )
                 }
             }
         }
@@ -720,35 +720,39 @@ open class DiscoveryFragment :
     private fun renderSpanSize() {
         gridLayoutManager?.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val template = discoveryAdapter.componentList[position].properties?.template
-                val name = discoveryAdapter.componentList[position].name
-                return when (name) {
-                    ComponentNames.CalendarWidgetItem.componentName -> 1
-                    ComponentNames.ShimmerCalendarWidget.componentName -> 1
-                    ComponentNames.BannerInfiniteItem.componentName -> 1
-                    ComponentNames.ShopCardItemView.componentName -> 1
-                    ComponentNames.ContentCardItem.componentName -> 1
-                    ComponentNames.ContentCardEmptyState.componentName -> 1
-                    ComponentNames.ProductCardRevampItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.MasterProductCardItemList.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.MasterProductCardItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.MasterProductCardItemListReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItemList.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItemListReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleCarouselItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSingleItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSingleItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ShopOfferHeroBrandProductItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
-                    else -> 2
-                }
-            }
+                if (position >= 0 && position < discoveryAdapter.componentList.size) {
+                    val component = discoveryAdapter.componentList.getOrNull(position)
+                    val template = component?.properties?.template
+                    val name = component?.name
+                    return when (name) {
+                        ComponentNames.CalendarWidgetItem.componentName,
+                        ComponentNames.ShimmerCalendarWidget.componentName,
+                        ComponentNames.BannerInfiniteItem.componentName,
+                        ComponentNames.ShopCardItemView.componentName,
+                        ComponentNames.ContentCardItem.componentName,
+                        ComponentNames.ContentCardEmptyState.componentName -> 1
 
+                        ComponentNames.ProductCardRevampItem.componentName,
+                        ComponentNames.MasterProductCardItemList.componentName,
+                        ComponentNames.MasterProductCardItemReimagine.componentName,
+                        ComponentNames.MasterProductCardItemListReimagine.componentName,
+                        ComponentNames.ProductCardCarouselItem.componentName,
+                        ComponentNames.ProductCardCarouselItemList.componentName,
+                        ComponentNames.ProductCardCarouselItemReimagine.componentName,
+                        ComponentNames.ProductCardCarouselItemListReimagine.componentName,
+                        ComponentNames.ProductCardSprintSaleItem.componentName,
+                        ComponentNames.ProductCardSprintSaleItemReimagine.componentName,
+                        ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+                        ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
+                        ComponentNames.ProductCardSingleItem.componentName,
+                        ComponentNames.ProductCardSingleItemReimagine.componentName,
+                        ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                        ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
+
+                        else -> 2
+                    }
+                } else return 0
+            }
         }
     }
 
