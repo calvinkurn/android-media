@@ -231,7 +231,7 @@ object AppLogAnalytics {
             params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
             Cassava.save(params, event, "ByteIO")
             AppLog.onEventV3(event, params)
-            Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
+            Timber.d("($TAG) sending event ($event), value: ${params.toString(2)}")
         }
     }
 
@@ -259,7 +259,7 @@ object AppLogAnalytics {
     fun pushPageData() {
         val tempHashMap = HashMap<String, Any>()
         _pageDataList.add(tempHashMap)
-        Timber.d("Push _pageDataList: ${_pageDataList.printForLog()}")
+        Timber.d("Push _pageDataList: \n${_pageDataList.printForLog()}")
     }
 
     fun removeLastPageData() {
