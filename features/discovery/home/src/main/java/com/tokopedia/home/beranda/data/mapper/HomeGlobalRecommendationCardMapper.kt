@@ -275,7 +275,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             index,
             tabIndex,
             tabName,
-            appLog.toAppLogModel(recommendationCard.recParam)
+            appLog.toAppLogModel(recommendationCard.recParam),
         )
     }
 

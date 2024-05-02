@@ -244,7 +244,7 @@ class HomeRecommendationCardMapper @Inject constructor(
             layoutName,
             (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
             tabName,
-            appLog.toAppLogModel(recommendationCard.recParam)
+            appLog.toAppLogModel(recommendationCard.recParam),
         )
     }
 
