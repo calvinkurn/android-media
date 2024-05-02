@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.core.view.updatePadding
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.media.loader.clearImage
@@ -61,6 +62,7 @@ class DynamicHomeNavBarView : LinearLayout {
 
     init {
         super.setOrientation(HORIZONTAL)
+        updatePadding(top = resources.getDimensionPixelOffset(navigation_commonR.dimen.navigation_common_bottom_nav_bar_top_padding))
         refresh()
     }
 
@@ -182,13 +184,17 @@ class DynamicHomeNavBarView : LinearLayout {
                     val key = if (isSelected) Key.AnimActive else Key.AnimInactive
                     val variant = if (isDarkMode) Variant.Dark else Variant.Light
                     val assetId = key + variant
-                    val asset = model.assets[assetId] as? Type.Lottie
-                    val isCached = asset?.let { cacheManager.isUrlLoaded(it.url) } ?: false
+                    val asset = model.assets[assetId]
+                    val isCached = when (asset) {
+                        is Type.Lottie -> cacheManager.isUrlLoaded(asset.url)
+                        is Type.LottieRes -> true
+                        else -> false
+                    }
 
                     if (isCached) {
                         asset
                     } else {
-                        asset?.let { cacheManager.preloadFromUrl(it.url) }
+                        asset?.let { if (it is Type.Lottie) cacheManager.preloadFromUrl(it.url) }
                         model.assets[
                             (if (isSelected) Key.ImageActive else Key.ImageInactive) + variant
                         ]
