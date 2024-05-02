@@ -57,6 +57,7 @@ object AppLogRecommendation {
     }
 
     private fun AppLogRecommendationProductModel.setGlobalParams() {
+        val additionalPdp = additionalParam as? AppLogAdditionalParam.PDP
         AppLogAnalytics.setGlobalParams(
             entranceForm = entranceForm,
             enterMethod = enterMethod ?: AppLogAnalytics.getDataLast(ENTER_METHOD)?.toString(),
@@ -65,7 +66,9 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
-            parentProductId = (additionalParam as? AppLogAdditionalParam.PDP)?.parentProductId
+            parentProductId = additionalPdp?.parentProductId,
+            parentTrackId = additionalPdp?.parentTrackId,
+            parentRequestId = additionalPdp?.parentRequestId
         )
     }
 
