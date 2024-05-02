@@ -31,7 +31,7 @@ class UpdateStoriesSettingUseCase @Inject constructor(
 
     data class Param(
         @SerializedName("req")
-        val req: Author,
+        val req: Author
     ) : GqlParam {
         data class Author(
             @SerializedName("authorID")
@@ -40,8 +40,8 @@ class UpdateStoriesSettingUseCase @Inject constructor(
             val authorType: String,
             @SerializedName("optionType")
             val optionType: String,
-            @SerializedName("isDisabled")
-            val isDisabled: Boolean,
+            @SerializedName("isDisable")
+            val isDisabled: Boolean
         )
     }
 
@@ -56,4 +56,3 @@ class UpdateStoriesSettingUseCase @Inject constructor(
         """
     }
 }
-
