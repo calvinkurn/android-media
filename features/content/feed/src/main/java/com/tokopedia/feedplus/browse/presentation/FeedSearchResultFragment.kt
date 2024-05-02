@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedSearchResultAdapter
@@ -63,6 +64,7 @@ internal class FeedSearchResultFragment @Inject constructor(
     private val adapter: FeedSearchResultAdapter by lazyThreadSafetyNone {
         FeedSearchResultAdapter(
             this.viewLifecycleOwner.lifecycleScope,
+            requireActivity().calculateWindowSizeClass(),
             cardListener
         )
     }
@@ -163,6 +165,8 @@ internal class FeedSearchResultFragment @Inject constructor(
             view.clearFocus()
 
             if (focusState) {
+                tracker.clickSearchbar()
+
                 val intent = router.getIntent(context, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE).apply {
                     putExtra(FeedLocalSearchActivity.TAG_KEYWORD, viewModel.searchKeyword)
                 }

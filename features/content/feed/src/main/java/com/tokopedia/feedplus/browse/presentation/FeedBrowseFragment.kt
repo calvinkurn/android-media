@@ -394,7 +394,7 @@ internal class FeedBrowseFragment @Inject constructor(
             if (!newHeaderDetail.isShowSearchBar) {
                 it.header?.title = newHeaderDetail.title
             } else {
-                it.initSearchBar(false, newHeaderDetail.searchBarPlaceholder)
+                it.setSearchBar(false, newHeaderDetail.searchBarPlaceholder)
                 it.setSearchbarFocusListener { view, focusState ->
                     searchbarFocusHandler(view, focusState)
                 }
