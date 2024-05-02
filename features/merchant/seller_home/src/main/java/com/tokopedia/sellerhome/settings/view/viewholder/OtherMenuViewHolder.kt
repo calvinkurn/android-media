@@ -52,6 +52,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class OtherMenuViewHolder(
     private val view: View?,
@@ -123,9 +124,9 @@ class OtherMenuViewHolder(
     fun setIsTopadsAutoTopup(isAutoTopup: Boolean) {
         val color =
             if (isAutoTopup) {
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                unifyprinciplesR.color.Unify_NN500
             }
         topadsAutoTopupIcon?.run {
             setImage(
