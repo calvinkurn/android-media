@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalShare
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
@@ -1190,18 +1191,22 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun initializeShareEx(element: ProductListUiModel.ProductUiModel) {
-        val DUMMY_APPLINK = "tokopedia://share?" +
-            "product_id=2151019476" +
-            "&page_type=1" +
-            "&default_url=${element.productUrl}" +
-            "&label_action_click_share_icon=" +
-            "&label_action_click_close_icon=" +
-            "&label_action_click_channel=" +
-            "&label_impression_bottomsheet=" +
-            "&utm_campaign="
+        val label = "{share_id} - ${element.productId} - ${element.orderId} - ${element.orderStatusId}"
+        val affiliateLabel = "{share_id} - ${element.productId} - ${element.orderId}"
+        val shareApplink = "${ApplinkConstInternalShare.SHARE}?" +
+            "${ApplinkConstInternalShare.Param.PRODUCT_ID}=${element.productId}" +
+            "&${ApplinkConstInternalShare.Param.PAGE_TYPE}=1" +
+            "&${ApplinkConstInternalShare.Param.DEFAULT_URL}=${element.productUrl}" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_SHARE_ICON}=$label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CLOSE_ICON}=$label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CHANNEL}=$label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_IMPRESSION_BOTTOMSHEET}=$label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_IMPRESSION_AFFILIATE_REGISTRATION}=$affiliateLabel" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_AFFILIATE_REGISTRATION}=$affiliateLabel" +
+            "&${ApplinkConstInternalShare.Param.UTM_CAMPAIGN}=pdp-{share_id}-${element.orderId}"
 
-        val intent = RouteManager.getIntent(context, DUMMY_APPLINK)
-        startActivityForResult(intent, 123)
+        val intent = RouteManager.getIntent(context, shareApplink)
+        startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_SHARE)
     }
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {

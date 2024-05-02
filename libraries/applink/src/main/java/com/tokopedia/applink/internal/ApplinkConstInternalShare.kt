@@ -1,12 +1,21 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.constant.DeeplinkConstant
+
 object ApplinkConstInternalShare {
+
+    private const val GLOBAL_SHARE = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}"
+    const val SHARE = "${GLOBAL_SHARE}/share"
 
     const val ACTIVITY_RESULT_COPY_LINK = "copy_link"
 
     object ActivityResult {
         const val RESULT_CODE_COPY_LINK = 989
         const val PARAM_TOASTER_MESSAGE = "toaster_message"
+    }
+
+    object PageType {
+        const val BOM = 6
     }
 
     object Param {
