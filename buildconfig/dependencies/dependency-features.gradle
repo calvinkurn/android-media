@@ -44,7 +44,7 @@ ext {
             contentAnalytic                 : ":features:content:analytic",
             contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
-			feedCommon						: ":features:content:feed_common",
+            feedCommon                      : ":features:content:feed_common",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
             kol                             : ":features:content:kol",

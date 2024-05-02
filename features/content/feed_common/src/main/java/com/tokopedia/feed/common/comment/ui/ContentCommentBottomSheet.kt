@@ -54,11 +54,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
@@ -310,14 +310,18 @@ class ContentCommentBottomSheet @Inject constructor(
                             view,
                             text = if (event.message is UnknownHostException) getString(feedcommonR.string.connection_fail_and_try_again) else event.message.message.orEmpty(),
                             actionText = if (!event.message.message?.equals(CommentException.createDeleteFailed().message.orEmpty())
-                                    .orFalse()
-                            ) "" else getString(feedcommonR.string.try_again),
+                                .orFalse()
+                            ) {
+                                ""
+                            } else {
+                                getString(feedcommonR.string.try_again)
+                            },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
                             type = if (event.message.message?.equals(CommentException.createLinkNotAllowed().message.orEmpty())
-                                    .orFalse()
+                                .orFalse()
                             ) {
                                 Toaster.TYPE_ERROR
                             } else {
@@ -529,7 +533,7 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         analytics?.clickReportReason(feedReportRequestParamModel.reason)
         viewModel.submitAction(
-            CommentAction.ReportComment (
+            CommentAction.ReportComment(
                 feedReportRequestParamModel.copy(
                     reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_COMMENT
                 )
