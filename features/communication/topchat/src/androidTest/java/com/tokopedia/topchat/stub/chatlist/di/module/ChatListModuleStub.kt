@@ -10,6 +10,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.FakeTopchatCacheManager
 import com.tokopedia.topchat.chatlist.data.datastore.TopChatListDataStore
+import com.tokopedia.topchat.chatlist.data.util.TopChatListResourceProvider
+import com.tokopedia.topchat.chatlist.data.util.TopChatListResourceProviderImpl
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatlist.data.TopChatListDataStoreStub
@@ -65,5 +67,11 @@ class ChatListModuleStub {
     @Provides
     fun provideTopChatListDataStore(): TopChatListDataStore {
         return TopChatListDataStoreStub()
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideResourceProvider(@ApplicationContext context: Context): TopChatListResourceProvider {
+        return TopChatListResourceProviderImpl(context)
     }
 }

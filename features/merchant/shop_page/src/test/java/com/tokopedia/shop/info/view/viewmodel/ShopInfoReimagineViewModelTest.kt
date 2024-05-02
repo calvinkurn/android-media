@@ -140,7 +140,7 @@ class ShopInfoReimagineViewModelTest {
             }
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -175,8 +175,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -223,8 +222,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -275,8 +273,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -315,8 +312,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -359,8 +355,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -411,8 +406,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -454,8 +448,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -497,8 +490,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -540,8 +532,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -583,8 +574,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
 
@@ -641,8 +631,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -733,8 +722,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -772,8 +760,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -818,8 +805,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -907,8 +893,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -967,8 +952,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -1013,8 +997,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             val actual = emittedValues.last()
@@ -1049,8 +1032,8 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
+
             viewModel.processEvent(ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo)
 
             // Then
@@ -1096,8 +1079,8 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
+
             viewModel.processEvent(
                 ShopInfoUiEvent.TapCtaViewPharmacyLocation
             )
@@ -1127,7 +1110,7 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
             viewModel.processEvent(ShopInfoUiEvent.RetryGetShopInfo)
 
             // Then
@@ -1156,8 +1139,8 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
+
             viewModel.processEvent(
                 ShopInfoUiEvent.TapShopRating
             )
@@ -1196,8 +1179,8 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
+
             viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote))
 
             // Then
@@ -1230,8 +1213,8 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
+
             viewModel.processEvent(ShopInfoUiEvent.TapReviewImage(review, 1))
 
             // Then
@@ -1263,8 +1246,8 @@ class ShopInfoReimagineViewModelTest {
             mockReportShopGqlCall()
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
-            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
+
             viewModel.processEvent(ShopInfoUiEvent.TapReviewImageViewAll(selectedProductId))
 
             // Then
@@ -1384,7 +1367,7 @@ class ShopInfoReimagineViewModelTest {
             // Given
 
             // When
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // Then
             coVerify { tracker.sendShopInfoOpenScreenImpression(shopId) }
@@ -1395,7 +1378,7 @@ class ShopInfoReimagineViewModelTest {
     fun `When click CTA expand pharmacy information, should call sendCtaExpandPharmacyInformationEvent tracker`() {
         runBlockingTest {
             // Given
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // When
             viewModel.processEvent(ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo)
@@ -1409,7 +1392,7 @@ class ShopInfoReimagineViewModelTest {
     fun `When click CTA view pharmacy location information, should call sendCtaViewPharmacyLocationEvent tracker`() {
         runBlockingTest {
             // Given
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // When
             viewModel.processEvent(ShopInfoUiEvent.TapCtaViewPharmacyLocation)
@@ -1423,7 +1406,7 @@ class ShopInfoReimagineViewModelTest {
     fun `When click icon view all shop review, should call sendCtaViewPharmacyLocationEvent tracker`() {
         runBlockingTest {
             // Given
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // When
             viewModel.processEvent(ShopInfoUiEvent.TapShopRating)
@@ -1437,7 +1420,7 @@ class ShopInfoReimagineViewModelTest {
     fun `When swipe top review, should call sendTopReviewImpression tracker`() {
         runBlockingTest {
             // Given
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // When
             viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
@@ -1451,7 +1434,7 @@ class ShopInfoReimagineViewModelTest {
     fun `When swipe to previously seen reviewer, should not call sendTopReviewImpression tracker for the second time`() {
         runBlockingTest {
             // Given
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // When
             viewModel.processEvent(ShopInfoUiEvent.SwipeReview(reviewIndex = 1))
@@ -1476,7 +1459,7 @@ class ShopInfoReimagineViewModelTest {
                 title = "Syarat dan Ketentuan",
                 description = "Harap record video sebelum unboxing"
             )
-            viewModel.processEvent(ShopInfoUiEvent.Setup(shopId, districtId, cityId))
+            viewModel.processEvent(ShopInfoUiEvent.GetShopInfo(shopId, districtId, cityId))
 
             // When
             viewModel.processEvent(ShopInfoUiEvent.TapShopNote(shopNote = shopNote))

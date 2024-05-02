@@ -75,6 +75,7 @@ class ChatTabCounterViewModel @Inject constructor(
                 is TopChatListAction.SetLastVisitedTab -> {
                     setLastVisitedTab(it.position)
                 }
+                else -> Unit
             }
         }
             .flowOn(dispatcher.immediate)
