@@ -410,5 +410,7 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keep class com.bytedance.crash.entity.EventBody { *; }
 -keep class com.bytedance.crash.entity.Header { *; }
 -dontwarn android.os.Looper$Observer
+-keep class com.bytedance.apm { *; }
+
 
 -dontwarn com.bytedance.common.wschannel.WsChannelSettings$OkOpaqueCallback
