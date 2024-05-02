@@ -127,7 +127,7 @@ class ShopStatusViewHolder(
             }
 
             is RegularMerchant.Pending -> setRegularMerchantPending()
-            else -> setRegularMerchantNeedUpgrade()
+            else -> {/* no-op */}
         }
 
         pmIcon?.gone()
@@ -166,15 +166,6 @@ class ShopStatusViewHolder(
         setDescription(
             sellermenucommonR.string.setting_verified,
             unifyprinciplesR.color.Unify_NN600
-        )
-    }
-
-    private fun setRegularMerchantNeedUpgrade() {
-        shopStatusEligiblePmIcon?.hide()
-
-        setDescription(
-            R.string.sah_new_other_status_upgrade,
-            unifyprinciplesR.color.Unify_GN500
         )
     }
 

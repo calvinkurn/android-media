@@ -1686,24 +1686,7 @@ fun SellerMenuStatusPm(
                     }
             )
 
-            if (isKyc) {
-                if (canUpgrade) {
-                    NestTypography(
-                        text = stringResource(id = sellermenuR.string.setting_upgrade),
-                        textStyle = NestTheme.typography.body2.copy(
-                            color = NestTheme.colors.GN._500,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier
-                            .constrainAs(upgradePMText) {
-                                top.linkTo(pmIcon.top)
-                                bottom.linkTo(pmIcon.bottom)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(end = 16.dp)
-                    )
-                }
-            } else {
+            if (!isKyc) {
                 NestIcon(
                     iconId = IconUnify.INFORMATION,
                     colorLightEnable = NestTheme.colors.RN._500,
