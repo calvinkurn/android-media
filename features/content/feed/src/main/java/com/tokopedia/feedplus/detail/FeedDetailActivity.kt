@@ -146,6 +146,8 @@ class FeedDetailActivity : BaseActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.headerDetail.collectLatest {
                     if (it.isShowSearchBar) {
+                        analytic.impressSearchBar()
+
                         binding.feedDetailHeader.post {
                             binding.feedDetailHeader.setFeedSearchBar {
                                 analytic.clickSearchBar()
