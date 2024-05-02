@@ -92,4 +92,9 @@
     <dimen name="home_lego_3_auto_product_image_radius">8dp</dimen>
 
     <dimen name="home_special_release_revamp_product_padding">4dp</dimen>
+
+    <!--Timer-->
+    <dimen name="count_down_timer_highlight_text_margin_top">4dp</dimen>
+    <dimen name="count_down_timer_timertextview_text_size">12sp</dimen>
+    <dimen name="count_down_timer_timertextview_highlight_text_size">24sp</dimen>
 </resources>

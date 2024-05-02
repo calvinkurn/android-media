@@ -25,7 +25,7 @@
             app:typographyWeight="bold"
             tools:text="Lanjut cek yuk"/>
 
-        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        <com.tokopedia.home_component.widget.card.timer.CountdownTimer
             android:id="@+id/timer_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
