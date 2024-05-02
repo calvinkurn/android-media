@@ -474,10 +474,14 @@
 /settings.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
 /hansel.xml                                             @tokopedia/android-core-dev
+/.gitignore                                             @tokopedia/android-core-dev
 /gradle/                                                @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
 /wearosapp/                                        @tokopedia/android-core-dev
 /jacoco_task.gradle                                     @tokopedia/android-core-dev
+/tokoremotex/                                           @tokopedia/android-core-dev
+/.run/                                                  @tokopedia/android-core-dev
+/remote                                                 @tokopedia/android-core-dev
 testing/joint/inactivephone_otp/                        @tokopedia/android-minionkevin-dev
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 
