@@ -64,6 +64,7 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -853,6 +854,12 @@ open class HomeRevampViewModel @Inject constructor(
             }) {
                 updateWidget(cmHomeWidgetDataModel.copy(), index)
             }
+        }
+    }
+
+    fun refreshShortenWidget() {
+        findWidget<MultiTwoSquareWidgetUiModel> { model, _ ->
+            homeAtfUseCase.get().refreshData(model.id)
         }
     }
 

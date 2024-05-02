@@ -144,4 +144,6 @@ interface HomeCategoryListener {
     fun onCouponWidgetClaim(data: CouponWidgetDataModel, catalogId: String, couponPosition: Int)
 
     fun getHomeRefreshType(): HomeRefreshType
+
+    fun refreshShortenWidget()
 }

@@ -89,6 +89,9 @@ class ProductWidgetViewHolder(
 
     private fun shouldShowRetryWhenCampaignTimeout() {
         binding?.retryContainer?.root?.show()
+        binding?.retryContainer?.root?.setOnClickListener {
+            listener.retryWidget()
+        }
     }
 
     companion object {

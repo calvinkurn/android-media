@@ -3123,6 +3123,10 @@ open class HomeRevampFragment :
         getHomeViewModel().getBalanceWidgetData()
     }
 
+    override fun refreshShortenWidget() {
+        getHomeViewModel().refreshShortenWidget()
+    }
+
     override fun showHomeCoachmark(
         isShowBalanceWidgetCoachmark: Boolean,
         homeBalanceModel: HomeBalanceModel

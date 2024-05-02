@@ -8,4 +8,8 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
     override fun productChannelHeaderClicked(appLink: String) {
         listener.onDynamicChannelClicked(appLink)
     }
+
+    override fun retryWidget() {
+        listener.refreshShortenWidget()
+    }
 }
