@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
@@ -12,6 +14,7 @@ import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
 import com.tokopedia.purchase_platform.common.constant.ARGS_LIST_AUTO_APPLY_PROMO
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.telemetry.ITelemetryActivity
+import timber.log.Timber
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -36,6 +39,8 @@ open class OrderSummaryPageActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("byteio entrance info: %s",
+            AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.INSTANT, listOf("123")))
         component.inject(this)
     }
 

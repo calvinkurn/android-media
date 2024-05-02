@@ -259,7 +259,6 @@ object AppLogAnalytics {
     fun pushPageData() {
         val tempHashMap = HashMap<String, Any>()
         _pageDataList.add(tempHashMap)
-        Timber.d("Push _pageDataList: \n${_pageDataList.printForLog()}")
     }
 
     fun removeLastPageData() {
@@ -427,6 +426,7 @@ object AppLogAnalytics {
         pushPageData()
         putPageData(ACTIVITY_HASH_CODE, appLogInterface.hashCode())
         putAppLogInterfaceData(appLogInterface)
+        Timber.d("Push _pageDataList: \n${_pageDataList.printForLog()}")
     }
 
     fun updateCurrentPageData(appLogInterface: AppLogInterface) {
