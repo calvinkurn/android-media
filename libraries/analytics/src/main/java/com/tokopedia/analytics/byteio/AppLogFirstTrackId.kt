@@ -25,7 +25,8 @@ object AppLogFirstTrackId {
 
     private val _pdpPageDataList = ArrayList<HashMap<String, Any>>()
 
-    private val additionalPageName = listOf("shipmentactivity", "atcvariant", "ordersummarypage", "thankyoupageactivity")
+    private val additionalPageName =
+        listOf("shipmentactivity", "ordersummarypage", "sku", "thankyoupage")
 
     private fun appendPdpDataList(maps: HashMap<String, Any>) {
         _pdpPageDataList.add(maps)
@@ -48,10 +49,7 @@ object AppLogFirstTrackId {
 
     fun updateFirstTrackId() {
         val currentPage = getCurrentData() ?: return
-        synchronized(this) {
-            firstTrackId = ""
-            firstSourcePage = ""
-        }
+        updateGlobalData("", "")
 
         val currentPageName = currentPage[PAGE_NAME] as? String ?: ""
         val containAdditionalPageName = additionalPageName.isContainsOneOfString(
@@ -71,42 +69,26 @@ object AppLogFirstTrackId {
                 val previousTrackId = getDataFromPreviousPage(TRACK_ID, i)
                 val previousSourcePageType = getDataFromPreviousPage(SOURCE_PAGE_TYPE, i)
 
-                /**
-                 * Support page that doesn't have track id due to opening one of additionalPageName
-                 * We need to continue to find first_track_id in checkout
-                 *
-                 *Example:
-                 *  shopPage, pdp1(track_id), pdp2, checkout -> first_track_id should be pdp1
-                 *  pdp2 doesn't have track id, so we continue to find the first_track_id
-                 *  this case only happen when you want to get first_track_id
-                 *  in the page that doesn't send track_id
-                 */
                 if (additionalPageName.isContainsOneOfString(pageName)) {
+                    updateGlobalData(previousTrackId, previousSourcePageType)
                     continue
                 }
 
                 if (previousTrackId.isEmpty() || previousSourcePageType.isEmpty()) {
                     break
                 } else {
-                    synchronized(this) {
-                        _firstTrackId = previousTrackId
-                        _firstSourcePage = previousSourcePageType
-                    }
-                }
-
-
-                /**
-                 * Need to stop the flow if previous page is cart
-                 * especially for cart because the cart can go to pdp
-                 * through recommendation with track_id
-                 */
-                val previousPageName = getDataFromPreviousPage(PAGE_NAME, i)
-                if (additionalPageName.isContainsOneOfString(previousPageName)) {
-                    break
+                    updateGlobalData(previousTrackId, previousSourcePageType)
                 }
             } else {
                 break
             }
+        }
+    }
+
+    private fun updateGlobalData(trackId: String, firstSourcePage: String) {
+        synchronized(this) {
+            _firstTrackId = trackId
+            _firstSourcePage = firstSourcePage
         }
     }
 
