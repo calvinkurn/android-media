@@ -151,6 +151,14 @@ object ShopPageHomeMapper {
                 ?: ""
         )
 
+        val colorMode = productCardColorHelper.determineProductCardColorMode(
+            isFestivity = isFestivity,
+            shouldOverrideTheme = isOverrideTheme,
+            patternColorType = patternColorType,
+            backgroundColor = backgroundColor,
+            makeProductCardTransparent = true
+        )
+
         val baseProductCardModel = if (isHasOCCButton) {
             ProductCardModel(
                 productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -166,14 +174,15 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
+                shopBadgeList = shopHomeProductViewModel.shopBadgeList.map { badge ->
+                    ProductCardModel.ShopBadge(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl,
+                        isShown = badge.show
+                    )
+                },
                 forceLightModeColor = false,
-                colorMode = productCardColorHelper.determineProductCardColorMode(
-                    isFestivity = isFestivity,
-                    shouldOverrideTheme = isOverrideTheme,
-                    patternColorType = patternColorType,
-                    backgroundColor = backgroundColor,
-                    makeProductCardTransparent = true
-                )
+                colorMode = colorMode
             )
         } else {
             ProductCardModel(
@@ -187,15 +196,16 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
+                shopBadgeList = shopHomeProductViewModel.shopBadgeList.map { badge ->
+                    ProductCardModel.ShopBadge(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl,
+                        isShown = badge.show
+                    )
+                },
                 hasAddToCartButton = isHasATC,
                 forceLightModeColor = false,
-                colorMode = productCardColorHelper.determineProductCardColorMode(
-                    isFestivity = isFestivity,
-                    shouldOverrideTheme = isOverrideTheme,
-                    patternColorType = patternColorType,
-                    backgroundColor = backgroundColor,
-                    makeProductCardTransparent = true
-                )
+                colorMode = colorMode
             )
         }
         return if (isShopPersonalizationWidgetEnableDirectPurchase(
