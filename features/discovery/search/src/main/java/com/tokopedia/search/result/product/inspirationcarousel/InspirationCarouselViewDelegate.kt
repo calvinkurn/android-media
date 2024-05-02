@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.result.domain.model.SearchCouponModel
 import com.tokopedia.search.result.presentation.model.CouponDataView
@@ -38,6 +39,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
     override fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
@@ -49,9 +57,18 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
-    override fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
+    override fun trackEventClickInspirationCarouselGridItem(
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         val data =
             InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                 product,
@@ -59,6 +76,12 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        AppLogSearch.eventSearchResultClick(
+            product.asByteIOSearchResult("")
+        )
+
+        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
@@ -69,6 +92,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultClick(
+//            product.asByteIOSearchResult("")
+//        )
+//
+//        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
@@ -80,9 +110,18 @@ class InspirationCarouselViewDelegate @Inject constructor(
         val trackingQueue = trackingQueue
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
-    override fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
+    override fun trackEventClickInspirationCarouselChipsItem(
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         val data =
             InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                 product,
@@ -90,6 +129,12 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        AppLogSearch.eventSearchResultClick(
+            product.asByteIOSearchResult("")
+        )
+
+        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {

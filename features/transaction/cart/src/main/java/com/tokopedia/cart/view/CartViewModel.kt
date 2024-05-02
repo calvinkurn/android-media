@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -31,6 +34,7 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.mapper.CartShopGroupTickerGroupMetadataRequestMapper
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.processor.CartCalculator
@@ -130,10 +134,11 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -297,9 +302,7 @@ class CartViewModel @Inject constructor(
         const val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
         const val RECENT_VIEW_XSOURCE = "recentview"
         const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
-        const val PAGE_NAME_RECENT_VIEW_TEST = "cart_recent_view_test" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val PAGE_NAME_RECOMMENDATION = "cart"
-        const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val RECOMMENDATION_XSOURCE = "recom_widget"
         const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
         const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
@@ -694,6 +697,7 @@ class CartViewModel @Inject constructor(
 
         _subTotalState.value = SubTotalState(
             subtotalCashback,
+            subtotalBeforeSlashedPrice,
             totalItemQty.toString(),
             finalSubtotal,
             dataList.isEmpty()
@@ -1080,7 +1084,7 @@ class CartViewModel @Inject constructor(
             val cartRecentViewHolderData = CartRecentViewHolderData(
                 recommendationWidgetMetadata = RecommendationWidgetMetadata(
                     pageNumber = 1,
-                    pageName = PAGE_NAME_RECENT_VIEW_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
+                    pageName = PAGE_NAME_RECENT_VIEW,
                     xSource = RECENT_VIEW_XSOURCE,
                     productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
@@ -1143,7 +1147,7 @@ class CartViewModel @Inject constructor(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
                         xSource = RECOMMENDATION_XSOURCE,
-                        pageName = PAGE_NAME_RECOMMENDATION_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
+                        pageName = PAGE_NAME_RECOMMENDATION,
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true
@@ -1639,6 +1643,13 @@ class CartViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun sendAtcButtonTracker() {
+        val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
+            cartDataList.value, subTotalState.value
+        )
+        AppLogPdp.sendCartButtonClick(buttonClickTracker)
     }
 
     fun processAddToCart(productModel: Any) {
@@ -2412,7 +2423,8 @@ class CartViewModel @Inject constructor(
                         .build(),
                     enableBoAffordability = cartGroupHolderData.cartShopGroupTicker.enableBoAffordability,
                     enableBundleCrossSell = cartGroupHolderData.cartShopGroupTicker.enableBundleCrossSell,
-                    isTokoNow = cartGroupHolderData.isTokoNow
+                    isTokoNow = cartGroupHolderData.isTokoNow,
+                    groupMetadata = CartShopGroupTickerGroupMetadataRequestMapper.generateGroupMetadata(cartGroupHolderData)
                 )
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
                     .cartShopGroupTickerAggregator.data

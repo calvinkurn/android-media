@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.R
@@ -57,7 +59,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
-    private lateinit var adapter: EditNegKeywordListAdapter
+    private var adapter: EditNegKeywordListAdapter? = null
     private var restoreData: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var cursor = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
@@ -117,21 +119,22 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
+        val startPosition = adapter?.items?.size.orZero()
         this.cursor = cursor
         data.forEach { result ->
             if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT)) {
-                adapter.items.add(EditNegKeywordItemViewModel(result))
+                adapter?.items?.add(EditNegKeywordItemViewModel(result))
                 originalKeyList.add(result.tag)
             }
         }
-        if (adapter.items.isEmpty()) {
-            adapter.items.add(EditNegKeywordEmptyViewModel())
+        if (adapter?.items?.isEmpty() == true) {
+            adapter?.items?.add(EditNegKeywordEmptyViewModel())
             setVisibilityOperation(View.GONE)
         } else {
             setVisibilityOperation(View.VISIBLE)
         }
         updateItemCount()
-        adapter.notifyDataSetChanged()
+        adapter?.notifyItemRangeInserted(startPosition, adapter?.items?.size.orZero())
         recyclerviewScrollListener.updateStateAfterGetData()
     }
 
@@ -141,8 +144,8 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private fun onStatusChange(position: Int) {
         if (isExistsOriginal(position)) {
-            deletedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
-            addedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
+            deletedKeywords?.add((adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data)
+            addedKeywords?.add((adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data)
         }
     }
 
@@ -151,7 +154,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_title))
             dialog.setDescription(MethodChecker.fromHtml(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),
-                (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
+                (adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data.tag)))
             dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
             dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
             dialog.setPrimaryCTAClickListener {
@@ -167,28 +170,32 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun deleteNegKeyword(position: Int) {
+        val startPosition = adapter?.items?.size.orZero()
+        var itemCount = Int.ZERO
         restoreData?.forEach {
-            if (it.tag == (adapter.items[position] as EditNegKeywordItemViewModel).data.tag) {
+            if (it.tag == (adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data.tag) {
                 it.isChecked = false
             }
         }
         if (isExistsOriginal(position)) {
-            deletedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
+            deletedKeywords?.add((adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data)
         } else {
             var ind = 0
             addedKeywords?.forEachIndexed { index, it ->
-                if (it.tag == (adapter.items[position] as EditNegKeywordItemViewModel).data.tag) {
+                if (it.tag == (adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data.tag) {
                     ind = index
                 }
             }
             addedKeywords?.removeAt(ind)
         }
-        adapter.items.removeAt(position)
-        if (adapter.items.isEmpty()) {
-            adapter.items.add(EditNegKeywordEmptyViewModel())
+        adapter?.items?.removeAt(position)
+        adapter?.notifyItemRemoved(position)
+        if (adapter?.items?.isEmpty() == true) {
+            adapter?.items?.add(EditNegKeywordEmptyViewModel())
+            itemCount++
             setVisibilityOperation(View.GONE)
         }
-        adapter.notifyDataSetChanged()
+        adapter?.notifyItemRangeInserted(startPosition, itemCount)
         updateItemCount()
         view?.let {
             Toaster.build(it,
@@ -207,7 +214,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private fun getCurrentItems(): ArrayList<String>? {
         val list: ArrayList<String> = arrayListOf()
-        adapter.items.forEach {
+        adapter?.items?.forEach {
             if (it is EditNegKeywordItemViewModel)
                 list.add(it.data.tag)
         }
@@ -217,14 +224,14 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private fun updateItemCount() {
         keywordCount?.text =
             String.format(getString(R.string.topads_edit_kata_kunci_negative_count),
-                adapter.items.size)
+                adapter?.items?.size)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.getString("groupId").let {
             groupId = it.toIntOrZero()
-            adapter.items.clear()
+            adapter?.items?.clear()
             viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
         }
 
@@ -263,28 +270,31 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun addKeywords(data: ArrayList<GetKeywordResponse.KeywordsItem>?) {
-        if (adapter.items.isNotEmpty() && adapter.items[0] is EditNegKeywordEmptyViewModel) {
-            adapter.items.clear()
+        val startPosition = adapter?.items?.size.orZero()
+        var itemCount = Int.ZERO
+        if (adapter?.items?.isNotEmpty() == true && adapter?.items?.getOrNull(Int.ZERO) is EditNegKeywordEmptyViewModel) {
+            adapter?.items?.clear()
         }
         data?.forEach {
-            if (adapter.items.find { item -> (item as EditNegKeywordItemViewModel).data.tag == it.tag } == null) {
-                adapter.items.add(EditNegKeywordItemViewModel(it))
+            if (adapter?.items?.find { item -> (item as EditNegKeywordItemViewModel).data.tag == it.tag } == null) {
+                adapter?.items?.add(EditNegKeywordItemViewModel(it))
                 addedKeywords?.add(it)
+                itemCount++
             }
         }
         setVisibilityOperation(View.VISIBLE)
         updateItemCount()
-        adapter.notifyDataSetChanged()
+        adapter?.notifyItemRangeInserted(startPosition, itemCount)
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
-        return (originalKeyList.find { it -> (adapter.items[position] as EditNegKeywordItemViewModel).data.tag == it } != null)
+        return (originalKeyList.find { it -> (adapter?.items?.getOrNull(position) as EditNegKeywordItemViewModel).data.tag == it } != null)
     }
 
     fun sendData(): Bundle {
         val bundle = Bundle()
         val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
-        list.addAll(adapter.getCurrentItems())
+        adapter?.getCurrentItems()?.let { list.addAll(it) }
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_ADDED, addedKeywords)
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_DELETED, deletedKeywords)
         bundle.putParcelableArrayList(NEGATIVE_KEYWORD_ALL, list)

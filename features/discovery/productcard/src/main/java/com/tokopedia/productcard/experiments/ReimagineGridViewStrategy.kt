@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -24,6 +25,7 @@ import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType.Grid
 import com.tokopedia.productcard.reimagine.cart.ProductCardCartExtension
+import com.tokopedia.productcard.reimagine.cta.ProductCardGenericCtaExtension
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -48,6 +50,7 @@ internal class ReimagineGridViewStrategy(
 
     private val renderer = ProductCardRenderer(productCardView, Grid)
     private val cartExtension = ProductCardCartExtension(productCardView, Grid)
+    private val genericCtaExtension = ProductCardGenericCtaExtension(productCardView, Grid)
     private val stockInfo = ProductCardStockInfo(productCardView)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
@@ -112,10 +115,12 @@ internal class ReimagineGridViewStrategy(
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
         renderer.setProductModel(productCardModel)
         stockInfo.render(productCardModel)
+
+        genericCtaExtension.render(productCardModel)
         cartExtension.render(productCardModel)
 
-        renderVideo(productCardModel)
         renderThreeDots(productCardModel)
+        renderVideo(productCardModel)
         renderContentPadding(productCardModel)
 
         CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
@@ -174,7 +179,14 @@ internal class ReimagineGridViewStrategy(
                 ?: 0
             else 0
 
-        guidelineBottom?.setGuidelineEnd(paddingBottomGuideline)
+        guidelineBottom?.run {
+            if (productCardModel.isInBackground)
+                productCardView.findViewById<View?>(R.id.productCardShopSection)
+                    .updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    bottomToBottom = id
+                }
+            setGuidelineEnd(paddingBottomGuideline)
+        }
     }
 
     override fun recycle() {
@@ -210,5 +222,17 @@ internal class ReimagineGridViewStrategy(
 
     override fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+    override fun setGenericCtaButtonOnClickListener(l: View.OnClickListener?) {
+        genericCtaExtension.ctaClickListener = { l?.onClick(it) }
+    }
+
+    override fun setGenericCtaSecondaryButtonOnClickListener(l: View.OnClickListener?) {
+        genericCtaExtension.ctaSecondaryClickListener = { l?.onClick(it) }
+    }
+
+    override fun reRenderGenericCtaButton(productCardModel: ProductCardModelReimagine) {
+        genericCtaExtension.render(productCardModel)
     }
 }

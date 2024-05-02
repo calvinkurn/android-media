@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.checkoutpayment">
+
+    <application>
+        <activity android:name=".list.view.PaymentListingActivity"
+            android:label="@string/title_one_click_checkout_choose_payment_method"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".topup.view.PaymentTopUpWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+    </application>
+</manifest>

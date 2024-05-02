@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.interceptor.SlardarAPMInterceptor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ public class TkpdOkHttpBuilder {
         Dispatcher dispatcher = new Dispatcher();
         dispatcher.setMaxRequestsPerHost(MAX_REQUEST_PER_HOST);
         this.builder.dispatcher(dispatcher);
+        this.addInterceptor(new SlardarAPMInterceptor());
     }
 
     public OkHttpClient.Builder getBuilder() {

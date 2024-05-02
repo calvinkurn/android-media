@@ -1,13 +1,12 @@
 package com.tkpd.atcvariant.view
 
-import android.graphics.drawable.Drawable
-import android.view.Gravity
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.generateBackgroundWithShadow
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -17,30 +16,21 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * Created by Yehezkiel on 17/05/21
  */
-class PartialAtcButtonView private constructor(val view: View,
-                                               private val buttonListener: PartialAtcButtonListener) {
+class PartialAtcButtonView private constructor(
+    val view: View,
+    private val buttonListener: PartialAtcButtonListener
+) {
 
     private val btnBuy = view.findViewById<UnifyButton>(R.id.btn_buy_variant)
     private val btnAtc = view.findViewById<UnifyButton>(R.id.btn_atc_variant)
     private val btnChat = view.findViewById<UnifyButton>(R.id.btn_chat_variant)
 
     private var isShopOwner: Boolean = false
-    val shadowDrawable: Drawable? by lazy {
-        view.generateBackgroundWithShadow(
-                backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
-                topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                topRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                elevation = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
-                shadowRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
-                shadowGravity = Gravity.TOP)
-    }
 
     var visibility: Boolean = false
         set(value) {
@@ -55,17 +45,47 @@ class PartialAtcButtonView private constructor(val view: View,
     }
 
     init {
-        view.background = shadowDrawable
         btnChat.generateTopchatButtonPdp()
     }
 
-    fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
+    fun renderButtonView(
+        isProductBuyable: Boolean,
+        isShopOwner: Boolean,
+        cartTypeData: CartTypeData? = null
+    ) {
         this.isShopOwner = isShopOwner
-        val onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
+        val onSuccessGetCartType =
+            cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton(onSuccessGetCartType, isShopOwner, isProductBuyable, cartTypeData)
+        btnBuy.isParallelLoading = btnBuy.isVisible && btnAtc.isVisible
+        btnAtc.isParallelLoading = btnBuy.isVisible && btnAtc.isVisible
     }
 
-    private fun renderButton(isCartRedirectionNotEmpty: Boolean, isShopOwner: Boolean, isProductBuyable: Boolean, cartRedirectionData: CartTypeData? = null) {
+    fun showLoading() {
+        setButtonToLoading(isLoading = true)
+    }
+
+    fun hideLoading() {
+        setButtonToLoading(isLoading = false)
+    }
+
+    private fun setButtonToLoading(isLoading: Boolean) {
+        btnAtc.setLoading(isLoading = isLoading)
+        btnBuy.setLoading(isLoading = isLoading)
+    }
+
+    private fun UnifyButton.setLoading(isLoading: Boolean) {
+        if (!isVisible) return
+
+        this.isLoading = isLoading
+    }
+
+    private fun renderButton(
+        isCartRedirectionNotEmpty: Boolean,
+        isShopOwner: Boolean,
+        isProductBuyable: Boolean,
+        cartRedirectionData: CartTypeData? = null
+    ) {
         val shouldRenderCartRedirection = !GlobalConfig.isSellerApp() && isCartRedirectionNotEmpty
         val shouldRenderFallbackButton = !GlobalConfig.isSellerApp() && !isCartRedirectionNotEmpty
 
@@ -98,31 +118,40 @@ class PartialAtcButtonView private constructor(val view: View,
             }
         }
 
+
         btnBuy.run {
             val firstButton = availableButton.firstOrNull()
             showWithCondition(firstButton != null)
-            generateTheme(firstButton?.color ?: "")
+            generateTheme(firstButton?.color.orEmpty())
             val fallbackTextIfEmpty = if (firstButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
             val textFirstButton = availableButton.getOrNull(0)?.text ?: fallbackTextIfEmpty
             text = textFirstButton
-            setOnClickListener {
-                buttonListener.buttonCartTypeClick(availableButton.getOrNull(0)?.cartType
-                        ?: "", text.toString(), availableButton.getOrNull(0)?.showRecommendation
-                        ?: false)
-            }
 
+            setOnClickListener {
+                if (isLoading) return@setOnClickListener
+
+                buttonListener.buttonCartTypeClick(
+                    availableButton.getOrNull(0)?.cartType.orEmpty(),
+                    text.toString(),
+                    availableButton.getOrNull(0)?.showRecommendation.orFalse()
+                )
+            }
         }
 
         btnAtc.run {
             val secondButton = availableButton.getOrNull(1)
             showWithCondition(secondButton != null)
-            generateTheme(secondButton?.color ?: "")
+            generateTheme(secondButton?.color.orEmpty())
             val fallbackTextIfEmpty = if (secondButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
             text = availableButton.getOrNull(1)?.text ?: fallbackTextIfEmpty
             setOnClickListener {
-                buttonListener.buttonCartTypeClick(availableButton.getOrNull(1)?.cartType
-                        ?: "", text.toString(), availableButton.getOrNull(1)?.showRecommendation
-                        ?: false)
+                if (isLoading) return@setOnClickListener
+
+                buttonListener.buttonCartTypeClick(
+                    availableButton.getOrNull(1)?.cartType.orEmpty(),
+                    text.toString(),
+                    availableButton.getOrNull(1)?.showRecommendation.orFalse()
+                )
             }
         }
     }
@@ -131,7 +160,7 @@ class PartialAtcButtonView private constructor(val view: View,
         btnBuy.run {
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN)
-            text = context.getString(com.tokopedia.product.detail.common.R.string.buy_now)
+            text = context.getString(productdetailcommonR.string.buy_now)
             setOnClickListener {
                 buttonListener.buyNowClick(text.toString())
             }
@@ -140,7 +169,7 @@ class PartialAtcButtonView private constructor(val view: View,
         btnAtc.run {
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN)
-            text = context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+            text = context.getString(productdetailcommonR.string.plus_product_to_cart)
             setOnClickListener {
                 buttonListener.addToCartClick(text.toString())
             }
@@ -151,7 +180,7 @@ class PartialAtcButtonView private constructor(val view: View,
 
     private fun showNoStockButton() {
         btnBuy.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.empty_stock_atc)
+            text = context.getString(productdetailcommonR.string.empty_stock_atc)
             show()
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_DISABLE)
         }
@@ -165,7 +194,7 @@ interface PartialAtcButtonListener {
     fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
     fun onChatButtonClick()
 
-    //Listener for fallback button
+    // Listener for fallback button
     fun addToCartClick(buttonText: String)
     fun buyNowClick(buttonText: String)
 }

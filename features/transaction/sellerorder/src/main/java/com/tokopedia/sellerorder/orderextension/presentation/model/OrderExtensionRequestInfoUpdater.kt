@@ -8,9 +8,10 @@ interface OrderExtensionRequestInfoUpdater {
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
             return oldData.copy(
-                processing = false,
+                sendingRequest = false,
                 message = "",
-                success = true,
+                success = false,
+                completed = false,
                 throwable = null
             ).apply { updateItems(this) }
         }
@@ -36,9 +37,10 @@ interface OrderExtensionRequestInfoUpdater {
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
             return if (selectedOption.selected) oldData else oldData.copy(
-                processing = false,
+                sendingRequest = false,
                 message = "",
-                success = true,
+                success = false,
+                completed = false,
                 throwable = null
             ).apply { updateItems(this) }
         }
@@ -88,11 +90,10 @@ interface OrderExtensionRequestInfoUpdater {
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
             return oldData.copy(
-                processing = false,
+                sendingRequest = false,
                 message = "",
                 success = false,
-                completed = true,
-                refreshOnDismiss = false,
+                completed = false,
                 throwable = throwable
             )
         }
@@ -102,13 +103,13 @@ interface OrderExtensionRequestInfoUpdater {
         private val action: (OrderExtensionRequestInfoUiModel) -> Unit
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return if (oldData.processing || oldData.completed) {
+            return if (oldData.sendingRequest || oldData.completed) {
                 oldData
             } else {
                 oldData.copy(
-                    processing = true,
+                    sendingRequest = true,
                     message = "",
-                    success = true,
+                    success = false,
                     throwable = null
                 ).also {
                     action(it)
@@ -123,7 +124,7 @@ interface OrderExtensionRequestInfoUpdater {
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
             return oldData.copy(
-                processing = false,
+                sendingRequest = false,
                 message = errorMessage,
                 success = false,
                 throwable = throwable
@@ -134,11 +135,10 @@ interface OrderExtensionRequestInfoUpdater {
     class OnSuccessSendingOrderExtensionRequest(private val message: String) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
             return oldData.copy(
-                processing = false,
+                sendingRequest = false,
                 message = message,
                 success = true,
                 completed = true,
-                refreshOnDismiss = true,
                 throwable = null
             )
         }
@@ -147,11 +147,12 @@ interface OrderExtensionRequestInfoUpdater {
     class OnRequestDismissBottomSheet: OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
             return oldData.copy(
-                processing = false,
+                items = emptyList(),
+                orderExtensionDate = OrderExtensionRequestInfoUiModel.OrderExtensionDate(),
+                sendingRequest = false,
                 message = "",
-                success = true,
+                success = false,
                 completed = true,
-                refreshOnDismiss = false,
                 throwable = null
             )
         }

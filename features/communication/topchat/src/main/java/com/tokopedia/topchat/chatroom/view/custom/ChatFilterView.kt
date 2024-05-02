@@ -9,9 +9,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
+import com.tokopedia.topchat.chatlist.domain.pojo.TopChatListFilterEnum
 import com.tokopedia.topchat.chatroom.view.adapter.ChatFilterAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.typefactory.ChatFilterTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.uimodel.ChatFilterUiModel
@@ -25,15 +23,16 @@ class ChatFilterView : LinearLayout {
     private var rvFilterAdapter: ChatFilterAdapter? = null
 
     private val sellerFilter = arrayListOf(
-        ChatFilterUiModel(R.string.filter_chat_unread, PARAM_FILTER_UNREAD),
-        ChatFilterUiModel(R.string.filter_chat_unreplied, PARAM_FILTER_UNREPLIED)
+        ChatFilterUiModel(R.string.filter_chat_unread, TopChatListFilterEnum.FILTER_UNREAD),
+        ChatFilterUiModel(R.string.filter_chat_unreplied, TopChatListFilterEnum.FILTER_UNREPLIED)
     )
     private val buyerFilter = listOf(
-        ChatFilterUiModel(R.string.filter_chat_unread, PARAM_FILTER_UNREAD)
+        ChatFilterUiModel(R.string.filter_chat_unread, TopChatListFilterEnum.FILTER_UNREAD),
+        ChatFilterUiModel(R.string.filter_chat_broadcast, TopChatListFilterEnum.FILTER_BROADCAST)
     )
 
     interface FilterListener {
-        fun onFilterChanged(filterType: String)
+        fun onFilterChanged(filterType: TopChatListFilterEnum)
     }
 
     constructor(context: Context) : super(context) {
@@ -114,7 +113,10 @@ class ChatFilterView : LinearLayout {
 
     fun updateIsWhiteListTopBot(whiteListTopBot: Boolean) {
         if (!whiteListTopBot) return
-        val topBotFilter = ChatFilterUiModel(R.string.filter_chat_smart_reply, PARAM_FILTER_TOPBOT)
+        val topBotFilter = ChatFilterUiModel(
+            R.string.filter_chat_smart_reply,
+            TopChatListFilterEnum.FILTER_TOPBOT
+        )
         if (sellerFilter.size <= 2) {
             sellerFilter.add(topBotFilter)
         }

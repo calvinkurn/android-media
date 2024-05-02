@@ -13,6 +13,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
@@ -30,8 +31,8 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.TestUtils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -160,6 +161,7 @@ abstract class BasePdpViewModelTest {
         mockkStatic(GlobalConfig::class)
         mockkObject(ProductDetailServerLogger)
         mockkStatic(TrackApp::class)
+        mockkObject(ProductRollenceHelper)
         normalizeOs()
         spykViewModel = spyk(viewModel)
     }

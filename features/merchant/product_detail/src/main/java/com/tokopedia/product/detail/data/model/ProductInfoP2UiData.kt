@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.model.sdui.SDUIData
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -73,7 +74,9 @@ data class ProductInfoP2UiData(
     var bmgm: BMGMData = BMGMData(),
     var gwp: GWPData = GWPData(),
     var promoPriceStyle: List<PromoPriceStyle> = emptyList(),
-    var dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse> = emptyList()
+    var dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse> = emptyList(),
+    var wishlistVariant: Map<String, Boolean> = mapOf(),
+    var sdui: List<SDUIData> = emptyList()
 ) {
 
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
@@ -96,12 +99,22 @@ data class ProductInfoP2UiData(
     }
 
     fun getRatesProductMetadata(productId: String): String {
-        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.productMetadata?.firstOrNull { it.productId == productId }?.value ?: ""
+        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.productMetadata?.firstOrNull { it.productId == productId }?.value
+            ?: ""
     }
 
     fun getOfferIdPriority(pid: String?): String {
         val gwpOfferId = gwp.data.firstOrNull { it.productIDs.contains(pid) }?.offerId.orEmpty()
         val bmgmOfferId = bmgm.data.firstOrNull { it.productIDs.contains(pid) }?.offerId.orEmpty()
         return gwpOfferId.ifBlank { bmgmOfferId }
+    }
+
+    fun getWishlistStatusByProductId(productId: String): Boolean =
+        wishlistVariant.getOrElse(productId) { false }
+
+    fun updateWishlistStatus(productId: String, isWishlist: Boolean) {
+        val editedWishlist = wishlistVariant.toMutableMap()
+        editedWishlist[productId] = isWishlist
+        wishlistVariant = editedWishlist
     }
 }

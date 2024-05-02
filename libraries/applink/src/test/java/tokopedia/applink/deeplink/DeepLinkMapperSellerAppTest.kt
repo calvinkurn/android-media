@@ -29,7 +29,7 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 32
-        const val SIZE_PATH = 74
+        const val SIZE_PATH = 75
     }
 
     @Throws(RuntimeException::class)

@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+
+def isBitsRepo() {
+    return project.findProperty('resRepo') == 'bits'
+}
+
+if (isBitsRepo()) {
+    apply plugin: 'com.bytedance.security.ByteSignPlugin'
+
+    SigningConfiguration {
+        if (project.name == "sellerapp") {
+            applicationId = "com.tokopedia.sellerapp"
+        } else {
+            applicationId = "com.tokopedia.tkpd"
+        }
+
+        overwriteOriginalFile = false
+    }
+}
+
+android {
+    defaultConfig {
+        if (!isBitsRepo()) {
+            if (project.name == "sellerapp") {
+                applicationId = "com.tokopedia.sellerapp"
+            } else {
+                applicationId = "com.tokopedia.tkpd"
+            }
+        }
+    }
+}

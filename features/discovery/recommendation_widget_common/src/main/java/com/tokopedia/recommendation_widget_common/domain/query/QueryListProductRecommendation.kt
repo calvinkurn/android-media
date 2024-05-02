@@ -11,8 +11,8 @@ import com.tokopedia.recommendation_widget_common.domain.query.QueryListProductR
 object QueryListProductRecommendation {
     const val LIST_PRODUCT_RECOMMENDATION_QUERY_NAME = "ListProductRecommendationQuery"
     const val LIST_PRODUCT_RECOMMENDATION_QUERY: String = "" +
-        "query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean, ${'$'}shopIDs: String, ${'$'}productCardVersion: Int) {\n" +
-        "                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow, shopIDs : ${'$'}shopIDs, productCardVersion : ${'$'}productCardVersion) {\n" +
+        "query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean, ${'$'}shopIDs: String, ${'$'}productCardVersion: Int, ${'$'}currentSessionID: String!, ${'$'}refreshType: String!) {\n" +
+        "                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow, shopIDs : ${'$'}shopIDs, productCardVersion : ${'$'}productCardVersion, currentSessionID: ${'$'}currentSessionID, refreshType: ${'$'}refreshType) {\n" +
         "                    data {\n" +
         "                      tID\n" +
         "                      source\n" +
@@ -40,6 +40,11 @@ object QueryListProductRecommendation {
         "                        }\n" +
         "                        endDate\n" +
         "                      }\n" +
+        "                       appLog {\n" +
+        "                         sessionID\n" +
+        "                         requestID\n" +
+        "                         logID\n" +
+        "                       }\n" +
         "                      recommendation {\n" +
         "                        id\n" +
         "                        name\n" +
@@ -112,6 +117,8 @@ object QueryListProductRecommendation {
         "                        }\n" +
         "                        parentID\n" +
         "                        gridPosition\n" +
+        "                        recParam\n" +
+        "                        countSold\n" +
         "                      }\n" +
         "                    }\n" +
         "                  }\n" +

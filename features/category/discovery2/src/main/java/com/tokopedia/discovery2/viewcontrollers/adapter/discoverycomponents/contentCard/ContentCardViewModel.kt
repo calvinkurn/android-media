@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.usecase.contentCardUseCase.ContentCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isEven
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -85,11 +86,21 @@ class ContentCardViewModel(
         }
     }
 
-    private fun getContentCardList(): ArrayList<ComponentsItem>? {
-        components.getComponentsItem()?.let { productList ->
-            return productList as ArrayList<ComponentsItem>
+    private fun getContentCardList(): List<ComponentsItem>? {
+        components.getComponentsItem()?.let { contentCards ->
+            return contentCards.evenUp()
         }
+
         return null
+    }
+
+    private fun List<ComponentsItem>.evenUp(): List<ComponentsItem> {
+        if (size.isEven()) return this
+
+        return toMutableList()
+            .apply {
+                add(ComponentsItem(name = ComponentNames.ContentCardEmptyState.componentName))
+            }
     }
 
     private fun ArrayList<ComponentsItem>.addShimmer() {

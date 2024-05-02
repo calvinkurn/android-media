@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'com.google.gms.google-services'
@@ -18,16 +18,24 @@ buildscript {
 }
 
 def isEnableMacrobenchmarkUtil() {
-    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+    if (project.hasProperty('enableMacrobenchmarkUtil') ?: "false") {
         return "true";
     }
     return "false";
 }
+
 android {
     namespace 'com.tokopedia.tkpd'
     testNamespace 'com.tokopedia.tkpd.test'
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/x86/libjsc.so'
+        pickFirst '**/armeabi-v7a/libjsc.so'
+        pickFirst "**/libc++_shared.so"
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -63,7 +71,6 @@ android {
         minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "com.tokopedia.tkpd"
         versionCode 391100000
         versionName "3.150"
         vectorDrawables.useSupportLibrary = true
@@ -95,6 +102,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.interceptors)
+    implementation projectOrAar(rootProject.ext.libraries.translator)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -120,6 +128,27 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
 
+    implementation rootProject.ext.msSdkDependencies.msSdk
+    implementation rootProject.ext.msSdkDependencies.sdkMonitor
+    implementation rootProject.ext.appLogDependencies.baseLibsUtility
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.msSdkDependencies.keva
+    implementation rootProject.ext.appLogDependencies.encrypt
+    implementation rootProject.ext.msSdkDependencies.network
+    implementation rootProject.ext.appLogDependencies.businessALog
+    implementation rootProject.ext.msSdkDependencies.cronet
+    implementation rootProject.ext.msSdkDependencies.networkOk3
+    implementation rootProject.ext.msSdkDependencies.librarian
+    implementation rootProject.ext.appLogDependencies.androidALog
+    implementation rootProject.ext.msSdkDependencies.apmUtil
+    implementation rootProject.ext.msSdkDependencies.serviceManager
+    implementation rootProject.ext.msSdkDependencies.serviceManagerAnnotation
+    implementation rootProject.ext.msSdkDependencies.ssRetrofit2
+    implementation rootProject.ext.msSdkDependencies.platformThread
+    implementation rootProject.ext.msSdkDependencies.wsChannel
+    implementation rootProject.ext.msSdkDependencies.apmApi
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
+
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
@@ -134,7 +163,7 @@ dependencies {
         Do not remove this dependencies, because we use real login usecase
     */
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
-    implementation projectOrAar(rootProject.ext.features.otp)
+    implementation projectOrAar(rootProject.ext.features.verification)
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)

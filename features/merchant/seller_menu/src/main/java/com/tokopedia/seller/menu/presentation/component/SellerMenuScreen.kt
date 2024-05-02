@@ -47,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -57,6 +58,7 @@ import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -115,6 +117,8 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 private const val STATUS_INCUBATE_OS = 6
 private const val TICKER_TYPE_WARNING = "warning"
 private const val TICKER_TYPE_DANGER = "danger"
+private const val TRANSACTION_FORMAT = "%s/" + Constant.ShopStatus.MAX_TRANSACTION
+private const val REACH_MAX_FREE_TRANSACTION = ">" + Constant.ShopStatus.MAX_TRANSACTION
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -875,52 +879,31 @@ fun SellerMenuShopStatusInfo(
     modifier: Modifier,
     onActionClick: (SellerMenuActionClick) -> Unit
 ) {
+    val totalTransaction = userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
+    val shouldShowTransaction = totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION_VISIBLE
     when (val shopType = userShopInfoWrapper.shopType) {
         is RegularMerchant -> {
-            val totalTransaction =
-                userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
-            userShopInfoWrapper.userShopInfoUiModel?.let { uiModel ->
-                var statsRmText: String? = null
-                var totalStatsRmText: String? = null
+            userShopInfoWrapper.userShopInfoUiModel?.let {
 
-                val shouldShowTransactionSection =
-                    totalTransaction < Constant.ShopStatus.THRESHOLD_TRANSACTION &&
-                        uiModel.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO
-
-                val ctaColor =
-                    when (shopType) {
-                        is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
-                            NestTheme.colors.GN._500
-                        }
-
-                        is RegularMerchant.Pending -> {
-                            NestTheme.colors.NN._950.copy(
-                                alpha = 0.68f
-                            )
-                        }
-
-                        else -> {
-                            null
-                        }
+                val ctaColor = when (shopType) {
+                    is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
+                        NestTheme.colors.GN._500
                     }
 
-                if (shouldShowTransactionSection) {
-                    if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
-                        statsRmText = MethodChecker.fromHtml(
-                            stringResource(id = sellermenuR.string.transaction_passed)
-                        ).toString()
-                        totalStatsRmText = null
-                    } else {
-                        statsRmText = stringResource(id = getRmStatsTextRes(uiModel))
-                        totalStatsRmText = stringResource(
-                            id = sellermenuR.string.total_transaction,
-                            totalTransaction.toString()
+                    is RegularMerchant.Pending -> {
+                        NestTheme.colors.NN._950.copy(
+                            alpha = 0.68f
                         )
                     }
+
+                    else -> {
+                        null
+                    }
                 }
+
                 SellerMenuStatusRegular(
-                    rmStatsText = statsRmText,
-                    rmTotalStatsText = totalStatsRmText,
+                    shouldShowTransaction = shouldShowTransaction,
+                    totalTransaction = totalTransaction,
                     pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
                     ctaTextRes = getRmVerificationTextRes(shopType),
                     ctaColor = ctaColor,
@@ -936,17 +919,19 @@ fun SellerMenuShopStatusInfo(
             (userShopInfoWrapper.shopType as? PowerMerchantStatus)?.let { pm ->
                 val periodType = userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
                 val isNewSeller = userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
-                val canUpgrade =
-                    when {
-                        periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO && isNewSeller == false -> true
-                        periodType == Constant.COMMUNICATION_PERIOD_PM_PRO -> false
-                        shopType is PowerMerchantStatus.NotActive -> false
-                        else -> true
-                    }
+                val canUpgrade = when {
+                    periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO && isNewSeller == false -> true
+                    periodType == Constant.COMMUNICATION_PERIOD_PM_PRO -> false
+                    shopType is PowerMerchantStatus.NotActive -> false
+                    else -> true
+                }
+
                 SellerMenuStatusPm(
-                    isActive = pm is PowerMerchantStatus.Active,
+                    shouldShowTransaction = shouldShowTransaction,
+                    totalTransaction = totalTransaction,
                     canUpgrade = canUpgrade,
                     modifier = modifier,
+                    isKyc = userShopInfoWrapper.userShopInfoUiModel?.isKyc.orFalse(),
                     onActionClick = onActionClick
                 )
             }
@@ -988,6 +973,8 @@ fun SellerMenuShopStatusInfo(
                 userShopInfoWrapper.userShopInfoUiModel?.badge ?: PMProURL.ICON_URL
 
             SellerMenuStatusPmPro(
+                shouldShowTransaction = shouldShowTransaction,
+                totalTransaction = totalTransaction,
                 pmProGradeName = gradeName,
                 backgroundImageUrl = backgroundImageUrl,
                 pmProBadgeUrl = pmProBadgeUrl,
@@ -1014,7 +1001,7 @@ private fun getRmStatsTextRes(userShopInfoUiModel: UserShopInfoWrapper.UserShopI
     return if (userShopInfoUiModel.dateCreated.isBlank() || userShopInfoUiModel.isBeforeOnDate) {
         sellermenuR.string.transaction_on_date
     } else {
-        sellermenuR.string.transaction_since_joining
+        sellermenuR.string.total_transaction_label
     }
 }
 
@@ -1517,8 +1504,8 @@ fun SellerMenuOrderSectionItem(
 
 @Composable
 fun SellerMenuStatusRegular(
-    rmStatsText: String?,
-    rmTotalStatsText: String?,
+    shouldShowTransaction: Boolean = false,
+    totalTransaction: Long = 0L,
     pmEligibleIcon: Int?,
     @StringRes ctaTextRes: Int?,
     ctaColor: Color?,
@@ -1545,9 +1532,7 @@ fun SellerMenuStatusRegular(
                 iconEligiblePm,
                 regularMerchantStatus,
                 dividerSpacer,
-                dividerStatsRm,
-                textStatsRm,
-                textTotalStatsRm
+                transactionComponent
             ) = createRefs()
 
             val leftGuideline = createGuidelineFromStart(16.dp)
@@ -1600,116 +1585,150 @@ fun SellerMenuStatusRegular(
                 )
             }
 
-            if (rmStatsText != null) {
-                Spacer(
-                    modifier = Modifier
-                        .height(12.dp)
-                        .constrainAs(dividerSpacer) {
-                            top.linkTo(shopStatusTitle.bottom)
-                        }
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_divider_stats_rm),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .constrainAs(dividerStatsRm) {
-                            start.linkTo(shopStatusTitle.start)
-                            end.linkTo(regularMerchantStatus.end)
-                            top.linkTo(dividerSpacer.bottom)
-                            bottom.linkTo(textStatsRm.top)
-                        }
-                )
-
-                NestTypography(
-                    text = rmStatsText,
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.NN._950.copy(
-                            alpha = 0.68f
-                        )
-                    ),
-                    modifier = Modifier
-                        .constrainAs(textStatsRm) {
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(leftGuideline)
-                            top.linkTo(dividerStatsRm.bottom)
-                        }
-                        .padding(
-                            top = 12.dp,
-                            end = 16.dp
-                        )
-                )
-            }
-
-            if (rmTotalStatsText != null) {
-                NestTypography(
-                    text = rmTotalStatsText,
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.NN._950.copy(
-                            alpha = 0.96f
-                        ),
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .padding(
-                            top = 12.dp,
-                            end = 16.dp
-                        )
-                        .constrainAs(textTotalStatsRm) {
-                            top.linkTo(dividerStatsRm.bottom)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                        }
-                )
-            }
+            TotalTransactionComponent(
+                shouldShowTransaction,
+                totalTransaction,
+                modifier = Modifier.constrainAs(transactionComponent) {
+                    top.linkTo(shopStatusTitle.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+            )
         }
     }
 }
 
 @Composable
+fun TotalTransactionComponent(shouldShowTransaction: Boolean, totalTransaction: Long, modifier: Modifier) {
+    if (shouldShowTransaction) {
+        ConstraintLayout(
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            val (divider, tvTransactionLabel, tvTransactions) = createRefs()
+            val totalTransactionFmt = if (totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION) {
+                String.format(TRANSACTION_FORMAT, totalTransaction.toString())
+            } else {
+                REACH_MAX_FREE_TRANSACTION
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_divider_stats_rm),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .constrainAs(divider) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top, margin = 12.dp)
+                    }
+            )
+
+            NestTypography(
+                text = stringResource(id = R.string.total_transaction_label),
+                textStyle = NestTheme.typography.body2.copy(
+                    color = NestTheme.colors.NN._950.copy(
+                        alpha = 0.68f
+                    )
+                ),
+                modifier = Modifier
+                    .constrainAs(tvTransactionLabel) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        top.linkTo(divider.bottom)
+                    }
+                    .padding(
+                        top = 12.dp,
+                        end = 16.dp
+                    )
+            )
+
+            NestTypography(
+                text = totalTransactionFmt,
+                textStyle = NestTheme.typography.body2.copy(
+                    color = NestTheme.colors.NN._950.copy(
+                        alpha = 0.96f
+                    ),
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .padding(
+                        top = 12.dp,
+                        end = 16.dp
+                    )
+                    .constrainAs(tvTransactions) {
+                        top.linkTo(tvTransactionLabel.top)
+                        bottom.linkTo(tvTransactionLabel.bottom)
+                        end.linkTo(parent.end)
+                    }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewSellerMenuStatusPm() {
+//    SellerMenuStatusPm(true, 50, false, Modifier, false) {
+//
+//    }
+
+//    SellerMenuStatusRegular(
+//        shouldShowTransaction = true,
+//        totalTransaction = 51L,
+//        pmEligibleIcon = IconUnify.BADGE_PM_FILLED,
+//        ctaTextRes = sellermenucommonR.string.setting_verifikasi,
+//        ctaColor = NestTheme.colors.GN._500
+//    )
+//    TotalTransactionComponent(shouldShowTransaction = true, totalTransaction = 51,
+//        Modifier
+//            .fillMaxWidth()
+//            .wrapContentHeight())
+}
+
+@Composable
 fun SellerMenuStatusPm(
-    isActive: Boolean,
+    shouldShowTransaction: Boolean = false,
+    totalTransaction: Long = 0L,
     canUpgrade: Boolean,
     modifier: Modifier,
+    isKyc: Boolean,
     onActionClick: (SellerMenuActionClick) -> Unit
 ) {
     val actionClick =
         when {
-            !isActive -> SellerMenuActionClick.POWER_MERCHANT_INACTIVE
+            !isKyc -> SellerMenuActionClick.POWER_MERCHANT_KYC
             canUpgrade -> SellerMenuActionClick.POWER_MERCHANT_UPGRADE
             else -> SellerMenuActionClick.POWER_MERCHANT
         }
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .height(45.dp)
+            .wrapContentHeight()
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
             .clickable { onActionClick(actionClick) }
     ) {
         ConstraintLayout(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
         ) {
             val (
                 powerMerchantText,
                 powerMerchantStatusText,
                 pmIcon,
-                upgradePMText
+                upgradePMText,
+                kycNotVerified,
+                transactionComponent
             ) = createRefs()
 
             val middleGuideline = createGuidelineFromStart(40.dp)
 
-            val pmText =
-                if (isActive) {
-                    stringResource(id = sellermenucommonR.string.power_merchant_upgrade)
-                } else {
-                    stringResource(id = sellermenucommonR.string.power_merchant_status)
-                }
+            val pmText = stringResource(id = sellermenucommonR.string.power_merchant_upgrade)
 
             NestTypography(
                 text = pmText,
@@ -1721,39 +1740,56 @@ fun SellerMenuStatusPm(
                     .widthIn(min = 0.dp)
                     .constrainAs(powerMerchantText) {
                         start.linkTo(middleGuideline)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        top.linkTo(pmIcon.top)
+                        bottom.linkTo(pmIcon.bottom)
                     }
             )
 
-            if (!isActive) {
+            if (isKyc) {
+                if (canUpgrade) {
+                    NestTypography(
+                        text = stringResource(id = sellermenuR.string.setting_upgrade),
+                        textStyle = NestTheme.typography.body2.copy(
+                            color = NestTheme.colors.GN._500,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier
+                            .constrainAs(upgradePMText) {
+                                top.linkTo(pmIcon.top)
+                                bottom.linkTo(pmIcon.bottom)
+                                end.linkTo(parent.end)
+                            }
+                            .padding(end = 16.dp)
+                    )
+                }
+            } else {
+                NestIcon(
+                    iconId = IconUnify.INFORMATION,
+                    colorLightEnable = NestTheme.colors.RN._500,
+                    colorNightEnable = NestTheme.colors.RN._500,
+                    modifier = Modifier
+                        .width(16.dp)
+                        .height(16.dp)
+                        .clip(CircleShape)
+                        .background(Color.Transparent)
+                        .constrainAs(kycNotVerified) {
+                            end.linkTo(powerMerchantStatusText.start)
+                            top.linkTo(pmIcon.top)
+                            bottom.linkTo(pmIcon.bottom)
+                        }
+                )
+
                 NestTypography(
-                    text = stringResource(id = sellermenucommonR.string.setting_not_active),
+                    text = stringResource(id = sellermenucommonR.string.setting_other_not_verified),
                     textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.RN._500,
-                        fontWeight = FontWeight.Bold
+                        color = NestTheme.colors.NN._950,
+                        fontWeight = FontWeight.Normal
                     ),
                     modifier = Modifier
                         .widthIn(min = 0.dp)
                         .constrainAs(powerMerchantStatusText) {
-                            start.linkTo(powerMerchantText.end)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
-                )
-            }
-
-            if (canUpgrade) {
-                NestTypography(
-                    text = stringResource(id = sellermenuR.string.setting_upgrade),
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = NestTheme.colors.GN._500,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .constrainAs(upgradePMText) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
+                            top.linkTo(pmIcon.top)
+                            bottom.linkTo(pmIcon.bottom)
                             end.linkTo(parent.end)
                         }
                         .padding(end = 16.dp)
@@ -1771,9 +1807,19 @@ fun SellerMenuStatusPm(
                     .constrainAs(pmIcon) {
                         start.linkTo(parent.start)
                         end.linkTo(middleGuideline)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        linkTo(top = parent.top, bottom = parent.bottom, bias = 0f, bottomMargin = 12.dp, topMargin = 12.dp)
                     }
+            )
+
+            TotalTransactionComponent(
+                shouldShowTransaction,
+                totalTransaction,
+                modifier = Modifier.constrainAs(transactionComponent) {
+                    top.linkTo(pmIcon.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom, margin = 12.dp)
+                }
             )
         }
     }
@@ -1781,6 +1827,8 @@ fun SellerMenuStatusPm(
 
 @Composable
 fun SellerMenuStatusPmPro(
+    shouldShowTransaction: Boolean,
+    totalTransaction: Long,
     pmProGradeName: String?,
     backgroundImageUrl: String,
     pmProBadgeUrl: String,
@@ -1790,14 +1838,14 @@ fun SellerMenuStatusPmPro(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(45.dp)
+            .wrapContentHeight()
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
     ) {
         ConstraintLayout(
             modifier = Modifier
-                .fillMaxHeight()
+                .wrapContentHeight()
                 .fillMaxWidth()
         ) {
             val (
@@ -1805,7 +1853,8 @@ fun SellerMenuStatusPmPro(
                 pmProTextRef,
                 pmProStatusText,
                 pmProIconRef,
-                pmInfoSpacerRef
+                pmInfoSpacerRef,
+                transactionComponent
             ) = createRefs()
 
             NestImage(
@@ -1833,8 +1882,7 @@ fun SellerMenuStatusPmPro(
                     .clip(CircleShape)
                     .border(1.dp, NestTheme.colors.NN._50, CircleShape)
                     .constrainAs(pmProIconRef) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        linkTo(top = parent.top, bottom = parent.bottom, bias = 0f, topMargin = 12.dp, bottomMargin = 12.dp)
                         end.linkTo(pmInfoSpacerRef.end)
                     }
             )
@@ -1850,8 +1898,8 @@ fun SellerMenuStatusPmPro(
                 modifier = Modifier
                     .padding(start = 3.dp)
                     .constrainAs(pmProTextRef) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        top.linkTo(pmProIconRef.top)
+                        bottom.linkTo(pmProIconRef.bottom)
                         start.linkTo(pmInfoSpacerRef.end)
                     }
             )
@@ -1864,10 +1912,21 @@ fun SellerMenuStatusPmPro(
                 ),
                 modifier = Modifier
                     .constrainAs(pmProStatusText) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        top.linkTo(pmProTextRef.top)
+                        bottom.linkTo(pmProTextRef.bottom)
                         start.linkTo(pmProTextRef.end)
                     }
+            )
+
+            TotalTransactionComponent(
+                shouldShowTransaction,
+                totalTransaction,
+                modifier = Modifier.constrainAs(transactionComponent) {
+                    top.linkTo(pmProTextRef.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom, margin = 12.dp)
+                }
             )
         }
     }

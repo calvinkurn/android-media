@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.common_sdk_affiliate_toko.model.AdditionalParam
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.config.GlobalConfig
@@ -65,13 +66,15 @@ import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingData
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
@@ -95,7 +98,10 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -408,70 +414,78 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `hide floating button is false when get pid in cartRedirection is error`() = with(spykViewModel) {
-        getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = "123"))
-        every { isShopOwner() } returns false
-        every { p2Data.value } returns ProductInfoP2UiData()
+    fun `hide floating button is false when get pid in cartRedirection is error`() =
+        with(spykViewModel) {
+            getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = "123"))
+            every { isShopOwner() } returns false
+            every { p2Data.value } returns ProductInfoP2UiData()
 
-        assertFalse(shouldHideFloatingButton())
-    }
+            assertFalse(shouldHideFloatingButton())
+        }
 
     @Test
-    fun `hide floating button is false when shouldHideFloatingButtonInPdp return false`() = with(spykViewModel) {
-        val pid = "123"
-        val oneOverrideButton = listOf(AvailableButton())
-        getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = pid))
+    fun `hide floating button is false when shouldHideFloatingButtonInPdp return false`() =
+        with(spykViewModel) {
+            val pid = "123"
+            val oneOverrideButton = listOf(AvailableButton())
+            getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = pid))
 
-        every { isShopOwner() } returns false
-        // owner false, hide false, override empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData())
-        )
-        assertFalse(shouldHideFloatingButton())
-
-        // owner false, hide false, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(
-                pid to CartTypeData(overrideButtons = oneOverrideButton)
+            every { isShopOwner() } returns false
+            // owner false, hide false, override empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData())
             )
-        )
-        assertFalse(shouldHideFloatingButton())
+            assertFalse(shouldHideFloatingButton())
 
-        // owner false, hide true, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(
-                pid to CartTypeData(hideFloatingButton = true, overrideButtons = oneOverrideButton)
+            // owner false, hide false, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(
+                    pid to CartTypeData(overrideButtons = oneOverrideButton)
+                )
             )
-        )
-        assertFalse(shouldHideFloatingButton())
+            assertFalse(shouldHideFloatingButton())
 
-        every { isShopOwner() } returns true
-        // owner true, hide true, override empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData(hideFloatingButton = true))
-        )
-        assertFalse(shouldHideFloatingButton())
-
-        // owner true, hide true, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(
-                pid to CartTypeData(hideFloatingButton = true, overrideButtons = oneOverrideButton)
+            // owner false, hide true, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(
+                    pid to CartTypeData(
+                        hideFloatingButton = true,
+                        overrideButtons = oneOverrideButton
+                    )
+                )
             )
-        )
-        assertFalse(shouldHideFloatingButton())
+            assertFalse(shouldHideFloatingButton())
 
-        // owner true, hide false, override empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData())
-        )
-        assertFalse(shouldHideFloatingButton())
+            every { isShopOwner() } returns true
+            // owner true, hide true, override empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData(hideFloatingButton = true))
+            )
+            assertFalse(shouldHideFloatingButton())
 
-        // owner true, hide false, override !empty
-        every { p2Data.value } returns ProductInfoP2UiData(
-            cartRedirection = mapOf(pid to CartTypeData(overrideButtons = oneOverrideButton))
-        )
-        assertFalse(shouldHideFloatingButton())
-    }
+            // owner true, hide true, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(
+                    pid to CartTypeData(
+                        hideFloatingButton = true,
+                        overrideButtons = oneOverrideButton
+                    )
+                )
+            )
+            assertFalse(shouldHideFloatingButton())
+
+            // owner true, hide false, override empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData())
+            )
+            assertFalse(shouldHideFloatingButton())
+
+            // owner true, hide false, override !empty
+            every { p2Data.value } returns ProductInfoP2UiData(
+                cartRedirection = mapOf(pid to CartTypeData(overrideButtons = oneOverrideButton))
+            )
+            assertFalse(shouldHideFloatingButton())
+        }
 
     @Test
     fun `hide floating button is true`() = with(spykViewModel) {
@@ -1369,7 +1383,8 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             onError.invoke(Throwable(""))
         }
 
-        val miniCart = generateMiniCartMock(productId = dataP1.layoutData.basic.productID).toMutableMap()
+        val miniCart =
+            generateMiniCartMock(productId = dataP1.layoutData.basic.productID).toMutableMap()
         `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
@@ -1463,7 +1478,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             topAdsImageViewUseCase.getImageData(any())
-        } returns arrayListOf(TopAdsImageViewModel())
+        } returns arrayListOf(TopAdsImageUiModel())
     }
 
     @Test
@@ -1503,7 +1518,17 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         mockkObject(GetPdpLayoutUseCase)
         every {
-            GetPdpLayoutUseCase.createParams(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            GetPdpLayoutUseCase.createParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } throws Throwable()
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
@@ -1924,28 +1949,46 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val affiliateUUID = "123"
         val affiliateChannel = "affiliate channel"
         val uuid = "1111"
+        val affiliateSubIds = mapOf("1" to "subId1", "subid2" to "subId2", "asal" to "asal")
+        val affiliateSource = "PDP"
 
         val slot = slot<AffiliatePageDetail>()
+        val subIdsSlot = slot<List<AdditionalParam>>()
 
         viewModel.hitAffiliateCookie(
             productInfo = mockProductInfoP1,
             affiliateUuid = affiliateUUID,
             uuid = uuid,
-            affiliateChannel = affiliateChannel
+            affiliateChannel = affiliateChannel,
+            affiliateSubIds = affiliateSubIds,
+            affiliateSource = affiliateSource
         )
 
         coVerify {
             affiliateCookieHelper.initCookie(
-                affiliateUUID,
-                affiliateChannel,
-                capture(slot),
-                uuid
+                affiliateUUID = affiliateUUID,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = capture(slot),
+                uuid = uuid,
+                additionalParam = emptyList(),
+                subIds = capture(subIdsSlot),
+                source = affiliateSource
             )
         }
 
         with(slot.captured) {
             assertEquals(productId, this.pageId)
             assertTrue(source is AffiliateSdkPageSource.PDP)
+        }
+
+        with (subIdsSlot.captured) {
+            assertEquals(size, 2)
+
+            assertEquals(get(0).key, "1")
+            assertEquals(get(0).value, "subId1")
+
+            assertEquals(get(1).key, "2")
+            assertEquals(get(1).value, "subId2")
         }
     }
 
@@ -1999,15 +2042,19 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             productInfo = mockProductInfoP1,
             affiliateUuid = affiliateUUID,
             uuid = uuid,
-            affiliateChannel = affiliateChannel
+            affiliateChannel = affiliateChannel,
+            affiliateSubIds = null,
+            affiliateSource = null
         )
 
         coVerify {
             affiliateCookieHelper.initCookie(
-                affiliateUUID,
-                affiliateChannel,
-                any(),
-                uuid
+                affiliateUUID = affiliateUUID,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = any(),
+                uuid = uuid,
+                subIds = emptyList(),
+                source = ""
             )
         }
         // no op, expect to be handled by Affiliate SDK
@@ -2276,7 +2323,12 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+        viewModel.updateRecomCartNonVariant(
+            recomItem,
+            quantity,
+            miniCart,
+            RecommendationNowAffiliateData()
+        )
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2300,7 +2352,12 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+        viewModel.updateRecomCartNonVariant(
+            recomItem,
+            quantity,
+            miniCart,
+            RecommendationNowAffiliateData()
+        )
 
         coVerify {
             updateCartUseCase.executeOnBackground()
@@ -2321,7 +2378,12 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.updateRecomCartNonVariant(recomItem, quantity, miniCart, RecommendationNowAffiliateData())
+        viewModel.updateRecomCartNonVariant(
+            recomItem,
+            quantity,
+            miniCart,
+            RecommendationNowAffiliateData()
+        )
         coVerify {
             updateCartUseCase.executeOnBackground()
         }
@@ -2403,7 +2465,10 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
     // endregion
     @Test
     fun `verify add to wishlistv2 returns success`() {
-        val productId = "123"
+        `on success get product info login`()
+
+        val productId = "518076286"
+
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2412,8 +2477,9 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addWishListV2(productId, mockListener)
 
-        verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        verify { addToWishlistV2UseCase.setParams(any(), any()) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), true)
     }
 
     @Test
@@ -2448,8 +2514,10 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `verify add to wishlistv2 returns fail`() {
-        val productId = "123"
-        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        `on success get product info login`()
+
+        val productId = "518076286"
+
         val mockThrowable = mockk<Throwable>("fail")
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2460,16 +2528,19 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify {
             addToWishlistV2UseCase.setParams(
-                recommendationItem.productId.toString(),
-                userSessionInterface.userId
+                any(),
+                any()
             )
         }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), false)
     }
 
     @Test
     fun `verify remove wishlistV2 returns success`() {
-        val productId = "123"
+        `on success get product info login`()
+
+        val productId = "518076293"
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2480,13 +2551,18 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeWishListV2(productId, mockListener)
 
-        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        verify { deleteWishlistV2UseCase.setParams(any(), any()) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), false)
     }
 
     @Test
     fun `verify remove wishlistV2 returns fail`() {
-        val productId = "123"
+        `on success get product info login`()
+
+        val productId = "518076293"
+
         val mockThrowable = mockk<Throwable>("fail")
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -2495,8 +2571,10 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeWishListV2(productId, mockListener)
 
-        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        verify { deleteWishlistV2UseCase.setParams(any(), any()) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+
+        assertEquals(viewModel.p2Data.value?.getWishlistStatusByProductId(productId), true)
     }
 
     //region product ar
@@ -2978,7 +3056,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns flowOf(Result.success(layoutExpected))
 
         coEvery {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+            getP2DataAndMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                captureLambda()
+            )
         } returns p2Expected
 
         viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
@@ -3011,7 +3096,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns flowOf(Result.success(layoutExpected))
 
         coEvery {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+            getP2DataAndMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                captureLambda()
+            )
         } returns p2Expected
         coEvery { remoteConfigInstance.getLong(any(), any()) } returns 5000
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
@@ -3041,7 +3133,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns flowOf(Result.success(layoutExpected))
 
         coEvery {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+            getP2DataAndMiniCartUseCase.executeOnBackground(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                captureLambda()
+            )
         } throws Throwable()
 
         viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
@@ -3123,6 +3222,62 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         assertTrue(viewModel.productLayout.value == null)
     }
+
+    //region atc animation
+    @Test
+    fun `success atc and animation`() = runTest {
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.PDP_ATC_ANIMATION_KEY,
+                ""
+            )
+        } returns RollenceKey.PDP_ATC_ANIMATION_VARIANT
+
+        val successAtcAndAnimation = mutableListOf<Boolean>()
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
+        }
+
+        assertEquals(successAtcAndAnimation.size, 0)
+
+        viewModel.onFinishAnimation()
+        viewModel.onFinishAtc()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 1)
+        assertEquals(successAtcAndAnimation.first(), true)
+
+        viewModel.onFinishAtc()
+        viewModel.onFinishAnimation()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 2)
+        assertEquals(successAtcAndAnimation[1], true)
+    }
+
+    @Test
+    fun `success atc and animation when rollence false`() = runTest {
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.PDP_ATC_ANIMATION_KEY,
+                ""
+            )
+        } returns ""
+
+        val successAtcAndAnimation = mutableListOf<Boolean>()
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
+        }
+
+        assertEquals(successAtcAndAnimation.size, 0)
+
+        viewModel.onFinishAtc()
+
+        advanceUntilIdle()
+        assertEquals(successAtcAndAnimation.size, 1)
+        assertEquals(successAtcAndAnimation.first(), true)
+    }
+    //endregion
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"

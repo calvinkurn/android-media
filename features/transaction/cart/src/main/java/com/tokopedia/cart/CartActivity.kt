@@ -2,13 +2,16 @@ package com.tokopedia.cart
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.cart.view.CartRevampFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.telemetry.ITelemetryActivity
 
 class CartActivity :
     BaseCheckoutActivity(),
-    ITelemetryActivity {
+    ITelemetryActivity,
+    AppLogInterface {
 
     private var revampFragment: CartRevampFragment? = null
     private var cartId: String? = null
@@ -63,4 +66,12 @@ class CartActivity :
     }
 
     override fun getTelemetrySectionName() = "atc"
+
+    override fun getPageName(): String {
+        return PageName.CART
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
 }
