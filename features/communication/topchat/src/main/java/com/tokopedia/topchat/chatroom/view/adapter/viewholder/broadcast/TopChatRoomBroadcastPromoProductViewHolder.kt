@@ -46,35 +46,29 @@ class TopChatRoomBroadcastPromoProductViewHolder(
         binding?.topchatChatroomBroadcastPromoProductCard?.addOnImpressionListener(
             uiModel.impressHolder
         ) {
-            val banner = broadcastUiModel.banner
-            if (banner != null) {
-                productListener.onImpressionBroadcastProduct(
-                    blastId = broadcastUiModel.blastId,
-                    campaignStatus = banner.getCampaignStatusString(),
-                    campaignCountDown = banner.getCampaignCountDownString(),
-                    productId = uiModel.productId,
-                    position = layoutPosition,
-                    totalProduct = getTotalProduct()
-                )
-            }
+            productListener.onImpressionBroadcastProduct(
+                blastId = broadcastUiModel.blastId,
+                campaignStatus = broadcastUiModel.banner?.getCampaignStatusString().orEmpty(),
+                campaignCountDown = broadcastUiModel.banner?.getCampaignCountDownString().orEmpty(),
+                productId = uiModel.productId,
+                position = layoutPosition,
+                totalProduct = getTotalProduct()
+            )
         }
     }
 
     private fun setListener() {
         binding?.topchatChatroomBroadcastPromoProductCard?.setOnClickListener {
-            val banner = broadcastUiModel.banner
-            if (banner != null) {
-                productListener.onClickBroadcastProduct(
-                    blastId = broadcastUiModel.blastId,
-                    campaignStatus = banner.getCampaignStatusString(),
-                    campaignCountDown = banner.getCampaignCountDownString(),
-                    productId = uiModel?.productId.orEmpty(),
-                    position = layoutPosition,
-                    totalProduct = getTotalProduct(),
-                    androidUrl = uiModel?.androidUrl.orEmpty(),
-                    productUrl = uiModel?.productUrl.orEmpty()
-                )
-            }
+            productListener.onClickBroadcastProduct(
+                blastId = broadcastUiModel.blastId,
+                campaignStatus = broadcastUiModel.banner?.getCampaignStatusString().orEmpty(),
+                campaignCountDown = broadcastUiModel.banner?.getCampaignCountDownString().orEmpty(),
+                productId = uiModel?.productId.orEmpty(),
+                position = layoutPosition,
+                totalProduct = getTotalProduct(),
+                androidUrl = uiModel?.androidUrl.orEmpty(),
+                productUrl = uiModel?.productUrl.orEmpty()
+            )
         }
     }
 
@@ -85,7 +79,7 @@ class TopChatRoomBroadcastPromoProductViewHolder(
         }.let {
             totalProduct--
         }
-        return totalProduct
+        return totalProduct.coerceAtLeast(0)
     }
 
     companion object {
