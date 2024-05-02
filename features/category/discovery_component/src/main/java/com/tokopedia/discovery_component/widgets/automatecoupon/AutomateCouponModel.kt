@@ -2,14 +2,16 @@ package com.tokopedia.discovery_component.widgets.automatecoupon
 
 sealed class AutomateCouponModel {
     data class List(
-        val type: DynamicColorText,
-        val benefit: DynamicColorText,
-        val tnc: DynamicColorText,
+        val type: DynamicColorText? = null,
+        val benefit: DynamicColorText? = null,
+        val tnc: DynamicColorText? = null,
         val backgroundUrl: String,
-        val timeLimit: TimeLimit,
+        val timeLimit: TimeLimit? = null,
         val iconUrl: String,
-        val shopName: DynamicColorText?,
-        val badgeText: String?
+        val shopName: DynamicColorText? = null,
+        val badgeText: String? = null,
+        val isTopads: Boolean = false,
+        val topAdsClickUrl: String? = null
     ) : AutomateCouponModel()
 
     data class Grid(
@@ -19,6 +21,8 @@ sealed class AutomateCouponModel {
         val backgroundUrl: String,
         val iconUrl: String?,
         val shopName: DynamicColorText?,
-        val badgeText: String?
+        val badgeText: String?,
+        val isTopads: Boolean = false,
+        val topAdsClickUrl: String? = null
     ) : AutomateCouponModel()
 }

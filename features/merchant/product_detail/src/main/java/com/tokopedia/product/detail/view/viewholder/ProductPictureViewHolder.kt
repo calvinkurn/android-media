@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.databinding.PdpPictureViewHolderBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 
 /**
  * Created by Yehezkiel on 25/11/20
@@ -72,6 +72,7 @@ class ProductPictureViewHolder(
             is MediaContainerType.Portrait -> {
                 setFashionScale()
             }
+
             else -> {
                 setNormalScale()
             }
@@ -110,5 +111,9 @@ class ProductPictureViewHolder(
 
         // set scaleType must always be after setAdjustViewBounds
         scaleType = scale
+    }
+
+    fun getImageUnify(): ImageView? {
+        return binding.pdpMainImg
     }
 }

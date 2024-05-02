@@ -29,14 +29,6 @@ buildscript {
             }
             allowInsecureProtocol = true
         }
-        maven {
-            url "${artifactory_url}" + "/libs-release-local";
-            credentials {
-                username = "${artifactory_username}"
-                password = "${artifactory_password}"
-            }
-            allowInsecureProtocol = true
-        }
     }
     dependencies {
         classpath ('com.android.tools.build:gradle:8.0.1')
@@ -54,4 +46,6 @@ buildscript {
 }
 
 apply from: 'buildproj.gradle'
+apply from: 'buildconfig/kotlin/repository.gradle'
+
 

@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.databinding.HomeRecommendationFeedViewholderBinding
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.kotlin.extensions.view.onTabReselected
 import com.tokopedia.kotlin.extensions.view.onTabSelected
@@ -50,7 +51,6 @@ class HomeRecommendationFeedViewHolder(
             // 3rd dp8 comes from N0 divider in home recommendation feed viewholder
             layoutParams?.height = listener.windowHeight - listener.homeMainToolbarHeight +
                 HEIGHT_8.toDpInt() +
-                HEIGHT_8.toDpInt() +
                 HEIGHT_8.toDpInt()
             homeRecommendationFeedContainer.layoutParams = layoutParams
 
@@ -78,7 +78,8 @@ class HomeRecommendationFeedViewHolder(
             listener.childsFragmentManager,
             recommendationTabDataModelList,
             listener.parentPool,
-            remoteConfig
+            remoteConfig,
+            listener.getHomeRefreshType()
         )
 
         binding.viewPagerHomeFeeds.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
@@ -120,6 +121,10 @@ class HomeRecommendationFeedViewHolder(
     }
 
     private fun onTabLayoutSelected(tab: TabLayout.Tab) {
+        homeFeedPagerAdapter
+            ?.getRegisteredFragment(tab.position)
+            ?.setRefreshType(listener.getHomeRefreshType())
+
         if (tab.position < recommendationTabDataModelList!!.size) {
             val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
             HomePageTracking.eventClickOnHomePageRecommendationTab(

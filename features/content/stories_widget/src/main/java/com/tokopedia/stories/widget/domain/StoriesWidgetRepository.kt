@@ -9,10 +9,16 @@ interface StoriesWidgetRepository {
 
     suspend fun hasSeenCoachMark(): Boolean
 
-    suspend fun getUpdatedSeenStatus(shopId: String, lastUpdated: TimeMillis): Boolean
+    suspend fun getUpdatedSeenStatus(
+        shopId: String,
+        currentHasSeenAll: Boolean,
+        lastUpdated: TimeMillis
+    ): Boolean
 
     suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntryPoint,
-        shopIds: List<String>
+        shopIds: List<String>,
+        categoryIds: List<String> = emptyList(),
+        productIds: List<String> = emptyList(),
     ): StoriesWidgetInfo
 }

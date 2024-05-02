@@ -40,8 +40,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -326,8 +326,9 @@ class NotificationViewModel @Inject constructor(
                 val params = GetRecommendationRequestParam(
                     pageNumber = page,
                     xSource = RECOM_WIDGET,
-                    pageName = RECOM_SOURCE_INBOX_PAGE,
-                    productIds = emptyList()
+                    pageName = RECOM_SOURCE_NOTIF_PAGE,
+                    productIds = emptyList(),
+                    hasNewProductCardEnabled = true
                 )
                 val recommendationWidget = getRecommendationUseCase.getData(params).firstOrNull()
                 recommendationWidget?.let {
@@ -415,7 +416,7 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTopAdsImageData(): ArrayList<TopAdsImageViewModel> {
+    private suspend fun getTopAdsImageData(): ArrayList<TopAdsImageUiModel> {
         return withContext(dispatcher.io) {
             topAdsImageViewUseCase.getImageData(
                 topAdsImageViewUseCase.getQueryMap(
@@ -487,7 +488,7 @@ class NotificationViewModel @Inject constructor(
         const val TOP_ADS_DIMEN_ID = 3
 
         const val RECOM_WIDGET = "recom_widget"
-        const val RECOM_SOURCE_INBOX_PAGE = "inbox"
+        const val RECOM_SOURCE_NOTIF_PAGE = "recom_notif"
 
         const val DEFAULT_SHOP_ID = "0"
         const val CLEAR_ALL_NOTIF_TYPE = 0

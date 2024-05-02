@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.common
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Point
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -28,7 +29,6 @@ object AtcVariantHelper {
     const val PDP_PARCEL_KEY_RESULT = "pdp_page_result"
 
     const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
-
     const val ATC_VARIANT_RESULT_CODE = 19202
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
     const val KEY_EXT_PARAMS = "ext_params"
@@ -59,6 +59,7 @@ object AtcVariantHelper {
         uspImageUrl: String = "",
         dismissAfterTransaction: Boolean = false,
         saveAfterClose: Boolean = true,
+        cartViewLocation: Point? = null, // only for pdp
         startActivitResult: (Intent, Int) -> Unit
     ) {
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -95,12 +96,21 @@ object AtcVariantHelper {
             shopId = productInfoP1.basic.shopID,
             miniCartData = miniCart,
             minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
-            showQtyEditor = isTokoNow
+            showQtyEditor = isTokoNow,
+            cartPosition = cartViewLocation
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", pageSource.source, "", "", "")
-            .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            productInfoP1.basic.productID,
+            "",
+            pageSource.source,
+            "",
+            "",
+            ""
+        ).putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
 
@@ -223,5 +233,6 @@ enum class VariantPageSource(val source: String) {
     FEED_PAGESOURCE("feed"),
     BUY_MORE_GET_MORE("offerpage"),
     CATALOG_PAGESOURCE("catalog"),
-    STORIES_PAGESOURCE("stories"),
+    PRODUCT_PREVIEW_PAGESOURCE("fullscreen_media_pdp"),
+    STORIES_PAGESOURCE("stories")
 }

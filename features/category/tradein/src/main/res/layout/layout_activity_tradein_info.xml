@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/dp_30"
-    android:background="@drawable/header_bottom_sheet_rounded_white"
+    android:background="@drawable/trade_in_header_bottom_sheet_rounded_white"
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +28,7 @@
             android:contentDescription="@null"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close_default" />
+            app:srcCompat="@drawable/tradein_ic_close_default" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/heading"

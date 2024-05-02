@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_installment"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl8"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:loader_type="circular" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_installment_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/lbl_installment_not_available"
+            android:textColor="@color/Unify_NN950_96"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/terms_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/Unify_Background"
+            android:paddingBottom="16dp">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_installment_terms"
+                android:layout_width="@dimen/dp_26"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_corner_radius="0"
+                app:unify_image_placeholder="@drawable/ic_installment_term"
+                app:unify_image_type="rect"
+                tools:ignore="ContentDescription" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:text="@string/lbl_see_installment_terms_and_condition"
+                android:textColor="@color/Unify_NN950_44"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_installment_terms"
+                app:layout_constraintEnd_toStartOf="@+id/iv_expand_terms"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@+id/iv_installment_terms"
+                app:layout_constraintTop_toTopOf="@+id/iv_installment_terms"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_expand_terms"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:rotation="180"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_installment_terms"
+                app:unify_image_corner_radius="0"
+                app:unify_image_placeholder="@drawable/ic_arrow_drop_down_grey_occ"
+                app:unify_image_type="rect"
+                tools:ignore="ContentDescription" />
+
+            <WebView
+                android:id="@+id/web_view_terms"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/iv_expand_terms"
+                app:layout_constraintStart_toStartOf="@+id/iv_installment_terms"
+                app:layout_constraintTop_toBottomOf="@+id/iv_installment_terms"
+                tools:ignore="WebViewLayout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

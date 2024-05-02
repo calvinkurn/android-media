@@ -16,8 +16,7 @@ class HomeMissionWidgetRepository @Inject constructor(
     : HomeRepository<HomeMissionWidgetData.HomeMissionWidget> {
 
     override suspend fun getRemoteData(bundle: Bundle): HomeMissionWidgetData.HomeMissionWidget {
-        getMissionWidget.get().generateParam(bundle)
-        return getMissionWidget.get().executeOnBackground()
+        return getMissionWidget.get().execute(bundle)
     }
 
     override suspend fun getCachedData(bundle: Bundle): HomeMissionWidgetData.HomeMissionWidget {

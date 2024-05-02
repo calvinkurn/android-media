@@ -101,6 +101,12 @@ object ProductCartHelper {
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
+    fun goToCheckoutWithAutoApplyPromo(activity: Activity, listPromoAutoApply: ArrayList<PromoExternalAutoApply>) {
+        val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.CHECKOUT)
+        intent.putParcelableArrayListExtra(ARGS_LIST_AUTO_APPLY_PROMO, listPromoAutoApply)
+        activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
     fun goToOneClickCheckout(activity: Activity) {
         val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)

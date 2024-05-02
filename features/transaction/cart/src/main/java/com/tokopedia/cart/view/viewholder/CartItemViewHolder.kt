@@ -1217,15 +1217,15 @@ class CartItemViewHolder(
     }
 
     private fun renderProductNotesEmpty() {
-        binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note)
+        binding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
         binding.buttonChangeNote.contentDescription =
-            binding.root.context.getString(R.string.cart_button_notes_empty_content_desc)
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
     }
 
     private fun renderProductNotesFilled() {
-        binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note_completed)
+        binding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
         binding.buttonChangeNote.contentDescription =
-            binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
     }
 
     private fun renderOldQuantity(
@@ -1406,8 +1406,25 @@ class CartItemViewHolder(
         }
 
         qtyEditorProduct.apply {
-            onFocusChanged = {
-                qtyState.value = if (it.isFocused) QtyState.Focus else QtyState.Enabled
+            onFocusChanged = { focus ->
+                val currentFocus = qtyState.value
+                if (currentFocus is QtyState.Focus && !focus.isFocused) {
+                    val newQty = qtyValue.value
+                    if (newQty == 0) {
+                        actionListener?.onCartItemDeleteButtonClicked(
+                            data,
+                            CartDeleteButtonSource.QuantityEditorImeAction
+                        )
+                    } else {
+                        validateQty(newQty, data)
+                        lastQty = qtyValue.value
+                        actionListener?.onCartItemQuantityChanged(data, qtyValue.value)
+                        handleRefreshType(data, viewHolderListener)
+                        hideKeyboard()
+                        actionListener?.clearAllFocus()
+                    }
+                }
+                qtyState.value = if (focus.isFocused) QtyState.Focus else QtyState.Enabled
             }
             keyboardOptions.value = KeyboardOptions(
                 imeAction = ImeAction.Done,

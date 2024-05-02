@@ -28,8 +28,6 @@ object ProductDetailConstant {
     // PAYLOADS
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
-    const val PAYLOAD_MEDIA_UPDATE = 6
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
@@ -77,9 +75,9 @@ object ProductDetailConstant {
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
     const val PRODUCT_DYNAMIC_ONELINER = "dynamic_oneliner"
+    const val PRODUCT_DYNAMIC_ONELINER_VARIANT = "dynamic_oneliner_var"
     const val PRODUCT_DYNAMIC_ONELINER_PROMO = "oneliner_promo"
     const val PRODUCT_SHOP_ADDITIONAL = "shop_additional"
-    const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
@@ -100,7 +98,7 @@ object ProductDetailConstant {
     const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
     const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
     const val VIEW_TO_VIEW = "view-to-view"
-    const val SDUI_VIEW = "sdui_palugada"
+    const val SDUI = "sdui"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
@@ -144,6 +142,8 @@ object ProductDetailConstant {
     const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
+    const val ARG_AFFILIATE_SUB_IDS = "ARG_AFFILIATE_SUB_IDS"
+    const val ARG_AFFILIATE_SOURCE = "ARG_AFFILIATE_SOURCE"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
     const val ARG_LAYOUT_ID = "ARG_LAYOUT_ID"
     const val ARG_EXT_PARAM = "ARG_EXT_PARAM"

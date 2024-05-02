@@ -4,13 +4,14 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.uimodel.AddToCartEvent
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartTrackerEvent
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -105,9 +106,9 @@ class AddToCartTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN add to cart recent view item success THEN should render success`() {
         // GIVEN
-        val productModel = CartRecentViewItemHolderData(
-            id = "0",
-            shopId = "0",
+        val recommendationItem = RecommendationItem(
+            productId = 0,
+            shopId = 0,
             name = "a",
             price = "1",
             minOrder = 1,
@@ -131,11 +132,11 @@ class AddToCartTest : BaseCartViewModelTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartViewModel.processAddToCart(productModel)
+        cartViewModel.processAddToCart(recommendationItem)
 
         // THEN
         assertEquals(
-            AddToCartEvent.Success(addToCartDataModel, productModel),
+            AddToCartEvent.Success(addToCartDataModel, recommendationItem),
             cartViewModel.addToCartEvent.value
         )
     }
@@ -157,7 +158,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartViewModel.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+        cartViewModel.processAddToCart(RecommendationItem(productId = 0, shopId = 0))
 
         // THEN
         MatcherAssert.assertThat(
@@ -175,7 +176,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartViewModel.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+        cartViewModel.processAddToCart(RecommendationItem(productId = 0, shopId = 0))
 
         // THEN
         assertEquals(
@@ -390,6 +391,168 @@ class AddToCartTest : BaseCartViewModelTest() {
                 productPrice = "1"
                 productMinOrder = 1
             }
+        )
+
+        // THEN
+        assertEquals(
+            AddToCartEvent.Failed(exception),
+            cartViewModel.addToCartEvent.value
+        )
+    }
+
+    @Test
+    fun `WHEN add to cart from recent view with topads THEN call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "https://click.url",
+            isTopAds = true
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(
+            CartTrackerEvent.ATCTrackingURLRecent(recommendationItem),
+            cartViewModel.cartTrackerEvent.value
+        )
+    }
+
+    @Test
+    fun `WHEN add to cart from recent view with no click url THEN don't call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "",
+            isTopAds = true
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(null, cartViewModel.cartTrackerEvent.value)
+    }
+
+    @Test
+    fun `WHEN add to cart from recent view with no topads THEN don't call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "https://click.url",
+            isTopAds = false
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(null, cartViewModel.cartTrackerEvent.value)
+    }
+
+    @Test
+    fun `WHEN add to cart from recent view with no topads and click url THEN don't call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "",
+            isTopAds = false
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(null, cartViewModel.cartTrackerEvent.value)
+    }
+
+    @Test
+    fun `WHEN add buy again item item success THEN should render success`() {
+        // GIVEN
+        val productModel = CartBuyAgainItemHolderData(
+            recommendationItem = RecommendationItem(
+                productId = 0,
+                shopId = 0,
+                name = "a",
+                price = "1",
+                minOrder = 1
+            )
+        )
+        val successMessage = "Success message add to cart"
+        val addToCartDataModel = AddToCartDataModel().apply {
+            status = AddToCartDataModel.STATUS_OK
+            data = DataModel().apply {
+                message = arrayListOf<String>().apply {
+                    add(successMessage)
+                }
+                success = 1
+            }
+        }
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartViewModel.processAddToCart(productModel)
+
+        // THEN
+        assertEquals(
+            AddToCartEvent.Success(addToCartDataModel, productModel),
+            cartViewModel.addToCartEvent.value
+        )
+    }
+
+    @Test
+    fun `WHEN add buy again item failed THEN should render error`() {
+        // GIVEN
+        val errorMessage = "Add to cart error"
+        val addToCartDataModel = AddToCartDataModel().apply {
+            this.status = AddToCartDataModel.STATUS_ERROR
+            this.data = DataModel()
+            this.errorMessage = arrayListOf<String>().apply {
+                add(errorMessage)
+            }
+        }
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartViewModel.processAddToCart(
+            CartBuyAgainItemHolderData(
+                recommendationItem = RecommendationItem(
+                    productId = 0,
+                    shopId = 0
+                )
+            )
+        )
+
+        // THEN
+        MatcherAssert.assertThat(
+            cartViewModel.addToCartEvent.value,
+            CoreMatchers.instanceOf<Any>(AddToCartEvent.Failed::class.java)
+        )
+    }
+
+    @Test
+    fun `WHEN add buy again item failed with exception THEN should render error`() {
+        // GIVEN
+        val exception = IllegalStateException("Add to cart error with exception")
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } throws exception
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartViewModel.processAddToCart(
+            CartBuyAgainItemHolderData(
+                recommendationItem = RecommendationItem(
+                    productId = 0,
+                    shopId = 0
+                )
+            )
         )
 
         // THEN

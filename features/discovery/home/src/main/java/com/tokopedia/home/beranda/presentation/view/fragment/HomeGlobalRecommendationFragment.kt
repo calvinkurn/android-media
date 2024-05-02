@@ -18,6 +18,14 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
+import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.GlidePageTrackObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductShowAppLog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -28,6 +36,8 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asCardTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
@@ -41,11 +51,15 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationCon
 import com.tokopedia.home.beranda.presentation.view.helper.ScrollToTopAdapterDataObserver
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
+import com.tokopedia.home.util.toRecomRequestType
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
@@ -59,8 +73,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -69,6 +83,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 @RecomTemporary
 class HomeGlobalRecommendationFragment :
@@ -142,6 +157,9 @@ class HomeGlobalRecommendationFragment :
 
     private var startY = 0.0F
     private var startX = 0.0F
+
+    private var hasApplogScrollListener = false
+    private var refreshType = HomeRefreshType.FIRST_OPEN
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -257,7 +275,7 @@ class HomeGlobalRecommendationFragment :
                                 getString(R.string.home_error_connection),
                                 Snackbar.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.abstraction.R.string.title_try_again),
+                                getString(abstractionR.string.title_try_again),
                                 View.OnClickListener {
                                     endlessRecyclerViewScrollListener?.loadMoreNextPage()
                                 }
@@ -404,6 +422,7 @@ class HomeGlobalRecommendationFragment :
 
                     homeRecomCurrentPage = page
                     viewModel.fetchNextHomeRecommendation(
+                        tabIndex,
                         tabName,
                         recomId,
                         DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
@@ -417,6 +436,9 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
+        sendProductShowAppLog(
+            model.asProductTrackModel()
+        )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -464,6 +486,11 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
+        sendProductClickAppLog(
+            model.asProductTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
+        )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -527,7 +554,7 @@ class HomeGlobalRecommendationFragment :
     override fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -536,14 +563,14 @@ class HomeGlobalRecommendationFragment :
         val rvContext = recyclerView?.context
 
         rvContext?.let {
-            RouteManager.route(it, model.topAdsImageViewModel?.applink)
+            RouteManager.route(it, model.topAdsImageUiModel?.applink)
         }
     }
 
     override fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -551,9 +578,14 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
+        sendCardClickAppLog(
+            model.asCardTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
+        )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -569,15 +601,18 @@ class HomeGlobalRecommendationFragment :
         rvContext?.let {
             RouteManager.route(
                 it,
-                model.topAdsImageViewModel?.applink
+                model.topAdsImageUiModel?.applink
             )
         }
     }
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
+        sendCardShowAppLog(
+            model.asCardTrackModel()
+        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -593,6 +628,9 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
+        sendCardShowAppLog(
+            item.asCardTrackModel()
+        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressEntityCardTracking(
                 item,
@@ -603,6 +641,11 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
+        sendCardClickAppLog(
+            item.asCardTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
+        )
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -615,6 +658,11 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
+        sendCardClickAppLog(
+            element.asCardTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
+        )
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
             position,
@@ -627,6 +675,9 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onPlayCardImpressed(element: PlayCardModel, position: Int) {
+        sendCardShowAppLog(
+            element.asCardTrackModel()
+        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressPlayVideoWidgetTracking(
                 element,
@@ -655,7 +706,9 @@ class HomeGlobalRecommendationFragment :
             recomId,
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
-            sourceType = sourceType
+            sourceType = sourceType,
+            refreshType = RefreshType.REFRESH,
+            tabIndex = tabIndex
         )
     }
 
@@ -687,6 +740,19 @@ class HomeGlobalRecommendationFragment :
                 }
             }
         })
+        trackVerticalScroll()
+    }
+
+    private fun trackVerticalScroll() {
+        if(hasApplogScrollListener) return
+        recyclerView?.addVerticalTrackListener {
+            GlidePageTrackObject(
+                listName = tabName,
+                listNum = tabIndex,
+                distanceToTop = (parentFragment as? AppLogGlidePageInterface)?.getDistanceToTop().orZero() + totalScrollY
+            )
+        }
+        hasApplogScrollListener = true
     }
 
     private fun goToProductDetail(productId: String, position: Int) {
@@ -731,7 +797,9 @@ class HomeGlobalRecommendationFragment :
                 recomId,
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
-                sourceType = sourceType
+                sourceType = sourceType,
+                refreshType = refreshType.toRecomRequestType(),
+                tabIndex = tabIndex
             )
         }
     }
@@ -749,6 +817,10 @@ class HomeGlobalRecommendationFragment :
             recyclerView?.scrollToPosition(BASE_POSITION)
         }
         recyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun setRefreshType(refreshType: HomeRefreshType) {
+        this.refreshType = refreshType
     }
 
     private fun createProductCardOptionsModel(
@@ -948,4 +1020,3 @@ class HomeGlobalRecommendationFragment :
         }
     }
 }
-

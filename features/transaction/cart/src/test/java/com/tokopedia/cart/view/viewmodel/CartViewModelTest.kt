@@ -2,11 +2,14 @@ package com.tokopedia.cart.view.viewmodel
 
 import androidx.lifecycle.Observer
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
+import com.tokopedia.cart.view.CartViewModel
 import com.tokopedia.cart.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cart.view.uimodel.CartAddOnData
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGlobalEvent
@@ -14,7 +17,6 @@ import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectedAmountHolderData
@@ -36,6 +38,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -393,7 +396,8 @@ class CartViewModelTest : BaseCartViewModelTest() {
             ShipmentSellerCashbackModel(),
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
-            DisabledAccordionHolderData()
+            DisabledAccordionHolderData(),
+            CartBuyAgainHolderData()
         )
         var index = cartViewModel.cartDataList.value.lastIndex
         val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
@@ -644,22 +648,26 @@ class CartViewModelTest : BaseCartViewModelTest() {
             CartItemHolderData(),
             CartShopBottomHolderData(cartGroupHolderData),
             ShipmentSellerCashbackModel(),
-            DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
-            DisabledAccordionHolderData()
+            DisabledItemHeaderHolderData(),
+            DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
+            CartWishlistHolderData()
         )
         var index = cartViewModel.cartDataList.value.lastIndex
-        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        val cartRecentViewHolderData = CartRecentViewHolderData()
+        val cartRecentViewHolderData = CartRecentViewHolderData(
+            recommendationWidgetMetadata = RecommendationWidgetMetadata(
+                pageNumber = 1,
+                pageName = CartViewModel.PAGE_NAME_RECENT_VIEW,
+                xSource = CartViewModel.RECENT_VIEW_XSOURCE,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
+            )
+        )
 
         // WHEN
-        cartViewModel.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
+        cartViewModel.addCartRecentViewData()
 
         // THEN
-        assertEquals(
-            cartSectionHeaderHolderData,
-            cartViewModel.cartDataList.value[++index]
-        )
         assertEquals(
             cartRecentViewHolderData,
             cartViewModel.cartDataList.value[++index]
@@ -680,6 +688,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
             DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
             CartRecentViewHolderData(),
             CartWishlistHolderData(),
             CartTopAdsHeadlineData(),
@@ -763,6 +772,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
             DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
             CartRecentViewHolderData(),
             CartWishlistHolderData()
         )
@@ -796,6 +806,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
             DisabledItemHeaderHolderData(),
             DisabledReasonHolderData(),
             DisabledAccordionHolderData(),
+            CartBuyAgainHolderData(),
             CartWishlistHolderData()
         )
         val oldSize = cartViewModel.cartDataList.value.size
@@ -1098,56 +1109,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
     // endregion
 
-    // region updateRecentViewData
-    @Test
-    fun `WHEN updateRecentViewData THEN recent view data in cartDataList should be updated`() {
-        // GIVEN
-        cartViewModel.cartDataList.value = arrayListOf(
-            CartGroupHolderData(),
-            CartItemHolderData(),
-            CartItemHolderData(),
-            CartRecentViewHolderData(
-                recentViewList = listOf(
-                    CartRecentViewItemHolderData(id = "123")
-                )
-            )
-        )
-        cartViewModel.cartDataList.observeForever(cartDataListObserver)
-        val productId = "123"
-        val isWishlist = true
-
-        // WHEN
-        cartViewModel.updateRecentViewData(productId, isWishlist)
-
-        // THEN
-        verify {
-            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
-        }
-    }
-
-    @Test
-    fun `WHEN updateRecentViewData with empty recentViewList THEN recent view data in cartDataList should not be updated`() {
-        // GIVEN
-        cartViewModel.cartDataList.value = arrayListOf(
-            CartGroupHolderData(),
-            CartItemHolderData(),
-            CartItemHolderData(),
-            CartRecentViewHolderData(recentViewList = emptyList())
-        )
-        cartViewModel.cartDataList.observeForever(cartDataListObserver)
-        val productId = "123"
-        val isWishlist = true
-
-        // WHEN
-        cartViewModel.updateRecentViewData(productId, isWishlist)
-
-        // THEN
-        verify(inverse = true) {
-            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
-        }
-    }
-    // endregion
-
     // region removeWishlist
     @Test
     fun `WHEN removeWishlist from cartDataList THEN global event need to change to OnNeedUpdateWishlistAdapterData`() {
@@ -1412,7 +1373,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         verifyOrder {
             cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
             spyViewModel.reCalculateSubTotal()
-            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, "0", 0.0, false))
+            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, 0.0,"0", 0.0, false))
         }
     }
 

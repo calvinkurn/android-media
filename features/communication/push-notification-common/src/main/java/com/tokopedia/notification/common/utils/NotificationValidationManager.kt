@@ -6,6 +6,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.isAppInstalled
 import com.tokopedia.notification.common.data.UserKey
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.util.EncoderDecoder
 
 data class NotificationTargetPriorities(
         var priorityType: NotificationValidationManager.NotificationPriorityType,
@@ -35,13 +36,13 @@ class NotificationValidationManager(
         if (data.isAdvanceTarget) {
             notify()
         } else {
+            val appUserId = decryptData(bundle?.getString(UserKey.USER_ID)?: "")
             if (!GlobalConfig.isSellerApp()) {
                 val isSellerAppInstalled = context.isAppInstalled(SELLER_APP)
                 val isSellerAppLogged = bundle?.getBoolean(UserKey.IS_LOGIN)?: false
-                val sellerAppUserId = bundle?.getString(UserKey.USER_ID)?: ""
 
                 if (!isSellerAppInstalled || !isSellerAppLogged
-                        || userSession.userId != sellerAppUserId
+                        || userSession.userId != appUserId
                         || data.priorityType is NotificationPriorityType.MainApp) {
                     notify()
                 } else {
@@ -50,10 +51,9 @@ class NotificationValidationManager(
             } else {
                 val isMainAppInstalled = context.isAppInstalled(CUSTOMER_APP)
                 val isMainAppLogged = bundle?.getBoolean(UserKey.IS_LOGIN)?: false
-                val mainAppUserId = bundle?.getString(UserKey.USER_ID)?: ""
 
                 if (!isMainAppInstalled || !isMainAppLogged
-                        || userSession.userId != mainAppUserId
+                        || userSession.userId != appUserId
                         || data.priorityType is NotificationPriorityType.SellerApp) {
                     notify()
                 } else {
@@ -61,6 +61,10 @@ class NotificationValidationManager(
                 }
             }
         }
+    }
+
+    private fun decryptData(data: String): String {
+        return EncoderDecoder.Decrypt(data, UserKey.IV_KEY_PUSH_NOTIF)
     }
 
     fun validate(bundle: Bundle?, notify: ValidationCallback) {

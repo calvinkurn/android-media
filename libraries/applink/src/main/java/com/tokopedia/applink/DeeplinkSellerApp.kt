@@ -89,6 +89,12 @@ object DeeplinkSellerApp {
         "seller" to mutableListOf(
             DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
                 DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
             }
         ),
         "seller-mvc" to mutableListOf(

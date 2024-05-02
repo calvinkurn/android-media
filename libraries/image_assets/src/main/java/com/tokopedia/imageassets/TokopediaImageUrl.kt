@@ -56,9 +56,6 @@ object TokopediaImageUrl {
     const val IMG_USP_NOW_GUARANTEED_QUALITY_DARK_MODE = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_guaranteed_quality_dark_mode.png"
     const val IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE = "https://images.tokopedia.net/img/android/tokonow/ic_educational_information_free_shipping.png"
     const val IMG_USP_NOW_FREE_SHIPPING_DARK_MODE = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_free_shipping_dark_mode.png"
-    const val SWITCHER_WIDGET_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget.png"
-    const val SWITCHER_WIDGET_CARD_2H_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_2h.png"
-    const val SWITCHER_WIDGET_CARD_20M_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_15m.png"
     const val RECIPE_BACKGROUND_IMAGE_URL = "https://images.tokopedia.net/img/tokonow/recipe/tokopedianow_recipe_background.png"
     const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_search.png"
     const val TOKO_NOW_NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"
@@ -67,6 +64,7 @@ object TokopediaImageUrl {
     const val IMG_DARK_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-dark.png"
     const val IMG_LIGHT_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-light.png"
     const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/bg_bottomsheet_tokomart_educational_information.png"
+    const val IMG_SHOPPING_LIST_EMPTY = "https://images.tokopedia.net/img/android/tokonow/shopping_list_empty.png"
     const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
     const val ILLUSTRATION_OUT_OF_COVERAGE = "https://images.tokopedia.net/img/tokonow/recipe/illustration_out_of_coverage.png"
     const val DEFAULT_BANNER_IMAGE_URL_1 = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg"
@@ -416,4 +414,7 @@ object TokopediaImageUrl {
     const val SRE_SELLER_HOME_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/sah_ramadhan_thematic_backdrop.png"
     const val PDP_ICON_PROMO_RED =
         "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20icon%20red.png"
+    const val ILLUSTRATION_GENERAL_EMPTY_BASKET = "https://images.tokopedia.net/img/illustration/global/Medium_General_Empty_Basket.png"
+    const val TOKOPEDIANOW_SEE_ALL_BRAND_SUPERGRAPHIC = "https://images.tokopedia.net/img/tokopedianow/ic_see_all_brand_supergraphic.png"
+    const val CATALOG_SELLER_OFFERING_PRODUCT_LIST_ICON = "https://images.tokopedia.net/img/illustration/seller/Medium_Donation_Safe.png"
 }

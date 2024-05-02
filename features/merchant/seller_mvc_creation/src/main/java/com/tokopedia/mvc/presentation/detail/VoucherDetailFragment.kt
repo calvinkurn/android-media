@@ -447,7 +447,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.ONGOING -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ongoing_label)
-                        setTextColorCompat(color.Green_G500)
+                        setTextColorCompat(color.Unify_GN500)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
                 }
@@ -683,32 +683,22 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         voucherSettingBinding?.run {
             when (data.voucherType) {
                 PromoType.FREE_SHIPPING -> {
-                    tpgVoucherNominalLabel.text =
-                        getString(R.string.smvc_nominal_free_shipping_label)
+                    tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_free_shipping_label)
                     tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                 }
 
                 PromoType.CASHBACK -> {
                     when (data.voucherDiscountType) {
                         BenefitType.NOMINAL -> {
-                            tpgVoucherNominalLabel.text =
-                                getString(R.string.smvc_nominal_cashback_label)
-                            tpgVoucherNominal.text =
-                                data.voucherDiscountAmount.getCurrencyFormatted()
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_cashback_label)
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                         }
 
                         else -> {
-                            tpgVoucherNominalLabel.text =
-                                getString(R.string.smvc_percentage_cashback_label)
-                            tpgVoucherNominal.text =
-                                data.voucherDiscountAmount.getPercentFormatted()
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_cashback_label)
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
                             if (data.isGetSubsidy() && data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) {
-                                llParentInitialCashback.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
-                                llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
-                                tpgInitialCashback.text =
-                                    data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
-                                tpgAdditionalSubsidy.text =
-                                    data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
+                                setCashbackSubsidyDetail(data)
                             }
                         }
                     }
@@ -717,21 +707,44 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 else -> {
                     when (data.voucherDiscountType) {
                         BenefitType.NOMINAL -> {
-                            tpgVoucherNominalLabel.text =
-                                getString(R.string.smvc_nominal_discount_label)
-                            tpgVoucherNominal.text =
-                                data.voucherDiscountAmount.getCurrencyFormatted()
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_discount_label)
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                         }
 
                         else -> {
-                            tpgVoucherNominalLabel.text =
-                                getString(R.string.smvc_percentage_discount_label)
-                            tpgVoucherNominal.text =
-                                data.voucherDiscountAmount.getPercentFormatted()
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_discount_label)
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
+                            if (data.isGetSubsidy() && data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) {
+                                setDiscountSubsidyDetail(data)
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun setCashbackSubsidyDetail(data: VoucherDetailData) {
+        voucherSettingBinding?.apply {
+            llParentInitialPromo.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
+            llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
+            tpgInitialPromoLabel.text = getString(R.string.smvc_initial_cashback_label)
+            tpgInitialPromo.text =
+                data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
+            tpgAdditionalSubsidy.text =
+                data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
+        }
+    }
+
+    private fun setDiscountSubsidyDetail(data: VoucherDetailData) {
+        voucherSettingBinding?.apply {
+            llParentInitialPromo.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
+            llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
+            tpgInitialPromoLabel.text = getString(R.string.smvc_initial_discount_label)
+            tpgInitialPromo.text =
+                data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
+            tpgAdditionalSubsidy.text =
+                data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
         }
     }
 

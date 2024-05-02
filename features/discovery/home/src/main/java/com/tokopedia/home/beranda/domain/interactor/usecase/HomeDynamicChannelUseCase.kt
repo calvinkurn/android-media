@@ -60,7 +60,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -349,10 +349,27 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
                     },
                     mapToWidgetData = { visitableFound, data, _ ->
-                        val resultList =
-                            LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions, false)
+                        val missionWidgetList =
+                            LazyLoadDataMapper.mapMissionWidgetData(
+                                data.getHomeMissionWidget.missions,
+                                false,
+                                data.getHomeMissionWidget.appLog
+                            )
+
+                        val mission4SquareWidgetList = LazyLoadDataMapper
+                            .map4SquareMissionWidgetData(
+                                missionWidgetList = data.getHomeMissionWidget.missions,
+                                isCache = false,
+                                appLog = data.getHomeMissionWidget.appLog,
+                                channelName = visitableFound.name,
+                                channelId = visitableFound.id,
+                                header = visitableFound.header,
+                                verticalPosition = visitableFound.verticalPosition
+                            )
+
                         visitableFound.copy(
-                            missionWidgetList = resultList,
+                            missionWidgetList = missionWidgetList,
+                            mission4SquareWidgetList = mission4SquareWidgetList,
                             header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),
                             config = data.getHomeMissionWidget.config.getAsChannelConfig(),
                             status = MissionWidgetListDataModel.STATUS_SUCCESS
@@ -422,7 +439,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                 dynamicChannelPlainResponse.getWidgetDataIfExist<
                     HomeTopAdsBannerDataModel,
-                    ArrayList<TopAdsImageViewModel>>(
+                    ArrayList<TopAdsImageUiModel>>(
                     widgetRepository = homeTopadsImageRepository,
                     iterateList = true,
                     onWidgetExist = { size ->
@@ -452,14 +469,14 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 ) { visitableFound, data, position ->
                     var newTopAdsModel = visitableFound.copy()
                     if (data.isNotEmpty()) {
-                        newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
+                        newTopAdsModel = visitableFound.copy(topAdsImageUiModel = data[0])
                     }
                     newTopAdsModel
                 }
 
                 dynamicChannelPlainResponse.getWidgetDataIfExist<
                     HomeTopAdsVerticalBannerDataModel,
-                    ArrayList<TopAdsImageViewModel>>(
+                    ArrayList<TopAdsImageUiModel>>(
                     widgetRepository = homeTopadsImageRepository,
                     iterateList = true,
                     bundleParam = {
@@ -476,7 +493,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 ) { visitableFound, data, _ ->
                     var newTopAdsModel = visitableFound.copy()
                     if (data.isNotEmpty()) {
-                        newTopAdsModel = visitableFound.copy(topAdsImageViewModelList = data)
+                        newTopAdsModel = visitableFound.copy(topAdsImageUiModelList = data)
                     }
                     newTopAdsModel
                 }
@@ -1016,7 +1033,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
             if (isNewAtfMechanism) {
                 if (!isFirstLoad) {
-                    launch { homeAtfUseCase.refreshData() }
+                    homeAtfUseCase.refreshData()
                     launch { homeHeaderUseCase.updateBalanceWidget(true) }
                 }
             } else {

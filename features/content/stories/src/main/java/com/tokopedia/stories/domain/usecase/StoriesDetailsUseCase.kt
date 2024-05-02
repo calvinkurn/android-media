@@ -1,24 +1,25 @@
 package com.tokopedia.stories.domain.usecase
 
+import android.annotation.SuppressLint
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import javax.inject.Inject
 
 class StoriesDetailsUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<StoriesRequestModel, StoriesDetailsResponseModel>(dispatchers.io) {
+) : CoroutineUseCase<StoriesDetailsUseCase.Request, StoriesDetailsResponseModel>(dispatchers.io) {
 
-    override suspend fun execute(params: StoriesRequestModel): StoriesDetailsResponseModel {
+    override suspend fun execute(params: Request): StoriesDetailsResponseModel {
         val request = createRequestParams(params)
         return graphqlRepository.request(graphqlQuery(), request)
     }
 
-    private fun createRequestParams(params: StoriesRequestModel): Map<String, Any> {
+    private fun createRequestParams(params: Request): Map<String, Any> {
         return mapOf(PARAM_REQUEST to params)
     }
 
@@ -35,6 +36,7 @@ class StoriesDetailsUseCase @Inject constructor(
                     slug
                     status
                     category
+                    categoryName
                     publishedAt
                     author {
                       id
@@ -80,4 +82,23 @@ class StoriesDetailsUseCase @Inject constructor(
             }
         """
     }
+
+    data class Request(
+        @SerializedName("authorID")
+        val authorID: String,
+        @SerializedName("authorType")
+        val authorType: String,
+        @SerializedName("source")
+        val source: String,
+        @SerializedName("sourceID")
+        val sourceID: String,
+        @SerializedName("entrypoint")
+        val entryPoint: String,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("categoryIDs")
+        val categoryIds: List<String> = emptyList(),
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("productIDs")
+        val productIds: List<String> = emptyList()
+    )
 }

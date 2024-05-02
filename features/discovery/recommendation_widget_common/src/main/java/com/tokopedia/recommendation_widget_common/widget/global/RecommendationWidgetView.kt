@@ -8,10 +8,13 @@ import androidx.core.view.forEach
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -23,7 +26,7 @@ import android.R as androidR
 /**
  * Created by frenzel on 11/03/23
  */
-class RecommendationWidgetView : LinearLayout {
+class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
     constructor(context: Context) : super(context) {
         init()
     }
@@ -42,12 +45,15 @@ class RecommendationWidgetView : LinearLayout {
     private val typeFactory = RecommendationTypeFactoryImpl()
     private var job: MutableList<Job>? = mutableListOf()
 
+    private var eligibleToTrack = false
+    private var recTriggerObject = RecommendationTriggerObject()
+
     private fun init() { }
 
     fun bind(
         model: RecommendationWidgetModel,
         parentRootView: View? = null,
-        callback: Callback? = null,
+        callback: Callback? = null
     ) {
         val lifecycleOwner = context.asLifecycleOwner() ?: return
 
@@ -60,7 +66,7 @@ class RecommendationWidgetView : LinearLayout {
         lifecycleOwner: LifecycleOwner,
         model: RecommendationWidgetModel,
         parentRootView: View?,
-        callback: Callback?,
+        callback: Callback?
     ) {
         job?.forEach { it.cancel() }
         job?.clear()
@@ -99,6 +105,7 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     private fun bind(visitableList: List<RecommendationVisitable>?, callback: Callback?) {
+        setRecTriggerObject(visitableList)
         val diffUtilCallback = RecommendationWidgetViewDiffUtilCallback(
             parentView = this,
             visitableList = visitableList,
@@ -120,16 +127,17 @@ class RecommendationWidgetView : LinearLayout {
 
     private fun renderView(
         visitableList: List<RecommendationVisitable>?,
-        callback: Callback?,
+        callback: Callback?
     ) {
         if (visitableList.isNullOrEmpty()) {
             hide()
 
-            if (visitableList?.isEmpty() == true)
+            if (visitableList?.isEmpty() == true) {
                 callback?.onError()
+            }
         } else {
             show()
-            callback?.onShow()
+            callback?.onShow(visitableList)
         }
     }
 
@@ -158,6 +166,18 @@ class RecommendationWidgetView : LinearLayout {
         recommendationWidgetViewModel?.dismissMessage()
     }
 
+    private fun setRecTriggerObject(list: List<RecommendationVisitable>?) {
+        val model = list?.find { it is RecommendationVerticalModel && it.widget.recommendationItemList.isNotEmpty() }
+        if(model != null) {
+            eligibleToTrack = true
+            recTriggerObject = RecommendationTriggerObject(
+                sessionId = model.appLog.sessionId,
+                requestId = model.appLog.requestId,
+                moduleName = model.metadata.pageName,
+            )
+        }
+    }
+
     fun recycle() {
         job?.forEach { it.cancel() }
         job?.clear()
@@ -171,7 +191,15 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     interface Callback {
-        fun onShow() { }
+        fun onShow(visitableList: List<RecommendationVisitable>?) { }
         fun onError() { }
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
+    }
+
+    override fun isEligibleToTrack(): Boolean {
+        return eligibleToTrack
     }
 }

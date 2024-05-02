@@ -44,7 +44,12 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         `Then verify start from is incremented twice`()
         val topAdsIndexStart = searchProductModelFirstPage.topAdsModel.data.size
         val organicIndexStart = searchProductModelFirstPage.searchProduct.data.productList.size
-        `Then verify visitable list with product items`(visitableListSlot, searchProductModelSecondPage, topAdsIndexStart, organicIndexStart)
+        `Then verify visitable list with product items`(
+            visitableListSlot = visitableListSlot,
+            searchProductModel = searchProductModelSecondPage,
+            topAdsPositionStart = topAdsIndexStart,
+            organicPositionStart = organicIndexStart,
+        )
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {

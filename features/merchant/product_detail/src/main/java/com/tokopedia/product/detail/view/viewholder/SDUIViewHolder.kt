@@ -5,14 +5,18 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.databinding.ItemSduiContainerBinding
-import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
+import com.tokopedia.product.detail.view.viewholder.sdui.SDUICallback
+import com.tokopedia.product.detail.view.viewholder.sdui.SDUIEvent
 import com.tokopedia.sdui.SDUIManager
+import com.tokopedia.sdui.extention.ActionHandler
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
+import com.tokopedia.sdui.utils.DivActionUtils
 import org.json.JSONObject
 
 class SDUIViewHolder(
     view: View,
-    private val listener: ProductDetailListener
+    private val callback: SDUICallback
 ) : ProductDetailPageViewHolder<SDUIDataModel>(view) {
 
     companion object {
@@ -26,7 +30,10 @@ class SDUIViewHolder(
 
     private val sduiManager = lazy {
         SDUIManager().apply {
-            initSDUI(context, actionHandler)
+            initSDUI(
+                context = context,
+                sduiTrackingInterface = actionHandler
+            )
         }
     }
 
@@ -44,6 +51,7 @@ class SDUIViewHolder(
     }
 
     private fun createAndAddSDUIView(element: SDUIDataModel) {
+        if (!element.shouldRefreshUI) return
         val jsonObject = element.jsonObject ?: return
         val templateJSON = jsonObject.optJSONObject("templates") ?: return
         val cardJson = jsonObject.getJSONObject("card") ?: return
@@ -57,27 +65,38 @@ class SDUIViewHolder(
 
         view.addOnImpressionListener(
             holder = element.impressHolder,
-            holders = listener.getImpressionHolders(),
+            holders = callback.impressionHolders,
             name = element.name,
-            useHolders = listener.isRemoteCacheableActive()
+            useHolders = callback.isRemoteCacheableActive
         ) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            val trackerData = getComponentTrackData(element = element)
+            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
 
         binding.sduiViewContainer.removeAllViews()
         binding.sduiViewContainer.addView(view)
+        element.shouldRefreshUI = false
     }
+
 
     private fun generateActionHandler() = lazy {
         object : SDUITrackingInterface {
 
+            private fun parsePayloadToEventMap(payload: JSONObject): HashMap<String, Any> {
+                val trackingData = payload.getJSONObject(ActionHandler.KEY_TRACKING_DATA)
+                return DivActionUtils.toMap(trackingData)
+            }
+
             override fun onViewClick(trackerPayload: JSONObject?) {
-                val element = element ?: return
-                listener.onClickDynamicOneLiner("", "", component = getComponentTrackData(element))
+                val payload = trackerPayload ?: return
+                val eventMap = parsePayloadToEventMap(payload)
+                callback.event(SDUIEvent.SendTracker(eventMap))
             }
 
             override fun onViewVisible(trackerPayload: JSONObject?) {
-                // No Op
+                val payload = trackerPayload ?: return
+                val eventMap = parsePayloadToEventMap(payload)
+                callback.event(SDUIEvent.SendTracker(eventMap))
             }
         }
     }

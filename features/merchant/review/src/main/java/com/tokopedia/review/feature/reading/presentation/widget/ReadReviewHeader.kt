@@ -12,6 +12,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -58,6 +59,7 @@ class ReadReviewHeader @JvmOverloads constructor(
     private var topicFilterChipIndex: Int = 0
 
     private var isTopicExtraction = false
+    private var filterVariantItem: SortFilterItem? = null
 
     init {
         setupViews()
@@ -156,6 +158,18 @@ class ReadReviewHeader @JvmOverloads constructor(
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
             topicFilterChipIndex = filter.indexOf(topicFilter)
+        }
+        if (availableFilters.variant) {
+            val variantFilter = SortFilterItem(
+                context.getString(R.string.review_reading_filter_all_variants),
+                ChipsUnify.TYPE_NORMAL,
+                ChipsUnify.SIZE_SMALL
+            )
+            setListenerAndChevronListener(variantFilter) {
+                listener.onFilterWithVariantClicked(isChipsActive(variantFilter.type))
+            }
+            filter.add(variantFilter)
+            filterVariantItem = variantFilter
         }
         val sortOption = getSortFilterItem(getDefaultSortTitle())
         setListenerAndChevronListener(sortOption) { listener.onSortClicked(mapSortTitleToBottomSheetInput(sortOption)) }
@@ -278,6 +292,12 @@ class ReadReviewHeader @JvmOverloads constructor(
                 listener.onClearFiltersClicked()
             }
         }
+
+        binding.readReviewSortFilter.chipItems?.find {
+            it.title == context.getString(R.string.review_reading_filter_all_variants)
+        }?.refChipUnify?.apply {
+            showNewNotification = shouldShowNewBadge()
+        }
     }
 
     fun setTopicExtraction(
@@ -285,7 +305,10 @@ class ReadReviewHeader @JvmOverloads constructor(
         preselectKeyword: String?,
         listener: ReadReviewFilterChipsListener
     ) {
-        if (keywords.isEmpty()) return
+        if (keywords.isEmpty()) {
+            binding.readReviewExtractedTopic.keywords = keywords
+            return
+        }
         binding.readReviewHighlightedTopicLeft.gone()
         binding.readReviewHighlightedTopicRight.gone()
 
@@ -319,6 +342,17 @@ class ReadReviewHeader @JvmOverloads constructor(
                 title = selectedSort
                 type = ChipsUnify.TYPE_SELECTED
             }
+        }
+    }
+
+    fun updateSelectedVariant(count: Int) {
+        val title = context.getString(R.string.review_reading_filter_all_variants)
+        if (count > 0) {
+            filterVariantItem?.title = "$count $title"
+            filterVariantItem?.type = ChipsUnify.TYPE_SELECTED
+        } else {
+            filterVariantItem?.title = title
+            filterVariantItem?.type = ChipsUnify.TYPE_NORMAL
         }
     }
 
@@ -359,5 +393,16 @@ class ReadReviewHeader @JvmOverloads constructor(
 
     fun loadingTopicExtraction() {
         if (isTopicExtraction) binding.readReviewExtractedTopic.loading()
+    }
+
+    fun removeNewBadge(title: String) {
+        binding.readReviewSortFilter.chipItems?.find { it.title == title }?.refChipUnify?.apply {
+            if (showNewNotification) chip_new_notification.setLayoutWidth(0)
+        }
+    }
+
+    private fun shouldShowNewBadge(): Boolean {
+        val sharedPref = context.getSharedPreferences("READ_REVIEW", Context.MODE_PRIVATE)
+        return sharedPref.getBoolean("VARIANT_FILTER_BADGE", true)
     }
 }

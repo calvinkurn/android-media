@@ -611,6 +611,12 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("see-all-category") { _: String ->
                 ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
+            },
+            DLP.startsWith("all-annotation") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowAllAnnotation(deeplink)
+            },
+            DLP.matchPattern("list-belanja") { _: String ->
+                ApplinkConstInternalTokopediaNow.SHOPPING_LIST
             }
         ),
         "occ" to mutableListOf(
@@ -792,12 +798,22 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
         ),
+        "product-preview" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
+        ),
         "product-review" to mutableListOf(
             DLP.startsWith("create") { uri: Uri ->
                 DeeplinkMapperMerchant.getRegisteredNavigationProductReview(uri)
             },
             DLP.matchPattern("bulk-create") { _: String ->
                 ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW
+            }
+        ),
+        "product-webview-bs" to mutableListOf(
+            DLP.matchPattern("") { _:String ->
+                ApplinkConstInternalMarketplace.PRODUCT_WEBVIEW_BS
             }
         ),
         "productar" to mutableListOf(
@@ -974,6 +990,12 @@ object DeeplinkMainApp {
             },
             DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
                 DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(

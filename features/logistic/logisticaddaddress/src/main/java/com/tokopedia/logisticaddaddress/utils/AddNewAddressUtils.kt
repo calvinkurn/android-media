@@ -53,11 +53,13 @@ object AddNewAddressUtils {
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 isGpsOn = true
             } else {
-                mSettingsClient
-                    .checkLocationSettings(mLocationSettingsRequest)
-                    .addOnSuccessListener(context as Activity) {
-                        isGpsOn = true
-                    }
+                mLocationSettingsRequest?.let { it1 ->
+                    mSettingsClient
+                        .checkLocationSettings(it1)
+                        .addOnSuccessListener(context as Activity) {
+                            isGpsOn = true
+                        }
+                }
             }
 
             isGpsOn = isLocationEnabled(it) && isGpsOn

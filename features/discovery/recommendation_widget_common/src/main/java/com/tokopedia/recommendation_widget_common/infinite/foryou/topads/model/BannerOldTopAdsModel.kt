@@ -4,20 +4,22 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.TemporaryBackwardCompatible
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 @TemporaryBackwardCompatible
 class BannerOldTopAdsModel(
-    val topAdsImageViewModel: TopAdsImageViewModel? = null,
+    val topAdsImageUiModel: TopAdsImageUiModel? = null,
     val position: Int = -1,
     val bannerType: String
 ) : ForYouRecommendationVisitable, ImpressHolder() {
 
-    override fun type(typeFactory: ForYouRecommendationTypeFactory) = Int.MIN_VALUE
+    override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 
     override fun areItemsTheSame(other: Any): Boolean {
         return other is BannerOldTopAdsModel &&
-            topAdsImageViewModel?.bannerId == other.topAdsImageViewModel?.bannerId
+            topAdsImageUiModel?.bannerId == other.topAdsImageUiModel?.bannerId
     }
 
     override fun areContentsTheSame(other: Any): Boolean {
@@ -30,7 +32,7 @@ class BannerOldTopAdsModel(
 
         other as BannerOldTopAdsModel
 
-        if (topAdsImageViewModel != other.topAdsImageViewModel) return false
+        if (topAdsImageUiModel != other.topAdsImageUiModel) return false
 
         return true
     }

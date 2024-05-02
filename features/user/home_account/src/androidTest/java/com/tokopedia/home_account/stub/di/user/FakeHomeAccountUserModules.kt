@@ -6,7 +6,6 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -21,8 +20,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.FORCE_LIGHT_MODE
 import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreferenceManager
 import com.tokopedia.sessioncommon.util.OclUtils.Companion.OCL_ROLLENCE
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -105,7 +104,6 @@ class FakeHomeAccountUserModules(val context: Context) {
         return mockk() {
             every { getString(OCL_ROLLENCE, any()) } returns ""
             every { getString(BIOMETRIC_ENTRY_POINT, any()) } returns "true"
-            every { getString(ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE) } returns "true"
         }
     }
 

@@ -435,32 +435,32 @@
           "deeplink_variable": "ApplinkConstInternalGlobal.ADD_BANK"
      },
      {
-          "destination_activity": "com.tokopedia.otp.verification.view.activity.VerificationActivity",
+          "destination_activity": "com.tokopedia.verification.otp.view.activity.VerificationActivity",
           "deeplink": "tokopedia-android-internal://user/cotp",
           "deeplink_variable": "ApplinkConstInternalUserPlatform.COTP"
      },
      {
-          "destination_activity": "com.tokopedia.otp.silentverification.view.activity.SilentVerificationActivity",
+          "destination_activity": "com.tokopedia.verification.silentverification.view.activity.SilentVerificationActivity",
           "deeplink": "tokopedia-android-internal://user/silent-verification",
           "deeplink_variable": "ApplinkConstInternalUserPlatform.SILENT_VERIFICAITON"
      },
      {
-          "destination_activity": "com.tokopedia.otp.notif.view.activity.ReceiverNotifActivity",
+          "destination_activity": "com.tokopedia.verification.notif.view.activity.ReceiverNotifActivity",
           "deeplink": "tokopedia-android-internal://user/otp-push-notif-receiver",
           "deeplink_variable": "ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_RECEIVER"
      },
      {
-          "destination_activity": "com.tokopedia.otp.notif.view.activity.SettingNotifActivity",
+          "destination_activity": "com.tokopedia.verification.notif.view.activity.SettingNotifActivity",
           "deeplink": "tokopedia-android-internal://user/otp-push-notif-setting",
           "deeplink_variable": "ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_SETTING"
      },
      {
-          "destination_activity": "com.tokopedia.otp.qrcode.view.activity.LoginByQrActivity",
+          "destination_activity": "com.tokopedia.verification.qrcode.view.activity.LoginByQrActivity",
           "deeplink": "tokopedia-android-internal://user/qr-login",
           "deeplink_variable": "ApplinkConstInternalUserPlatform.QR_LOGIN"
      },
      {
-          "destination_activity": "com.tokopedia.otp.qrcode.view.activity.LoginByQrResultActivity",
+          "destination_activity": "com.tokopedia.verification.qrcode.view.activity.LoginByQrResultActivity",
           "deeplink": "tokopedia-android-internal://user/qr-login-result",
           "deeplink_variable": "ApplinkConstInternalUserPlatform.QR_LOGIN_RESULT"
      },
@@ -2541,42 +2541,22 @@
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://*.tokopedia.com/topads",
+          "deeplink": "https://ta.tokopedia.com/v2/manage",
           "deeplink_variable": ""
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://*.tokopedia.com/topads/*",
+          "deeplink": "https://ta.tokopedia.com/v2/manage/*",
           "deeplink_variable": ""
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://*.tokopedia.com/topads",
+          "deeplink": "http://ta.tokopedia.com/v2/manage",
           "deeplink_variable": ""
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://*.tokopedia.com/topads/*",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://tokopedia.com/topads",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://tokopedia.com/topads/*",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://tokopedia.com/topads",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://tokopedia.com/topads/*",
+          "deeplink": "http://ta.tokopedia.com/v2/manage/*",
           "deeplink_variable": ""
      }
 ]

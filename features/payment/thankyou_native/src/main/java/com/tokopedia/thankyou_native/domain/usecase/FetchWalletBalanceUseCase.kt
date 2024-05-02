@@ -12,16 +12,16 @@ class FetchWalletBalanceUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<WalletBalanceGqlResponse>(graphqlRepository) {
 
-    fun getGoPayBalance(onResult: (WalletBalance?) -> Unit) {
+    suspend fun getGoPayBalance(onResult: (WalletBalance?) -> Unit) {
         this.setTypeClass(WalletBalanceGqlResponse::class.java)
         this.setRequestParams(getRequestParams())
         this.setGraphqlQuery(GetWalletBalanceQuery.GQL_QUERY)
-        this.execute(
-            { result -> if(result.walletBalance.code == CODE_SUCCESS)
-                    onResult(result.walletBalance)
-                else onResult(null)
-            }, { onResult(null) }
-        )
+        val result = executeOnBackground()
+        if (result.walletBalance.code == CODE_SUCCESS) {
+            onResult(result.walletBalance)
+        } else {
+            onResult(null)
+        }
     }
 
     private fun getRequestParams() = mapOf(

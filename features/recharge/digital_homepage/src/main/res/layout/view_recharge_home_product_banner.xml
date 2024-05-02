@@ -41,7 +41,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/recharge_home_close_button_content_description"
-            app:srcCompat="@drawable/ic_close_white" />
+            app:srcCompat="@drawable/common_ic_close_white" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/view_recharge_home_product_banner_product_card"
