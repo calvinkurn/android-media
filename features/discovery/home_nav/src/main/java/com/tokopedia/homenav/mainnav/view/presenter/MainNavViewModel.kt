@@ -123,6 +123,11 @@ class MainNavViewModel @Inject constructor(
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
 
+    /**
+     * Pair here consist of Boolean and String
+     * Boolean is whether there is error
+     * String contains the error message
+     */
     val onAtcProductState: LiveData<Pair<Boolean, String>> get() = _onAtcProductState
     private val _onAtcProductState: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
 
