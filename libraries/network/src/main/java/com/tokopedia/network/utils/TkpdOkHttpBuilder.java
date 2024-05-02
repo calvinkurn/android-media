@@ -35,7 +35,10 @@ public class TkpdOkHttpBuilder {
         Dispatcher dispatcher = new Dispatcher();
         dispatcher.setMaxRequestsPerHost(MAX_REQUEST_PER_HOST);
         this.builder.dispatcher(dispatcher);
-        this.addInterceptor(new SlardarAPMInterceptor());
+
+        if (!GlobalConfig.isSellerApp()) {
+            this.addInterceptor(new SlardarAPMInterceptor());
+        }
     }
 
     public OkHttpClient.Builder getBuilder() {
