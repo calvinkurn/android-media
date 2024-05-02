@@ -49,6 +49,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50464
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
+            ShareExPageTypeEnum.BOM -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45653
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -88,6 +92,10 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50465
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
+            }
+            ShareExPageTypeEnum.BOM -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45654
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
             }
             else -> Unit
         }
@@ -133,6 +141,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50466
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
+            ShareExPageTypeEnum.BOM -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45655
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -173,6 +185,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50467
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
+            ShareExPageTypeEnum.BOM -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45656
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -202,6 +218,11 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.PDP -> {
                 bundle.putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_31185)
                 bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.PDP)
+                bundle.putString(ShareExAnalyticsConst.Key.PRODUCT_ID, identifier)
+            }
+            ShareExPageTypeEnum.BOM -> {
+                bundle.putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_50278)
+                bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.BOM)
                 bundle.putString(ShareExAnalyticsConst.Key.PRODUCT_ID, identifier)
             }
             else -> Unit
@@ -251,6 +272,11 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.PDP -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_31186
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.PDP
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+            }
+            ShareExPageTypeEnum.BOM -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50279
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
             }
             else -> Unit
