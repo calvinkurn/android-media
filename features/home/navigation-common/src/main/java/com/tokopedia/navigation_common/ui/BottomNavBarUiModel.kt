@@ -14,7 +14,7 @@ data class BottomNavBarUiModel(
     @SerializedName("jumper")
     val jumper: BottomNavBarJumper?,
     @SerializedName("assets")
-    val assets: Map<String, BottomNavBarAsset>,
+    val assets: Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type>,
     @SerializedName("discoId")
     val discoId: DiscoId
 ) {
@@ -57,19 +57,3 @@ value class DiscoId(val value: String) {
 
 @JvmInline
 value class BottomNavBarItemType(val value: String)
-
-sealed interface BottomNavBarAsset {
-
-    val url: String
-
-    @JvmInline
-    value class Image(override val url: String) : BottomNavBarAsset
-
-    @JvmInline
-    value class Lottie(override val url: String) : BottomNavBarAsset {
-
-        companion object {
-            private val regex = Regex.fromLiteral("https://.*.json")
-        }
-    }
-}

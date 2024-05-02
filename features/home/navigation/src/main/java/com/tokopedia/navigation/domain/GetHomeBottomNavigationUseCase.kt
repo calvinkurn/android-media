@@ -81,9 +81,9 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
                 type = BottomNavBarItemType(data.type),
                 jumper = null,
                 assets = data.imageList.associate {
-                    it.type to when (val type = it.imageType) {
-                        "image" -> BottomNavBarAsset.Image(it.imageUrl)
-                        "lottie" -> BottomNavBarAsset.Lottie(it.imageUrl)
+                    BottomNavBarAsset.Id(it.type) to when (val type = it.imageType) {
+                        "image" -> BottomNavBarAsset.Type.Image(it.imageUrl)
+                        "lottie" -> BottomNavBarAsset.Type.Lottie(it.imageUrl)
                         else -> error("Not supported for type $type")
                     }
                 },

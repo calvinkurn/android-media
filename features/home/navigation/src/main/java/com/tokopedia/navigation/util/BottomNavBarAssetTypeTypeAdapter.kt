@@ -6,7 +6,7 @@ import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset
 
-object BottomNavBarAssetTypeAdapter : TypeAdapter<BottomNavBarAsset>() {
+object BottomNavBarAssetTypeTypeAdapter : TypeAdapter<BottomNavBarAsset.Type>() {
 
     private const val KEY_TYPE = "type"
     private const val KEY_URL = "url"
@@ -14,7 +14,7 @@ object BottomNavBarAssetTypeAdapter : TypeAdapter<BottomNavBarAsset>() {
     private const val VALUE_IMAGE = "image"
     private const val VALUE_LOTTIE = "lottie"
 
-    override fun write(writer: JsonWriter, asset: BottomNavBarAsset?) {
+    override fun write(writer: JsonWriter, asset: BottomNavBarAsset.Type?) {
         if (asset == null) return
         writer.beginObject()
         with(writer) {
@@ -27,7 +27,7 @@ object BottomNavBarAssetTypeAdapter : TypeAdapter<BottomNavBarAsset>() {
         writer.endObject()
     }
 
-    override fun read(reader: JsonReader): BottomNavBarAsset? {
+    override fun read(reader: JsonReader): BottomNavBarAsset.Type? {
         reader.beginObject()
 
         var typeString: String? = null
@@ -44,15 +44,15 @@ object BottomNavBarAssetTypeAdapter : TypeAdapter<BottomNavBarAsset>() {
         reader.endObject()
 
         return when (typeString) {
-            VALUE_IMAGE -> BottomNavBarAsset.Image(url)
-            VALUE_LOTTIE -> BottomNavBarAsset.Lottie(url)
+            VALUE_IMAGE -> BottomNavBarAsset.Type.Image(url)
+            VALUE_LOTTIE -> BottomNavBarAsset.Type.Lottie(url)
             else -> null
         }
     }
 
-    private val BottomNavBarAsset.jsonStringValue
+    private val BottomNavBarAsset.Type.jsonStringValue
         get() = when (this) {
-            is BottomNavBarAsset.Image -> VALUE_IMAGE
-            is BottomNavBarAsset.Lottie -> VALUE_LOTTIE
+            is BottomNavBarAsset.Type.Image -> VALUE_IMAGE
+            is BottomNavBarAsset.Type.Lottie -> VALUE_LOTTIE
         }
 }

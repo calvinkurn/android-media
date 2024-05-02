@@ -15,6 +15,9 @@ import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.navigation_common.databinding.ItemBottomNavbarBinding
+import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Key
+import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Type
+import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Variant
 import com.tokopedia.navigation_common.util.LottieCacheManager
 import com.tokopedia.navigation_common.util.inDarkMode
 import com.tokopedia.navigation_common.util.isDeviceAnimationDisabled
@@ -72,7 +75,7 @@ class DynamicHomeNavBarView : LinearLayout {
 
         modelList.forEach {
             it.assets.values.forEach loadAsset@{ asset ->
-                if (asset !is BottomNavBarAsset.Lottie) return@loadAsset
+                if (asset !is Type.Lottie) return@loadAsset
                 cacheManager.preloadFromUrl(asset.url)
             }
         }
@@ -167,24 +170,18 @@ class DynamicHomeNavBarView : LinearLayout {
     ) {
         val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
         val asset = when {
-            isSelected == null -> model.assets[if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT]
-            !isSelected && prevIsSelected != true -> model.assets[if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT]
+            isSelected == null -> model.assets[Key.ImageInactive + if (isDarkMode) Variant.Dark else Variant.Light]
+            !isSelected && prevIsSelected != true -> model.assets[Key.ImageInactive + if (isDarkMode) Variant.Dark else Variant.Light]
             context.isDeviceAnimationDisabled() || isSelected == prevIsSelected -> {
-                model.assets[
-                    if (isSelected) {
-                        if (isDarkMode) ASSET_STATIC_ACTIVE_DARK else ASSET_STATIC_ACTIVE_LIGHT
-                    } else {
-                        if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT
-                    }
-                ]
+                val key = if (isSelected) Key.ImageActive else Key.ImageInactive
+                val variant = if (isDarkMode) Variant.Dark else Variant.Light
+                model.assets[key + variant]
             }
             else -> {
                 run {
-                    val assetId = if (isSelected) {
-                        if (isDarkMode) ASSET_ANIM_ACTIVE_DARK else ASSET_ANIM_ACTIVE_LIGHT
-                    } else {
-                        if (isDarkMode) ASSET_ANIM_INACTIVE_DARK else ASSET_ANIM_INACTIVE_LIGHT
-                    }
+                    val key = if (isSelected) Key.AnimActive else Key.AnimInactive
+                    val variant = if (isDarkMode) Variant.Dark else Variant.Light
+                    val assetId = key + variant
                     val asset = model.assets[assetId]
                     val isCached = asset?.let { cacheManager.isUrlLoaded(it.url) } ?: false
 
@@ -192,13 +189,8 @@ class DynamicHomeNavBarView : LinearLayout {
                         asset
                     } else {
                         asset?.let { cacheManager.preloadFromUrl(it.url) }
-
                         model.assets[
-                            if (isSelected) {
-                                if (isDarkMode) ASSET_STATIC_ACTIVE_DARK else ASSET_STATIC_ACTIVE_LIGHT
-                            } else {
-                                if (isDarkMode) ASSET_STATIC_INACTIVE_DARK else ASSET_STATIC_INACTIVE_LIGHT
-                            }
+                            (if (isSelected) Key.ImageActive else Key.ImageInactive) + variant
                         ]
                     }
                 }
@@ -212,12 +204,12 @@ class DynamicHomeNavBarView : LinearLayout {
         clearImage()
 
         when (asset) {
-            is BottomNavBarAsset.Image -> {
+            is Type.Image -> {
                 loadImageWithoutPlaceholderAndError(asset.url) {
                     setCacheStrategy(MediaCacheStrategy.DATA)
                 }
             }
-            is BottomNavBarAsset.Lottie -> {
+            is Type.Lottie -> {
                 LottieCompositionFactory.fromUrl(context, asset.url)
                     .addListener { composition ->
                         setComposition(composition)
@@ -245,18 +237,6 @@ class DynamicHomeNavBarView : LinearLayout {
         setBackgroundColor(
             ContextCompat.getColor(uiModeAwareContext, unifyprinciplesR.color.Unify_NN0)
         )
-    }
-
-    companion object {
-        private const val ASSET_STATIC_INACTIVE_LIGHT = "unselected_icon_light_mode"
-        private const val ASSET_STATIC_ACTIVE_LIGHT = "selected_icon_light_mode"
-        private const val ASSET_ANIM_INACTIVE_LIGHT = "inactive_icon_light_mode"
-        private const val ASSET_ANIM_ACTIVE_LIGHT = "active_icon_light_mode"
-
-        private const val ASSET_STATIC_INACTIVE_DARK = "unselected_icon_dark_mode"
-        private const val ASSET_STATIC_ACTIVE_DARK = "selected_icon_dark_mode"
-        private const val ASSET_ANIM_INACTIVE_DARK = "inactive_icon_dark_mode"
-        private const val ASSET_ANIM_ACTIVE_DARK = "active_icon_dark_mode"
     }
 
     interface Listener {

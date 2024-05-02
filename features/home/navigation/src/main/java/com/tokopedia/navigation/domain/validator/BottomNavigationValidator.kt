@@ -1,7 +1,10 @@
 package com.tokopedia.navigation.domain.validator
 
 import com.tokopedia.navigation.presentation.model.BottomNavHomeType
+import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Key
+import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Variant
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
+import com.tokopedia.navigation_common.ui.plus
 import javax.inject.Inject
 
 class BottomNavigationValidator @Inject constructor() {
@@ -24,10 +27,10 @@ class BottomNavigationValidator @Inject constructor() {
     private fun List<BottomNavBarUiModel>.requireMandatoryImageAssets() {
         forEach {
             val assets = it.assets
-            requireNotNull(assets["selected_icon_light_mode"])
-            requireNotNull(assets["unselected_icon_light_mode"])
-            requireNotNull(assets["selected_icon_dark_mode"])
-            requireNotNull(assets["unselected_icon_dark_mode"])
+            requireNotNull(assets[Key.ImageActive + Variant.Light])
+            requireNotNull(assets[Key.ImageInactive + Variant.Light])
+            requireNotNull(assets[Key.ImageActive + Variant.Dark])
+            requireNotNull(assets[Key.ImageInactive + Variant.Dark])
         }
     }
 }

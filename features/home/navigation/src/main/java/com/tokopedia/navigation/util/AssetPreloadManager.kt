@@ -4,7 +4,7 @@ import android.content.Context
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.navigation_common.ui.BottomNavBarAsset
+import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Type
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.util.LottieCacheManager
 import kotlinx.coroutines.async
@@ -20,8 +20,8 @@ class AssetPreloadManager @Inject constructor(
 
     suspend fun preloadByCacheTask(cacheTask: CompletableTask<List<BottomNavBarUiModel>>) = withContext(dispatchers.io) {
         val assets = cacheTask.items.flatMap { it.assets.values }
-        val imageAssets = assets.filterIsInstance<BottomNavBarAsset.Image>()
-        val lottieAssets = assets.filterIsInstance<BottomNavBarAsset.Lottie>()
+        val imageAssets = assets.filterIsInstance<Type.Image>()
+        val lottieAssets = assets.filterIsInstance<Type.Lottie>()
 
         val cacheImages = async { cacheImageAssets(imageAssets) }
         val cacheLotties = async { cacheLottieAssets(lottieAssets) }
@@ -29,7 +29,7 @@ class AssetPreloadManager @Inject constructor(
         if (cacheImages.await()) cacheTask.completeTask()
     }
 
-    private suspend fun cacheImageAssets(assets: List<BottomNavBarAsset.Image>) = coroutineScope {
+    private suspend fun cacheImageAssets(assets: List<Type.Image>) = coroutineScope {
         val results = assets.map {
             async {
                 GlideApp.with(context)
@@ -45,7 +45,7 @@ class AssetPreloadManager @Inject constructor(
         results.all { it }
     }
 
-    private suspend fun cacheLottieAssets(assets: List<BottomNavBarAsset.Lottie>) = coroutineScope {
+    private suspend fun cacheLottieAssets(assets: List<Type.Lottie>) = coroutineScope {
         val results = assets.map {
             async {
                 lottieCacheManager.preloadSyncFromUrl(it.url)

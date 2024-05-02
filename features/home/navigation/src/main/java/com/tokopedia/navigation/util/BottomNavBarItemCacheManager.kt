@@ -20,7 +20,8 @@ class BottomNavBarItemCacheManager @Inject constructor(
 ) {
 
     private val gson = GsonBuilder().apply {
-        registerTypeAdapter(BottomNavBarAsset::class.java, BottomNavBarAssetTypeAdapter)
+        registerTypeAdapter(BottomNavBarAsset.Type::class.java, BottomNavBarAssetTypeTypeAdapter)
+        registerTypeAdapter(BottomNavBarAsset.Id::class.java, BottomNavBarAssetIdDeserializer)
     }.create()
 
     private val bottomNav = stringSetPreferencesKey(KEY_BOTTOM_NAV)
