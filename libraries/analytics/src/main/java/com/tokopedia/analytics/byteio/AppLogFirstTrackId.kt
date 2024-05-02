@@ -53,20 +53,20 @@ object AppLogFirstTrackId {
             firstSourcePage = ""
         }
 
+        val currentPageName = currentPage[PAGE_NAME] as? String ?: ""
         val containAdditionalPageName = additionalPageName.isContainsOneOfString(
-            (currentPage[PAGE_NAME] as? String ?: "").lowercase()
+            currentPageName.lowercase()
         )
-
-        if (currentPage[PAGE_NAME] != PageName.PDP &&
+        if (currentPageName != PageName.PDP &&
             !containAdditionalPageName
         ) {
             return
         }
 
         for (i in _pdpPageDataList.size - 1 downTo 0) {
-            val currentPageName = _pdpPageDataList[i][PAGE_NAME] as? String ?: ""
-            if (currentPageName == PageName.PDP ||
-                additionalPageName.isContainsOneOfString(currentPageName.lowercase())
+            val pageName = _pdpPageDataList[i][PAGE_NAME] as? String ?: ""
+            if (pageName == PageName.PDP ||
+                additionalPageName.isContainsOneOfString(pageName.lowercase())
             ) {
                 val previousTrackId = getDataFromPreviousPage(TRACK_ID, i)
                 val previousSourcePageType = getDataFromPreviousPage(SOURCE_PAGE_TYPE, i)
