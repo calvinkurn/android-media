@@ -4,6 +4,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarous
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.FIXED_GRID
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselOption
@@ -308,6 +309,7 @@ class ProductViewModelMapper(
         productItem.parentId = productModel.meta.parentID
         productItem.isPortrait = productModel.meta.isPortrait
         productItem.isImageBlurred = productModel.meta.isImageBlurred && !isEnableAdultContent
+        productItem.recommendationAdsLog = RecommendationAdsLog(productModel.ads.creativeID, productModel.ads.logExtra)
         return productItem
     }
 
@@ -396,6 +398,7 @@ class ProductViewModelMapper(
         productItem.showButtonAtc = showButtonAtc
         productItem.parentId = productModel.parentId
         productItem.isPortrait = productModel.isPortrait
+        productItem.recommendationAdsLog = RecommendationAdsLog(productModel.ads.creativeID, productModel.ads.logExtra)
         return productItem
     }
 
