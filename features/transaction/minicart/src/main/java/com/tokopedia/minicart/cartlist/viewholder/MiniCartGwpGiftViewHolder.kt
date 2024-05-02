@@ -34,26 +34,26 @@ class MiniCartGwpGiftViewHolder(
                     )
                 }
 
-                val bottomSheet = GiftListBottomSheet.newInstance(
-                    offerId = element.offerId,
-                    warehouseId = element.warehouseId,
-                    tierGifts = listOf(
-                        TierGifts(
-                            tierId = element.tierId,
-                            gifts = element.giftList.map {
-                                TierGifts.GiftProduct(
-                                    productId = it.id.toLongOrZero(),
-                                    quantity = it.qty
-                                )
-                            }
-                        )
-                    ),
-                    pageSource = PageSource.MINICART_NOW,
-                    shopId = element.shopId,
-                    autoSelectTierChipByTierId = element.tierId
-                )
-
                 setupCtaClickListener(element.ctaText) {
+                    val bottomSheet = GiftListBottomSheet.newInstance(
+                        offerId = element.offerId,
+                        warehouseId = element.warehouseId,
+                        tierGifts = listOf(
+                            TierGifts(
+                                tierId = element.tierId,
+                                gifts = element.giftList.map {
+                                    TierGifts.GiftProduct(
+                                        productId = it.id.toLongOrZero(),
+                                        quantity = it.qty
+                                    )
+                                }
+                            )
+                        ),
+                        pageSource = PageSource.MINICART_NOW,
+                        shopId = element.shopId,
+                        autoSelectTierChipByTierId = element.tierId
+                    )
+
                     listener?.onClickCta(
                         offerId = element.offerId,
                         offerTypeId = element.offerTypeId,
