@@ -11,6 +11,7 @@ import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMI
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemContentCardAdapter
 import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ThumbnailWidgetViewHolder(
@@ -32,9 +33,15 @@ class ThumbnailWidgetViewHolder(
 
     override fun bind(element: ThumbnailWidgetUiModel?) {
         if (element == null) return
-
-        binding?.txtHeader?.text = element.header.name
+        setupWidgetHeader(element.header)
         mAdapter?.submitList(element.data)
+    }
+
+    private fun setupWidgetHeader(header: ChannelHeader) {
+        binding?.txtHeader?.text = header.name
+        binding?.txtHeader?.setOnClickListener {
+            listener.thumbnailChannelHeaderClicked(header.applink)
+        }
     }
 
     private fun setupRecyclerView() {
