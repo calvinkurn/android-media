@@ -13,6 +13,10 @@ import java.util.HashMap
 
 class ThumbnailTwoSquareWidgetCallback(val listener: HomeCategoryListener) : ThumbnailWidgetListener {
 
+    override fun thumbnailChannelHeaderClicked(appLink: String) {
+        listener.onDynamicChannelClicked(appLink)
+    }
+
     override fun thumbnailClicked(data: ItemThumbnailWidgetUiModel, position: Int) {
         listener.onDynamicChannelClicked(data.appLink)
         TwoSquareWidgetTracking.clickCardDeals(data, position, listener.userId)

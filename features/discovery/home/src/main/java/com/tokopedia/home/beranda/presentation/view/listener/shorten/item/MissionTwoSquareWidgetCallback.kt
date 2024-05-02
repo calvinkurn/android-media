@@ -15,6 +15,10 @@ import java.util.HashMap
 
 class MissionTwoSquareWidgetCallback(val listener: HomeCategoryListener) : MissionWidgetListener {
 
+    override fun missionChannelHeaderClicked(appLink: String) {
+        listener.onDynamicChannelClicked(appLink)
+    }
+
     override fun missionClicked(data: ItemMissionWidgetUiModel, position: Int) {
         listener.onDynamicChannelClicked(data.appLink)
 
