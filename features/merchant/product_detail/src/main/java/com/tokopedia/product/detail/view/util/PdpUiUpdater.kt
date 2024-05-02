@@ -1,6 +1,10 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogFirstTrackId
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
@@ -299,7 +303,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
 
         if (loadInitialData) {
-            updateVerticalRecommendationWidget(productId)
+            updateVerticalRecommendationWidget(dataP1, productId)
         }
     }
 
@@ -1299,12 +1303,24 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateVerticalRecommendationWidget(productId: String) {
+    fun getAppLogAdditionalParam(p1: ProductInfoP1?): AppLogAdditionalParam.PDP {
+        p1 ?: return AppLogAdditionalParam.PDP()
+
+        return AppLogAdditionalParam.PDP(
+            parentProductId = p1.parentProductId,
+            parentTrackId = AppLogAnalytics.getLastData(AppLogParam.TRACK_ID) as? String ?: "",
+            parentRequestId = AppLogAnalytics.getLastData(AppLogParam.REQUEST_ID) as? String ?: "",
+            firstTrackId = AppLogFirstTrackId.firstTrackId,
+            firstSourcePage = AppLogFirstTrackId.firstSourcePage
+        )
+    }
+
+    private fun updateVerticalRecommendationWidget(p1: ProductInfoP1, productId: String) {
         mapOfData.forEach { (key, data) ->
             if (key.startsWith(RECOM_VERTICAL)) {
                 updateData(key, true) {
                     mapOfData[key] = (data as? PdpRecommendationWidgetDataModel)?.run {
-                        updateVerticalRecommendationWidgetProductId(productId)
+                        updateVerticalRecommendationWidgetProductId(p1, productId)
                     } ?: data
                 }
             }
@@ -1312,6 +1328,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun PdpRecommendationWidgetDataModel.updateVerticalRecommendationWidgetProductId(
+        p1: ProductInfoP1,
         productId: String
     ): PdpRecommendationWidgetDataModel {
         return copy(

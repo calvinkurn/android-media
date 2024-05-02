@@ -3195,15 +3195,8 @@ open class ProductDetailFragment :
     }
 
     override fun getAppLogAdditionalParam(): AppLogAdditionalParam.PDP {
-        val p1 = viewModel.getProductInfoP1 ?: return AppLogAdditionalParam.PDP()
-
-        return AppLogAdditionalParam.PDP(
-            parentProductId = p1.parentProductId,
-            parentTrackId = AppLogAnalytics.getLastData(TRACK_ID) as? String ?: "",
-            parentRequestId = AppLogAnalytics.getLastData(REQUEST_ID) as? String ?: "",
-            firstTrackId = AppLogFirstTrackId.firstTrackId,
-            firstSourcePage = AppLogFirstTrackId.firstSourcePage
-        )
+        return pdpUiUpdater?.getAppLogAdditionalParam(viewModel.getP1())
+            ?: AppLogAdditionalParam.PDP()
     }
 
     private fun handleObserverP1Error(error: Throwable) {
