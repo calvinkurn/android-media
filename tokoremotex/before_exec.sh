@@ -4,6 +4,11 @@ if grep 'resRepo=tokopedia' "gradle.properties"; then
   echo "changing resRepo to bits.."
   sed -i 's/resRepo=tokopedia/resRepo=bits/g' "gradle.properties"
 fi
+if grep 'distributionUrl=https\\://services.gradle.org/distributions/gradle-8.2-bin.zip' gradle/wrapper/gradle-wrapper.properties; then
+  echo "changing distributionUrl to bits.."
+  sed -i 's|https\\://services.gradle.org/distributions/gradle-8.2-bin.zip|https://voffline.byted.org/download/tos/schedule/ttclient-android/gradle/gradle-8.2-all.zip|g' gradle/wrapper/gradle-wrapper.properties
+  cat gradle/wrapper/gradle-wrapper.properties
+fi
 
 if [ -f "settings.gradle" ]; then
   echo "disabling unused settings for $1.."
