@@ -1,0 +1,17 @@
+#!/bin/bash
+
+wget https://download.java.net/java/17/latest/jdk-17_linux-x64_bin.tar.gz
+# Extract Java 17 tar.gz file
+echo "Extracting Java 17..."
+tar -xzf jdk-17_linux-x64_bin.tar.gz
+# Set JAVA_HOME environment variable
+echo "Setting JAVA_HOME environment variable..."
+export JAVA_HOME=/data00/jdk-17.0.11
+echo 'export JAVA_HOME=/data00/jdk-17.0.11' >> ~/.bashrc
+# Update PATH variable to include Java 17 binaries
+echo "Updating PATH variable..."
+export PATH=$JAVA_HOME/bin:$PATH
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+# Print Java version to verify installation
+echo "Java 17 installation completed!"
+java -version

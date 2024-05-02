@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import android.os.Parcelable
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import kotlinx.parcelize.Parcelize
 
 data class OrderPayment(
@@ -259,12 +260,3 @@ data class OrderPaymentGoCicilTerms(
     val hasPromoLabel: Boolean
         get() = labelMessage.isNotBlank()
 }
-
-data class OrderPaymentFee(
-    val title: String = "",
-    val fee: Double = 0.0,
-    val showTooltip: Boolean = false,
-    val showSlashed: Boolean = false,
-    val slashedFee: Int = 0,
-    val tooltipInfo: String = ""
-)

@@ -9,7 +9,7 @@ import com.tokopedia.pdpCheckout.testing.atc_common.interceptor.AtcInterceptor
 import com.tokopedia.pdpCheckout.testing.cart.robot.CartPageMocks
 import com.tokopedia.pdpCheckout.testing.cart.robot.cartPage
 import com.tokopedia.pdpCheckout.testing.checkout.robot.CheckoutPageMocks
-import com.tokopedia.pdpCheckout.testing.checkout.robot.checkoutPage
+import com.tokopedia.pdpCheckout.testing.checkout.robot.checkoutPageRevamp
 import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailIntentRule
 import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailInterceptor
 import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailRobot
@@ -87,7 +87,7 @@ class PdpCartCheckoutJourneyTest {
         // Prevent glide crash
         Thread.sleep(2000)
 
-        checkoutPage {
+        checkoutPageRevamp {
             waitForData()
             clickChooseDuration()
             waitForData()

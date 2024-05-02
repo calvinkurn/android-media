@@ -16,6 +16,7 @@ import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
@@ -46,6 +47,8 @@ interface CommonTopupBillsComponent {
 
     @DigitalAddToCartQualifier
     fun restRepository(): RestRepository
+
+    fun remoteConfig(): RemoteConfig
 
     fun digitalInterceptor(): DigitalInterceptor
 

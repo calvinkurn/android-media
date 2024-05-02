@@ -63,7 +63,8 @@
       "eventLabel": "success",
       "checkout_option": "checkout page loaded",
       "userId": ".+",
-      "promoFlag": "true|false"
+      "promoFlag": "true|false",
+      "paymentMethod": "buy now|add to cart"
     },
     {
       "eventCategory": "courier selection",
@@ -115,7 +116,8 @@
       "eventLabel": "",
       "checkout_option": "data validation",
       "userId": ".+",
-      "promoFlag": "true|false"
+      "promoFlag": "true|false",
+      "paymentMethod": "buy now|add to cart"
     },
     {
       "eventCategory": "courier selection",
@@ -168,7 +170,8 @@
       "eventLabel": "success",
       "checkout_option": "click_payment option button",
       "userId": ".+",
-      "promoFlag": "true|false"
+      "promoFlag": "true|false",
+      "paymentMethod": "buy now|add to cart"
     },
     {
       "promotions": ".*",

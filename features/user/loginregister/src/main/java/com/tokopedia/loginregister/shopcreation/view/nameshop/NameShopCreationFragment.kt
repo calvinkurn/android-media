@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
@@ -21,6 +22,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_OPEN_SHOP_CREATION
 import com.tokopedia.loginregister.databinding.FragmentNameShopCreationBinding
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
@@ -274,6 +276,12 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 userSession.shopId,
                 userSession.shopName
         )
+
+        val appID = LoginConstants.MsSdkKey.APPID
+        val mgr = MSManagerUtils.get(appID)
+        mgr?.let {
+            mgr.report(LoginConstants.MsSdkKey.REGISTERED)
+        }
     }
 
     private fun emptyStatePhoneField() {

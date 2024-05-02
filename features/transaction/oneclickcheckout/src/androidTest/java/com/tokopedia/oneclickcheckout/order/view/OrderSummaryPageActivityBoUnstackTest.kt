@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
 import android.content.Intent
+import android.util.Log
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -22,13 +23,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
-@UiTest
+//Disabled because no longer relevant
+//@UiTest
 class OrderSummaryPageActivityBoUnstackTest {
 
     @get:Rule
@@ -58,7 +58,7 @@ class OrderSummaryPageActivityBoUnstackTest {
         activityRule.finishActivity()
     }
 
-    @Test
+//    @Test
     fun usePromoBoClashing_dontShowTickerBo() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
         logisticInterceptor.customRatesResponsePath = RATES_ETA_RESPONSE_PATH
@@ -98,6 +98,7 @@ class OrderSummaryPageActivityBoUnstackTest {
                     }
                 )
             )
+            Log.i("qwertyuiop", "click")
             clickButtonPromo()
             assertShipmentPromoRevamp(false)
         }

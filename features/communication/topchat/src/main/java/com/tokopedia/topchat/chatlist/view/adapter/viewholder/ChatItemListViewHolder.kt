@@ -37,6 +37,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.time.TimeHelper
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author : Steven 2019-08-07
@@ -55,8 +56,8 @@ class ChatItemListViewHolder constructor(
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
     private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
-    private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-    private val readSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
+    private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN500)
+    private val readSpanColor: Int = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_68)
     private val typingImage: ImageUnify = itemView.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
     private val typingText: Typography = itemView.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
     private val labelIcon: ImageUnify? = itemView.findViewById(R.id.chatlist_img_label_icon)
@@ -301,14 +302,14 @@ class ChatItemListViewHolder constructor(
         message.setLines(2)
         message.maxLines = 2
         message.setTypeface(null, NORMAL)
-        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+        message.setTextColor(MethodChecker.getColor(message.context, unifyprinciplesR.color.Unify_NN950_68))
         if (chat.isActive) {
             itemView.setBackgroundColor(
-                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+                MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_GN50)
             )
         } else {
             itemView.setBackgroundColor(
-                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Background)
             )
         }
     }

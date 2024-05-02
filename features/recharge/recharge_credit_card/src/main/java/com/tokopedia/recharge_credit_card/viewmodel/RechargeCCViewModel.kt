@@ -26,6 +26,8 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCDppoConsentUimodel
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,7 +40,8 @@ class RechargeCCViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher,
     private val rechargeFavoriteNumberRepo: RechargeFavoriteNumberRepository,
-    private val getDppoConsentUseCase: GetDppoConsentUseCase
+    private val getDppoConsentUseCase: GetDppoConsentUseCase,
+    private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher) {
 
     var prefixData: RechargeCCCatalogPrefix = RechargeCCCatalogPrefix()
@@ -68,13 +71,18 @@ class RechargeCCViewModel @Inject constructor(
             runCatching {
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[MENU_ID] = menuId.toIntSafely()
-
+                val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                 val data = withContext(dispatcher) {
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
+                    val graphqlCacheStrategy = if (isEnableGqlCache) {
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL)
+                    } else {
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                    }
                     graphqlRepository.response(
                         listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL).build()
+                        graphqlCacheStrategy.build()
                     )
                 }.getSuccessData<RechargeCCMenuDetailResponse>()
 
@@ -95,11 +103,17 @@ class RechargeCCViewModel @Inject constructor(
                 mapParam[CATEGORY_ID] = categoryId
 
                 val data = withContext(dispatcher) {
+                    val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
+                    val graphqlCacheStrategy = if (isEnableGqlCache) {
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK)
+                    } else {
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                    }
                     graphqlRepository.response(
                         listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK).build()
+                        graphqlCacheStrategy.build()
                     )
                 }.getSuccessData<RechargeCCBankListReponse>()
 
@@ -121,11 +135,17 @@ class RechargeCCViewModel @Inject constructor(
                 mapParam[MENU_ID] = menuId.toIntSafely()
 
                 prefixData = withContext(dispatcher) {
+                    val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                     val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
+                    val graphqlCacheStrategy = if (isEnableGqlCache) {
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX)
+                    } else {
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                    }
                     graphqlRepository.response(
                         listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX).build()
+                        graphqlCacheStrategy.build()
                     )
                 }.getSuccessData()
 
