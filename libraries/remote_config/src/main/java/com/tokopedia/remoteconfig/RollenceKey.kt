@@ -48,8 +48,6 @@ object RollenceKey {
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
-    const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
-    const val CART_CHECKOUT_NEW = "cart_checkout_new"
     const val CART_BUY_AGAIN = "buyagain_cart"
     const val CART_BUY_AGAIN_CONTROL = "no_buyagain_cart"
     const val CART_BUY_AGAIN_VARIANT = "with_buyagain_cart"
@@ -136,4 +134,9 @@ object RollenceKey {
 
     const val PDP_ATC_ANIMATION_VARIANT = "variant_animation"
     const val PDP_ATC_ANIMATION_KEY = "pdp_animation_atc"
+
+    // Travel
+    const val FLIGHT_INSURANCE_AUTO_TICK = "Flight_Ins_Att"
+    const val FLIGHT_INSURANCE_AUTO_TICK_CONTROL = "flight_ins_with_att"
+    const val FLIGHT_INSURANCE_AUTO_TICK_VARIANT = "flight_ins_wout_att"
 }

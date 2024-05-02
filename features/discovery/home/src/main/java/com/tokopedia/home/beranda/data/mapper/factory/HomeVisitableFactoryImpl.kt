@@ -22,6 +22,7 @@ import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_MISSION
 import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V2
+import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V3
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.home.constant.AtfKey.TYPE_TODO
 import com.tokopedia.home_component.model.ChannelGrid
@@ -366,6 +367,29 @@ class HomeVisitableFactoryImpl(
                                 )
                             }
 
+                            TYPE_MISSION_V3 -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(
+                                            MissionWidgetListDataModel(
+                                                status = MissionWidgetListDataModel.STATUS_LOADING,
+                                                showShimmering = data.isShimmer,
+                                                source = MissionWidgetListDataModel.SOURCE_ATF,
+                                                widgetParam = data.param,
+                                            )
+                                        )
+                                    },
+                                    onSuccess = {
+                                        addMission4SquareWidgetData(
+                                            data,
+                                            data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
+                                            index,
+                                            isCache,
+                                        )
+                                    }
+                                )
+                            }
+
                             TYPE_CHANNEL -> {
                                 data.atfStatusCondition(
                                     onLoading = {
@@ -482,6 +506,38 @@ class HomeVisitableFactoryImpl(
                 id = atfData.id.toString(),
                 name = atfData.name,
                 missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache, it.appLog),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
+                verticalPosition = index,
+                status = MissionWidgetListDataModel.STATUS_SUCCESS,
+                showShimmering = atfData.isShimmer,
+                source = MissionWidgetListDataModel.SOURCE_ATF,
+                type = MissionWidgetMapper.getMissionWidgetType(atfData.component),
+                widgetParam = atfData.param
+            )
+            visitableList.add(mission)
+        }
+    }
+
+    private fun addMission4SquareWidgetData(
+        atfData: AtfData,
+        data: HomeMissionWidgetData.GetHomeMissionWidget?,
+        index: Int,
+        isCache: Boolean,
+    ) {
+        data?.let {
+            val mission = MissionWidgetListDataModel(
+                id = atfData.id.toString(),
+                name = atfData.name,
+                mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
+                    missionWidgetList = it.missions,
+                    isCache = isCache,
+                    appLog = it.appLog,
+                    channelId = atfData.id.toString(),
+                    channelName = atfData.name,
+                    header = data.header.getAsHomeComponentHeader(),
+                    verticalPosition = index
+                ),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),
                 verticalPosition = index,

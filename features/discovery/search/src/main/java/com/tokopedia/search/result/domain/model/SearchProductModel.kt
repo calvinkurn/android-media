@@ -13,7 +13,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Option.Companion.KEY_PRICE_RANGE
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 
 data class SearchProductModel(
@@ -57,10 +57,13 @@ data class SearchProductModel(
 
     ) {
 
-    private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
+    private val topAdsImageUiModelList: MutableList<TopAdsImageUiModel> = mutableListOf()
 
     val requestId: String
         get() = searchProductV5.header.meta.dynamicFields.requestId
+
+    val searchId: String
+        get() = searchProductV5.header.meta.dynamicFields.searchId
 
     fun hasProducts(isV5: Boolean): Boolean =
         if (isV5) searchProductV5.data.productList.isNotEmpty()
@@ -143,12 +146,12 @@ data class SearchProductModel(
 
     fun productListType() = searchProduct.header.meta.productListType
 
-    fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
-        this.topAdsImageViewModelList.clear()
-        this.topAdsImageViewModelList.addAll(topAdsImageViewModelList)
+    fun setTopAdsImageViewModelList(topAdsImageUiModelList: List<TopAdsImageUiModel>) {
+        this.topAdsImageUiModelList.clear()
+        this.topAdsImageUiModelList.addAll(topAdsImageUiModelList)
     }
 
-    fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
+    fun getTopAdsImageViewModelList(): List<TopAdsImageUiModel> = topAdsImageUiModelList
 
     data class SearchProduct (
             @SerializedName("header")
@@ -231,7 +234,10 @@ data class SearchProductModel(
 
         data class DynamicFields(
             @SerializedName("request_id")
-            val requestId: String = ""
+            val requestId: String = "",
+
+            @SerializedName("search_id")
+            val searchId: String = ""
         )
     }
 

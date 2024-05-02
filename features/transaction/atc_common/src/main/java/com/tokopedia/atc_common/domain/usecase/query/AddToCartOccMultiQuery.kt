@@ -35,6 +35,7 @@ val QUERY_ADD_TO_CART_OCC_MULTI = """
                     shop_id
                     warehouse_id
                 }
+                next_page
             }
         }
     }
@@ -68,6 +69,7 @@ val QUERY_ADD_TO_CART_OCC_EXTERNAL_MULTI = """
                     is_free_ongkir
                     is_free_ongkir_extra
                 }
+                next_page
             }
         }
     }

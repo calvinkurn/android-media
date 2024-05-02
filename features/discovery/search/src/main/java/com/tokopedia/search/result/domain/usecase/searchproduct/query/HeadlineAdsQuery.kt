@@ -118,6 +118,7 @@ object HeadlineAdsQuery {
                         description
                         uri
                         layout
+                        position
                     }
                     applinks
                 }

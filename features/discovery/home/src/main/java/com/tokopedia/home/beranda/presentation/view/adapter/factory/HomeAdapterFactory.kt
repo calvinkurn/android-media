@@ -75,6 +75,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetC
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.BestSellerListener
@@ -113,6 +114,7 @@ import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
+import com.tokopedia.home_component.viewholders.mission.Mission4SquareWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
@@ -123,8 +125,10 @@ import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHo
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
+import com.tokopedia.home_component.viewholders.V2OrigamiSDUIViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
+import com.tokopedia.home_component.viewholders.mission.v3.Mission4SquareWidgetListener
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
@@ -215,6 +219,7 @@ class HomeAdapterFactory(
     private val couponWidgetListener: CouponWidgetListener,
     private val homeThematicUtil: HomeThematicUtil,
     private val origamiListenerDelegate: OrigamiListenerDelegate,
+    private val mission4SquareWidgetListener: Mission4SquareWidgetListener,
     private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -427,6 +432,10 @@ class HomeAdapterFactory(
     }
 
     override fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int {
+        if (missionWidgetListDataModel.componentName == AtfKey.TYPE_MISSION_V3) {
+            return Mission4SquareWidgetViewHolder.LAYOUT
+        }
+
         return MissionWidgetViewHolder.LAYOUT
     }
 
@@ -476,6 +485,10 @@ class HomeAdapterFactory(
     }
 
     override fun type(origamiSDUIDataModel: OrigamiSDUIDataModel): Int {
+        if (shouldUseFixesAdaptiveOrigami()) {
+            return V2OrigamiSDUIViewHolder.LAYOUT
+        }
+
         return OrigamiSDUIViewHolder.LAYOUT
     }
 
@@ -625,6 +638,7 @@ class HomeAdapterFactory(
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener)
+            Mission4SquareWidgetViewHolder.LAYOUT -> viewHolder = Mission4SquareWidgetViewHolder(view, mission4SquareWidgetListener)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, cardInteraction = true)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
@@ -655,6 +669,7 @@ class HomeAdapterFactory(
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
+            V2OrigamiSDUIViewHolder.LAYOUT -> viewHolder = V2OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
@@ -662,4 +677,6 @@ class HomeAdapterFactory(
 
         return viewHolder
     }
+
+    private fun shouldUseFixesAdaptiveOrigami() = true
 }

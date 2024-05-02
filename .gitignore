@@ -69,3 +69,7 @@ libraries/applink/sa_df.txt
 jacoco.exec
 /robust/
 /tools/ktlint
+
+# remotex
+.remoteX/
+start.sh

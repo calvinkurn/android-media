@@ -30,7 +30,6 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -73,7 +72,6 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
-import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
@@ -81,9 +79,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
-import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
@@ -98,9 +94,6 @@ import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ATC_QUANTI
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_LAYOUT
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.LOAD_LAYOUT_ERROR
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
-import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.view.TokoNowView
@@ -138,10 +131,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselC
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home2hSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
-import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BundleWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
@@ -154,13 +144,9 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductCar
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
-import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
-import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
-import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeHeaderViewHolder.HomeHeaderListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestFinishedWidgetViewHolder
@@ -252,9 +238,6 @@ class TokoNowHomeFragment :
     lateinit var analyticsQuestWidget: HomeQuestWidgetAnalytics
 
     @Inject
-    lateinit var homeSharedPref: TokoNowSharedPreference
-
-    @Inject
     lateinit var playWidgetImpressionValidator: DefaultImpressionValidator
 
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
@@ -275,9 +258,7 @@ class TokoNowHomeFragment :
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
-                homeQuestSequenceWidgetListener = createQuestCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
-                homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
                 playWidgetCoordinator = createPlayWidgetCoordinator(),
@@ -317,7 +298,6 @@ class TokoNowHomeFragment :
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
-    private var switcherCoachMark: SwitcherCoachMark? = null
     private var playWidgetCoordinator: PlayWidgetCoordinator? = null
     private var bannerComponentCallback: BannerComponentCallback? = null
 
@@ -369,7 +349,7 @@ class TokoNowHomeFragment :
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
-        switchServiceOrLoadLayout()
+        loadLayout()
         initScreenShotDetector()
         getDialogReceiverReferral()
         initAffiliateCookie()
@@ -590,15 +570,6 @@ class TokoNowHomeFragment :
                 fragment = this,
                 addFragmentLifecycleObserver = true,
                 permissionListener = this
-            )
-        }
-    }
-
-    private fun switchServiceOrLoadLayout() {
-        localCacheModel?.apply {
-            viewModelTokoNow.switchServiceOrLoadLayout(
-                externalServiceType = externalServiceType,
-                localCacheModel = this
             )
         }
     }
@@ -1063,36 +1034,11 @@ class TokoNowHomeFragment :
             )
         }
 
-        observe(viewModelTokoNow.setUserPreference) {
-            when (it) {
-                is Success -> onSuccessSetUserPreference(it.data)
-                is Fail -> showFailedToFetchData()
-            }
-        }
-
         observe(viewModelTokoNow.getReferralResult) {
             if (it is Fail) {
                 showToaster(
                     message = getString(R.string.tokopedianow_home_referral_toaster),
                     type = TYPE_ERROR
-                )
-            }
-        }
-
-        observe(viewModelTokoNow.homeSwitchServiceTracker) {
-            if (it.isImpressionTracker) {
-                analytics.sendImpressSwitcherWidget(
-                    userId = it.userId,
-                    whIdOrigin = it.whIdOrigin,
-                    whIdDestination = it.whIdDestination,
-                    isNow15 = it.isNow15
-                )
-            } else {
-                analytics.sendClickSwitcherWidget(
-                    userId = it.userId,
-                    whIdOrigin = it.whIdOrigin,
-                    whIdDestination = it.whIdDestination,
-                    isNow15 = it.isNow15
                 )
             }
         }
@@ -1260,53 +1206,6 @@ class TokoNowHomeFragment :
         )
     }
 
-    private fun onSuccessSetUserPreference(data: SetUserPreferenceData) {
-        val warehouses = data.warehouses.map {
-            LocalWarehouseModel(
-                it.warehouseId.toLongOrZero(),
-                it.serviceType
-            )
-        }
-
-        ChooseAddressUtils.updateTokoNowData(
-            requireContext(),
-            data.warehouseId,
-            data.shopId,
-            warehouses,
-            data.serviceType
-        )
-
-        onRefreshLayout()
-
-        localCacheModel?.apply {
-            val has2hCoachMarkBeenShown = homeSharedPref.get2hCoachMarkOnBoardShown()
-            val has20mCoachMarkBeenShown = homeSharedPref.get20mCoachMarkOnBoardShown()
-
-            val needToShowOnBoardToaster = viewModelTokoNow.needToShowOnBoardToaster(
-                serviceType = service_type,
-                has20mCoachMarkBeenShown = has20mCoachMarkBeenShown,
-                has2hCoachMarkBeenShown = has2hCoachMarkBeenShown,
-                isWarehouseIdZero = warehouse_id.toLongOrZero().isZero()
-            )
-
-            if (needToShowOnBoardToaster) {
-                showSwitcherToaster(service_type)
-            }
-        }
-    }
-
-    private fun showSwitcherToaster(serviceType: String) {
-        getServiceTypeRes(
-            key = SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
-            serviceType = serviceType
-        )?.let {
-            showToaster(
-                message = getString(it),
-                type = TYPE_NORMAL
-            )
-        }
-    }
-
     private fun setupReferralData(referral: HomeSharingReferralWidgetUiModel) {
         val referralCode = referral.sharingUrlParam.removePrefix("${referral.slug}/")
         val url = "$SHARE_HOME_URL?${LinkerConstants.QUERY_KEY_REFERRAL_CODE}=$referralCode"
@@ -1458,7 +1357,6 @@ class TokoNowHomeFragment :
         showHomeLayout(data)
         checkAddressDataAndServiceArea()
         showHideChooseAddress()
-        hideSwitcherCoachMark()
     }
 
     private fun showHideChooseAddress() {
@@ -1478,7 +1376,6 @@ class TokoNowHomeFragment :
         startRenderPerformanceMonitoring()
         showHomeLayout(data)
         stickyLoginLoadContent()
-        showOnBoarding()
         getLayoutComponentData()
         resetSwipeLayout()
         stopRenderPerformanceMonitoring()
@@ -1502,106 +1399,6 @@ class TokoNowHomeFragment :
 
     private fun hideTopSpacingView() {
         binding?.viewTopSpacing?.hide()
-    }
-
-    private fun showOnBoarding() {
-        rvHome?.post {
-            when {
-                // When in 2 hours state, if coach mark is never shown and the 20 minutes switcher widget is exist then show coach mark
-                !homeSharedPref.get20mCoachMarkOnBoardShown() && adapter.getItem(Home20mSwitcher::class.java) != null -> {
-                    rvHome?.addOneTimeGlobalLayoutListener {
-                        show20mSwitcherCoachMark()
-                    }
-                }
-                // When in 20 minutes state, if bottomsheet is never shown and the 2 hours switcher widget is exist then show bottomsheet
-                !homeSharedPref.get20mBottomSheetOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
-                    show20mBottomSheet()
-                }
-                // When in 20 minutes state, if coach mark is never shown and the 2 hours switcher widget is exist then show coach mark
-                !homeSharedPref.get2hCoachMarkOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
-                    rvHome?.addOneTimeGlobalLayoutListener {
-                        show2hSwitcherCoachMark()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun show20mBottomSheet() {
-        var isBackTo2hClicked = false
-        TokoNowOnBoard20mBottomSheet
-            .newInstance()
-            .show(
-                childFragmentManager,
-                OnBoard20mBottomSheetCallback(
-                    onBackTo2hClicked = {
-                        localCacheModel?.let {
-                            viewModelTokoNow.switchService(it)
-                        }
-                        isBackTo2hClicked = true
-                    },
-                    onDismiss = {
-                        homeSharedPref.set20mBottomSheetOnBoardShown(true)
-                        if (!isBackTo2hClicked) {
-                            show2hSwitcherCoachMark()
-                        }
-                        isBackTo2hClicked = false
-                    }
-                )
-            )
-    }
-
-    private fun show20mSwitcherCoachMark() {
-        adapter.getItem(Home20mSwitcher::class.java)?.let {
-            // search viewholder by index
-            val index = adapter.findPosition(it)
-            rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.findViewById<View>(R.id.tp_title)?.let { tpTitle ->
-
-                // set switcher coachmark for specified views
-                switcherCoachMark = SwitcherCoachMark(
-                    context = tpTitle.context
-                ) {
-                    homeSharedPref.set20mCoachMarkOnBoardShown(
-                        shown = true
-                    )
-                }.apply {
-                    set20mCoachMark(
-                        tpTitle = tpTitle
-                    )
-                    show()
-                }
-            }
-        }
-    }
-
-    private fun show2hSwitcherCoachMark() {
-        adapter.getItem(Home2hSwitcher::class.java)?.let {
-            // search viewholder by index
-            val index = adapter.findPosition(it)
-            rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.apply {
-                val tpTitle = findViewById<View>(R.id.tp_title)
-                val tpSubtitle = findViewById<View>(R.id.tp_subtitle)
-
-                // set switcher coachmark for specified views
-                switcherCoachMark = SwitcherCoachMark(
-                    context = context
-                ) {
-                    homeSharedPref.set2hCoachMarkOnBoardShown(
-                        shown = true
-                    )
-                }.apply {
-                    set2hCoachMark(
-                        tpTitle = tpTitle,
-                        tpSubtitle = tpSubtitle
-                    )
-                    show()
-                }
-            }
-        }
-    }
-
-    private fun hideSwitcherCoachMark() {
-        switcherCoachMark?.hide()
     }
 
     private fun checkAddressDataAndServiceArea() {
@@ -1664,8 +1461,7 @@ class TokoNowHomeFragment :
             val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
             val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
             val removeAbleWidgets = listOf(
-                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
-                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity))
             )
             viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets)
         }
@@ -1674,8 +1470,7 @@ class TokoNowHomeFragment :
     private fun getHomeLayout() {
         localCacheModel?.let {
             val removeAbleWidgets = listOf(
-                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
-                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity))
             )
             viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
@@ -1951,30 +1746,16 @@ class TokoNowHomeFragment :
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
-
-            override fun onSwitchService() {
-                localCacheModel?.let {
-                    viewModelTokoNow.switchService(it)
-                }
-            }
         }
     }
 
-    private fun createQuestCallback(): HomeQuestSequenceWidgetListener {
-        return QuestWidgetCallback(this, viewModelTokoNow, analytics)
-    }
-
     private fun createSlideBannerCallback(): BannerComponentCallback? {
-        bannerComponentCallback = BannerComponentCallback(this, viewModelTokoNow, userSession, analytics)
+        bannerComponentCallback = BannerComponentCallback(this, analytics)
         return bannerComponentCallback
     }
 
     private fun createLegoBannerCallback(): DynamicLegoBannerCallback {
-        return DynamicLegoBannerCallback(this, viewModelTokoNow, userSession, analytics)
-    }
-
-    private fun createHomeSwitcherListener(): HomeSwitcherListener {
-        return HomeSwitcherListener(requireContext(), viewModelTokoNow)
+        return DynamicLegoBannerCallback(this, analytics)
     }
 
     private fun createProductRecomOocCallback(): HomeProductRecomOocCallback {

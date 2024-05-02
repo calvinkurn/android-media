@@ -1,8 +1,10 @@
 package com.tokopedia.loginregister.common.analytics
 
 import android.os.Build
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import timber.log.Timber
 
 /**
@@ -78,6 +80,127 @@ class ShopCreationAnalytics {
                 ACTION_CLICK_BACK_ADD_NAME_REGISTRATION,
                 LABEL_EMPTY
         ))
+    }
+
+    // Tracker ID: 50566 MainApp, 50571 SellerApp
+    fun sendSellerClickIndividualEvent (shopId: String, userId: String) {
+        val trackerId = if (GlobalConfig.isSellerApp()) "50571" else "50566"
+        Tracker.Builder()
+            .setEvent("clickPG")
+            .setEventAction("seller click individual")
+            .setEventCategory("kyc onboard")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", trackerId)
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
+    // Tracker ID: 50567
+    fun sendSellerClickRegisterToOsEvent () {
+        val trackerId = if (GlobalConfig.isSellerApp()) "50572" else "50567"
+        Tracker.Builder()
+            .setEvent("clickPG")
+            .setEventAction("seller click register to os")
+            .setEventCategory("kyc onboard")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", trackerId)
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .setShopId("")
+            .setUserId("")
+            .build()
+            .send()
+    }
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
+    // Tracker ID: 50568
+    fun sendSellerClickTetapBukaDiPerangkatIniEvent (shopId: String, userId: String) {
+        val trackerId = if (GlobalConfig.isSellerApp()) "50573" else "50568"
+        Tracker.Builder()
+            .setEvent("clickPG")
+            .setEventAction("seller click tetap buka di perangkat Ini")
+            .setEventCategory("kyc onboard")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", trackerId)
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
+    // Tracker ID: 50569
+    fun sendSellerClickDismissTheKycPromptEvent (shopId: String, userId: String) {
+        val trackerId = if (GlobalConfig.isSellerApp()) "50574" else "50569"
+        Tracker.Builder()
+            .setEvent("clickPG")
+            .setEventAction("seller click dismiss the kyc prompt")
+            .setEventCategory("kyc onboard")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", trackerId)
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
+    // Tracker ID: 50693
+    fun sendSellerClickRefreshStatusEvent (shopId: String, userId: String) {
+        val trackerId = if (GlobalConfig.isSellerApp()) "50695" else "50693"
+        Tracker.Builder()
+            .setEvent("clickPG")
+            .setEventAction("seller click refresh status")
+            .setEventCategory("kyc waiting state")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", trackerId)
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
+    // Tracker ID: 50694
+    fun sendSellerClickVerifikasiUlangEvent (shopId: String, userId: String) {
+        val trackerId = if (GlobalConfig.isSellerApp()) "50696" else "50694"
+        Tracker.Builder()
+            .setEvent("clickPG")
+            .setEventAction("seller click verifikasi ulang")
+            .setEventCategory("kyc waiting state")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", trackerId)
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4554
+    // Tracker ID: 50705
+    fun sendSellerClickToSellerEducationMaterialsEvent (shopId: String, userId: String) {
+        val trackerId = if (GlobalConfig.isSellerApp()) "50708" else "50705"
+        Tracker.Builder()
+            .setEvent("clickPG")
+            .setEventAction("seller click to seller education materials")
+            .setEventCategory("kyc waiting state")
+            .setEventLabel("")
+            .setCustomProperty("trackerId", trackerId)
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
     }
 
     companion object {

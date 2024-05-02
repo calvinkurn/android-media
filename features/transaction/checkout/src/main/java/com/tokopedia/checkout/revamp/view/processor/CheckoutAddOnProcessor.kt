@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
+import com.tokopedia.checkout.revamp.view.EPHARMACY_INDEX_FROM_BOTTOM
 import com.tokopedia.checkout.revamp.view.epharmacy
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
@@ -263,7 +264,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                         uploadPrescriptionUiModel.isBlockCheckoutFlowMessage = it
                         uploadPrescriptionUiModel.isError = true
                     }
-                checkoutItems[checkoutItems.size - 5] =
+                checkoutItems[checkoutItems.size - EPHARMACY_INDEX_FROM_BOTTOM] =
                     CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel)
                 return checkoutItems
             }
@@ -473,7 +474,7 @@ class CheckoutAddOnProcessor @Inject constructor(
         uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
         uploadPrescriptionUiModel.shopIds = shopIds
         uploadPrescriptionUiModel.cartIds = cartIds
-        checkoutItems[checkoutItems.size - 5] =
+        checkoutItems[checkoutItems.size - EPHARMACY_INDEX_FROM_BOTTOM] =
             CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel)
         return checkoutItems
     }

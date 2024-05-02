@@ -7,14 +7,16 @@ interface InspirationListAtcView {
 
     fun trackSeeMoreClick(data: InspirationCarouselDataView.Option)
 
-    fun trackItemClick(
-        trackingData: InspirationCarouselTracking.Data,
-        product: InspirationCarouselDataView.Option.Product,
-    )
+    fun trackItemClick(trackingData: InspirationCarouselTracking.Data)
+
+    fun trackItemClickByteIO(product: InspirationCarouselDataView.Option.Product)
 
     fun trackItemImpress(product: InspirationCarouselDataView.Option.Product)
 
-    fun trackAddToCart(trackingData: InspirationCarouselTracking.Data)
+    fun trackAddToCart(
+        trackingData: InspirationCarouselTracking.Data,
+        product: InspirationCarouselDataView.Option.Product,
+    )
 
     fun openAddToCartToaster(message: String, isSuccess: Boolean)
 

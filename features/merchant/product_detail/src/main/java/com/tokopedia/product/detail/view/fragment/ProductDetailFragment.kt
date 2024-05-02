@@ -46,6 +46,7 @@ import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -329,6 +330,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX_SA
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
@@ -396,6 +398,7 @@ open class ProductDetailFragment :
 
         private const val DEBOUNCE_CLICK = 750
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
+        private const val FPS_TRACER_PDP = "Product Detail Scene"
 
         fun newInstance(
             productId: String? = null,
@@ -690,6 +693,8 @@ open class ProductDetailFragment :
 
         setPDPDebugMode()
         trackVerticalScroll()
+
+        getRecyclerView()?.bindFpsTracer(FPS_TRACER_PDP)
     }
 
     private fun onClickDynamicOneLinerPromo() {
@@ -2338,6 +2343,15 @@ open class ProductDetailFragment :
         return !viewModel.isShopOwner() && !isPrefetch
     }
 
+    override fun onExpandProductName(componentTrackData: ComponentTrackDataModel) {
+        pdpUiUpdater?.updateOnExpandProductName()
+        ProductDetailTracking.Click.eventProductNameExpandClicked(
+            componentTrackDataModel = componentTrackData,
+            productInfo = viewModel.getProductInfoP1,
+            userId = viewModel.userId
+        )
+    }
+
     override fun onMainImageClicked(
         componentTrackDataModel: ComponentTrackDataModel?,
         position: Int
@@ -3084,7 +3098,9 @@ open class ProductDetailFragment :
             cartItemId = cartId
         }
         if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+            || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+//            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
+            ) {
             AppLogPdp.sendConfirmCartResult(model)
         }
     }
@@ -3295,7 +3311,11 @@ open class ProductDetailFragment :
                 affiliateSource = affiliateSource
             )
 
-            mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+            mStoriesWidgetManager.updateStories(
+                shopIds = listOf(p1.basic.shopID),
+                categoryIds = viewModel.getProductInfoP1?.basic?.category?.detail?.map { it.id }.orEmpty(),
+                productIds = listOf(viewModel.getProductInfoP1?.basic?.productID.orEmpty()),
+            )
 
             handleShareAdditionalCheck(p2Data.shopInfo)
 
@@ -3494,7 +3514,11 @@ open class ProductDetailFragment :
 
             ProductDetailCommonConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
-                goToOneClickCheckout()
+                if (result.isOccNewCheckoutPage) {
+                    goToCheckout()
+                } else {
+                    goToOneClickCheckout()
+                }
             }
 
             ProductDetailCommonConstant.BUY_BUTTON -> {
@@ -3593,6 +3617,16 @@ open class ProductDetailFragment :
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
         startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
+    private fun goToCheckout() {
+        val p1 = viewModel.getProductInfoP1 ?: return
+        val selectedPromoCodes = p1.data.promoPrice.promoCodes.mapIntoPromoExternalAutoApply()
+
+        ProductCartHelper.goToCheckoutWithAutoApplyPromo(
+            (context as ProductDetailActivity),
+            ArrayList(selectedPromoCodes)
+        )
     }
 
     private fun goToCartCheckout(cartId: String) {
@@ -3744,8 +3778,7 @@ open class ProductDetailFragment :
         }
 
         pdpUiUpdater?.removeComponentP2Data(
-            it,
-            viewModel.getProductInfoP1?.basic?.stats?.countReview ?: ""
+            it
         )
 
         renderRestrictionBottomSheet(it.restrictionInfo)
@@ -4140,7 +4173,8 @@ open class ProductDetailFragment :
                     productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
                         ?: "",
                     categoryId = it.basic.category.id,
-                    isScheduled = isScheduled
+                    isScheduled = isScheduled,
+                    weightWording = it.basic.weightWording
                 )
             )
             shouldRefreshShippingBottomSheet = false
@@ -4283,11 +4317,14 @@ open class ProductDetailFragment :
     private fun openShareExBottomSheet(
         dynamicProductInfoP1: ProductInfoP1
     ) {
+        val mediaPosition = pdpUiUpdater?.mediaMap?.indexOfSelectedVariantOptionId()?.coerceAtLeast(0).orZero()
+        val productImageUrl = pdpUiUpdater?.mediaMap?.listOfMedia?.getOrNull(mediaPosition)?.urlOriginal.orEmpty()
         shareExInitializer?.openShareBottomSheet(
             generateShareExBottomSheetArg(
                 productId = dynamicProductInfoP1.basic.productID,
                 productUrl = dynamicProductInfoP1.basic.url,
-                campaignId = dynamicProductInfoP1.data.campaign.campaignID
+                campaignId = dynamicProductInfoP1.data.campaign.campaignID,
+                productImageUrl = productImageUrl
             )
         )
     }
@@ -6413,10 +6450,15 @@ open class ProductDetailFragment :
      * from old share to share 2.0
      */
     private fun isUsingShareEx(): Boolean {
+        val rollenceKey = if (!GlobalConfig.isSellerApp()) {
+            ROLLENCE_SHARE_EX
+        } else {
+            ROLLENCE_SHARE_EX_SA
+        }
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            ROLLENCE_SHARE_EX,
+            rollenceKey,
             ""
-        ) == ROLLENCE_SHARE_EX
+        ) == rollenceKey
     }
 
     private fun processAffiliateSubIds(bundle: Bundle?) {

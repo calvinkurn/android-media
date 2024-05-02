@@ -7,6 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
@@ -31,8 +35,6 @@ import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.exception.PinnedProductException
@@ -42,17 +44,27 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
+import com.tokopedia.play.broadcaster.ui.model.ComponentPreparationUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveMenuCoachMarkType
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
+import com.tokopedia.play.broadcaster.util.coachmark.LiveMenuCoachMark
 import com.tokopedia.play.broadcaster.util.extension.getDialog
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.report.product.ProductReportSummaryBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.report.live.PlayBroadcastLiveReportSummaryBottomSheet
+import com.tokopedia.play.broadcaster.view.compose.report.live.LiveStatsView
 import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
-import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
@@ -83,6 +95,7 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -94,18 +107,20 @@ import javax.inject.Inject
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
+    private val reportAnalyticFactory: PlayBroadcastReportAnalytic.Factory,
     private val beautificationUiBridge: BeautificationUiBridge,
-    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
+    private val sharedPref: HydraSharedPreferences,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
-    private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
+    private val viewStatInfo: ComposeView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
     private val iconProduct: PlayBroIconWithGreenDotView by detachableView(R.id.icon_product)
     private val icFaceFilter: PlayBroIconWithGreenDotView by detachableView(R.id.ic_face_filter)
+    private val icStatistic: IconUnify by detachableView(R.id.ic_statistic)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
@@ -223,6 +238,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private val toasterManager = PlayBroadcastToasterManager(this)
 
+    private val reportAnalytic = reportAnalyticFactory.create(
+        getAccount = { parentViewModel.selectedAccount },
+        getChannelId = { parentViewModel.channelId },
+        getChannelTitle = { parentViewModel.channelTitle }
+    )
+
+    private val liveMenuCoachMark by lazyThreadSafetyNone {
+        LiveMenuCoachMark(requireContext())
+    }
+
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -316,6 +341,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                 })
             }
+            is PlayBroadcastLiveReportSummaryBottomSheet -> {
+                childFragment.setListener(object : PlayBroadcastLiveReportSummaryBottomSheet.Listener {
+                    override fun onEstimatedIncomeClicked() {
+                        openProductReportSummarySheet()
+                    }
+                })
+            }
         }
     }
 
@@ -331,6 +363,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
+        setupLiveStats()
+
         actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener {
@@ -339,7 +373,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
         iconProduct.setOnClickListener {
             interactiveGameResultViewComponent?.hideCoachMark()
-            gameIconView.cancelCoachMark()
+            liveMenuCoachMark.dismiss()
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             productTagView.hideCoachMark()
@@ -347,7 +381,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
             interactiveGameResultViewComponent?.hideCoachMark()
-            gameIconView.cancelCoachMark()
+            liveMenuCoachMark.dismiss()
 
             if (message.isBlank()) {
                 analytic.clickAddPinChatMessage(
@@ -369,6 +403,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 childFragmentManager,
                 requireActivity().classLoader
             ).showFaceSetupBottomSheet(BeautificationSetupFragment.PageSource.Live)
+        }
+
+        icStatistic.setOnClickListener {
+            reportAnalytic.clickStatisticIcon()
+            openProductReportSummarySheet()
         }
 
         childFragmentManager.commit {
@@ -395,6 +434,38 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         else -> PlayBroadcastAction.Ignore
                     }
                 )
+            }
+        }
+
+        liveMenuCoachMark.setListener(object : LiveMenuCoachMark.Listener {
+            override fun onImpress(coachMarkType: LiveMenuCoachMarkType) {
+                when (coachMarkType) {
+                    is LiveMenuCoachMarkType.Statistic -> {
+                        sharedPref.setFirstStatisticIconShown(parentViewModel.selectedAccount.id)
+                        reportAnalytic.impressStatisticIconCoachMark()
+                    }
+                    else -> {}
+                }
+            }
+        })
+    }
+
+    private fun setupLiveStats() {
+        viewStatInfo.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            setContent {
+                val uiState by parentViewModel.uiState.collectAsStateWithLifecycle()
+
+                NestTheme(isOverrideStatusBarColor = false) {
+                    LiveStatsView(
+                        liveStatsList = uiState.liveReportSummary.liveStats,
+                        onClick = {
+                            reportAnalytic.clickLiveStatsArea()
+                            openLiveStatsSheet()
+                        }
+                    )
+                }
             }
         }
     }
@@ -518,17 +589,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * render to ui
      */
-    private fun showCounterDuration(remainingInMs: Long) {
-        viewStatInfo.setTimerCounter(remainingInMs)
-    }
-
-    private fun setTotalView(totalView: TotalViewUiModel) {
-        viewStatInfo.setTotalView(totalView)
-    }
-
-    private fun setTotalLike(totalLike: TotalLikeUiModel) {
-        viewStatInfo.setTotalLike(totalLike)
-    }
+//    private fun showCounterDuration(remainingInMs: Long) {
+//        viewStatInfo.setTimerCounter(remainingInMs)
+//    }
+//
+//    private fun setTotalView(totalView: TotalViewUiModel) {
+//        viewStatInfo.setTotalView(totalView)
+//    }
+//
+//    private fun setTotalLike(totalLike: TotalLikeUiModel) {
+//        viewStatInfo.setTotalLike(totalLike)
+//    }
 
     private fun setChatList(chatList: List<PlayChatUiModel>) {
         chatListView.setChatList(chatList)
@@ -560,7 +631,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 secondaryListener = { dialog ->
                     analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
 
-                    gameIconView.cancelCoachMark()
+                    liveMenuCoachMark.dismiss()
                     interactiveGameResultViewComponent?.hideCoachMark()
                     productTagView.hideCoachMark()
                     stopBroadcast()
@@ -753,11 +824,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      */
 
     private fun observeTotalViews() {
-        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
+//        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
     private fun observeTotalLikes() {
-        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
+//        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
     }
 
     private fun observeChatList() {
@@ -826,6 +897,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
 
                 renderBeautificationMenu(prevState?.beautificationConfig, state.beautificationConfig)
+
+                renderStatisticMenu(prevState?.selectedContentAccount, state.selectedContentAccount)
+
+                renderLiveMenuCoachMark(
+                    prevState?.componentPreparation,
+                    state.componentPreparation,
+                    state.onBoarding,
+                )
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -908,7 +987,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.broadcastTimerStateChanged.collectLatest { state ->
                 when (state) {
-                    is PlayBroadcastTimerState.Active -> showCounterDuration(state.duration)
+                    is PlayBroadcastTimerState.Active -> {
+//                        showCounterDuration(state.duration)
+                    }
                     PlayBroadcastTimerState.Finish -> {
                         stopBroadcast()
                         showForceStopDialog()
@@ -966,7 +1047,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 if (formView.visibility != View.VISIBLE) {
                     formView.setPinnedMessage(state.message)
                 } else {
-                    gameIconView.cancelCoachMark()
+                    liveMenuCoachMark.dismiss()
                 }
                 formView.setLoading(state.editStatus == PinnedMessageEditStatus.Uploading)
                 formView.visibility = View.VISIBLE
@@ -1044,11 +1125,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             if (prevState != state) {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
                 analytic.onImpressGameIconButton(parentViewModel.channelId, parentViewModel.channelTitle)
-            }
-            if (!hasPinnedFormView() && !isQuizFormVisible() && onboarding.firstInteractive) {
-                gameIconView.showCoachmark()
-            } else {
-                gameIconView.cancelCoachMark()
             }
         }
     }
@@ -1158,7 +1234,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
             if (dialog?.isAdded == true) dialog.dismiss()
         } else {
-            gameIconView.cancelCoachMark()
+            liveMenuCoachMark.dismiss()
             InteractiveSetupDialogFragment.getOrCreate(
                 childFragmentManager,
                 requireActivity().classLoader
@@ -1204,6 +1280,49 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         icFaceFilter.showWithCondition(!curr.isUnknown)
         analytic.viewBeautificationEntryPointOnLivePage(parentViewModel.selectedAccount)
+    }
+
+    private fun renderStatisticMenu(
+        prev: ContentAccountUiModel?,
+        curr: ContentAccountUiModel,
+    ) {
+        if (prev == curr) return
+
+        icStatistic.showWithCondition(curr.isShop)
+    }
+
+    private fun renderLiveMenuCoachMark(
+        prev: ComponentPreparationUiModel?,
+        curr: ComponentPreparationUiModel,
+        currOnboardingUiModel: OnboardingUiModel,
+    ) {
+        if (prev == curr) return
+
+        if (!curr.hasBeenHandled && curr.areAllComponentsReady) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(COACHMARK_INITIAL_DELAY)
+
+                val coachMarks = buildList {
+                    if (gameIconView.isShown() && !hasPinnedFormView() && !isQuizFormVisible() && currOnboardingUiModel.firstInteractive) {
+                        add(LiveMenuCoachMarkType.Game(gameIconView.rootView))
+                    }
+
+                    if (icStatistic.isVisible && currOnboardingUiModel.firstStatisticIconShown) {
+                        add(LiveMenuCoachMarkType.Statistic(icStatistic))
+                    }
+                }
+
+                if (coachMarks.isEmpty()) return@launch
+
+                if (coachMarks.any { it is LiveMenuCoachMarkType.Game }) {
+                    delay(COACHMARK_GAME_DELAY)
+                }
+
+                liveMenuCoachMark.show(coachMarks)
+
+                parentViewModel.submitAction(PlayBroadcastAction.ComponentHasBeenHandled)
+            }
+        }
     }
 
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {
@@ -1256,7 +1375,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     /** Game Region */
     private fun showQuizForm(isShow: Boolean) {
-        if (isShow) gameIconView.cancelCoachMark()
+        if (isShow) liveMenuCoachMark.dismiss()
 
         quizForm.showWithCondition(isShow)
     }
@@ -1284,6 +1403,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             requireContext().classLoader
         )
         ongoingLeaderboardBottomSheet.show(childFragmentManager)
+    }
+
+    private fun openLiveStatsSheet() {
+        PlayBroadcastLiveReportSummaryBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader
+        ).show(childFragmentManager)
+    }
+
+    private fun openProductReportSummarySheet() {
+        ProductReportSummaryBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader
+        ).show(childFragmentManager)
     }
 
     private fun startBroadcast(ingestUrl: String) {
@@ -1316,5 +1449,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     companion object {
         private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
+
+        private const val COACHMARK_INITIAL_DELAY = 500L
+        private const val COACHMARK_GAME_DELAY = 3000L
     }
 }

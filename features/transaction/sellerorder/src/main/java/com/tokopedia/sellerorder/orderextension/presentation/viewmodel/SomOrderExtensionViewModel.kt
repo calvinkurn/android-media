@@ -14,7 +14,6 @@ import com.tokopedia.sellerorder.orderextension.presentation.mapper.OrderExtensi
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUpdater
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,8 +30,7 @@ class SomOrderExtensionViewModel @Inject constructor(
     val orderExtensionRequestInfo: LiveData<OrderExtensionRequestInfoUiModel>
         get() = _requestExtensionInfo
 
-    private val orderExtensionRequestInfoUpdates: MutableLiveData<OrderExtensionRequestInfoUpdater> =
-        MutableLiveData()
+    private val orderExtensionRequestInfoUpdates = MutableLiveData<OrderExtensionRequestInfoUpdater>()
 
     init {
         launch {
@@ -110,8 +108,8 @@ class SomOrderExtensionViewModel @Inject constructor(
     fun getSomOrderExtensionRequestInfo(orderId: String) {
         launchCatchError(context = dispatcher.io, block = {
             val result = somGetOrderExtensionRequestInfoUseCase.execute(orderId, userSession.shopId)
-            val mappedResult =
-                somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)
+            val mappedResult = somGetOrderExtensionRequestInfoMapper
+                .mapSuccessResponseToUiModel(result)
             onSuccessGetSomRequestExtensionInfo(mappedResult)
         }, onError = {
             onFailedGetOrderExtensionRequest(it)
@@ -130,8 +128,8 @@ class SomOrderExtensionViewModel @Inject constructor(
                         requestExtensionInfo.getComment(selectedOptionCode),
                         extensionTime
                     )
-                    val mappedResult =
-                        somOrderExtensionRequestResultMapper.mapResponseToUiModel(result)
+                    val mappedResult = somOrderExtensionRequestResultMapper
+                        .mapResponseToUiModel(result)
                     if (!mappedResult.success) {
                         onFailedSendingOrderExtensionRequest(
                             errorMessage = mappedResult.message,
@@ -166,20 +164,20 @@ class SomOrderExtensionViewModel @Inject constructor(
 
     fun updateOrderExtensionRequestInfoOnCommentChanged(element: OrderExtensionRequestInfoUiModel.CommentUiModel?) {
         element?.let {
-            orderExtensionRequestInfoUpdates.value =
-                OrderExtensionRequestInfoUpdater.OnCommentChange(it)
+            orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+                .OnCommentChange(it)
         }
     }
 
     fun updateOrderExtensionRequestInfoOnSelectedOptionChanged(element: OrderExtensionRequestInfoUiModel.OptionUiModel?) {
         element?.let {
-            orderExtensionRequestInfoUpdates.value =
-                OrderExtensionRequestInfoUpdater.OnSelectedOptionChange(it)
+            orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+                .OnSelectedOptionChange(it)
         }
     }
 
     fun requestDismissOrderExtensionRequestInfoBottomSheet() {
-        orderExtensionRequestInfoUpdates.value =
-            OrderExtensionRequestInfoUpdater.OnRequestDismissBottomSheet()
+        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+            .OnRequestDismissBottomSheet()
     }
 }

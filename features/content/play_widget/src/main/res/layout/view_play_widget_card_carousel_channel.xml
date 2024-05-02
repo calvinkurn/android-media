@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_NN300"
-    app:rcl_cornerRadius="12dp"
+    app:rcl_cornerRadius="@dimen/play_widget_carousel_corner_radius"
     >
 
     <androidx.appcompat.widget.AppCompatImageView

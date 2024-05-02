@@ -29,12 +29,26 @@ class MissionWidgetMapper @Inject constructor() {
                 showShimmering = atfData.atfMetadata.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
                 widgetParam = atfData.atfMetadata.param,
+                componentName = atfData.atfMetadata.component,
             )
         } else {
             MissionWidgetListDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 name = atfData.atfMetadata.name,
-                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(data.missions, atfData.isCache, data.appLog),
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(
+                    data.missions,
+                    atfData.isCache,
+                    data.appLog
+                ),
+                mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
+                    missionWidgetList = data.missions,
+                    isCache = atfData.isCache,
+                    appLog = data.appLog,
+                    channelId = atfData.atfMetadata.id.toString(),
+                    channelName = atfData.atfMetadata.name,
+                    header = data.header.getAsHomeComponentHeader(),
+                    verticalPosition = index
+                ),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),
                 verticalPosition = index,
@@ -42,6 +56,7 @@ class MissionWidgetMapper @Inject constructor() {
                 showShimmering = atfData.atfMetadata.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
                 type = getMissionWidgetType(atfData.atfMetadata.component),
+                componentName = atfData.atfMetadata.component,
                 widgetParam = atfData.atfMetadata.param,
             )
         }

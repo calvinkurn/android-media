@@ -51,9 +51,6 @@ import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
@@ -61,6 +58,7 @@ import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.TopChatListFilterEnum
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.view.TopChatListAction
@@ -77,7 +75,6 @@ import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
 import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
-import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
@@ -141,7 +138,6 @@ class ChatListFragment :
 
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
-    private var filterChecked = 0
     private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
@@ -251,7 +247,7 @@ class ChatListFragment :
         setupSellerBroadcast()
         setupChatSellerBannedStatus()
         setupEmptyModel()
-        notifyAndGetChatListMessage(view)
+        notifyAndGetChatListMessage()
     }
 
     private fun setupChatSellerBannedStatus() {
@@ -455,6 +451,7 @@ class ChatListFragment :
         }
 
         updateShopActive()
+        chatItemListViewModel.setupViewModelObserver()
     }
 
     private fun setChatListTickerBuyer(result: ChatListTickerResponse.ChatListTicker) {
@@ -520,8 +517,7 @@ class ChatListFragment :
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
         adapter?.let { adapter ->
             if (
-                (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
-                filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
+                (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel)
             ) {
                 return
             }
@@ -575,8 +571,7 @@ class ChatListFragment :
         adapter?.let { adapter ->
             if (
                 (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
-                adapter.list.isEmpty() ||
-                filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
+                adapter.list.isEmpty()
             ) {
                 return
             }
@@ -602,7 +597,9 @@ class ChatListFragment :
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         if (sightTag == PARAM_TAB_USER) {
-            mStoriesWidgetManager.updateStories(data.list.map { it.id })
+            mStoriesWidgetManager.updateStories(
+                data.list.mapNotNull { if (it.isSeller()) it.id else null }
+            )
         }
         fpmStopTrace()
     }
@@ -672,13 +669,17 @@ class ChatListFragment :
         activity?.let {
             if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<TopchatItemMenu>()
-            val arrayFilterString = chatItemListViewModel.getFilterTitles(it, isTabSeller())
-
-            for ((index, title) in arrayFilterString.withIndex()) {
-                if (index == filterChecked) {
-                    itemMenus.add(TopchatItemMenu(title, hasCheck = true))
+            val filterSelected = chatItemListViewModel.chatListFilterUiState.value.selectedFilter
+            val filterList = if (isTabSeller()) {
+                chatItemListViewModel.chatListFilterUiState.value.filterListSeller
+            } else {
+                chatItemListViewModel.chatListFilterUiState.value.filterListBuyer
+            }
+            for ((filterEnum, filterTitle) in filterList) {
+                if (filterEnum == filterSelected) {
+                    itemMenus.add(TopchatItemMenu(title = filterTitle, hasCheck = true, filterEnum = filterEnum))
                 } else {
-                    itemMenus.add(TopchatItemMenu(title))
+                    itemMenus.add(TopchatItemMenu(title = filterTitle, filterEnum = filterEnum))
                 }
             }
 
@@ -686,11 +687,13 @@ class ChatListFragment :
             filterMenu.apply {
                 setTitle(title)
                 setItemMenuList(itemMenus)
-                setOnItemMenuClickListener { menu, pos ->
+                setOnItemMenuClickListener { menu ->
                     chatListAnalytics.eventClickListFilterChat(
                         menu.title.lowercase(Locale.getDefault())
                     )
-                    filterChecked = pos
+                    menu.filterEnum?.let {
+                        chatItemListViewModel.processAction(TopChatListAction.SetFilter(it))
+                    }
                     loadInitialData()
                     dismiss()
                 }
@@ -724,7 +727,11 @@ class ChatListFragment :
     }
 
     override fun loadData(page: Int) {
-        chatItemListViewModel.getChatListMessage(page, filterChecked, sightTag)
+        chatItemListViewModel.getChatListMessage(
+            page,
+            chatItemListViewModel.chatListFilterUiState.value.selectedFilter,
+            sightTag
+        )
     }
 
     override fun chatItemClicked(
@@ -906,9 +913,13 @@ class ChatListFragment :
         }
     }
 
-    private fun notifyAndGetChatListMessage(view: View?) {
+    private fun notifyAndGetChatListMessage() {
         chatTabListContract?.notifyViewCreated()
-        chatItemListViewModel.getChatListMessage(1, filterChecked, sightTag)
+        chatItemListViewModel.getChatListMessage(
+            1,
+            chatItemListViewModel.chatListFilterUiState.value.selectedFilter,
+            sightTag
+        )
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -942,14 +953,14 @@ class ChatListFragment :
                     image = CHAT_BUYER_EMPTY
                 }
             }
-
-            if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_UNREAD)) {
+            val filterChecked = chatItemListViewModel.chatListFilterUiState.value.selectedFilter
+            if (filterChecked == TopChatListFilterEnum.FILTER_UNREAD) {
                 image = CHAT_BUYER_EMPTY
                 title = it.getString(R.string.empty_chat_read_all_title)
                 subtitle = ""
                 ctaText = ""
                 ctaApplink = ""
-            } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_TOPBOT)) {
+            } else if (filterChecked == TopChatListFilterEnum.FILTER_TOPBOT) {
                 image = CHAT_SELLER_EMPTY_SMART_REPLY
                 title = it.getString(R.string.empty_chat_smart_reply)
                 subtitle = ""

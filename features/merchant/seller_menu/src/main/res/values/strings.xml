@@ -35,7 +35,7 @@
     <string name="seller_menu_shop_score_max_label">/100</string>
     <string name="seller_menu_shop_score_empty_label">--</string>
 
-    <string name="transaction_since_joining">Transaksi sejak bergabung</string>
+    <string name="total_transaction_label">Total transaksi</string>
     <string name="transaction_on_date">Transaksi sejak 14 Juni 2021</string>
     <string name="transaction_passed">Kamu telah melewati <![CDATA[<b>100</b>]]> transaksi</string>
 
