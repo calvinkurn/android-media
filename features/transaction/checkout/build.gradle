@@ -9,6 +9,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
 
     defaultConfig {
@@ -140,6 +141,27 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestUtil rootProject.ext.testDependencies.orchestrator
+
+    implementation rootProject.ext.msSdkDependencies.msSdk
+    implementation rootProject.ext.msSdkDependencies.sdkMonitor
+    implementation rootProject.ext.appLogDependencies.baseLibsUtility
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.msSdkDependencies.keva
+    implementation rootProject.ext.appLogDependencies.encrypt
+    implementation rootProject.ext.msSdkDependencies.network
+    implementation rootProject.ext.appLogDependencies.businessALog
+    implementation rootProject.ext.msSdkDependencies.cronet
+    implementation rootProject.ext.msSdkDependencies.networkOk3
+    implementation rootProject.ext.msSdkDependencies.librarian
+    implementation rootProject.ext.appLogDependencies.androidALog
+    implementation rootProject.ext.msSdkDependencies.apmUtil
+    implementation rootProject.ext.msSdkDependencies.serviceManager
+    implementation rootProject.ext.msSdkDependencies.serviceManagerAnnotation
+    implementation rootProject.ext.msSdkDependencies.ssRetrofit2
+    implementation rootProject.ext.msSdkDependencies.platformThread
+    implementation rootProject.ext.msSdkDependencies.wsChannel
+    implementation rootProject.ext.msSdkDependencies.apmApi
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
 }
 
 project.ext {

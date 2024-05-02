@@ -1,7 +1,6 @@
 package com.tokopedia.logisticcart.shipping.model
 
 data class ShippingWidgetUiModel(
-    // renderShippingVibrationAnimation
     var isShippingBorderRed: Boolean = false,
     // renderShippingVibrationAnimation
     var isTriggerShippingVibrationAnimation: Boolean = false,

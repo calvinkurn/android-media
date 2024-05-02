@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -566,6 +567,13 @@ class CheckoutFragment :
                 }
 
                 is CheckoutPageState.Success -> {
+
+                    val appID = MSSDK_APPID
+                    val mgr = MSManagerUtils.get(appID)
+                    mgr?.let {
+                        mgr.report(MSSDK_CHECKOUT)
+                    }
+
                     hideLoading()
                     updateLocalCacheAddressData(it.cartShipmentAddressFormData.groupAddress.first().userAddress)
                     binding.globalErrorCheckout.isVisible = false
@@ -2891,18 +2899,13 @@ class CheckoutFragment :
             putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
         }
         startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
-        checkoutAnalyticsCourierSelection.sendPaymentClickArrowToChangePaymentOptionEvent(getPaymentMethodName(payment), viewModel.getCartTypeString())
-    }
-
-    private fun getPaymentMethodName(payment: CheckoutPaymentModel): String {
-        return payment.data?.paymentWidgetData?.firstOrNull()?.gatewayName ?: ""
+        checkoutAnalyticsCourierSelection.sendPaymentClickArrowToChangePaymentOptionEvent(payment.getPaymentMethodName(), viewModel.getCartTypeString())
     }
 
     private fun onActivityResultFromPaymentListing(resultCode: Int, data: Intent?) {
         val gateway = data?.getStringExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY)
         val metadata = data?.getStringExtra(PaymentListingActivity.EXTRA_RESULT_METADATA)
         if (gateway != null && metadata != null) {
-//            orderSummaryAnalytics.eventClickSelectedPaymentOption(gateway, userSession.get().userId)
             viewModel.choosePayment(gateway, metadata)
         }
     }
@@ -2930,10 +2933,11 @@ class CheckoutFragment :
     }
 
     override fun onChangeInstallment(payment: CheckoutPaymentModel) {
-        if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
+        val mandatoryHit = payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit
+        if (mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
             // gocicil
             onChangeGoCicilInstallment(payment.data, payment)
-        } else if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
+        } else if (mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
             // cc
             onChangeCcInstallment(payment.data, payment)
         }
@@ -3043,9 +3047,6 @@ class CheckoutFragment :
                 ),
                 REQUEST_CODE_PAYMENT_TOP_UP
             )
-    //                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
-    //                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
-    //                }
         }
     }
 
@@ -3054,6 +3055,8 @@ class CheckoutFragment :
     }
 
     companion object {
+        private const val MSSDK_APPID: String = "573733"
+        private const val MSSDK_CHECKOUT: String = "checkout"
 
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
 

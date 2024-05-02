@@ -2,6 +2,7 @@ package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.revamp.view.PROMO_INDEX_FROM_BOTTOM
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
@@ -65,7 +66,8 @@ class CheckoutPromoProcessor @Inject constructor(
         listData: List<CheckoutItem>,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean,
-        isOneClickShipment: Boolean
+        isOneClickShipment: Boolean,
+        cartType: String
     ): PromoRequest {
         val promoRequest = PromoRequest()
         val listOrderItem = ArrayList<Order>()
@@ -160,6 +162,8 @@ class CheckoutPromoProcessor @Inject constructor(
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         if (isOneClickShipment) {
             promoRequest.cartType = "ocs"
+        } else if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+            promoRequest.cartType = CheckoutConstant.PARAM_NEW_OCC
         } else {
             promoRequest.cartType = CartConstant.PARAM_DEFAULT
         }
@@ -180,7 +184,8 @@ class CheckoutPromoProcessor @Inject constructor(
         shipmentCartItemModelList: List<CheckoutItem>,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean,
-        isOneClickShipment: Boolean
+        isOneClickShipment: Boolean,
+        cartType: String
     ): ValidateUsePromoRequest {
         val bboPromoCodes = ArrayList<String>()
         val validateUsePromoRequest = ValidateUsePromoRequest()
@@ -250,7 +255,11 @@ class CheckoutPromoProcessor @Inject constructor(
         }
         validateUsePromoRequest.orders = listOrderItem
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
+        if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+            validateUsePromoRequest.cartType = CheckoutConstant.PARAM_NEW_OCC
+        } else {
+            validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
+        }
         validateUsePromoRequest.skipApply = 0
         validateUsePromoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
         if (isTradeIn) {
@@ -268,8 +277,6 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest.codes = globalPromoCodes
         if (isOneClickShipment) {
             validateUsePromoRequest.cartType = "ocs"
-        } else {
-            validateUsePromoRequest.cartType = "default"
         }
         this.bboPromoCodes = bboPromoCodes
         return validateUsePromoRequest
@@ -279,13 +286,15 @@ class CheckoutPromoProcessor @Inject constructor(
         shipmentCartItemModelList: List<CheckoutItem>,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean,
-        isOneClickShipment: Boolean
+        isOneClickShipment: Boolean,
+        cartType: String
     ): ValidateUsePromoRequest {
         val validateUsePromoRequest = generateValidateUsePromoRequest(
             shipmentCartItemModelList,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
         setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
         return validateUsePromoRequest
@@ -383,7 +392,8 @@ class CheckoutPromoProcessor @Inject constructor(
         courierItemData: CourierItemData,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInByDropOff: Boolean
+        isTradeInByDropOff: Boolean,
+        cartType: String
     ): List<CheckoutItem> {
         try {
             val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
@@ -399,7 +409,8 @@ class CheckoutPromoProcessor @Inject constructor(
                 courierItemData,
                 isOneClickShipment,
                 isTradeIn,
-                isTradeInByDropOff
+                isTradeInByDropOff,
+                cartType
             )
         } catch (t: Throwable) {
             return onValidatePromoError(
@@ -410,7 +421,8 @@ class CheckoutPromoProcessor @Inject constructor(
                 validateUsePromoRequest,
                 isOneClickShipment,
                 isTradeIn,
-                isTradeInByDropOff
+                isTradeInByDropOff,
+                cartType
             )
         }
     }
@@ -438,7 +450,8 @@ class CheckoutPromoProcessor @Inject constructor(
         courierItemData: CourierItemData,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInByDropOff: Boolean
+        isTradeInByDropOff: Boolean,
+        cartType: String
     ): List<CheckoutItem> {
         val isValidatePromoRevampSuccess =
             validateUsePromoRevampUiModel.status.equals(
@@ -482,7 +495,7 @@ class CheckoutPromoProcessor @Inject constructor(
             for ((index, checkoutItem) in checkoutItems.withIndex()) {
                 if (checkoutItem is CheckoutOrderModel && checkoutItem.cartStringGroup == cartString) {
                     if (checkoutItem.boCode.isNotEmpty()) {
-                        doClearBoSilently(checkoutItem)
+                        doClearBoSilently(checkoutItem, cartType)
                     }
                     checkoutItems[index] = checkoutItem.copy(
                         shipment = checkoutItem.shipment.copy(
@@ -498,12 +511,16 @@ class CheckoutPromoProcessor @Inject constructor(
         }
     }
 
-    private suspend fun doClearBoSilently(checkoutItem: CheckoutOrderModel) {
+    private suspend fun doClearBoSilently(checkoutItem: CheckoutOrderModel, cartType: String) {
         try {
             clearCacheAutoApplyStackUseCase.setParams(
                 ClearPromoRequest(
                     ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                    false,
+                    if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+                        true
+                    } else {
+                        false
+                    },
                     ClearPromoOrderData(
                         emptyList(),
                         arrayListOf(
@@ -624,7 +641,8 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest: ValidateUsePromoRequest,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInByDropOff: Boolean
+        isTradeInByDropOff: Boolean,
+        cartType: String
     ): List<CheckoutItem> {
         Timber.d(t)
         val checkoutItems = shipmentCartItemModelList.toMutableList()
@@ -640,7 +658,7 @@ class CheckoutPromoProcessor @Inject constructor(
         )
         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(t.message)
         if (t is AkamaiErrorException) {
-            clearAllPromo(validateUsePromoRequest)
+            clearAllPromo(validateUsePromoRequest, cartType)
             for ((index, checkoutItem) in checkoutItems.withIndex()) {
                 if (checkoutItem is CheckoutOrderModel && !checkoutItem.shipment.courierItemData?.selectedShipper?.logPromoCode.isNullOrEmpty()) {
                     checkoutItems[index] =
@@ -658,7 +676,7 @@ class CheckoutPromoProcessor @Inject constructor(
             )
         } else {
             if (orderModel.boCode.isNotEmpty()) {
-                doClearBoSilently(orderModel)
+                doClearBoSilently(orderModel, cartType)
                 newOrderModel = newOrderModel.copy(boCode = "", boUniqueId = "")
             }
             toasterProcessor.commonToaster.emit(
@@ -681,7 +699,7 @@ class CheckoutPromoProcessor @Inject constructor(
         return checkoutItems
     }
 
-    suspend fun clearAllBo(checkoutItems: List<CheckoutItem>) {
+    suspend fun clearAllBo(checkoutItems: List<CheckoutItem>, cartType: String) {
         val clearOrders = ArrayList<ClearPromoOrder>()
         var hasBo = false
         for (shipmentCartItemModel in checkoutItems) {
@@ -707,7 +725,7 @@ class CheckoutPromoProcessor @Inject constructor(
                     clearCacheAutoApplyStackUseCase.setParams(
                         ClearPromoRequest(
                             ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                            false,
+                            cartType == CartShipmentAddressFormData.CART_TYPE_OCC,
                             ClearPromoOrderData(
                                 ArrayList(),
                                 clearOrders
@@ -721,13 +739,13 @@ class CheckoutPromoProcessor @Inject constructor(
         }
     }
 
-    suspend fun clearPromo(clearPromoOrder: ClearPromoOrder): Boolean {
+    suspend fun clearPromo(clearPromoOrder: ClearPromoOrder, cartType: String): Boolean {
         return withContext(dispatchers.io) {
             try {
                 val responseData = clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
                         ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                        false,
+                        cartType == CartShipmentAddressFormData.CART_TYPE_OCC,
                         ClearPromoOrderData(
                             emptyList(),
                             arrayListOf(clearPromoOrder)
@@ -742,13 +760,13 @@ class CheckoutPromoProcessor @Inject constructor(
         }
     }
 
-    suspend fun clearPromoValidate(clearPromoOrder: ClearPromoOrder): Boolean {
+    suspend fun clearPromoValidate(clearPromoOrder: ClearPromoOrder, cartType: String): Boolean {
         return withContext(dispatchers.io) {
             try {
                 val responseData = clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
                         ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                        false,
+                        cartType == CartShipmentAddressFormData.CART_TYPE_OCC,
                         ClearPromoOrderData(
                             emptyList(),
                             arrayListOf(clearPromoOrder)
@@ -849,7 +867,8 @@ class CheckoutPromoProcessor @Inject constructor(
         checkoutItems: List<CheckoutItem>,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInByDropOff: Boolean
+        isTradeInByDropOff: Boolean,
+        cartType: String
     ): List<CheckoutItem> {
         var items = checkoutItems.toMutableList()
         return withContext(dispatchers.io) {
@@ -934,7 +953,7 @@ class CheckoutPromoProcessor @Inject constructor(
             } catch (t: Throwable) {
                 Timber.d(t)
                 if (t is AkamaiErrorException) {
-                    clearAllPromo(validateUsePromoRequest)
+                    clearAllPromo(validateUsePromoRequest, cartType)
                     items[items.size - PROMO_INDEX_FROM_BOTTOM] = items.promo()!!.copy(promo = LastApplyUiModel())
                     for ((index, checkoutItem) in items.withIndex()) {
                         if (checkoutItem is CheckoutOrderModel) {
@@ -1087,7 +1106,8 @@ class CheckoutPromoProcessor @Inject constructor(
 
     suspend fun cancelNotEligiblePromo(
         notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>,
-        listData: List<CheckoutItem>
+        listData: List<CheckoutItem>,
+        cartType: String
     ): Boolean {
         var hasPromo = false
         val globalPromoCodes = arrayListOf<String>()
@@ -1131,7 +1151,7 @@ class CheckoutPromoProcessor @Inject constructor(
                 val response = clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
                         ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                        false,
+                        cartType == CartShipmentAddressFormData.CART_TYPE_OCC,
                         ClearPromoOrderData(globalPromoCodes, clearOrders)
                     )
                 ).executeOnBackground()
@@ -1158,7 +1178,7 @@ class CheckoutPromoProcessor @Inject constructor(
         return null
     }
 
-    private suspend fun clearAllPromo(validateUsePromoRequest: ValidateUsePromoRequest) {
+    private suspend fun clearAllPromo(validateUsePromoRequest: ValidateUsePromoRequest, cartType: String) {
         var hasPromo = false
         val globalCodes = ArrayList<String>()
         for (code in validateUsePromoRequest.codes) {
@@ -1191,7 +1211,7 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest.orders = cloneOrders
         val params = ClearPromoRequest(
             ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-            false,
+            cartType == CartShipmentAddressFormData.CART_TYPE_OCC,
             ClearPromoOrderData(globalCodes, clearOrders)
         )
         if (hasPromo) {

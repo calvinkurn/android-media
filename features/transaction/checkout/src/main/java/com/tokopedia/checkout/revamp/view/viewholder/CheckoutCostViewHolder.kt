@@ -46,6 +46,7 @@ class CheckoutCostViewHolder(
 
         renderOtherFee(cost)
         renderPaymentFee(cost)
+        renderPaymentWordings(cost)
 
         binding.tvCheckoutCostTotalValue.setTextAndContentDescription(
             cost.totalPriceString,
@@ -591,7 +592,12 @@ class CheckoutCostViewHolder(
                         binding.llCheckoutCostPaymentsExpanded,
                         false
                     )
-                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = installmentTitleString
+                    val interestText = cost.installmentDetail!!.description.split(" ").firstOrNull{ it.contains("%") }
+                    if (interestText != null) {
+                        itemBinding.tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan ($interestText per bulan)"
+                    } else {
+                        itemBinding.tvCheckoutCostPaymentFeeTitle.text = installmentTitleString
+                    }
                     itemBinding.icCheckoutCostPaymentFee.isVisible = false
                     itemBinding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
                     itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment, false).removeDecimalSuffix()
@@ -713,7 +719,12 @@ class CheckoutCostViewHolder(
                 // render outside
                 val paymentFee = installmentFee.first()
                 binding.apply {
-                    tvCheckoutCostPaymentFeeTitle.text = binding.root.context.getString(R.string.checkout_lbl_installment_fee)
+                    val interestText = cost.installmentDetail!!.description.split(" ").firstOrNull{ it.contains("%") }
+                    if (interestText != null) {
+                        tvCheckoutCostPaymentFeeTitle.text = "Biaya Cicilan ($interestText per bulan)"
+                    } else {
+                        tvCheckoutCostPaymentFeeTitle.text = binding.root.context.getString(R.string.checkout_lbl_installment_fee)
+                    }
                     tvCheckoutCostPaymentFeeTitle.isVisible = true
                     icCheckoutCostPaymentFee.isVisible = false
                     tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
@@ -738,7 +749,6 @@ class CheckoutCostViewHolder(
                     llCheckoutCostPaymentsExpanded.isVisible = false
                 }
             }
-            binding.tvCheckoutCostTotalTitle.text = binding.root.context.getString(R.string.checkout_cost_total_with_payment_title)
         } else {
             binding.apply {
                 tvCheckoutCostPaymentFeeTitle.isVisible = false
@@ -751,6 +761,16 @@ class CheckoutCostViewHolder(
                 vCheckoutCostPaymentsExpandedSeparator.isVisible = false
                 llCheckoutCostPaymentsExpanded.isVisible = false
             }
+        }
+    }
+
+    private fun renderPaymentWordings(cost: CheckoutCostModel) {
+        if (cost.useNewWording) {
+            binding.tvCheckoutCostTotalTitle.text = binding.root.context.getString(R.string.checkout_cost_total_with_payment_title)
+            binding.tvCheckoutCostHeader.text = binding.root.context.getString(R.string.checkout_cost_with_payment_header_title)
+        } else {
+            binding.tvCheckoutCostTotalTitle.text = binding.root.context.getString(R.string.checkout_cost_total_title)
+            binding.tvCheckoutCostHeader.text = binding.root.context.getString(R.string.checkout_cost_header_title)
         }
     }
 

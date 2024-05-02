@@ -341,11 +341,8 @@ class ShopOpenRevampQuisionerFragment :
                 false
             )
         }
-
-        if (isNeedLocation) {
-            showLoader()
-            gotoPickLocation()
-        }
+        showLoader()
+        gotoPickLocation()
     }
 
     private fun showLoader() {
@@ -439,13 +436,7 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                if (isNeedLocation) {
-                    // Should have stayed in the feature instead of finish the feature
-                    hideLoader()
-                } else {
-                    hideLoader()
-                    showExitOrPickLocationDialog()
-                }
+                gotoPickLocation()
             }
         }
     }

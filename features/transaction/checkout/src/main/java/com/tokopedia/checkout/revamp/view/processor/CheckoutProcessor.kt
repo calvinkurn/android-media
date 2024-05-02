@@ -95,7 +95,8 @@ class CheckoutProcessor @Inject constructor(
                 checkoutRequest,
                 "",
                 fingerprintPublicKey,
-                paymentParam
+                paymentParam,
+                cartType
             )
             try {
                 val checkoutData = withContext(dispatchers.io) {
@@ -361,8 +362,10 @@ class CheckoutProcessor @Inject constructor(
         carts: Carts,
         dynamicData: String,
         fingerprintPublicKey: String?,
-        payment: Payment
+        payment: Payment,
+        cartType: String
     ): CheckoutRequest {
+        val atcBuyType = if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) AtcBuyType.INSTANT else AtcBuyType.ATC
         return CheckoutRequest(
             carts,
             isOneClickShipment.toString(),
@@ -377,7 +380,7 @@ class CheckoutProcessor @Inject constructor(
             fingerprintSupport = (fingerprintPublicKey != null).toString(),
             fingerprintPublickey = fingerprintPublicKey ?: "",
             payment = payment,
-            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC, carts.cartIds)
+            tracker = AppLogAnalytics.getEntranceInfoForCheckout(atcBuyType, carts.cartIds)
         )
     }
 

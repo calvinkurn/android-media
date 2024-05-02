@@ -337,7 +337,8 @@ class CheckoutViewModel @Inject constructor(
                             )
                         )
 
-                        val cost = CheckoutCostModel()
+                        cartType = saf.cartShipmentAddressFormData.cartType
+                        val cost = CheckoutCostModel(useNewWording = payment.enable)
 
                         val paymentLevelAddOnsMap = mutableMapOf<Long, CheckoutCrossSellItem>()
                         if (!tickerError.isError) {
@@ -410,8 +411,6 @@ class CheckoutViewModel @Inject constructor(
                                 it
                             }
                         }
-
-                        cartType = saf.cartShipmentAddressFormData.cartType
 
                         withContext(dispatchers.main) {
                             listData.value = listOf(
@@ -667,10 +666,6 @@ class CheckoutViewModel @Inject constructor(
         } else {
             ""
         }
-    }
-
-    private fun getPaymentMethod(payment: CheckoutPaymentModel): String {
-        return payment.data?.paymentWidgetData?.firstOrNull()?.gatewayName ?: ""
     }
 
     fun triggerSendEnhancedEcommerceCheckoutAnalytics(
@@ -1497,7 +1492,8 @@ class CheckoutViewModel @Inject constructor(
                         orderModel.preOrderDurationDay.toString(),
                         orderModel.fulfillmentId,
                         orderModel.cartStringGroup
-                    )
+                    ),
+                    cartType
                 )
                 commonToaster.emit(
                     CheckoutPageToaster(
@@ -1562,7 +1558,8 @@ class CheckoutViewModel @Inject constructor(
                         checkoutOrderModel.preOrderDurationDay.toString(),
                         checkoutOrderModel.fulfillmentId,
                         checkoutOrderModel.cartStringGroup
-                    )
+                    ),
+                    cartType
                 )
                 if (!success) {
                     val items = listData.value.toMutableList()
@@ -1636,7 +1633,8 @@ class CheckoutViewModel @Inject constructor(
             list ?: listData.value,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
@@ -1645,7 +1643,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
@@ -1654,7 +1653,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
@@ -1663,7 +1663,8 @@ class CheckoutViewModel @Inject constructor(
             newListData,
             isTradeIn,
             isTradeInByDropOff,
-            isOneClickShipment
+            isOneClickShipment,
+            cartType
         )
     }
 
@@ -1678,12 +1679,14 @@ class CheckoutViewModel @Inject constructor(
                 checkoutItems,
                 isTradeIn,
                 isTradeInByDropOff,
-                isOneClickShipment
+                isOneClickShipment,
+                cartType
             ),
             checkoutItems,
             isOneClickShipment,
             isTradeIn,
-            isTradeInByDropOff
+            isTradeInByDropOff,
+            cartType
         )
         newItems = getEntryPointInfo(newItems, checkoutItems)
         newItems = checkCrossSellImpressionState(newItems)
@@ -1780,7 +1783,8 @@ class CheckoutViewModel @Inject constructor(
             courierItemData,
             isOneClickShipment,
             isTradeIn,
-            isTradeInByDropOff
+            isTradeInByDropOff,
+            cartType
         )
         newItems = getEntryPointInfo(newItems, listData.value)
         listData.value = newItems
@@ -1874,7 +1878,8 @@ class CheckoutViewModel @Inject constructor(
                     order.preOrderDurationDay.toString(),
                     order.fulfillmentId,
                     order.cartStringGroup
-                )
+                ),
+                cartType
             )
         }
         val validateUsePromoRequest = generateValidateUsePromoRequest()
@@ -1919,7 +1924,8 @@ class CheckoutViewModel @Inject constructor(
             newCourierItemData,
             isOneClickShipment,
             isTradeIn,
-            isTradeInByDropOff
+            isTradeInByDropOff,
+            cartType
         )
         val newOrder = newItems[cartPosition] as CheckoutOrderModel
         if (newOrder.shipment.courierItemData != null) {
@@ -1986,7 +1992,8 @@ class CheckoutViewModel @Inject constructor(
                 checkoutOrderModel.preOrderDurationDay.toString(),
                 checkoutOrderModel.fulfillmentId,
                 checkoutOrderModel.cartStringGroup
-            )
+            ),
+            cartType
         )
         if (shouldClearPromoBenefit) {
             val list = listData.value.toMutableList()
@@ -2262,7 +2269,8 @@ class CheckoutViewModel @Inject constructor(
                     listData.value,
                     isTradeIn,
                     isTradeInByDropOff,
-                    isOneClickShipment
+                    isOneClickShipment,
+                    cartType
                 )
             )
             if (validateUsePromoRevampUiModel != null) {
@@ -2303,7 +2311,8 @@ class CheckoutViewModel @Inject constructor(
                 if (notEligiblePromoHolderdataList.size > 0) {
                     if (promoProcessor.cancelNotEligiblePromo(
                             notEligiblePromoHolderdataList,
-                            listData.value
+                            listData.value,
+                            cartType
                         )
                     ) {
                         if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
@@ -2584,7 +2593,8 @@ class CheckoutViewModel @Inject constructor(
                                         checkoutItem.preOrderDurationDay.toString(),
                                         checkoutItem.fulfillmentId,
                                         checkoutItem.cartStringGroup
-                                    )
+                                    ),
+                                    cartType
                                 )
                                 // reset shipment
                                 checkoutItems[index] =
@@ -2764,7 +2774,8 @@ class CheckoutViewModel @Inject constructor(
                         courierItemData,
                         isOneClickShipment,
                         isTradeIn,
-                        isTradeInByDropOff
+                        isTradeInByDropOff,
+                        cartType
                     ).toMutableList()
                 }
             } else {
@@ -2796,7 +2807,8 @@ class CheckoutViewModel @Inject constructor(
                         order.preOrderDurationDay.toString(),
                         order.fulfillmentId,
                         order.cartStringGroup
-                    )
+                    ),
+                    cartType
                 )
                 val newOrderModel = order.copy(
                     shipment = order.shipment.copy(
@@ -2858,7 +2870,8 @@ class CheckoutViewModel @Inject constructor(
                             shipmentCartItemModel.preOrderDurationDay.toString(),
                             shipmentCartItemModel.fulfillmentId,
                             shipmentCartItemModel.cartStringGroup
-                        )
+                        ),
+                        cartType
                     )
                     // reset shipment
                     checkoutItems[index] =
@@ -2880,7 +2893,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     private suspend fun hitClearAllBo() {
-        promoProcessor.clearAllBo(listData.value)
+        promoProcessor.clearAllBo(listData.value, cartType)
     }
 
     fun setAddon(
@@ -3107,7 +3120,8 @@ class CheckoutViewModel @Inject constructor(
                     order.preOrderDurationDay.toString(),
                     order.fulfillmentId,
                     order.cartStringGroup
-                )
+                ),
+                cartType
             )
             validatePromo()
         }
@@ -3317,7 +3331,7 @@ class CheckoutViewModel @Inject constructor(
 
         val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
         if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
-            payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost)
+            payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.tenorList == null) {
                 toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, INSTALLMENT_ERROR_MESSAGE))
@@ -3325,7 +3339,7 @@ class CheckoutViewModel @Inject constructor(
         }
 
         if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
-            payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost)
+            payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.installmentData == null) {
                 toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, INSTALLMENT_ERROR_MESSAGE))
@@ -3350,20 +3364,20 @@ class CheckoutViewModel @Inject constructor(
             cost = cost.copy(
                 usePaymentFees = true
             )
-            if (payment.tenorList != null) {
+            if (payment.tenorList != null || payment.installmentData != null) {
                 payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
                 updateTotalAndPayment(cost, payment, skipValidatePayment = true)
                 validatePromo(skipEE = true)
             } else {
                 updateTotalAndPayment(cost, payment)
             }
-            mTrackerShipment.sendViewPaymentMethodEvent(getPaymentMethod(payment), getCartTypeString())
         } else {
             cost = cost.copy(
                 usePaymentFees = true
             )
             updateTotalAndPayment(cost, payment)
         }
+        mTrackerShipment.sendViewPaymentMethodEvent(payment.getPaymentMethodName(), getCartTypeString())
     }
 
     private fun updateTotalAndPayment(cost: CheckoutCostModel, payment: CheckoutPaymentModel, skipValidatePayment: Boolean = false) {
@@ -3384,11 +3398,11 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun generateGoCicilInstallmentRequest(payment: CheckoutPaymentModel): GoCicilInstallmentRequest {
-        return paymentProcessor.generateInstallmentRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!)
+        return paymentProcessor.generateInstallmentRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!, shipmentPlatformFeeData)
     }
 
     fun generateCreditCardTenorListRequest(payment: CheckoutPaymentModel): CreditCardTenorListRequest {
-        return paymentProcessor.generateCreditCardTenorRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!)
+        return paymentProcessor.generateCreditCardTenorRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!, shipmentPlatformFeeData)
     }
 
     fun choosePayment(gatewayCode: String, metadata: String) {

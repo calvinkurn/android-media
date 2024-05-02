@@ -2,10 +2,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 data class HomeRecommendationBannerTopAdsUiModel(
-    val topAdsImageViewModel: TopAdsImageViewModel? = null,
+    val topAdsImageUiModel: TopAdsImageUiModel? = null,
     val cardId: String,
     val layoutCard: String,
     val layoutItem: String,
@@ -20,7 +20,7 @@ data class HomeRecommendationBannerTopAdsUiModel(
 
     override fun areItemsTheSame(other: Any): Boolean {
         return other is HomeRecommendationBannerTopAdsUiModel &&
-            topAdsImageViewModel?.bannerId == other.topAdsImageViewModel?.bannerId
+            topAdsImageUiModel?.bannerId == other.topAdsImageUiModel?.bannerId
     }
 
     override fun areContentsTheSame(other: Any): Boolean {
@@ -33,7 +33,7 @@ data class HomeRecommendationBannerTopAdsUiModel(
 
         other as HomeRecommendationBannerTopAdsUiModel
 
-        if (topAdsImageViewModel != other.topAdsImageViewModel) return false
+        if (topAdsImageUiModel != other.topAdsImageUiModel) return false
 
         return true
     }

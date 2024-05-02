@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
 import static com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT;
 import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
@@ -26,6 +25,7 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
@@ -284,12 +284,14 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         //changes for triggering unittest checker
+
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
         try {
             performanceTrace = new BlocksPerformanceTrace(
-                    this.getContext().getApplicationContext(),
+                    this,
                     PERFORMANCE_TRACE_HOME,
                     LifecycleOwnerKt.getLifecycleScope(this),
                     this,
@@ -331,6 +333,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         sendNotificationUserSetting();
         showDarkModeIntroBottomSheet();
+
     }
 
     private void initDownloadManagerDialog() {
@@ -1361,37 +1364,35 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        updateAppLogPageData(position);
+        updateAppLogPageData(position, false);
         sendEnterPage(position);
         return true;
     }
 
-    private void handleAppLogEnterMethod(String pageName) {
-        if(AppLogAnalytics.INSTANCE.getPageDataList().isEmpty()) return;
-        if (pageName.equals(PageName.HOME)) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
-        } else if (pageName.equals(PageName.WISHLIST)) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+    private void handleAppLogEnterMethod(AppLogInterface appLogInterface, boolean isFirstTimeInit) {
+        if (isFirstTimeInit) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+        } else {
+            String pageName = appLogInterface.getPageName();
+            if (AppLogAnalytics.INSTANCE.getPageDataList().isEmpty()) return;
+            if (pageName.equals(PageName.HOME)) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
+            } else if (pageName.equals(PageName.WISHLIST)) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+            }
         }
     }
 
-    private void updateAppLogPageData(int position) {
+    private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
-        if (fragment instanceof AppLogInterface applogInterface) {
-            handleAppLogEnterMethod(applogInterface.getPageName());
-
+        if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
             Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
-            if (currentPageName != null
-                    && applogInterface.getPageName().equals(currentPageName.toString())) {
-                return;
+            if (currentPageName == null
+                    || !applogInterface.getPageName().equals(currentPageName.toString())) {
+                AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
+                AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
             }
-            AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
-            AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
-
-            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
-            if (currentEnterMethod == null) {
-                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
-            }
+            handleAppLogEnterMethod(applogInterface, isFirstTimeInit);
         }
     }
 
@@ -1434,7 +1435,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            updateAppLogPageData(homePosition);
+            updateAppLogPageData(homePosition, true);
             sendEnterPage(homePosition);
             bottomNavigation.setInitialState(homePosition);
         }

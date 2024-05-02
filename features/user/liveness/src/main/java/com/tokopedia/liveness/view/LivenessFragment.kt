@@ -1,7 +1,15 @@
 package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.Detector.WarnCode.*
+import ai.advance.liveness.lib.Detector.WarnCode.FACECAPTURE
+import ai.advance.liveness.lib.Detector.WarnCode.FACEINACTION
+import ai.advance.liveness.lib.Detector.WarnCode.FACELARGE
+import ai.advance.liveness.lib.Detector.WarnCode.FACEMISSING
+import ai.advance.liveness.lib.Detector.WarnCode.FACENOTCENTER
+import ai.advance.liveness.lib.Detector.WarnCode.FACENOTFRONTAL
+import ai.advance.liveness.lib.Detector.WarnCode.FACENOTSTILL
+import ai.advance.liveness.lib.Detector.WarnCode.FACESMALL
+import ai.advance.liveness.lib.Detector.WarnCode.WARN_MULTIPLEFACES
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.http.entity.ResultEntity
@@ -16,7 +24,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
@@ -280,15 +287,10 @@ class LivenessFragment : BaseDaggerFragment(),
 
     private fun setLottieFile(url: String) {
         viewBinding?.lottieLivenessTips?.apply {
-            cancelAnimation()
+            pauseAnimation()
             clearAnimation()
             invalidate()
-
-            val lottieCompositionLottieTask =
-                LottieCompositionFactory.fromUrl(requireContext(), url)
-            lottieCompositionLottieTask.addListener { result ->
-                setComposition(result)
-            }
+            setAnimationFromUrl(url)
             repeatCount = ValueAnimator.INFINITE
             playAnimation()
         }

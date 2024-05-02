@@ -64,7 +64,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.CardUnify2
@@ -2502,21 +2502,21 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onBannerTopAdsImpression(
-        topAdsImageViewModel: TopAdsImageViewModel,
+        topAdsImageUiModel: TopAdsImageUiModel,
         position: Int
     ) {
         TopAdsUrlHitter(context).hitImpressionUrl(
             this::class.java.simpleName,
-            topAdsImageViewModel.adViewUrl,
+            topAdsImageUiModel.adViewUrl,
             "",
             "",
-            topAdsImageViewModel.imageUrl
+            topAdsImageUiModel.imageUrl
         )
-        WishlistAnalytics.impressTopAdsBanner(userSession.userId, topAdsImageViewModel, position)
+        WishlistAnalytics.impressTopAdsBanner(userSession.userId, topAdsImageUiModel, position)
     }
 
-    override fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
-        RouteManager.route(context, topAdsImageViewModel.applink)
+    override fun onBannerTopAdsClick(topAdsImageUiModel: TopAdsImageUiModel, position: Int) {
+        RouteManager.route(context, topAdsImageUiModel.applink)
     }
 
     override fun onRecommendationItemImpression(

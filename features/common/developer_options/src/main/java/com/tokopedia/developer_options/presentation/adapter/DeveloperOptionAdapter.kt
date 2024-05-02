@@ -160,6 +160,7 @@ class DeveloperOptionAdapter(
     )
 
     private val hiddenItems = mutableListOf(
+        MsSdkUiModel(listOf("")),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),

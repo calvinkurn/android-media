@@ -153,7 +153,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun setUpView() {
-        when(status) {
+        when (status) {
             KycStatus.REJECTED.code.toString() -> {
                 GotoKycAnalytics.sendViewStatusPage(
                     kycFlowType = GotoKycAnalytics.KYC_FLOW_NON_PROGRESSIVE,
@@ -199,7 +199,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         }
 
         binding?.layoutStatusSubmission?.btnPrimary?.setOnClickListener {
-            when(status) {
+            when (status) {
                 KycStatus.BLACKLISTED.code.toString() -> {
                     goToTokopediaCare()
                 }
@@ -212,8 +212,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     goToTransparentActivityToReVerify()
                 }
                 else -> {
-                    val activityResult = if ((status == KycStatus.VERIFIED.code.toString() ||
-                            status == KycStatus.PENDING.code.toString()) && callback.isNotEmpty()) {
+                    val activityResult = if ((
+                        status == KycStatus.VERIFIED.code.toString() ||
+                            status == KycStatus.PENDING.code.toString()
+                        ) && callback.isNotEmpty()
+                    ) {
                         KYCConstant.ActivityResult.LAUNCH_CALLBACK
                     } else {
                         Activity.RESULT_OK
@@ -291,7 +294,9 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     } else {
                         getString(R.string.goto_kyc_next_to_callback_with_source, sourcePage)
                     }
-                    else -> if (sourcePage.isEmpty()) {
+                    else -> if (sourcePage == KYC_SHOP_CREATION_SOURCE) {
+                        getString(R.string.goto_kyc_next_to_callback)
+                    } else if (sourcePage.isEmpty()) {
                         getString(R.string.goto_kyc_back_to_source)
                     } else {
                         getString(R.string.goto_kyc_back_with_source, sourcePage)
@@ -308,7 +313,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             layoutBenefitAccount.root.showWithCondition(isAccountPage)
             layoutBenefitAccount.tvTitle.text = getString(R.string.goto_kyc_benefit_account_title_verified)
         }
-
     }
 
     private fun onPending() {
@@ -336,7 +340,9 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                         }
                     }
                     else -> {
-                        if (sourcePage.isEmpty()) {
+                        if (sourcePage == KYC_SHOP_CREATION_SOURCE) {
+                            getString(R.string.goto_kyc_next_to_callback)
+                        } else if (sourcePage.isEmpty()) {
                             getString(R.string.goto_kyc_back_to_source)
                         } else {
                             getString(R.string.goto_kyc_back_with_source, sourcePage)
@@ -408,5 +414,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         private const val PARAM_TOKOPEDIA_CARE = "?nref='goto-kyc'"
         private const val PATH_TOKOPEDIA_CARE = "help/article/a-"
         private const val TAG_BOTTOM_SHEET_DETAIL_BENEFIT = "tag bottom sheet detail benefit"
+        private const val KYC_SHOP_CREATION_SOURCE = "ShopCreation"
     }
 }
