@@ -26,6 +26,7 @@ object RecommendationVerticalMapper {
                 componentName = model.widget.pageName,
                 widgetTracking = model.widgetTracking,
                 source = model.source,
+                appLogAdditionalParam = model.appLogAdditionalParam,
             )
         }
     }
