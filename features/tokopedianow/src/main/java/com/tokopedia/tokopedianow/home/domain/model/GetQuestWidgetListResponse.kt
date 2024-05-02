@@ -44,13 +44,15 @@ data class QuestList(
     companion object {
         private const val STATUS_IDLE = "Idle"
         private const val STATUS_CLAIMED = "Claimed"
+
+        private const val MANUAL_START_QUEST_ID = 0
     }
 
     fun isIdle() = questUser.status == STATUS_IDLE
 
     fun isClaimed() = questUser.status == STATUS_CLAIMED
 
-    fun isManualStart() = sequenceQuestIDs.isNullOrEmpty()
+    fun isManualStart() = sequenceQuestIDs?.firstOrNull() == MANUAL_START_QUEST_ID
 }
 
 data class QuestUser(
