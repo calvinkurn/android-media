@@ -487,6 +487,12 @@ data class SearchProductV5(
             @SerializedName("tag")
             @Expose
             val tag: Int = 0,
+
+            @SerializedName("creativeID")
+            val creativeID: String = "",
+
+            @SerializedName("logExtra")
+            val logExtra: String = "",
         ) {
             fun isOrganicAds() = id.isNotEmpty()
         }

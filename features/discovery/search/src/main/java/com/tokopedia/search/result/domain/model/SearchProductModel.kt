@@ -659,6 +659,12 @@ data class SearchProductModel(
             @SerializedName("tag")
             @Expose
             val tag: Int = 0,
+
+            @SerializedName("creativeID")
+            val creativeID: String = "",
+
+            @SerializedName("logExtra")
+            val logExtra: String = "",
     )
 
     data class ProductShop(

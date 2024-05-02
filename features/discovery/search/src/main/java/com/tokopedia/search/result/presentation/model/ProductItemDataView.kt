@@ -13,7 +13,9 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -95,6 +97,7 @@ class ProductItemDataView:
     var isImageBlurred: Boolean = false
     var byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData()
     val byteIOImpressHolder = ImpressHolder()
+    var recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.productID == productID) {
@@ -215,10 +218,8 @@ class ProductItemDataView:
 
     fun asAdsLogShowModel(): AdsLogShowModel {
         return AdsLogShowModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "",
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
             AdsLogShowModel.AdExtraData(
                 productId = productID,
                 productName = productName
@@ -228,10 +229,8 @@ class ProductItemDataView:
 
     fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
         return AdsLogShowOverModel(
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "",
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
             AdsLogShowOverModel.AdExtraData(
                 productId = productID,
                 productName = productName,
@@ -243,10 +242,8 @@ class ProductItemDataView:
     fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(
             refer,
-            // todo this value from BE
-            0,
-            // todo this value from BE
-            "",
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
                 productId = productID,
                 productName = productName
