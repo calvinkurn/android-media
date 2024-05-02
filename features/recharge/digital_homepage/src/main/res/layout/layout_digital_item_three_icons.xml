@@ -13,7 +13,7 @@
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/layout_lvl5"
-        tools:src="@drawable/ic_icon_alert" />
+        tools:src="@drawable/common_ic_icon_alert" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"

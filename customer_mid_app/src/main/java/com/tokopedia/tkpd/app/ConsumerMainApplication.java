@@ -502,7 +502,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     }
                 });
                 if (!activity.isFinishing() && !activity.isDestroyed()) {
-                    appUpdateDialogBuilder.getAlertDialog().show();
+                    appUpdateDialogBuilder.getAlertDialogAndShowPopUpUpdate();
                     if (finalInAppCallback != null) {
                         finalInAppCallback.onNeedUpdateInApp(detail);
                     }

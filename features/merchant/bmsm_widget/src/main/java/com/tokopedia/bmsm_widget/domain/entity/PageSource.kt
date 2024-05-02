@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 enum class PageSource : Parcelable {
     OFFER_LANDING_PAGE,
-    CART
+    CART,
+    MINICART_NOW
 }

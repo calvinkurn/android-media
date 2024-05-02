@@ -60,7 +60,8 @@ class AddToCartDataMapper @Inject constructor() {
         return AddToCartOccMultiDataModel(
             errorMessage = response.response.errorMessage,
             status = response.response.status,
-            data = mapAddToCartOccMultiData(response.response.data)
+            data = mapAddToCartOccMultiData(response.response.data),
+            nextPage = response.response.data.nextPage
         )
     }
 
@@ -171,7 +172,8 @@ class AddToCartDataMapper @Inject constructor() {
         return AddToCartDataModel(
             errorMessage = ArrayList(addToCartOccMultiDataModel.errorMessage),
             status = addToCartOccMultiDataModel.status,
-            data = mapDataModel(addToCartOccMultiDataModel.data)
+            data = mapDataModel(addToCartOccMultiDataModel.data),
+            isOccNewCheckoutPage = addToCartOccMultiDataModel.isNewCheckoutPaymentPage()
         )
     }
 

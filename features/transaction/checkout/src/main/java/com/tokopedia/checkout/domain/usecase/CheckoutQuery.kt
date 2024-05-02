@@ -17,6 +17,7 @@ const val CHECKOUT_QUERY = """
           data {
             redirect_url
             callback_url
+            method
             parameter {
               transaction_id
             }

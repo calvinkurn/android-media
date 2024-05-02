@@ -87,13 +87,10 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemReactivatedCo
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProPotentiallyDowngradedUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
@@ -319,18 +316,6 @@ open class ShopScoreMapper @Inject constructor(
                                         add(ItemStatusPMProUiModel())
                                         return@apply
                                     }
-                                }
-                            }
-                        }
-                        PMStatusConst.INACTIVE -> {
-                            when {
-                                !isEligiblePM.orFalse() || shopScore < SHOP_SCORE_60 -> {
-                                    add(mapToCardPotentialBenefitNonEligible())
-                                    return@apply
-                                }
-                                isEligiblePM.orFalse() -> {
-                                    add(mapToSectionRMEligibleToPM())
-                                    return@apply
                                 }
                             }
                         }
@@ -908,12 +893,6 @@ open class ShopScoreMapper @Inject constructor(
         return copyItemDetail
     }
 
-    private fun mapToCardPotentialBenefitNonEligible(): SectionRMPotentialPMBenefitUiModel {
-        return SectionRMPotentialPMBenefitUiModel(
-            potentialPMBenefitList = mapToItemPotentialBenefit()
-        )
-    }
-
     private fun mapToSectionPeriodDetailPerformanceTabletUiModel(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         isNewSeller: Boolean
@@ -969,60 +948,6 @@ open class ShopScoreMapper @Inject constructor(
                     identifier = it.identifier
                 )
             } ?: emptyList())
-    }
-
-    private fun mapToSectionRMEligibleToPM(): SectionRMPotentialPMProUiModel {
-        val potentialPMProPMBenefitList =
-            mapToItemPMProBenefit() as? List<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel>
-        return SectionRMPotentialPMProUiModel(
-            potentialPMProPMBenefitList = potentialPMProPMBenefitList
-        )
-    }
-
-    private fun mapToItemPMProBenefit(): List<ItemParentBenefitUiModel> {
-        return listOf(
-            ItemParentBenefitUiModel(
-                iconUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_01,
-                titleResources = R.string.title_item_benefit_1_pm_pro
-            ),
-            ItemParentBenefitUiModel(
-                iconUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_02,
-                titleResources = R.string.title_item_benefit_2_pm_pro
-            ),
-            ItemParentBenefitUiModel(
-                iconUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_03,
-                titleResources = R.string.title_item_benefit_3_pm_pro
-            )
-        )
-    }
-
-    private fun mapToItemPotentialBenefit():
-            List<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
-        return listOf(
-            SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                iconPotentialPMUrl = ShopScoreConstant.IC_PM_PRO_BADGE_BENEFIT_URL,
-                titlePotentialPM = R.string.title_item_rm_section_pm_benefit_1
-            ),
-            SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                iconPotentialPMUrl = ShopScoreConstant.IC_PROMOTION_BENEFIT_URL,
-                titlePotentialPM = R.string.title_item_rm_section_pm_benefit_3
-            )
-        )
-    }
-
-    private fun mapToItemCurrentStatusRMUiModel(isNewSellerProjection: Boolean)
-            : ItemStatusRMUiModel {
-        return ItemStatusRMUiModel(
-            titleRMEligible =
-            if (isNewSellerProjection)
-                R.string.title_header_rm_section_new_seller
-            else
-                R.string.title_header_rm_section,
-            descRMEligible = if (isNewSellerProjection)
-                R.string.desc_potential_rm_section_new_seller
-            else
-                R.string.desc_potential_eligible_power_merchant
-        )
     }
 
     private fun mapToCardTooltipLevel(level: Long = 0): List<CardTooltipLevelUiModel> {

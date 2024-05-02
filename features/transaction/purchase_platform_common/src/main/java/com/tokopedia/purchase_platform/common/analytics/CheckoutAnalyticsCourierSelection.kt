@@ -154,7 +154,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         eventCategory: String,
         eventAction: String,
         eventLabel: String,
-        step: String
+        step: String,
+        paymentMethod: String = ""
     ) {
         val dataLayer = getGtmData(
             ConstantTransactionAnalytics.EventName.CHECKOUT,
@@ -184,6 +185,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         }
         dataLayer[ExtraKey.USER_ID] = userId
         dataLayer[ExtraKey.PROMO_FLAG] = promoFlag.toString()
+        dataLayer[ExtraKey.PAYMENT_METHOD] = paymentMethod
         sendEnhancedEcommerce(dataLayer)
     }
 
@@ -1132,6 +1134,51 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
             )
             .setShopId(shopId)
             .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50674
+    fun sendViewPaymentMethodEvent(paymentMethod: String, cartTypeString: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.VIEW_PAYMENT_METHOD)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION)
+            .setEventLabel("$paymentMethod;$cartTypeString")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.VIEW_PAYMENT_WIDGET)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50675
+    fun sendPaymentClickArrowToChangePaymentOptionEvent(paymentMethod: String, cartTypeString: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION)
+            .setEventLabel("$paymentMethod;$cartTypeString")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50676
+    fun sendPaymentClickTenureOptionsEvent(tenure: String, cartTypeString: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_TENURE_OPTIONS)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION)
+            .setEventLabel("$tenure;$cartTypeString")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_TENURE_OPTIONS)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
             .build()
             .send()
     }

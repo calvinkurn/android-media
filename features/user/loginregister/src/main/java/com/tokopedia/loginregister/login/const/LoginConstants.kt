@@ -28,6 +28,12 @@ object LoginConstants {
         const val KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_login_page"
     }
 
+    object MsSdkKey{
+        const val LOGGED = "logged"
+        const val REGISTERED: String = "registered"
+        const val APPID: String = "573733"
+    }
+
     object OtpType {
         const val OTP_SECURITY_QUESTION = 134
         const val OTP_LOGIN_PHONE_NUMBER = 112

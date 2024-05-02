@@ -5,6 +5,7 @@ import android.app.TaskStackBuilder
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -226,9 +225,16 @@ open class ThankYouBaseFragment :
                 getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
             }
 
-            bindThanksPageDataToUI(thanksPageData)
-            addHeader()
+            startAnimate()
             observeViewModel()
+            addHeader()
+
+            Handler().postDelayed({
+
+
+//                showOnBoardingShare()
+            }, 5000)
+
             getFeatureRecommendationData()
             addRecommendation(getRecommendationContainer())
             getTopTickerData()
@@ -241,33 +247,15 @@ open class ThankYouBaseFragment :
                     this::hideTopAdsHeadlineView
                 )
             }
-
-            showOnBoardingShare()
-            startAnimate()
         }
     }
 
     private fun startAnimate() {
         if (!isV2Enabled) return
 
-        if (context?.isDeviceAnimationDisabled() == true) {
-            (activity as ThankYouPageActivity).globalNabToolbar.alpha = 1f
-            getBottomContentRecyclerView()?.translationY = 0f
-            getBottomContentRecyclerView()?.alpha = 1f
-        } else {
-            (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
-            getBottomContentRecyclerView()?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
-            getBottomContentRecyclerView()?.alpha = 0f
-            getBottomContentRecyclerView()?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
-        }
-
         getBottomContentRecyclerView()?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus) == InstantPaymentPage) {
-                    (activity as ThankYouPageActivity).lottieSuccess.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
-                } else {
-                    (activity as ThankYouPageActivity).header_background.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
-                }
+                (activity as ThankYouPageActivity).header_background.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
                 if (recyclerView.computeVerticalScrollOffset() < 5.toPx()) {
                     (activity as ThankYouPageActivity).toolbarBackground.hide()
                 } else {
@@ -333,6 +321,9 @@ open class ThankYouBaseFragment :
                     DigitalRecommendationPage.DG_THANK_YOU_PAGE
                 )
                 addMarketPlaceRecommendation(containerView)
+            }
+            else -> {
+                // no op
             }
         }
     }
@@ -494,7 +485,7 @@ open class ThankYouBaseFragment :
 
         thanksPageDataViewModel.bottomContentVisitableList.observe(viewLifecycleOwner) {
             bottomContentAdapter.setItems(it)
-            bottomContentAdapter.notifyDataSetChanged()
+            bottomContentAdapter.notifyItemChanged(it.size - 1)
         }
 
         thanksPageDataViewModel.bannerLiveData.observe(viewLifecycleOwner) {

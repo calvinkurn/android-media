@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_installment"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl8"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:loader_type="circular" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_installment_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="16dp"
+            app:closeButtonVisibility="gone"
+            app:tickerShapeType="loose"
+            android:visibility="gone"
+            app:tickerType="announcement" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_installment_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/Unify_NN950_68"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

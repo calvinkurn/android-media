@@ -20,7 +20,7 @@ class Mission4SquareWidgetListenerCallback(
     }
 
     override fun onMissionImpressed(model: Mission4SquareUiModel, position: Int) {
-        shouldTrackImpressWidgetWhenRendered(model, position)
+        shouldTrackGTMImpressWidgetWhenRendered(model, position)
     }
 
     private fun shouldTrackWhenProductOrCardClicked(model: Mission4SquareUiModel, position: Int) {
@@ -52,9 +52,8 @@ class Mission4SquareWidgetListenerCallback(
         )
     }
 
-    private fun shouldTrackImpressWidgetWhenRendered(model: Mission4SquareUiModel, position: Int) {
+    private fun shouldTrackGTMImpressWidgetWhenRendered(model: Mission4SquareUiModel, position: Int) {
         if (model.isProduct()) {
-            // GTM
             homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 Mission4SquareWidgetTracker.getMissionWidgetProductView(
                     model,
@@ -62,11 +61,7 @@ class Mission4SquareWidgetListenerCallback(
                     homeCategoryListener.userId
                 ) as HashMap<String, Any>
             )
-
-            // ByteIO
-            AppLogRecommendation.sendProductShowAppLog(model.asProductModel(model.isCache))
         } else {
-            // GTM
             homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 Mission4SquareWidgetTracker.getMissionWidgetView(
                     model,
@@ -74,8 +69,14 @@ class Mission4SquareWidgetListenerCallback(
                     homeCategoryListener.userId
                 ) as HashMap<String, Any>
             )
+        }
+    }
 
-            // ByteIO
+    override fun onMissionAppLogImpressed(model: Mission4SquareUiModel, position: Int) {
+        // ByteIO
+        if (model.isProduct()) {
+            AppLogRecommendation.sendProductShowAppLog(model.asProductModel(model.isCache))
+        } else {
             AppLogRecommendation.sendCardShowAppLog(model.asCardModel(model.isCache))
         }
     }
