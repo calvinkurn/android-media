@@ -29,7 +29,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 
-class CheckoutViewModelEditTest: BaseCheckoutViewModelTest() {
+class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
 
     @Test
     fun `GIVEN success update cart WHEN set product note THEN should set note`() {
@@ -74,6 +74,7 @@ class CheckoutViewModelEditTest: BaseCheckoutViewModelTest() {
         // THEN
         assertEquals("abc", (viewModel.listData.value[4] as CheckoutProductModel).noteToSeller)
     }
+
     @Test
     fun `GIVEN failed update cart WHEN set product note THEN should set note`() {
         // GIVEN
@@ -115,6 +116,50 @@ class CheckoutViewModelEditTest: BaseCheckoutViewModelTest() {
         viewModel.setProductNote("abc", 4)
 
         // THEN
-        assertEquals("abc", (viewModel.listData.value[4] as CheckoutProductModel).noteToSeller)
+        assertEquals("", (viewModel.listData.value[4] as CheckoutProductModel).noteToSeller)
+    }
+
+    @Test
+    fun `GIVEN show lottie WHEN hide lottie THEN flag set shouldShowLottieNotes`() {
+        // GIVEN
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", shouldShowLottieNotes = true),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
+        // WHEN
+        viewModel.hideNoteLottie(4)
+
+        // THEN
+        assertEquals(false, (viewModel.listData.value[4] as CheckoutProductModel).shouldShowLottieNotes)
     }
 }
