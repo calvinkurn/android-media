@@ -575,7 +575,10 @@ object AppLogAnalytics {
         }
     }
 
-    private fun getPreviousDataFrom(name: String, key: String): Any? {
+    /**
+     * Starting from N-1, this method will start searching for a key after the current item is the anchor
+     * */
+    private fun getPreviousDataFrom(anchor: String, key: String): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
@@ -584,7 +587,7 @@ object AppLogAnalytics {
             if (map.containsKey(key) && start) {
                 return map[key]
             }
-            if (map[PAGE_NAME] == name) {
+            if (map[PAGE_NAME] == anchor) {
                 start = true
             }
             idx--
