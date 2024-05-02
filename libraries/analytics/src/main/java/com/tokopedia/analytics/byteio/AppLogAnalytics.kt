@@ -9,6 +9,8 @@ import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_INFO
+import com.tokopedia.analytics.byteio.AppLogParam.FIRST_SOURCE_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.FIRST_TRACK_ID
 import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
@@ -138,6 +140,8 @@ object AppLogAnalytics {
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+            it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
+            it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
         }
     }
 
@@ -545,6 +549,8 @@ object AppLogAnalytics {
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+            it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
+            it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
         }
     }
 
