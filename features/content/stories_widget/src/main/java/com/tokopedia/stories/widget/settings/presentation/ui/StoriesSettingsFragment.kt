@@ -12,11 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.stories.widget.R
-import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingEvent
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
-import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTracking
 import com.tokopedia.unifycomponents.Toaster
@@ -24,15 +23,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class StoriesSettingsFragment @Inject constructor(private val factory: StoriesSettingsFactory.Creator, private val analytic: StoriesSettingsTracking) :
+class StoriesSettingsFragment @Inject constructor(private val factory: ViewModelFactory, private val analytic: StoriesSettingsTracking) :
     Fragment() {
 
-    val entryPoint = StoriesSettingsEntryPoint(
-        authorType = "shop",
-        authorId = "479541"
-    ) //TODO: get from Intent/appLink path/ userInterface
-
-    private val viewModel by viewModels<StoriesSettingsViewModel> { factory.create(entryPoint) }
+    private val viewModel by viewModels<StoriesSettingsViewModel> { factory }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

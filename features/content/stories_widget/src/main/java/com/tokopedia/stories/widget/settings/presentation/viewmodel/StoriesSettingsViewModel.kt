@@ -4,38 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
-import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsPageUiModel
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 3/22/24
  */
-class StoriesSettingsViewModel @AssistedInject constructor(
-    @Assisted private val entryPoint: StoriesSettingsEntryPoint,
+class StoriesSettingsViewModel @Inject constructor(
     private val repository: StoriesSettingsRepository,
     private val storiesChecker: StoriesSettingsChecker,
     private val dispatchers: CoroutineDispatchers,
-    ) : ViewModel() {
-
-    @AssistedFactory
-    interface Factory {
-        fun create(@Assisted entryPoint: StoriesSettingsEntryPoint): StoriesSettingsViewModel
-    }
+) : ViewModel() {
 
     private val _pageInfo = MutableStateFlow(StoriesSettingsPageUiModel.Empty)
     val pageInfo: Flow<StoriesSettingsPageUiModel>
@@ -48,7 +36,7 @@ class StoriesSettingsViewModel @AssistedInject constructor(
 
     fun onEvent(action: StoriesSettingsAction) {
         when (action) {
-            StoriesSettingsAction.FetchPageInfo-> getList()
+            StoriesSettingsAction.FetchPageInfo -> getList()
             is StoriesSettingsAction.SelectOption -> updateOption(action.option)
             else -> {}
         }
@@ -56,15 +44,17 @@ class StoriesSettingsViewModel @AssistedInject constructor(
 
     private fun getList() {
         viewModelScope.launchCatchError(block = {
-            val isEligible = withContext(dispatchers.io){
+            val isEligible = withContext(dispatchers.io) {
                 storiesChecker.isEligible()
             }
-            _pageInfo.update { result -> result.copy(config = result.config.copy(isEligible = isEligible)) }
-
-            if (!isEligible) return@launchCatchError
-
-            val data = repository.getOptions(entryPoint = entryPoint)
-            _pageInfo.update { result -> result.copy(state = ResultState.Success, options = data.options) }
+            val data = repository.getOptions()
+            _pageInfo.update { result ->
+                result.copy(
+                    state = ResultState.Success,
+                    config = data.config.copy(isEligible = isEligible),
+                    options = data.options
+                )
+            }
         }) {
             _pageInfo.update { data -> data.copy(state = ResultState.Fail(it)) }
         }
@@ -72,7 +62,7 @@ class StoriesSettingsViewModel @AssistedInject constructor(
 
     private fun updateOption(option: StoriesSettingOpt) {
         viewModelScope.launchCatchError(block = {
-            val response = repository.updateOption(entryPoint = entryPoint, option)
+            val response = repository.updateOption(option)
             if (response) {
                 updatePageOption(option)
                 _event.emit(StoriesSettingEvent.ClickTrack(option.copy(isSelected = !option.isSelected)))
@@ -85,7 +75,7 @@ class StoriesSettingsViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updatePageOption(option: StoriesSettingOpt){
+    private fun updatePageOption(option: StoriesSettingOpt) {
         _pageInfo.update { page ->
             page.copy(options = page.options.map { opt ->
                 if (option.optionType == opt.optionType) opt.copy(isSelected = !opt.isSelected) else opt

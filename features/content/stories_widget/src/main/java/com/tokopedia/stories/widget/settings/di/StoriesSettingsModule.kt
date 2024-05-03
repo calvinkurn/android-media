@@ -1,10 +1,15 @@
 package com.tokopedia.stories.widget.settings.di
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsFragment
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepo
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
+import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTracking
 import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTrackingImpl
 import dagger.Binds
@@ -26,4 +31,12 @@ abstract class StoriesSettingsModule {
 
     @Binds
     abstract fun bindAnalytic(trackingImpl: StoriesSettingsTrackingImpl): StoriesSettingsTracking
+
+    @Binds
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StoriesSettingsViewModel::class)
+    abstract fun provideViewModel(viewModel: StoriesSettingsViewModel): ViewModel
 }

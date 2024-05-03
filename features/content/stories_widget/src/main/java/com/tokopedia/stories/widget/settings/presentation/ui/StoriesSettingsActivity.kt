@@ -6,10 +6,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.di.DaggerStoriesSettingsComponent
-import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsFactory
 import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTracking
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class StoriesSettingsActivity : AppCompatActivity() {
     lateinit var fragmentFactory: FragmentFactory
 
     @Inject
-    lateinit var factory: StoriesSettingsFactory.Creator
+    lateinit var factory: ViewModelFactory
 
     @Inject
     lateinit var analytics: StoriesSettingsTracking

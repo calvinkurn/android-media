@@ -8,6 +8,7 @@ import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPo
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsPageUiModel
 import com.tokopedia.stories.widget.settings.data.usecase.StoriesSettingOptionsUseCase
 import com.tokopedia.stories.widget.settings.data.usecase.UpdateStoriesSettingUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class StoriesSettingsRepo @Inject constructor(
     private val storiesSettingOptionsUseCase: StoriesSettingOptionsUseCase,
     private val updateStoriesSettingUseCase: UpdateStoriesSettingUseCase,
     private val dispatchers: CoroutineDispatchers,
+    private val userSessionInterface: UserSessionInterface
 ) : StoriesSettingsRepository {
 
     private var lastRequestTime: Long = 0L
@@ -27,7 +29,13 @@ class StoriesSettingsRepo @Inject constructor(
             return diff >= DELAY_MS
         }
 
-    override suspend fun getOptions(entryPoint: StoriesSettingsEntryPoint): StoriesSettingsPageUiModel =
+    private val entryPoint: StoriesSettingsEntryPoint
+        get() = StoriesSettingsEntryPoint(
+            authorType = "shop",
+            authorId = userSessionInterface.shopId
+        )
+
+    override suspend fun getOptions(): StoriesSettingsPageUiModel =
         withContext(dispatchers.io) {
             val response = storiesSettingOptionsUseCase(
                 StoriesSettingOptionsUseCase.Param(
@@ -56,7 +64,6 @@ class StoriesSettingsRepo @Inject constructor(
         }
 
     override suspend fun updateOption(
-        entryPoint: StoriesSettingsEntryPoint,
         option: StoriesSettingOpt
     ): Boolean =
         withContext(dispatchers.io) {

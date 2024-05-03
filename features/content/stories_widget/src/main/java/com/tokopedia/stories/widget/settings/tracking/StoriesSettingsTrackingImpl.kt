@@ -16,15 +16,14 @@ import javax.inject.Inject
 class StoriesSettingsTrackingImpl @Inject constructor(
     managerFactory: ContentAnalyticManager.Factory,
     private val userSessionInterface: UserSessionInterface
-) :
-    StoriesSettingsTracking {
+) : StoriesSettingsTracking {
 
     private val analyticManager = managerFactory.create(
         businessUnit = BusinessUnit.content,
         eventCategory = EventCategory.automatedStory
     )
     private val authorId
-        get() = userSessionInterface.shopId // when user id when shop id need to adjust
+        get() = userSessionInterface.shopId
 
     override fun openScreen() {
         analyticManager.sendOpenScreen(

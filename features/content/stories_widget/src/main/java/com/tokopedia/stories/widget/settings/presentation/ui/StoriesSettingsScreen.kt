@@ -40,16 +40,6 @@ import java.net.UnknownHostException
 internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
     NestTheme(isOverrideStatusBarColor = false) {
         val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
-        val ctx = LocalContext.current
-
-        AndroidView(modifier = Modifier.padding(16.dp), factory = {
-            Ticker(it).apply {
-                tickerType = Ticker.TYPE_ANNOUNCEMENT
-                setTextDescription(ctx.getString(R.string.stories_ticker_title))
-            }
-        })
-
-        if (!pageInfo.config.isEligible) return@NestTheme
 
         when (val state = pageInfo.state) {
             ResultState.Success -> StoriesSettingsSuccess(
@@ -69,7 +59,19 @@ private fun StoriesSettingsSuccess(
     viewModel: StoriesSettingsViewModel
 ) {
     val isStoryEnable = pageInfo.options.any { it.isSelected }
+    val isEligible = pageInfo.config.isEligible
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("", "", false)
+
+    val ctx = LocalContext.current
+
+    if (isEligible.not()) {
+        AndroidView(modifier = Modifier.padding(16.dp), factory = {
+            Ticker(it).apply {
+                tickerType = Ticker.TYPE_ANNOUNCEMENT
+                setTextDescription(ctx.getString(R.string.stories_ticker_title))
+            }
+        })
+    }
 
     Column(
         modifier = Modifier
@@ -87,7 +89,7 @@ private fun StoriesSettingsSuccess(
             Column {
                 NestTypography(
                     modifier = Modifier.padding(bottom = 16.dp),
-                    text = pageInfo.options.firstOrNull()?.text.orEmpty(),
+                    text = itemFirst.text,
                     textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
                 )
                 NestTypography(
@@ -103,7 +105,7 @@ private fun StoriesSettingsSuccess(
 
                 LazyColumn {
                     items(pageInfo.options.drop(1)) { item ->
-                        SettingOptItem(item) {
+                        SettingOptItem(item, isEligible) {
                             viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
                         }
                     }
@@ -125,6 +127,7 @@ private fun StoriesSettingsSuccess(
                 },
                 update = { switchUnify ->
                     switchUnify.isChecked = isStoryEnable
+                    switchUnify.isEnabled = isEligible
                 },
             )
         }
@@ -149,7 +152,7 @@ private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsVie
 }
 
 @Composable
-private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSettingOpt) -> Unit) {
+private fun SettingOptItem(item: StoriesSettingOpt, isEligible: Boolean, onOptionClicked: (StoriesSettingOpt) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -173,6 +176,7 @@ private fun SettingOptItem(item: StoriesSettingOpt, onOptionClicked: (StoriesSet
             },
             update = { v ->
                 v.isChecked = item.isSelected
+                v.isEnabled = isEligible
             },
         )
     }
