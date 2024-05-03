@@ -13,8 +13,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomProductCardMapper
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastPromoProductBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,7 +74,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         }
     }
 
-    private fun bindProductCarousel(productCarousel: ProductCarouselUiModel) {
+    private fun bindProductCarousel(productCarousel: TopChatRoomProductCarouselUiModel) {
         bindSyncProductCarousel(productCarousel)
         binding.topchatChatroomBroadcastPromoRv.show()
         binding.topchatChatroomBroadcastPromoRv.updateData(productCarousel.products)
@@ -85,7 +85,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         binding.topchatChatroomBroadcastPromoLoaderSingleProduct.showWithCondition(product.isLoading)
         binding.topchatChatroomBroadcastPromoSingleProduct.show()
         binding.topchatChatroomBroadcastPromoSingleProduct.bind(
-            TopChatRoomProductCardMapper.mapToProductCard(product)
+            TopChatRoomProductCardMapper.mapToProductCardCompact(product)
         )
         binding.topchatChatroomBroadcastPromoSingleProduct.addOnImpressionListener(
             product.impressHolder
@@ -94,7 +94,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         }
     }
 
-    private fun bindSyncProductCarousel(productCarousel: ProductCarouselUiModel) {
+    private fun bindSyncProductCarousel(productCarousel: TopChatRoomProductCarouselUiModel) {
         if (!productCarousel.isLoading()) return
         productCarousel.products.forEach {
             if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {
@@ -118,12 +118,11 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
 
     private fun impressTracker() {
         val singleProduct = uiModel?.singleProduct
-        val banner = uiModel?.banner
-        if (singleProduct != null && banner != null) {
+        if (singleProduct != null) {
             productListener?.onImpressionBroadcastProduct(
                 blastId = uiModel?.blastId.orEmpty(),
-                campaignStatus = banner.getCampaignStatusString(),
-                campaignCountDown = banner.getCampaignCountDownString(),
+                campaignStatus = uiModel?.banner?.getCampaignStatusString().orEmpty(),
+                campaignCountDown = uiModel?.banner?.getCampaignCountDownString().orEmpty(),
                 productId = singleProduct.productId
             )
         }
@@ -132,12 +131,11 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
     private fun setSingleProductListener() {
         binding.topchatChatroomBroadcastPromoSingleProduct.setOnClickListener {
             val singleProduct = uiModel?.singleProduct
-            val banner = uiModel?.banner
-            if (singleProduct != null && banner != null) {
+            if (singleProduct != null) {
                 productListener?.onClickBroadcastProduct(
                     blastId = uiModel?.blastId.orEmpty(),
-                    campaignStatus = banner.getCampaignStatusString(),
-                    campaignCountDown = banner.getCampaignCountDownString(),
+                    campaignStatus = uiModel?.banner?.getCampaignStatusString().orEmpty(),
+                    campaignCountDown = uiModel?.banner?.getCampaignCountDownString().orEmpty(),
                     productId = singleProduct.productId,
                     androidUrl = singleProduct.androidUrl,
                     productUrl = singleProduct.productUrl

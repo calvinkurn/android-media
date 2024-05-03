@@ -8,7 +8,5 @@ data class TopchatProductRating(
     @SerializedName("count")
     val count: Int = 0,
     @SerializedName("rating_score")
-    val score: Float = 0f,
-    @SerializedName("sold")
-    val sold: String = ""
+    val score: Float = 0f
 )

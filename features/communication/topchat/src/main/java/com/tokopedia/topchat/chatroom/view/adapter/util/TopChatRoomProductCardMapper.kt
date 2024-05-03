@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_BLOCK
@@ -32,14 +33,13 @@ object TopChatRoomProductCardMapper {
             discountPercentage = productAttachment.dropPercentage.toIntOrZero(),
             labelGroupList = getProductCardLabelList(productAttachment),
             rating = if (productAttachment.rating.score > 0) productAttachment.rating.score.toString() else "",
-            shopBadge = ProductCardModel.ShopBadge(),
             hasAddToCart = false,
             videoUrl = "",
             hasThreeDots = false,
             stockInfo = ProductCardModel.StockInfo(
-                percentage = productAttachment.stockLabelPercentage,
-                label = productAttachment.stockLabelText,
-                labelColor = productAttachment.stockLabelColor
+                percentage = productAttachment.campaign.percentage.orZero(),
+                label = productAttachment.campaign.label.orEmpty(),
+                labelColor = productAttachment.campaign.labelColor.orEmpty()
             ),
             isSafeProduct = false,
             isInBackground = true,
@@ -74,11 +74,10 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
-            !productAttachment.isUpcomingCampaign &&
-            productAttachment.remainingStock < 1
+            !productAttachment.isUpcomingCampaign
         ) {
             labelGroupList.add(
                 ProductCardModel.LabelGroup(
@@ -101,11 +100,11 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.rating.sold.isNotBlank()) {
+        if (productAttachment.sold.isNotBlank()) {
             labelGroupList.add(
                 ProductCardModel.LabelGroup(
                     position = LABEL_REIMAGINE_CREDIBILITY,
-                    title = productAttachment.rating.sold,
+                    title = productAttachment.sold,
                     type = TEXT_COLOR_SOLD
                 )
             )
@@ -119,7 +118,7 @@ object TopChatRoomProductCardMapper {
         return ProductCardCompactUiModel(
             productId = productAttachment.productId,
             imageUrl = productAttachment.productImage,
-            minOrder = productAttachment.minOrder,
+            minOrder = productAttachment.minOrder.coerceAtLeast(1),
             availableStock = productAttachment.remainingStock,
             price = productAttachment.productPrice,
             discount = productAttachment.dropPercentage,
@@ -130,10 +129,11 @@ object TopChatRoomProductCardMapper {
             } else {
                 productAttachment.rating.score.toString()
             },
-            sold = productAttachment.rating.sold,
+            sold = productAttachment.sold,
             hasBeenWishlist = productAttachment.isWishListed(),
             isVariant = productAttachment.hasVariant(),
-            labelGroupList = getProductCardCompactLabelList(productAttachment)
+            labelGroupList = getProductCardCompactLabelList(productAttachment),
+            isPreOrder = productAttachment.isPreOrder
         )
     }
 
@@ -150,7 +150,7 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
             !productAttachment.isUpcomingCampaign &&

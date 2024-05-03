@@ -58,20 +58,17 @@ class TopChatRoomBroadcastFlashSaleProductViewHolder(
     }
 
     private fun setListener() {
-        binding?.root?.setOnClickListener {
-            val banner = broadcastUiModel.banner
-            if (banner != null) {
-                productListener.onClickBroadcastProduct(
-                    blastId = broadcastUiModel.blastId,
-                    campaignStatus = banner.getCampaignStatusString(),
-                    campaignCountDown = banner.getCampaignCountDownString(),
-                    productId = uiModel?.productId.orEmpty(),
-                    position = layoutPosition,
-                    totalProduct = getTotalProduct(),
-                    androidUrl = uiModel?.androidUrl.orEmpty(),
-                    productUrl = uiModel?.productUrl.orEmpty()
-                )
-            }
+        binding?.topchatChatroomBroadcastFlashsaleProductCard?.setOnClickListener {
+            productListener.onClickBroadcastProduct(
+                blastId = broadcastUiModel.blastId,
+                campaignStatus = broadcastUiModel.banner?.getCampaignStatusString().orEmpty(),
+                campaignCountDown = broadcastUiModel.banner?.getCampaignCountDownString().orEmpty(),
+                productId = uiModel?.productId.orEmpty(),
+                position = layoutPosition,
+                totalProduct = getTotalProduct(),
+                androidUrl = uiModel?.androidUrl.orEmpty(),
+                productUrl = uiModel?.productUrl.orEmpty()
+            )
         }
     }
 
@@ -82,7 +79,7 @@ class TopChatRoomBroadcastFlashSaleProductViewHolder(
         }.let {
             totalProduct--
         }
-        return totalProduct
+        return totalProduct.coerceAtLeast(0)
     }
 
     override fun onViewRecycled() {

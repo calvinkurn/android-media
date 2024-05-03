@@ -63,6 +63,7 @@ class TopChatRoomBroadcastCountdownView : LinearLayout {
             bindLabelBackgroundColor(banner)
             bindStartDate(banner)
             bindCountDown(banner)
+            bindCountdownTimerColor()
         } else {
             hide()
         }
@@ -104,9 +105,13 @@ class TopChatRoomBroadcastCountdownView : LinearLayout {
         val colorRes = when {
             banner.hasEndedCampaign() -> unifyprinciplesR.color.Unify_TN100
             banner.isHideBanner -> R.drawable.bg_chat_broadcast_campaign_label_without_banner
-            else -> unifyprinciplesR.color.Unify_RN500
+            else -> unifyprinciplesR.color.Unify_RN600
         }
         setBackgroundResource(colorRes)
+    }
+
+    private fun bindCountdownTimerColor() {
+        countdown?.timerVariant = TimerUnifySingle.VARIANT_GENERAL
     }
 
     private fun bindStartDate(banner: ImageAnnouncementUiModel) {

@@ -49,6 +49,9 @@ data class ProductProfile(
     @SerializedName("remaining_stock")
     var remainingStock: Int = 0,
 
+    @SerializedName("item_sold_format")
+    val sold: String? = "",
+
     @SerializedName("status")
     var status: Int = 1,
 
@@ -67,14 +70,8 @@ data class ProductProfile(
     @SerializedName("campaign_id")
     var campaignId: String = "0",
 
-    @SerializedName("stock_label_percentage")
-    var stockLabelPercentage: Int = 0,
-
-    @SerializedName("stock_label_text")
-    var stockLabelText: String = "",
-
-    @SerializedName("stock_label_color")
-    var stockLabelColor: String = "",
+    @SerializedName("campaign")
+    var campaign: TopChatCampaign? = TopChatCampaign(),
 
     @SerializedName("is_fulfillment")
     var isFulFillment: Boolean = false,

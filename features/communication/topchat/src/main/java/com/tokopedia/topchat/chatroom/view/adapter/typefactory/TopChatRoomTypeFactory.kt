@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.adapter.typefactory
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
@@ -11,10 +10,11 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselLis
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.*
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
@@ -39,7 +39,7 @@ interface TopChatRoomTypeFactory {
 
     fun type(roomSettingBannerUiModel: RoomSettingBannerUiModel): Int
 
-    fun type(productCarouselUiModel: ProductCarouselUiModel): Int
+    fun type(productCarouselUiModel: TopChatRoomProductCarouselUiModel): Int
 
     fun type(headerDateUiModel: HeaderDateUiModel): Int
 

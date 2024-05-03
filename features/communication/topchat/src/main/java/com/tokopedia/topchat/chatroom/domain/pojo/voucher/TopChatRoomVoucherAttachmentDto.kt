@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.domain.pojo.voucher
 
 import com.google.gson.annotations.SerializedName
 
-data class TopChatRoomVoucherAttachmentDto (
+data class TopChatRoomVoucherAttachmentDto(
     // Business related fields
     @SerializedName("voucher_id")
     val voucherId: String = "",
@@ -48,7 +48,7 @@ data class TopChatRoomVoucherAttachmentDto (
     val voucherTypeColorDark: String = "",
     @SerializedName("voucher_type_string")
     val voucherTypeString: String = "",
-    @SerializedName("voucher_mininum_string")
+    @SerializedName("voucher_minimum_string")
     val voucherMinimumString: String = "",
     @SerializedName("voucher_icon_url")
     val voucherIconUrl: String = "",

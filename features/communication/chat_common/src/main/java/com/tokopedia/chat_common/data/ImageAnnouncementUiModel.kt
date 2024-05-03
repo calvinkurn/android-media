@@ -31,15 +31,28 @@ class ImageAnnouncementUiModel
  * @see AttachmentType for attachment types.
  */
 constructor(
-    messageId: String, fromUid: String, from: String, fromRole: String,
-    attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
-    val redirectUrl: String, message: String, val broadcastBlastId: String, source: String,
-    val isHideBanner: Boolean, val broadcastCtaUrl: String?, val broadcastCtaText: String?,
+    messageId: String,
+    fromUid: String,
+    from: String,
+    fromRole: String,
+    attachmentId: String,
+    attachmentType: String,
+    replyTime: String,
+    val imageUrl: String,
+    val redirectUrl: String,
+    message: String,
+    val broadcastBlastId: String,
+    source: String,
+    var isHideBanner: Boolean,
+    val broadcastCtaUrl: String?,
+    val broadcastCtaText: String?,
     val broadcastCtaLabel: String?
 ) : BaseChatUiModel(
-        messageId, fromUid, from, fromRole, attachmentId,
-        attachmentType, replyTime, message, source
-), Visitable<BaseChatTypeFactory>, DeferredAttachment {
+    messageId, fromUid, from, fromRole, attachmentId,
+    attachmentType, replyTime, message, source
+),
+    Visitable<BaseChatTypeFactory>,
+    DeferredAttachment {
 
     var campaignLabel: String = ""
         private set
@@ -67,7 +80,8 @@ constructor(
     private var startDateFormat = "dd MMM yyyy"
 
     constructor(
-        item: Reply, attributes: ImageAnnouncementPojo
+        item: Reply,
+        attributes: ImageAnnouncementPojo
     ) : this(
         messageId = item.msgId,
         fromUid = item.senderId,
@@ -118,6 +132,7 @@ constructor(
         attributes.campaignLabel?.let {
             this.campaignLabel = it
         }
+        this.isHideBanner = attributes.isHideBanner
     }
 
     override fun syncError() {
@@ -171,22 +186,22 @@ constructor(
     }
 
     /**
-     * {campaign_countdown}: minutes until campaign start or end,
-     * if campaign has ended fill with minutes since campaign ended
+     * {campaign_countdown}: time millis until campaign start or end,
+     * if campaign has ended fill with time millis since campaign ended
      */
     fun getCampaignCountDownString(): String {
         val countDown = when (statusCampaign) {
             STARTED -> {
-                // minutes until start
-                (System.currentTimeMillis() - startDateMillis) / MINUTES_DIVIDER // convert to minutes
+                // time millis until start
+                System.currentTimeMillis() - startDateMillis
             }
             ON_GOING -> {
-                // minutes until end
-                (System.currentTimeMillis() - endDateMillis) / MINUTES_DIVIDER
+                // time millis until end
+                System.currentTimeMillis() - endDateMillis
             }
             ENDED -> {
-                // minutes since end
-                (endDateMillis - System.currentTimeMillis()) / MINUTES_DIVIDER
+                // time millis since end
+                endDateMillis - System.currentTimeMillis()
             }
             else -> 0
         }
@@ -197,9 +212,5 @@ constructor(
         const val STARTED = 2
         const val ON_GOING = 3
         const val ENDED = 4
-    }
-
-    companion object {
-        private const val MINUTES_DIVIDER = 60000
     }
 }

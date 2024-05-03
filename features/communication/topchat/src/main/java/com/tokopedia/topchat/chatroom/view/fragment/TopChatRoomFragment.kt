@@ -138,17 +138,17 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companio
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.ROLE_SELLER
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactoryImpl
-import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.adapter.util.CenterSmoothScroller
 import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReminderTickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
@@ -188,19 +188,19 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
-import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -1250,7 +1250,7 @@ open class TopChatRoomFragment :
     ): Boolean {
         return (
             visitable is ProductAttachmentUiModel &&
-                lastVisitable is ProductCarouselUiModel &&
+                lastVisitable is TopChatRoomProductCarouselUiModel &&
                 lastVisitable.from == visitable.from
             )
     }
@@ -1260,7 +1260,7 @@ open class TopChatRoomFragment :
         val lastVisitable = adapter.data.getOrNull(index + Int.ONE) ?: return
         // Create new carousel if needed
         if (shouldChangeToCarouselProductAttachment(lastVisitable, visitable)) {
-            ProductCarouselUiModel.mapToCarousel(
+            TopChatRoomProductCarouselUiModel.mapToCarousel(
                 listOf(
                     lastVisitable,
                     visitable
@@ -1272,7 +1272,7 @@ open class TopChatRoomFragment :
             }
             // Update existing carousel if needed
         } else if (shouldAddToCarouselProductAttachment(lastVisitable, visitable)) {
-            (lastVisitable as ProductCarouselUiModel).apply {
+            (lastVisitable as TopChatRoomProductCarouselUiModel).apply {
                 this.products = this.products.toMutableList() + visitable
                 adapter.notifyItemChanged(index + Int.ONE) // Update product in carousel
                 adapter.removeElement(visitable) // Remove current product

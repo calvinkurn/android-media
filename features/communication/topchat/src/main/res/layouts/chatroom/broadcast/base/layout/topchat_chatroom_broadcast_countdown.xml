@@ -7,7 +7,7 @@
     android:gravity="center_vertical"
     tools:orientation="horizontal"
     tools:parentTag="androidx.appcompat.widget.LinearLayoutCompat"
-    tools:background="@color/Unify_RN500">
+    tools:background="@color/Unify_RN600">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/topchat_chatroom_broadcast_tv_countdown"

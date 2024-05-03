@@ -141,7 +141,7 @@ open class TopChatRoomTypeFactoryImpl constructor(
         return TopchatEmptyViewHolder.LAYOUT
     }
 
-    override fun type(productCarouselUiModel: ProductCarouselUiModel): Int {
+    override fun type(productCarouselUiModel: TopChatRoomProductCarouselUiModel): Int {
         return ProductCarouselListAttachmentViewHolder.LAYOUT
     }
 

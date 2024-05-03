@@ -5,7 +5,7 @@ import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
-class ProductCarouselUiModel constructor(
+class TopChatRoomProductCarouselUiModel constructor(
     var products: List<Visitable<*>>,
     val isSender: Boolean,
     messageId: String,
@@ -48,10 +48,10 @@ class ProductCarouselUiModel constructor(
     companion object {
         fun mapToCarousel(
             listProductPreviewAttachment: List<Visitable<*>>
-        ): ProductCarouselUiModel? {
+        ): TopChatRoomProductCarouselUiModel? {
             val product = listProductPreviewAttachment.firstOrNull()
             return if (product != null && product is ProductAttachmentUiModel) {
-                ProductCarouselUiModel(
+                TopChatRoomProductCarouselUiModel(
                     products = listProductPreviewAttachment,
                     isSender = product.isSender,
                     messageId = product.messageId,
