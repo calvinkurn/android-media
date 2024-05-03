@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tiktok.open.sdk.auth.AuthApi
+import com.tiktok.open.sdk.auth.AuthRequest
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
@@ -26,6 +29,7 @@ import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
+import com.tokopedia.loginregister.login.domain.LoginTiktokUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
@@ -72,6 +76,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val tickerInfoUseCase: TickerInfoUseCase,
     private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
+    private val loginTiktokUseCase: LoginTiktokUseCase,
     private val loginSdkConsentUseCase: LoginSdkConsentUseCase,
     private val validateClientUseCase: ValidateClientUseCase,
     private val authorizeSdkUseCase: AuthorizeSdkUseCase,
@@ -276,6 +281,45 @@ class LoginEmailPhoneViewModel @Inject constructor(
         )
     }
 
+    fun authorize(authApi: AuthApi, codeVerifier: String) {
+        val enabledScopes: MutableList<String> = mutableListOf("user.info.basic")
+        val request = AuthRequest(
+            clientKey = "awqwcqhwliuqadwr",
+            scope = enabledScopes.joinToString(),
+            redirectUri = ApplinkConstInternalUserPlatform.TIKTOK_LOGIN,
+            codeVerifier = codeVerifier
+        )
+        authApi.authorize(request, AuthApi.AuthMethod.TikTokApp)
+    }
+
+    fun exchangeTiktokCode(code: String, codeVerifier: String, redirectUri: String) {
+        launch {
+            try {
+                userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+                val result = loginTiktokUseCase(
+                    LoginTiktokUseCase.Param(
+                        code = code,
+                        codeVerifier = codeVerifier,
+                        redirectUri = redirectUri
+                    )
+                )
+                LoginV2Mapper(userSession).map(
+                    result.loginToken,
+                    onSuccessLoginToken = {
+                        mutableLoginTokenV2Response.value = Success(it)
+                    },
+                    onErrorLoginToken = {
+                        mutableLoginTokenV2Response.value = Fail(it)
+                    },
+                    onShowPopupError = { showPopup(it.popupError) },
+                    onGoToActivationPage = { },
+                    onGoToSecurityQuestion = { }
+                )
+            } catch (e: Exception) {
+                mutableLoginTokenV2Response.value = Fail(e)
+            }
+        }
+    }
     fun loginEmail(email: String, password: String) {
         loginTokenUseCase.executeLoginEmailWithPassword(
             LoginTokenUseCase.generateParamLoginEmail(

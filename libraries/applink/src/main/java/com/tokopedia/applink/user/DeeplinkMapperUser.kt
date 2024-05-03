@@ -28,7 +28,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> ApplinkConstInternalUserPlatform.PRIVACY_CENTER
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
-            deeplink == ApplinkConst.LOGIN -> getLoginApplink()
+            deeplink.startsWith(ApplinkConst.LOGIN) -> getLoginApplink()
             deeplink == ApplinkConst.REGISTER_INIT -> getRegisterApplink()
             deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)

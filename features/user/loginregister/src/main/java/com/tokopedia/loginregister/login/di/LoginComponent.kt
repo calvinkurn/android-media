@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
+import com.tokopedia.loginregister.login.view.activity.TiktokLoginActivity
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment
@@ -29,4 +30,6 @@ interface LoginComponent {
     fun inject(bottomSheet: NeedHelpBottomSheet)
 
     fun inject(fragment: LoginSdkConsentFragment)
+
+    fun inject(activity: TiktokLoginActivity)
 }

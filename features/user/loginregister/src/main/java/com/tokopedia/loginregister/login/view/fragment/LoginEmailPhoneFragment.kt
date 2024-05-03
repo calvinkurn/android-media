@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import com.tokopedia.media.loader.loadImage
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
@@ -97,6 +96,7 @@ import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
+import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_TIKTOK_LOGIN
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.router.LoginRouter
@@ -105,6 +105,7 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
+import com.tokopedia.loginregister.login.view.activity.TiktokLoginActivity
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
@@ -113,6 +114,7 @@ import com.tokopedia.loginregister.login_sdk.LoginSdkActivity
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
@@ -743,7 +745,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             listener = object : SocmedBottomSheetListener {
                 override fun onItemClick(provider: ProviderData) {
                     if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
-                        onLoginGoogleClick()
+//                        onLoginGoogleClick()
+                        onLoginTiktokClicked()
+                        socmedBottomSheet?.dismiss()
                     }
                 }
             }
@@ -964,6 +968,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+    private fun onLoginTiktokClicked() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.TIKTOK_LOGIN)
+        showLoadingLogin()
+        startActivityForResult(intent, REQUEST_TIKTOK_LOGIN)
+    }
+
     private fun onLoginGoogleClick() {
         if (activity != null) {
             onDismissBottomSheet()
@@ -1086,7 +1096,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     @SuppressLint("PII Data Exposure")
-    override fun onSuccessLogin(shouldFinish: Boolean) {
+    override fun onSuccessLogin() {
         dismissLoadingLogin()
         activityShouldEnd = true
 
@@ -1418,11 +1428,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (isEnableSeamlessLogin) {
                 viewModel.getTemporaryKeyForSDK(profilePojo)
             } else {
-                if (activity is LoginSdkActivity) {
-                    onSuccessLogin(shouldFinish = false)
-                } else {
-                    onSuccessLogin()
-                }
+                onSuccessLogin()
             }
         }
     }

@@ -76,8 +76,8 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         (activity as LoginSdkActivity).switchToConsentFragment()
     }
 
-    override fun onSuccessLogin(shouldFinish: Boolean) {
-        super.onSuccessLogin(shouldFinish = false)
+    override fun onSuccessLogin() {
+        super.onSuccessLogin()
         goToConsentPage()
     }
 

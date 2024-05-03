@@ -395,6 +395,8 @@ object DeeplinkMapper {
 
             deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.COTP) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
 
+            deeplink.startsWith(ApplinkConstInternalUserPlatform.TIKTOK_LOGIN) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+
             else -> return ""
         }
     }
