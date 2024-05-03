@@ -60,12 +60,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
         validate(CLICK_MERCHANT_TOOLS_RECOMMENDATION_PATH)
     }
 
-    protected fun clickPowerMerchantSection() {
-        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
-        onIdView(R.id.potentialPowerMerchantWidget).isViewDisplayed().onClick()
-        validate(CLICK_POWER_MERCHANT_SECTION_PATH)
-    }
-
     protected fun clickTickerPenalty() {
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         onIdVisibleView(unifycomponentsR.id.ticker_description).isViewDisplayed().onClick()
