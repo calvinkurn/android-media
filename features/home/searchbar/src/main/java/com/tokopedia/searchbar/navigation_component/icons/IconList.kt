@@ -28,14 +28,14 @@ object IconList {
     const val ID_CART = IconUnify.CART
     const val ID_NAV_GLOBAL = IconUnify.MENU_HAMBURGER
     const val ID_WISHLIST = IconUnify.HEART
-    const val ID_SHARE = IconUnify.SHARE_MOBILE
+    const val ID_SHARE = IconUnify.SOCIAL_SHARE
     const val ID_SETTING = IconUnify.SETTING
     const val ID_SEARCH = IconUnify.SEARCH
     const val ID_INFORMATION = IconUnify.INFORMATION
     const val ID_BILL = IconUnify.BILL
     const val ID_LIST_TRANSACTION = IconUnify.LIST_TRANSACTION
     const val ID_NOTEBOOK = IconUnify.NOTEBOOK
-    const val ID_SHARE_AB_TEST = IconUnify.SHARE_AFFILIATE
+    const val ID_SHARE_AB_TEST = IconUnify.SOCIAL_SHARE_AFFILIATE
     const val NAME_MESSAGE = "Inbox"
     const val NAME_NOTIFICATION = "Notif"
     const val NAME_CART = "Cart"
