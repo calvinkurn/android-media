@@ -64,7 +64,6 @@ import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerforman
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
@@ -571,8 +570,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
                         shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
                     val itemRMIndex =
                         shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
-                    val itemPMProIndex =
-                        shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
                     val itemHeaderParameterDetailIndex = shopPerformanceAdapter.list.indexOfFirst {
                         it is ItemHeaderParameterDetailUiModel
                     }
@@ -613,7 +610,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
                             COACHMARK_LAST_POSITION_PM_RM -> {
                                 if (itemPMIndex in firstVisiblePosition..lastVisiblePosition
                                     || itemRMIndex in firstVisiblePosition..lastVisiblePosition
-                                    || itemPMProIndex in firstVisiblePosition..lastVisiblePosition
                                 ) {
                                     coachMark?.animateShow()
                                 } else {
@@ -671,8 +667,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
-        val positionPMPro =
-            shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
         val positionRMEligible =
             shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
@@ -680,9 +674,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         var position = RecyclerView.NO_POSITION
 
         when {
-            positionPMPro != RecyclerView.NO_POSITION -> {
-                position = positionPMPro
-            }
             positionPM != RecyclerView.NO_POSITION -> {
                 position = positionPM
             }

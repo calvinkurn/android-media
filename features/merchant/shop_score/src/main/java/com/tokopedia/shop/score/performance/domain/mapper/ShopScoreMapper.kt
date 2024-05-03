@@ -85,7 +85,6 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemParentBenefit
 import com.tokopedia.shop.score.performance.presentation.model.ItemProtectedParameterUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemReactivatedComebackUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProPotentiallyDowngradedUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
@@ -310,10 +309,6 @@ open class ShopScoreMapper @Inject constructor(
                                 when (shopScore) {
                                     in SHOP_SCORE_60..SHOP_SCORE_69 -> {
                                         add(ItemStatusPMProPotentiallyDowngradedUiModel(false))
-                                        return@apply
-                                    }
-                                    else -> {
-                                        add(ItemStatusPMProUiModel())
                                         return@apply
                                     }
                                 }
