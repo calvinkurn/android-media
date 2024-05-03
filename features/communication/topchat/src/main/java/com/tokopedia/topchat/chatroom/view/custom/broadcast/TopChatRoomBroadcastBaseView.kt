@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastBannerListener
@@ -57,7 +57,7 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
             bindSyncBanner(bannerAttachment)
             if (!bannerAttachment.isHideBanner) {
                 binding.topchatChatroomBroadcastIvBanner.show()
-                binding.topchatChatroomBroadcastIvBanner.loadImageWithoutPlaceholder(bannerAttachment.imageUrl)
+                binding.topchatChatroomBroadcastIvBanner.loadImage(bannerAttachment.imageUrl)
                 binding.topchatChatroomBroadcastIvBanner.addOnImpressionListener(
                     bannerAttachment.impressHolder
                 ) {
