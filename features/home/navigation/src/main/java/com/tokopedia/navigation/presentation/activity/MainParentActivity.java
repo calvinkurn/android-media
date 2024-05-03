@@ -1477,12 +1477,14 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }
 
+    //MIGRATED
     @Override
     public void homeForYouMenuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
@@ -1629,6 +1631,7 @@ public class MainParentActivity extends BaseActivity implements
         return HomeRollenceController.isIconJumper();
     }
 
+    //MIGRATED
     @Override
     public void setHomeToForYouTabSelected() {
         boolean isForYouToHomeMenu = false;
@@ -1638,6 +1641,7 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
 
+    //MIGRATED
     @Override
     public void setForYouToHomeMenuTabSelected() {
         boolean isForYouToHomeMenu = true;

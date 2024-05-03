@@ -26,7 +26,7 @@ data class GetHomeBottomNavigationResponse(
         val imageList: List<Image> = emptyList(),
 
         @SerializedName("jumper")
-        val jumper: Jumper = Jumper(),
+        val jumper: Jumper? = null,
 
         @SerializedName("discoID")
         val discoId: String = "",

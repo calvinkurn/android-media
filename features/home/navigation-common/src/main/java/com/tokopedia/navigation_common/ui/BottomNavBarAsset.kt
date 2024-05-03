@@ -14,6 +14,7 @@ class BottomNavBarAsset {
             val ImageInactive = Key("unselected_icon")
             val AnimActive = Key("active_icon")
             val AnimInactive = Key("inactive_icon")
+            val AnimIdle = Key("idle_icon")
         }
 
         override fun toString(): String {

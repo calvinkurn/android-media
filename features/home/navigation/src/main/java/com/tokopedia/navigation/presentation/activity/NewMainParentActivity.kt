@@ -87,6 +87,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.HomeBottomNavListener
 import com.tokopedia.navigation_common.listener.HomeCoachmarkListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.HomeScrollViewListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
@@ -461,15 +462,16 @@ class NewMainParentActivity :
     }
 
     override fun setForYouToHomeMenuTabSelected() {
-//        TODO("Not yet implemented")
+        binding.dynamicNavbar.setJumperForId(BottomNavHomeId, false)
     }
 
     override fun setHomeToForYouTabSelected() {
-//        TODO("Not yet implemented")
+        binding.dynamicNavbar.setJumperForId(BottomNavHomeId, true)
     }
 
     override fun isIconJumperEnabled(): Boolean {
-        return HomeRollenceController.isIconJumper()
+        val bottomNav = viewModel.dynamicBottomNav.value ?: return false
+        return bottomNav.any { it.uniqueId == BottomNavHomeId && it.jumper != null }
     }
 
     private fun initInjector() {
@@ -506,6 +508,11 @@ class NewMainParentActivity :
 
         viewModel.dynamicBottomNav.observe(this) { bottomNavList ->
             binding.dynamicNavbar.setModelList(bottomNavList)
+
+            //TODO("Ask Dave about this")
+            if (bottomNavList.isEmpty()) return@observe
+            val homeBottomNav = bottomNavList.firstOrNull { it.uniqueId == BottomNavHomeId } ?: return@observe
+            if (homeBottomNav.jumper != null) setHomeToForYouTabSelected()
         }
 
         viewModel.nextDynamicBottomNav.observe(this) { bottomNavList ->
@@ -772,10 +779,11 @@ class NewMainParentActivity :
             override fun onItemSelected(
                 view: DynamicHomeNavBarView,
                 model: BottomNavBarUiModel,
-                isReselected: Boolean
+                isReselected: Boolean,
+                isJumper: Boolean,
             ) {
                 if (isReselected) {
-                    onItemReselected(model.uniqueId)
+                    onItemReselected(model, isJumper)
                 }
                 else {
                     val fragment = getFragmentById(model.uniqueId)
@@ -785,11 +793,31 @@ class NewMainParentActivity :
         })
     }
 
-    private fun onItemReselected(id: BottomNavItemId) {
-        if (false) {
-            //if support jumper
+    private fun onItemReselected(model: BottomNavBarUiModel, isJumper: Boolean) {
+        if (model.jumper != null) {
+            onJumperPressed(model, isJumper)
         } else {
-            scrollToTop(id)
+            scrollToTop(model.uniqueId)
+        }
+    }
+
+    private fun onJumperPressed(model: BottomNavBarUiModel, isJumper: Boolean) {
+        when (model.uniqueId) {
+            BottomNavHomeId -> onHomeJumperPressed(model, isJumper)
+            else -> {}
+        }
+    }
+
+    private fun onHomeJumperPressed(model: BottomNavBarUiModel, isJumper: Boolean) {
+        val activeFragment = getCurrentActiveFragment() ?: return
+        if (activeFragment.tag != BottomNavHomeId.value) return
+        if (activeFragment !is HomeScrollViewListener) return
+
+        if (isJumper) {
+            activeFragment.getRecommendationForYouIndex() ?: return
+            activeFragment.onScrollToRecommendationForYou()
+        } else {
+            activeFragment.onScrollToHomeHeader()
         }
     }
 

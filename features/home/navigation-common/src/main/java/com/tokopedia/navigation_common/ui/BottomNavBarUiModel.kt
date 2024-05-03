@@ -27,12 +27,8 @@ data class BottomNavBarJumper(
     val id: Int,
     @SerializedName("title")
     val title: String,
-    @SerializedName("toJumperAsset")
-    val toJumperAsset: BottomNavBarAsset,
-    @SerializedName("idleAsset")
-    val idleAsset: BottomNavBarAsset,
-    @SerializedName("toInitialAsset")
-    val toInitialAsset: BottomNavBarAsset
+    @SerializedName("assets")
+    val assets: Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type>,
 )
 
 fun BottomNavItemId(type: BottomNavBarItemType, discoId: DiscoId = DiscoId.Empty): BottomNavItemId {

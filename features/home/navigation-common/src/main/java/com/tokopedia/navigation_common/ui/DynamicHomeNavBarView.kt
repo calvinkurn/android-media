@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import androidx.core.view.updatePadding
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.media.loader.clearImage
@@ -61,6 +60,8 @@ class DynamicHomeNavBarView : LinearLayout {
 
     private val modelMap = mutableMapOf<BottomNavItemId, BottomNavBarUiModel>()
 
+    private val jumperStateMap = mutableMapOf<BottomNavItemId, Boolean>()
+
     init {
         super.setOrientation(HORIZONTAL)
         refresh()
@@ -68,6 +69,12 @@ class DynamicHomeNavBarView : LinearLayout {
 
     override fun setOrientation(orientation: Int) {
         error("Orientation is not allowed to be changed")
+    }
+
+    fun setJumperForId(id: BottomNavItemId, shouldChangeToJumper: Boolean) {
+        val oldState = jumperStateMap[id]
+        jumperStateMap[id] = shouldChangeToJumper
+        if (oldState != shouldChangeToJumper) refresh()
     }
 
     fun setModelList(modelList: List<BottomNavBarUiModel>) {
@@ -88,7 +95,9 @@ class DynamicHomeNavBarView : LinearLayout {
 
     fun select(itemId: BottomNavItemId) {
         val model = modelMap[itemId] ?: return
-        mListener?.onItemSelected(this, model, mSelectedItemId == itemId)
+
+        mListener?.onItemSelected(this, model, mSelectedItemId == itemId, model.isJumper())
+
         mSelectedItemId = itemId
         rebindAllItems(itemId)
     }
@@ -149,16 +158,18 @@ class DynamicHomeNavBarView : LinearLayout {
         stateHolder: StateHolder,
         isSelected: Boolean?
     ) {
-        val (model, prevIsSelected) = stateHolder
-        ivIcon.bindAsset(model, isSelected, prevIsSelected)
-        tvTitle.bindText(model, isSelected)
+        val (model, prevIsSelected, prevShouldUseJumper) = stateHolder
+        val shouldUseJumper = model.jumper != null && model.isJumper()
+
+        ivIcon.bindAsset(model, isSelected, prevIsSelected, shouldUseJumper, prevShouldUseJumper)
+        tvTitle.bindText(model, isSelected, shouldUseJumper)
 
         rippleView.background = ContextCompat.getDrawable(uiModeAwareContext, navigation_commonR.drawable.bg_ripple_container)
 
         root.setOnTouchListener(BottomNavBarItemRippleTouchListener(root, rippleView))
         root.setOnClickListener { select(model.uniqueId) }
 
-        updateState(stateHolder.copy(isSelected = isSelected))
+        updateState(stateHolder.copy(isSelected = isSelected, isJumper = shouldUseJumper))
     }
 
     private fun ItemBottomNavbarBinding.updateState(newState: StateHolder) {
@@ -172,39 +183,14 @@ class DynamicHomeNavBarView : LinearLayout {
     private fun LottieAnimationView.bindAsset(
         model: BottomNavBarUiModel,
         isSelected: Boolean?,
-        prevIsSelected: Boolean?
+        prevIsSelected: Boolean?,
+        shouldUseJumper: Boolean,
+        prevIsJumper: Boolean,
     ) {
-        val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
-        val asset = when {
-            isSelected == null -> model.assets[Key.ImageInactive + if (isDarkMode) Variant.Dark else Variant.Light]
-            !isSelected && prevIsSelected != true -> model.assets[Key.ImageInactive + if (isDarkMode) Variant.Dark else Variant.Light]
-            context.isDeviceAnimationDisabled() || isSelected == prevIsSelected -> {
-                val key = if (isSelected) Key.ImageActive else Key.ImageInactive
-                val variant = if (isDarkMode) Variant.Dark else Variant.Light
-                model.assets[key + variant]
-            }
-            else -> {
-                run {
-                    val key = if (isSelected) Key.AnimActive else Key.AnimInactive
-                    val variant = if (isDarkMode) Variant.Dark else Variant.Light
-                    val assetId = key + variant
-                    val asset = model.assets[assetId]
-                    val isCached = when (asset) {
-                        is Type.Lottie -> cacheManager.isUrlLoaded(asset.url)
-                        is Type.LottieRes -> true
-                        else -> false
-                    }
-
-                    if (isCached) {
-                        asset
-                    } else {
-                        asset?.let { if (it is Type.Lottie) cacheManager.preloadFromUrl(it.url) }
-                        model.assets[
-                            (if (isSelected) Key.ImageActive else Key.ImageInactive) + variant
-                        ]
-                    }
-                }
-            }
+        val asset = if (shouldUseJumper) {
+            getJumperAssets(model, isSelected, prevIsSelected, prevIsJumper)
+        } else {
+            getNormalAssets(model, isSelected, prevIsSelected, prevIsJumper)
         } ?: return
 
         Log.d("DynamicHomeNavBarView", "Model: ${model.uniqueId}, isSelected: $isSelected, prevIsSelected: $prevIsSelected, Asset: $asset")
@@ -241,8 +227,71 @@ class DynamicHomeNavBarView : LinearLayout {
         }
     }
 
-    private fun TextView.bindText(model: BottomNavBarUiModel, isSelected: Boolean?) {
-        text = model.title
+
+    //TODO("Revisit this logic")
+    private fun getNormalAssets(
+        model: BottomNavBarUiModel,
+        isSelected: Boolean?,
+        prevIsSelected: Boolean?,
+        prevIsJumper: Boolean,
+    ): Type? {
+        val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
+        val variant = if (isDarkMode) Variant.Dark else Variant.Light
+        return when {
+            isSelected == null -> model.assets[Key.ImageInactive + variant]
+            !isSelected && prevIsSelected != true -> model.assets[Key.ImageInactive + variant]
+            (context.isDeviceAnimationDisabled() || isSelected == prevIsSelected) && !prevIsJumper -> {
+                val key = if (isSelected) Key.ImageActive else Key.ImageInactive
+                model.assets[key + variant]
+            }
+            else -> {
+                run {
+                    val asset = if (prevIsJumper && model.jumper != null) {
+                        if (isSelected) model.jumper.assets[Key.AnimInactive + variant]
+                        else model.assets[Key.ImageInactive + variant]
+                    } else {
+                        val key = if (isSelected) Key.AnimActive else Key.AnimInactive
+                        model.assets[key + variant]
+                    }
+
+                    val isCached = when (asset) {
+                        is Type.Lottie -> cacheManager.isUrlLoaded(asset.url)
+                        is Type.LottieRes -> true
+                        else -> false
+                    }
+
+                    if (isCached) {
+                        asset
+                    } else {
+                        asset?.let { if (it is Type.Lottie) cacheManager.preloadFromUrl(it.url) }
+                        model.assets[
+                            (if (isSelected) Key.ImageActive else Key.ImageInactive) + variant
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getJumperAssets(
+        model: BottomNavBarUiModel,
+        isSelected: Boolean?,
+        prevIsSelected: Boolean?,
+        prevIsJumper: Boolean,
+    ): Type? {
+        val assets = model.jumper?.assets ?: return null
+        val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
+        val variant = if (isDarkMode) Variant.Dark else Variant.Light
+        return when {
+            isSelected != true -> assets[Key.ImageInactive + variant]
+            context.isDeviceAnimationDisabled() -> assets[Key.AnimActive + variant]
+            isSelected == prevIsSelected -> if (prevIsJumper) null else assets[Key.AnimActive + variant]
+            else -> assets[Key.AnimIdle + variant]
+        }
+    }
+
+    private fun TextView.bindText(model: BottomNavBarUiModel, isSelected: Boolean?, shouldUseJumper: Boolean) {
+        text = if (!shouldUseJumper || model.jumper == null) model.title else model.jumper.title
         setTextColor(
             ContextCompat.getColor(
                 uiModeAwareContext,
@@ -261,13 +310,23 @@ class DynamicHomeNavBarView : LinearLayout {
         )
     }
 
+    private fun BottomNavBarUiModel.isJumper(): Boolean {
+        return jumperStateMap[uniqueId] == true
+    }
+
     interface Listener {
-        fun onItemSelected(view: DynamicHomeNavBarView, model: BottomNavBarUiModel, isReselected: Boolean)
+        fun onItemSelected(
+            view: DynamicHomeNavBarView,
+            model: BottomNavBarUiModel,
+            isReselected: Boolean,
+            isJumper: Boolean,
+        )
     }
 
     data class StateHolder(
         val model: BottomNavBarUiModel,
-        val isSelected: Boolean?
+        val isSelected: Boolean?,
+        val isJumper: Boolean = false,
     ) {
         companion object {
             fun init(model: BottomNavBarUiModel): StateHolder {

@@ -10,6 +10,7 @@ import com.tokopedia.navigation.util.CompletableTask
 import com.tokopedia.navigation_common.model.bottomnav.GetHomeBottomNavigationResponse
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
+import com.tokopedia.navigation_common.ui.BottomNavBarJumper
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.DiscoId
 import kotlinx.coroutines.Dispatchers
@@ -75,20 +76,33 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
     private suspend fun getDataFromNetwork(): List<BottomNavBarUiModel> {
         val response: GetHomeBottomNavigationResponse = graphqlRepository.request(graphqlQuery(), Unit)
         return response.data.bottomNavigations.map { data ->
+            val jumper = data.jumper
             BottomNavBarUiModel(
                 id = data.id.toInt(),
                 title = data.name,
                 type = BottomNavBarItemType(data.type),
-                jumper = null,
-                assets = data.imageList.associate {
-                    BottomNavBarAsset.Id(it.type) to when (val type = it.imageType) {
-                        "image" -> BottomNavBarAsset.Type.Image(it.imageUrl)
-                        "lottie" -> BottomNavBarAsset.Type.Lottie(it.imageUrl)
-                        else -> error("Not supported for type $type")
-                    }
+                jumper = if (jumper != null) {
+                    BottomNavBarJumper(
+                        id = jumper.id.toInt(),
+                        title = jumper.name,
+                        assets = jumper.imageList.toAssetsMap(),
+                    )
+                } else {
+                    null
                 },
+                assets = data.imageList.toAssetsMap(),
                 discoId = DiscoId(data.discoId)
             )
+        }
+    }
+
+    private fun List<GetHomeBottomNavigationResponse.Image>.toAssetsMap(): Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type> {
+        return associate {
+            BottomNavBarAsset.Id(it.type) to when (val type = it.imageType) {
+                "image" -> BottomNavBarAsset.Type.Image(it.imageUrl)
+                "lottie" -> BottomNavBarAsset.Type.Lottie(it.imageUrl)
+                else -> error("Not supported for type $type")
+            }
         }
     }
 
