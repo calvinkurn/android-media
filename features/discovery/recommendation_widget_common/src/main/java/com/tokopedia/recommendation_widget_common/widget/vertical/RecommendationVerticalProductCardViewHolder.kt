@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.vertical
 
+import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.setOnVisibilityChanged
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
@@ -18,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapp
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
+import com.tokopedia.recommendation_widget_common.widget.vertical.PercentVisibleLayout.OnVisibilityPercentChanged
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -32,12 +35,12 @@ class RecommendationVerticalProductCardViewHolder(
 
     private val binding = ItemRecomVerticalProductcardBinding.bind(itemView)
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
+//    init {
+//        itemView.addOnAttachStateChangeListener(
+//            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+//            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+//        )
+//    }
 
     override fun bind(element: RecommendationVerticalProductCardModel) {
         this.elementItem = element
@@ -77,6 +80,35 @@ class RecommendationVerticalProductCardViewHolder(
     }
 
     private fun setupProductCardListener(element: RecommendationVerticalProductCardModel) {
+        binding.percentLayout.setOnVisibilityPercentChangedListener(object: OnVisibilityPercentChanged {
+            override fun onVisibilityChange(
+                verticalClip: Int,
+                horizontalClip: Int,
+                percentageHeight: Int,
+                percentageWidth: Int
+            ) {
+                if(element.recomItem.isTopAds) {
+                    Log.d(
+                        "PERCENT",
+                        "${element.recomItem.name} percentageHeight ${percentageHeight}%"
+                    )
+                }
+            }
+
+            override fun onShow(percent: Int) {
+                if(element.recomItem.isTopAds) {
+                    element?.recomItem?.sendShowAdsByteIo(itemView.context)
+                    Log.d("PERCENT", "${element.recomItem.name} onShow ${percent}")
+                }
+            }
+
+            override fun onShowOver(percent: Int) {
+                if(element.recomItem.isTopAds) {
+                    element?.recomItem?.sendShowOverAdsByteIo(itemView.context, percent)
+                    Log.d("PERCENT", "${element.recomItem.name} onShowOver ${percent}")
+                }
+            }
+        })
         with(binding.productCardView) {
             addOnImpressionListener(element.recomItem) { onProductCardImpressed(element) }
             addOnImpression1pxListener(element.recomItem.appLogImpressHolder) { onProductCardImpressed1px(element) }
