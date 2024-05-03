@@ -291,7 +291,8 @@ object DynamicChannelComponentMapper {
             expiredTime = expiredTime,
             categoryBreadcrumbs = categoryBreadcrumbs,
             position = index,
-            recommendationAdsLog = RecommendationAdsLog(creativeID, logExtra)
+            creativeID = creativeID,
+            logExtra = logExtra
         )
     }
 
@@ -403,7 +404,8 @@ object DynamicChannelComponentMapper {
         },
         categoryBreadcrumbs = categoryBreadcrumbs,
         position = index,
-        recommendationAdsLog = RecommendationAdsLog(creativeID = recommendationAdsLog.creativeID, recommendationAdsLog.logExtra)
+        creativeID = recommendationAdsLog.creativeID,
+        logExtra = recommendationAdsLog.logExtra
     )
 
     private fun Array<com.tokopedia.home.beranda.domain.model.LabelGroup>.getLabelGroupFulfillment(): LabelGroup? {

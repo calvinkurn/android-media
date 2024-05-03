@@ -59,8 +59,8 @@ object TrackRecommendationMapper {
 
     fun ChannelGrid.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(refer,
-            recommendationAdsLog.logExtra.toLongOrZero(),
-            recommendationAdsLog.logExtra,
+            creativeID.toLongOrZero(),
+            logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
             productId = id,
             productName = name,
@@ -69,8 +69,8 @@ object TrackRecommendationMapper {
 
     fun ChannelGrid.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
         return AdsLogShowOverModel(
-            recommendationAdsLog.logExtra.toLongOrZero(),
-            recommendationAdsLog.logExtra,
+            creativeID.toLongOrZero(),
+            logExtra,
             AdsLogShowOverModel.AdExtraData(
                 productId = id,
                 productName = name,
@@ -80,8 +80,8 @@ object TrackRecommendationMapper {
 
     fun ChannelGrid.asAdsLogShowModel(): AdsLogShowModel {
         return AdsLogShowModel(
-            recommendationAdsLog.logExtra.toLongOrZero(),
-            recommendationAdsLog.logExtra,
+            creativeID.toLongOrZero(),
+            logExtra,
             AdsLogShowModel.AdExtraData(
             productId = id,
             productName = name,

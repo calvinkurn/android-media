@@ -28,14 +28,14 @@ object AppLogTopAds {
         context: Context,
         adsLogShowOverModel: AdsLogShowOverModel
     ) {
-        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
+        val pageName = getPageName()
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(pageName == PageName.SEARCH_RESULT) {
+                        if(isSearchPage(pageName)) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -71,15 +71,14 @@ object AppLogTopAds {
         context: Context,
         adsLogShowModel: AdsLogShowModel
     ) {
-        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
-
+        val pageName = getPageName()
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(pageName == PageName.SEARCH_RESULT) {
+                        if(isSearchPage(pageName)) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -113,15 +112,14 @@ object AppLogTopAds {
         context: Context,
         adsLogRealtimeClickModel: AdsLogRealtimeClickModel
     ) {
-        val pageName = AppLogAnalytics.getLastData(PAGE_NAME)
-
+        val pageName = getPageName()
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(pageName == PageName.SEARCH_RESULT) {
+                        if(isSearchPage(pageName)) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -148,17 +146,19 @@ object AppLogTopAds {
         )
     }
 
+    private fun getPageName() = AppLogAnalytics.getLastData(PAGE_NAME)
+
     private fun getSystemBootTime(): String = (System.currentTimeMillis() - SystemClock.elapsedRealtime()).toString()
 
     private fun getEnterFrom(): String {
-        val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
+        val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
         return if (prevPageName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
     }
 
     private fun getChannel(): String {
         val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
         return when(prevPageName) {
-            AppLogSearch.ParamValue.GOODS_SEARCH -> AdsLogConst.Channel.PRODUCT_SEARCH
+            AppLogSearch.ParamValue.GOODS_SEARCH, PageName.SEARCH_RESULT -> AdsLogConst.Channel.PRODUCT_SEARCH
             PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
             PageName.SHOP -> AdsLogConst.Channel.STORE_SEARCH
             PageName.EXTERNAL_PROMO -> AdsLogConst.Channel.FIND_SEARCH
@@ -182,8 +182,12 @@ object AppLogTopAds {
     }
 
     private fun JSONObject.putTag(currentPageName: Any?) {
-        val tagName = if (currentPageName == PageName.SEARCH_RESULT) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
+        val tagName = if (isSearchPage(currentPageName)) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
         put(AdsLogConst.TAG, tagName)
+    }
+
+    private fun isSearchPage(currentPageName: Any?): Boolean {
+        return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH)
     }
 
     private fun JSONObject.putNetworkType(context: Context) {

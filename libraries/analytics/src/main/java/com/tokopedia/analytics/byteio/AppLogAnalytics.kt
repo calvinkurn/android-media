@@ -227,7 +227,7 @@ object AppLogAnalytics {
             params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
             Cassava.save(params, event, "ByteIO")
             AppLog.onEventV3(event, params)
-            Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
+//            Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
         }
     }
 
