@@ -49,7 +49,7 @@ class TopChatRoomVoucherUiModel private constructor(
 
     class Builder : SendableUiModel.Builder<Builder, TopChatRoomVoucherUiModel>() {
 
-        internal lateinit var merchantVoucherModel: MerchantVoucherModel
+        internal var merchantVoucherModel = MerchantVoucherModel(0, merchantVoucherOwner = MerchantVoucherOwner())
         internal var isPublic: Int = 1
         internal var isLockToProduct: Int = 0
         internal var appLink: String = ""
@@ -117,9 +117,6 @@ class TopChatRoomVoucherUiModel private constructor(
         }
 
         override fun build(): TopChatRoomVoucherUiModel {
-            if (!::merchantVoucherModel.isInitialized) {
-                throw IllegalStateException("MerchantVoucherModel must be initialized")
-            }
             return TopChatRoomVoucherUiModel(this)
         }
     }
