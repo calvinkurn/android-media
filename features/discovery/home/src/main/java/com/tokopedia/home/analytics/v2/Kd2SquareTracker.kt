@@ -10,7 +10,7 @@ object Kd2SquareTracker : BaseTrackerConst() {
 
     // TrackerID: 50030
     private const val IMPRESSION_TRACKER_ID = "50030"
-    private const val IMPRESSION_ACTION = "impression on banner dynamic channel 2 square"
+    private const val IMPRESSION_ACTION = "impression on banner ${Const.ITEM_NAME}"
     fun widgetImpressed(model: ChannelModel, userId: String, position: Int): Map<String, Any> {
         val attribute = model.trackingAttributionModel
 
@@ -22,7 +22,7 @@ object Kd2SquareTracker : BaseTrackerConst() {
             promotions = model.channelGrids.mapIndexed { index, channelGrid ->
                 Promotion(
                     id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    name = "/ - p${position + 1} - dynamic channel 2 square - banner - ${attribute.headerName}",
+                    name = "/ - p${position + 1} - ${Const.ITEM_NAME} - banner - ${attribute.headerName}",
                     position = (index + 1).toString(),
                     creative = channelGrid.attribution
                 )
@@ -40,7 +40,7 @@ object Kd2SquareTracker : BaseTrackerConst() {
 
     // TrackerID: 50031
     private const val CARD_CLICK_TRACKER_ID = "50031"
-    private const val CARD_CLICK_ACTION = "click on banner dynamic channel 2 square"
+    private const val CARD_CLICK_ACTION = "click on banner ${Const.ITEM_NAME}"
     fun cardClicked(attribute: ChannelTracker, userId: String, position: Int): Map<String, Any> {
 
         val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
@@ -50,10 +50,10 @@ object Kd2SquareTracker : BaseTrackerConst() {
             eventLabel = "${attribute.channelId} - ${attribute.headerName}",
             promotions = listOf(
                 Promotion(
-                    id = "${attribute.channelId}_${attribute}bannerId_${attribute.categoryId}_${attribute}persoType", // TODO
-                    name = "/ - p${position + 1} - dynamic channel 2 square - banner - ${attribute.headerName}",
+                    id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
+                    name = "/ - p${position + 1} - ${Const.ITEM_NAME} - banner - ${attribute.headerName}",
                     position = (position + 1).toString(),
-                    creative = "" //attribute.attribution // TODO
+                    creative = attribute.attribution
                 )
             )
         )
@@ -65,5 +65,9 @@ object Kd2SquareTracker : BaseTrackerConst() {
             .appendUserId(userId)
 
         return trackingBuilder.build()
+    }
+
+    object Const {
+        const val ITEM_NAME = "dynamic channel 2 square"
     }
 }

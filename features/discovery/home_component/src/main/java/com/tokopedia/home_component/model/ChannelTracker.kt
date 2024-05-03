@@ -36,6 +36,9 @@ data class ChannelTracker(
     val channelName: String = "",
     val gridId: String = "",
     val headerName: String = "",
+    val bannerId: String = "",
+    val attribution: String = "",
+    val persoType: String = "",
 ) {
 
     fun isProduct() = productId.isNotEmpty() && productId != "0"

@@ -82,6 +82,9 @@ object DynamicChannelComponentMapper {
             channelName = channel?.name.orEmpty(),
             gridId = grid.id,
             headerName = channel?.header?.name.orEmpty(),
+            bannerId = channel?.brandId.orEmpty(),
+            attribution = channel?.homeAttribution.orEmpty(),
+            persoType = channel?.persoType.orEmpty(),
         )
     }
 
