@@ -33,10 +33,16 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert
 import org.junit.Assert
@@ -152,7 +158,7 @@ class ThankPageViewModelUnitTest {
     }
 
     @Test
-    fun successGyroRecommendationLiveData() {
+    fun successGyroRecommendationLiveData() = runTest {
         val gyroRecommendation = mockk<GyroRecommendation>(relaxed = true)
         val featureEngineData = mockk<FeatureEngineData>(relaxed = true)
         val tokoMemberRequestParam = mockk<TokoMemberRequestParam>(relaxed = true)
@@ -296,8 +302,13 @@ class ThankPageViewModelUnitTest {
         } coAnswers {
             thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
         }
-        viewModel.checkForGoPayActivation(thankPageData, "")
-        Assert.assertEquals(viewModel.gyroResponseLiveData.value, featureEngineData)
+        runBlocking {
+            launch {
+                viewModel.checkForGoPayActivation(thankPageData, "")
+            }
+            delay(500)
+            Assert.assertEquals(viewModel.gyroResponseLiveData.value, featureEngineData)
+        }
     }
 
     @Test
@@ -329,12 +340,18 @@ class ThankPageViewModelUnitTest {
             thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
         }
 
-        // when
-        viewModel.checkForGoPayActivation(thankPageData, "")
+        runBlocking {
+            launch {
+                // when
+                viewModel.checkForGoPayActivation(thankPageData, "")
 
-        // then
-        Assert.assertEquals(viewModel.bannerLiveData.value?.title, expectedTitle)
-        Assert.assertEquals(viewModel.bannerLiveData.value?.items?.size, expectedBannerItemSize)
+                delay(500)
+
+                // then
+                Assert.assertEquals(viewModel.bannerLiveData.value?.title, expectedTitle)
+                Assert.assertEquals(viewModel.bannerLiveData.value?.items?.size, expectedBannerItemSize)
+            }
+        }
     }
 
     @Test
@@ -373,18 +390,23 @@ class ThankPageViewModelUnitTest {
             thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
         }
 
-        // when
-        viewModel.addBottomContentWidget(bannerWidgetModel)
-        viewModel.checkForGoPayActivation(thankPageData, "")
-        viewModel.addBottomContentWidget(gyroVisitable)
-        viewModel.addBottomContentWidget(headlineAdsVisitable)
+        runBlocking {
+            launch {
+                viewModel.addBottomContentWidget(bannerWidgetModel)
+                viewModel.checkForGoPayActivation(thankPageData, "")
+                viewModel.addBottomContentWidget(gyroVisitable)
+                viewModel.addBottomContentWidget(headlineAdsVisitable)
+            }
 
-        // assert
-        Assert.assertEquals(viewModel.widgetOrder, arrayListOf("instant_header","waiting_header","processing_header","divider","banner", "dg", "pg", "shopads", "feature"))
-        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.size, 3)
-        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.first(), bannerWidgetModel)
-        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.get(1), headlineAdsVisitable)
-        Assert.assertEquals(viewModel.bottomContentVisitableList.value?.last(), gyroVisitable)
+            delay(1000)
+
+            // assert
+            Assert.assertEquals(viewModel.widgetOrder, arrayListOf("instant_header","waiting_header","processing_header","divider","banner", "dg", "pg", "shopads", "feature"))
+            Assert.assertEquals(viewModel.bottomContentVisitableList.value?.size, 3)
+            Assert.assertEquals(viewModel.bottomContentVisitableList.value?.first(), bannerWidgetModel)
+            Assert.assertEquals(viewModel.bottomContentVisitableList.value?.get(1), headlineAdsVisitable)
+            Assert.assertEquals(viewModel.bottomContentVisitableList.value?.last(), gyroVisitable)
+        }
     }
 
     @Test
@@ -415,18 +437,22 @@ class ThankPageViewModelUnitTest {
             thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
         }
 
-        // when
-        viewModel.checkForGoPayActivation(thankPageData, "")
-
-        // verify
-        verify {
-            gyroEngineMapperUseCase.getFeatureListData(
-                any(),
-                queryParamTokomember,
-                any(),
-                any()
-            )
+        runBlocking {
+            launch {
+                viewModel.checkForGoPayActivation(thankPageData, "")
+            }
+            delay(500)
+            verify {
+                gyroEngineMapperUseCase.getFeatureListData(
+                    any(),
+                    queryParamTokomember,
+                    any(),
+                    any()
+                )
+            }
         }
+
+        // when
     }
 
     @Test

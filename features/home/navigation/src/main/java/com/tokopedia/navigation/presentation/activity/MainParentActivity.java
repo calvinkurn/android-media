@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
 import static com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT;
 import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
@@ -26,6 +25,7 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
@@ -284,12 +284,14 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         //changes for triggering unittest checker
+
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
         try {
             performanceTrace = new BlocksPerformanceTrace(
-                    this.getContext().getApplicationContext(),
+                    this,
                     PERFORMANCE_TRACE_HOME,
                     LifecycleOwnerKt.getLifecycleScope(this),
                     this,
@@ -331,6 +333,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         sendNotificationUserSetting();
         showDarkModeIntroBottomSheet();
+
     }
 
     private void initDownloadManagerDialog() {

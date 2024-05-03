@@ -129,13 +129,12 @@ object RepurchaseLayoutMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStateNoResult(serviceType: String) {
+    fun MutableList<Visitable<*>>.addEmptyStateNoResult() {
         add(
             TokoNowEmptyStateNoResultUiModel(
                 defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
                 defaultDescriptionResId = getServiceTypeRes(
-                    key = REPURCHASE_EMPTY_RESOURCE_ID,
-                    serviceType = serviceType
+                    key = REPURCHASE_EMPTY_RESOURCE_ID
                 ),
                 globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
             )

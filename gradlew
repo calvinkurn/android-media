@@ -61,7 +61,12 @@
 #       You can find Gradle at https://github.com/gradle/gradle/.
 #
 ##############################################################################
-
+hasRemoteX=$(cat "$(pwd)/local.properties" | grep "ENV=RemoteX")
+if [ -n "$hasRemoteX" ]; then
+    export JAVA_HOME=/data00/jdk-17.0.11
+    export PATH=$JAVA_HOME/bin:$PATH
+    echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+fi
 # Attempt to set APP_HOME
 
 # Resolve links: $0 may be a link

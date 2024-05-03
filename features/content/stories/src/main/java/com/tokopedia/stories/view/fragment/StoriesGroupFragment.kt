@@ -135,7 +135,7 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun dismissOnboard() {
-        viewModelAction(StoriesUiAction.ResumeStories)
+        viewModelAction(StoriesUiAction.ResumeStories())
         binding.vStoriesOnboarding.gone()
     }
 
