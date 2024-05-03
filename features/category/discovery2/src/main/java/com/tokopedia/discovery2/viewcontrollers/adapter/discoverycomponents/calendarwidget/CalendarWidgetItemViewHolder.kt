@@ -85,6 +85,10 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         when (properties?.calendarLayout) {
             Calendar.SINGLE -> {
                 calendarCardUnify.removeAllViews()
+                val layoutParams = calendarCardUnify.layoutParams
+                layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT
+                layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+                calendarCardUnify.layoutParams = layoutParams
                 calendarCardUnify.addView(
                     LayoutInflater.from(itemView.context).inflate(
                         R.layout.discovery_calendar_single_layout_item,
