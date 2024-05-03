@@ -256,6 +256,7 @@ object AppLogPdp {
                 put("product_id", analyticData.productId)
                 put("is_single_sku", analyticData.isSingleSku.intValue)
                 put("buy_type", analyticData.buyType.value)
+                put("shop_id", analyticData.shopId)
             }
         )
     }
@@ -270,6 +271,7 @@ object AppLogPdp {
                 put("product_id", analyticData.productId)
                 put("is_single_sku", analyticData.isSingleSku.intValue)
                 put("buy_type", analyticData.buyType.value)
+                put("shop_id", analyticData.shopId)
             }
         )
     }
