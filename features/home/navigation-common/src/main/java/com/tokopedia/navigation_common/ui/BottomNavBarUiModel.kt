@@ -36,16 +36,39 @@ data class BottomNavBarJumper(
 )
 
 fun BottomNavItemId(type: BottomNavBarItemType, discoId: DiscoId = DiscoId.Empty): BottomNavItemId {
-    return BottomNavItemId("${type.value}_${discoId.value}")
+    val id = buildString {
+        append(type.value)
+        if (discoId == DiscoId.Empty) return@buildString
+
+        append(BottomNavItemId.DELIMITER)
+        append(discoId.value)
+    }
+    return BottomNavItemId(id)
 }
 
 @JvmInline
 value class BottomNavItemId(val value: String) {
+
     val type: BottomNavBarItemType
-        get() = BottomNavBarItemType(value.split("_")[0])
+        get() {
+            return BottomNavBarItemType(
+                if (value.contains(DELIMITER)) value.split(DELIMITER)[0]
+                else value
+            )
+        }
 
     val discoId: DiscoId
-        get() = DiscoId(value.split("_")[1])
+        get() {
+            return if (value.contains(DELIMITER)) {
+                DiscoId(value.split(DELIMITER)[1])
+            } else {
+                DiscoId.Empty
+            }
+        }
+
+    companion object {
+        internal const val DELIMITER = "-*-"
+    }
 }
 
 @JvmInline

@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -38,6 +39,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -52,7 +60,9 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.analytics.AppEventTracking
@@ -66,6 +76,7 @@ import com.tokopedia.navigation.GlobalNavConstant
 import com.tokopedia.navigation.databinding.ActivityMainParentBinding
 import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
+import com.tokopedia.navigation.presentation.model.BottomNavFeedId
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
 import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
@@ -79,7 +90,6 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
-import com.tokopedia.navigation_common.ui.BottomNavBarAsset
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.BottomNavItemId
 import com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
@@ -175,6 +185,8 @@ class NewMainParentActivity :
 
     private var isUserFirstTimeLogin = false
 
+    private var doubleTapExit = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring()
@@ -182,6 +194,7 @@ class NewMainParentActivity :
         pltPerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS)
 
         super.onCreate(savedInstanceState)
+        HomeRollenceController.fetchIconJumperValue() //TODO("Is this still valid after revamp?")
         initInjector()
         if (savedInstanceState != null) {
             viewModel.isRecurringAppLink = savedInstanceState.getBoolean(KEY_IS_RECURRING_APPLINK, false)
@@ -239,17 +252,22 @@ class NewMainParentActivity :
         viewModel.fetchNotificationData()
 
         run firstTimeLogin@{
-            if (!userSession.get().isLoggedIn || isUserFirstTimeLogin) return@firstTimeLogin
-//            reloadPage()
+            if (!userSession.get().isLoggedIn || !isUserFirstTimeLogin) return@firstTimeLogin
+            val currentId = getCurrentActiveFragment()?.tag?.let {
+                BottomNavItemId(it)
+            } ?: BottomNavHomeId
+
+            reloadPage(currentId, true)
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn
 
         addShortcutsAsync()
 
-//        if (currentFragment != null) {
-//            configureStatusBarBasedOnFragment(currentFragment)
-//            onFragmentSelected(currentFragment)
-//        }
+        val fragment = getCurrentActiveFragment()
+        if (fragment != null) {
+            configureStatusBarBasedOnFragment(fragment)
+            FragmentLifecycleObserver.onFragmentSelected(fragment)
+        }
 
         if (pltPerformanceCallback.customMetric.containsKey(MAIN_PARENT_ON_RESUME_METRICS) && !hasRunOnResumePlt) {
             pltPerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS)
@@ -261,6 +279,20 @@ class NewMainParentActivity :
         super.onDestroy()
         appDownloadManagerHelper?.activityRef?.clear()
         appDownloadManagerHelper = null
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode)
+        run handleByRequestCode@{
+            when (requestCode) {
+                REQUEST_CODE_LOGIN -> {
+                    if (resultCode != Activity.RESULT_OK || data == null) return@handleByRequestCode
+                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
+                    if (isSuccessRegister) goToNewUserZonePage()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -277,7 +309,7 @@ class NewMainParentActivity :
         runCatching {
             super.onRestoreInstanceState(savedInstanceState)
         }.onFailure {
-            TODO()
+            reloadPage(BottomNavHomeId, false)
         }
     }
 
@@ -289,7 +321,7 @@ class NewMainParentActivity :
         setIntent(intent)
         setDownloadManagerParameter()
         showSelectedPage()
-        // handleAppLinkBottomNavigation(false);
+        handleAppLinkBottomNavigation(false);
     }
 
     override fun onRequestPermissionsResult(
@@ -299,6 +331,36 @@ class NewMainParentActivity :
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         checkWritePermissionResultAndInstallApk(requestCode, grantResults)
+    }
+
+    override fun onBackPressed() {
+        if (doubleTapExit) {
+            finish()
+        } else {
+            doubleTapExit = true
+            runCatching {
+                if (!isFinishing) {
+                    Toast.makeText(this, navigationR.string.exit_message, Toast.LENGTH_SHORT).show()
+                }
+                Handler().postDelayed({
+                    doubleTapExit = false
+                }, EXIT_DELAY_MILLIS)
+            }.onFailure { it.printStackTrace() }
+        }
+    }
+
+    private fun reloadPage(id: BottomNavItemId, isJustLoggedIn: Boolean) {
+        val isFeed = id == BottomNavFeedId
+        val intent = intent.putExtra(
+            ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+            isFeed && isJustLoggedIn
+        ).putExtra(ARGS_TAB_ID, id.value)
+
+        if (isFeed) recreate()
+        else {
+            finish()
+            startActivity(intent)
+        }
     }
 
     override fun startHomePerformanceMonitoring() {
@@ -399,11 +461,11 @@ class NewMainParentActivity :
     }
 
     override fun setForYouToHomeMenuTabSelected() {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     override fun setHomeToForYouTabSelected() {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     override fun isIconJumperEnabled(): Boolean {
@@ -474,11 +536,11 @@ class NewMainParentActivity :
     }
 
     private fun getTabIdFromIntentExtras(extras: Bundle): BottomNavItemId {
-        return BottomNavItemId(extras.getString(ARGS_TAB_ID, TAB_TYPE_HOME))
+        return BottomNavItemId(extras.getString(ARGS_TAB_ID, BottomNavHomeId.value))
     }
 
     private fun getTabIdFromQueryParameter(data: Uri): BottomNavItemId {
-        return BottomNavItemId(data.getQueryParameter(ARGS_TAB_ID) ?: TAB_TYPE_HOME)
+        return BottomNavItemId(data.getQueryParameter(ARGS_TAB_ID) ?: BottomNavHomeId.value)
     }
 
     private fun initDownloadManagerDialog() {
@@ -512,8 +574,6 @@ class NewMainParentActivity :
         showSelectedPage()
 
         setupBottomNavigation()
-//        populateBottomNavigationView()
-//        bottomNavigation.setMenuClickListener(this)
 //        bottomNavigation.setHomeForYouMenuClickListener(this)
     }
 
@@ -593,6 +653,23 @@ class NewMainParentActivity :
         selectFragment(fragment, tabId)
     }
 
+    private fun handleAppLinkBottomNavigation(isFirstInit: Boolean) {
+        if (!::binding.isInitialized) return
+
+        val tabId = getTabIdFromIntent()
+        binding.dynamicNavbar.select(tabId)
+
+        if (tabId == BottomNavHomeId) {
+            setHomeNavSelected(tabId, isFirstInit)
+        }
+    }
+
+    private fun setHomeNavSelected(tabId: BottomNavItemId, isFirstInit: Boolean) {
+        if (!isFirstInit) return
+        updateAppLogPageData(tabId, true)
+        sendEnterPage(tabId)
+    }
+
     private fun getFragmentById(id: BottomNavItemId): Fragment? {
 //        TODO()
 //        return HomeInternalRouter.getHomeFragment(
@@ -667,7 +744,7 @@ class NewMainParentActivity :
         val activeFragment = getCurrentActiveFragment()
         if (activeFragment == fragment) return
 
-        supportFragmentManager.commit {
+        supportFragmentManager.commit(allowStateLoss = true) {
             run hideActiveFragment@{
                 if (activeFragment == null) return@hideActiveFragment
                 hide(activeFragment)
@@ -697,10 +774,29 @@ class NewMainParentActivity :
                 model: BottomNavBarUiModel,
                 isReselected: Boolean
             ) {
-                val fragment = getFragmentById(model.uniqueId)
-                fragment?.let { selectFragment(it, model.uniqueId) }
+                if (isReselected) {
+                    onItemReselected(model.uniqueId)
+                }
+                else {
+                    val fragment = getFragmentById(model.uniqueId)
+                    fragment?.let { selectFragment(it, model.uniqueId) }
+                }
             }
         })
+    }
+
+    private fun onItemReselected(id: BottomNavItemId) {
+        if (false) {
+            //if support jumper
+        } else {
+            scrollToTop(id)
+        }
+    }
+
+    private fun scrollToTop(id: BottomNavItemId) {
+        val fragment = getFragmentById(id) ?: return
+        if (!fragment.userVisibleHint || fragment !is FragmentListener) return
+        fragment.onScrollToTop()
     }
 
     private fun sendOpenHomeEvent(): Boolean {
@@ -749,6 +845,15 @@ class NewMainParentActivity :
     private fun sendNotificationUserSetting() {
         if (!userSession.get().isLoggedIn) return
         NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
+    }
+
+    private fun goToNewUserZonePage() {
+        val intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER)
+        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
+        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+        startActivities(arrayOf(intentHome, intentNewUser))
+        finish()
     }
 
     private fun showDarkModeIntroBottomSheet() {
@@ -812,7 +917,7 @@ class NewMainParentActivity :
                 putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true)
             }
 
-            val homeIntent = MainParentActivity.start(this)
+            val homeIntent = start(this)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .setAction(RouteManager.INTERNAL_VIEW)
 
@@ -927,6 +1032,42 @@ class NewMainParentActivity :
         }
     }
 
+    private fun updateAppLogPageData(tabId: BottomNavItemId, isFirstInit: Boolean) {
+        val fragment = getFragmentById(tabId) ?: return
+        if (userSession.get().isFirstTimeUser || fragment !is AppLogInterface) return
+        val currentPageName = AppLogAnalytics.getCurrentData(PAGE_NAME)
+        if (currentPageName == null || fragment.getPageName() != currentPageName.toString()) {
+            AppLogAnalytics.pushPageData(fragment)
+            AppLogAnalytics.putPageData(IS_MAIN_PARENT, true)
+        }
+        handleAppLogEnterMethod(fragment, isFirstInit)
+    }
+
+    private fun handleAppLogEnterMethod(appLogInterface: AppLogInterface, isFirstInit: Boolean) {
+        if (isFirstInit) {
+            AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_APP_ICON)
+        } else {
+            val pageName = appLogInterface.getPageName()
+            if (AppLogAnalytics.pageDataList.isEmpty()) return
+
+            when (pageName) {
+                PageName.HOME -> {
+                    AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_HOME_ICON)
+                }
+                PageName.WISHLIST -> {
+                    AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun sendEnterPage(tabId: BottomNavItemId) {
+        val fragment = getFragmentById(tabId) ?: return
+        if (userSession.get().isFirstTimeUser || fragment !is AppLogInterface || !fragment.shouldTrackEnterPage()) return
+        AppLogRecommendation.sendEnterPageAppLog()
+    }
+
     companion object {
         private const val ARGS_TAB_ID = "tab_id"
         private const val ARGS_HAS_RUN_ON_RESUME_PLT = "has_run_on_resume_plt"
@@ -950,6 +1091,10 @@ class NewMainParentActivity :
 
         private const val KEY_IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK"
         private const val KEY_MO_ENGAGE_COUPON_CODE = "coupon_code"
+
+        private const val REQUEST_CODE_LOGIN: Int = 12137
+
+        private const val EXIT_DELAY_MILLIS = 2_000L
 
         fun start(context: Context): Intent {
             return Intent(context, NewMainParentActivity::class.java)

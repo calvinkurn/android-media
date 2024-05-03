@@ -289,6 +289,7 @@ public class MainParentActivity extends BaseActivity implements
         win.setAttributes(winParams);
     }
 
+    // MIGRATED
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //changes for triggering unittest checker
@@ -454,7 +455,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    //MIGRATED
+    //NO NEED?
     public boolean isFirstTimeUser() {
         return userSession.get().isFirstTimeUser();
     }
@@ -565,6 +566,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    // MIGRATED
     private void handleAppLinkBottomNavigation(boolean isFirstInit) {
 
         if (bottomNavigation == null) return;
@@ -591,6 +593,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    // MIGRATED
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -608,11 +611,6 @@ public class MainParentActivity extends BaseActivity implements
         DaggerGlobalNavComponent.factory()
                 .create(getApplicationComponent(), this)
                 .inject(this);
-//        DaggerGlobalNavComponent.builder()
-//                .baseAppComponent(getApplicationComponent())
-//                .globalNavModule(new GlobalNavModule())
-//                .build()
-//                .inject(this);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -622,6 +620,7 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().setView(this);
     }
 
+    //MIGRATED
     private int getPositionFragmentByMenu(int i) {
         int position = HOME_MENU;
         if (i == FEED_MENU) {
@@ -674,6 +673,7 @@ public class MainParentActivity extends BaseActivity implements
         setBadgeNotifCounter(fragment);
     }
 
+    // MIGRATED
     private void openFragment(Fragment fragment) {
         handler.post(() -> {
             String backStateName = fragment.getClass().getName();
@@ -694,6 +694,7 @@ public class MainParentActivity extends BaseActivity implements
         });
     }
 
+    // MIGRATED
     private void showSelectedFragment(Fragment fragment, FragmentManager manager, FragmentTransaction ft) {
         for (int i = 0; i < manager.getFragments().size(); i++) {
             Fragment frag = manager.getFragments().get(i);
@@ -728,6 +729,7 @@ public class MainParentActivity extends BaseActivity implements
         lineBottomNav.setBackgroundResource(lineColorRes);
     }
 
+    // MIGRATED
     private void scrollToTop(Fragment fragment) {
         if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
@@ -753,6 +755,7 @@ public class MainParentActivity extends BaseActivity implements
         return null;
     }
 
+    //MIGRATED
     private void setupStatusBarInMarshmallowAbove(Fragment fragment) {
         if (getIsFragmentLightStatusBar(fragment)) {
             requestStatusBarLight();
@@ -777,6 +780,7 @@ public class MainParentActivity extends BaseActivity implements
         return false;
     }
 
+    //NOT NEEDED?
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setUserSession(UserSessionInterface userSession) {
         this.userSession = (Lazy<UserSessionInterface>) userSession;
@@ -789,6 +793,7 @@ public class MainParentActivity extends BaseActivity implements
         return getApplicationComponent();
     }
 
+    //MIGRATED
     @Override
     protected void onResume() {
         super.onResume();
@@ -829,6 +834,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
@@ -917,6 +923,7 @@ public class MainParentActivity extends BaseActivity implements
         return false;
     }
 
+    //MIGRATED
     private void reloadPage(int position, boolean isJustLoggedIn) {
         boolean isPositionFeed = position == FEED_MENU;
         Intent intent = getIntent()
@@ -932,6 +939,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //NOT NEEDED?
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
 
@@ -991,6 +999,7 @@ public class MainParentActivity extends BaseActivity implements
         return getSupportFragmentManager().findFragmentById(R.id.container);
     }
 
+    //MIGRATED
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
@@ -1015,6 +1024,7 @@ public class MainParentActivity extends BaseActivity implements
         return this;
     }
 
+    //MIGRATED
     public BaseAppComponent getApplicationComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
@@ -1429,6 +1439,7 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
+    // MIGRATED
     private void handleAppLogEnterMethod(AppLogInterface appLogInterface, boolean isFirstTimeInit) {
         if (isFirstTimeInit) {
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
@@ -1443,6 +1454,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
         if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
@@ -1456,6 +1468,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    // MIGRATED
     private void sendEnterPage(int position) {
         Fragment fragment = fragmentList.get(position);
         if (!isFirstTimeUser() && fragment instanceof AppLogInterface appLogInterface &&
@@ -1493,6 +1506,7 @@ public class MainParentActivity extends BaseActivity implements
         return embracePageName;
     }
 
+    // MIGRATED
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
             updateAppLogPageData(homePosition, true);
@@ -1543,6 +1557,7 @@ public class MainParentActivity extends BaseActivity implements
         );
     }
 
+    //MIGRATED
     private void gotoNewUserZonePage() {
         Intent intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER);
         Intent intentHome = RouteManager.getIntent(this, ApplinkConst.HOME);
