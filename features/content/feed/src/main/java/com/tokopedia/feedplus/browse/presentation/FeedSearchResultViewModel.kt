@@ -99,7 +99,7 @@ internal class FeedSearchResultViewModel @AssistedInject constructor(
                         prevContents + newContents
                     }
                     _cursor.update { response.nextCursor }
-                    _hasNextPage.update { response.channels.isNotEmpty() }
+                    _hasNextPage.update { response.nextCursor.isNotEmpty() }
                     _pageState.update { FeedSearchResultPageState.SUCCESS }
                 }
                 is ContentSlotModel.NoData -> {
