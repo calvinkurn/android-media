@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.browse.presentation
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -56,8 +55,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentcommonR
-import com.tokopedia.feedplus.R as feedplusR
-
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -407,7 +404,6 @@ internal class FeedBrowseFragment @Inject constructor(
         if (widgets.isEmpty()) {
             adapter.setPlaceholder()
         } else {
-
             adapter.setItems(widgets) {
                 if (_binding == null) return@setItems
                 binding.feedBrowseList.invalidateItemDecorations()
@@ -416,9 +412,9 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private fun searchbarFocusHandler(view: View, focusState: Boolean) {
-        tracker.clickSearchbar()
-
         if (focusState) {
+            tracker.clickSearchbar()
+
             viewModel.getHeaderDetail().also {
                 val intent = router.getIntent(context, it.applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
                 intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
