@@ -362,11 +362,20 @@ open class DiscoveryAnalytics(
         val componentName = dataItem?.let {
             getPlayComponentName(it.playWidgetType, it.mobileBanner)
         }
+        val gtmItemName = dataItem?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "0",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType" +
-                    " - ${widgetPosition + 1} - - - ${componentName.orEmpty()}",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType" +
+                            " - ${widgetPosition + 1} - - - ${componentName.orEmpty()}"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (widgetPosition + 1).toString()
+                        )
+                    }),
                 KEY_CREATIVE to creativeName,
                 KEY_POSITION to channelPositionInList
             )
@@ -483,11 +492,21 @@ open class DiscoveryAnalytics(
         destinationURL: String
     ) {
         val list = ArrayList<Map<String, Any>>()
-        val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
+        val data = componentsItem.data?.firstOrNull()
+        val creativeName = data?.creativeName ?: EMPTY_STRING
+        val gtmItemName = data?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to componentsItem.id,
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (widgetPosition + 1).toString()
+                        )
+                    }),
                 KEY_CREATIVE to creativeName,
                 KEY_POSITION to "$channelPositionInList - "
             )
@@ -523,10 +542,19 @@ open class DiscoveryAnalytics(
         destinationURL: String
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = componentsItem.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to componentsItem.id,
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (widgetPosition + 1).toString()
+                        )
+                    }),
                 KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
                 KEY_POSITION to "$channelPositionInList - "
             )
@@ -565,11 +593,20 @@ open class DiscoveryAnalytics(
         val componentName = dataItem?.let {
             getPlayComponentName(it.playWidgetType, it.mobileBanner)
         }
+        val gtmItemName = dataItem?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "0",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType" +
-                    " - ${widgetPosition + 1} - - - ${componentName.orEmpty()}",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType" +
+                            " - ${widgetPosition + 1} - - - ${componentName.orEmpty()}"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (widgetPosition + 1).toString()
+                        )
+                    }),
                 KEY_CREATIVE to creativeName,
                 KEY_POSITION to channelPositionInList
             )
@@ -633,10 +670,19 @@ open class DiscoveryAnalytics(
         itemPosition: Int
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = componentsItem.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "${adID}_$shopId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (positionInPage + 1).toString()
+                        )
+                    }),
                 KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
                 KEY_POSITION to itemPosition.toString()
             )
@@ -672,10 +718,19 @@ open class DiscoveryAnalytics(
         itemPosition: Int
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = componentsItem.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "${adID}_$shopId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (positionInPage + 1).toString()
+                        )
+                    }),
                 KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
                 KEY_POSITION to itemPosition.toString()
             )
@@ -1924,10 +1979,21 @@ open class DiscoveryAnalytics(
         couponName: String?
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = components.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "${components.id}_$shopId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT",
+                KEY_NAME to
+                    (
+                        if (gtmItemName.isNullOrEmpty()) {
+                            "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT"
+                        } else {
+                            gtmItemName.replace(
+                                "#POSITION",
+                                (positionInPage + 1).toString()
+                            )
+                        }
+                        ),
                 KEY_CREATIVE to "${couponName ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
                 KEY_POSITION to 1
             )
@@ -2039,10 +2105,21 @@ open class DiscoveryAnalytics(
         couponName: String?
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = components.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "${components.id}_$shopId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT",
+                KEY_NAME to
+                    (
+                        if (gtmItemName.isNullOrEmpty()) {
+                            "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT"
+                        } else {
+                            gtmItemName.replace(
+                                "#POSITION",
+                                (positionInPage + 1).toString()
+                            )
+                        }
+                        ),
                 KEY_CREATIVE to "${couponName ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
                 KEY_POSITION to 1
             )
@@ -2097,10 +2174,21 @@ open class DiscoveryAnalytics(
             }
         }
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = components.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "${components.parentComponentId}_$shopId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
+                KEY_NAME to
+                    (
+                        if (gtmItemName.isNullOrEmpty()) {
+                            "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName"
+                        } else {
+                            gtmItemName.replace(
+                                "#POSITION",
+                                (components.parentComponentPosition + 1).toString()
+                            )
+                        }
+                        ),
                 KEY_CREATIVE to "$SHOP_DETAIL - $shopName",
                 KEY_POSITION to horizontalPosition
             )
@@ -2138,6 +2226,7 @@ open class DiscoveryAnalytics(
         val componentName: String
         val action: String
         val tracker: String
+        val gtmItemName = components.data?.firstOrNull()?.gtmItemName
         when (components.name) {
             ComponentNames.MerchantVoucherListItem.componentName -> {
                 horizontalPosition = components.position + 1
@@ -2147,7 +2236,17 @@ open class DiscoveryAnalytics(
                 list.add(
                     mapOf(
                         KEY_ID to "${components.parentComponentId}_$shopId",
-                        KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
+                        KEY_NAME to
+                            (
+                                if (gtmItemName.isNullOrEmpty()) {
+                                    "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName"
+                                } else {
+                                    gtmItemName.replace(
+                                        "#POSITION",
+                                        (components.parentComponentPosition + 1).toString()
+                                    )
+                                }
+                                ),
                         KEY_CREATIVE to "$VOUCHER_DETAIL - ${dataItem?.title ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
                         KEY_POSITION to horizontalPosition
                     )
@@ -2162,7 +2261,16 @@ open class DiscoveryAnalytics(
                 list.add(
                     mapOf(
                         KEY_ID to "${components.parentComponentId}_$shopId",
-                        KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
+                        KEY_NAME to
+                            (
+                                if (gtmItemName.isNullOrEmpty()) {
+                                    "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName"
+                                } else {
+                                    gtmItemName.replace(
+                                        "#POSITION",
+                                        (components.parentComponentPosition + 1).toString()
+                                    )
+                                }),
                         KEY_CREATIVE to "${dataItem?.title ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
                         KEY_POSITION to horizontalPosition
                     )
@@ -2281,10 +2389,19 @@ open class DiscoveryAnalytics(
         couponName: String?
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = components.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to "${components.id}_$shopId",
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_DETAIL_COMPONENT",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_DETAIL_COMPONENT"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (positionInPage + 1).toString()
+                        )
+                    }),
                 KEY_CREATIVE to "${couponName ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING} - $shopType",
                 KEY_POSITION to 1
             )
@@ -2427,22 +2544,22 @@ open class DiscoveryAnalytics(
 
     private fun trackEventImpressionCalendar(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = componentsItems.data?.get(0)?.gtmItemName
         list.add(
             mapOf(
                 KEY_NAME to (
-                    if (componentsItems.data?.get(0)?.gtmItemName?.isEmpty() == true) {
+                    if (gtmItemName?.isEmpty() == true) {
                         "/discovery/$removedDashPageIdentifier - $pageType - ${
                             getParentPosition(
                                 componentsItems
                             ) + 1
                         } - ${componentsItems.data?.firstOrNull()?.title} - - ${componentsItems.name}"
                     } else {
-                        (componentsItems.data?.get(0)?.gtmItemName?.replace(
+                        (gtmItemName?.replace(
                             "#POSITION",
                             (getParentPosition(componentsItems) + 1).toString()
                         )) ?: ""
-                    }
-                    ),
+                    }),
                 KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
                 KEY_POSITION to "${componentsItems.position + 1}",
                 KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -2778,10 +2895,19 @@ open class DiscoveryAnalytics(
         map[PAGE_PATH] = removedDashPageIdentifier
         val list = ArrayList<Map<String, Any>>()
         val hashMap = HashMap<String, Any>()
+        val gtmItemName = componentsItems.data?.firstOrNull()?.gtmItemName
         hashMap[KEY_ID] = componentsItems.parentComponentId
-        hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${
-            getParentPosition(componentsItems)
-        } - - - $MIX_LEFT_BANNER"
+        hashMap[KEY_NAME] =
+            (if (gtmItemName.isNullOrEmpty()) {
+                "/${removeDashPageIdentifier(pagePath)} - $pageType - ${
+                    getParentPosition(componentsItems)
+                } - - - $MIX_LEFT_BANNER"
+            } else {
+                gtmItemName.replace(
+                    "#POSITION",
+                    (getParentPosition(componentsItems)).toString()
+                )
+            })
         hashMap[KEY_CREATIVE] = componentsItems.properties?.mixLeft?.creativeName ?: EMPTY_STRING
         hashMap[KEY_POSITION] = 1
         list.add(hashMap)
@@ -2813,14 +2939,25 @@ open class DiscoveryAnalytics(
             eventLabel = "$MIX_LEFT_BANNER - $creativeName - $applink"
         )
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = componentsItems.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
                 KEY_ID to componentsItems.parentComponentId,
-                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${
-                    getParentPosition(
-                        componentsItems
-                    )
-                } - - - $MIX_LEFT_BANNER",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/${removeDashPageIdentifier(pagePath)} - $pageType - ${
+                            getParentPosition(
+                                componentsItems
+                            )
+                        } - - - $MIX_LEFT_BANNER"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (getParentPosition(
+                                componentsItems
+                            )).toString()
+                        )
+                    }),
                 KEY_CREATIVE to creativeName,
                 KEY_POSITION to 1
             )
