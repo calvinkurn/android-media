@@ -11,6 +11,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX_TY
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
@@ -40,6 +46,8 @@ class UniversalSharingPostPurchaseSharingActivity :
     private var bottomSheet: UniversalSharingPostPurchaseBottomSheet? = null
     private var source: String = ""
 
+    private var shareExInitializer: ShareExInitializer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -68,6 +76,13 @@ class UniversalSharingPostPurchaseSharingActivity :
 
         bottomSheet = UniversalSharingPostPurchaseBottomSheet.newInstance(data)
         bottomSheet?.setListener(this)
+        setupShareExBottomSheet()
+    }
+
+    private fun setupShareExBottomSheet() {
+        if (isUsingShareEx()) {
+            shareExInitializer = ShareExInitializer(this)
+        }
     }
 
     private fun showBottomSheet() {
@@ -81,6 +96,33 @@ class UniversalSharingPostPurchaseSharingActivity :
     }
 
     override fun onOpenShareBottomSheet(
+        orderId: String,
+        shopName: String,
+        product: UniversalSharingPostPurchaseProductResponse
+    ) {
+        if (isUsingShareEx()) {
+            openShareEx(product)
+        } else {
+            openUniversalShareBottomSheet(orderId, shopName, product)
+        }
+    }
+
+    private fun openShareEx(
+        product: UniversalSharingPostPurchaseProductResponse
+    ) {
+        currentFocus?.hideKeyboard()
+        val trackerArg = ShareExTrackerArg("utmCampaign")
+        val shareExArg = ShareExBottomSheetArg.Builder(
+            ShareExPageTypeEnum.THANK_YOU_PRODUCT,
+            product.url,
+            trackerArg
+        )
+            .withProductId(product.productId)
+            .build()
+        shareExInitializer?.openShareBottomSheet(shareExArg)
+    }
+
+    private fun openUniversalShareBottomSheet(
         orderId: String,
         shopName: String,
         product: UniversalSharingPostPurchaseProductResponse
@@ -183,5 +225,12 @@ class UniversalSharingPostPurchaseSharingActivity :
 
     private fun generateApplinkPDP(productId: String): String {
         return UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productId)
+    }
+
+    private fun isUsingShareEx(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            ROLLENCE_SHARE_EX_TY,
+            ""
+        ) == ROLLENCE_SHARE_EX_TY
     }
 }

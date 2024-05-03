@@ -120,6 +120,7 @@ class ShareExBottomSheetArg private constructor(
             ShareExPageTypeEnum.SHOP -> shopId
             ShareExPageTypeEnum.DISCOVERY -> campaignId
             ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> metadata[ApplinkConstInternalShare.Param.REFERRAL_CODE] ?: ""
+            ShareExPageTypeEnum.THANK_YOU_PRODUCT -> productId
             else -> generalId
         }
     }
