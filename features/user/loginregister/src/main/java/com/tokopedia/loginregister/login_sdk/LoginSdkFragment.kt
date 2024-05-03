@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.const.LoginConstants
@@ -36,8 +35,6 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
             redirectUri = redirectUrl
         )
         showLoadingLogin()
-
-        viewBinding?.registerButton?.gone()
     }
 
     private fun initObserver() {
@@ -62,7 +59,6 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         super.setupToolbar()
         activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
             headerTitle = "Masuk ke Tokopedia"
-            actionText = ""
         }
     }
 
