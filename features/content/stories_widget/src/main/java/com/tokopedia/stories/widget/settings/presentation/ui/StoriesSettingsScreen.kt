@@ -10,6 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -64,6 +67,8 @@ private fun StoriesSettingsSuccess(
 
     val ctx = LocalContext.current
 
+    var checked by remember { mutableStateOf(isStoryEnable) }
+
     if (isEligible.not()) {
         AndroidView(modifier = Modifier.padding(16.dp), factory = {
             Ticker(it).apply {
@@ -114,10 +119,9 @@ private fun StoriesSettingsSuccess(
             AndroidView(
                 factory = { context ->
                     SwitchUnify(context).apply {
-                        this.isChecked = isChecked
-                        this.isEnabled = isEnabled
-                        this.setOnCheckedChangeListener { view, _ ->
+                        this.setOnCheckedChangeListener { view, isActive ->
                             if (view.isPressed) {
+                                checked = isActive
                                 viewModel.onEvent(
                                     StoriesSettingsAction.SelectOption(itemFirst)
                                 )
@@ -126,7 +130,7 @@ private fun StoriesSettingsSuccess(
                     }
                 },
                 update = { switchUnify ->
-                    switchUnify.isChecked = isStoryEnable
+                    switchUnify.isChecked = checked
                     switchUnify.isEnabled = isEligible
                 },
             )
@@ -152,7 +156,11 @@ private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsVie
 }
 
 @Composable
-private fun SettingOptItem(item: StoriesSettingOpt, isEligible: Boolean, onOptionClicked: (StoriesSettingOpt) -> Unit) {
+private fun SettingOptItem(
+    item: StoriesSettingOpt,
+    isEligible: Boolean,
+    onOptionClicked: (StoriesSettingOpt) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
