@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -84,10 +83,8 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         activity?.let {
             if (!GlobalConfig.isSellerApp()) {
                 analytics.eventClickRegisterFromLogin()
-                var intent =
-                    RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-                intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
                 startActivityForResult(intent, LoginConstants.Request.REQUEST_INIT_REGISTER_SDK)
             }
         }
