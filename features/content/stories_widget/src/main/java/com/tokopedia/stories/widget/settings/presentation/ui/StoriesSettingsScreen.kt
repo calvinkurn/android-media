@@ -1,7 +1,6 @@
 package com.tokopedia.stories.widget.settings.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.globalerror.compose.NestGlobalError
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
@@ -78,62 +78,91 @@ private fun StoriesSettingsSuccess(
         })
     }
 
-    Column(
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .alpha(if (!pageInfo.config.isEligible) 0.4f else 1f)
     ) {
+        val (tvHeader, ivIconHeader, switchHeader, tvDescription, tvAll, tvCategory, rvOptions) = createRefs()
         NestTypography(
-            modifier = Modifier.padding(bottom = 16.dp),
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .constrainAs(tvHeader) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                },
             text = stringResource(id = R.string.stories_settings_header),
             textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold)
         )
-        Row {
-            NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier.padding(end = 12.dp))
-            Column {
-                NestTypography(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    text = itemFirst.text,
-                    textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
-                )
-                NestTypography(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    text = pageInfo.config.articleCopy,
-                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
-                )
-                NestTypography(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    text = stringResource(id = R.string.stories_settings_body),
-                    textStyle = NestTheme.typography.paragraph3
-                )
-
-                LazyColumn {
-                    items(pageInfo.options.drop(1)) { item ->
-                        SettingOptItem(item, isEligible) {
-                            viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+        NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier
+            .padding(end = 12.dp)
+            .constrainAs(ivIconHeader) {
+                top.linkTo(tvHeader.bottom)
+                start.linkTo(tvHeader.start)
+            })
+        NestTypography(
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .constrainAs(tvDescription) {
+                    start.linkTo(ivIconHeader.end)
+                    top.linkTo(ivIconHeader.top)
+                },
+            text = itemFirst.text,
+            textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
+        )
+        AndroidView(
+            modifier = Modifier.constrainAs(switchHeader) {
+                end.linkTo(parent.end)
+                top.linkTo(tvDescription.top)
+                bottom.linkTo(tvDescription.bottom)
+            },
+            factory = { context ->
+                SwitchUnify(context).apply {
+                    this.setOnCheckedChangeListener { view, isActive ->
+                        if (view.isPressed) {
+                            checked = isActive
+                            viewModel.onEvent(
+                                StoriesSettingsAction.SelectOption(itemFirst)
+                            )
                         }
                     }
                 }
+            },
+            update = { switchUnify ->
+                switchUnify.isChecked = checked
+                switchUnify.isEnabled = isEligible
+            },
+        )
+        NestTypography(
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .constrainAs(tvAll) {
+                    top.linkTo(tvDescription.bottom)
+                    start.linkTo(tvDescription.start)
+                },
+            text = pageInfo.config.articleCopy,
+            textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+        )
+        NestTypography(
+            modifier = Modifier.padding(bottom = 16.dp).constrainAs(tvCategory){
+                top.linkTo(tvAll.bottom)
+                start.linkTo(tvAll.start)
+            },
+            text = stringResource(id = R.string.stories_settings_body),
+            textStyle = NestTheme.typography.paragraph3
+        )
+
+        LazyColumn(modifier = Modifier.constrainAs(rvOptions){
+            top.linkTo(tvCategory.bottom)
+            start.linkTo(tvCategory.start)
+            end.linkTo(parent.end)
+        }) {
+            items(pageInfo.options.drop(1)) { item ->
+                SettingOptItem(item, isEligible) {
+                    viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                }
             }
-            AndroidView(
-                factory = { context ->
-                    SwitchUnify(context).apply {
-                        this.setOnCheckedChangeListener { view, isActive ->
-                            if (view.isPressed) {
-                                checked = isActive
-                                viewModel.onEvent(
-                                    StoriesSettingsAction.SelectOption(itemFirst)
-                                )
-                            }
-                        }
-                    }
-                },
-                update = { switchUnify ->
-                    switchUnify.isChecked = checked
-                    switchUnify.isEnabled = isEligible
-                },
-            )
         }
     }
 }
