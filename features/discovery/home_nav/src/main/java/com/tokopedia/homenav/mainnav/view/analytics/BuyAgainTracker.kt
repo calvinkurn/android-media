@@ -1,13 +1,10 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
 import android.os.Bundle
-import android.util.Log
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.asTrackingPageSource
 import com.tokopedia.homenav.mainnav.view.interactor.listener.BuyAgainCallback
 import com.tokopedia.homenav.mainnav.view.widget.BuyAgainModel
 import com.tokopedia.iris.Iris
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object BuyAgainTracker : BaseTrackerConst() {
@@ -53,7 +50,7 @@ object BuyAgainTracker : BaseTrackerConst() {
             )
         }
         irisInstance.saveEvent(bundle)
-        getTracker().sendEnhanceEcommerceEvent(Ecommerce.PRODUCT_VIEW, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
 
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 19)
@@ -89,7 +86,7 @@ object BuyAgainTracker : BaseTrackerConst() {
             )
         }
 
-        getTracker().sendEnhanceEcommerceEvent(Ecommerce.PRODUCT_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 20)
@@ -129,7 +126,7 @@ object BuyAgainTracker : BaseTrackerConst() {
             )
         }
 
-        getTracker().sendEnhanceEcommerceEvent(Ecommerce.ADD_TO_CART, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.ADD_TO_CART, bundle)
     }
 }
 

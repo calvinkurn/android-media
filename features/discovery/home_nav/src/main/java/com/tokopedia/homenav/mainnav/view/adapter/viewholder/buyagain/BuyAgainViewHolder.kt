@@ -52,7 +52,6 @@ class BuyAgainViewHolder constructor(
             }
 
             override fun onAtcButtonClicked(model: BuyAgainModel) {
-                Log.d("TAG", "onAtcButtonClicked: Kteken atc")
                 listener.onAtcButtonClicked(model, bindingAdapterPosition)
             }
         }
