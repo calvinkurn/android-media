@@ -29,6 +29,6 @@ class StoriesSettingsChecker @Inject constructor(
                 )
             )
         )
-        return@withContext response.data.isEligibleForAuto || response.data.isEligibleForManual
+        return@withContext response.data.isEligibleForAuto
     }
 }

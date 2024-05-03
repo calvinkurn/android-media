@@ -2,10 +2,12 @@ package com.tokopedia.stories.widget.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
 import com.tokopedia.stories.widget.settings.presentation.StoriesSettingsEntryPoint
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.withContext
 
 /**
  * @author by astidhiyaa on 3/22/24
@@ -26,6 +29,7 @@ class StoriesSettingsViewModel @AssistedInject constructor(
     @Assisted private val entryPoint: StoriesSettingsEntryPoint,
     private val repository: StoriesSettingsRepository,
     private val storiesChecker: StoriesSettingsChecker,
+    private val dispatchers: CoroutineDispatchers,
     ) : ViewModel() {
 
     @AssistedFactory
@@ -52,12 +56,15 @@ class StoriesSettingsViewModel @AssistedInject constructor(
 
     private fun getList() {
         viewModelScope.launchCatchError(block = {
-            val isEligible = asyncCatchError(block = {
+            val isEligible = withContext(dispatchers.io){
                 storiesChecker.isEligible()
-            }){ false }
+            }
+            _pageInfo.update { result -> result.copy(config = result.config.copy(isEligible = isEligible)) }
+
+            if (!isEligible) return@launchCatchError
 
             val data = repository.getOptions(entryPoint = entryPoint)
-            _pageInfo.update { data.copy(state = ResultState.Success, config = data.config.copy(isEligible = isEligible.await().orFalse()), options = data.options.map { it.copy(isDisabled = !isEligible.await().orFalse()) }) }
+            _pageInfo.update { result -> result.copy(state = ResultState.Success, options = data.options) }
         }) {
             _pageInfo.update { data -> data.copy(state = ResultState.Fail(it)) }
         }

@@ -43,7 +43,6 @@ class StoriesSettingsRepo @Inject constructor(
                         text = it.copy,
                         isSelected = !it.isDisabled,
                         optionType = it.optionType,
-                        isDisabled = false,
                     )
                 },
                 config = StoriesSettingConfig(
