@@ -23,6 +23,7 @@ class TopChatRoomBroadcastPromoProductViewHolder(
 
     private var binding: TopchatChatroomBroadcastPromoProductItemBinding? by viewBinding()
     private var uiModel: ProductAttachmentUiModel? = null
+    private val mapper = TopChatRoomProductCardMapper(itemView.context)
 
     init {
         setListener()
@@ -37,7 +38,7 @@ class TopChatRoomBroadcastPromoProductViewHolder(
     private fun bindProduct(uiModel: ProductAttachmentUiModel) {
         binding?.topchatChatroomBroadcastPromoLoaderProductCard?.showWithCondition(uiModel.isLoading)
         binding?.topchatChatroomBroadcastPromoProductCard?.bind(
-            TopChatRoomProductCardMapper.mapToProductCardCompact(uiModel),
+            mapper.mapToProductCardCompact(uiModel),
             ProductCardCompactViewListener()
         )
     }

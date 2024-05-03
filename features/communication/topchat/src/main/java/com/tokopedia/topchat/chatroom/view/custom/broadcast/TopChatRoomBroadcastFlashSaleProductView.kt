@@ -34,6 +34,7 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
         get() = masterJob + Dispatchers.Main
 
     private var binding: TopchatChatroomBroadcastFlashsaleProductBinding
+    private val mapper = TopChatRoomProductCardMapper(context)
 
     init {
         binding = TopchatChatroomBroadcastFlashsaleProductBinding.inflate(
@@ -89,7 +90,7 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
         launch {
             val listProductCard = productList.mapNotNull {
                 if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {
-                    TopChatRoomProductCardMapper.mapToProductCard(it)
+                    mapper.mapToProductCard(it)
                 } else {
                     null
                 }

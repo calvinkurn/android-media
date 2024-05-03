@@ -422,4 +422,12 @@ object ViewUtil {
             null
         }
     }
+
+    fun Context.getColorAsHexString(@ColorRes id: Int): String {
+        return try {
+            "#${Integer.toHexString(ContextCompat.getColor(this, id))}"
+        } catch (_: Throwable) {
+            ""
+        }
+    }
 }

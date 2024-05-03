@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
+import android.content.Context
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -9,17 +10,17 @@ import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_OVERLAY
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.topchat.common.Constant.BACKGROUND_COLOR_LABEL
 import com.tokopedia.topchat.common.Constant.BACKGROUND_COLOR_LABEL_COMPACT
 import com.tokopedia.topchat.common.Constant.BACKGROUND_OPACITY_OOS
 import com.tokopedia.topchat.common.Constant.BACKGROUND_OPACITY_PREORDER
 import com.tokopedia.topchat.common.Constant.EMPTY_STOCK
 import com.tokopedia.topchat.common.Constant.PREORDER
 import com.tokopedia.topchat.common.Constant.STATUS
-import com.tokopedia.topchat.common.Constant.TEXT_COLOR_LABEL
 import com.tokopedia.topchat.common.Constant.TEXT_COLOR_SOLD
+import com.tokopedia.topchat.common.util.ViewUtil.getColorAsHexString
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-object TopChatRoomProductCardMapper {
+class TopChatRoomProductCardMapper(private val context: Context) {
 
     fun mapToProductCard(
         productAttachment: ProductAttachmentUiModel
@@ -60,7 +61,7 @@ object TopChatRoomProductCardMapper {
                     styles = listOf(
                         ProductCardModel.LabelGroup.Style(
                             key = LabelGroupStyle.BACKGROUND_COLOR,
-                            value = BACKGROUND_COLOR_LABEL
+                            value = context.getColorAsHexString(unifyprinciplesR.color.Unify_Static_Black)
                         ),
                         ProductCardModel.LabelGroup.Style(
                             key = LabelGroupStyle.BACKGROUND_OPACITY,
@@ -68,7 +69,7 @@ object TopChatRoomProductCardMapper {
                         ),
                         ProductCardModel.LabelGroup.Style(
                             key = LabelGroupStyle.TEXT_COLOR,
-                            value = TEXT_COLOR_LABEL
+                            value = context.getColorAsHexString(unifyprinciplesR.color.Unify_Static_White)
                         )
                     )
                 )
@@ -86,7 +87,7 @@ object TopChatRoomProductCardMapper {
                     styles = listOf(
                         ProductCardModel.LabelGroup.Style(
                             key = LabelGroupStyle.BACKGROUND_COLOR,
-                            value = BACKGROUND_COLOR_LABEL
+                            value = context.getColorAsHexString(unifyprinciplesR.color.Unify_Static_Black)
                         ),
                         ProductCardModel.LabelGroup.Style(
                             key = LabelGroupStyle.BACKGROUND_OPACITY,
@@ -94,7 +95,7 @@ object TopChatRoomProductCardMapper {
                         ),
                         ProductCardModel.LabelGroup.Style(
                             key = LabelGroupStyle.TEXT_COLOR,
-                            value = TEXT_COLOR_LABEL
+                            value = context.getColorAsHexString(unifyprinciplesR.color.Unify_Static_White)
                         )
                     )
                 )

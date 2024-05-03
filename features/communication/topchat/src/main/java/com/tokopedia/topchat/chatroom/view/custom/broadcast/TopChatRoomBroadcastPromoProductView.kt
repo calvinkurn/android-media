@@ -32,6 +32,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         get() = masterJob + Dispatchers.Main
 
     private var binding: TopchatChatroomBroadcastPromoProductBinding
+    private val mapper = TopChatRoomProductCardMapper(context)
 
     init {
         binding = TopchatChatroomBroadcastPromoProductBinding.inflate(
@@ -85,7 +86,7 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
         binding.topchatChatroomBroadcastPromoLoaderSingleProduct.showWithCondition(product.isLoading)
         binding.topchatChatroomBroadcastPromoSingleProduct.show()
         binding.topchatChatroomBroadcastPromoSingleProduct.bind(
-            TopChatRoomProductCardMapper.mapToProductCardCompact(product)
+            mapper.mapToProductCardCompact(product)
         )
         binding.topchatChatroomBroadcastPromoSingleProduct.addOnImpressionListener(
             product.impressHolder
