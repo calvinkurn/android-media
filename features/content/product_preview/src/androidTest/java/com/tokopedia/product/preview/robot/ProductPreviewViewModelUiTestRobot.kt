@@ -33,8 +33,8 @@ import com.tokopedia.content.product.preview.view.fragment.ReviewFragment
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
+import com.tokopedia.content.test.espresso.recyclerViewSmoothScrollTo
 import com.tokopedia.product.preview.factory.ProductPreviewFragmentFactoryUITest
-import com.tokopedia.product.preview.utils.smoothScrollTo
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import com.tokopedia.content.common.R as contentcommonR
@@ -48,7 +48,7 @@ internal class ProductPreviewViewModelUiTestRobot(
     private val repo: ProductPreviewRepository,
     private val userSession: UserSessionInterface,
     private val productPreviewPref: ProductPreviewSharedPreferences,
-    private val router: Router,
+    private val router: Router
 ) {
 
     private val viewModel: ProductPreviewViewModel by lazy {
@@ -207,13 +207,15 @@ internal class ProductPreviewViewModelUiTestRobot(
             .onView(withId(contentproductpreviewR.id.tv_review_tab_title))
             .perform(click())
 
-        Espresso
-            .onView(withId(contentproductpreviewR.id.rv_review))
-            .perform(smoothScrollTo(1))
+        recyclerViewSmoothScrollTo(
+            rvId = contentproductpreviewR.id.rv_review,
+            position = 1
+        )
 
-        Espresso
-            .onView(withId(contentproductpreviewR.id.rv_review))
-            .perform(smoothScrollTo(2))
+        recyclerViewSmoothScrollTo(
+            rvId = contentproductpreviewR.id.rv_review,
+            position = 2
+        )
     }
 
     fun onClickReviewAccountName() = chainable {
@@ -243,15 +245,8 @@ internal class ProductPreviewViewModelUiTestRobot(
     }
 
     fun onClickReviewReport() = chainable {
-        Espresso
-            .onView(withId(contentproductpreviewR.id.tv_review_tab_title))
-            .perform(click())
-
-        Espresso
-            .onView(withId(contentproductpreviewR.id.iv_review_menu))
-            .perform(click())
-
-        composeTestRule.onAllNodesWithTag(getString(contentcommonR.string.content_test_tag_three_dots_screen)).onLast()
+        composeTestRule.onAllNodesWithTag(getString(contentcommonR.string.content_test_tag_three_dots_screen))
+            .onLast()
             .assertIsDisplayed()
             .performClick()
     }
@@ -265,7 +260,8 @@ internal class ProductPreviewViewModelUiTestRobot(
             .onView(withId(contentproductpreviewR.id.iv_review_menu))
             .perform(click())
 
-        composeTestRule.onAllNodesWithTag(getString(contentcommonR.string.content_test_tag_three_dots_screen)).onFirst()
+        composeTestRule.onAllNodesWithTag(getString(contentcommonR.string.content_test_tag_three_dots_screen))
+            .onFirst()
             .assertIsDisplayed()
             .performClick()
     }
@@ -281,20 +277,8 @@ internal class ProductPreviewViewModelUiTestRobot(
     }
 
     fun onClickSubmitReport() = chainable {
-        Espresso
-            .onView(withId(contentproductpreviewR.id.tv_review_tab_title))
-            .perform(click())
-
-        Espresso
-            .onView(withId(contentproductpreviewR.id.iv_review_menu))
-            .perform(click())
-
-        composeTestRule.onAllNodesWithTag(getString(contentcommonR.string.content_test_tag_three_dots_screen)).onLast()
-            .assertIsDisplayed()
-            .performClick()
-
-
-        composeTestRule.onAllNodesWithTag(getString(contentproductpreviewR.string.product_prev_test_tag_option_report)).onFirst()
+        composeTestRule.onAllNodesWithTag(getString(contentproductpreviewR.string.product_prev_test_tag_option_report))
+            .onFirst()
             .assertIsDisplayed()
             .performClick()
 
@@ -311,13 +295,9 @@ internal class ProductPreviewViewModelUiTestRobot(
         Espresso
             .onView(withId(contentproductpreviewR.id.layout_like_review))
             .perform(click())
-
-        Espresso
-            .onView(withId(contentproductpreviewR.id.layout_like_review))
-            .perform(click())
     }
 
-    private fun getString(id: Int) : String {
+    private fun getString(id: Int): String {
         return context.getString(id)
     }
 

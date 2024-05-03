@@ -88,8 +88,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
@@ -102,7 +102,7 @@ dependencies {
         exclude group: 'com.google.firebase'
     }
     androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
-    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
+    androidTestImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 }
 
 

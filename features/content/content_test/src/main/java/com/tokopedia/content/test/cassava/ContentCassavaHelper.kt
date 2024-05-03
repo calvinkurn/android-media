@@ -57,3 +57,5 @@ fun containsEventAction(value: String) = contains("eventAction" to value)
 fun containsScreenName(value: String) = containsScreenName("screenName" to value)
 
 fun containsEvent(value: String) = contains("event" to value)
+
+fun containsTrackerId(value: String) = contains("trackerId" to value)
