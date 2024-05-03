@@ -14,5 +14,7 @@ data class Data(
     val queryString: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("price_validation")
-    val priceValidation: PriceValidation = PriceValidation()
+    val priceValidation: PriceValidation = PriceValidation(),
+    @SerializedName("method")
+    val method: String = ""
 )

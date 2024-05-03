@@ -895,6 +895,7 @@ public interface ApplinkConst {
 
     interface Som {
         String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
+        String SELLER_ORDER_EXTENSION_REQUEST = "tokopedia://seller/seller-order-extension-request";
     }
 
     interface ProductPreview {

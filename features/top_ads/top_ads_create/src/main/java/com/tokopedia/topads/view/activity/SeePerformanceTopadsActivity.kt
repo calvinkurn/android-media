@@ -188,58 +188,60 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         seePerformanceTopAdsViewModel?.topAdsPromoInfo?.observe(this) {
-            when (it.topAdsGetPromo.data.first().status) {
-                TOPADS_ACTIVE_AND_VISIBLE -> {
-                    ImageViewCompat.setImageTintList(
-                        mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                this,
-                                unifyprinciplesR.color.Unify_GN500
+            if (it.topAdsGetPromo.data.isNotEmpty()){
+                when (it.topAdsGetPromo.data.first().status) {
+                    TOPADS_ACTIVE_AND_VISIBLE -> {
+                        ImageViewCompat.setImageTintList(
+                            mainBottomSheetBinding.includeStatusIklan.adStatusDot,
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this,
+                                    unifyprinciplesR.color.Unify_GN500
+                                )
                             )
                         )
-                    )
-                    mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
-                        getString(R.string.ads_active)
-                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility =
-                        View.INVISIBLE
-                    mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
-                        View.INVISIBLE
-                }
-                TOPADS_ACTIVE_BUT_NOT_VISIBLE -> {
-                    ImageViewCompat.setImageTintList(
-                        mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                this,
-                                unifyprinciplesR.color.Unify_YN300
+                        mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
+                            getString(R.string.ads_active)
+                        mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility =
+                            View.INVISIBLE
+                        mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
+                            View.INVISIBLE
+                    }
+                    TOPADS_ACTIVE_BUT_NOT_VISIBLE -> {
+                        ImageViewCompat.setImageTintList(
+                            mainBottomSheetBinding.includeStatusIklan.adStatusDot,
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this,
+                                    unifyprinciplesR.color.Unify_YN300
+                                )
                             )
                         )
-                    )
-                    mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
-                        getString(R.string.ads_active)
-                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.text =
-                        getString(R.string.ads_not_delivered)
-                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility = View.VISIBLE
-                    mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
-                        View.VISIBLE
-                }
-                TOPADS_NOT_ACTIVE -> {
-                    ImageViewCompat.setImageTintList(
-                        mainBottomSheetBinding.includeStatusIklan.adStatusDot,
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                this,
-                                unifyprinciplesR.color.Unify_NN500
+                        mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
+                            getString(R.string.ads_active)
+                        mainBottomSheetBinding.includeStatusIklan.adStatusDesc.text =
+                            getString(R.string.ads_not_delivered)
+                        mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility = View.VISIBLE
+                        mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
+                            View.VISIBLE
+                    }
+                    TOPADS_NOT_ACTIVE -> {
+                        ImageViewCompat.setImageTintList(
+                            mainBottomSheetBinding.includeStatusIklan.adStatusDot,
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this,
+                                    unifyprinciplesR.color.Unify_NN500
+                                )
                             )
                         )
-                    )
-                    mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
-                        getString(R.string.topads_non_active)
-                    mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility =
-                        View.INVISIBLE
-                    mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
-                        View.INVISIBLE
+                        mainBottomSheetBinding.includeStatusIklan.manualAdStatus.text =
+                            getString(R.string.topads_non_active)
+                        mainBottomSheetBinding.includeStatusIklan.adStatusDesc.visibility =
+                            View.INVISIBLE
+                        mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.visibility =
+                            View.INVISIBLE
+                    }
                 }
             }
             seePerformanceTopAdsViewModel?.getGroupInfo()
