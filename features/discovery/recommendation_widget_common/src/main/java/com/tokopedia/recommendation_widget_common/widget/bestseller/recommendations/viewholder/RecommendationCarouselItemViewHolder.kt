@@ -2,13 +2,10 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller.recommendat
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationCarouselItemViewHolderBinding
@@ -22,13 +19,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class RecommendationCarouselItemViewHolder(view: View, private val listener: RecommendationCarouselListener) : AbstractViewHolder<RecommendationCarouselItemDataModel>(view) {
     private var binding: RecommendationCarouselItemViewHolderBinding? by viewBinding()
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(element: RecommendationCarouselItemDataModel) {
         this.elementItem = element
         binding?.recommendationItemCard?.applyCarousel()
@@ -39,18 +29,6 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
         binding?.recommendationItemCard?.setOnClickListener(object : ProductCardClickListener {
             override fun onClick(v: View) {
                 listener.onProductClick(element.recommendationItem)
-            }
-
-            override fun onAreaClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
-            }
-
-            override fun onProductImageClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
-            }
-
-            override fun onSellerInfoClicked(v: View) {
-                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
             }
         })
 
