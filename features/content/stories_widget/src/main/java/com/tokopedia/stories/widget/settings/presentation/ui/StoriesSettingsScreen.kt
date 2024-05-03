@@ -40,6 +40,17 @@ import java.net.UnknownHostException
 internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
     NestTheme(isOverrideStatusBarColor = false) {
         val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
+        val ctx = LocalContext.current
+
+        AndroidView(modifier = Modifier.padding(16.dp), factory = {
+            Ticker(it).apply {
+                tickerType = Ticker.TYPE_ANNOUNCEMENT
+                setTextDescription(ctx.getString(R.string.stories_ticker_title))
+            }
+        })
+
+        if (!pageInfo.config.isEligible) return@NestTheme
+
         when (val state = pageInfo.state) {
             ResultState.Success -> StoriesSettingsSuccess(
                 viewModel = viewModel,
@@ -60,76 +71,64 @@ private fun StoriesSettingsSuccess(
     val isStoryEnable = pageInfo.options.any { it.isSelected }
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("", "", false)
 
-    val ctx = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .alpha(if (!pageInfo.config.isEligible) 0.4f else 1f)
+    ) {
+        NestTypography(
+            modifier = Modifier.padding(bottom = 16.dp),
+            text = stringResource(id = R.string.stories_settings_header),
+            textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold)
+        )
+        Row {
+            NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier.padding(end = 12.dp))
+            Column {
+                NestTypography(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = pageInfo.options.firstOrNull()?.text.orEmpty(),
+                    textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
+                )
+                NestTypography(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = pageInfo.config.articleCopy,
+                    textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+                )
+                NestTypography(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = stringResource(id = R.string.stories_settings_body),
+                    textStyle = NestTheme.typography.paragraph3
+                )
 
-    if (!pageInfo.config.isEligible) {
-        AndroidView(factory = {
-            Ticker(it).apply {
-                tickerType = Ticker.TYPE_INFORMATION
-                tickerTitle = ctx.getString(R.string.stories_ticker_title)
-            }
-        })
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .alpha(if (!pageInfo.config.isEligible) 0.4f else 1f)
-        ) {
-            NestTypography(
-                modifier = Modifier.padding(bottom = 16.dp),
-                text = stringResource(id = R.string.stories_settings_header),
-                textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold)
-            )
-            Row {
-                NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier.padding(end = 12.dp))
-                Column {
-                    NestTypography(
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        text = pageInfo.options.firstOrNull()?.text.orEmpty(),
-                        textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
-                    )
-                    NestTypography(
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        text = pageInfo.config.articleCopy,
-                        textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
-                    )
-                    NestTypography(
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        text = stringResource(id = R.string.stories_settings_body),
-                        textStyle = NestTheme.typography.paragraph3
-                    )
-
-                    LazyColumn {
-                        items(pageInfo.options.drop(1)) { item ->
-                            SettingOptItem(item) {
-                                viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
-                            }
+                LazyColumn {
+                    items(pageInfo.options.drop(1)) { item ->
+                        SettingOptItem(item) {
+                            viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
                         }
                     }
                 }
-                AndroidView(
-                    factory = { context ->
-                        SwitchUnify(context).apply {
-                            this.isChecked = isChecked
-                            this.isEnabled = isEnabled
-                            this.setOnCheckedChangeListener { view, _ ->
-                                if (view.isPressed) {
-                                    viewModel.onEvent(
-                                        StoriesSettingsAction.SelectOption(itemFirst)
-                                    )
-                                }
+            }
+            AndroidView(
+                factory = { context ->
+                    SwitchUnify(context).apply {
+                        this.isChecked = isChecked
+                        this.isEnabled = isEnabled
+                        this.setOnCheckedChangeListener { view, _ ->
+                            if (view.isPressed) {
+                                viewModel.onEvent(
+                                    StoriesSettingsAction.SelectOption(itemFirst)
+                                )
                             }
                         }
-                    },
-                    update = { switchUnify ->
-                        switchUnify.isChecked = isStoryEnable
-                    },
-                )
-            }
+                    }
+                },
+                update = { switchUnify ->
+                    switchUnify.isChecked = isStoryEnable
+                },
+            )
         }
     }
-
 }
 
 @Composable
@@ -189,7 +188,7 @@ data class StoriesSettingConfig(
     val articleCopy: String,
     val articleAppLink: String,
     val articleWebLink: String,
-    val isEligible : Boolean,
+    val isEligible: Boolean,
 )
 
 data class StoriesSettingsPageUiModel(
