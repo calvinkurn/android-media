@@ -143,30 +143,29 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
         author: ContentStoriesDetails.Stories.Author
     ) =
         buildList {
-            when {
-                !isOwner(author) && template.reportable -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.WARNING,
-                        name = contentcommonR.string.content_common_menu_report,
-                        type = ContentMenuIdentifier.Report
-                    )
+            if (!isOwner(author) && template.reportable) add(
+                ContentMenuItem(
+                    iconUnify = IconUnify.WARNING,
+                    name = contentcommonR.string.content_common_menu_report,
+                    type = ContentMenuIdentifier.Report
                 )
+            )
 
-                isOwner(author) && template.deletable -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.DELETE,
-                        name = storiesR.string.stories_delete_story_title,
-                        type = ContentMenuIdentifier.Delete
-                    )
+            if (isOwner(author) && template.deletable) add(
+                ContentMenuItem(
+                    iconUnify = IconUnify.DELETE,
+                    name = storiesR.string.stories_delete_story_title,
+                    type = ContentMenuIdentifier.Delete
                 )
-                isOwner(author) -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.GRAPH,
-                        name = contentcommonR.string.performance_see,
-                        type = ContentMenuIdentifier.SeePerformance
-                    )
+            )
+
+            if (isOwner(author)) add(
+                ContentMenuItem(
+                    iconUnify = IconUnify.GRAPH,
+                    name = contentcommonR.string.performance_see,
+                    type = ContentMenuIdentifier.SeePerformance
                 )
-            }
+            )
         }
 
     private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
