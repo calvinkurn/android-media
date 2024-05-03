@@ -35,18 +35,23 @@ internal class FeedSearchResultAdapter(
 
     override fun List<FeedSearchResultContent>.mapToItems(): List<FeedBrowseItemListModel> {
         var channelCount = 0
+        val title = this
+            .filterIsInstance<FeedSearchResultContent.Title>()
+            .firstOrNull()
+            ?.title
+            .orEmpty()
 
         return map {
             when (it) {
                 is FeedSearchResultContent.Title -> {
                     FeedBrowseItemListModel.Title(
-                        slotInfo = SlotInfo.Empty,
+                        slotInfo = SlotInfo.Empty.copy(title = title),
                         title = it.title
                     )
                 }
                 is FeedSearchResultContent.Channel -> {
                     FeedBrowseItemListModel.InspirationCard.Item(
-                        slotInfo = SlotInfo.Empty,
+                        slotInfo = SlotInfo.Empty.copy(title = title),
                         item = it.channel,
                         config = it.config,
                         index = channelCount++,

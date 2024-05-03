@@ -30,6 +30,7 @@ import com.tokopedia.feedplus.browse.presentation.model.action.FeedSearchResultA
 import com.tokopedia.feedplus.browse.presentation.model.srp.FeedSearchResultContent
 import com.tokopedia.feedplus.browse.presentation.model.state.FeedSearchResultPageState
 import com.tokopedia.feedplus.databinding.FragmentFeedSearchResultBinding
+import com.tokopedia.feedplus.domain.mapper.toAuthorWidgetModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -110,6 +111,11 @@ internal class FeedSearchResultFragment @Inject constructor(
             viewHolder: InspirationCardViewHolder.Item,
             model: FeedBrowseItemListModel.InspirationCard.Item
         ) {
+            tracker.clickAuthorName(
+                item = model.item.partner.toAuthorWidgetModel(model.item.channelId),
+                slotInfo = model.slotInfo,
+                widgetPositionInList = model.index,
+            )
             router.route(context, model.item.partner.appLink)
         }
     }
@@ -142,6 +148,8 @@ internal class FeedSearchResultFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tracker.openScreenBrowseFeedPage()
 
         setupView()
         setupObserver()

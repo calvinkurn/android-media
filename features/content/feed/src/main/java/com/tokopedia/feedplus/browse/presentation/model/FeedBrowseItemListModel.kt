@@ -122,7 +122,7 @@ internal data class SlotInfo(
         val Empty = SlotInfo(
             id = "",
             title = "",
-            position = RecyclerView.NO_POSITION
+            position = 0
         )
     }
 }
