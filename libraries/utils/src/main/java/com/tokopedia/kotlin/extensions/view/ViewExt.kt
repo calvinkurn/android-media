@@ -574,3 +574,26 @@ fun View.addOnAttachStateChangeListener(onViewAttachedToWindow:() -> Unit, onVie
         }
     )
 }
+
+fun View.setAdsTrackListener(onViewAttachedToWindow:() -> Unit,
+                             onViewDetachedFromWindow: () -> Unit,
+                             setVisiblePercentage: () -> Unit) {
+    addOnAttachStateChangeListener(
+        object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                onViewAttachedToWindow()
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                onViewDetachedFromWindow()
+            }
+        }
+    )
+
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            setVisiblePercentage()
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    })
+}

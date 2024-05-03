@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHold
 import com.tokopedia.baselist.R
 import com.tokopedia.config.GlobalConfig
 import java.lang.StringBuilder
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -36,7 +37,9 @@ open class PercentageScrollListener : OnScrollListener() {
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        setVisiblePercentageOnScrollChanged(recyclerView)
+        if (abs(dy) > 0 || abs(dx) > 0 ) {
+            setVisiblePercentageOnScrollChanged(recyclerView)
+        }
     }
 
     private fun addDebugView(v: View) {
@@ -90,7 +93,6 @@ open class PercentageScrollListener : OnScrollListener() {
         addDebugView(itemView)
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i) as? IAdsViewHolderTrackListener
             ?: return
-        itemView.getGlobalVisibleRect(itemVisibleRect)
 
         val visibleAreaPercentage = getCalculateVisibleViewArea(itemView, itemVisibleRect)
 
@@ -104,6 +106,8 @@ open class PercentageScrollListener : OnScrollListener() {
 }
 
 fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect): Int {
+
+    itemView.getGlobalVisibleRect(itemVisibleRect)
 
     val visibleWidth = itemVisibleRect.right - itemVisibleRect.left
     val visibleHeight = itemVisibleRect.bottom - itemVisibleRect.top

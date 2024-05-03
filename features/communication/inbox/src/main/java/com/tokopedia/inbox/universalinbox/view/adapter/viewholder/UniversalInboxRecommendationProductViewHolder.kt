@@ -1,8 +1,11 @@
 package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.adapter.getCalculateVisibleViewArea
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -17,6 +20,8 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.setAdsTrackListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
@@ -35,10 +40,15 @@ class UniversalInboxRecommendationProductViewHolder(
     private val binding: UniversalInboxRecommendationProductItemBinding? by viewBinding()
     private var recTriggerObject = RecommendationTriggerObject()
 
+    private val itemViewRect by lazy(LazyThreadSafetyMode.NONE) {
+        Rect()
+    }
+
     init {
-        itemView.addOnAttachStateChangeListener(
+        itemView.setAdsTrackListener(
             onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) },
+            setVisiblePercentage = { setVisiblePercentage(getCalculateVisibleViewArea(itemView, itemViewRect)) }
         )
     }
 

@@ -1,12 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
+import android.graphics.Rect
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.getCalculateVisibleViewArea
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
@@ -28,7 +30,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
+import com.tokopedia.kotlin.extensions.view.setAdsTrackListener
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -61,10 +63,15 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var isFullFilment: Boolean = false
     private var isRecommendation = false
 
+    private val itemViewRect by lazy(LazyThreadSafetyMode.NONE) {
+        Rect()
+    }
+
     init {
-        itemView.addOnAttachStateChangeListener(
+        itemView.setAdsTrackListener(
             onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) },
+            setVisiblePercentage = { setVisiblePercentage(getCalculateVisibleViewArea(itemView, itemViewRect)) }
         )
     }
 
