@@ -90,7 +90,6 @@ open class PowerMerchantSubscriptionFragment :
 
     private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         activity?.setResult(result.resultCode)
-        activity?.finish()
     }
 
     protected val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
