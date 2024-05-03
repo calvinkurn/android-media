@@ -67,8 +67,6 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
 
     fun getApplink() = components.data?.firstOrNull()?.applinks
 
-    fun getComponent() = components
-
     override fun onStop() {
         stopTimer()
         isTimerStopped = true

@@ -82,7 +82,9 @@ class DiscoveryRecycleAdapter(
                     // id to help tracking automation, only to debug apk only
                     holder.bindView(this, parentComponent)
                     if (GlobalConfig.isAllowDebuggingTools()) {
-                        holder.itemView.contentDescription = "componentID-" + this.components.id
+                        if (this.components.id.isNotEmpty()) {
+                            holder.itemView.contentDescription = "componentID-" + this.components.id
+                        }
                     }
                 }
             }
