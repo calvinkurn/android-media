@@ -14,11 +14,11 @@ import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherType
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.promousage.domain.entity.list.PromoSimpleItem
 import com.tokopedia.topchat.chatroom.domain.pojo.voucher.TopChatRoomVoucherAttachmentDto
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 class TopChatRoomVoucherUiModel private constructor(
     builder: Builder
-) : SendableUiModel(builder), Visitable<TopChatTypeFactory> {
+) : SendableUiModel(builder), Visitable<TopChatRoomTypeFactory> {
 
     private val isPublic: Int = builder.isPublic
     private val isLockToProduct: Int = builder.isLockToProduct
@@ -40,10 +40,10 @@ class TopChatRoomVoucherUiModel private constructor(
     val appLink: String = builder.appLink
     val header: String = builder.header
     val description: String = builder.description
-    val voucherUi: PromoSimpleItem = builder.voucherUi
+    val voucherUi: PromoSimpleItem? = builder.voucherUi
     val impressHolder = ImpressHolder()
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -53,7 +53,7 @@ class TopChatRoomVoucherUiModel private constructor(
         internal var isPublic: Int = 1
         internal var isLockToProduct: Int = 0
         internal var appLink: String = ""
-        internal lateinit var voucherUi: PromoSimpleItem
+        internal var voucherUi: PromoSimpleItem? = null
         internal var header: String = ""
         internal var description: String = ""
 

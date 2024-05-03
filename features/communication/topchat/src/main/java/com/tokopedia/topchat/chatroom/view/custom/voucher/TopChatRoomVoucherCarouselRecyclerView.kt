@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomVoucherCarouselAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.TopChatRoomHorizontalSpacingItemDecoration
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
 class TopChatRoomVoucherCarouselRecyclerView @JvmOverloads constructor(
@@ -35,8 +36,11 @@ class TopChatRoomVoucherCarouselRecyclerView @JvmOverloads constructor(
         scrollToPosition(0)
     }
 
-    fun setVoucherListener(listener: TopChatRoomVoucherListener) {
-        voucherAdapter = TopChatRoomVoucherCarouselAdapter(listener)
+    fun setVoucherListener(
+        listener: TopChatRoomVoucherListener,
+        broadcastUiModel: TopChatRoomBroadcastUiModel
+    ) {
+        voucherAdapter = TopChatRoomVoucherCarouselAdapter(broadcastUiModel, listener)
         adapter = voucherAdapter
     }
 }

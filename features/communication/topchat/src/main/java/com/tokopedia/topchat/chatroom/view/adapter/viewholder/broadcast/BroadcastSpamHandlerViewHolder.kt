@@ -91,7 +91,7 @@ class BroadcastSpamHandlerViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_broadcast_spam_handler
+        val LAYOUT = R.layout.topchat_chatroom_broadcast_spam_handler_item
 
         const val PAYLOAD_UPDATE_STATE = "update_state"
     }

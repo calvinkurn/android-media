@@ -23,12 +23,14 @@ class TopChatRoomBroadcastStatusView @JvmOverloads constructor(
 
     init {
         binding = TopchatChatroomBroadcastStatusBinding.inflate(
-            LayoutInflater.from(context), this
+            LayoutInflater.from(context),
+            this
         )
     }
 
     fun bindStatus(uiModel: TopChatRoomBroadcastUiModel) {
-        uiModel.messageUiModel?.let { message ->
+        val message = uiModel.messageUiModel
+        if (message != null) {
             val shouldShowStatusIcon = message.isShowTime && message.isSender && !message.isDeleted()
             val shouldShowTime = message.isShowTime && !message.isDeleted()
             binding.apply {
@@ -55,6 +57,8 @@ class TopChatRoomBroadcastStatusView @JvmOverloads constructor(
                     }
                 }
             }
+        } else {
+            binding.topchatChatroomBroadcastIvStatus.hide()
         }
     }
 

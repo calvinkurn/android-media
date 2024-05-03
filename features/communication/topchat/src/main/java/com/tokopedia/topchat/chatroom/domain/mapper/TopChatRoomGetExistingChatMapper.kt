@@ -34,11 +34,11 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.voucher.TopChatRoomVoucherWrapperDto
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCarouselUiModel
@@ -278,9 +278,9 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     private fun createCarouselProduct(
         chatDateTime: Reply,
         products: List<Visitable<*>>
-    ): ProductCarouselUiModel {
+    ): TopChatRoomProductCarouselUiModel {
         with(chatDateTime) {
-            return ProductCarouselUiModel(
+            return TopChatRoomProductCarouselUiModel(
                 products = products,
                 isSender = !chatDateTime.isOpposite,
                 messageId = msgId,
@@ -354,7 +354,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             if (chat.isVoucherAttachment()) {
                 val voucher = convertToVoucher(chat)
                 if (voucher is TopChatRoomVoucherUiModel) {
-                    vouchers.add(voucher)
                     vouchers.add(voucher)
                 }
                 idx++

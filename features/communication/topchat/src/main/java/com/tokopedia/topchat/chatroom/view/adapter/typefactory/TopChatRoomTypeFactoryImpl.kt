@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter
+package com.tokopedia.topchat.chatroom.view.adapter.typefactory
 
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastFlashSaleViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastPromoViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -42,6 +43,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.voucher.TopChatOld
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastBannerListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
@@ -53,11 +56,13 @@ import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherCar
 import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
-open class TopChatTypeFactoryImpl constructor(
+open class TopChatRoomTypeFactoryImpl constructor(
     private val imageAnnouncementListener: ImageAnnouncementListener,
+    private val bannerBroadcastListener: TopChatRoomBroadcastBannerListener,
     private val chatLinkHandlerListener: ChatLinkHandlerListener,
     private val imageUploadListener: ImageUploadListener,
     private val productAttachmentListener: TopchatProductAttachmentListener,
+    private val productBroadcastListener: TopChatRoomBroadcastProductListener,
     private val imageDualAnnouncementListener: DualAnnouncementListener,
     private val voucherListener: TopChatRoomVoucherListener,
     private val invoiceThumbnailListener: InvoiceThumbnailListener,
@@ -81,7 +86,7 @@ open class TopChatTypeFactoryImpl constructor(
     imageUploadListener,
     productAttachmentListener
 ),
-    TopChatTypeFactory {
+    TopChatRoomTypeFactory {
 
     // Check if chat bubble first, if not return default impl
     override fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int {
@@ -113,7 +118,7 @@ open class TopChatTypeFactoryImpl constructor(
     }
 
     override fun type(voucherCarouselUiModel: TopChatRoomVoucherCarouselUiModel): Int {
-        return 0 // No implementation yet
+        return 0 // No implementation yet, but used as new broadcast component
     }
 
     override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
@@ -136,7 +141,7 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatEmptyViewHolder.LAYOUT
     }
 
-    override fun type(productCarouselUiModel: ProductCarouselUiModel): Int {
+    override fun type(productCarouselUiModel: TopChatRoomProductCarouselUiModel): Int {
         return ProductCarouselListAttachmentViewHolder.LAYOUT
     }
 
@@ -155,7 +160,7 @@ open class TopChatTypeFactoryImpl constructor(
     override fun type(broadCastUiModel: TopChatRoomBroadcastUiModel): Int {
         return when (TopChatRoomMessageTypeEnum.fromValue(broadCastUiModel.messageType)) {
             TopChatRoomMessageTypeEnum.PROMO_V2 -> {
-                0
+                TopChatRoomBroadcastPromoViewHolder.LAYOUT
             }
             TopChatRoomMessageTypeEnum.FLASH_SALE_V2 -> {
                 TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT
@@ -260,7 +265,18 @@ open class TopChatTypeFactoryImpl constructor(
                 productBundlingListener, productBundlingCarouselListener
             )
             TopChatRoomBroadcastFlashSaleViewHolder.LAYOUT -> TopChatRoomBroadcastFlashSaleViewHolder(
-                parent, voucherListener
+                parent,
+                deferredAttachment,
+                bannerBroadcastListener,
+                productBroadcastListener,
+                voucherListener
+            )
+            TopChatRoomBroadcastPromoViewHolder.LAYOUT -> TopChatRoomBroadcastPromoViewHolder(
+                parent,
+                deferredAttachment,
+                bannerBroadcastListener,
+                productBroadcastListener,
+                voucherListener
             )
             TopChatRoomBubbleMessageViewHolder.LAYOUT -> TopChatRoomBubbleMessageViewHolder(
                 parent,
