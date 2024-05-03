@@ -47,11 +47,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.header.compose.HeaderActionButton
 import com.tokopedia.header.compose.NestHeader
@@ -108,7 +106,6 @@ import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuComposeViewMod
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
-import java.util.*
 import com.tokopedia.gm.common.R as gmcommonR
 import com.tokopedia.seller.menu.R as sellermenuR
 import com.tokopedia.seller.menu.common.R as sellermenucommonR
@@ -628,14 +625,14 @@ fun SellerMenuShopInfo(
             errorLocalLoad
         ) = createRefs()
 
-        val statusUiModel = userShopInfoWrapper.userShopInfoUiModel?.statusInfoUiModel
+        val statusUiModel = userShopInfoWrapper.userShopInfoUiModel.statusInfoUiModel
         val shouldShowTicker =
-            !statusUiModel?.statusTitle.isNullOrBlank() &&
-                !statusUiModel?.statusMessage.isNullOrBlank() &&
-                statusUiModel?.shopStatus.orZero() == STATUS_INCUBATE_OS
+            statusUiModel.statusTitle.isNotBlank() &&
+                statusUiModel.statusMessage.isNotBlank() &&
+                statusUiModel.shopStatus.orZero() == STATUS_INCUBATE_OS
 
         if (shouldShowTicker) {
-            val tickerType = when (statusUiModel?.tickerType) {
+            val tickerType = when (statusUiModel.tickerType) {
                 TICKER_TYPE_DANGER -> TickerType.ERROR
                 TICKER_TYPE_WARNING -> TickerType.WARNING
                 else -> TickerType.ANNOUNCEMENT
@@ -643,11 +640,11 @@ fun SellerMenuShopInfo(
             NestTicker(
                 ticker = listOf(
                     NestTickerData(
-                        tickerTitle = statusUiModel?.statusTitle.orEmpty(),
+                        tickerTitle = statusUiModel.statusTitle,
                         tickerType = tickerType,
                         tickerDescription = HtmlLinkHelper(
                             LocalContext.current,
-                            statusUiModel?.statusMessage.orEmpty()
+                            statusUiModel.statusMessage
                         ).spannedString?.toAnnotatedString() ?: ""
                     )
                 ),
@@ -879,106 +876,14 @@ fun SellerMenuShopStatusInfo(
     modifier: Modifier,
     onActionClick: (SellerMenuActionClick) -> Unit
 ) {
-    val totalTransaction = userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
+    val totalTransaction = userShopInfoWrapper.userShopInfoUiModel.totalTransaction.orZero()
     val shouldShowTransaction = totalTransaction <= Constant.ShopStatus.MAX_TRANSACTION_VISIBLE
     when (val shopType = userShopInfoWrapper.shopType) {
         is RegularMerchant -> {
-            userShopInfoWrapper.userShopInfoUiModel?.let {
-
-                val ctaColor = when (shopType) {
-                    is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
-                        NestTheme.colors.GN._500
-                    }
-
-                    is RegularMerchant.Pending -> {
-                        NestTheme.colors.NN._950.copy(
-                            alpha = 0.68f
-                        )
-                    }
-
-                    else -> {
-                        null
-                    }
-                }
-
-                SellerMenuStatusRegular(
-                    shouldShowTransaction = shouldShowTransaction,
-                    totalTransaction = totalTransaction,
-                    pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
-                    ctaTextRes = getRmVerificationTextRes(shopType),
-                    ctaColor = ctaColor,
-                    modifier = modifier
-                        .clickable {
-                            onActionClick(SellerMenuActionClick.POWER_MERCHANT)
-                        }
-                )
-            }
-        }
-
-        is PowerMerchantStatus -> {
-            (userShopInfoWrapper.shopType as? PowerMerchantStatus)?.let { pm ->
-                val periodType = userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
-                val isNewSeller = userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
-                val canUpgrade = when {
-                    periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO && isNewSeller == false -> true
-                    periodType == Constant.COMMUNICATION_PERIOD_PM_PRO -> false
-                    shopType is PowerMerchantStatus.NotActive -> false
-                    else -> true
-                }
-
-                SellerMenuStatusPm(
-                    shouldShowTransaction = shouldShowTransaction,
-                    totalTransaction = totalTransaction,
-                    canUpgrade = canUpgrade,
-                    modifier = modifier,
-                    isKyc = userShopInfoWrapper.userShopInfoUiModel?.isKyc.orFalse(),
-                    onActionClick = onActionClick
-                )
-            }
-        }
-
-        is PowerMerchantProStatus -> {
-            val gradeName =
-                userShopInfoWrapper.userShopInfoUiModel?.pmProGradeName?.replaceFirstChar {
-                    if (it.isLowerCase()) {
-                        it.titlecase(Locale.getDefault())
-                    } else {
-                        it.toString()
-                    }
-                }
-
-            val backgroundImageUrl: String
-            val statusTextColor: Color
-
-            when (shopType) {
-                PowerMerchantProStatus.Advanced -> {
-                    backgroundImageUrl = PMProURL.BG_ADVANCE
-                    statusTextColor = NestTheme.colors.NN._950.copy(
-                        alpha = 0.68f
-                    )
-                }
-
-                PowerMerchantProStatus.Expert -> {
-                    backgroundImageUrl = PMProURL.BG_EXPERT
-                    statusTextColor = NestTheme.colors.TN._500
-                }
-
-                PowerMerchantProStatus.Ultimate -> {
-                    backgroundImageUrl = PMProURL.BG_ULTIMATE
-                    statusTextColor = NestTheme.colors.YN._400
-                }
-            }
-
-            val pmProBadgeUrl =
-                userShopInfoWrapper.userShopInfoUiModel?.badge ?: PMProURL.ICON_URL
-
-            SellerMenuStatusPmPro(
+            SellerMenuStatusRegular(
                 shouldShowTransaction = shouldShowTransaction,
                 totalTransaction = totalTransaction,
-                pmProGradeName = gradeName,
-                backgroundImageUrl = backgroundImageUrl,
-                pmProBadgeUrl = pmProBadgeUrl,
-                statusTextColor = statusTextColor,
+                pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
                 modifier = modifier
                     .clickable {
                         onActionClick(SellerMenuActionClick.POWER_MERCHANT)
@@ -986,13 +891,58 @@ fun SellerMenuShopStatusInfo(
             )
         }
 
-        else -> {
+        is PowerMerchantStatus -> {
+            val periodType = userShopInfoWrapper.userShopInfoUiModel.periodTypePmPro
+            val isNewSeller = userShopInfoWrapper.userShopInfoUiModel.isNewSeller
+            val canUpgrade = when {
+                periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO && !isNewSeller -> true
+                periodType == Constant.COMMUNICATION_PERIOD_PM_PRO -> false
+                shopType is PowerMerchantStatus.NotActive -> false
+                else -> true
+            }
+
+            SellerMenuStatusPm(
+                shouldShowTransaction = shouldShowTransaction,
+                totalTransaction = totalTransaction,
+                canUpgrade = canUpgrade,
+                modifier = modifier,
+                isKyc = userShopInfoWrapper.userShopInfoUiModel.isKyc.orFalse(),
+                onActionClick = onActionClick
+            )
+        }
+
+        is PowerMerchantProStatus -> {
+            val backgroundImageUrl: String = when (shopType) {
+                PowerMerchantProStatus.Advanced -> PMProURL.BG_ADVANCE
+                PowerMerchantProStatus.Expert -> PMProURL.BG_EXPERT
+                PowerMerchantProStatus.Ultimate -> PMProURL.BG_ULTIMATE
+            }
+
+            val pmProBadgeUrl = userShopInfoWrapper.userShopInfoUiModel.badge
+
+            SellerMenuStatusPmPro(
+                shouldShowTransaction = shouldShowTransaction,
+                totalTransaction = totalTransaction,
+                backgroundImageUrl = backgroundImageUrl,
+                pmProBadgeUrl = pmProBadgeUrl,
+                modifier = modifier
+                    .clickable {
+                        onActionClick(SellerMenuActionClick.POWER_MERCHANT)
+                    }
+            )
+        }
+
+        is ShopType.OfficialStore -> {
             SellerMenuStatusOS(
                 modifier = modifier
                     .clickable {
                         onActionClick(SellerMenuActionClick.OFFICIAL_STORE)
                     }
             )
+        }
+
+        else -> {
+            /* no-op */
         }
     }
 }
@@ -1007,30 +957,10 @@ private fun getRmStatsTextRes(userShopInfoUiModel: UserShopInfoWrapper.UserShopI
 
 private fun getPmEligibleIcon(userShopInfoWrapper: UserShopInfoWrapper): Int? {
     return if (userShopInfoWrapper.shopType == RegularMerchant.Verified) {
-        userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
-            ?: userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantEligibleIcon()
+        userShopInfoWrapper.userShopInfoUiModel.getPowerMerchantProEligibleIcon()
+            ?: userShopInfoWrapper.userShopInfoUiModel.getPowerMerchantEligibleIcon()
     } else {
         null
-    }
-}
-
-private fun getRmVerificationTextRes(shopType: ShopType?): Int? {
-    return when (shopType as? RegularMerchant) {
-        is RegularMerchant.Verified -> {
-            sellermenucommonR.string.setting_verifikasi
-        }
-
-        is RegularMerchant.Pending -> {
-            sellermenucommonR.string.setting_verified
-        }
-
-        is RegularMerchant.NeedUpgrade -> {
-            sellermenuR.string.setting_upgrade
-        }
-
-        else -> {
-            null
-        }
     }
 }
 
@@ -1507,8 +1437,6 @@ fun SellerMenuStatusRegular(
     shouldShowTransaction: Boolean = false,
     totalTransaction: Long = 0L,
     pmEligibleIcon: Int?,
-    @StringRes ctaTextRes: Int?,
-    ctaColor: Color?,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -1568,23 +1496,6 @@ fun SellerMenuStatusRegular(
                 )
             }
 
-            if (ctaTextRes != null && ctaColor != null) {
-                NestTypography(
-                    text = stringResource(id = ctaTextRes),
-                    textStyle = NestTheme.typography.body2.copy(
-                        color = ctaColor,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .constrainAs(regularMerchantStatus) {
-                            top.linkTo(shopStatusTitle.top)
-                            bottom.linkTo(shopStatusTitle.bottom)
-                            end.linkTo(parent.end)
-                        }
-                )
-            }
-
             TotalTransactionComponent(
                 shouldShowTransaction,
                 totalTransaction,
@@ -1600,7 +1511,11 @@ fun SellerMenuStatusRegular(
 }
 
 @Composable
-fun TotalTransactionComponent(shouldShowTransaction: Boolean, totalTransaction: Long, modifier: Modifier) {
+fun TotalTransactionComponent(
+    shouldShowTransaction: Boolean,
+    totalTransaction: Long,
+    modifier: Modifier
+) {
     if (shouldShowTransaction) {
         ConstraintLayout(
             modifier = modifier
@@ -1669,26 +1584,6 @@ fun TotalTransactionComponent(shouldShowTransaction: Boolean, totalTransaction: 
     }
 }
 
-@Preview
-@Composable
-fun PreviewSellerMenuStatusPm() {
-//    SellerMenuStatusPm(true, 50, false, Modifier, false) {
-//
-//    }
-
-//    SellerMenuStatusRegular(
-//        shouldShowTransaction = true,
-//        totalTransaction = 51L,
-//        pmEligibleIcon = IconUnify.BADGE_PM_FILLED,
-//        ctaTextRes = sellermenucommonR.string.setting_verifikasi,
-//        ctaColor = NestTheme.colors.GN._500
-//    )
-//    TotalTransactionComponent(shouldShowTransaction = true, totalTransaction = 51,
-//        Modifier
-//            .fillMaxWidth()
-//            .wrapContentHeight())
-}
-
 @Composable
 fun SellerMenuStatusPm(
     shouldShowTransaction: Boolean = false,
@@ -1715,7 +1610,9 @@ fun SellerMenuStatusPm(
             .clickable { onActionClick(actionClick) }
     ) {
         ConstraintLayout(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             val (
                 powerMerchantText,
@@ -1725,8 +1622,6 @@ fun SellerMenuStatusPm(
                 kycNotVerified,
                 transactionComponent
             ) = createRefs()
-
-            val middleGuideline = createGuidelineFromStart(40.dp)
 
             val pmText = stringResource(id = sellermenucommonR.string.power_merchant_upgrade)
 
@@ -1739,30 +1634,13 @@ fun SellerMenuStatusPm(
                 modifier = Modifier
                     .widthIn(min = 0.dp)
                     .constrainAs(powerMerchantText) {
-                        start.linkTo(middleGuideline)
+                        start.linkTo(pmIcon.end, margin = 4.dp)
                         top.linkTo(pmIcon.top)
                         bottom.linkTo(pmIcon.bottom)
                     }
             )
 
-            if (isKyc) {
-                if (canUpgrade) {
-                    NestTypography(
-                        text = stringResource(id = sellermenuR.string.setting_upgrade),
-                        textStyle = NestTheme.typography.body2.copy(
-                            color = NestTheme.colors.GN._500,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier
-                            .constrainAs(upgradePMText) {
-                                top.linkTo(pmIcon.top)
-                                bottom.linkTo(pmIcon.bottom)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(end = 16.dp)
-                    )
-                }
-            } else {
+            if (!isKyc) {
                 NestIcon(
                     iconId = IconUnify.INFORMATION,
                     colorLightEnable = NestTheme.colors.RN._500,
@@ -1773,7 +1651,7 @@ fun SellerMenuStatusPm(
                         .clip(CircleShape)
                         .background(Color.Transparent)
                         .constrainAs(kycNotVerified) {
-                            end.linkTo(powerMerchantStatusText.start)
+                            end.linkTo(powerMerchantStatusText.start, margin = 2.dp)
                             top.linkTo(pmIcon.top)
                             bottom.linkTo(pmIcon.bottom)
                         }
@@ -1805,9 +1683,14 @@ fun SellerMenuStatusPm(
                     .border(1.5.dp, NestTheme.colors.NN._0, CircleShape)
                     .background(Color.Transparent)
                     .constrainAs(pmIcon) {
-                        start.linkTo(parent.start)
-                        end.linkTo(middleGuideline)
-                        linkTo(top = parent.top, bottom = parent.bottom, bias = 0f, bottomMargin = 12.dp, topMargin = 12.dp)
+                        start.linkTo(parent.start, margin = 12.dp)
+                        linkTo(
+                            top = parent.top,
+                            bottom = parent.bottom,
+                            bias = 0f,
+                            bottomMargin = 12.dp,
+                            topMargin = 12.dp
+                        )
                     }
             )
 
@@ -1829,10 +1712,8 @@ fun SellerMenuStatusPm(
 fun SellerMenuStatusPmPro(
     shouldShowTransaction: Boolean,
     totalTransaction: Long,
-    pmProGradeName: String?,
     backgroundImageUrl: String,
     pmProBadgeUrl: String,
-    statusTextColor: Color,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -1851,7 +1732,6 @@ fun SellerMenuStatusPmPro(
             val (
                 pmProBackgroundRef,
                 pmProTextRef,
-                pmProStatusText,
                 pmProIconRef,
                 pmInfoSpacerRef,
                 transactionComponent
@@ -1882,7 +1762,13 @@ fun SellerMenuStatusPmPro(
                     .clip(CircleShape)
                     .border(1.dp, NestTheme.colors.NN._50, CircleShape)
                     .constrainAs(pmProIconRef) {
-                        linkTo(top = parent.top, bottom = parent.bottom, bias = 0f, topMargin = 12.dp, bottomMargin = 12.dp)
+                        linkTo(
+                            top = parent.top,
+                            bottom = parent.bottom,
+                            bias = 0f,
+                            topMargin = 12.dp,
+                            bottomMargin = 12.dp
+                        )
                         end.linkTo(pmInfoSpacerRef.end)
                     }
             )
@@ -1901,20 +1787,6 @@ fun SellerMenuStatusPmPro(
                         top.linkTo(pmProIconRef.top)
                         bottom.linkTo(pmProIconRef.bottom)
                         start.linkTo(pmInfoSpacerRef.end)
-                    }
-            )
-
-            NestTypography(
-                text = pmProGradeName.orEmpty(),
-                textStyle = NestTheme.typography.body2.copy(
-                    color = statusTextColor,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier
-                    .constrainAs(pmProStatusText) {
-                        top.linkTo(pmProTextRef.top)
-                        bottom.linkTo(pmProTextRef.bottom)
-                        start.linkTo(pmProTextRef.end)
                     }
             )
 
@@ -1940,15 +1812,17 @@ fun SellerMenuStatusOS(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .height(45.dp)
+            .wrapContentHeight()
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
     ) {
-        ConstraintLayout {
-            val (statusText, badgeBorder, statusImage) = createRefs()
-
-            val middleGuideline = createGuidelineFromStart(40.dp)
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(all = 8.dp)
+        ) {
+            val (statusText, statusImage) = createRefs()
 
             NestTypography(
                 text = stringResource(id = sellermenucommonR.string.official_store),
@@ -1958,20 +1832,7 @@ fun SellerMenuStatusOS(
                 ),
                 modifier = Modifier
                     .constrainAs(statusText) {
-                        start.linkTo(middleGuideline)
-                    }
-            )
-
-            Box(
-                modifier = Modifier
-                    .width(24.dp)
-                    .height(0.dp)
-                    .clip(CircleShape)
-                    .border(5.dp, NestTheme.colors.NN._0, CircleShape)
-                    .background(Color.Transparent)
-                    .constrainAs(badgeBorder) {
-                        start.linkTo(parent.start)
-                        end.linkTo(middleGuideline)
+                        start.linkTo(statusImage.end, margin = 8.dp)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                     }
@@ -1982,11 +1843,12 @@ fun SellerMenuStatusOS(
                 contentDescription = null,
                 modifier = Modifier
                     .constrainAs(statusImage) {
-                        top.linkTo(badgeBorder.top)
-                        bottom.linkTo(badgeBorder.bottom)
-                        start.linkTo(badgeBorder.start)
-                        end.linkTo(badgeBorder.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
                     }
+                    .width(24.dp)
+                    .height(24.dp)
             )
         }
     }
@@ -2118,7 +1980,7 @@ fun SellerMenuFeatureCard(
         modifier = modifier
             .fillMaxWidth()
             .height(110.dp),
-        type = NestCardType.Shadow,
+        type = NestCardType.default(),
         onClick = onActionClick
     ) {
         ConstraintLayout(

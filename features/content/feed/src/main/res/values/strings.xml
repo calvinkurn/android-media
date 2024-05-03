@@ -104,6 +104,14 @@
 
     <string name="feed_product_highlight_atc">+</string>
 
+    <!-- Tooltip -->
+    <string name="feed_search_tooltip_user_affinity">Cara cepet cari konten favoritmu! ❤️</string>
+    <string name="feed_search_tooltip_creator">Cek konten dari para kreator inspiratif!</string>
+    <string name="feed_search_tooltip_story">Udah cek update Story hari ini?</string>
+    <string name="feed_search_tooltip_trending_and_viral_video">Ada konten yang lagi viral! 🔥</string>
+    <string name="feed_search_tooltip_promo">Ada promo hidden gem di konten!</string>
+
+
     <!-- Feed Local Search -->
     <string name="feed_local_search_page_text_placeholder_fallback">Cari konten di Feed</string>
 
@@ -114,6 +122,6 @@
     <string name="feed_local_search_restricted_title">Oops, kontennya nggak ada</string>
     <string name="feed_local_search_restricted_desc">Coba cari kata kunci yang lain, atau pelajari info selengkapnya, ya.</string>
     <string name="feed_local_search_restricted_cta">Pelajari Selengkapnya</string>
-    
+
     <string name="feed_content_tnc_link">https://www.tokopedia.com/terms?lang=id#konten</string>
 </resources>

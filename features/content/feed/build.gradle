@@ -96,6 +96,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.creationCommon)
     implementation projectOrAar(rootProject.ext.features.storiesInternal)
     implementation projectOrAar(rootProject.ext.features.storiesWidget)
+    implementation projectOrAar(rootProject.ext.features.feedCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
