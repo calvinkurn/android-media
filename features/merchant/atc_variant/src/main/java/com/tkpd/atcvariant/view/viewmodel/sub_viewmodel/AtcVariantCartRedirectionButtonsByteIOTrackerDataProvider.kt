@@ -21,6 +21,7 @@ class AtcVariantCartRedirectionButtonsByteIOTrackerDataProvider :
             private fun getSelectedVariant() = mediator.getVariantData()?.getChildByOptionId(
                 mediator.getSelectedOptionIds()?.values.orEmpty().toList()
             )
+            override fun getShopId() = mediator.getBasicInfo()?.shopID.orEmpty()
         })
     }
 }

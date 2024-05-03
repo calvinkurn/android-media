@@ -41,6 +41,7 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.aggregator.SimpleBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
@@ -157,6 +158,8 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     override fun getActivityResultData(): ProductVariantResult = variantActivityResult
+
+    override fun getBasicInfo(): SimpleBasicInfo? = aggregatorData?.simpleBasicInfo
 
     // updated with the previous page data as well
     fun getVariantAggregatorData(): ProductVariantAggregatorUiData? {
@@ -545,10 +548,10 @@ class AtcVariantViewModel @Inject constructor(
     private fun sendByteIoConfirmTracker(actionButton: Int, selectedChild: VariantChild?) {
         val parentId = getVariantData()?.parentId.orEmpty()
         val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
-        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON
-            || actionButton == ProductDetailCommonConstant.BUY_BUTTON
+        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON ||
+            actionButton == ProductDetailCommonConstant.BUY_BUTTON
 //            || actionButton == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
-            ) {
+        ) {
             AppLogPdp.addToCart.set(true)
             AppLogPdp.sendConfirmCart(
                 TrackConfirmCart(
@@ -729,7 +732,7 @@ class AtcVariantViewModel @Inject constructor(
             originalPrice = selectedChild?.finalMainPrice.orZero(),
             salePrice = selectedChild?.finalPrice.orZero(),
             skuId = selectedChild?.productId.orEmpty(),
-            addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
+            addSkuNum = selectedChild?.getFinalMinOrder().orZero()
         )
     }
 

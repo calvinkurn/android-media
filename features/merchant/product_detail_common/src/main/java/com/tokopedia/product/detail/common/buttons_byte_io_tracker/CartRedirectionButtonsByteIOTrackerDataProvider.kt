@@ -26,7 +26,8 @@ class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsB
             buyType = when (cartType) {
                 ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.BuyType.OCS
                 else -> return null
-            }
+            },
+            shopId = _mediator.getShopId()
         )
     }
 
@@ -41,7 +42,8 @@ class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsB
             buyType = when (buttonAction) {
                 ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickAnalyticData.BuyType.OCS
                 else -> return null
-            }
+            },
+            shopId = _mediator.getShopId()
         )
     }
 

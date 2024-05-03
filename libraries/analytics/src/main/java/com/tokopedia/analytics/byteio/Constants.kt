@@ -277,7 +277,8 @@ data class ButtonShowAnalyticData(
     val buttonName: ButtonName,
     val productId: String,
     val isSingleSku: Boolean,
-    val buyType: BuyType
+    val buyType: BuyType,
+    val shopId: String
 ) {
     enum class ButtonName(val value: String) {
         BUY_NOW("buy now")
@@ -292,7 +293,8 @@ data class ButtonClickAnalyticData(
     val buttonName: ButtonName,
     val productId: String,
     val isSingleSku: Boolean,
-    val buyType: BuyType
+    val buyType: BuyType,
+    val shopId: String
 ) {
     enum class ButtonName(val value: String) {
         BUY_NOW("buy now")

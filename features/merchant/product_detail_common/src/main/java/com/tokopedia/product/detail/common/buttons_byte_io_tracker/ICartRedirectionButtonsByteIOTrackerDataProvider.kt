@@ -47,5 +47,6 @@ interface ICartRedirectionButtonsByteIOTrackerDataProvider {
         fun getProductOriginalPrice(): Double?
         fun getProductSalePrice(): Double?
         fun isFollowShop(): Boolean
+        fun getShopId(): String
     }
 }
