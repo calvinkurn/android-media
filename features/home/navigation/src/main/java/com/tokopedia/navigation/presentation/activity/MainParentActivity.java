@@ -1616,6 +1616,7 @@ public class MainParentActivity extends BaseActivity implements
         globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
     }
 
+    //MIGRATED
     @Override
     public void onHomeCoachMarkFinished() {
         View feedIconView = bottomNavigation.findViewById(R.id.menu_feed);

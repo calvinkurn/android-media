@@ -1,5 +1,6 @@
 package com.tokopedia.navigation_common.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
@@ -62,7 +63,6 @@ class DynamicHomeNavBarView : LinearLayout {
 
     init {
         super.setOrientation(HORIZONTAL)
-        updatePadding(top = resources.getDimensionPixelOffset(navigation_commonR.dimen.navigation_common_bottom_nav_bar_top_padding))
         refresh()
     }
 
@@ -144,6 +144,7 @@ class DynamicHomeNavBarView : LinearLayout {
         addView(view)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun ItemBottomNavbarBinding.bindModel(
         stateHolder: StateHolder,
         isSelected: Boolean?
@@ -152,6 +153,9 @@ class DynamicHomeNavBarView : LinearLayout {
         ivIcon.bindAsset(model, isSelected, prevIsSelected)
         tvTitle.bindText(model, isSelected)
 
+        rippleView.background = ContextCompat.getDrawable(uiModeAwareContext, navigation_commonR.drawable.bg_ripple_container)
+
+        root.setOnTouchListener(BottomNavBarItemRippleTouchListener(root, rippleView))
         root.setOnClickListener { select(model.uniqueId) }
 
         updateState(stateHolder.copy(isSelected = isSelected))

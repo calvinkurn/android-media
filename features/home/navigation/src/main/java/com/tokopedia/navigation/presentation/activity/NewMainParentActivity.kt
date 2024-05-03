@@ -457,7 +457,7 @@ class NewMainParentActivity :
     }
 
     override fun onHomeCoachMarkFinished() {
-//        TODO()
+        //Feed Coachmark has been deprecated, so this is expected to be empty as of now
     }
 
     override fun setForYouToHomeMenuTabSelected() {
