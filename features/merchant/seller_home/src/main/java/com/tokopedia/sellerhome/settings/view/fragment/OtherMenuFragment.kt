@@ -48,7 +48,6 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
-import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.seller.menu.common.exception.UserShopInfoException
 import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
@@ -94,6 +93,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
 import javax.inject.Inject
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
 
 class OtherMenuFragment :
     BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -315,12 +315,8 @@ class OtherMenuFragment :
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
-    override fun onRmTransactionClicked(currentTransactionTotal: Long) {
-        if (currentTransactionTotal < MAX_RM_TRANSACTION_THRESHOLD) {
-            openRmTransactionBottomSheet(currentTransactionTotal)
-        } else {
-            goToNewMembershipScheme()
-        }
+    override fun onTransactionClicked(currentTransactionTotal: Long) {
+        openTransactionBottomSheet(currentTransactionTotal)
     }
 
     override fun onShopBadgeClicked() {
@@ -583,6 +579,7 @@ class OtherMenuFragment :
         observeIsShowTageCentralizePromo()
         observeIsTopAdsShopUsed()
         observeTopAdsAutoAdsStatus()
+        observeShopTransaction()
     }
 
     private fun observeShopBadge() {
@@ -644,6 +641,14 @@ class OtherMenuFragment :
                     onOperationalHourRefresh()
                 }
                 logHeaderError(it.throwable, OPERATIONAL_HOUR)
+            }
+        }
+    }
+
+    private fun observeShopTransaction() {
+        viewModel.totalTransactionData.observe(viewLifecycleOwner) {
+            if (it is SettingResponseState.SettingSuccess) {
+                viewHolder?.setShopTransactionData(it.data)
             }
         }
     }
@@ -798,13 +803,9 @@ class OtherMenuFragment :
         startActivity(totalMemberIntent)
     }
 
-    private fun openRmTransactionBottomSheet(currentTransactionTotal: Long) {
-        RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
-    }
-
-    private fun goToNewMembershipScheme() {
-        context?.let {
-            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+    private fun openTransactionBottomSheet(currentTransactionTotal: Long) {
+        if (!childFragmentManager.isStateSaved) {
+            RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
         }
     }
 
@@ -850,7 +851,7 @@ class OtherMenuFragment :
                         .orEmpty(),
                     Snackbar.LENGTH_INDEFINITE,
                     Toaster.TYPE_NORMAL,
-                    context?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry)
+                    context?.getString(sellermenucommonR.string.setting_toaster_error_retry)
                         .orEmpty()
                 ) {
                     viewModel.reloadErrorData()
@@ -877,7 +878,7 @@ class OtherMenuFragment :
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
             }
-                ?: context?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message)
+                ?: context?.resources?.getString(sellermenucommonR.string.setting_toaster_error_message)
                     .orEmpty()
             view?.showToasterError(errorMessage, onRetryAction)
         }
@@ -1048,7 +1049,7 @@ class OtherMenuFragment :
             errorMessage,
             Snackbar.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry)
+            resources.getString(sellermenucommonR.string.setting_toaster_error_retry)
         ) {
             onRetryAction()
         }.show()

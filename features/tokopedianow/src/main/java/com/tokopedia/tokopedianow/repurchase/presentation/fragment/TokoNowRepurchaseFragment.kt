@@ -61,7 +61,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
@@ -114,6 +113,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowRepurchaseFragment:
     Fragment(),
@@ -481,7 +481,7 @@ class TokoNowRepurchaseFragment:
     private fun setupSwipeRefreshLayout() {
         context?.let {
             val marginZero = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
+                unifyprinciplesR.dimen.layout_lvl0).orZero()
             val toolbarHeight = NavToolbarExt.getToolbarHeight(it)
             swipeRefreshLayout?.setMargin(marginZero, toolbarHeight, marginZero, marginZero)
             swipeRefreshLayout?.setOnRefreshListener {
@@ -613,12 +613,6 @@ class TokoNowRepurchaseFragment:
             )
         }
 
-        observe(viewModel.setUserPreference) {
-            if(it is Success) {
-                onSuccessSetUserPreference(it.data)
-            }
-        }
-
         observe(viewModel.updateToolbarNotification) { update ->
             if(update) {
                 updateToolbarNotification()
@@ -678,25 +672,6 @@ class TokoNowRepurchaseFragment:
                 }
             }
         }
-    }
-
-    private fun onSuccessSetUserPreference(data: SetUserPreferenceData) {
-        val warehouses = data.warehouses.map {
-            LocalWarehouseModel(
-                it.warehouseId.toLongOrZero(),
-                it.serviceType
-            )
-        }
-
-        ChooseAddressUtils.updateTokoNowData(
-            requireContext(),
-            data.warehouseId,
-            data.shopId,
-            warehouses,
-            data.serviceType
-        )
-
-        refreshLayout()
     }
 
     private fun trackRepurchaseAddToCart(quantity: Int, data: RepurchaseProductUiModel) {
@@ -889,10 +864,10 @@ class TokoNowRepurchaseFragment:
         miniCartWidget?.post {
             val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
             val paddingBottom = if (isShowMiniCartWidget && !outOfCoverage) {
-                miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_font_16).toIntSafely()
+                miniCartWidget?.height.orZero() - context?.resources?.getDimension(unifyprinciplesR.dimen.unify_font_16).toIntSafely()
             } else {
                 activity?.resources?.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
+                    unifyprinciplesR.dimen.layout_lvl0).orZero()
             }
             swipeRefreshLayout?.setPadding(0, 0, 0, paddingBottom)
         }
@@ -912,7 +887,7 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun getMiniCartHeight(): Int {
-        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
+        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(unifyprinciplesR.dimen.unify_space_16)?.toInt().orZero()
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int, actionText: String = "", clickListener: () -> Unit = {}) {
@@ -1026,10 +1001,6 @@ class TokoNowRepurchaseFragment:
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = ""
-
-            override fun onSwitchService() {
-                viewModel.switchService()
-            }
         }
     }
 

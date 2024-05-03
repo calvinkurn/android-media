@@ -11,6 +11,9 @@ kapt {
 android {
     namespace 'com.tokopedia.logisticcart'
     testNamespace 'com.tokopedia.logisticcart.test'
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
     buildFeatures {
         viewBinding true
     }
@@ -69,6 +72,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
     //-------------------------------------------------------------------//
 }
 

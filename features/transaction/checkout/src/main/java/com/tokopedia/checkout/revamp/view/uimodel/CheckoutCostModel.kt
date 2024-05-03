@@ -2,11 +2,16 @@ package com.tokopedia.checkout.revamp.view.uimodel
 
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.domain.PaymentFeeDetail
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 
 data class CheckoutCostModel(
     override val cartStringGroup: String = "",
     val totalPrice: Double = 0.0,
     val totalPriceString: String = "-",
+    val totalPriceWithAllPaymentFees: Double = 0.0,
+    val totalPriceWithInternalPaymentFees: Double = 0.0,
     val totalItem: Int = 0,
     val originalItemPrice: Double = 0.0,
     val finalItemPrice: Double = 0.0,
@@ -24,9 +29,6 @@ data class CheckoutCostModel(
     var promoMessage: String? = null,
     var emasPrice: Double = 0.0,
     var tradeInPrice: Double = 0.0,
-    var totalPromoStackAmount: Int = 0,
-    var totalPromoStackAmountStr: String? = null,
-    var totalDiscWithoutCashback: Int = 0,
     var bookingFee: Int = 0,
     var discountLabel: String = "",
     var discountAmount: Int = 0,
@@ -42,5 +44,35 @@ data class CheckoutCostModel(
     var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel(),
     var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList(),
     val totalOtherFee: Double = 0.0,
-    var isExpandOtherFee: Boolean = false
-) : CheckoutItem
+    var isExpandOtherFee: Boolean = false,
+    val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList(),
+    val originalPaymentFees: List<PaymentFeeDetail> = emptyList(),
+    val usePaymentFees: Boolean = false,
+    val isInstallment: Boolean = false,
+    val installmentFee: Double = 0.0,
+    val installmentDetail: GoCicilInstallmentOption? = null,
+    var isExpandPaymentFee: Boolean = false,
+    val useNewWording: Boolean = false
+) : CheckoutItem {
+
+    val finalPaymentFee: Double
+        get() {
+            return if (usePaymentFees) {
+                (dynamicPaymentFees?.sumOf { it.fee } ?: 0.0) + originalPaymentFees.sumOf { it.amount }
+            } else if (dynamicPlatformFee.fee <= 0) {
+                0.0
+            } else {
+                dynamicPlatformFee.fee
+            }
+        }
+
+    val totalDiscounts: Double
+        get() {
+            return (productDiscountAmount + shippingDiscountAmount + discountAmount).toDouble()
+        }
+
+    val totalProductAndShippingPrice: Double
+        get() {
+            return originalItemPrice + originalShippingFee
+        }
+}

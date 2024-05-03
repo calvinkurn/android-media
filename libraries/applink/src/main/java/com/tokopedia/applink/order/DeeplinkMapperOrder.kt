@@ -296,4 +296,25 @@ object DeeplinkMapperOrder {
             return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
         }
     }
+
+    object SellerOrderExtensionRequest {
+
+        const val INTENT_RESULT_SUCCESS = "success"
+        const val INTENT_RESULT_MESSAGE = "message"
+
+        const val INTENT_PARAM_ORDER_ID = "orderId"
+
+        const val PATH = "seller-order-extension-request"
+
+        private const val INTERNAL_APP_LINK = "tokopedia-android-internal://seller/${PATH}"
+
+        fun getRegisteredNavigation(uri: Uri): String {
+            val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+            val params = mapOf<String, Any>(
+                INTENT_PARAM_ORDER_ID to uri.getQueryParameter(INTENT_PARAM_ORDER_ID).toZeroStringIfNull(),
+                RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
+            )
+            return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
+        }
+    }
 }

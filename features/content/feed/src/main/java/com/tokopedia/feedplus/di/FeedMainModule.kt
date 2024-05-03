@@ -2,6 +2,8 @@ package com.tokopedia.feedplus.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.feedplus.data.sharedpref.FeedTooltipPreferences
+import com.tokopedia.feedplus.data.sharedpref.FeedTooltipPreferencesImpl
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferencesImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -28,12 +30,6 @@ class FeedMainModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @FeedMainScope
-    @Provides
-    fun provideOnBoardingPreferences(@ApplicationContext context: Context): OnBoardingPreferences {
-        return OnBoardingPreferencesImpl(context)
     }
 
     @FeedMainScope

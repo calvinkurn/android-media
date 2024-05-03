@@ -43,6 +43,7 @@ data class OwocProductListUiModel(
         val priceText: String,
         val productId: String,
         val productName: String,
+        val productUrl: String,
         val productThumbnailUrl: String,
         val quantity: Int,
         val addOnSummaryUiModel: AddOnSummaryUiModel? = null,

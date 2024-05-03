@@ -34,6 +34,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommen
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_NEW_OCC
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_OCC_MULTI
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
@@ -1256,7 +1257,7 @@ class PromoCheckoutViewModel @Inject constructor(
 
         val params = clearPromoParam.apply {
             serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE
-            isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI
+            isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI || validateUsePromoRequest.cartType == PARAM_NEW_OCC
             orderData = ClearPromoOrderData(
                 codes = globalPromo,
                 orders = orders
