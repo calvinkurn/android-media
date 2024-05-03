@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomBroadcastFlashSaleCarouselAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomBroadcastProductCarouselAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.TopChatRoomHorizontalSpacingItemDecoration
 import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomBroadcastFlashSaleTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
@@ -22,7 +22,7 @@ class TopChatRoomBroadcastFlashSaleProductRecyclerView @JvmOverloads constructor
     private val horizontalSpacingItemDecoration = TopChatRoomHorizontalSpacingItemDecoration(
         4.dpToPx(context.resources.displayMetrics)
     )
-    private var flashSaleProductAdapter: TopChatRoomBroadcastFlashSaleCarouselAdapter? = null
+    private var flashSaleProductAdapter: TopChatRoomBroadcastProductCarouselAdapter? = null
 
     init {
         setHasFixedSize(true)
@@ -40,7 +40,7 @@ class TopChatRoomBroadcastFlashSaleProductRecyclerView @JvmOverloads constructor
         productListener: TopChatRoomBroadcastProductListener,
         broadcastUiModel: TopChatRoomBroadcastUiModel
     ) {
-        flashSaleProductAdapter = TopChatRoomBroadcastFlashSaleCarouselAdapter(
+        flashSaleProductAdapter = TopChatRoomBroadcastProductCarouselAdapter(
             TopChatRoomBroadcastFlashSaleTypeFactoryImpl(broadcastUiModel, productListener)
         )
         adapter = flashSaleProductAdapter

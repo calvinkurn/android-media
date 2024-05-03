@@ -28,6 +28,7 @@ object Constant {
     // Style
     const val BACKGROUND_COLOR_LABEL = "#000000"
     const val TEXT_COLOR_LABEL = "#FFFFFF"
+    const val TEXT_COLOR_SOLD = "textDarkGrey"
     const val BACKGROUND_OPACITY_PREORDER = "0.7"
     const val BACKGROUND_OPACITY_OOS = "0.5"
     const val BACKGROUND_COLOR_LABEL_COMPACT = "transparentBlack"

@@ -10,26 +10,26 @@ import com.tokopedia.productcard.compact.productcardcarousel.util.ProductCardExt
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
-import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastFlashsaleProductSeeMoreItemBinding
+import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastProductSeeMoreItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TopChatRoomBroadcastFlashSaleSeeMoreViewHolder(
+class TopChatRoomBroadcastSeeMoreViewHolder(
     itemView: View,
     private val broadcastUiModel: TopChatRoomBroadcastUiModel,
     private val productListener: TopChatRoomBroadcastProductListener
 ) : AbstractViewHolder<ProductAttachmentUiModel>(itemView) {
 
-    private val binding: TopchatChatroomBroadcastFlashsaleProductSeeMoreItemBinding? by viewBinding()
+    private val binding: TopchatChatroomBroadcastProductSeeMoreItemBinding? by viewBinding()
     private var uiModel: ProductAttachmentUiModel? = null
 
     init {
-        binding?.topchatChatroomBroadcastFlashsaleSeeMoreCard?.setProductCarouselWidth()
+        binding?.topchatChatroomBroadcastSeeMoreCard?.setProductCarouselWidth()
         setListener()
     }
 
     override fun bind(uiModel: ProductAttachmentUiModel) {
         this.uiModel = uiModel
-        binding?.topchatChatroomBroadcastFlashsaleSeeMoreTv?.text = uiModel.productName
+        binding?.topchatChatroomBroadcastSeeMoreTv?.text = uiModel.productName
         impressTracker(uiModel)
     }
 
@@ -65,11 +65,11 @@ class TopChatRoomBroadcastFlashSaleSeeMoreViewHolder(
 
     override fun onViewRecycled() {
         super.onViewRecycled()
-        binding?.topchatChatroomBroadcastFlashsaleSeeMoreArrow?.clearImage()
+        binding?.topchatChatroomBroadcastSeeMoreArrow?.clearImage()
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.topchat_chatroom_broadcast_flashsale_product_see_more_item
+        val LAYOUT = R.layout.topchat_chatroom_broadcast_product_see_more_item
     }
 }

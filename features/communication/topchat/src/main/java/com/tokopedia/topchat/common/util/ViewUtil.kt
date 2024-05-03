@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.utils.resources.isDarkMode
 import timber.log.Timber
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object ViewUtil {
 
@@ -205,10 +206,10 @@ object ViewUtil {
                 R.color.topchat_dms_message_shadow
             } else {
                 // Do not change this to nest color (NN600)
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
+                unifyprinciplesR.color.Unify_NN950_20
             }
         } catch (ignored: Throwable) {
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
+            unifyprinciplesR.color.Unify_NN950_20
         }
     }
 

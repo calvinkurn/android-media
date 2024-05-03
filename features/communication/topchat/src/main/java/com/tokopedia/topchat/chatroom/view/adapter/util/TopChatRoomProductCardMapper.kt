@@ -1,10 +1,12 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_BLOCK
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_OVERLAY
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.topchat.common.Constant.BACKGROUND_COLOR_LABEL
@@ -15,6 +17,7 @@ import com.tokopedia.topchat.common.Constant.EMPTY_STOCK
 import com.tokopedia.topchat.common.Constant.PREORDER
 import com.tokopedia.topchat.common.Constant.STATUS
 import com.tokopedia.topchat.common.Constant.TEXT_COLOR_LABEL
+import com.tokopedia.topchat.common.Constant.TEXT_COLOR_SOLD
 
 object TopChatRoomProductCardMapper {
 
@@ -29,19 +32,17 @@ object TopChatRoomProductCardMapper {
             slashedPrice = productAttachment.priceBefore,
             discountPercentage = productAttachment.dropPercentage.toIntOrZero(),
             labelGroupList = getProductCardLabelList(productAttachment),
-            rating = productAttachment.rating.score.toString(),
-            shopBadge = ProductCardModel.ShopBadge(),
+            rating = if (productAttachment.rating.score > 0) productAttachment.rating.score.toString() else "",
             hasAddToCart = false,
             videoUrl = "",
             hasThreeDots = false,
-            // TODO: get data from BE
             stockInfo = ProductCardModel.StockInfo(
-                percentage = 30,
-                label = "Segera Habis",
-                labelColor = ""
+                percentage = productAttachment.campaign.percentage.orZero(),
+                label = productAttachment.campaign.label.orEmpty(),
+                labelColor = productAttachment.campaign.labelColor.orEmpty()
             ),
             isSafeProduct = false,
-            isInBackground = false,
+            isInBackground = true,
             nonVariant = null,
             colorMode = null
         )
@@ -73,11 +74,10 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (!productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
-            !productAttachment.isUpcomingCampaign &&
-            productAttachment.remainingStock < 1
+            !productAttachment.isUpcomingCampaign
         ) {
             labelGroupList.add(
                 ProductCardModel.LabelGroup(
@@ -100,16 +100,25 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
+        if (productAttachment.sold.isNotBlank()) {
+            labelGroupList.add(
+                ProductCardModel.LabelGroup(
+                    position = LABEL_REIMAGINE_CREDIBILITY,
+                    title = productAttachment.sold,
+                    type = TEXT_COLOR_SOLD
+                )
+            )
+        }
         return labelGroupList
     }
 
-    fun mapToProductCardCompactCarousel(
+    fun mapToProductCardCompact(
         productAttachment: ProductAttachmentUiModel
     ): ProductCardCompactUiModel {
         return ProductCardCompactUiModel(
             productId = productAttachment.productId,
             imageUrl = productAttachment.productImage,
-            minOrder = productAttachment.minOrder,
+            minOrder = productAttachment.minOrder.coerceAtLeast(1),
             availableStock = productAttachment.remainingStock,
             price = productAttachment.productPrice,
             discount = productAttachment.dropPercentage,
@@ -120,9 +129,11 @@ object TopChatRoomProductCardMapper {
             } else {
                 productAttachment.rating.score.toString()
             },
+            sold = productAttachment.sold,
             hasBeenWishlist = productAttachment.isWishListed(),
             isVariant = productAttachment.hasVariant(),
-            labelGroupList = getProductCardCompactLabelList(productAttachment)
+            labelGroupList = getProductCardCompactLabelList(productAttachment),
+            isPreOrder = productAttachment.isPreOrder
         )
     }
 
@@ -139,7 +150,7 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (!productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
             !productAttachment.isUpcomingCampaign &&
@@ -156,4 +167,3 @@ object TopChatRoomProductCardMapper {
         return labelGroupList
     }
 }
-

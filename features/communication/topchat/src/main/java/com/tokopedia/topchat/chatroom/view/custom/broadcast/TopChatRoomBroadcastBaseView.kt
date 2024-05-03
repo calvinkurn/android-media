@@ -53,14 +53,18 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
 
     private fun bindBannerAttachment(uiModel: TopChatRoomBroadcastUiModel) {
         val bannerAttachment = uiModel.banner
-        if (bannerAttachment != null && !bannerAttachment.isHideBanner) {
+        if (bannerAttachment != null) {
             bindSyncBanner(bannerAttachment)
-            binding.topchatChatroomBroadcastIvBanner.show()
-            binding.topchatChatroomBroadcastIvBanner.loadImageWithoutPlaceholder(bannerAttachment.imageUrl)
-            binding.topchatChatroomBroadcastIvBanner.addOnImpressionListener(
-                bannerAttachment.impressHolder
-            ) {
-                impressBanner(bannerAttachment)
+            if (!bannerAttachment.isHideBanner) {
+                binding.topchatChatroomBroadcastIvBanner.show()
+                binding.topchatChatroomBroadcastIvBanner.loadImageWithoutPlaceholder(bannerAttachment.imageUrl)
+                binding.topchatChatroomBroadcastIvBanner.addOnImpressionListener(
+                    bannerAttachment.impressHolder
+                ) {
+                    impressBanner(bannerAttachment)
+                }
+            } else {
+                binding.topchatChatroomBroadcastIvBanner.hide()
             }
         } else {
             binding.topchatChatroomBroadcastIvBanner.hide()

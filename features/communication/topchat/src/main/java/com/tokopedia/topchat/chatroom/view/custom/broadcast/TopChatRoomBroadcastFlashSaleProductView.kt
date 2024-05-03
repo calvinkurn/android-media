@@ -8,14 +8,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.reimagine.getMaxHeightForGridCarouselView
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomProductCardMapper
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBroadcastFlashsaleProductBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +52,6 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     ) {
         this.productListener = productListener
         this.deferredAttachment = deferredViewHolderAttachment
-        setSingleProductListener()
     }
 
     fun bind(uiModel: TopChatRoomBroadcastUiModel) {
@@ -64,30 +62,33 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
     private fun bindProduct(uiModel: TopChatRoomBroadcastUiModel) {
         val carouselProduct = uiModel.productCarousel
         val singleProduct = uiModel.singleProduct
-        if (carouselProduct != null && carouselProduct.products.isNotEmpty()) {
-            binding.topchatChatroomBroadcastFlashsaleSingleProduct.hide()
-            setProductCarouselListener()
-            bindProductCarousel(carouselProduct)
-        } else if (singleProduct != null) {
-            binding.topchatChatroomBroadcastFlashsaleRv.hide()
-            bindSingleProduct(singleProduct)
-        } else {
-            binding.topchatChatroomBroadcastFlashsaleSingleProduct.hide()
-            binding.topchatChatroomBroadcastFlashsaleRv.hide()
+        when {
+            (carouselProduct != null) -> {
+                setProductCarouselListener()
+                bindSyncProductCarousel(carouselProduct)
+                setProductListData(carouselProduct.products)
+            }
+            (singleProduct != null) -> { // Single product is also RV with 1 items
+                setProductCarouselListener()
+                bindSyncProduct(singleProduct)
+                setProductListData(listOf(singleProduct))
+            }
+            else -> {
+                binding.topchatChatroomBroadcastFlashsaleRv.hide()
+            }
         }
     }
 
-    private fun bindProductCarousel(productCarousel: ProductCarouselUiModel) {
-        bindSyncProductCarousel(productCarousel)
+    private fun setProductListData(productList: List<Visitable<*>>) {
         binding.topchatChatroomBroadcastFlashsaleRv.show()
-        binding.topchatChatroomBroadcastFlashsaleRv.updateData(productCarousel.products)
-        setRvHeight(productCarousel.products)
+        binding.topchatChatroomBroadcastFlashsaleRv.updateData(productList)
+        setRvHeight(productList)
     }
 
     private fun setRvHeight(productList: List<Visitable<*>>) {
         launch {
             val listProductCard = productList.mapNotNull {
-                if (it is ProductAttachmentUiModel) {
+                if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {
                     TopChatRoomProductCardMapper.mapToProductCard(it)
                 } else {
                     null
@@ -105,21 +106,7 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
         }
     }
 
-    private fun bindSingleProduct(product: ProductAttachmentUiModel) {
-        bindSyncProduct(product)
-        binding.topchatChatroomBroadcastFlashsaleLoaderSingleProduct.showWithCondition(product.isLoading)
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.show()
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.setProductModel(
-            TopChatRoomProductCardMapper.mapToProductCard(product)
-        )
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.addOnImpressionListener(
-            product.impressHolder
-        ) {
-            impressTracker()
-        }
-    }
-
-    private fun bindSyncProductCarousel(productCarousel: ProductCarouselUiModel) {
+    private fun bindSyncProductCarousel(productCarousel: TopChatRoomProductCarouselUiModel) {
         if (!productCarousel.isLoading()) return
         productCarousel.products.forEach {
             if (it is ProductAttachmentUiModel && !it.isProductDummySeeMore()) {
@@ -141,36 +128,6 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
         }
     }
 
-    private fun impressTracker() {
-        val singleProduct = uiModel?.singleProduct
-        val banner = uiModel?.banner
-        if (singleProduct != null && banner != null) {
-            productListener?.onImpressionBroadcastProduct(
-                blastId = uiModel?.blastId.orEmpty(),
-                campaignStatus = banner.getCampaignStatusString(),
-                campaignCountDown = banner.getCampaignCountDownString(),
-                productId = singleProduct.productId
-            )
-        }
-    }
-
-    private fun setSingleProductListener() {
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.setOnClickListener {
-            val singleProduct = uiModel?.singleProduct
-            val banner = uiModel?.banner
-            if (singleProduct != null && banner != null) {
-                productListener?.onClickBroadcastProduct(
-                    blastId = uiModel?.blastId.orEmpty(),
-                    campaignStatus = banner.getCampaignStatusString(),
-                    campaignCountDown = banner.getCampaignCountDownString(),
-                    productId = singleProduct.productId,
-                    androidUrl = singleProduct.androidUrl,
-                    productUrl = singleProduct.productUrl
-                )
-            }
-        }
-    }
-
     private fun setProductCarouselListener() {
         val uiModel = uiModel
         if (uiModel != null) {
@@ -178,9 +135,5 @@ class TopChatRoomBroadcastFlashSaleProductView @JvmOverloads constructor(
                 binding.topchatChatroomBroadcastFlashsaleRv.setListener(it, uiModel)
             }
         }
-    }
-
-    fun cleanUp() {
-        binding.topchatChatroomBroadcastFlashsaleSingleProduct.recycle()
     }
 }

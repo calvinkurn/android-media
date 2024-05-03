@@ -6,14 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedExc
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastFlashSaleProductViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastFlashSaleSeeMoreViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.TopChatRoomBroadcastSeeMoreViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomBroadcastProductListener
 import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
 
 class TopChatRoomBroadcastFlashSaleTypeFactoryImpl(
     private val broadcastUiModel: TopChatRoomBroadcastUiModel,
     private val productListener: TopChatRoomBroadcastProductListener
-) : TopChatRoomBroadcastFlashSaleTypeFactory {
+) : TopChatRoomBroadcastTypeFactory {
 
     override fun type(
         visitable: Visitable<*>
@@ -21,7 +21,7 @@ class TopChatRoomBroadcastFlashSaleTypeFactoryImpl(
         return when (visitable) {
             is ProductAttachmentUiModel -> {
                 if (visitable.isProductDummySeeMore()) {
-                    TopChatRoomBroadcastFlashSaleSeeMoreViewHolder.LAYOUT
+                    TopChatRoomBroadcastSeeMoreViewHolder.LAYOUT
                 } else {
                     TopChatRoomBroadcastFlashSaleProductViewHolder.LAYOUT
                 }
@@ -42,7 +42,7 @@ class TopChatRoomBroadcastFlashSaleTypeFactoryImpl(
                 broadcastUiModel = broadcastUiModel,
                 productListener = productListener
             )
-            TopChatRoomBroadcastFlashSaleSeeMoreViewHolder.LAYOUT -> TopChatRoomBroadcastFlashSaleSeeMoreViewHolder(
+            TopChatRoomBroadcastSeeMoreViewHolder.LAYOUT -> TopChatRoomBroadcastSeeMoreViewHolder(
                 itemView = view,
                 broadcastUiModel = broadcastUiModel,
                 productListener = productListener

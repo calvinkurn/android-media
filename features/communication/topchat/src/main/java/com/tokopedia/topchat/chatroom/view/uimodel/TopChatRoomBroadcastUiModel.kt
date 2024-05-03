@@ -23,13 +23,16 @@ class TopChatRoomBroadcastUiModel(
     attachmentType = reply.attachment.type.toString(),
     replyTime = reply.replyTime,
     message = reply.msg,
-    source = reply.source
-), Visitable<TopChatRoomTypeFactory> {
+    source = reply.source,
+    blastId = reply.blastId,
+    messageType = reply.messageType
+),
+    Visitable<TopChatRoomTypeFactory> {
 
     val banner: ImageAnnouncementUiModel? get() = items[TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementUiModel
     val singleVoucher: TopChatRoomVoucherUiModel? get() = items[TYPE_VOUCHER] as? TopChatRoomVoucherUiModel
     val voucherCarousel: TopChatRoomVoucherCarouselUiModel? get() = items[TYPE_VOUCHER_CAROUSEL_ATTACHMENT] as? TopChatRoomVoucherCarouselUiModel
-    val productCarousel: ProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_CAROUSEL_ATTACHMENT] as? ProductCarouselUiModel
+    val productCarousel: TopChatRoomProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_CAROUSEL_ATTACHMENT] as? TopChatRoomProductCarouselUiModel
     val singleProduct: ProductAttachmentUiModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT] as? ProductAttachmentUiModel
     val productBundling: Visitable<*>? get() = items[AttachmentType.Companion.TYPE_PRODUCT_BUNDLING]
     val messageUiModel: MessageUiModel? get() = items[AttachmentType.Companion.TYPE_MESSAGE] as? MessageUiModel
