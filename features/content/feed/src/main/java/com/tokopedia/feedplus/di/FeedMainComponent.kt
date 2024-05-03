@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.content.common.comment.di.ContentCommentModule
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
+import com.tokopedia.feed.common.comment.di.ContentCommentModule
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import dagger.BindsInstance
@@ -22,7 +22,7 @@ import dagger.Component
     ],
     dependencies = [
         BaseAppComponent::class,
-        CreationUploaderComponent::class,
+        CreationUploaderComponent::class
     ]
 )
 interface FeedMainComponent {
@@ -34,7 +34,7 @@ interface FeedMainComponent {
         fun build(
             appComponent: BaseAppComponent,
             creationUploaderComponent: CreationUploaderComponent,
-            @BindsInstance activityContext : Context
-        ) : FeedMainComponent
+            @BindsInstance activityContext: Context
+        ): FeedMainComponent
     }
 }
