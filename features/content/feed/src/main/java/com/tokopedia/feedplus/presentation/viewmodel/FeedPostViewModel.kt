@@ -42,6 +42,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedGetChannelStatusUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
@@ -124,6 +125,7 @@ class FeedPostViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase,
+    private val tooltipManager: FeedTooltipManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -207,6 +209,12 @@ class FeedPostViewModel @Inject constructor(
 
     fun saveScrollPosition(position: Int) {
         mSavedPostPosition = position
+
+        if (tooltipManager.isShowTooltip(position)) {
+            viewModelScope.launch {
+                tooltipManager.showTooltipEvent()
+            }
+        }
     }
 
     fun getScrollPosition(): Int? {
