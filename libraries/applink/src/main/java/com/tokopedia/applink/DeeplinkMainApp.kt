@@ -993,6 +993,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(

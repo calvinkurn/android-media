@@ -19,13 +19,13 @@ sealed interface StoriesUiAction {
     data class UpdateStoryDuration(val duration: Int) : StoriesUiAction
     data class OpenBottomSheet(val type: BottomSheetType) : StoriesUiAction
     data class SelectReportReason(val reason: PlayUserReportReasoningUiModel.Reasoning) : StoriesUiAction
+    data class ResumeStories(val forceResume: Boolean = false) : StoriesUiAction
 
     object VideoBuffering : StoriesUiAction
     object PageIsSelected : StoriesUiAction
     object NextDetail : StoriesUiAction
     object PreviousDetail : StoriesUiAction
     object PauseStories : StoriesUiAction
-    object ResumeStories : StoriesUiAction
     object OpenKebabMenu : StoriesUiAction
     object TapSharing : StoriesUiAction
     object ShowDeleteDialog : StoriesUiAction

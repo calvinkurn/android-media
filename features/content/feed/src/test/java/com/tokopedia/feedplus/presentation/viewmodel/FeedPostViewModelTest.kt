@@ -7,8 +7,6 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import com.tokopedia.content.common.comment.model.CountComment
-import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
@@ -21,6 +19,8 @@ import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.feed.common.comment.model.CountComment
+import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
@@ -79,7 +79,11 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.topads.sdk.domain.model.*
+import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.CpmShop
+import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -682,7 +686,7 @@ class FeedPostViewModelTest {
         val dummySuccess = FeedProductActionModel(
             cartId = cartId,
             product = dummyData,
-            source = FeedProductActionModel.Source.BottomSheet,
+            source = FeedProductActionModel.Source.BottomSheet
         )
 
         coEvery { userSession.userId } returns "1"
