@@ -20,6 +20,8 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.home.beranda.data.model.AtfData as OldAtfData
 import javax.inject.Inject
 
@@ -48,6 +50,12 @@ class AtfMapper @Inject constructor(
                 isOptional = data.isOptional,
                 isShimmer = data.isShimmer,
             ),
+            style = AtfData.AtfStyle(
+                isBleeding = data.style?.isBleeding.orFalse(),
+                heightRatio = data.style?.heightRatio.orZero(),
+                widthRatio = data.style?.widthRatio.orZero(),
+                gradientColor = data.style?.gradientColor ?: emptyList(),
+            ),
             isCache = false,
         )
     }
@@ -55,6 +63,10 @@ class AtfMapper @Inject constructor(
     fun mapCacheToDomainAtfData(
         data: AtfCacheEntity,
     ): AtfData {
+        val style = safe(OldAtfData.AtfStyle()) {
+            Gson().fromJson(data.style, OldAtfData.AtfStyle::class.java)
+        }
+
         return AtfData(
             atfMetadata = AtfMetadata(
                 id = data.id,
@@ -69,12 +81,20 @@ class AtfMapper @Inject constructor(
             atfStatus = data.status,
             isCache = true,
             lastUpdate = data.lastUpdate,
+            style = AtfData.AtfStyle(
+                isBleeding = style.isBleeding,
+                heightRatio = style.heightRatio,
+                widthRatio = style.widthRatio,
+                gradientColor = style.gradientColor,
+            ),
         )
     }
 
     fun mapDomainToCacheEntity(
         data: AtfData,
     ): AtfCacheEntity {
+        val style = safe("") { Gson().toJson(data.style) }
+
         return AtfCacheEntity(
             id = data.atfMetadata.id,
             position = data.atfMetadata.position,
@@ -86,6 +106,7 @@ class AtfMapper @Inject constructor(
             status = data.atfStatus,
             isShimmer = data.atfMetadata.isShimmer,
             lastUpdate = data.lastUpdate,
+            style = style
         )
     }
 
@@ -130,5 +151,9 @@ class AtfMapper @Inject constructor(
             }
         }
         return visitables
+    }
+
+    private fun <T> safe(default: T, invoke: () -> T): T {
+        return try { invoke() } catch (_: Throwable) { default }
     }
 }

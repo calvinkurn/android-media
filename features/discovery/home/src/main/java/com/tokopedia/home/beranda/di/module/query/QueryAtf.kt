@@ -15,6 +15,7 @@ internal object QueryAtf {
         "    param\n" +
         "    isOptional\n" +
         "    isShimmer\n" +
+        "    style\n" +
         "    }\n" +
         "}"
 }
