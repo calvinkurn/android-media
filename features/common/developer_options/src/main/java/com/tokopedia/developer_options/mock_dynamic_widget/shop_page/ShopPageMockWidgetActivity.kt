@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.mock_dynamic_widget.shop_page.ShopPageMockWidgetModel.BmsmMockWidgetModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -19,7 +18,11 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
         private const val SHARED_PREF_NAME = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
         private const val SHARED_PREF_MOCK_WIDGET_DATA = "SHARED_PREF_MOCK_WIDGET_DATA"
         private const val SHARED_PREF_MOCK_BMSM_WIDGET_DATA = "SHARED_PREF_MOCK_BMSM_WIDGET_DATA"
+        private const val SHARED_PREF_MOCK_PLAY_WIDGET_DATA = "SHARED_PREF_MOCK_PLAY_WIDGET_DATA"
         private const val SHARED_PREF_MOCK_LOTTIE_URL_DATA = "SHARED_PREF_MOCK_LOTTIE_URL_DATA"
+        private val BMSM_PD_WIDGET_OFFERING_INFO_DATA_SOURCE = R.raw.bmsm_pd_widget_get_offering_info_mock_response
+        private val BMSM_GWP_WIDGET_OFFERING_INFO_DATA_SOURCE = R.raw.bmsm_gwp_widget_get_offering_info_mock_response
+        private val PLAY_WIDGET_DATA_SOURCE = R.raw.play_widget_mock_response
     }
 
     private val sharedPref by lazy {
@@ -135,14 +138,25 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
             sharedPref.edit().putString(SHARED_PREF_MOCK_WIDGET_DATA, it).apply()
         }
         listMockShopWidgetData.forEach {
-            if (it.getWidgetType().equals("group_offering_product", true)) {
-                if (it.getWidgetName().equals("bmgm_banner_group", true)) {
-                    ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmPdWidgetMockResponse().mockBmsmWidgetData)?.let {
-                        sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+            when (it.getWidgetType()) {
+                "group_offering_product" -> {
+                    if (it.getWidgetName().equals("bmgm_banner_group", true)) {
+                        ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmPdWidgetMockResponse().mockBmsmWidgetData)?.let {
+                            sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+                        }
+                    } else {
+                        ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmGwpWidgetMockResponse().mockBmsmWidgetData)?.let {
+                            sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+                        }
                     }
-                } else {
-                    ShopPageMockWidgetModelMapper.bmsmWidgetMockDataToJson(generateBmsmGwpWidgetMockResponse().mockBmsmWidgetData)?.let {
-                        sharedPref.edit().putString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, it).apply()
+                }
+                "dynamic" -> {
+                    if (it.getWidgetName().equals("play", true)) {
+                        resources.let {
+                            ShopPageMockWidgetModelMapper.getStringMockWidgetJsonFromRaw(it, PLAY_WIDGET_DATA_SOURCE).let {
+                                sharedPref.edit().putString(SHARED_PREF_MOCK_PLAY_WIDGET_DATA, it).apply()
+                            }
+                        }
                     }
                 }
             }
@@ -165,17 +179,13 @@ class ShopPageMockWidgetActivity : BaseActivity(), ShopPageMockWidgetAdapter.Sho
 
     private fun generateBmsmPdWidgetMockResponse(): BmsmMockWidgetModel {
         return resources?.let {
-            val offeringInfoMockJsonData = ShopPageMockWidgetModelMapper.getBmsmPdWidgetOfferingInfoMockJsonFromRaw(it)
-            val offeringProductMockJsonData = ShopPageMockWidgetModelMapper.getBmsmWidgetOfferingProductMockJsonFromRaw(it)
-            ShopPageMockWidgetModelMapper.generateMockBmsmWidgetData(offeringInfoMockJsonData, offeringProductMockJsonData)
+            ShopPageMockWidgetModelMapper.generateMockBmsmWidgetData(it, BMSM_PD_WIDGET_OFFERING_INFO_DATA_SOURCE)
         } ?: BmsmMockWidgetModel()
     }
 
     private fun generateBmsmGwpWidgetMockResponse(): BmsmMockWidgetModel {
         return resources?.let {
-            val offeringInfoMockJsonData = ShopPageMockWidgetModelMapper.getBmsmGwpWidgetOfferingInfoMockJsonFromRaw(it)
-            val offeringProductMockJsonData = ShopPageMockWidgetModelMapper.getBmsmWidgetOfferingProductMockJsonFromRaw(it)
-            ShopPageMockWidgetModelMapper.generateMockBmsmWidgetData(offeringInfoMockJsonData, offeringProductMockJsonData)
+            ShopPageMockWidgetModelMapper.generateMockBmsmWidgetData(it, BMSM_GWP_WIDGET_OFFERING_INFO_DATA_SOURCE)
         } ?: BmsmMockWidgetModel()
     }
 }

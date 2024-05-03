@@ -16,8 +16,6 @@ import java.io.InputStream
 
 object ShopPageMockWidgetModelMapper {
     private val SHOP_PAGE_MOCK_WIDGET_DATA_RESOURCE = R.raw.shop_page_template_mock_widget
-    private val BMSM_PD_WIDGET_OFFERING_INFO_DATA_SOURCE = R.raw.bmsm_pd_widget_get_offering_info_mock_response
-    private val BMSM_GWP_WIDGET_OFFERING_INFO_DATA_SOURCE = R.raw.bmsm_gwp_widget_get_offering_info_mock_response
     private val BMSM_WIDGET_OFFERING_PRODUCT_DATA_SOURCE = R.raw.bmsm_widget_get_offering_product_mock_response
     private val gson by lazy {
         Gson()
@@ -31,45 +29,6 @@ object ShopPageMockWidgetModelMapper {
 
     fun getShopPageMockJsonFromRaw(resources: Resources): JsonArray? {
         val rawResource: InputStream = resources.openRawResource(SHOP_PAGE_MOCK_WIDGET_DATA_RESOURCE)
-        val content: String = GraphqlHelper.streamToString(rawResource)
-        try {
-            rawResource.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return JsonParser.parseString(content).asJsonArray
-    }
-
-    fun generateMockBmsmWidgetData(offeringInfo: JsonArray?, offeringProduct: JsonArray?): BmsmMockWidgetModel {
-        val offeringInfoResponseData = offeringInfo?.first()?.asJsonObject.toString()
-        val offeringProductResponseData = offeringProduct?.first()?.asJsonObject.toString()
-        return BmsmMockWidgetModel(Pair(offeringInfoResponseData, offeringProductResponseData))
-    }
-
-    fun getBmsmPdWidgetOfferingInfoMockJsonFromRaw(resources: Resources): JsonArray? {
-        val rawResource: InputStream = resources.openRawResource(BMSM_PD_WIDGET_OFFERING_INFO_DATA_SOURCE)
-        val content: String = GraphqlHelper.streamToString(rawResource)
-        try {
-            rawResource.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return JsonParser.parseString(content).asJsonArray
-    }
-
-    fun getBmsmGwpWidgetOfferingInfoMockJsonFromRaw(resources: Resources): JsonArray? {
-        val rawResource: InputStream = resources.openRawResource(BMSM_GWP_WIDGET_OFFERING_INFO_DATA_SOURCE)
-        val content: String = GraphqlHelper.streamToString(rawResource)
-        try {
-            rawResource.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return JsonParser.parseString(content).asJsonArray
-    }
-
-    fun getBmsmWidgetOfferingProductMockJsonFromRaw(resources: Resources): JsonArray? {
-        val rawResource: InputStream = resources.openRawResource(BMSM_WIDGET_OFFERING_PRODUCT_DATA_SOURCE)
         val content: String = GraphqlHelper.streamToString(rawResource)
         try {
             rawResource.close()
@@ -101,6 +60,40 @@ object ShopPageMockWidgetModelMapper {
             addProperty("widgetType", widgetType)
             addProperty("widgetName", widgetName)
         }
+    }
+
+    fun generateMockBmsmWidgetData(
+        resources: Resources,
+        rawResourcePath: Int
+    ): BmsmMockWidgetModel {
+        val offeringInfo = getMockWidgetJsonFromRaw(resources, rawResourcePath)
+        val offeringProduct = getMockWidgetJsonFromRaw(resources, BMSM_WIDGET_OFFERING_PRODUCT_DATA_SOURCE)
+        val offeringInfoResponseData = offeringInfo?.first()?.asJsonObject.toString()
+        val offeringProductResponseData = offeringProduct?.first()?.asJsonObject.toString()
+        return BmsmMockWidgetModel(Pair(offeringInfoResponseData, offeringProductResponseData))
+    }
+
+    private fun getMockWidgetJsonFromRaw(resources: Resources, rawResourcePath: Int): JsonArray? {
+        val rawResource: InputStream = resources.openRawResource(rawResourcePath)
+        val content: String = GraphqlHelper.streamToString(rawResource)
+        try {
+            rawResource.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return JsonParser.parseString(content).asJsonArray
+    }
+
+    fun getStringMockWidgetJsonFromRaw(resources: Resources, rawResourcePath: Int): String {
+        val rawResource: InputStream = resources.openRawResource(rawResourcePath)
+        val content: String = GraphqlHelper.streamToString(rawResource)
+        try {
+            rawResource.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        val jsonArray = JsonParser.parseString(content).asJsonArray
+        return jsonArray?.first()?.asJsonObject.toString()
     }
 
     fun updateWidgetId(mockShopWidgetData: List<ShopPageMockWidgetModel>) {
