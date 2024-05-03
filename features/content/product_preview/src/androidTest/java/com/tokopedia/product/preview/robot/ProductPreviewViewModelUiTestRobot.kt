@@ -17,8 +17,10 @@ import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
@@ -33,10 +35,13 @@ import com.tokopedia.content.product.preview.view.fragment.ReviewFragment
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
+import com.tokopedia.content.test.cassava.containsEvent
+import com.tokopedia.content.test.cassava.containsEventAction
 import com.tokopedia.content.test.espresso.recyclerViewSmoothScrollTo
 import com.tokopedia.product.preview.factory.ProductPreviewFragmentFactoryUITest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
+import org.junit.Rule
 import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 import com.tokopedia.empty_state.R as empty_stateR
@@ -50,6 +55,11 @@ internal class ProductPreviewViewModelUiTestRobot(
     private val productPreviewPref: ProductPreviewSharedPreferences,
     private val router: Router
 ) {
+
+    @get:Rule
+    var cassavaTest = CassavaTestRule(sendValidationResult = false)
+
+    private val cassavaPath = "tracker/content/productpreview/product_preview.json"
 
     private val viewModel: ProductPreviewViewModel by lazy {
         ProductPreviewViewModel(
@@ -128,6 +138,20 @@ internal class ProductPreviewViewModelUiTestRobot(
 
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
+    }
+
+    fun validateEvent(eventName: String) = chainable {
+        ViewMatchers.assertThat(
+            cassavaTest.validate(cassavaPath),
+            containsEvent(eventName)
+        )
+    }
+
+    fun validateEventAction(eventAction: String) = chainable {
+        ViewMatchers.assertThat(
+            cassavaTest.validate(cassavaPath),
+            containsEventAction(eventAction)
+        )
     }
 
     fun showProductAndReviewTab() = chainable {

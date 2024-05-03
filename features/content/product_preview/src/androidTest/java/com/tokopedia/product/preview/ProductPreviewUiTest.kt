@@ -1,18 +1,16 @@
 package com.tokopedia.product.preview
 
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.product.preview.domain.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreferences
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
-import com.tokopedia.content.test.cassava.containsTrackerId
 import com.tokopedia.product.preview.data.ProductPreviewMockData
 import com.tokopedia.product.preview.robot.ProductPreviewViewModelUiTestRobot
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -23,17 +21,13 @@ import org.junit.runner.RunWith
 
 @UiTest
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class ProductPreviewUiTest {
 
     @get:Rule
     val composeTestRule = createEmptyComposeRule()
 
-    @get:Rule
-    var cassavaTest = CassavaTestRule(sendValidationResult = false)
-
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-    private val analyticProductPreviewTracker = "tracker/content/productpreview/product_preview.json"
 
     private val mockData = ProductPreviewMockData()
     private val repository: ProductPreviewRepository = mockk(relaxed = true)
@@ -62,41 +56,18 @@ class ProductPreviewUiTest {
         coEvery { repository.getProductMiniInfo(productId) } returns mockData.mockProductMiniInfo()
 
         getProductPreviewRobot(mockData.mockSourceProduct(productId))
+            .validateEvent("openScreen")
+            .validateEventAction("view - add to cart media fullscreen")
             .onSwipeProductContent()
             .onClickTab()
             .onSwipeTab()
+            .validateEventAction("view - image content")
+            .validateEventAction("scroll - swipe left right content")
             .onClickProductThumbnail()
+            .validateEventAction("click - content thumbnail")
             .showProductAndReviewTab()
             .onClickBackButton()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49606")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49598")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49594")
-        )
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49589")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49588")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49587")
-        )
+            .validateEventAction("click - back button to pdp")
     }
 
     @Test
@@ -117,23 +88,11 @@ class ProductPreviewUiTest {
         )
             .showProductAndReviewTab()
             .showATCRemindMe()
+            .validateEventAction("view - ingatkan saya")
             .onClickAtcButton()
+            .validateEventAction("click - ingatkan saya")
             .onClickNavigationButton()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("50664")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49601")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49600")
-        )
+            .validateEventAction("click - bottom nav")
     }
 
     @Test
@@ -147,35 +106,15 @@ class ProductPreviewUiTest {
             userSession = userSession
         )
             .onSwipeReviewContentFromProductPage()
+            .validateEventAction("scroll - swipe up down ulasan tab")
             .onClickReviewAccountName()
+            .validateEventAction("click - account name")
             .onClickReviewThreeDots()
+            .validateEventAction("click - three dots")
             .onClickReviewReport()
+            .validateEventAction("click - laporkan ulasan")
             .onClickSubmitReport()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49850")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49650")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49605")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49603")
-        )
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49602")
-        )
+            .validateEventAction("click - submit report ulasan")
     }
 
     @Test
@@ -189,11 +128,7 @@ class ProductPreviewUiTest {
             userSession = userSession
         )
             .onClickReviewWatchMode()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49651")
-        )
+            .validateEventAction("click - mode nonton")
     }
 
     @Test
@@ -206,11 +141,7 @@ class ProductPreviewUiTest {
             userSession = userSession
         )
             .onClickPauseOrPlayVideo()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49845")
-        )
+            .validateEventAction("click - pause play button")
     }
 
     @Test
@@ -224,11 +155,7 @@ class ProductPreviewUiTest {
             userSession = userSession
         )
             .onClickLikeUnLike()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("49851")
-        )
+            .validateEventAction("click - like button")
     }
 
     @Test
@@ -241,11 +168,7 @@ class ProductPreviewUiTest {
             userSession = userSession
         )
             .onClickAtcButton()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("50427")
-        )
+            .validateEventAction("click - add to cart media fullscreen")
     }
 
     @Test
@@ -259,10 +182,6 @@ class ProductPreviewUiTest {
             router = router
         )
             .onClickAtcButton()
-
-        assertThat(
-            cassavaTest.validate(analyticProductPreviewTracker),
-            containsTrackerId("50428")
-        )
+            .validateEventAction("click - variant bottomsheet atc entry point")
     }
 }
