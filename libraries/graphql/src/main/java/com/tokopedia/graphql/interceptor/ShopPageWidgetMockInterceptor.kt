@@ -23,6 +23,7 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
         private const val SHARED_PREF_SHOP_PAGE_MOCK_WIDGET = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
         private const val SHARED_PREF_MOCK_WIDGET_DATA = "SHARED_PREF_MOCK_WIDGET_DATA"
         private const val SHARED_PREF_MOCK_BMSM_WIDGET_DATA = "SHARED_PREF_MOCK_BMSM_WIDGET_DATA"
+        private const val SHARED_PREF_MOCK_PLAY_WIDGET_DATA = "SHARED_PREF_MOCK_PLAY_WIDGET_DATA"
     }
 
     private val sharedPref: SharedPreferences = applicationContext.getSharedPreferences(
@@ -40,6 +41,7 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
             // second pair is shopPageGetLayout widget mock response
             val stringListOfPairMockWidgetData = sharedPref.getString(SHARED_PREF_MOCK_WIDGET_DATA, null)
             val stringPairOfBmsmMockWidgetData = sharedPref.getString(SHARED_PREF_MOCK_BMSM_WIDGET_DATA, null)
+            val stringMockPlayWidgetData = sharedPref.getString(SHARED_PREF_MOCK_PLAY_WIDGET_DATA, null)
 
             val requestBody = chain.request()
             val buffer = Buffer()
@@ -65,9 +67,15 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
                         val mockResponseOfferingInfo = mockResponseBmsmWidgetData.first
                         val mockResponseOfferingProduct = mockResponseBmsmWidgetData.second
                         return if (requestString.contains("getOfferingInfoForBuyer")) {
-                            mockResponseBmsmOfferingInfo(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseOfferingInfo)
+                            mockResponseBmsmOfferingInfo(networkRequest, mockResponseOfferingInfo)
                         } else if (requestString.contains("getOfferingProductList")) {
-                            mockResponseBmsmOfferingProduct(networkRequest, chain.proceed(chain.request()).body?.string().orEmpty(), mockResponseOfferingProduct)
+                            mockResponseBmsmOfferingProduct(networkRequest, mockResponseOfferingProduct)
+                        } else {
+                            chain.proceed(chain.request())
+                        }
+                    } else if (null != stringMockPlayWidgetData) {
+                        return if (requestString.contains("playGetWidgetV2")) {
+                            mockResponseGetPlayWidgetV2(networkRequest, stringMockPlayWidgetData)
                         } else {
                             chain.proceed(chain.request())
                         }
@@ -137,7 +145,7 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
             .build()
     }
 
-    private fun mockResponseBmsmOfferingInfo(copy: Request, responseString: String, mockData: String): Response {
+    private fun mockResponseBmsmOfferingInfo(copy: Request, mockData: String): Response {
         val mockOfferingInfoJsonObject = JsonParser.parseString(mockData).asJsonObject
 
         val mockOfferingInfoResponse = JsonArray()
@@ -158,7 +166,7 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
             .build()
     }
 
-    private fun mockResponseBmsmOfferingProduct(copy: Request, responseString: String, mockData: String): Response {
+    private fun mockResponseBmsmOfferingProduct(copy: Request, mockData: String): Response {
         val mockOfferingProductJsonObject = JsonParser.parseString(mockData).asJsonObject
 
         val mockOfferingProductResponse = JsonArray()
@@ -173,6 +181,27 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
             .message(mockOfferingProductResponse.toString())
             .body(
                 mockOfferingProductResponse.toString().toByteArray()
+                    .toResponseBody("application/json".toMediaTypeOrNull())
+            )
+            .addHeader("content-type", "application/json")
+            .build()
+    }
+
+    private fun mockResponseGetPlayWidgetV2(copy: Request, mockData: String): Response {
+        val mockGetPlayWidgetV2JsonObject = JsonParser.parseString(mockData).asJsonObject
+
+        val mockGetPlayWidgetV2Response = JsonArray()
+        val data = JsonObject()
+        data.add("data", mockGetPlayWidgetV2JsonObject)
+        mockGetPlayWidgetV2Response.add(data)
+
+        return Response.Builder()
+            .request(copy)
+            .code(200)
+            .protocol(Protocol.HTTP_2)
+            .message(mockGetPlayWidgetV2Response.toString())
+            .body(
+                mockGetPlayWidgetV2Response.toString().toByteArray()
                     .toResponseBody("application/json".toMediaTypeOrNull())
             )
             .addHeader("content-type", "application/json")
