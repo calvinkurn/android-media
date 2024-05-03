@@ -118,12 +118,11 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
 
     private fun impressTracker() {
         val singleProduct = uiModel?.singleProduct
-        val banner = uiModel?.banner
-        if (singleProduct != null && banner != null) {
+        if (singleProduct != null) {
             productListener?.onImpressionBroadcastProduct(
                 blastId = uiModel?.blastId.orEmpty(),
-                campaignStatus = banner.getCampaignStatusString(),
-                campaignCountDown = banner.getCampaignCountDownString(),
+                campaignStatus = uiModel?.banner?.getCampaignStatusString().orEmpty(),
+                campaignCountDown = uiModel?.banner?.getCampaignCountDownString().orEmpty(),
                 productId = singleProduct.productId
             )
         }
@@ -132,12 +131,11 @@ class TopChatRoomBroadcastPromoProductView @JvmOverloads constructor(
     private fun setSingleProductListener() {
         binding.topchatChatroomBroadcastPromoSingleProduct.setOnClickListener {
             val singleProduct = uiModel?.singleProduct
-            val banner = uiModel?.banner
-            if (singleProduct != null && banner != null) {
+            if (singleProduct != null) {
                 productListener?.onClickBroadcastProduct(
                     blastId = uiModel?.blastId.orEmpty(),
-                    campaignStatus = banner.getCampaignStatusString(),
-                    campaignCountDown = banner.getCampaignCountDownString(),
+                    campaignStatus = uiModel?.banner?.getCampaignStatusString().orEmpty(),
+                    campaignCountDown = uiModel?.banner?.getCampaignCountDownString().orEmpty(),
                     productId = singleProduct.productId,
                     androidUrl = singleProduct.androidUrl,
                     productUrl = singleProduct.productUrl

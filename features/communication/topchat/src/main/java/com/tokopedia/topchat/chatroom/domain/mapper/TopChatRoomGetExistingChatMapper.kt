@@ -355,7 +355,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 val voucher = convertToVoucher(chat)
                 if (voucher is TopChatRoomVoucherUiModel) {
                     vouchers.add(voucher)
-                    vouchers.add(voucher)
                 }
                 idx++
             } else {

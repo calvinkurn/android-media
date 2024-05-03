@@ -74,11 +74,10 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
-            !productAttachment.isUpcomingCampaign &&
-            productAttachment.remainingStock < 1
+            !productAttachment.isUpcomingCampaign
         ) {
             labelGroupList.add(
                 ProductCardModel.LabelGroup(
@@ -119,7 +118,7 @@ object TopChatRoomProductCardMapper {
         return ProductCardCompactUiModel(
             productId = productAttachment.productId,
             imageUrl = productAttachment.productImage,
-            minOrder = productAttachment.minOrder,
+            minOrder = productAttachment.minOrder.coerceAtLeast(1),
             availableStock = productAttachment.remainingStock,
             price = productAttachment.productPrice,
             discount = productAttachment.dropPercentage,
@@ -133,7 +132,8 @@ object TopChatRoomProductCardMapper {
             sold = productAttachment.sold,
             hasBeenWishlist = productAttachment.isWishListed(),
             isVariant = productAttachment.hasVariant(),
-            labelGroupList = getProductCardCompactLabelList(productAttachment)
+            labelGroupList = getProductCardCompactLabelList(productAttachment),
+            isPreOrder = productAttachment.isPreOrder
         )
     }
 
@@ -150,7 +150,7 @@ object TopChatRoomProductCardMapper {
                 )
             )
         }
-        if (productAttachment.isProductActive() &&
+        if (productAttachment.hasEmptyStock() &&
             !productAttachment.isProductArchived() &&
             !productAttachment.isProductDummySeeMore() &&
             !productAttachment.isUpcomingCampaign &&

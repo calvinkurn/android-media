@@ -26,7 +26,9 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
 
     init {
         binding = TopchatChatroomProductCardCompactHorizontalBinding.inflate(
-            LayoutInflater.from(context), this, true
+            LayoutInflater.from(context),
+            this,
+            true
         )
     }
 
@@ -84,6 +86,9 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
         val rating = product.rating
         val sold = product.sold
         if (rating.isNotBlank() || sold.isNotBlank()) {
+            binding.topchatChatroomProductCompactHorizontalSeparator.showWithCondition(
+                rating.isNotBlank() && sold.isNotBlank()
+            )
             bindRatingText(rating)
             bindSold(sold)
             binding.topchatChatroomLlProductCompactHorizontalRating.show()
@@ -106,23 +111,30 @@ class TopChatRoomProductCardCompactHorizontal @JvmOverloads constructor(
 
     private fun bindSold(sold: String) {
         if (sold.isNotBlank()) {
-            binding.topchatChatroomProductCompactHorizontalSeparator.show()
             binding.topchatChatroomTvProductCompactHorizontalSold.text = sold
             binding.topchatChatroomTvProductCompactHorizontalSold.show()
         } else {
-            binding.topchatChatroomProductCompactHorizontalSeparator.gone()
             binding.topchatChatroomTvProductCompactHorizontalSold.gone()
         }
     }
 
     private fun bindLabel(product: ProductCardCompactUiModel) {
         val oosLabelGroup = product.getOosLabelGroup()
-        if (oosLabelGroup != null) {
-            binding.topchatChatroomTvProductCompactHorizontalLabel.setLabelType(HIGHLIGHT_DARK_GREY)
-            binding.topchatChatroomTvProductCompactHorizontalLabel.text = oosLabelGroup.title
-            binding.topchatChatroomTvProductCompactHorizontalLabel.show()
-        } else {
-            binding.topchatChatroomTvProductCompactHorizontalLabel.gone()
+        val preOrderLabelGroup = product.getPreOrderLabelGroup()
+        when {
+            (oosLabelGroup != null) -> {
+                binding.topchatChatroomTvProductCompactHorizontalLabel.setLabelType(HIGHLIGHT_DARK_GREY)
+                binding.topchatChatroomTvProductCompactHorizontalLabel.text = oosLabelGroup.title
+                binding.topchatChatroomTvProductCompactHorizontalLabel.show()
+            }
+            (preOrderLabelGroup != null) -> {
+                binding.topchatChatroomTvProductCompactHorizontalLabel.setLabelType(HIGHLIGHT_DARK_GREY)
+                binding.topchatChatroomTvProductCompactHorizontalLabel.text = preOrderLabelGroup.title
+                binding.topchatChatroomTvProductCompactHorizontalLabel.show()
+            }
+            else -> {
+                binding.topchatChatroomTvProductCompactHorizontalLabel.gone()
+            }
         }
     }
 
