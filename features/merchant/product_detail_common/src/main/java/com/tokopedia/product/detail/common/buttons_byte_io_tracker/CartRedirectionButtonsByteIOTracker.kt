@@ -38,7 +38,7 @@ class CartRedirectionButtonsByteIOTracker : ICartRedirectionButtonsByteIOTracker
                     getCartRedirectionButtonsByteIOTrackerActionType(),
                     data
                 ) ?: return
-                AppLogPdp.sendButtonClickCompleted(analyticData)
+                AppLogPdp.sendButtonConfirmSku(analyticData)
             }
         }
     }

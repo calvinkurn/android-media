@@ -4,6 +4,7 @@ import com.tokopedia.analytics.byteio.ButtonClickAnalyticData
 import com.tokopedia.analytics.byteio.ButtonClickCompletedAnalyticData
 import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
 @Suppress("LateinitUsage")
@@ -57,8 +58,8 @@ class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsB
             skuId = _mediator.getSkuId() ?: return null,
             quantity = _mediator.getProductMinOrder().toString(),
             productType = _mediator.getProductType() ?: return null,
-            originalPrice = _mediator.getProductOriginalPrice().toString(),
-            salePrice = _mediator.getProductSalePrice().toString(),
+            originalPrice = _mediator.getProductOriginalPrice().orZero(),
+            salePrice = _mediator.getProductSalePrice().orZero(),
             followStatus = if (_mediator.isFollowShop()) {
                 ButtonClickCompletedAnalyticData.FollowStatus.FOLLOWED
             } else {

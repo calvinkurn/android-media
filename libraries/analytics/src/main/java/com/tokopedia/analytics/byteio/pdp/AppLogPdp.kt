@@ -280,7 +280,7 @@ object AppLogPdp {
         )
     }
 
-    fun sendButtonClickCompleted(analyticData: ButtonClickCompletedAnalyticData) {
+    fun sendButtonConfirmSku(analyticData: ButtonClickCompletedAnalyticData) {
         AppLogAnalytics.send(
             EventName.PDP_BUTTON_CLICK_COMPLETED,
             JSONObject().apply {
@@ -296,8 +296,8 @@ object AppLogPdp {
                 put("sku_id", analyticData.skuId)
                 put("quantity", analyticData.quantity)
                 put("product_type", analyticData.productType.type)
-                put("original_price", analyticData.originalPrice)
-                put("sale_price", analyticData.salePrice)
+                put("original_price_value", analyticData.originalPrice)
+                put("sale_price_value", analyticData.salePrice)
                 put("follow_status", analyticData.followStatus.value)
                 put("buy_type", analyticData.buyType.value)
                 put("cart_id", analyticData.cartId)
