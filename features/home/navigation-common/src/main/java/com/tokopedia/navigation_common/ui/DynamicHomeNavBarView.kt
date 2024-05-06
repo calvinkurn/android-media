@@ -89,7 +89,7 @@ class DynamicHomeNavBarView : LinearLayout {
         modelList.forEach {
             it.assets.values.forEach loadAsset@{ asset ->
                 if (asset !is Type.LottieUrl) return@loadAsset
-                cacheManager.preloadFromUrl(asset.url)
+                asset.preload()
             }
         }
 

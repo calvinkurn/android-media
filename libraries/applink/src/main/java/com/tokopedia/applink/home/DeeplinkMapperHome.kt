@@ -24,6 +24,7 @@ object DeeplinkMapperHome {
     const val EXTRA_TAB_TYPE = "tab_type"
     const val EXTRA_DISCO_ID = "disco_id"
 
+    const val TAB_TYPE_HOME = "home"
     const val TAB_TYPE_FEED = "feed"
 
     fun isLoginAndHasShop(context: Context): Boolean {
@@ -43,7 +44,10 @@ object DeeplinkMapperHome {
 
         // tokopedia://home
         if (uri.host == Uri.parse(ApplinkConst.HOME).host && uri.pathSegments.isEmpty()) {
-            return ApplinkConsInternalHome.HOME_NAVIGATION
+            return UriUtil.buildUriAppendParams(
+                ApplinkConsInternalHome.HOME_NAVIGATION,
+                mapOf(EXTRA_TAB_TYPE to TAB_TYPE_HOME)
+            )
         } else if (deeplink.startsWith(ApplinkConst.HOME_CATEGORY) && uri.pathSegments.size == 1) {
             return ApplinkConsInternalHome.HOME_NAVIGATION
         } else if (deeplink.startsWith(ApplinkConst.Navigation.MAIN_NAV)) {
