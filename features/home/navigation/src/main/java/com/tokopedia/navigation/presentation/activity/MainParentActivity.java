@@ -55,7 +55,9 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.EnterMethod;
+import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -152,7 +154,8 @@ public class MainParentActivity extends BaseActivity implements
         ITelemetryActivity,
         InAppCallback,
         HomeCoachmarkListener,
-        HomeBottomNavListener {
+        HomeBottomNavListener,
+        IAppLogActivity {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -1361,6 +1364,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
+        AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, getPageName());
         updateAppLogPageData(position, false);
         sendEnterPage(position);
         return true;
@@ -1548,5 +1552,20 @@ public class MainParentActivity extends BaseActivity implements
         if (isSameValue)
             return;
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
+    }
+
+    @Override
+    public String getPageName() {
+
+        String pageName = switch (currentSelectedFragmentPosition) {
+            case HOME_MENU -> PageName.HOME;
+            case FEED_MENU -> PageName.FEED;
+            case OS_MENU -> PageName.OFFICIAL_STORE;
+            case WISHLIST_MENU -> PageName.WISHLIST;
+            case UOH_MENU -> PageName.UOH;
+            default -> "";
+        };
+
+        return pageName;
     }
 }

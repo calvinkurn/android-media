@@ -28,14 +28,13 @@ object AppLogTopAds {
         context: Context,
         adsLogShowOverModel: AdsLogShowOverModel
     ) {
-        val pageName = getPageName()
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(isSearchPage(pageName)) {
+                        if(isSearchPage(getPageName())) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -58,7 +57,7 @@ object AppLogTopAds {
 
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, getSystemBootTime())
 
-                putTag(pageName)
+                putTag(getPageName())
             }
         )
     }
@@ -146,19 +145,21 @@ object AppLogTopAds {
         )
     }
 
-    private fun getPageName() = AppLogAnalytics.getLastData(PAGE_NAME)
+    private fun getPageName() = AppLogAnalytics.currentPageName
 
     private fun getSystemBootTime(): String = (System.currentTimeMillis() - SystemClock.elapsedRealtime()).toString()
 
     private fun getEnterFrom(): String {
-        val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
+        val prevPageName = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
         return if (prevPageName == PageName.HOME) AdsLogConst.EnterFrom.MALL else AdsLogConst.EnterFrom.OTHER
     }
 
     private fun getChannel(): String {
-        val prevPageName = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
+        val prevPageName = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
         return when(prevPageName) {
-            AppLogSearch.ParamValue.GOODS_SEARCH, PageName.SEARCH_RESULT -> AdsLogConst.Channel.PRODUCT_SEARCH
+            AppLogSearch.ParamValue.GOODS_SEARCH, PageName.SEARCH_RESULT,
+            PageName.HOME, PageName.OFFICIAL_STORE ->
+                AdsLogConst.Channel.PRODUCT_SEARCH
             PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
             PageName.SHOP -> AdsLogConst.Channel.STORE_SEARCH
             PageName.EXTERNAL_PROMO -> AdsLogConst.Channel.FIND_SEARCH
@@ -172,7 +173,9 @@ object AppLogTopAds {
     }
 
     private fun JSONObject.putChannelName(channelName: String) {
-        put(AdsLogConst.Param.CHANNEL, channelName)
+        if (channelName.isNotBlank()) {
+            put(AdsLogConst.Param.CHANNEL, channelName)
+        }
     }
 
     private fun JSONObject.putProductName(productName: String) {
