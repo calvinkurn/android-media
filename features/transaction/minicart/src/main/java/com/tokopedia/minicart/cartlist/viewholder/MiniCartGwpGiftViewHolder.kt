@@ -50,7 +50,8 @@ class MiniCartGwpGiftViewHolder(
                     ),
                     pageSource = PageSource.MINICART_NOW,
                     shopId = element.shopId,
-                    autoSelectTierChipByTierId = element.tierId
+                    autoSelectTierChipByTierId = element.tierId,
+                    mainProducts = listOf() // need to pass real main products data
                 )
 
                 setupCtaClickListener(element.ctaText) {
