@@ -11,7 +11,7 @@
     <string name="pm_label_cancellation_questionnaire_intro_title">Agar pengajuanmu terkirim, beri masukan untuk layanan Power Merchant, yuk!</string>
 
     <string name="power_merchant_register_now">Gabung Sekarang</string>
-    <string name="power_merchant_benefit_learn_more">Pelajari Selengkapnya</string>
+    <string name="power_merchant_benefit_learn_more">Pelajari Selengkapnya ></string>
     <string name="power_merchant_performance_tips">Tips Tingkatkan Performa</string>
     <string name="power_merchant_max_score">/100</string>
     <string name="power_merchant_status_label">Status Power Merchant:</string>
@@ -59,6 +59,8 @@
     <string name="pm_desc_shop_score_term_new_seller_before_30_days">Proyeksi skor tokomu %s</string>
     <string name="pm_title_shop_score_term_new_seller_after_30_days"><![CDATA[Proyeksi Skor Toko: <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_desc_shop_score_term_new_seller_after_30_days">Batas min. skor 70</string>
+    <string name="pm_title_data_verification_term">Verifikasi data diri</string>
+    <string name="pm_desc_data_verification_term">Agar bisa jadi Power Merchant PRO</string>
 
     <string name="pm_kyc_verify_ktp">Verifikasi data diri dengan KTP</string>
     <string name="pm_kyc_verified">Data Diri Terverifikasi</string>
@@ -104,7 +106,7 @@
     <string name="pm_all_questionnaire_must_be_answered">Anda belum menjawab semua pertanyaan</string>
     <string name="pm_pro_number_of_order"><![CDATA[Produk Terjual: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_number_of_order"><![CDATA[Pesanan Selesai: <font color=\"%1$s\">%2$s</font>]]></string>
-    <string name="pm_number_of_minimum_order">Min. %1$s pesanan dalam 30 hari terakhir</string>
+    <string name="pm_number_of_minimum_order">Min. %1$s dalam 30 hari terakhir</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_niv_threshold_term">Min. %1$s dalam 30 hari terakhir</string>
     <string name="pm_niv_threshold_term_membership">Target: min. %1$s dalam 90 hari terakhir</string>
@@ -115,17 +117,19 @@
     <string name="pm_not_eligible_niv_term_description"><![CDATA[Tokomu harus mendapatkan pendapatan <b>Rp%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!]]></string>
     <string name="pm_benefits_that_you_can_get">Keuntungan yang bisa kamu dapatkan</string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro_new_seller">Berbagai keuntungan eksklusif Power Merchant PRO:</string>
-    <string name="pm_get_exclusive_benefit_of_being_pm_pro">Tingkatkan performa toko sesuai target dan nikmati keuntungannya!</string>
-    <string name="pm_pro_general_benefit_1">Badge PM PRO untuk menambah kepercayaan</string>
-    <string name="pm_pro_general_benefit_2">Kuota penggunaan fitur lebih banyak</string>
-    <string name="pm_pro_general_benefit_3">Akses eksklusif ke semua fitur promosi</string>
-
+    <string name="pm_get_exclusive_benefit_of_being_pm_pro">Tingkatkan Performa Toko sesuai target &amp; nikmati keuntungannya!</string>
+    <string name="pm_keep_being_of_pm_pro">Pertahankan Performa Toko dan nikmati keuntungannya!</string>
+    <string name="pm_pro_general_benefit_1">Badge PM PRO untuk tingkatkan kepercayaan</string>
+    <string name="pm_pro_general_benefit_2">Promo eksklusif untukmu</string>
+    <string name="pm_pro_general_benefit_3">Berpotensi mendapatkan lebih banyak kunjungan</string>
     <string name="pm_deactivation_bottom_sheet_message">*Berdasarkan data di bulan Desember 2022 - Januari 2023.</string>
     <string name="pm_pm_deactivation_be_rm_tnc">Agar pengajuan terkirim, Lanjut ke Pengajuan dan beri masukan.</string>
     <string name="pm_stop_pm">Berhenti dari PM</string>
     <string name="pm_regular_merchant">Regular Merchant</string>
     <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_pro_upgrade_description">Sebagai Power Merchant PRO, kamu bisa dapat:</string>
+    <string name="pm_pro_notupgrade_description">Sebagai Power Merchant PRO, kamu mendapatkan:</string>
+    <string name="pm_pro_shop_achivement">Pencapaian tokomu hari ini</string>
     <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
     <string name="pm_moderated_shop_ticker_description">Kamu bisa daftar Power Merchant jika toko kembali aktif.</string>
     <string name="pm_bottom_sheet_moderated_shop_title">Proses bergabung tidak bisa \ndilanjutkan</string>
@@ -176,7 +180,7 @@
     <string name="pm_power_merchant_step_pro_expert">Expert</string>
     <string name="pm_power_merchant_step_pro_ultimate">Ultimate</string>
     <string name="pm_fee_service">Biaya Layanan</string>
-    <string name="pm_learn_fee_service">Pelajari detail biaya per kategori</string>
+    <string name="pm_learn_fee_service">Lihat detail biaya per kategori</string>
 
     <string name="pm_active_shop_score_description">Batas min. skor %1$d</string>
 
@@ -234,5 +238,7 @@
 
     <string name="opt_in_pm_pro_activation_success_message">Berhasil membatalkan pengajuan untuk berhenti jadi Power Merchant PRO.</string>
     <string name="opt_in_pm_activation_success_message">Berhasil membatalkan pengajuan untuk berhenti jadi Power Merchant.</string>
+    <string name="pm_explore_shop">Eksplor fitur tokomu, yuk!</string>
+    <string name="pm_try_explore_shop">Cobain fiturnya buat optimalkan toko kamu.</string>
 
 </resources>

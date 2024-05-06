@@ -20,10 +20,10 @@ import kotlin.coroutines.CoroutineContext
 
 class ErrorLoadViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
 ) :
-    DiscoveryBaseViewModel(), CoroutineScope {
+    DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val showLoader: MutableLiveData<Boolean> = MutableLiveData()
 

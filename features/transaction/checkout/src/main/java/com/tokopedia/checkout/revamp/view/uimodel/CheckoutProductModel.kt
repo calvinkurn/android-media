@@ -15,6 +15,8 @@ data class CheckoutProductModel(
     val cartId: Long = 0,
     val productId: Long = 0,
     val productCatId: Long = 0,
+    val lastLevelCategory: String = "",
+    val categoryIdentifier: String = "",
     val name: String = "",
     val price: Double = 0.0,
     val originalPrice: Double = 0.0,
@@ -105,6 +107,7 @@ data class CheckoutProductModel(
     val warehouseId: String = "",
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val cartStringOrder: String = "",
+    val shopTier: Int = 0,
 
     // group data
     val uiGroupType: Int = 0,
@@ -118,7 +121,11 @@ data class CheckoutProductModel(
     val isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
     var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
     val shopLocation: String = "",
-    val shouldShowGroupInfo: Boolean = false
+    val shouldShowGroupInfo: Boolean = false,
+
+    // additional feature
+    val enableNoteEdit: Boolean = false,
+    val enableQtyEdit: Boolean = false
 ) : CheckoutItem {
 
     val shouldShowBmgmInfoIcon: Boolean

@@ -111,8 +111,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
-
-
 }
 
 project.ext {

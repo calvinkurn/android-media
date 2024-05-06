@@ -112,6 +112,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                     hash
                   }
                   meta {
+                    status_code
                     next_cursor
                     is_autoplay
                     max_autoplay_in_cell
@@ -142,7 +143,10 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
             val sourceId: String,
 
             @SerializedName("is_wifi")
-            val isWifi: Boolean
+            val isWifi: Boolean,
+
+            @SerializedName("search_keyword")
+            val searchKeyword: String,
         )
     }
 }

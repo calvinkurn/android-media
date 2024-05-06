@@ -6,6 +6,7 @@ import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
@@ -32,7 +33,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : FeedBrowseRepository {
 
-    override suspend fun getTitle(): String {
+    override suspend fun getHeaderDetail(): HeaderDetailModel? {
         return withContext(dispatchers.io) {
             try {
                 feedXHeaderUseCase.setRequestParams(
@@ -43,9 +44,9 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     )
                 )
                 val response = feedXHeaderUseCase.executeOnBackground()
-                mapper.mapTitle(response)
+                mapper.mapHeaderData(response)
             } catch (_: Throwable) {
-                ""
+                null
             }
         }
     }
@@ -96,7 +97,8 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     cursor = extraParam.cursor,
                     sourceId = extraParam.sourceId,
                     sourceType = extraParam.sourceType,
-                    isWifi = isWifi
+                    isWifi = isWifi,
+                    searchKeyword = extraParam.searchKeyword,
                 )
             )
         )

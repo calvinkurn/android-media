@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_unify"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</merge>
