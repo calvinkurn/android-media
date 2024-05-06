@@ -948,7 +948,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         animatorSet.playSequentially(fadeOutAnim, rewardSummaryAnimation())
         fadeOutAnim.addListener(onEnd = {
-            lottieTimeUp.cancelAnimation()
+            lottieTimeUp.pauseAnimation()
             lottieTimeUp.gone()
             bgSoundManager?.mPlayer?.setVolume(NORMAL_VOLUME, NORMAL_VOLUME)
         })

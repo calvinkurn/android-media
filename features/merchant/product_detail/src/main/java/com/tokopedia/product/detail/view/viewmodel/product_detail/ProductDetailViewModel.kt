@@ -110,11 +110,11 @@ import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
@@ -254,9 +254,9 @@ class ProductDetailViewModel @Inject constructor(
     val discussionMostHelpful: LiveData<Result<DiscussionMostHelpfulResponseWrapper>>
         get() = _discussionMostHelpful
 
-    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> =
+    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageUiModel>>> =
         MutableLiveData()
-    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
+    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageUiModel>>>
         get() = _topAdsImageView
 
     private val _topAdsRecomChargeData =
@@ -805,7 +805,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
-        sendConfirmCartBytIoTracker()
+//        sendConfirmCartBytIoTracker() // disabled on this phase
         val result = withContext(dispatcher.io) {
             addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
         }

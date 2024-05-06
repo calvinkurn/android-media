@@ -32,11 +32,26 @@ class HomeMissionWidgetUseCase @Inject constructor(
                     )
                 }
             )
-            val resultList =
-                LazyLoadDataMapper.mapMissionWidgetData(results.getHomeMissionWidget.missions, false, results.getHomeMissionWidget.appLog)
+            val missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(
+                results.getHomeMissionWidget.missions,
+                false,
+                results.getHomeMissionWidget.appLog
+            )
+
+            val mission4SquareWidgetList = LazyLoadDataMapper.map4SquareMissionWidgetData(
+                missionWidgetList = results.getHomeMissionWidget.missions,
+                isCache = false,
+                appLog = results.getHomeMissionWidget.appLog,
+                channelName = currentMissionWidgetListDataModel.name,
+                channelId = currentMissionWidgetListDataModel.id,
+                header = currentMissionWidgetListDataModel.header,
+                verticalPosition = currentMissionWidgetListDataModel.verticalPosition
+            )
+
             currentMissionWidgetListDataModel.copy(
                 header = results.getHomeMissionWidget.header.getAsHomeComponentHeader(),
-                missionWidgetList = resultList,
+                missionWidgetList = missionWidgetList,
+                mission4SquareWidgetList = mission4SquareWidgetList,
                 status = MissionWidgetListDataModel.STATUS_SUCCESS
             )
         } catch (e: Exception) {

@@ -22,11 +22,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
-import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
-import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.feed.common.comment.PageSource
+import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalytics
+import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalyticsModel
+import com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -1157,10 +1157,11 @@ class PlayUserInteractionFragment @Inject constructor(
                             childFragmentManager,
                             requireActivity().classLoader
                         )
-                        commentAnalyticsModel = ContentCommentAnalyticsModel(
-                            eventCategory = "groupchat room",
-                            eventLabel = "$channelId - ${playViewModel.partnerId}"
-                        )
+                        commentAnalyticsModel =
+                            ContentCommentAnalyticsModel(
+                                eventCategory = "groupchat room",
+                                eventLabel = "$channelId - ${playViewModel.partnerId}"
+                            )
                         if (event.isOpen) sheet.show(childFragmentManager) else sheet.dismiss()
                     }
                     else -> {

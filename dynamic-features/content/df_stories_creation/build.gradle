@@ -37,6 +37,10 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude '**/libc++_shared.so'
+    }
+
     // Specifies 4 flavor dimensions.
     flavorDimensions "tier", "client"
 

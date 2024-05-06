@@ -16,6 +16,7 @@
     <string name="title_bottomsheet_insurance">Keuntungan pakai asuransi</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
     <string name="label_choose_payment">Pilih Pembayaran</string>
+    <string name="label_pay_now">Bayar Sekarang</string>
     <string name="checkout_common_module_title_loading">Loading</string>
     <string name="checkout_flow_toaster_action_ok">Oke</string>
     <string name="checkout_flow_error_global_message">Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya</string>
@@ -38,4 +39,11 @@
     <string name="pp_epharmacy_message_error_prescription_or_consultation_not_complete">Ada %d produk lagi yang butuh resep</string>
 
     <string name="pp_auto_unapply_bo_toaster_message">Pengiriman disesuaikan karena ada perubahan di promo yang kamu pilih.</string>
+
+    <string name="content_desc_note_save">button save</string>
+    <string name="cart_action_save">Simpan</string>
+    <string name="cart_label_new_note_bottom_sheet_title">Catatan produk</string>
+    <string name="cart_text_note_hint">Pastikan tidak ada data pribadi, ya.</string>
+    <string name="cart_button_notes_empty_content_desc">button change note empty</string>
+    <string name="cart_button_notes_filled_content_desc">button change note filled</string>
 </resources>

@@ -178,25 +178,40 @@ internal fun ImageView.loadImageRounded(url: String?, radius: Float) {
     }
 }
 
-internal fun ImageView.imageRounded(url: String?, radius: Float, cornerType: CornerType?) {
+internal fun ImageView.imageRounded(
+    url: String?,
+    radius: Float,
+    cornerType: CornerType?,
+    @ColorInt
+    overlayColor: Int?,) {
     if(url == null) return
 
     if (cornerType == null || cornerType == CornerType.ALL) {
-        this.loadImageRounded(url, radius)
+        this.loadImageRounded(url, radius.roundToInt(), CornerType.ALL, overlayColor)
     } else {
-        this.loadImageRounded(url, radius.roundToInt(), cornerType)
+        this.loadImageRounded(url, radius.roundToInt(), cornerType, overlayColor)
     }
 }
 
 internal fun ImageView.loadImageRounded(
     url: String,
     roundingRadius: Int,
-    cornerType: CornerType
+    cornerType: CornerType,
+    @ColorInt
+    color: Int?
 ){
     val transformation = RoundedCornersTransformation(roundingRadius, cornerType)
+
+    val multiTransform = if (color == null){
+        MultiTransformation(CenterCrop(), transformation)
+    } else {
+        val layerTransformation = LayerOverlayTransformation(color, roundingRadius.toFloat())
+        MultiTransformation(CenterCrop(), transformation, layerTransformation)
+    }
+
     Glide.with(context)
         .load(url)
-        .transform(CenterCrop(), transformation)
+        .transform(multiTransform)
         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
         .into(this)
 }

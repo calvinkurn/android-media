@@ -56,4 +56,7 @@
     <string name="path_content_browse" translatable="false">/browse</string>
     <string name="path_content_browse_category_inspiration" translatable="false">/browse/inspirational</string>
 
+    <string name="host_product_preview" translatable="false">product-preview</string>
+    <string name="path_product_preview" translatable="false">/.*\</string>
+
 </resources>

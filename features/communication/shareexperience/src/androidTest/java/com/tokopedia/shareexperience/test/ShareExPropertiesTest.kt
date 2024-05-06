@@ -7,8 +7,10 @@ import com.tokopedia.shareexperience.test.base.ShareExBaseTest
 import com.tokopedia.shareexperience.test.robot.generalResult
 import com.tokopedia.shareexperience.test.robot.propertiesResult
 import com.tokopedia.shareexperience.test.robot.propertiesRobot
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class ShareExPropertiesTest : ShareExBaseTest() {
 
     @Test

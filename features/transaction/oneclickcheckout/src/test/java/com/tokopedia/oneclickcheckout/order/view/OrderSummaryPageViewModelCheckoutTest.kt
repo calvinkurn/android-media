@@ -475,7 +475,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Then
         assertEquals(true, isOnSuccessCalled)
         coVerify(inverse = true) {
-            goCicilInstallmentOptionUseCase.executeSuspend(any())
+            goCicilInstallmentOptionUseCase(any())
         }
         verify(exactly = 1) {
             orderSummaryAnalytics.eventClickBayarSuccess(

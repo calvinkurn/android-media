@@ -24,5 +24,6 @@ interface InspirationCarouselDynamicProductView {
         dynamicProductCarousel: BroadMatchDataView,
         type: String,
         inspirationCarouselOption: InspirationCarouselDataView.Option,
+        aladdinButtonType: String,
     )
 }

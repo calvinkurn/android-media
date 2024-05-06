@@ -63,11 +63,11 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -121,7 +121,7 @@ class UniversalInboxFragment @Inject constructor(
     private var shouldTopAdsAndLoadRecommendation = true
 
     // TopAds Banner
-    private var topAdsBannerInProductCards: List<TopAdsImageViewModel>? = null
+    private var topAdsBannerInProductCards: List<TopAdsImageUiModel>? = null
     private var topAdsBannerExperimentPosition: Int = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 
     // TopAds Headline
@@ -698,7 +698,7 @@ class UniversalInboxFragment @Inject constructor(
         viewModel.processAction(UniversalInboxAction.LoadNextPage(page))
     }
 
-    override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
+    override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageUiModel>>) {
         if (categoriesList.isEmpty()) return
         // If response size is 2, then there are 2 types of banner (carousel & single)
         // one below static menu & one in the product recommendation

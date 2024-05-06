@@ -554,6 +554,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                             }
                         }
                     }
+                    ... on pdpDataComponentSDUIDivKit {
+                        template 
+                    }
                   }
                 }
               }

@@ -33,12 +33,10 @@ import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunication
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetHomeBannerV2DataResponse.GetHomeBannerV2Response
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
-import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetHomeBannerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -64,7 +62,6 @@ import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
@@ -141,9 +138,6 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getProductBundleRecomUseCase: GetProductBundleRecomUseCase
 
     @RelaxedMockK
-    lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
-
-    @RelaxedMockK
     lateinit var getHomeReferralUseCase: GetHomeReferralUseCase
 
     @RelaxedMockK
@@ -200,7 +194,6 @@ abstract class TokoNowHomeViewModelTestFixture {
             getChooseAddressWarehouseLocUseCase,
             getRepurchaseWidgetUseCase,
             getQuestWidgetListUseCase,
-            setUserPreferenceUseCase,
             getHomeReferralUseCase,
             referralEvaluateJoinUseCase,
             getCatalogCouponListUseCase,
@@ -211,7 +204,6 @@ abstract class TokoNowHomeViewModelTestFixture {
             playWidgetTools,
             addressData,
             userSession,
-            abTestPlatform,
             coroutineTestRule.dispatchers,
             addToCartUseCase,
             updateCartUseCase,
@@ -273,12 +265,6 @@ abstract class TokoNowHomeViewModelTestFixture {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
-        val homeLayoutList = viewModel.homeLayoutList.value
-        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
-        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
     }
 
     protected fun verifyQuestWidgetVisitableItem(expectedVisitableItem: Visitable<*>?) {
@@ -457,13 +443,6 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { getQuestWidgetListUseCase.execute(any()) }
     }
 
-    protected fun verifySetUserPreferenceUseCaseCalled(
-        localCacheModel: LocalCacheModel,
-        serviceType: String
-    ) {
-        coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
-    }
-
     protected fun verifyGetQuestWidgetListUseCaseNotCalled() {
         coVerify(exactly = 0) { getQuestWidgetListUseCase.execute(any()) }
     }
@@ -564,14 +543,6 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetRepurchaseWidget_thenReturn(error: Throwable) {
         coEvery { getRepurchaseWidgetUseCase.execute(any()) } throws error
-    }
-
-    protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreferenceData) {
-        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
-    }
-
-    protected fun onSetUserPreference_thenReturn(error: Throwable) {
-        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 
     protected fun onGetReferralSenderHome_thenReturn(slug: String, referral: HomeReferralDataModel) {

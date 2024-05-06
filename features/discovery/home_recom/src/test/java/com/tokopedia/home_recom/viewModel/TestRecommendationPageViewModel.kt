@@ -18,12 +18,10 @@ import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -61,7 +59,6 @@ class TestRecommendationPageViewModel {
     private val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     private val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
     private val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
-    private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getPrimaryProductUseCase = mockk<GetPrimaryProductUseCase>(relaxed = true)
     private val getTopadsIsAdsUseCase = mockk<GetTopadsIsAdsUseCase>(relaxed = true)
     private val getTopAdsHeadlineUseCase = mockk<GetTopAdsHeadlineUseCase>(relaxed = true)
@@ -77,7 +74,6 @@ class TestRecommendationPageViewModel {
             getRecommendationUseCase = getRecommendationUseCase,
             addToWishlistV2UseCase = addToWishlistV2UseCase,
             deleteWishlistV2UseCase = deleteWishlistV2UseCase,
-            topAdsWishlishedUseCase = topAdsWishlishedUseCase,
             addToCartUseCase = addToCartUseCase,
             getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
             getPrimaryProductUseCase = getPrimaryProductUseCase,

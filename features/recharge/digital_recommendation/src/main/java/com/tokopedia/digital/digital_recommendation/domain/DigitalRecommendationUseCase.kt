@@ -14,6 +14,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 /**
@@ -21,7 +23,8 @@ import javax.inject.Inject
  */
 class DigitalRecommendationUseCase @Inject constructor(
         private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val remoteConfig: RemoteConfig
 ) {
     suspend fun execute(page: DigitalRecommendationPage,
                         dgCategories: List<Int>,
@@ -35,13 +38,15 @@ class DigitalRecommendationUseCase @Inject constructor(
                         PARAM_PG_CATEGORY_IDS to pgCategories
                 )
         )
-
-        multiRequestGraphqlUseCase.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
-                        .setSessionIncluded(true)
-                        .build()
-        )
+        val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
+        val graphqlCacheStrategy = if (isEnableGqlCache) {
+            GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                .setSessionIncluded(true)
+        } else {
+            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+        }
+        multiRequestGraphqlUseCase.setCacheStrategy(graphqlCacheStrategy.build())
         multiRequestGraphqlUseCase.clearRequest()
 
         return try {
@@ -77,13 +82,15 @@ class DigitalRecommendationUseCase @Inject constructor(
                 PARAM_PG_CATEGORY_IDS to pgCategories
             )
         )
-
-        multiRequestGraphqlUseCase.setCacheStrategy(
+        val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
+        val graphqlCacheStrategy = if (isEnableGqlCache) {
             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
                 .setSessionIncluded(true)
-                .build()
-        )
+        } else {
+            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+        }
+        multiRequestGraphqlUseCase.setCacheStrategy(graphqlCacheStrategy.build())
         multiRequestGraphqlUseCase.clearRequest()
 
         return try {

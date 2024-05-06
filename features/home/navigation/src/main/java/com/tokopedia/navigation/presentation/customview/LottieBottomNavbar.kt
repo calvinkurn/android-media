@@ -404,6 +404,9 @@ class LottieBottomNavbar : LinearLayout {
                 }
 
                 override fun onAnimationEnd(p0: Animator) {
+                    if (icon.isAnimating) {
+                        icon.pauseAnimation()
+                    }
                     if (selectedItem != index) {
                         val bottomMenuSelected = bottomMenu
                         val iconSelected = icon
@@ -723,7 +726,7 @@ class LottieBottomNavbar : LinearLayout {
             }
 
             // update image based on home header or for you section
-            selectedIcon.cancelAnimation()
+            selectedIcon.pauseAnimation()
 
             // update animation based on home header or for you section
             val animTransitionName = if (isForYouToHomeSelected) {
@@ -771,7 +774,7 @@ class LottieBottomNavbar : LinearLayout {
         if (iconList[selectedItem ?: 0].second) {
             val pair = iconList[selectedItem ?: 0]
             val oldSelectedItem = pair.first
-            oldSelectedItem.cancelAnimation()
+            oldSelectedItem.pauseAnimation()
 
             val animToEnabledName = if (!isDarkMode) {
                 menu[selectedItem ?: 0].animInactive
@@ -795,7 +798,7 @@ class LottieBottomNavbar : LinearLayout {
 
             val isOldForYouState = isForYouSelectedByPosition(it)
             if (isOldForYouState) {
-                selectedIcon.cancelAnimation()
+                selectedIcon.pauseAnimation()
 
                 // this approach to avoid race condition if using the setAnimation
                 menu[it].imageInactive?.let { imageEnabled ->

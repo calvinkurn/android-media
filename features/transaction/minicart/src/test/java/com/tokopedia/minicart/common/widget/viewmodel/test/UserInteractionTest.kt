@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -41,6 +42,7 @@ class UserInteractionTest {
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase = mockk()
     private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase = mockk()
     private val addToCartBundleUseCase: AddToCartBundleUseCase = mockk()
+    private val updateGwpUseCase: BmGmGetGroupProductTickerUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
 
     @get: Rule
@@ -60,6 +62,7 @@ class UserInteractionTest {
             addToCartOccMultiUseCase,
             miniCartListUiModelMapper,
             miniCartChatListUiModelMapper,
+            updateGwpUseCase,
             userSession
         )
     }

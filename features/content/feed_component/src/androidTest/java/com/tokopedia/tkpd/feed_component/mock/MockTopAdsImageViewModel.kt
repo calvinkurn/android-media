@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.feed_component.mock
 
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 object MockTopAdsImageViewModel {
-    fun get() = TopAdsImageViewModel(
+    fun get() = TopAdsImageUiModel(
             bannerId = "1"
     )
 }

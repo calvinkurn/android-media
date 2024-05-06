@@ -52,7 +52,7 @@ public class CronetDependencyAdapter extends AbsCronetDependAdapter {
    @Override
    public String getChannel() {
       // todo plz define your own channel enums: local_test, googleplay, xiaomi...
-      return GlobalConfig.isAllowDebuggingTools() ? "local_test" : "googleplay";
+      return GlobalConfig.isAllowDebuggingTools() ? "local_test" : GlobalConfig.STORE_CHANNEL;
    }
 
    @Override

@@ -10,6 +10,9 @@ import com.tokopedia.media.loader.loadImageWithTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 
 object ImageUtil {
+    const val NORMAL_BRIGHTNESS = 1f
+    const val OOS_BRIGHTNESS = 0.5f
+
     fun setBackgroundImage(
         context: Context,
         url: String,

@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -50,6 +51,7 @@ class GetProductBundleRecomTest {
     private val addToCartBundleUseCase: AddToCartBundleUseCase = mockk()
     private var miniCartListUiModelMapper: MiniCartListUiModelMapper = spyk()
     private var miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper = spyk()
+    private val updateGwpUseCase: BmGmGetGroupProductTickerUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
 
     @get: Rule
@@ -69,6 +71,7 @@ class GetProductBundleRecomTest {
             addToCartOccMultiUseCase,
             miniCartListUiModelMapper,
             miniCartChatListUiModelMapper,
+            updateGwpUseCase,
             userSession
         )
     }
@@ -80,7 +83,7 @@ class GetProductBundleRecomTest {
          */
         // mock mini cart list data response
         val mockMiniCartListResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockMiniCartListResponse)
         }
@@ -127,7 +130,7 @@ class GetProductBundleRecomTest {
         // mock mini cart list data response
         val mockMiniCartListResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
         coEvery {
-            getMiniCartListUseCase.setParams(any())
+            getMiniCartListUseCase.setParams(any(), any(), any())
         } just Runs
         coEvery {
             getMiniCartListUseCase.execute(any(), any())

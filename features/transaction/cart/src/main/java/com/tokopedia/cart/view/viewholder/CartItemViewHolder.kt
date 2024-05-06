@@ -134,6 +134,9 @@ class CartItemViewHolder(
         itemView.addOnImpressionListener(data, onView = {
             if (!data.isError) {
                 actionListener?.onAvailableCartItemImpression(listOf(data))
+                if (data.isEnableCartVariant) {
+                    actionListener?.onViewChangeVariant(data.cartId)
+                }
             }
         })
 
@@ -1170,13 +1173,39 @@ class CartItemViewHolder(
     private fun renderVariant(data: CartItemHolderData) {
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
-        val textProductVariant = binding.textProductVariant
+        val textProductVariant = binding.itemVariantCart.textProductVariant
         if (!data.isError && data.variant.isNotBlank()) {
             textProductVariant.text = data.variant
             textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
+            if (data.isEnableCartVariant) {
+                textProductVariant.setOnClickListener {
+                    actionListener?.onClickChangeVariant(
+                        data.productId,
+                        data.shopHolderData.shopId,
+                        data.cartId,
+                        data.quantity
+                    )
+                }
+                binding.itemVariantCart.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
+                binding.itemVariantCart.iconVariant.setOnClickListener {
+                    actionListener?.onClickChangeVariant(
+                        data.productId,
+                        data.shopHolderData.shopId,
+                        data.cartId,
+                        data.quantity
+                    )
+                }
+                binding.itemVariantCart.iconVariant.show()
+            } else {
+                binding.itemVariantCart.iconVariant.setOnClickListener(null)
+                binding.itemVariantCart.iconVariant.gone()
+            }
         } else {
+            textProductVariant.setOnClickListener(null)
             textProductVariant.gone()
+            binding.itemVariantCart.iconVariant.setOnClickListener(null)
+            binding.itemVariantCart.iconVariant.gone()
         }
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
         if (data.isError) {
@@ -1217,15 +1246,15 @@ class CartItemViewHolder(
     }
 
     private fun renderProductNotesEmpty() {
-        binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note)
+        binding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
         binding.buttonChangeNote.contentDescription =
-            binding.root.context.getString(R.string.cart_button_notes_empty_content_desc)
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
     }
 
     private fun renderProductNotesFilled() {
-        binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note_completed)
+        binding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
         binding.buttonChangeNote.contentDescription =
-            binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
     }
 
     private fun renderOldQuantity(
@@ -1949,7 +1978,8 @@ class CartItemViewHolder(
             }
 
             CartProductLabelData.TYPE_TIMER -> {
-                val remainingTimeMillis = productLabelData.localExpiredTimeMillis - System.currentTimeMillis()
+                val remainingTimeMillis =
+                    productLabelData.localExpiredTimeMillis - System.currentTimeMillis()
                 if (productLabelData.alwaysShowTimer) {
                     binding.cartCampaignProductLabel.showTimedLabel(
                         remainingTimeMillis = remainingTimeMillis,
