@@ -2,7 +2,6 @@ package com.tokopedia.unifyorderhistory.util
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
-import timber.log.Timber
 
 object UohRollenceUtil {
 
