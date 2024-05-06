@@ -74,7 +74,7 @@ class ShippingDurationConverter @Inject constructor() {
     private fun convertPaidSectionModel(paidSectionInfo: PaidSectionInfo): PaidSectionInfoUiModel {
         return PaidSectionInfoUiModel(
             showCollapsableIcon = paidSectionInfo.isCollapsed,
-            isCollapsed = paidSectionInfo.isCollapsed,
+            isCollapsed = !paidSectionInfo.isCollapsed,
             title = paidSectionInfo.labelText
         )
     }
