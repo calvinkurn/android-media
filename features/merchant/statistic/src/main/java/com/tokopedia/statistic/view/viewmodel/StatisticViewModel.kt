@@ -171,7 +171,7 @@ class StatisticViewModel @Inject constructor(
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
-        viewModelScope.launch(dispatchers.io) {
+        viewModelScope.launch(dispatchers.main) {
             runCatching {
                 val result: Success<List<CardDataUiModel>> = Success(
                     withContext(dispatchers.io) {
@@ -208,7 +208,7 @@ class StatisticViewModel @Inject constructor(
     }
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
-        viewModelScope.launch(dispatchers.io) {
+        viewModelScope.launch(dispatchers.main) {
             runCatching {
                 val result: Success<List<MultiLineGraphDataUiModel>> =
                     Success(
@@ -374,7 +374,7 @@ class StatisticViewModel @Inject constructor(
     }
 
     fun getMultiComponentDetailTabWidgetData(tab: MultiComponentTab) {
-        viewModelScope.launch(dispatchers.io) {
+        viewModelScope.launch(dispatchers.main) {
             runCatching {
                 val result =
                     getMultiComponentDetailData.get().executeOnBackground(tab, dynamicParameter)
