@@ -89,6 +89,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+
+    implementation rootProject.ext.slardarDependencies.commonMonitor
 }
 
 project.ext {

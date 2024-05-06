@@ -993,6 +993,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(
@@ -1035,6 +1038,11 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("haspassword") { _: String ->
                 ApplinkConstInternalUserPlatform.HAS_PASSWORD
+            }
+        ),
+        "share" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
             }
         ),
         "share_address" to mutableListOf(

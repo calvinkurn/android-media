@@ -70,8 +70,6 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiMod
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PopupEndTenureUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
@@ -573,10 +571,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
                         shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
                     val itemRMIndex =
                         shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
-                    val itemRMNonEligibleIndex =
-                        shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
-                    val itemPotentialPMProIndex =
-                        shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
                     val itemPMProIndex =
                         shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
                     val itemHeaderParameterDetailIndex = shopPerformanceAdapter.list.indexOfFirst {
@@ -619,8 +613,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
                             COACHMARK_LAST_POSITION_PM_RM -> {
                                 if (itemPMIndex in firstVisiblePosition..lastVisiblePosition
                                     || itemRMIndex in firstVisiblePosition..lastVisiblePosition
-                                    || itemRMNonEligibleIndex in firstVisiblePosition..lastVisiblePosition
-                                    || itemPotentialPMProIndex in firstVisiblePosition..lastVisiblePosition
                                     || itemPMProIndex in firstVisiblePosition..lastVisiblePosition
                                 ) {
                                     coachMark?.animateShow()
@@ -679,13 +671,9 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
-        val positionPotentialPMPro =
-            shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
         val positionPMPro =
             shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
-        val positionRMNonEligible =
-            shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
         val positionRMEligible =
             shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
 
@@ -695,14 +683,8 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
             positionPMPro != RecyclerView.NO_POSITION -> {
                 position = positionPMPro
             }
-            positionPotentialPMPro != RecyclerView.NO_POSITION -> {
-                position = positionPotentialPMPro
-            }
             positionPM != RecyclerView.NO_POSITION -> {
                 position = positionPM
-            }
-            positionRMNonEligible != RecyclerView.NO_POSITION -> {
-                position = positionRMNonEligible
             }
             positionRMEligible != RecyclerView.NO_POSITION -> {
                 position = positionRMEligible

@@ -33,4 +33,5 @@
     <string name="mini_cart_check_cart">Cek Keranjang</string>
     <string name="mini_cart_bmgm_bottom_sheet_title">Barang yang Dipilih</string>
     <string name="bmgm_error_state_message">Konten gagal ditampilkan, yuk, klik tombol di samping buat coba lagi.</string>
+    <string name="mini_cart_progressive_info_failed_text">Info promosi gagal dimuat. Muat ulang, yuk!</string>
 </resources>

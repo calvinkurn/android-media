@@ -137,7 +137,7 @@ class ChatListActivityTest : ChatListTest() {
     }
 
     @Test
-    fun should_show_2_filters_when_user_on_buyer_tab() {
+    fun should_show_3_filters_when_user_on_buyer_tab() {
         // Given
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
@@ -149,7 +149,7 @@ class ChatListActivityTest : ChatListTest() {
         onView(withId(R.id.menu_chat_filter)).perform(click())
 
         // Then
-        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(2)))
+        onView(withId(R.id.rv_menu)).check(withItemCount(equalTo(3)))
     }
 
     @Test

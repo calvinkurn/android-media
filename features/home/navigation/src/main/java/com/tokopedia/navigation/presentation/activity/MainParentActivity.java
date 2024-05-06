@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
@@ -74,6 +75,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
@@ -292,12 +294,14 @@ public class MainParentActivity extends BaseActivity implements
     // MIGRATED
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         //changes for triggering unittest checker
+
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
         try {
             performanceTrace = new BlocksPerformanceTrace(
-                    this.getContext().getApplicationContext(),
+                    this,
                     PERFORMANCE_TRACE_HOME,
                     LifecycleOwnerKt.getLifecycleScope(this),
                     this,
@@ -1080,7 +1084,7 @@ public class MainParentActivity extends BaseActivity implements
     public void onNotifyCart() {
         if (presenter != null)
             this.presenter.get().getNotificationData();
-        
+
         this.viewModel.fetchNotificationData();
     }
 
@@ -1417,6 +1421,7 @@ public class MainParentActivity extends BaseActivity implements
 
         if ((position == CART_MENU || position == UOH_MENU || position == WISHLIST_MENU) && !presenter.get().isUserLogin()) {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
             return false;

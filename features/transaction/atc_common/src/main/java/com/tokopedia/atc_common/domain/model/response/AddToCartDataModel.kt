@@ -9,7 +9,8 @@ data class AddToCartDataModel(
     var status: String = "",
     var data: DataModel = DataModel(),
     var errorReporter: ErrorReporterModel = ErrorReporterModel(),
-    var responseJson: String = ""
+    var responseJson: String = "",
+    val isOccNewCheckoutPage: Boolean = false
 ) : Parcelable {
 
     /*

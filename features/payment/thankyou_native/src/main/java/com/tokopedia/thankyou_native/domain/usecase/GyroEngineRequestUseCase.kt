@@ -24,7 +24,7 @@ class GyroEngineRequestUseCase @Inject constructor(
     val gson: Gson
 ) : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
-    fun getFeatureEngineData(
+    suspend fun getFeatureEngineData(
         thanksPageData: ThanksPageData,
         walletBalance: WalletBalance?,
         onSuccess: (ValidateEngineResponse) -> Unit
@@ -33,14 +33,12 @@ class GyroEngineRequestUseCase @Inject constructor(
             this.setTypeClass(FeatureEngineResponse::class.java)
             this.setRequestParams(getRequestParams(thanksPageData, walletBalance))
             this.setGraphqlQuery(GyroRecommendationQuery.GQL_QUERY)
-            this.execute(
-                { result ->
-                    onSuccess(result.validateEngineResponse)
-                },
-                {
-                    it.printStackTrace()
-                }
-            )
+            val result = this.executeOnBackground()
+            if (result.validateEngineResponse.success) {
+                onSuccess(result.validateEngineResponse)
+            } else {
+
+            }
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }

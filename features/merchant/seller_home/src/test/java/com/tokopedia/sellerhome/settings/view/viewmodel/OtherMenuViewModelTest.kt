@@ -11,12 +11,21 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.PMTransactionDataUiModel
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.sellerhome.utils.verifyStateErrorEquals
 import com.tokopedia.sellerhome.utils.verifyStateSuccessEquals
-import com.tokopedia.sellerhomecommon.domain.model.*
+import com.tokopedia.sellerhomecommon.domain.model.Ad
+import com.tokopedia.sellerhomecommon.domain.model.Data
+import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoList
+import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoListData
+import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoListPage
+import com.tokopedia.sellerhomecommon.domain.model.TopadsGetShopInfoV2_1
+import com.tokopedia.shop.common.data.source.cloud.model.RestrictMetaDataModel
+import com.tokopedia.shop.common.data.source.cloud.model.RestrictValidateRestrictionModel
+import com.tokopedia.shop.common.data.source.cloud.model.TokoPlusBadgeResponse
 import com.tokopedia.shop.common.view.model.BadgeUiModel
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
@@ -134,6 +143,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getAllOtherMenuData()
 
             assert(mViewModel.shouldShowMultipleErrorToaster.value == true)
+
+            assertOnTotalTransactionFailed()
         }
 
     @Test
@@ -888,6 +899,116 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
             Assert.assertTrue(mViewModel.shouldShowMultipleErrorToaster.value == currentValue)
         }
+
+    @Test
+    fun `when get shop chargeable data should be successfully with shop chargeable true`() {
+        val shopChargeableStatus = true
+        onShopChargeableStatus(shopChargeableStatus)
+    }
+
+    @Test
+    fun `when get shop chargeable data should be successfully with shop chargeable false`() {
+        val shopChargeableStatus = false
+        onShopChargeableStatus(shopChargeableStatus)
+    }
+
+    @Test
+    fun `when get shop chargeable data should be failed`() {
+        runTest {
+            val totalTransaction = 31L
+            val shopTier = 1
+            val userShopInfoWrapper = UserShopInfoWrapper(
+                PowerMerchantStatus.Active,
+                UserShopInfoWrapper.UserShopInfoUiModel(totalTransaction = totalTransaction, shopTier = shopTier)
+            )
+            onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+            val shopId = "123"
+
+            every {
+                userSession.shopId
+            } returns shopId
+
+            coEvery {
+                getShopChargeableUseCase.execute(shopId, shopTier, totalTransaction)
+            } throws Throwable()
+
+            mViewModel.getUserShopInfo()
+
+            coVerify {
+                getShopChargeableUseCase.execute(shopId, shopTier, totalTransaction)
+            }
+
+            verifyGetUserShopInfoCalled()
+            assert((mViewModel.userShopInfoLiveData.value as? SettingResponseState.SettingSuccess)?.data?.userShopInfoWrapper == userShopInfoWrapper)
+
+            assertOnTotalTransactionFailed()
+        }
+    }
+
+    private fun assertOnTotalTransactionFailed() {
+        val transactionSuccessState = SettingResponseState.SettingSuccess(
+            PMTransactionDataUiModel(
+                canBeShown = false
+            )
+        )
+        mViewModel.totalTransactionData.verifyStateSuccessEquals(transactionSuccessState)
+    }
+
+    private fun onShopChargeableStatus(isChargeable: Boolean) {
+        runTest {
+            val shopId = "123"
+            val totalTransaction = 31L
+            val shopTier = 1
+            val userShopInfoWrapper = UserShopInfoWrapper(
+                PowerMerchantStatus.Active,
+                UserShopInfoWrapper.UserShopInfoUiModel(totalTransaction = totalTransaction, shopTier = shopTier)
+            )
+            onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+            every {
+                userSession.shopId
+            } returns shopId
+
+            onGetShopChargeable_thenReturn(isChargeable, shopId, shopTier, totalTransaction)
+
+            mViewModel.getUserShopInfo()
+
+            verifyGetUserShopInfoCalled()
+            assert((mViewModel.userShopInfoLiveData.value as? SettingResponseState.SettingSuccess)?.data?.userShopInfoWrapper == userShopInfoWrapper)
+
+            val transactionSuccessState = SettingResponseState.SettingSuccess(
+                PMTransactionDataUiModel(
+                    totalTransaction = totalTransaction,
+                    isChargeable = isChargeable,
+                    canBeShown = true
+                )
+            )
+            mViewModel.totalTransactionData.verifyStateSuccessEquals(transactionSuccessState)
+        }
+    }
+    private suspend fun onGetShopChargeable_thenReturn(isChargeable: Boolean, shopId: String, shopTier: Int, transactions: Long) {
+        val response = TokoPlusBadgeResponse(
+            RestrictValidateRestrictionModel(
+                dataResponse = listOf(
+                    RestrictMetaDataModel(
+                        status = if (isChargeable) {
+                            "eligible"
+                        } else {
+                            "ineligible"
+                        }
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            getShopChargeableUseCase.executeOnBackground()
+        } returns response
+
+        coEvery {
+            getShopChargeableUseCase.execute(shopId, shopTier, transactions)
+        } returns isChargeable
+    }
 
     @Test
     fun `when setSuccessStateMapDefaultValue but _secondarySuccessStateMap is already set, should not set values again`() =
