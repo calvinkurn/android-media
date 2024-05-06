@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
@@ -232,7 +233,9 @@ public class MyApplication extends BaseMainApplication
     }
 
     private void initBTMSDK(){
+        long timeStart = System.currentTimeMillis();
         InitBtmSdk.INSTANCE.init(this);
+        Log.i("BTMSDK","init time elapse: " + (System.currentTimeMillis() - timeStart));
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
