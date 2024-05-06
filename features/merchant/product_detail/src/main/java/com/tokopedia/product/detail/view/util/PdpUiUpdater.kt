@@ -1342,7 +1342,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 ),
                 metadata = recommendationWidgetModel.metadata.copy(
                     productIds = if (productId.isBlank()) listOf() else listOf(productId)
-                )
+                ),
+                appLogAdditionalParam = getAppLogAdditionalParam(p1)
             )
         )
     }
