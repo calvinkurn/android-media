@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -106,6 +108,7 @@ class StatisticActivity :
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         initInjector()
+        checkLoggedInStatus()
 
         if (savedInstanceState == null) {
             checkWhiteListStatus()
@@ -429,5 +432,12 @@ class StatisticActivity :
             }
         }
         toastCountDown.start()
+    }
+
+    private fun checkLoggedInStatus() {
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(this, ApplinkConst.LOGIN)
+            finish()
+        }
     }
 }
