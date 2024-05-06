@@ -66,7 +66,7 @@ class StoriesSettingsFragment @Inject constructor(
                     is StoriesSettingEvent.ShowErrorToaster -> {
                         Toaster.build(
                             requireView(),
-                            text = event.message.message.orEmpty(),
+                            text = event.message.message ?: "Terjadi kesalahan",
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
