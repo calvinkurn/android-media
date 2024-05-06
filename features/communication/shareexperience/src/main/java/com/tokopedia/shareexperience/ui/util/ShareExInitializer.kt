@@ -250,7 +250,7 @@ class ShareExInitializer(
     }
 
     override fun onSuccessCopyLink() {
-        dismissListener?.onDismissAfterCopyLink()
+        dismissListener?.onSuccessCopyLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->
@@ -270,6 +270,7 @@ class ShareExInitializer(
     }
 
     override fun onFailGenerateAffiliateLink(shortLink: String) {
+        dismissListener?.onFailGenerateAffiliateLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->

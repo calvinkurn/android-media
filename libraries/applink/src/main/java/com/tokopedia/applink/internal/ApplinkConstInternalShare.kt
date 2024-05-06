@@ -11,7 +11,10 @@ object ApplinkConstInternalShare {
 
     object ActivityResult {
         const val RESULT_CODE_COPY_LINK = 989
-        const val PARAM_TOASTER_MESSAGE = "toaster_message"
+        const val RESULT_CODE_FAIL_GENERATE_AFFILIATE_LINK = 990
+        const val PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK = "toaster_message_success_copy_link"
+        const val PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK = "toaster_message_fail_generate_affiliate_link"
+        const val PARAM_TOASTER_CTA_COPY_LINK = "toaster_cta_copy_link"
     }
 
     object PageType {

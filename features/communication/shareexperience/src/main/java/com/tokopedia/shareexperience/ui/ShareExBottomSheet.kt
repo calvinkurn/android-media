@@ -245,8 +245,8 @@ class ShareExBottomSheet :
             if (it.errorHistory.contains(ShareExIntentErrorEnum.AFFILIATE_ERROR) &&
                 it.shortLink.isNotBlank()
             ) {
-                dismiss()
                 listener?.onFailGenerateAffiliateLink(it.shortLink)
+                dismiss()
                 return@collect
             }
 

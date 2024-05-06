@@ -357,6 +357,7 @@ open class BuyerOrderDetailFragment :
                 }
             }
             BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM -> handleBrcCsatFormResult(data)
+            BuyerOrderDetailIntentCode.REQUEST_CODE_SHARE -> handleShareResult(resultCode, data)
         }
     }
 
@@ -984,6 +985,29 @@ open class BuyerOrderDetailFragment :
         if (!message.isNullOrBlank()) {
             showToasterOnRefreshed(message, WidgetBrcCsat.ANIMATION_DURATION)
             loadBuyerOrderDetail(false)
+        }
+    }
+
+    private fun handleShareResult(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK -> {
+                val message: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK)
+                        .orEmpty()
+                showCommonToaster(message)
+            }
+            ApplinkConstInternalShare.ActivityResult.RESULT_CODE_FAIL_GENERATE_AFFILIATE_LINK -> {
+                val messageFailGenerateAffiliateLink: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK).orEmpty()
+                val messageCopyLink: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK).orEmpty()
+                val ctaCopyLink: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK).orEmpty()
+
+                showCommonToaster(messageFailGenerateAffiliateLink, ctaCopyLink) {
+                    showCommonToaster(messageCopyLink)
+                }
+            }
         }
     }
 
