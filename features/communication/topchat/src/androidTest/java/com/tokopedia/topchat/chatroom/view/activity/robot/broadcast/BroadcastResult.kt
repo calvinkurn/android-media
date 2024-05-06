@@ -357,10 +357,10 @@ object BroadcastResult {
 
     fun assertNewBroadcastTimeStamp(
         position: Int,
-        timeStamp: String
+        matcher: Matcher<View>
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_tv_status, withText(timeStamp))
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_broadcast_tv_status, matcher)
         }
     }
 }

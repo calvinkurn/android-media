@@ -28,7 +28,8 @@ object BroadcastRobot {
      */
     fun clickBroadcastBanner(position: Int) {
         generalRobot {
-            scrollChatToPosition(1)
+            scrollChatToPosition(position + 1) // big size image
+            Thread.sleep(100)
             doActionOnListItemAt(position, R.id.topchat_chatroom_broadcast_iv_banner, click())
         }
     }

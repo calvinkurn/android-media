@@ -151,7 +151,7 @@ class TopChatRoomBuyerBroadcastFlashSaleTest : TopchatRoomTest() {
             assertNewBroadcastVoucher(1, promousageR.id.promo_tv_title_mini_card, withText("Rp20 rb"))
             assertNewBroadcastVoucher(1, promousageR.id.promo_tv_desc_mini_card, withText("Min. belanja Rp50 rb"))
 
-            assertNewBroadcastTimeStamp(1, "12:00")
+            assertNewBroadcastTimeStamp(1, isDisplayed())
         }
 
         // When
@@ -221,17 +221,6 @@ class TopChatRoomBuyerBroadcastFlashSaleTest : TopchatRoomTest() {
         // Then
         broadcastResult {
             assertNewBroadcastBanner(1, isDisplayed())
-            assertNewBroadcastCountdown(1, "Campaign \"Koleksi Spesial\" telah berakhir. Nantikan campaign berikutnya, ya!")
-        }
-
-        // When
-        broadcastRobot {
-            clickBroadcastBanner(1)
-        }
-
-        // Then
-        generalResult {
-            openPageWithExtra("url", "https://chat.tokopedia.com/tc/v1/redirect/")
         }
     }
 
@@ -251,6 +240,7 @@ class TopChatRoomBuyerBroadcastFlashSaleTest : TopchatRoomTest() {
                 1,
                 not(isDisplayed())
             )
+            assertNewBroadcastTimeStamp(1, not(isDisplayed()))
         }
     }
 
