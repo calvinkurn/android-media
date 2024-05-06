@@ -25,9 +25,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -109,6 +113,7 @@ import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -213,6 +218,7 @@ open class HomeAccountUserFragment :
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
     private var statusNameTokopediaCard = ""
+    private var hasApplogScrollListener = false
 
     var adapter: HomeAccountUserAdapter? = null
     var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
@@ -453,6 +459,14 @@ open class HomeAccountUserFragment :
                     )
             }
         }
+    }
+
+    override fun onProductRecommendation1pxImpression(item: RecommendationItem, adapterPosition: Int) {
+        AppLogRecommendation.sendProductShowAppLog(
+            model = item.asProductTrackModel(
+                entranceForm = EntranceForm.PURE_GOODS_CARD,
+            ),
+        )
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
@@ -1656,8 +1670,17 @@ open class HomeAccountUserFragment :
             }
         }
         endlessRecyclerViewScrollListener?.let {
-            binding?.homeAccountUserFragmentRv?.addOnScrollListener(it)
+            binding?.homeAccountUserFragmentRv?.run {
+                addOnScrollListener(it)
+                addRecommendationScrollListener()
+            }
         }
+    }
+
+    private fun RecyclerView.addRecommendationScrollListener() {
+        if(hasApplogScrollListener) return
+        addVerticalTrackListener()
+        hasApplogScrollListener = true
     }
 
     private fun showLoadMoreLoading() {
