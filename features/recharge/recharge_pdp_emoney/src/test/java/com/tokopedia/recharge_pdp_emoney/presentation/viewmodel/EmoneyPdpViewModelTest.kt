@@ -13,6 +13,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumber
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.usecase.GetBCAGenCheckerUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
