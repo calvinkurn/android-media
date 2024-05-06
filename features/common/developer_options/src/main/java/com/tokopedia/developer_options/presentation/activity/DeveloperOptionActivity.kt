@@ -23,6 +23,7 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analyticsdebugger.cassava.ui.MainValidatorActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -226,6 +227,7 @@ class DeveloperOptionActivity :
         var isChangeUrlApplink = false
         var isCoachmarkApplink = false
         var isHomeMacrobenchmarkApplink = false
+        var isCassava = false
         if (intent != null) {
             uri = intent.data
             if (uri != null) {
@@ -234,12 +236,15 @@ class DeveloperOptionActivity :
                     uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_COACHMARK
                 isHomeMacrobenchmarkApplink =
                     uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_HOME_MACROBENCHMARK
+                isCassava =
+                    uri.pathSegments.size == 3 && uri.pathSegments[1] == "cassava"
             }
         }
         when {
             isChangeUrlApplink -> uri?.apply { handleUri(this) }
             isHomeMacrobenchmarkApplink -> userSession?.apply { handleHomeMacrobenchmarkUri(this) }
             isCoachmarkApplink -> uri?.apply { handleCoachmarkUri(this) }
+            isCassava -> startActivity(MainValidatorActivity.newInstance(this))
             else -> {
                 setContentView(R.layout.activity_developer_option)
                 setRecyclerView()
