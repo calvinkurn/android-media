@@ -19,5 +19,4 @@ interface ShopPerformanceTypeFactory {
     fun type(itemReactivatedComebackUiModel: ItemReactivatedComebackUiModel): Int
     fun type(tickerReactivatedUiModel: TickerReactivatedUiModel): Int
     fun type(itemHeaderParameterDetailUiModel: ItemHeaderParameterDetailUiModel): Int
-    fun type(model: ItemStatusPMProPotentiallyDowngradedUiModel): Int
 }

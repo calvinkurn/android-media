@@ -11,7 +11,6 @@ import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.Item
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemProtectedParameterSectionViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemReactivatedComebackViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemShopPerformanceErrorViewHolder
-import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemStatusPMProPotentiallyDowngradedViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemStatusRMViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.ItemTimerNewSellerViewHolder
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.PeriodDetailPerformanceViewHolder
@@ -25,7 +24,6 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerform
 import com.tokopedia.shop.score.performance.presentation.model.ItemLevelScoreProjectUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemReactivatedComebackUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProPotentiallyDowngradedUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
@@ -100,10 +98,6 @@ class ShopPerformanceAdapterTypeFactory(
         return ItemHeaderParameterPerformanceViewHolder.LAYOUT
     }
 
-    override fun type(model: ItemStatusPMProPotentiallyDowngradedUiModel): Int {
-        return ItemStatusPMProPotentiallyDowngradedViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(
@@ -155,10 +149,6 @@ class ShopPerformanceAdapterTypeFactory(
                 shopPerformanceListener
             )
             ItemHeaderParameterPerformanceViewHolder.LAYOUT -> ItemHeaderParameterPerformanceViewHolder(
-                parent,
-                shopPerformanceListener
-            )
-            ItemStatusPMProPotentiallyDowngradedViewHolder.LAYOUT -> ItemStatusPMProPotentiallyDowngradedViewHolder(
                 parent,
                 shopPerformanceListener
             )
