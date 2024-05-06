@@ -21,6 +21,7 @@ import com.tokopedia.tkpd.feed_component.browse.di.DaggerFeedBrowseTestComponent
 import com.tokopedia.tkpd.feed_component.browse.di.FeedBrowseDataTestModule
 import com.tokopedia.tkpd.feed_component.builder.FeedBrowseModelBuilder
 import com.tokopedia.tkpd.feed_component.helper.FeedCassavaHelper
+import com.tokopedia.tkpd.feed_component.helper.delay
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
@@ -63,6 +64,8 @@ class FeedSearchResultAnalyticTest {
         mockGetWidgetContentSlotResponse(isSuccess = false)
 
         launchTestActivity()
+
+        delay(1000)
 
         mockGetWidgetContentSlotResponse(isSuccess = true)
 
