@@ -102,6 +102,7 @@ import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHo
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
 import com.tokopedia.scp_rewards_touchpoints.common.BUYER_ORDER_DETAIL_PAGE
 import com.tokopedia.scp_rewards_touchpoints.common.Error
@@ -1182,12 +1183,11 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun isUsingShareEx(): Boolean {
-        return true
-//        val rollenceKey = "shareex_an_order"
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-//            rollenceKey,
-//            ""
-//        ) == rollenceKey
+        val rollenceKey = "shareex_an_order"
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            rollenceKey,
+            ""
+        ) == rollenceKey
     }
 
     private fun initializeShareEx(element: ProductListUiModel.ProductUiModel) {
