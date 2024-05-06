@@ -979,7 +979,7 @@ class BCABalanceViewModel @Inject constructor(
                             cardType,
                             lastBalance,
                             messageBCATopUp2,
-                            isErrorTopUp2 = true
+                            isErrorTopUp2 = false
                         )
                     } else {
                         errorCardMessageMutable.postValue(Pair(
