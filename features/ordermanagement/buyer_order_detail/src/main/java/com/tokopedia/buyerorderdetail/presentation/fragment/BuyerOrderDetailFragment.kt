@@ -1183,7 +1183,7 @@ open class BuyerOrderDetailFragment :
 
     private fun isUsingShareEx(): Boolean {
         return true
-//        val rollenceKey = "rollence_key_tmp"
+//        val rollenceKey = "shareex_an_order"
 //        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
 //            rollenceKey,
 //            ""
@@ -1203,7 +1203,7 @@ open class BuyerOrderDetailFragment :
             "&${ApplinkConstInternalShare.Param.LABEL_IMPRESSION_BOTTOMSHEET}=$label" +
             "&${ApplinkConstInternalShare.Param.LABEL_IMPRESSION_AFFILIATE_REGISTRATION}=$affiliateLabel" +
             "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_AFFILIATE_REGISTRATION}=$affiliateLabel" +
-            "&${ApplinkConstInternalShare.Param.UTM_CAMPAIGN}=pdp-{share_id}-${element.orderId}"
+            "&${ApplinkConstInternalShare.Param.UTM_CAMPAIGN}=Order-{share_id}-${element.productId}-${element.orderId}"
 
         val intent = RouteManager.getIntent(context, shareApplink)
         startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_SHARE)
