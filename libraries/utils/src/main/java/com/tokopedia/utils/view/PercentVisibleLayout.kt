@@ -82,19 +82,19 @@ class PercentVisibleLayout : RelativeLayout {
             widthPixels = 0
         }
         if (mPercentageListener != null && isBetweenHorizontalPercentageLimits(widthPercentage) && isBetweenVerticalPercentageLimits(heightPercentage)) {
-            if (heightPercentage > maxVisiblePercentage) {
-                maxVisiblePercentage = heightPercentage
+            if (heightPercentage > maxVisiblePercentage || widthPercentage > maxVisiblePercentage) {
+                maxVisiblePercentage = (heightPercentage + widthPercentage) / 2
             }
             if (duplicateEnabled || !duplicateEnabled && (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage)) {
                 lastPercentageHeight = heightPercentage
                 lastPercentageWidht = widthPercentage
                 mPercentageListener?.onVisibilityChange(fromWhereHeigth, fromWhereWidht, heightPercentage, widthPercentage)
             }
-            if (!onShowTriggered && heightPercentage > 1) {
+            if (!onShowTriggered && (heightPercentage > 1 || widthPercentage > 1)) {
                 mPercentageListener?.onShow()
                 onShowTriggered = true
             }
-            if (onShowTriggered && heightPercentage < 1) {
+            if (onShowTriggered && (heightPercentage < 1 || widthPercentage < 1)) {
                 mPercentageListener!!.onShowOver(maxVisiblePercentage)
                 onShowTriggered = false
                 maxVisiblePercentage = 0
