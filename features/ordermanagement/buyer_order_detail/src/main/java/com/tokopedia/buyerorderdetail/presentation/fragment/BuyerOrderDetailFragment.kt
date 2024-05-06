@@ -1195,7 +1195,7 @@ open class BuyerOrderDetailFragment :
         val affiliateLabel = "{share_id} - ${element.productId} - ${element.orderId}"
         val shareApplink = "${ApplinkConstInternalShare.SHARE}?" +
             "${ApplinkConstInternalShare.Param.PRODUCT_ID}=${element.productId}" +
-            "&${ApplinkConstInternalShare.Param.PAGE_TYPE}=1" +
+            "&${ApplinkConstInternalShare.Param.PAGE_TYPE}=${ApplinkConstInternalShare.PageType.ORDER_DETAIL}" +
             "&${ApplinkConstInternalShare.Param.DEFAULT_URL}=${element.productUrl}" +
             "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_SHARE_ICON}=$label" +
             "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CLOSE_ICON}=$label" +
