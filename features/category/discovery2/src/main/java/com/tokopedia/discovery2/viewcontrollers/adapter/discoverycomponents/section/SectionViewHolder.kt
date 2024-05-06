@@ -143,7 +143,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 }
             )
-        }, 50)
+        }, 100)
     }
 
     private fun renderFestiveBackground(imageUrl: String) {
@@ -163,7 +163,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 }
             )
-        }, 50)
+        }, 100)
     }
 
     private fun addHeightBgOnce(view: View) {
