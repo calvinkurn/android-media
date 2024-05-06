@@ -193,32 +193,6 @@ class StatisticActivityViewModelTest {
         assert(viewModel.userRole.value is Fail)
     }
 
-    private fun fetchPaywallAccessTestScope(
-        testBody: TestScope.(mockShopId: String, elementKey: String, source: String, results: List<Boolean>) -> Unit
-    ) {
-        runTest {
-            val results = mutableListOf<Boolean>()
-            val job = launch(UnconfinedTestDispatcher()) {
-                viewModel.paywallAccess.collectLatest {
-                    results.add(it)
-                }
-            }
-
-            val mockShopId = "12345"
-            val elementKey = GetElementBenefitByKeyBulkUseCase.Companion.Keys.STATISTIC_PAYWALL_ACCESS
-            val source = GetElementBenefitByKeyBulkUseCase.Companion.Sources.STATISTIC
-
-            every {
-                userSession.shopId
-            } returns mockShopId
-
-            testBody(mockShopId, elementKey, source, results)
-
-            job.cancel()
-            results.clear()
-        }
-    }
-
     @Test
     fun `when fetch paywall access should success then set the access is granted`() {
         fetchPaywallAccessTestScope { mockShopId, elementKey, source, results ->
@@ -322,6 +296,32 @@ class StatisticActivityViewModelTest {
             }
 
             assert(!results[0]) //initial value and resulting failed which means the user doesn't has the access
+        }
+    }
+
+    private fun fetchPaywallAccessTestScope(
+        testBody: TestScope.(mockShopId: String, elementKey: String, source: String, results: List<Boolean>) -> Unit
+    ) {
+        runTest {
+            val results = mutableListOf<Boolean>()
+            val job = launch(UnconfinedTestDispatcher()) {
+                viewModel.paywallAccess.collectLatest {
+                    results.add(it)
+                }
+            }
+
+            val mockShopId = "12345"
+            val elementKey = GetElementBenefitByKeyBulkUseCase.Companion.Keys.STATISTIC_PAYWALL_ACCESS
+            val source = GetElementBenefitByKeyBulkUseCase.Companion.Sources.STATISTIC
+
+            every {
+                userSession.shopId
+            } returns mockShopId
+
+            testBody(mockShopId, elementKey, source, results)
+
+            job.cancel()
+            results.clear()
         }
     }
 
