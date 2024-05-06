@@ -107,7 +107,7 @@ object SellerMenuComposeUiMapper {
                         shopFollowers = uiModel.shopInfo.shopFollowersUiModel?.shopFollowers.orZero(),
                         shopBadgeUrl = uiModel.shopInfo.shopBadgeUiModel?.shopBadgeUrl.orEmpty(),
                         userShopInfoWrapper = uiModel.shopInfo.shopStatusUiModel?.userShopInfoWrapper
-                            ?: UserShopInfoWrapper(null, null),
+                            ?: UserShopInfoWrapper(null),
                         partialResponseStatus = uiModel.shopInfo.partialResponseStatus,
                         balanceValue = uiModel.shopInfo.saldoBalanceUiModel?.balanceValue.orEmpty()
                     )
@@ -152,7 +152,7 @@ object SellerMenuComposeUiMapper {
                         shopAge = shopAge,
                         shopFollowers = Long.ZERO,
                         shopBadgeUrl = String.EMPTY,
-                        userShopInfoWrapper = UserShopInfoWrapper(null, null),
+                        userShopInfoWrapper = UserShopInfoWrapper(null),
                         partialResponseStatus = false to false,
                         balanceValue = String.EMPTY
                     )

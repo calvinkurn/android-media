@@ -8,6 +8,7 @@ android {
     testNamespace 'com.tokopedia.sellerhome.test'
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
 
     defaultConfig {

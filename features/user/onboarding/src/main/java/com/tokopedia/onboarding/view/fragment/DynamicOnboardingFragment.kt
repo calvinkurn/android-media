@@ -13,7 +13,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.onboarding.R
@@ -88,20 +88,9 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         when (requestCode) {
             REQUEST_NEXT_PAGE -> {
                 activity?.let {
-                    val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-                    if (resultCode == Activity.RESULT_OK && userSession.isLoggedIn && data != null) {
-                        val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-                        if (isSuccessRegister) {
-                            it.startActivities(arrayOf(intentHome, intentNewUser))
-                        } else {
-                            it.startActivity(intentHome)
-                        }
-                    } else {
-                        it.startActivity(intentHome)
-                    }
+                    it.startActivity(intentHome)
                     it.finish()
                 }
             }
@@ -248,6 +237,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val page = RouteManager.getIntent(it, appLink)
             if (defferedDeeplinkPath.isEmpty()) {
                 if (appLink == ApplinkConst.REGISTER || appLink == ApplinkConst.LOGIN) {
+                    page.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
                     startActivityForResult(page, REQUEST_NEXT_PAGE)
                 } else if (appLink !=  ApplinkConst.HOME) {
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
