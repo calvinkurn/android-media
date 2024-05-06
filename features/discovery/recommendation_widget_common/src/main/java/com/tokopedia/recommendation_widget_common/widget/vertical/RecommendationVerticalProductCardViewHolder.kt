@@ -82,7 +82,7 @@ class RecommendationVerticalProductCardViewHolder(
         AppLogRecommendation.sendProductShowAppLog(
             element.recomItem.asProductTrackModel(
                 entranceForm = EntranceForm.PURE_GOODS_CARD,
-                additionalParam = element.source?.appLogAdditionalParam
+                additionalParam = element.appLogAdditionalParam
             )
         )
 
@@ -111,7 +111,7 @@ class RecommendationVerticalProductCardViewHolder(
         AppLogRecommendation.sendProductClickAppLog(
             element.recomItem.asProductTrackModel(
                 entranceForm = EntranceForm.PURE_GOODS_CARD,
-                additionalParam = element.source?.appLogAdditionalParam
+                additionalParam = element.appLogAdditionalParam
             )
         )
 

@@ -2,7 +2,7 @@ package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.AppLogParam
 
-sealed interface AppLogAdditionalParam {
+interface AppLogAdditionalParam {
     val parameters: Map<String, Any>
         get() = hashMapOf()
 
