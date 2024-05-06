@@ -97,11 +97,15 @@ class DynamicHomeNavBarView : LinearLayout {
         select(mSelectedItemId ?: firstModel.uniqueId)
     }
 
-    fun select(itemId: BottomNavItemId) {
-        val model = modelMap[itemId] ?: return
+    fun select(itemId: BottomNavItemId, forceSelect: Boolean = false) {
+        val model = modelMap[itemId]
 
-        val isSelected = mListener?.onItemSelected(this, model, mSelectedItemId == itemId, model.isJumper())
-        if (isSelected != true) return
+        if (model != null) {
+            val isSelected = mListener?.onItemSelected(this, model, mSelectedItemId == itemId, model.isJumper())
+            if (isSelected != true && !forceSelect) return
+        } else {
+            if (!forceSelect) return
+        }
 
         mSelectedItemId = itemId
         rebindAllItems(itemId)

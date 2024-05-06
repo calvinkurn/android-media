@@ -21,14 +21,14 @@ import javax.inject.Inject
 internal class MainParentViewModel @Inject constructor(
     private val getNotificationUseCase: GetNewBottomNavNotificationUseCase,
     private val getHomeBottomNavigationUseCase: GetHomeBottomNavigationUseCase,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
     private val _notification = MutableStateFlow<Notification?>(null)
     val notification get() = _notification.asLiveData()
 
-    private val _dynamicBottomNav = MutableLiveData<List<BottomNavBarUiModel>>(emptyList())
-    val dynamicBottomNav: LiveData<List<BottomNavBarUiModel>> by this::_dynamicBottomNav
+    private val _dynamicBottomNav = MutableLiveData<List<BottomNavBarUiModel>?>(null)
+    val dynamicBottomNav: LiveData<List<BottomNavBarUiModel>?> by this::_dynamicBottomNav
 
     private val _nextDynamicBottomNav = MutableLiveData<CompletableTask<List<BottomNavBarUiModel>>?>(null)
     val nextDynamicBottomNav: LiveData<CompletableTask<List<BottomNavBarUiModel>>?> by this::_nextDynamicBottomNav

@@ -21,6 +21,11 @@ object DeeplinkMapperHome {
     const val TAB_POSITION_OS = 2
     const val TAB_POSITION_RECOM = 5
 
+    const val EXTRA_TAB_TYPE = "tab_type"
+    const val EXTRA_DISCO_ID = "disco_id"
+
+    const val TAB_TYPE_FEED = "feed"
+
     fun isLoginAndHasShop(context: Context): Boolean {
         val userSession = UserSession(context)
         return userSession.isLoggedIn && userSession.hasShop()

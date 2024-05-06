@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -95,8 +96,10 @@ import com.tokopedia.navigation_common.listener.HomeScrollViewListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
+import com.tokopedia.navigation_common.ui.BottomNavBarItemType
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.BottomNavItemId
+import com.tokopedia.navigation_common.ui.DiscoId
 import com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -108,9 +111,12 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import kotlin.coroutines.resume
 import com.tokopedia.navigation.R as navigationR
 import com.tokopedia.resources.common.R as resourcescommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -191,6 +197,8 @@ class NewMainParentActivity :
     private var isUserFirstTimeLogin = false
 
     private var doubleTapExit = false
+
+    private var selectJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // changes for triggering unittest checker
@@ -511,6 +519,7 @@ class NewMainParentActivity :
         }
 
         viewModel.dynamicBottomNav.observe(this) { bottomNavList ->
+            if (bottomNavList == null) return@observe
             binding.dynamicNavbar.setModelList(bottomNavList)
 
             //TODO("Ask Dave about this")
@@ -547,11 +556,17 @@ class NewMainParentActivity :
     }
 
     private fun getTabIdFromIntentExtras(extras: Bundle): BottomNavItemId {
-        return BottomNavItemId(extras.getString(ARGS_TAB_ID, BottomNavHomeId.value))
+        return BottomNavItemId(
+            BottomNavBarItemType(extras.getString(ARGS_TAB_TYPE, BottomNavHomeId.type.value)),
+            DiscoId(extras.getString(ARGS_DISCO_ID, ""))
+        )
     }
 
     private fun getTabIdFromQueryParameter(data: Uri): BottomNavItemId {
-        return BottomNavItemId(data.getQueryParameter(ARGS_TAB_ID) ?: BottomNavHomeId.value)
+        return BottomNavItemId(
+            BottomNavBarItemType(data.getQueryParameter(ARGS_TAB_TYPE) ?: BottomNavHomeId.type.value),
+            DiscoId(data.getQueryParameter(ARGS_DISCO_ID).orEmpty())
+        )
     }
 
     private fun initDownloadManagerDialog() {
@@ -640,26 +655,34 @@ class NewMainParentActivity :
     }
 
     private fun showSelectedPage() {
-        val tabId = run {
-            val tabIdFromIntent = getTabIdFromIntent()
-            if (viewModel.hasTabType(tabIdFromIntent.type)) {
-                tabIdFromIntent
-            } else {
-                BottomNavHomeId
+        selectJob?.cancel()
+        selectJob = lifecycleScope.launch {
+            awaitNavData()
+            val tabId = run {
+                val tabIdFromIntent = getTabIdFromIntent()
+                if (viewModel.hasTabType(tabIdFromIntent.type)) {
+                    tabIdFromIntent
+                } else {
+                    BottomNavHomeId
+                }
             }
-        }
-        val fragment = getFragmentById(tabId) ?: return
-
-        run feedPlusArguments@{
-            if (!fragment::class.java.name.equals(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, true)) return@feedPlusArguments
-            runCatching {
-                val oldArgs = fragment.arguments ?: Bundle()
-                intent.extras?.let { extras -> oldArgs.putAll(extras) }
-                fragment.arguments = oldArgs
-            }.onFailure { it.printStackTrace() }
+            val fragment = getFragmentById(tabId) ?: return@launch
+            selectFragment(fragment, tabId)
+            binding.dynamicNavbar.select(tabId, forceSelect = true)
         }
 
-        selectFragment(fragment, tabId)
+
+//        run feedPlusArguments@{
+//            if (!fragment::class.java.name.equals(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, true)) return@feedPlusArguments
+//            runCatching {
+//                val oldArgs = fragment.arguments ?: Bundle()
+//                intent.extras?.let { extras -> oldArgs.putAll(extras) }
+//                fragment.arguments = oldArgs
+//            }.onFailure { it.printStackTrace() }
+//        }
+
+
+
     }
 
     private fun handleAppLinkBottomNavigation(isFirstInit: Boolean) {
@@ -693,7 +716,7 @@ class NewMainParentActivity :
                 startActivity(intent)
                 null
             } else {
-                supportFragmentManager.create(
+                val fragment = supportFragmentManager.create(
                     this,
                     Bundle().apply {
                         putDiscoId(id.discoId)
@@ -701,6 +724,17 @@ class NewMainParentActivity :
 //                    putShouldShowGlobalNav(false)
                     }
                 )
+
+                run feedPlusArguments@{
+                    if (!fragment::class.java.name.equals(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, true)) return@feedPlusArguments
+                    runCatching {
+                        val oldArgs = fragment.arguments ?: Bundle()
+                        intent.extras?.let { extras -> oldArgs.putAll(extras) }
+                        fragment.arguments = oldArgs
+                    }.onFailure { it.printStackTrace() }
+                }
+
+                fragment
             }
         }
     }
@@ -920,6 +954,23 @@ class NewMainParentActivity :
         finish()
     }
 
+    private suspend fun awaitNavData() = suspendCancellableCoroutine { cont ->
+        fun sendDataOnce() {
+            if (cont.isActive) { cont.resume(Unit) }
+        }
+
+        if (viewModel.dynamicBottomNav.value != null) {
+            sendDataOnce()
+        }
+        val observer = Observer<List<BottomNavBarUiModel>?> {
+            if (it == null) return@Observer
+            sendDataOnce()
+        }
+        viewModel.dynamicBottomNav.observe(this, observer)
+
+        cont.invokeOnCancellation { viewModel.dynamicBottomNav.removeObserver(observer) }
+    }
+
     /**
      * While refreshing the app update info, we also check whether we have updates in progress to
      * complete.
@@ -1117,6 +1168,9 @@ class NewMainParentActivity :
 
     companion object {
         private const val ARGS_TAB_ID = "tab_id"
+        private const val ARGS_TAB_TYPE = "tab_type"
+        private const val ARGS_DISCO_ID = "disco_id"
+
         private const val ARGS_HAS_RUN_ON_RESUME_PLT = "has_run_on_resume_plt"
         internal const val SCROLL_RECOMMEND_LIST = "recommend_list"
 

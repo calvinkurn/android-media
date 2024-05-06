@@ -99,7 +99,8 @@ object DeeplinkMapperContent {
         return UriUtil.buildUriAppendParams(
             ApplinkConsInternalHome.HOME_NAVIGATION,
             buildMap {
-                put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
+//                put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
+                put(DeeplinkMapperHome.EXTRA_TAB_TYPE, DeeplinkMapperHome.TAB_TYPE_FEED)
 
                 val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
