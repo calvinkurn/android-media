@@ -150,19 +150,19 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 )
             )
 
-            if (isOwner(author) && template.deletable) add(
-                ContentMenuItem(
-                    iconUnify = IconUnify.DELETE,
-                    name = storiesR.string.stories_delete_story_title,
-                    type = ContentMenuIdentifier.Delete
-                )
-            )
-
             if (isOwner(author)) add(
                 ContentMenuItem(
                     iconUnify = IconUnify.GRAPH,
                     name = storiesR.string.stories_performance,
                     type = ContentMenuIdentifier.SeePerformance
+                )
+            )
+
+            if (isOwner(author) && template.deletable) add(
+                ContentMenuItem(
+                    iconUnify = IconUnify.DELETE,
+                    name = storiesR.string.stories_delete_story_title,
+                    type = ContentMenuIdentifier.Delete
                 )
             )
         }
