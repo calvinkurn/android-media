@@ -1,12 +1,10 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.test.util.assertEmpty
 import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.content.test.util.assertFalse
 import com.tokopedia.content.test.util.assertTrue
 import com.tokopedia.feedplus.detail.data.FeedDetailRepository
-import com.tokopedia.feedplus.helper.assertEqualTo
 import com.tokopedia.feedplus.presentation.robot.createFeedDetailViewModelRobot
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
@@ -14,8 +12,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -23,7 +19,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 /**
