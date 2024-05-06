@@ -615,7 +615,7 @@ object DeeplinkMainApp {
             DLP.startsWith("all-annotation") { deeplink: String ->
                 DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowAllAnnotation(deeplink)
             },
-            DLP.matchPattern("list-belanja") {  _: String ->
+            DLP.matchPattern("list-belanja") { _: String ->
                 ApplinkConstInternalTokopediaNow.SHOPPING_LIST
             }
         ),
@@ -796,6 +796,11 @@ object DeeplinkMainApp {
             },
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
+        ),
+        "product-preview" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
             }
         ),
         "product-review" to mutableListOf(
@@ -988,6 +993,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(
@@ -1030,6 +1038,11 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("haspassword") { _: String ->
                 ApplinkConstInternalUserPlatform.HAS_PASSWORD
+            }
+        ),
+        "share" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
             }
         ),
         "share_address" to mutableListOf(

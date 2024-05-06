@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -99,14 +100,11 @@ class PlayBroadcastSummaryViewModelTest {
     @Test
     fun `when get traffic summary is success & theres a leaderboard, then it should return success with additional metrics`() {
         val mockTotalInteractiveParticipant = "0"
-        val mockMetricList = mutableListOf(
-            TrafficMetricUiModel(
-                type = TrafficMetricType.GameParticipants,
-                count = mockTotalInteractiveParticipant
-            )
-        ).apply {
-            addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats))
-        }
+        val mockMetricHighlightList = listOf(
+            LiveStatsUiModel.GameParticipant(mockTotalInteractiveParticipant)
+        )
+
+        val mockMetricList = playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats)
 
         val mockSlotResponse = mockSlotResponse.copy(
             data = GetSellerLeaderboardSlotResponse.Data(slots = listOf(GetSellerLeaderboardSlotResponse.SlotData()))
@@ -132,6 +130,9 @@ class PlayBroadcastSummaryViewModelTest {
             with(state) {
                 liveReport.trafficMetricsResult.assertEqualTo(
                     NetworkResult.Success(mockMetricList)
+                )
+                liveReport.trafficMetricHighlight.assertEqualTo(
+                    NetworkResult.Success(mockMetricHighlightList)
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
                 channelSummary.duration.assertEqualTo(mockLiveStats.duration)

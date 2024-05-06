@@ -98,6 +98,7 @@ data class CartItemHolderData(
     var bundleIds: List<String> = emptyList(),
     var showErrorBottomDivider: Boolean = false,
     var shouldDivideHalfErrorBottomDivider: Boolean = false,
+    var isEnableCartVariant: Boolean = false,
 
     // Will be set after calculation
     var wholesalePrice: Double = 0.0,

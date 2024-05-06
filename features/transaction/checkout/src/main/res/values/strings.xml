@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
+    <string name="checkout_module_title_activity_checkout_payment">Beli Langsung</string>
     <string name="show_case_finish">Mengerti</string>
     <string name="show_case_prev">Sebelumnya</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
@@ -87,6 +88,7 @@
     <string name="content_desc_tv_shipping_fee_summary">text ringkasan ongkir</string>
     <string name="content_desc_tv_total_payment">text total tagihan</string>
     <string name="content_desc_tv_select_payment_method">button pilih pembayaran</string>
+    <string name="content_desc_tv_pay_now">button bayar sekarang</string>
     <string name="content_desc_img_insurance_info">image info asuransi</string>
     <string name="content_desc_cb_insurance">checkbox asuransi</string>
     <string name="content_desc_tv_change_address_top">text pilih alamat lain</string>
@@ -141,6 +143,10 @@
     <string name="platform_fee_diskon_label">Diskon %s</string>
     <string name="platform_fee_diskon_format" formatted="false">-%s</string>
 
+    <string name="checkout_service_fee_title_info">Biaya Layanan</string>
+    <string name="checkout_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
+    <string name="checkout_lbl_installment_fee">Biaya cicilan per bulan</string>
+
     <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
     <string name="checkout_label_total_gifting">Total Pelengkap Hadiah</string>
     <string name="bmgm_mini_cart_bottom_sheet_title">Buy More Save More</string>
@@ -153,5 +159,12 @@
     <string name="dropship_name">Nama Pengirim</string>
     <string name="dropship_phone">Nomor Telepon</string>
     <string name="dropship_error_protection_usage">Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan</string>
+
+    <string name="checkout_cost_header_title">Cek ringkasan belanjamu, yuk</string>
+    <string name="checkout_cost_with_payment_header_title">Cek ringkasan transaksimu, yuk</string>
+    <string name="checkout_cost_others_title">Total Lainnya</string>
+    <string name="checkout_cost_payments_title">Biaya Transaksi</string>
+    <string name="checkout_cost_total_title">Total Belanja</string>
+    <string name="checkout_cost_total_with_payment_title">Total Tagihan</string>
 
 </resources>

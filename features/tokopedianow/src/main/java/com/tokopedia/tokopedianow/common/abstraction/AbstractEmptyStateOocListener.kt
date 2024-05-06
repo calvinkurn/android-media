@@ -4,6 +4,4 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 
 abstract class AbstractEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
     override fun onGetEventCategory(): String = ""
-
-    override fun onSwitchService() { /* nothing to do */ }
 }

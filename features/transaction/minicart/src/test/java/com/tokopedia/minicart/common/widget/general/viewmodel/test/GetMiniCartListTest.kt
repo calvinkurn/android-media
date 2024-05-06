@@ -47,7 +47,7 @@ class GetMiniCartListTest {
     fun `WHEN first load mini cart list success THEN flag isFirstLoad should be true`() {
         // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }
@@ -63,7 +63,7 @@ class GetMiniCartListTest {
     fun `WHEN reload mini cart list success THEN flag isFirstLoad should be false`() {
         // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }
@@ -78,7 +78,7 @@ class GetMiniCartListTest {
     @Test
     fun `WHEN reload mini cart list error THEN global state should not be updated`() {
         // given
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(ResponseErrorException())
         }
@@ -95,7 +95,7 @@ class GetMiniCartListTest {
     fun `WHEN first load mini cart list success but get out of service THEN global event should be updated accordingly`() {
         // given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessOutOfService()
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
         }
@@ -112,7 +112,7 @@ class GetMiniCartListTest {
         // given
         val errorMessage = "Error Message"
         val exception = ResponseErrorException(errorMessage)
-        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.setParams(any(), any(), any()) } just Runs
         coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }

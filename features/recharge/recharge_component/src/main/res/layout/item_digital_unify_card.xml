@@ -83,7 +83,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_action_x" />
+                tools:src="@drawable/common_ic_action_x" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

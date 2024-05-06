@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class ComingSoonViewModel(application: Application, components: ComponentsItem, position: Int) : DiscoveryBaseViewModel() {
+class ComingSoonViewModel(application: Application, components: ComponentsItem, position: Int) : DiscoveryBaseViewModel(components) {
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 

@@ -18,7 +18,7 @@ class ShareExAnalytics @Inject constructor(
     }
 
     fun trackActionClickIconShare(
-        identifier: String,
+        productId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -31,14 +31,23 @@ class ShareExAnalytics @Inject constructor(
             ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.CLICK_COMMUNICATION,
             ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.CLICK_SHARE_BUTTON,
             ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel,
-            ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_10365,
             ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE,
             ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE
         )
         when (pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10365
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.TOP_NAV_PDP
-                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.REVIEW -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50124
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50464
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
             else -> Unit
         }
@@ -49,7 +58,7 @@ class ShareExAnalytics @Inject constructor(
     }
 
     fun trackActionClickClose(
-        identifier: String,
+        productId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -62,14 +71,23 @@ class ShareExAnalytics @Inject constructor(
             ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.CLICK_COMMUNICATION,
             ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.CLICK_CLOSE,
             ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel,
-            ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_10366,
             ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE,
             ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE
         )
         when (pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10366
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.PDP
-                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.REVIEW -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50125
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50465
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
             else -> Unit
         }
@@ -80,7 +98,7 @@ class ShareExAnalytics @Inject constructor(
     }
 
     fun trackActionClickChannel(
-        identifier: String,
+        productId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         channel: String,
@@ -97,14 +115,23 @@ class ShareExAnalytics @Inject constructor(
             ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.CLICK_COMMUNICATION,
             ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.CLICK_SHARING_CHANNEL,
             ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel,
-            ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_10367,
             ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE,
             ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE
         )
         when (pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10367
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.PDP
-                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.REVIEW -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50126
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50466
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
             else -> Unit
         }
@@ -115,7 +142,7 @@ class ShareExAnalytics @Inject constructor(
     }
 
     fun trackImpressionBottomSheet(
-        identifier: String,
+        productId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -128,14 +155,23 @@ class ShareExAnalytics @Inject constructor(
             ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.VIEW_COMMUNICATION,
             ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.VIEW_SHARING_CHANNEL,
             ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel,
-            ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_10368,
             ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE,
             ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE
         )
         when (pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10368
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.PDP
-                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.REVIEW -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50127
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.REVIEW
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = productId
+            }
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50467
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
             else -> Unit
         }
@@ -159,12 +195,12 @@ class ShareExAnalytics @Inject constructor(
             putString(ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.VIEW_ITEM)
             putString(ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.IMPRESSION_TICKER_AFFILIATE)
             putString(ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel)
-            putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_31185)
             putString(ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE)
             putString(ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE)
         }
         when (pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
+                bundle.putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_31185)
                 bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.PDP)
                 bundle.putString(ShareExAnalyticsConst.Key.PRODUCT_ID, identifier)
             }
@@ -208,12 +244,12 @@ class ShareExAnalytics @Inject constructor(
             ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.CLICK_COMMUNICATION,
             ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.CLICK_TICKER_AFFILIATE,
             ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel,
-            ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_31186,
             ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE,
             ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE
         )
         when (pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_31186
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.PDP
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
             }
