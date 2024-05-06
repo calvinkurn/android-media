@@ -20,8 +20,9 @@ class AssetPreloadManager @Inject constructor(
 
     suspend fun preloadByCacheTask(cacheTask: CompletableTask<List<BottomNavBarUiModel>>) = withContext(dispatchers.io) {
         val assets = cacheTask.items.flatMap { it.assets.values }
-        val imageAssets = assets.filterIsInstance<Type.ImageUrl>()
-        val lottieAssets = assets.filterIsInstance<Type.LottieUrl>()
+        val jumperAssets = cacheTask.items.flatMap { it.jumper?.assets?.values.orEmpty() }
+        val imageAssets = assets.filterIsInstance<Type.ImageUrl>() + jumperAssets.filterIsInstance<Type.ImageUrl>()
+        val lottieAssets = assets.filterIsInstance<Type.LottieUrl>() + jumperAssets.filterIsInstance<Type.LottieUrl>()
 
         val cacheImages = async { cacheImageAssets(imageAssets) }
         val cacheLotties = async { cacheLottieAssets(lottieAssets) }
