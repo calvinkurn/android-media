@@ -47,7 +47,6 @@ object RollenceKey {
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
-    const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CART_BUY_AGAIN = "buyagain_cart"
     const val CART_BUY_AGAIN_CONTROL = "no_buyagain_cart"
     const val CART_BUY_AGAIN_VARIANT = "with_buyagain_cart"
