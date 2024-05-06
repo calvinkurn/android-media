@@ -341,6 +341,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         product_id
                         product_name
                         product_price
+                        product_min_order
+                        product_max_order
+                        product_invenage_value
+                        product_switch_invenage
                         product_original_price
                         product_wholesale_price
                         product_weight_fmt

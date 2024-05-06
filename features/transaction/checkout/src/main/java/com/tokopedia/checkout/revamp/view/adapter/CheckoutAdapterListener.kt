@@ -189,4 +189,8 @@ interface CheckoutAdapterListener {
     fun onPaymentAction(payment: CheckoutPaymentModel)
 
     fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee)
+
+    fun onCheckoutItemQuantityChanged(product: CheckoutProductModel, value: Int)
+
+    fun clearAllFocus()
 }

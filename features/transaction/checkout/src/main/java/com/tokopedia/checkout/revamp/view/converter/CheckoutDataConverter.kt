@@ -497,7 +497,11 @@ class CheckoutDataConverter @Inject constructor() {
             bmgmTierProductList = product.bmgmTierProductList,
             shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER,
             enableNoteEdit = additionalFeature.isEnableNoteEdit && !groupShopV2.disabledFeatures.isNoteEditDisabledFeatures,
-            enableQtyEdit = additionalFeature.isEnableQtyEdit
+            enableQtyEdit = additionalFeature.isEnableQtyEdit && !groupShopV2.disabledFeatures.isQtyEditDisabledFeatures,
+            minOrder = product.productMinOrder,
+            maxOrder = product.productMaxOrder,
+            invenageValue = product.productInvenageValue,
+            switchInvenage = product.productSwitchInvenage
         )
     }
 

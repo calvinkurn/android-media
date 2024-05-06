@@ -467,6 +467,10 @@ class ShipmentMapper @Inject constructor() {
                     addOnProduct =
                         mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
                     campaignId = product.campaignId
+                    productMinOrder = product.productMinOrder
+                    productMaxOrder = product.productMaxOrder
+                    productInvenageValue = product.productInvenageValue
+                    productSwitchInvenage = product.productSwitchValue
                 }
                 productListResult.add(productResult)
             }
@@ -1421,10 +1425,10 @@ class ShipmentMapper @Inject constructor() {
     private fun mapDisabledFeatures(disabledFeatures: List<String>): DisabledFeatures {
         val disabledFeature = DisabledFeatures()
         for (feature in disabledFeatures) {
-            if (feature.equals(AdditionalFeature.QTY_EDIT, ignoreCase = true)) {
+            if (feature.equals(DisabledFeatures.QTY_EDIT, ignoreCase = true)) {
                 disabledFeature.isQtyEditDisabledFeatures = true
             }
-            if (feature.equals(AdditionalFeature.NOTE_EDIT, ignoreCase = true)) {
+            if (feature.equals(DisabledFeatures.NOTE_EDIT, ignoreCase = true)) {
                 disabledFeature.isNoteEditDisabledFeatures = true
             }
         }

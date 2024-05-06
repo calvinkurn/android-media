@@ -126,7 +126,14 @@ data class CheckoutProductModel(
 
     // additional feature
     val enableNoteEdit: Boolean = false,
-    val enableQtyEdit: Boolean = false
+    val enableQtyEdit: Boolean = false,
+
+    val shouldShowMinQtyError: Boolean = false,
+    val shouldShowMaxQtyError: Boolean = false,
+    val minOrder: Int = 0,
+    val maxOrder: Int = 0,
+    val invenageValue: Int = 0,
+    val switchInvenage: Int = 0
 ) : CheckoutItem {
 
     val shouldShowBmgmInfoIcon: Boolean

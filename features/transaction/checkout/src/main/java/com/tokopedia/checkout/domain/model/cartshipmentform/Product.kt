@@ -82,5 +82,11 @@ data class Product(
     val shopName: String = "",
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val originWarehouseIds: List<Long> = emptyList(),
-    var campaignId: Int = -1
+    var campaignId: Int = -1,
+
+    // qty editor
+    var productMinOrder: Int = 0,
+    var productMaxOrder: Int = 0,
+    var productInvenageValue : Int = 0,
+    var productSwitchInvenage: Int = 0
 ) : Parcelable

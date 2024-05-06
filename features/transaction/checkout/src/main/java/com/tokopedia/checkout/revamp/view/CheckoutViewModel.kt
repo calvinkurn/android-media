@@ -3594,6 +3594,38 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun updateQuantityProduct(cartId: Long, newValue: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val itemIndex =
+            checkoutItems.indexOfFirst { it is CheckoutProductModel && it.cartId == cartId }
+        if (itemIndex > 0) {
+            val product = checkoutItems[itemIndex] as CheckoutProductModel
+            var showMaxQtyError = false
+            var showMinQtyError = false
+            var newQty = 0
+            if (newValue > product.maxOrder) {
+                showMaxQtyError = true
+                newQty = product.maxOrder
+            } else if (newValue < product.minOrder) {
+                showMinQtyError = true
+                newQty = product.minOrder
+            } else {
+                newQty = newValue
+            }
+            val newProduct = product.copy(
+                shouldShowMaxQtyError = showMaxQtyError,
+                shouldShowMinQtyError = showMinQtyError,
+                quantity = newQty
+            )
+            checkoutItems[itemIndex] = newProduct
+            /*viewModelScope.launch(dispatchers.io) {
+                addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
+            }*/
+            listData.value = checkoutItems
+            calculateTotal()
+        }
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
 

@@ -3054,6 +3054,15 @@ class CheckoutFragment :
         PaymentFeeInfoBottomSheet().show(this, paymentFee)
     }
 
+    override fun onCheckoutItemQuantityChanged(product: CheckoutProductModel, value: Int) {
+        viewModel.updateQuantityProduct(product.cartId, value)
+    }
+
+    override fun clearAllFocus() {
+        val view = activity?.currentFocus
+        view?.clearFocus()
+    }
+
     companion object {
         private const val MSSDK_APPID: String = "573733"
         private const val MSSDK_CHECKOUT: String = "checkout"
