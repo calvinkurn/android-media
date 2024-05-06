@@ -2588,13 +2588,24 @@ open class DiscoveryAnalytics(
 
     override fun trackEventClickCalendarWidget(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = componentsItems.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
-                KEY_NAME to "/discovery/$removedDashPageIdentifier - $pageType - ${
-                    getParentPosition(
-                        componentsItems
-                    ) + 1
-                } - ${componentsItems.data?.firstOrNull()?.title} - - ${componentsItems.name}",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/discovery/$removedDashPageIdentifier - $pageType - ${
+                            getParentPosition(
+                                componentsItems
+                            ) + 1
+                        } - ${componentsItems.data?.firstOrNull()?.title} - - ${componentsItems.name}"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (getParentPosition(
+                                componentsItems
+                            ) + 1).toString()
+                        )
+                    }),
                 KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
                 KEY_POSITION to "${componentsItems.position + 1}",
                 KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -2628,13 +2639,24 @@ open class DiscoveryAnalytics(
 
     override fun trackEventClickCalendarCTA(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
+        val gtmItemName = componentsItems.data?.firstOrNull()?.gtmItemName
         list.add(
             mapOf(
-                KEY_NAME to "/discovery/$removedDashPageIdentifier - $pageType - ${
-                    getParentPosition(
-                        componentsItems
-                    ) + 1
-                } - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+                KEY_NAME to
+                    (if (gtmItemName.isNullOrEmpty()) {
+                        "/discovery/$removedDashPageIdentifier - $pageType - ${
+                            getParentPosition(
+                                componentsItems
+                            ) + 1
+                        } - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}"
+                    } else {
+                        gtmItemName.replace(
+                            "#POSITION",
+                            (getParentPosition(
+                                componentsItems
+                            ) + 1).toString()
+                        )
+                    }),
                 KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
                 KEY_POSITION to "${componentsItems.position + 1}",
                 KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
