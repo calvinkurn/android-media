@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.byteio.recommendation
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 
 interface AppLogAdditionalParam {
@@ -21,7 +22,18 @@ interface AppLogAdditionalParam {
                 AppLogParam.FIRST_TRACK_ID to firstTrackId,
                 AppLogParam.FIRST_SOURCE_PAGE to firstSourcePage,
             )
+
+        override fun setAdditionalToGlobalParam() {
+            super.setAdditionalToGlobalParam()
+            AppLogAnalytics.setGlobalParams(
+                parentProductId = parentProductId,
+                parentTrackId = parentTrackId,
+                parentRequestId = parentRequestId
+            )
+        }
     }
+
+    fun setAdditionalToGlobalParam() {}
 
     object None : AppLogAdditionalParam
 }
