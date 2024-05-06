@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -59,23 +60,25 @@ fun ContentCreationView(
     NestTheme(
         isOverrideStatusBarColor = false
     ) {
-        CreationViewHeader(isOwner, onCloseClicked, onSeePerformanceClicked, onSettingsClicked)
-        when (creationConfig) {
-            is Success -> {
-                LaunchedEffect(Unit) {
-                    onImpressBottomSheet()
+        Column {
+            CreationViewHeader(isOwner, onCloseClicked, onSeePerformanceClicked, onSettingsClicked)
+            when (creationConfig) {
+                is Success -> {
+                    LaunchedEffect(Unit) {
+                        onImpressBottomSheet()
+                    }
+
+                    ContentCreationSuccessView(
+                        creationItemList = creationConfig.data.creationItems,
+                        selectedItem = selectedItem,
+                        onSelectItem = onSelectItem,
+                        onNextClicked = onNextClicked
+                    )
                 }
 
-                ContentCreationSuccessView(
-                    creationItemList = creationConfig.data.creationItems,
-                    selectedItem = selectedItem,
-                    onSelectItem = onSelectItem,
-                    onNextClicked = onNextClicked
-                )
+                is Fail -> ContentCreationFailView(onRetry = onRetryClicked)
+                else -> ContentCreationLoadingView()
             }
-
-            is Fail -> ContentCreationFailView(onRetry = onRetryClicked)
-            else -> ContentCreationLoadingView()
         }
     }
 }
@@ -182,7 +185,11 @@ private fun CreationViewHeader(
     onSeePerformance: () -> Unit,
     onContentSetting: () -> Unit
 ) {
-    ConstraintLayout{
+    ConstraintLayout(modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .padding(bottom = 16.dp)
+    ) {
         val (ivClose, tvTitle, ivPerformance, ivSettings) = createRefs()
         NestIcon(
             iconId = IconUnify.CLOSE,
@@ -201,7 +208,8 @@ private fun CreationViewHeader(
             text = stringResource(R.string.content_creation_bottom_sheet_title),
             textStyle = NestTheme.typography.heading3.copy(
                 color = NestTheme.colors.NN._950
-            ), modifier = Modifier.constrainAs(tvTitle){
+            ),
+            modifier = Modifier.constrainAs(tvTitle) {
                 start.linkTo(ivClose.end)
                 top.linkTo(ivClose.top)
                 bottom.linkTo(ivClose.bottom)
@@ -209,7 +217,7 @@ private fun CreationViewHeader(
                 width = Dimension.fillToConstraints
             },
         )
-        if (true) {
+        if (isOwner) {
             NestIcon(
                 iconId = IconUnify.GRAPH,
                 colorLightEnable = NestTheme.colors.NN._900,
