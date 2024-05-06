@@ -252,6 +252,8 @@ object AppLogPdp {
             JSONObject().apply {
                 addPage()
                 addEntranceInfo()
+                addEnterFromInfo()
+                addEnterFrom()
                 put("button_name", analyticData.buttonName.value)
                 put("product_id", analyticData.productId)
                 put("is_single_sku", analyticData.isSingleSku.intValue)
@@ -267,6 +269,8 @@ object AppLogPdp {
             JSONObject().apply {
                 addPage()
                 addEntranceInfo()
+                addEnterFromInfo()
+                addEnterFrom()
                 put("button_name", analyticData.buttonName.value)
                 put("product_id", analyticData.productId)
                 put("is_single_sku", analyticData.isSingleSku.intValue)
