@@ -480,23 +480,17 @@
                     tools:text="2 jam Tiba"
                     tools:visibility="visible" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/text_product_variant"
+                <include
+                    android:id="@+id/item_variant_cart"
+                    layout="@layout/item_variant_cart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:paddingTop="2dp"
-                    android:textColor="@color/Unify_NN600"
-                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/fl_image_product"
-                    app:layout_constraintTop_toBottomOf="@+id/text_product_tag_info"
-                    app:typographyType="display_3"
-                    tools:text="Biru, XL"
-                    tools:visibility="visible" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_product_tag_info" />
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/layout_product_info"
@@ -507,7 +501,7 @@
                     android:foregroundGravity="center_vertical"
                     app:flexWrap="wrap"
                     app:layout_constraintStart_toEndOf="@+id/fl_image_product"
-                    app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
+                    app:layout_constraintTop_toBottomOf="@+id/item_variant_cart"
                     tools:layout_height="20dp"
                     tools:layout_width="20dp"
                     tools:visibility="gone" />
