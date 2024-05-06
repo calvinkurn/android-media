@@ -289,6 +289,7 @@ class ShopInfoViewHolder(
             is PowerMerchantStatus.Active -> {
                 itemView?.apply {
                     setPowerMerchantShopStatus(shopStatusUiModel)
+                    setupTransactionSection(shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel)
                     sendSettingShopInfoImpressionTracking(
                         shopStatusUiModel,
                         trackingListener::sendImpressionDataIris
@@ -416,6 +417,43 @@ class ShopInfoViewHolder(
         powerMerchantText.text =
             getString(sellermenucommonR.string.power_merchant_upgrade)
         return this
+    }
+
+    private fun View.setupTransactionSection(userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel?) {
+        val txTotalStatsRM = findViewById<Typography>(R.id.tx_total_stats_rm)
+        val totalTransaction = userShopInfoUiModel?.totalTransaction ?: 0
+        if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION_VISIBLE) {
+            hideTransactionSection()
+        } else {
+            showTransactionSection(totalTransaction)
+            if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
+                txTotalStatsRM.hide()
+            } else {
+                txTotalStatsRM.show()
+                txTotalStatsRM.text =
+                    getString(R.string.total_transaction, totalTransaction.toString())
+            }
+        }
+    }
+
+    private fun View.hideTransactionSection() {
+        findViewById<View>(R.id.divider_stats_rm)?.hide()
+        findViewById<Typography>(R.id.tx_stats_rm)?.hide()
+        findViewById<Typography>(R.id.tx_total_stats_rm)?.hide()
+        findViewById<View>(R.id.view_rm_transaction_cta)?.hide()
+    }
+
+    private fun View.showTransactionSection(totalTransaction: Long) {
+        findViewById<View>(R.id.divider_stats_rm)?.show()
+        findViewById<View>(R.id.divider_stats_rm)?.setBackgroundResource(R.drawable.ic_divider_stats_rm)
+        findViewById<Typography>(R.id.tx_stats_rm)?.show()
+        findViewById<Typography>(R.id.tx_total_stats_rm)?.show()
+        findViewById<View>(R.id.view_rm_transaction_cta)?.run {
+            show()
+            setOnClickListener {
+                listener?.onRMTransactionClicked(totalTransaction)
+            }
+        }
     }
 
     private fun View.setPowerMerchantProStatus(

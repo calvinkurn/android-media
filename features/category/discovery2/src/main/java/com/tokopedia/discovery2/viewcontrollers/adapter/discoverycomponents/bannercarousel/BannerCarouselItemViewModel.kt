@@ -10,9 +10,9 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class BannerCarouselItemViewModel(
     application: Application,
-    private val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     init {

@@ -31,9 +31,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ProductHighlightViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
     private val productHighlightCardList: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()

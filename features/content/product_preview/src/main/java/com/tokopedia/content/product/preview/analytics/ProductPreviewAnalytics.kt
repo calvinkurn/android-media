@@ -125,6 +125,5 @@ interface ProductPreviewAnalytics {
      * 19. click bottom nav
      * 50664
      */
-
     fun onClickBottomNav(model: BottomNavUiModel)
 }
