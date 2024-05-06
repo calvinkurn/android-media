@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.ComparisonBpcListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
@@ -19,9 +20,23 @@ class ComparisonBpcWidgetAdapter(
     var adapterTypeFactory: ComparisonBpcTypeFactory
 ) : RecyclerView.Adapter<AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>>>() {
     private var comparisonBpcListModel = ComparisonBpcListModel()
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        PercentageScrollListener()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return adapterTypeFactory.createViewHolder(view, viewType)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.addOnScrollListener(scrollListener)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        recyclerView.removeOnScrollListener(scrollListener)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>>, position: Int) {
