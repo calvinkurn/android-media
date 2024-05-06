@@ -1134,7 +1134,7 @@ class PlayUserInteractionFragment @Inject constructor(
                             shareExInitializer?.openShareBottomSheet(
                                 bottomSheetArg = ShareExBottomSheetArg.Builder(
                                     pageTypeEnum = ShareExPageTypeEnum.PLAY,
-                                    defaultUrl = "",
+                                    defaultUrl = "tokopedia://play/$channelId",
                                     trackerArg = ShareExTrackerArg(
                                         utmCampaign = "",
                                         labelActionClickShareIcon = "",
