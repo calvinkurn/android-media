@@ -132,7 +132,7 @@ class PlayEngagementAnalyticTest {
         )
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId, 5000, isYouTube = false)
+    private fun createRobot() = PlayActivityRobot(channelId, 1000, isYouTube = false)
 
     @Test
     fun bottomSheet_privateVoucher() {
