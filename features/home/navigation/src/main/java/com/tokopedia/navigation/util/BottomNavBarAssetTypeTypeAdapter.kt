@@ -25,7 +25,7 @@ object BottomNavBarAssetTypeTypeAdapter : TypeAdapter<BottomNavBarAsset.Type>() 
             value(asset.jsonStringValue)
 
             when (asset) {
-                is BottomNavBarAsset.Type.Image -> {
+                is BottomNavBarAsset.Type.ImageUrl -> {
                     name(KEY_URL)
                     value(asset.url)
                 }
@@ -33,7 +33,7 @@ object BottomNavBarAssetTypeTypeAdapter : TypeAdapter<BottomNavBarAsset.Type>() 
                     name(KEY_RES)
                     value(asset.res)
                 }
-                is BottomNavBarAsset.Type.Lottie -> {
+                is BottomNavBarAsset.Type.LottieUrl -> {
                     name(KEY_URL)
                     value(asset.url)
                 }
@@ -65,9 +65,9 @@ object BottomNavBarAssetTypeTypeAdapter : TypeAdapter<BottomNavBarAsset.Type>() 
         reader.endObject()
 
         return when (typeString) {
-            VALUE_IMAGE -> BottomNavBarAsset.Type.Image(url)
+            VALUE_IMAGE -> BottomNavBarAsset.Type.ImageUrl(url)
             VALUE_IMAGE_RES -> BottomNavBarAsset.Type.ImageRes(res)
-            VALUE_LOTTIE -> BottomNavBarAsset.Type.Lottie(url)
+            VALUE_LOTTIE -> BottomNavBarAsset.Type.LottieUrl(url)
             VALUE_LOTTIE_RES -> BottomNavBarAsset.Type.LottieRes(res)
             else -> null
         }
@@ -75,9 +75,9 @@ object BottomNavBarAssetTypeTypeAdapter : TypeAdapter<BottomNavBarAsset.Type>() 
 
     private val BottomNavBarAsset.Type.jsonStringValue
         get() = when (this) {
-            is BottomNavBarAsset.Type.Image -> VALUE_IMAGE
+            is BottomNavBarAsset.Type.ImageUrl -> VALUE_IMAGE
             is BottomNavBarAsset.Type.ImageRes -> VALUE_IMAGE_RES
-            is BottomNavBarAsset.Type.Lottie -> VALUE_LOTTIE
+            is BottomNavBarAsset.Type.LottieUrl -> VALUE_LOTTIE
             is BottomNavBarAsset.Type.LottieRes -> VALUE_LOTTIE_RES
         }
 }

@@ -99,8 +99,8 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
     private fun List<GetHomeBottomNavigationResponse.Image>.toAssetsMap(): Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type> {
         return associate {
             BottomNavBarAsset.Id(it.type) to when (val type = it.imageType) {
-                "image" -> BottomNavBarAsset.Type.Image(it.imageUrl)
-                "lottie" -> BottomNavBarAsset.Type.Lottie(it.imageUrl)
+                "image" -> BottomNavBarAsset.Type.ImageUrl(it.imageUrl)
+                "lottie" -> BottomNavBarAsset.Type.LottieUrl(it.imageUrl)
                 else -> error("Not supported for type $type")
             }
         }

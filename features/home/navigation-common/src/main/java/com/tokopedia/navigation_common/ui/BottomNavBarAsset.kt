@@ -42,14 +42,19 @@ class BottomNavBarAsset {
     }
 
     sealed interface Type {
-        @JvmInline
-        value class Image(val url: String) : Type
+
+        sealed interface Image : Type
 
         @JvmInline
-        value class ImageRes(@DrawableRes val res: Int) : Type
+        value class ImageUrl(val url: String) : Image
 
         @JvmInline
-        value class Lottie(val url: String) : Type {
+        value class ImageRes(@DrawableRes val res: Int) : Image
+
+        sealed interface Lottie : Type
+
+        @JvmInline
+        value class LottieUrl(val url: String) : Lottie {
 
             companion object {
                 private val regex = Regex.fromLiteral("https://.*.json")
@@ -57,7 +62,7 @@ class BottomNavBarAsset {
         }
 
         @JvmInline
-        value class LottieRes(@RawRes val res: Int) : Type
+        value class LottieRes(@RawRes val res: Int) : Lottie
     }
 
     companion object {

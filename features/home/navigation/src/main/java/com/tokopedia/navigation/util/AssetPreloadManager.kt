@@ -20,8 +20,8 @@ class AssetPreloadManager @Inject constructor(
 
     suspend fun preloadByCacheTask(cacheTask: CompletableTask<List<BottomNavBarUiModel>>) = withContext(dispatchers.io) {
         val assets = cacheTask.items.flatMap { it.assets.values }
-        val imageAssets = assets.filterIsInstance<Type.Image>()
-        val lottieAssets = assets.filterIsInstance<Type.Lottie>()
+        val imageAssets = assets.filterIsInstance<Type.ImageUrl>()
+        val lottieAssets = assets.filterIsInstance<Type.LottieUrl>()
 
         val cacheImages = async { cacheImageAssets(imageAssets) }
         val cacheLotties = async { cacheLottieAssets(lottieAssets) }
@@ -29,7 +29,7 @@ class AssetPreloadManager @Inject constructor(
         if (cacheImages.await()) cacheTask.completeTask()
     }
 
-    private suspend fun cacheImageAssets(assets: List<Type.Image>) = coroutineScope {
+    private suspend fun cacheImageAssets(assets: List<Type.ImageUrl>) = coroutineScope {
         val results = assets.map {
             async {
                 GlideApp.with(context)
@@ -45,7 +45,7 @@ class AssetPreloadManager @Inject constructor(
         results.all { it }
     }
 
-    private suspend fun cacheLottieAssets(assets: List<Type.Lottie>) = coroutineScope {
+    private suspend fun cacheLottieAssets(assets: List<Type.LottieUrl>) = coroutineScope {
         val results = assets.map {
             async {
                 lottieCacheManager.preloadSyncFromUrl(it.url)

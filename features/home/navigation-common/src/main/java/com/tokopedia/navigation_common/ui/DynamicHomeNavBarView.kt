@@ -1,17 +1,21 @@
 package com.tokopedia.navigation_common.ui
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import com.airbnb.lottie.Lottie
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.LottieTask
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
@@ -84,7 +88,7 @@ class DynamicHomeNavBarView : LinearLayout {
 
         modelList.forEach {
             it.assets.values.forEach loadAsset@{ asset ->
-                if (asset !is Type.Lottie) return@loadAsset
+                if (asset !is Type.LottieUrl) return@loadAsset
                 cacheManager.preloadFromUrl(asset.url)
             }
         }
@@ -187,43 +191,80 @@ class DynamicHomeNavBarView : LinearLayout {
         shouldUseJumper: Boolean,
         prevIsJumper: Boolean,
     ) {
-        val asset = if (shouldUseJumper) {
+        val assetPlaylist = if (shouldUseJumper) {
             getJumperAssets(model, isSelected, prevIsSelected, prevIsJumper)
         } else {
             getNormalAssets(model, isSelected, prevIsSelected, prevIsJumper)
         } ?: return
 
-        Log.d("DynamicHomeNavBarView", "Model: ${model.uniqueId}, isSelected: $isSelected, prevIsSelected: $prevIsSelected, Asset: $asset")
+        bindAssetPlaylist(assetPlaylist)
+    }
 
+    private fun LottieAnimationView.bindAssetPlaylist(
+        playlist: AssetPlaylist
+    ) {
         removeAllAnimatorListeners()
         pauseAnimation()
         clearImage()
 
-        when (asset) {
-            is Type.Image -> {
-                loadImageWithoutPlaceholderAndError(asset.url) {
+        repeatCount = 0
+
+        when (playlist) {
+            is ImagePlaylist -> bindImagePlaylist(playlist)
+            is LottiePlaylist -> bindLottiePlaylist(playlist)
+        }
+    }
+
+    private fun LottieAnimationView.bindImagePlaylist(playlist: ImagePlaylist) {
+        when (val image = playlist.image) {
+            is Type.ImageUrl -> {
+                loadImageWithoutPlaceholderAndError(image.url) {
                     setCacheStrategy(MediaCacheStrategy.DATA)
                 }
             }
-            is Type.Lottie -> {
-                LottieCompositionFactory.fromUrl(context, asset.url)
-                    .addListener { composition ->
-                        setComposition(composition)
-                        playAnimation()
-                    }
-            }
             is Type.ImageRes -> {
                 setImageDrawable(
-                    ContextCompat.getDrawable(uiModeAwareContext, asset.res)
+                    ContextCompat.getDrawable(uiModeAwareContext, image.res)
                 )
             }
-            is Type.LottieRes -> {
-                LottieCompositionFactory.fromRawRes(context, asset.res)
-                    .addListener { composition ->
-                        setComposition(composition)
+        }
+    }
+
+    private fun LottieAnimationView.bindLottiePlaylist(playlist: LottiePlaylist) {
+        playlist.firstAsset.toLottieTask()
+            .addListener {
+                repeatCount = if (playlist.nextAsset == null && playlist.isInfinite) {
+                    LottieDrawable.INFINITE
+                } else {
+                    0
+                }
+                setComposition(it)
+                playAnimation()
+            }
+
+        addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animator: Animator) {}
+
+            override fun onAnimationEnd(animator: Animator) {
+                if (playlist.nextAsset == null) return
+                playlist.nextAsset.toLottieTask()
+                    .addListener {
+                        repeatCount = if (playlist.isInfinite) LottieDrawable.INFINITE else 0
+                        setComposition(it)
                         playAnimation()
                     }
             }
+
+            override fun onAnimationCancel(animator: Animator) {}
+
+            override fun onAnimationRepeat(animator: Animator) {}
+        })
+    }
+
+    private fun Type.Lottie.toLottieTask(): LottieTask<LottieComposition> {
+        return when (this) {
+            is Type.LottieUrl -> LottieCompositionFactory.fromUrl(context, url)
+            is Type.LottieRes -> LottieCompositionFactory.fromRawRes(context, res)
         }
     }
 
@@ -234,39 +275,60 @@ class DynamicHomeNavBarView : LinearLayout {
         isSelected: Boolean?,
         prevIsSelected: Boolean?,
         prevIsJumper: Boolean,
-    ): Type? {
+    ): AssetPlaylist? {
         val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
         val variant = if (isDarkMode) Variant.Dark else Variant.Light
         return when {
-            isSelected == null -> model.assets[Key.ImageInactive + variant]
-            !isSelected && prevIsSelected != true -> model.assets[Key.ImageInactive + variant]
+            isSelected == null -> {
+                ImagePlaylist.of(model.assets[Key.ImageInactive + variant])
+            }
+            !isSelected && prevIsSelected != true -> {
+                ImagePlaylist.of(model.assets[Key.ImageInactive + variant])
+            }
             (context.isDeviceAnimationDisabled() || isSelected == prevIsSelected) && !prevIsJumper -> {
                 val key = if (isSelected) Key.ImageActive else Key.ImageInactive
-                model.assets[key + variant]
+                ImagePlaylist.of(model.assets[key + variant])
             }
             else -> {
                 run {
                     val asset = if (prevIsJumper && model.jumper != null) {
-                        if (isSelected) model.jumper.assets[Key.AnimInactive + variant]
-                        else model.assets[Key.ImageInactive + variant]
+                        if (isSelected) {
+                            LottiePlaylist.of(model.jumper.assets[Key.AnimInactive + variant])
+                        }
+                        else {
+                            ImagePlaylist.of(model.assets[Key.ImageInactive + variant])
+                        }
                     } else {
                         val key = if (isSelected) Key.AnimActive else Key.AnimInactive
-                        model.assets[key + variant]
+                        LottiePlaylist.of(model.assets[key + variant])
                     }
 
-                    val isCached = when (asset) {
-                        is Type.Lottie -> cacheManager.isUrlLoaded(asset.url)
-                        is Type.LottieRes -> true
-                        else -> false
+                    val (firstAssetCached, secondAssetCached) = when (asset) {
+                        is LottiePlaylist -> {
+                            cacheManager.isUrlLoaded(asset.firstAsset.url) to (asset.nextAsset?.let {
+                                cacheManager.isUrlLoaded(it.url)
+                            } ?: false)
+                        }
+                        else -> false to false
                     }
 
-                    if (isCached) {
-                        asset
+                    if (firstAssetCached) {
+                        if (secondAssetCached) asset
+                        else {
+                            val lottiePlaylist = asset as LottiePlaylist
+                            LottiePlaylist.of(lottiePlaylist.firstAsset, isInfinite = lottiePlaylist.isInfinite)
+                        }
                     } else {
-                        asset?.let { if (it is Type.Lottie) cacheManager.preloadFromUrl(it.url) }
-                        model.assets[
-                            (if (isSelected) Key.ImageActive else Key.ImageInactive) + variant
-                        ]
+                        asset?.let { playlist ->
+                            if (playlist is LottiePlaylist) {
+                                cacheManager.preloadFromUrl(playlist.firstAsset.url)
+                                playlist.nextAsset?.url?.let { cacheManager.preloadFromUrl(it) }
+                            }
+                        }
+
+                        ImagePlaylist.of(
+                            model.assets[(if (isSelected) Key.ImageActive else Key.ImageInactive) + variant]
+                        )
                     }
                 }
             }
@@ -278,15 +340,30 @@ class DynamicHomeNavBarView : LinearLayout {
         isSelected: Boolean?,
         prevIsSelected: Boolean?,
         prevIsJumper: Boolean,
-    ): Type? {
+    ): AssetPlaylist? {
         val assets = model.jumper?.assets ?: return null
         val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
         val variant = if (isDarkMode) Variant.Dark else Variant.Light
         return when {
-            isSelected != true -> assets[Key.ImageInactive + variant]
-            context.isDeviceAnimationDisabled() -> assets[Key.AnimActive + variant]
-            isSelected == prevIsSelected -> if (prevIsJumper) null else assets[Key.AnimActive + variant]
-            else -> assets[Key.AnimIdle + variant]
+            isSelected != true -> {
+                ImagePlaylist.of(assets[Key.ImageInactive + variant])
+            }
+            context.isDeviceAnimationDisabled() -> {
+                LottiePlaylist.of(assets[Key.AnimActive + variant])
+            }
+            isSelected == prevIsSelected -> {
+                if (prevIsJumper) null
+                else {
+                    LottiePlaylist.of(
+                        assets[Key.AnimActive + variant],
+                        assets[Key.AnimIdle + variant],
+                        isInfinite = true,
+                    )
+                }
+            }
+            else -> {
+                LottiePlaylist.of(assets[Key.AnimIdle + variant], isInfinite = true)
+            }
         }
     }
 
@@ -331,6 +408,37 @@ class DynamicHomeNavBarView : LinearLayout {
         companion object {
             fun init(model: BottomNavBarUiModel): StateHolder {
                 return StateHolder(model, null)
+            }
+        }
+    }
+
+    private sealed interface AssetPlaylist
+
+    @JvmInline
+    private value class ImagePlaylist(val image: Type.Image) : AssetPlaylist {
+        companion object {
+            fun of(type: Type?): ImagePlaylist? {
+                return if (type is Type.ImageUrl) ImagePlaylist(type) else null
+            }
+        }
+    }
+
+    private data class LottiePlaylist(
+        val firstAsset: Type.LottieUrl,
+        val nextAsset: Type.LottieUrl?,
+        val isInfinite: Boolean,
+    ) : AssetPlaylist {
+        companion object {
+            fun of(firstAsset: Type?, secondAsset: Type? = null, isInfinite: Boolean = false): LottiePlaylist? {
+                return if (firstAsset !is Type.LottieUrl) {
+                    null
+                } else {
+                    LottiePlaylist(
+                        firstAsset,
+                        secondAsset as? Type.LottieUrl,
+                        isInfinite
+                    )
+                }
             }
         }
     }
