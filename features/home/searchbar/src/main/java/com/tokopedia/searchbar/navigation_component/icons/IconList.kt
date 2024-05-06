@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -64,6 +65,9 @@ object IconList {
                 id = ID_MESSAGE,
                 applink = getInboxApplink(),
                 disableRouteManager = disableRouteManager,
+                bundle = Bundle().apply {
+                    putString(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+                },
                 nonLoginApplink = ApplinkConst.LOGIN,
                 name = NAME_MESSAGE,
                 disableDefaultGtmTracker = disableDefaultGtmTracker
@@ -101,6 +105,9 @@ object IconList {
                 id = ID_NOTIFICATION,
                 applink = ApplinkConst.NOTIFICATION,
                 disableRouteManager = disableRouteManager,
+                bundle = Bundle().apply {
+                    putString(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+                },
                 nonLoginApplink = ApplinkConst.LOGIN,
                 name = NAME_NOTIFICATION,
                 disableDefaultGtmTracker = disableDefaultGtmTracker
@@ -116,6 +123,9 @@ object IconList {
                 id = ID_CART,
                 applink = ApplinkConst.CART,
                 disableRouteManager = disableRouteManager,
+                bundle = Bundle().apply {
+                    putString(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+                },
                 nonLoginApplink = ApplinkConst.LOGIN,
                 name = NAME_CART,
                 disableDefaultGtmTracker = disableDefaultGtmTracker
