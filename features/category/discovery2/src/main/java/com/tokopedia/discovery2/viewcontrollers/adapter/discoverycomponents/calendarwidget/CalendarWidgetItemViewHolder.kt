@@ -134,7 +134,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             }
 
             Calendar.GRID -> {
-                layoutParams.width = ((width) / 2)
+                layoutParams.width = ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_24)) / 2)
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_300)
             }
