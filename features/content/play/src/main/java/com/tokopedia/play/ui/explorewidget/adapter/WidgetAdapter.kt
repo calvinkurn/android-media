@@ -11,7 +11,7 @@ import com.tokopedia.play.view.uimodel.WidgetUiModel
  * @author by astidhiyaa on 02/12/22
  */
 class WidgetAdapter(coordinator: PlayExploreWidgetCoordinator) :
-    BaseDiffUtilAdapter<WidgetUiModel>() {
+    BaseDiffUtilAdapter<WidgetUiModel>() { //todo() remove coordinator, etc, adjust analytics
     init {
         delegatesManager.addDelegate(WidgetAdapterDelegate.Widget(coordinator))
         delegatesManager.addDelegate(WidgetAdapterDelegate.Shimmering())

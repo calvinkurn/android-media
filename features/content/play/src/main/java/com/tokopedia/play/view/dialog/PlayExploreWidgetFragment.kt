@@ -60,7 +60,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.play.R as playR
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 24/11/22
@@ -86,10 +86,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val widgetAdapter = WidgetAdapter(coordinator)
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
-    }
-
-    private val shimmerLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         StaggeredGridLayoutManager(SPAN_SHIMMER, StaggeredGridLayoutManager.VERTICAL)
     }
 
@@ -146,7 +142,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val clickableSpan by lazy(LazyThreadSafetyMode.NONE) {
         object : ClickableSpan() {
             override fun updateDrawState(tp: TextPaint) {
-                tp.color = MethodChecker.getColor(requireContext(), unifyR.color.Unify_GN500)
+                tp.color = MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_GN500)
                 tp.isUnderlineText = false
                 tp.typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
                     requireContext(),
@@ -298,7 +294,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         state: ExploreWidgetState,
         widget: List<WidgetUiModel>
     ) {
-        setLayoutManager(state)
         showEmpty(state is ExploreWidgetState.Empty)
 
         when (state) {
@@ -397,14 +392,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             binding.srExploreWidget.visible()
             binding.viewExploreWidgetEmpty.root.gone()
         }
-    }
-
-    private fun setLayoutManager(state: ExploreWidgetState) {
-        if (state is ExploreWidgetState.Fail) return
-
-        binding.rvWidgets.layoutManager =
-            if (state is ExploreWidgetState.Loading) shimmerLayoutManager else widgetLayoutManager
-        scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {

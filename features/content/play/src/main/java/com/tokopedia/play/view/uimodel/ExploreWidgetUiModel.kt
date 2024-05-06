@@ -12,14 +12,14 @@ import com.tokopedia.play_common.model.result.ResultState
  */
 data class ExploreWidgetUiModel(
     val chips: TabMenuUiModel,
-    val widgets: List<ExploreWidgetItemUiModel>,
+    val data: List<PlayWidgetItemUiModel>,
     val state: ExploreWidgetState
 ) {
     companion object {
         val Empty: ExploreWidgetUiModel
             get() = ExploreWidgetUiModel(
                 chips = TabMenuUiModel.Empty,
-                widgets = emptyList(),
+                data = emptyList(),
                 state = ExploreWidgetState.Loading
             )
     }

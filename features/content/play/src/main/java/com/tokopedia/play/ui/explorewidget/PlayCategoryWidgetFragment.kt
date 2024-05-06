@@ -40,6 +40,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 23/05/23
@@ -90,7 +91,7 @@ class PlayCategoryWidgetFragment @Inject constructor(
             override fun updateDrawState(tp: TextPaint) {
                 tp.color = MethodChecker.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
                 tp.isUnderlineText = false
                 tp.typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
