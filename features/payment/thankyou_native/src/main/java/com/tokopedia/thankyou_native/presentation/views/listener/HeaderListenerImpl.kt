@@ -91,7 +91,14 @@ class HeaderListenerImpl(
         }
     }
 
-    override fun onButtonClick(applink: String, type: String) {
+    override fun onButtonClick(applink: String, type: String, isPrimary: Boolean, text: String) {
+        thankYouPageAnalytics.sendCtaClickAnalytic(
+            isPrimary,
+            text,
+            applink,
+            thanksPageData.paymentID,
+            thanksPageData.merchantCode
+        )
         if (CtaTypeMapper.getType(type) == Redirect) {
             openApplink(applink)
         } else {

@@ -8,5 +8,5 @@ interface HeaderListener {
     fun onSecondaryButtonClick()
     fun openApplink(applink: String?)
 
-    fun onButtonClick(applink: String, type: String)
+    fun onButtonClick(applink: String, type: String, isPrimary: Boolean, text: String)
 }
