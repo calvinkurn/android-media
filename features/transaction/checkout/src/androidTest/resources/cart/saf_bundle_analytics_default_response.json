@@ -694,7 +694,8 @@
                 "profile_code": "TKPD_DEFAULT",
                 "additional_data": "{\"is_plus\":false}",
                 "error_wording": "Biaya jasa aplikasi gagal dimuat. Cek Total Tagihan di Pembayaran atau <a href=\"refresh\">Muat Ulang</a>."
-          }
+          },
+          "cart_type": "normal"
         }
       }
     }

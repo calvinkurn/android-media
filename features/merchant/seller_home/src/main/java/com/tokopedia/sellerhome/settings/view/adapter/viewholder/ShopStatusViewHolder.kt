@@ -94,7 +94,7 @@ class ShopStatusViewHolder(
         when (shopType) {
             is RegularMerchant -> setRegularMerchantLayout(shopType, userShopInfoUiModel)
             is PowerMerchantStatus -> setPowerMerchantLayout(userShopInfoUiModel?.isKyc.orFalse())
-            is PowerMerchantProStatus -> setPowerMerchantProLayout(shopType)
+            is PowerMerchantProStatus -> setPowerMerchantProLayout()
             is ShopType.OfficialStore -> setOfficialStoreLayout()
         }
 
@@ -127,7 +127,7 @@ class ShopStatusViewHolder(
             }
 
             is RegularMerchant.Pending -> setRegularMerchantPending()
-            else -> setRegularMerchantNeedUpgrade()
+            else -> {/* no-op */}
         }
 
         pmIcon?.gone()
@@ -152,30 +152,12 @@ class ShopStatusViewHolder(
             if (icon == null) hide() else show()
             setImage(icon)
         }
-
-        setDescription(
-            sellermenucommonR.string.setting_verifikasi,
-            unifyprinciplesR.color.Unify_GN500
-        )
     }
 
     private fun setRegularMerchantPending() {
         shopStatusEligiblePmIcon?.hide()
 
         shopStatusDescTextView?.isClickable = false
-        setDescription(
-            sellermenucommonR.string.setting_verified,
-            unifyprinciplesR.color.Unify_NN600
-        )
-    }
-
-    private fun setRegularMerchantNeedUpgrade() {
-        shopStatusEligiblePmIcon?.hide()
-
-        setDescription(
-            R.string.sah_new_other_status_upgrade,
-            unifyprinciplesR.color.Unify_GN500
-        )
     }
 
     private fun setPowerMerchantLayout(isKyc: Boolean) {
@@ -205,28 +187,9 @@ class ShopStatusViewHolder(
         }
     }
 
-    private fun setPowerMerchantProLayout(powerMerchantProStatus: PowerMerchantProStatus) {
+    private fun setPowerMerchantProLayout() {
         setTitle(R.string.sah_new_other_status_pm_pro_title)
-        val statusStringRes: Int
-        val statusColorRes: Int
-        when (powerMerchantProStatus) {
-            is PowerMerchantProStatus.Advanced -> {
-                statusStringRes = R.string.sah_new_other_status_pm_pro_advanced
-                statusColorRes = unifyprinciplesR.color.Unify_NN600
-            }
-
-            is PowerMerchantProStatus.Expert -> {
-                statusStringRes = R.string.sah_new_other_status_pm_pro_expert
-                statusColorRes = unifyprinciplesR.color.Unify_TN500
-            }
-
-            is PowerMerchantProStatus.Ultimate -> {
-                statusStringRes = R.string.sah_new_other_status_pm_pro_ultimate
-                statusColorRes = unifyprinciplesR.color.Unify_YN500
-            }
-        }
-        setDescription(statusStringRes, statusColorRes)
-
+        shopStatusDescTextView?.gone()
         pmIcon?.gone()
         pmProIcon?.show()
         successOsLayout?.gone()
@@ -301,5 +264,6 @@ class ShopStatusViewHolder(
         shopStatusDescTextView?.gone()
         pmIcon?.gone()
         pmProIcon?.gone()
+        icKycNotVerified?.gone()
     }
 }

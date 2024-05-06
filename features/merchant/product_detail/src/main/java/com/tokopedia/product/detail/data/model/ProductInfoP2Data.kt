@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount.Companion.asUiModel
 import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
+import com.tokopedia.product.detail.data.model.sdui.SDUIData
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
@@ -192,7 +193,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("productVariantWishlist")
     @Expose
-    val productVariantWishlist: List<ProductVariantWishlistResponse> = listOf()
+    val productVariantWishlist: List<ProductVariantWishlistResponse> = listOf(),
+
+    @SerializedName("sdui")
+    @Expose
+    val sdui: List<SDUIData> = emptyList()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -238,5 +243,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     gwp = gwp,
     promoPriceStyle = promoPriceStyle,
     dynamicOneLinerVariant = dynamicOneLinerVariant,
-    wishlistVariant = productVariantWishlist.asUiModel()
+    wishlistVariant = productVariantWishlist.asUiModel(),
+    sdui = sdui
 )

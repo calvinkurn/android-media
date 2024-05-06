@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="checkout_payment_method_label">Metode pembayaran</string>
+    <string name="checkout_payment_fee_title_info">Tentang %s</string>
+
+    <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
+
+    <string name="lbl_installment_not_available">Cicilan tidak tersedia untuk jenis kartu ini</string>
+    <string name="lbl_installment_error">Cicilan tidak tersedia.</string>
+    <string name="lbl_see_installment_terms_and_condition">Lihat Syarat &amp; Ketentuan</string>
+    <string name="lbl_installment_full_payment">Bayar Penuh</string>
+    <string name="lbl_installment_payment_fee">+ Biaya Layanan %1$s</string>
+    <string name="lbl_installment_payment_minimum_before_fee">Min. %1$s sebelum biaya layanan</string>
+    <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
+    <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
+
+    <string name="lbl_installment_afpb_default">Pilih Bayar Penuh / Cicilan</string>
+
+    <string name="default_afpb_error">Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi.</string>
+
+    <!--GOPAYLATERCICIL-->
+    <string name="occ_gocicil_bottom_sheet_title">Bayarnya mau berapa lama?</string>
+    <string name="occ_gocicil_default_installment">Pilih periode cicilan</string>
+    <string name="occ_lbl_installment_summary_period">Lama Pembayaran</string>
+    <string name="occ_lbl_installment_summary_amount_per_period">Cicilan per Bulan</string>
+    <string name="occ_lbl_installment_summary_first_date">Jatuh Tempo Pertama</string>
+    <string name="occ_lbl_installment_summary_last_date">Perkiraan Jatuh Tempo Terakhir</string>
+    <string name="occ_lbl_gocicil_installment_detail">%1$d bulan x %2$s</string>
+    <string name="occ_lbl_gocicil_installment_title">Cicil %1$dx %2$s</string>
+    <string name="occ_lbl_gocicil_installment_title_without_price">Cicil %1$dx</string>
+    <string name="occ_lbl_gocicil_installment_inactive_description">Periode cicilan tidak tersedia.</string>
+    <string name="occ_lbl_gocicil_installment_bottom_sheet_message">%1$s (%2$s)</string>
+    <string name="occ_lbl_gocicil_installment_period">%1$d Bulan</string>
+
+    <string name="title_top_up">Top-up</string>
+</resources>

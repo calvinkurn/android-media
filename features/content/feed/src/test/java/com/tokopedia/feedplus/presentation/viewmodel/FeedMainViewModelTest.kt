@@ -9,7 +9,10 @@ import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -51,6 +54,7 @@ class FeedMainViewModelTest {
     private val onBoardingPreferences: OnBoardingPreferences = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val uiEventManager: UiEventManager<FeedMainEvent> = mockk()
+    private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedMainViewModel
 
@@ -71,7 +75,8 @@ class FeedMainViewModelTest {
             deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager,
         )
     }
 
@@ -91,7 +96,8 @@ class FeedMainViewModelTest {
             deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager,
         )
         val displayName = mViewModel.displayName
 
@@ -477,7 +483,8 @@ class FeedMainViewModelTest {
             deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager
         )
 
         val mViewModel = FeedMainViewModel.provideFactory(factory, mActiveTabSource)
@@ -485,5 +492,26 @@ class FeedMainViewModelTest {
 
         assert(mViewModel.activeTabSource.tabName == mActiveTabSource.tabName)
         assert(mViewModel.activeTabSource.index == mActiveTabSource.index)
+    }
+
+    /** Tooltip */
+    @Test
+    fun consumeEventTooltip() {
+        val event = FeedTooltipEvent.ShowTooltip(FeedSearchTooltipCategory.Promo)
+
+        coEvery { tooltipManager.clearTooltipEvent(event.id) } returns Unit
+
+        viewModel.consumeEvent(event)
+
+        coVerify(exactly = 1) { tooltipManager.clearTooltipEvent(event.id) }
+    }
+
+    @Test
+    fun setHasShownTooltip() {
+        coEvery { tooltipManager.setHasShownTooltip() } returns Unit
+
+        viewModel.setHasShownTooltip()
+
+        coVerify(exactly = 1) { tooltipManager.setHasShownTooltip() }
     }
 }

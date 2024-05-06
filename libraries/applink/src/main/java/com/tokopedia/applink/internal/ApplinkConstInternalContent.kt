@@ -21,6 +21,8 @@ object ApplinkConstInternalContent {
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
     const val INTERNAL_FEED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED"
     const val INTERNAL_FEED_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/detail/"
+    const val INTERNAL_FEED_LOCAL_BROWSE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/search"
+    const val INTERNAL_FEED_SEARCH_RESULT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/search-result"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
     const val INTERNAL_PLAY_SHORTS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_SHORTS"
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"

@@ -348,7 +348,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 }
                 tabsViewModel.onTabClick()
                 val tabPosition = tab.position.inc()
-                mFragment.currentTabPosition = tabPosition
+                mFragment.setCurrentTabPosition(tabPosition)
                 CURRENT_TAB_NAME = tabsViewModel.components.data?.get(tab.position)?.name ?: ""
                 CURRENT_TAB_INDEX = tab.position
                 trackTabsGTMStatus(tab)

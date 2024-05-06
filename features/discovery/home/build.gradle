@@ -195,6 +195,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    //Slardar
+    implementation rootProject.ext.slardarDependencies.commonMonitor
 }
 
 project.ext {

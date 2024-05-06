@@ -25,6 +25,11 @@ class TokoPlusBadgeMapper @Inject constructor() {
         )
     }
 
+    fun getIsChargeable(data: TokoPlusBadgeResponse): Boolean {
+        val status = data.restrictValidateRestriction.dataResponse.firstOrNull()?.status.orEmpty()
+        return status == STATUS_ELIGIBLE
+    }
+
     private fun getBadge(list: List<RestrictMetaModel>, restrictionName: String): BadgeUiModel {
         val data = list.firstOrNull { it.restrictionName == restrictionName }
         return BadgeUiModel(

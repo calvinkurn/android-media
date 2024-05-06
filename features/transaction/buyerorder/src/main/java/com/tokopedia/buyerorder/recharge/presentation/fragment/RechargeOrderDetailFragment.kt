@@ -24,6 +24,8 @@ import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailActionButtonSectionViewHolder.Companion.MAPPING_URI_CANCEL_ORDER
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailActionButtonSectionViewHolder.Companion.MAPPING_URI_VOID
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailActionButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailStaticButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.utils.RechargeOrderDetailAnalytics
@@ -34,6 +36,7 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
@@ -46,7 +49,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 28/10/2021
  */
-class RechargeOrderDetailFragment : BaseDaggerFragment(),
+class RechargeOrderDetailFragment :
+    BaseDaggerFragment(),
     RechargeOrderDetailTopSectionViewHolder.ActionListener,
     RechargeOrderDetailProductViewHolder.ActionListener,
     RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
@@ -54,8 +58,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     RechargeOrderDetailAboutOrderViewHolder.ActionListener,
     RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
     RecommendationWidgetListener,
-    RechargeOrderDetailPaymentViewHolder.RechargeOrderDetailPaymentListener
-{
+    RechargeOrderDetailPaymentViewHolder.RechargeOrderDetailPaymentListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -124,10 +127,12 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         }
 
         arguments?.let {
-            if (it.containsKey(EXTRA_ORDER_ID))
+            if (it.containsKey(EXTRA_ORDER_ID)) {
                 orderId = it.getString(EXTRA_ORDER_ID) ?: ""
-            if (it.containsKey(EXTRA_ORDER_CATEGORY))
+            }
+            if (it.containsKey(EXTRA_ORDER_CATEGORY)) {
                 orderCategory = it.getString(EXTRA_ORDER_CATEGORY) ?: ""
+            }
         }
     }
 
@@ -207,6 +212,28 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     override fun onVoidButtonClicked() {
         showVoidDialog()
+    }
+
+    override fun onCancelOrderButtonClicked() {
+        showCancelOrderDialog()
+    }
+
+    override fun onViewPrimaryButton(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendImpressionPrimaryButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
+        )
+    }
+
+    override fun onViewSecondaryButton(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendImpressionSecondaryButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
+        )
     }
 
     override fun onBestSellerClick(
@@ -316,10 +343,16 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                             primaryActionButton.name,
                             primaryActionButton.buttonType
                         )
-                        if (!primaryActionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
-                            onStickyActionButtonClicked(ctx, primaryActionButton.uri)
-                        } else {
-                            showVoidDialog()
+                        when {
+                            primaryActionButton.mappingUri.equals(MAPPING_URI_VOID, true) -> {
+                                showVoidDialog()
+                            }
+                            primaryActionButton.mappingUri.equals(MAPPING_URI_CANCEL_ORDER, true) -> {
+                                showCancelOrderDialog()
+                            }
+                            else -> {
+                                onStickyActionButtonClicked(ctx, primaryActionButton.uri)
+                            }
                         }
                     }
                 }
@@ -338,9 +371,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                         rechargeViewModel.getTopAdsData(),
                         rechargeViewModel.getRecommendationWidgetPositionData()
                     )
-                    setupStickyButton(result.data.actionButtonList.actionButtons.firstOrNull {
-                        it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
-                    })
+                    setupStickyButton(
+                        result.data.actionButtonList.actionButtons.firstOrNull {
+                            it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
+                        }
+                    )
                     showMainView()
                 }
                 is Fail -> {
@@ -402,10 +437,47 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-
                 }
             }
         })
+
+        rechargeViewModel.rechargeSetFailResult.observe(viewLifecycleOwner) {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
+                    if (isSuccess) {
+                        if (it.data.isNeedRefresh) {
+                            it.data.isNeedRefresh = false
+                            rechargeViewModel.resetOrderDetailData()
+                            activity?.run {
+                                finish()
+                                startActivity(intent)
+                            }
+                        }
+                    } else {
+                        Toaster.build(
+                            binding.root,
+                            it.data.rechargeSetOrderToFail.attributes.errorMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+
+                is Fail -> {
+                    context?.getString(R.string.recharge_order_detail_cancel_order_dialog_failed)
+                        ?.let { errMsg ->
+                            Toaster.build(
+                                binding.root,
+                                errMsg,
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_NORMAL
+                            ).show()
+                        }
+                }
+            }
+        }
     }
 
     private fun showMainView() {
@@ -434,9 +506,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             if (mUri.contains(IDEM_POTENCY_KEY)) {
                 mUri = mUri.replace(
                     url.getQueryParameter(IDEM_POTENCY_KEY)
-                        ?: "", ""
+                        ?: "",
+                    ""
                 )
-                mUri = mUri.replace("${IDEM_POTENCY_KEY}=", "")
+                mUri = mUri.replace("$IDEM_POTENCY_KEY=", "")
             }
             RouteManager.route(context, mUri)
         } else if (uri.isNotEmpty()) {
@@ -462,16 +535,36 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun sendActionButtonClickedEvent(buttonName: String, buttonType: String) {
-        rechargeOrderDetailAnalytics.eventClickActionButton(
+        when (buttonType) {
+            PRIMARY_ACTION_BUTTON_TYPE -> sendClickPrimaryButtonEvent(buttonName)
+            SECONDARY_ACTION_BUTTON_TYPE -> sendClickSecondaryButtonEvent(buttonName)
+            else -> sendClickFeatureButtonEvent(buttonName)
+        }
+    }
+
+    private fun sendClickPrimaryButtonEvent(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendClickPrimaryButtonEvent(
             OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
             OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
-            buttonName,
-            when (buttonType) {
-                PRIMARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_PRIMARY_BUTTON
-                SECONDARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_SECONDARY_BUTTON
-                else -> RechargeOrderDetailAnalytics.EventAction.CLICK_FEATURE_BUTTON
-            },
-            (buttonType != PRIMARY_ACTION_BUTTON_TYPE && buttonType != SECONDARY_ACTION_BUTTON_TYPE)
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
+        )
+    }
+
+    private fun sendClickSecondaryButtonEvent(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendClickSecondaryButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
+        )
+    }
+
+    private fun sendClickFeatureButtonEvent(buttonName: String) {
+        rechargeOrderDetailAnalytics.sendClickOnFeatureButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            buttonName
         )
     }
 
@@ -491,27 +584,53 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             dialog.setPrimaryCTAText(getString(R.string.dialog_void_emoney_primary_cta_label))
             dialog.setPrimaryCTAClickListener {
                 rechargeViewModel.voidEmoneyData(orderId)
-                rechargeOrderDetailAnalytics.eventVoidPopupClickBatalkan(
+                rechargeOrderDetailAnalytics.sendClickBatalkanVoidPopupEvent(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setSecondaryCTAText(getString(R.string.dialog_void_emoney_secondary_cta_label))
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
-                rechargeOrderDetailAnalytics.eventVoidPopupClickKembali(
+                rechargeOrderDetailAnalytics.sendClickKembaliVoidPopupEvent(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setOnShowListener {
-                rechargeOrderDetailAnalytics.eventViewVoidPopup(
+                rechargeOrderDetailAnalytics.sendViewVoidPopupEvent(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setOverlayClose(false)
             dialog.show()
+        }
+    }
+
+    private fun showCancelOrderDialog() {
+        context?.let {
+            DialogUnify(
+                it,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            ).apply {
+                setTitle(it.getString(R.string.recharge_order_detail_cancel_order_dialog_title))
+                setDescription(it.getString(R.string.recharge_order_detail_cancel_order_dialog_description))
+                setPrimaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_primary))
+                setPrimaryCTAClickListener {
+                    showLoading()
+                    rechargeViewModel.executeCancelOrder(orderId.toIntOrZero())
+                    dismiss()
+                }
+                setSecondaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_secondary))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
         }
     }
 
@@ -528,7 +647,6 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         private const val IDEM_POTENCY_KEY = "idem_potency_key"
 
         private const val INVOICE_NUMBER_LABEL = "Nomor Invoice"
-        private const val MAPPING_URI_VOID = "void"
 
         fun getInstance(
             orderId: String,
@@ -541,5 +659,4 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 }
             }
     }
-
 }

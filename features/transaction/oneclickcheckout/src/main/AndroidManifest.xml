@@ -23,11 +23,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".payment.list.view.PaymentListingActivity"
-            android:label="@string/title_one_click_checkout_choose_payment_method"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
             android:name=".payment.creditcard.CreditCardPickerActivity"
             android:label="@string/title_one_click_checkout_credit_card_and_debit"
             android:screenOrientation="portrait"

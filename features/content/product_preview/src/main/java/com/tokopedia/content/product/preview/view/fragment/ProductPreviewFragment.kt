@@ -35,7 +35,6 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel.ButtonState.OOS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_KEY
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
@@ -97,7 +96,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private val currentTab: String get() {
         val index = binding.vpProductPreview.currentItem
-        return pagerAdapter.getCurrentTabKey(index)
+        return pagerAdapter.getCurrentTabName(index)
     }
 
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
@@ -278,11 +277,13 @@ class ProductPreviewFragment @Inject constructor(
                             },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
-                                if (isAtc) viewModel.onAction(
-                                    ProductPreviewAction.Navigate(
-                                        ApplinkConst.CART
+                                if (isAtc) {
+                                    viewModel.onAction(
+                                        ProductPreviewAction.Navigate(
+                                            ApplinkConst.CART
+                                        )
                                     )
-                                )
+                                }
                             }
                         ).show()
                     }
@@ -335,13 +336,13 @@ class ProductPreviewFragment @Inject constructor(
                 MediaBottomNav(product = model, onAtcClicked = {
                     handleAtc(model)
                 }, onNavClicked = {
-                    analytics.onClickBottomNav(model)
-                    router.route(
-                        requireContext(),
-                        ApplinkConst.PRODUCT_INFO,
-                        viewModel.productPreviewSource.productId
-                    )
-                })
+                        analytics.onClickBottomNav(model)
+                        router.route(
+                            requireContext(),
+                            ApplinkConst.PRODUCT_INFO,
+                            viewModel.productPreviewSource.productId
+                        )
+                    })
             }
         }
     }
@@ -356,7 +357,7 @@ class ProductPreviewFragment @Inject constructor(
                 shopId = model.shop.id,
                 productId = viewModel.productPreviewSource.productId,
                 startActivitResult = { intent, resultCode ->
-                    startActivityForResult(intent, resultCode)
+                    router.route(requireActivity(), intent, resultCode)
                 }
             )
         } else {

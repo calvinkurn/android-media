@@ -47,6 +47,7 @@ const val GET_BOM_GROUPED_ORDER_QUERY = """
                 order_detail_id
                 product_id
                 product_name
+                product_url
                 thumbnail
                 price_text
                 quantity
@@ -65,6 +66,7 @@ const val GET_BOM_GROUPED_ORDER_QUERY = """
               order_detail_id
               product_id
               product_name
+              product_url
               thumbnail
               price_text
               quantity

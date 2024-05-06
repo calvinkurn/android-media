@@ -32,7 +32,7 @@
 
     <!-- RM Transaction -->
     <string name="seller_rm_transaction_title">Jumlah transaksi</string>
-    <string name="seller_rm_transaction_info"><![CDATA[Kamu telah mendapatkan <b>%s</b> transaksi sejak bergabung. Bebas biaya layanan untuk <b>100</b> transaksi pertama. Setelahnya, biaya layanan akan dikenakan per produk terjual.]]></string>
-    <string name="seller_rm_transaction_edu"><![CDATA[Yuk, <a href="">baca artikel</a> untuk informasi lebih lanjut.]]></string>
+    <string name="seller_transaction_not_chargeable">Bebeas biaya layanan untuk %d transaksi pertama.</string>
+    <string name="seller_transaction_chargeable">Di atas %d transaksi akan dikenakan biaya layanan.</string>
 
 </resources>

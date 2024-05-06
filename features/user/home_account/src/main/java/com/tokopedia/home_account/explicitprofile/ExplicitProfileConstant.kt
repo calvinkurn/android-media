@@ -13,4 +13,6 @@ object ExplicitProfileConstant {
 
     const val ANSWER_YES = "yes"
     const val ANSWER_NO = "no"
+
+    const val MAX_ANSWER_DEFAULT = 10
 }
