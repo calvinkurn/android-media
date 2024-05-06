@@ -113,7 +113,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //renderHeaderView()
+        viewModel.fetchConfig(widgetSource, creationConfig)
     }
 
     private fun renderHeaderView() {
@@ -132,7 +132,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     )
                 }
             }
-            viewModel.fetchConfig(widgetSource, creationConfig)
         }
     }
 

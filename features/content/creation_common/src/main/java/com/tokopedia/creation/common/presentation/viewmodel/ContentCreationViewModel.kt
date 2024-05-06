@@ -33,7 +33,6 @@ class ContentCreationViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        //Todo:move
         checkStories()
     }
 
@@ -132,8 +131,6 @@ class ContentCreationViewModel @Inject constructor(
     private fun checkStories() {
         viewModelScope.launchCatchError(block = {
             val  response = storiesChecker.isEligible()
-        }) {
-
-        }
+        }) {}
     }
 }
