@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,17 +35,17 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 fun ProfileSettingsScreen(
     reviewSettings: ProfileSettingsUiModel,
     onBackPressed: () -> Unit,
-    onCheckedChanged: (isChecked: Boolean) -> Unit,
+    onCheckedChanged: (isChecked: Boolean) -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
     ) {
         Column {
             NestHeader(
                 variant = NestHeaderVariant.Default,
                 type = NestHeaderType.SingleLine(
                     onBackClicked = onBackPressed,
-                    title = stringResource(id = R.string.up_profile_settings_title),
+                    title = stringResource(id = R.string.up_profile_settings_title)
                 )
             )
 
@@ -55,12 +54,12 @@ fun ProfileSettingsScreen(
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
             ) {
                 val (
                     icReviewSettings,
                     tvReviewSettings,
-                    switchReviewSettings,
+                    switchReviewSettings
                 ) = createRefs()
 
                 ReviewSettingsIcon(
@@ -80,7 +79,7 @@ fun ProfileSettingsScreen(
                             start.linkTo(icReviewSettings.end, 16.dp)
                             end.linkTo(switchReviewSettings.start, 16.dp)
                             width = Dimension.fillToConstraints
-                    },
+                        }
                 )
 
                 ReviewSettingsToggle(
@@ -108,7 +107,7 @@ private fun ReviewSettingsIcon(
                 context,
                 IconUnify.STAR
             )
-        },
+        }
     )
 }
 
@@ -120,7 +119,7 @@ private fun ReviewSettingsText(
     NestTypography(
         modifier = modifier,
         textStyle = NestTheme.typography.paragraph2,
-        text = text,
+        text = text
     )
 }
 
@@ -130,7 +129,6 @@ private fun ReviewSettingsToggle(
     onCheckedChanged: (isChecked: Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     AndroidView(
         modifier = modifier.wrapContentHeight().testTag("review_toggle"),
         factory = { context ->
@@ -142,7 +140,7 @@ private fun ReviewSettingsToggle(
         },
         update = {
             it.isChecked = isChecked
-        },
+        }
     )
 }
 
@@ -154,10 +152,10 @@ private fun ProfileSettingsScreenPreview() {
             reviewSettings = ProfileSettingsUiModel(
                 settingID = ProfileSettingsUiModel.SETTING_ID_REVIEW,
                 title = "Show / hide review",
-                isEnabled = true,
+                isEnabled = true
             ),
             onBackPressed = {},
-            onCheckedChanged = {},
+            onCheckedChanged = {}
         )
     }
 }

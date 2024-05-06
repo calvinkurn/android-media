@@ -9,11 +9,14 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetRechargeCatalogPrefixSelectUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository,
+    private val remoteConfig: FirebaseRemoteConfigImpl
 ): GraphqlUseCase<TelcoCatalogPrefixSelect>(graphqlRepository) {
 
     private var params: RequestParams = RequestParams.EMPTY
@@ -24,9 +27,14 @@ class GetRechargeCatalogPrefixSelectUseCase @Inject constructor(
             TelcoCatalogPrefixSelect::class.java,
             params.parameters
         )
-        val gqlResponse = graphqlRepository.response(listOf(gqlRequest),
+        val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
+        val gqlCacheStrategy: GraphqlCacheStrategy.Builder = if (isEnableGqlCache) {
             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME)
+        } else {
+            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+        }
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), gqlCacheStrategy.build())
 
         val error = gqlResponse.getError(TelcoCatalogPrefixSelect::class.java)
         if (error == null || error.isEmpty()) {

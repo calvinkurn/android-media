@@ -33,8 +33,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 163
-        const val SIZE_PATH = 276
+        const val SIZE_HOST = 164
+        const val SIZE_PATH = 278
     }
 
     override fun setup() {
@@ -2437,6 +2437,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://seller/${DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_CODE}=$statusCode&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_TEXT}=$statusText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_L2_CANCELLATION_REASON}=$l2Reason&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_DESCRIPTION}=$description&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_PRIMARY_BUTTON_TEXT}=$primaryButtonText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT}=$secondaryButtonText&$KEY_REDIRECT_TO_SELLER_APP=true"
         assertEqualsDeepLinkMapper("${ApplinkConst.Som.BUYER_REQUEST_CANCEL_RESPOND}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_CODE}=$statusCode&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_TEXT}=$statusText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_L2_CANCELLATION_REASON}=$l2Reason&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_DESCRIPTION}=$description&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_PRIMARY_BUTTON_TEXT}=$primaryButtonText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT}=$secondaryButtonText&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller order extenson request appLink then should return tokopedia internal seller order extension request in customerapp`() {
+        val orderId = "987654321"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/${DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true"
+        assertEqualsDeepLinkMapper("${ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST}?${DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
     }
 
     @Test

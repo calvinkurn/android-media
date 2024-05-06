@@ -11,4 +11,6 @@ object Constant {
     const val SHARING_FEATURE = "share"
     const val copyLinkToastString = "Sip, link berhasil disalin!"
     const val actionBtnTxt = "OK"
+    const val BMSM_PD_OFFER_TYPE = 1L
+    const val BMSM_GWP_OFFER_TYPE = 2L
 }

@@ -43,7 +43,7 @@ class DynamicPositionRepository @Inject constructor(
             if (remote.positionEquals(cache)) {
                 // if remote position same with cache,
                 // populate cache data to remote position
-                remote.copyAtfContentsFrom(cache)
+                remote.copyAtfContentsFromCache(cache)
             } else if (remote.isDataError()) {
                 // when remote failed, show user cached data
                 // but still set the status flag as failed

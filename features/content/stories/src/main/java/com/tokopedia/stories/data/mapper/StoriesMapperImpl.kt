@@ -26,7 +26,6 @@ import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
@@ -146,7 +145,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
             if (!isOwner(author) && template.reportable) add(
                 ContentMenuItem(
                     iconUnify = IconUnify.WARNING,
-                    name = contentcommonR.string.content_common_menu_report,
+                    name = storiesR.string.stories_report,
                     type = ContentMenuIdentifier.Report
                 )
             )
@@ -162,7 +161,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
             if (isOwner(author)) add(
                 ContentMenuItem(
                     iconUnify = IconUnify.GRAPH,
-                    name = contentcommonR.string.performance_see,
+                    name = storiesR.string.stories_performance,
                     type = ContentMenuIdentifier.SeePerformance
                 )
             )

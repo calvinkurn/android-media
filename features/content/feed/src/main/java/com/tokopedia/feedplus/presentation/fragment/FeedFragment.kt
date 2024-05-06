@@ -37,11 +37,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.content.common.comment.ContentCommentFactory
-import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
-import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
-import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
@@ -56,6 +51,11 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.feed.common.comment.ContentCommentFactory
+import com.tokopedia.feed.common.comment.PageSource
+import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalytics
+import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalyticsModel
+import com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -71,6 +71,7 @@ import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.DaggerFeedMainComponent
+import com.tokopedia.feedplus.di.FeedInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -583,12 +584,7 @@ class FeedFragment :
     }
 
     private fun initInjector() {
-        DaggerFeedMainComponent.factory()
-            .build(
-                activityContext = requireContext(),
-                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent,
-                creationUploaderComponent = CreationUploaderComponentProvider.get(requireContext())
-            ).inject(this)
+        FeedInjector.get(requireActivity()).inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"
