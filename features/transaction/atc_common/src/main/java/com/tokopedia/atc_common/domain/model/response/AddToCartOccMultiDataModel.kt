@@ -7,7 +7,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 data class AddToCartOccMultiDataModel(
     val errorMessage: List<String> = emptyList(),
     val status: String = "",
-    val data: AddToCartOccMultiData = AddToCartOccMultiData()
+    val data: AddToCartOccMultiData = AddToCartOccMultiData(),
+    val nextPage: Int = 0
 ) {
     /**
      * This method is for checking if ATC error without capability of custom error handling when no message provided from backend
@@ -36,9 +37,15 @@ data class AddToCartOccMultiDataModel(
         return AddToCartDataMapper().mapAddToCartOccMultiDataModel(this)
     }
 
+    fun isNewCheckoutPaymentPage(): Boolean {
+        return nextPage == NEW_CHECKOUT_PAYMENT_PAGE
+    }
+
     companion object {
         const val STATUS_OK = "OK"
         const val STATUS_ERROR = "ERROR"
+
+        const val NEW_CHECKOUT_PAYMENT_PAGE = 1
     }
 }
 

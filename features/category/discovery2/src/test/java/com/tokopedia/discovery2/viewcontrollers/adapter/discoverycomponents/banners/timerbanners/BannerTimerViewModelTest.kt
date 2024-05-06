@@ -34,7 +34,7 @@ class BannerTimerViewModelTest {
 
     @Test
     fun `component value is present in live data`() {
-        assert(viewModel.getComponent() == componentsItem)
+        assert(viewModel.component == componentsItem)
     }
 
     @Test

@@ -58,7 +58,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     )
 
     private var offerType: OfferType = OfferType.PROGRESSIVE_DISCOUNT
@@ -78,7 +80,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private val viewModel: BmgmMiniCartViewModel by lazy {
         val owner = context as AppCompatActivity
         return@lazy ViewModelProvider(
-            owner, viewModelFactory
+            owner,
+            viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
     private var offerEndDate = ""
@@ -87,7 +90,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     init {
         binding = ViewBmgmMiniCartWidgetBinding.inflate(
-            LayoutInflater.from(context), this, true
+            LayoutInflater.from(context),
+            this,
+            true
         )
         initInjector()
         setupRecyclerView()
@@ -124,20 +129,26 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     fun setOnCheckCartClickListener(
-        offerEndDate: String, callback: (isOfferEnded: Boolean) -> Unit
+        offerEndDate: String,
+        callback: (isOfferEnded: Boolean) -> Unit
     ) {
         this.offerEndDate = offerEndDate
         this.onOfferEndedCallback = callback
     }
 
     fun fetchData(
-        shopIds: List<Long>, offerIds: List<Long>, offerJsonData: String, warehouseIds: List<Long>
+        shopIds: List<Long>,
+        offerIds: List<Long>,
+        offerJsonData: String,
+        warehouseIds: List<Long>,
+        cartId: String
     ) {
         this.param = MiniCartParam(
             shopIds = shopIds,
             offerIds = offerIds,
             offerJsonData = offerJsonData,
-            warehouseIds = warehouseIds
+            warehouseIds = warehouseIds,
+            cartId = cartId
         )
         this.shopIds = shopIds
         viewModel.getMiniCartData(param = param, showLoadingState = false)
@@ -186,7 +197,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                         showErrorState()
                     }
 
-                    else -> {/* no-op */
+                    else -> { /* no-op */
                     }
                 }
             }
@@ -204,7 +215,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                         openCartPage()
                     }
 
-                    else -> {/* no-op */
+                    else -> { /* no-op */
                     }
                 }
             }
@@ -363,7 +374,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 overridePrimaryButtonAction = true,
                 overridePrimaryButtonWording = context.getString(R.string.bmsm_check_cart),
                 page = MiniCartAnalytics.Page.BMSM_OLP_PAGE
-            ), listener
+            ),
+            listener
         )
     }
 
@@ -404,7 +416,10 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         val userId = userSession.get().userId
 
         BmgmMiniCartTracker.sendClickCekKeranjangEvent(
-            offerId = offerId, warehouseId = warehouseId, shopId = shopId, userId = userId
+            offerId = offerId,
+            warehouseId = warehouseId,
+            shopId = shopId,
+            userId = userId
         )
     }
 

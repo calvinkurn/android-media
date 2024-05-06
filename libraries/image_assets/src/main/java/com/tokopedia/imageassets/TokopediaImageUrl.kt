@@ -1,9 +1,6 @@
 package com.tokopedia.imageassets
 
 object TokopediaImageUrl {
-    const val SRE_OTHER_MENU_RM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_rm.png"
-    const val SRE_OTHER_MENU_PM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_pm.png"
-    const val SRE_OTHER_MENU_OS_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_os.png"
     const val EMPTY_DATA_URL = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     const val SHOP_BADGE = "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
     const val IMAGE_OUTSIDE_INDONESIA = "https://images.tokopedia.net/img/android/logistic/location_outside_indonesia.png"
@@ -56,9 +53,6 @@ object TokopediaImageUrl {
     const val IMG_USP_NOW_GUARANTEED_QUALITY_DARK_MODE = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_guaranteed_quality_dark_mode.png"
     const val IMG_USP_NOW_FREE_SHIPPING_LIGHT_MODE = "https://images.tokopedia.net/img/android/tokonow/ic_educational_information_free_shipping.png"
     const val IMG_USP_NOW_FREE_SHIPPING_DARK_MODE = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_free_shipping_dark_mode.png"
-    const val SWITCHER_WIDGET_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget.png"
-    const val SWITCHER_WIDGET_CARD_2H_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_2h.png"
-    const val SWITCHER_WIDGET_CARD_20M_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_15m.png"
     const val RECIPE_BACKGROUND_IMAGE_URL = "https://images.tokopedia.net/img/tokonow/recipe/tokopedianow_recipe_background.png"
     const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_search.png"
     const val TOKO_NOW_NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"

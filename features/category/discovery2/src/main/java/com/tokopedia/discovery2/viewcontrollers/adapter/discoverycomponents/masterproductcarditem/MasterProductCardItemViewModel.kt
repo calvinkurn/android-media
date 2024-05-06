@@ -44,9 +44,9 @@ private const val CAROUSEL_NOT_FOUND = -1
 
 class MasterProductCardItemViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val productCardModelLiveData: MutableLiveData<ProductCardModel> = MutableLiveData()

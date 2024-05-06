@@ -253,7 +253,8 @@ class PartialButtonActionView private constructor(
 
         btnBuyNow.text = availableButton.getOrNull(0)?.text ?: ""
         btnAddToCart.text = availableButton.getOrNull(1)?.text ?: ""
-
+        btnAddToCart.isParallelLoading = btnAddToCart.isVisible && btnBuyNow.isVisible
+        btnBuyNow.isParallelLoading = btnAddToCart.isVisible && btnBuyNow.isVisible
         btnBuyNow.setOnClickListener {
             buttonListener.buttonCartTypeClick(
                 availableButton.getOrNull(0)?.cartType

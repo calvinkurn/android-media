@@ -15,6 +15,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -29,6 +31,7 @@ import javax.inject.Inject
 class SharedTelcoViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val contactDataSource: ContactDataSource,
+    private val remoteConfig: RemoteConfig,
     val dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
@@ -92,10 +95,16 @@ class SharedTelcoViewModel @Inject constructor(
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
+                val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
+                val graphqlCacheStrategy = if (isEnableGqlCache) {
+                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME)
+                } else {
+                    GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                }
                 graphqlRepository.response(
                     listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build()
+                    graphqlCacheStrategy.build()
                 )
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 

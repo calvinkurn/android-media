@@ -19,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PRODUCT_PER_PAGE = 10
 
-class CategoryBestSellerViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class CategoryBestSellerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()

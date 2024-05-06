@@ -29,7 +29,7 @@ class FeeServiceWidget(
     override fun bind(element: WidgetFeeServiceUiModel) {
         binding?.run {
 
-            tvPmLearnFee.setOnClickListener {
+            root.setOnClickListener {
                 onLearnFeeClicked(element)
             }
             chevron.setOnClickListener {

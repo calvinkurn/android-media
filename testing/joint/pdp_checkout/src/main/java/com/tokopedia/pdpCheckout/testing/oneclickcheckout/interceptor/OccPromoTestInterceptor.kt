@@ -38,6 +38,9 @@ class OccPromoTestInterceptor : BaseOccInterceptor() {
                 )
             )
         }
+        if (requestString.contains(GET_PROMO_LIST_RECOMMENDATION_ENTRY_POINT_QUERY)) {
+            return mockResponse(copy, getJsonFromResource(GET_PROMO_LIST_RECOMMENDATION_ENTRY_POINT_DEFAULT_RESPONSE))
+        }
         return chain.proceed(chain.request())
     }
 
@@ -66,3 +69,7 @@ const val VALIDATE_USE_PROMO_REVAMP_CASHBACK_RED_STATE_RESPONSE = "promo/validat
 const val CLEAR_CACHE_AUTO_APPLY_STACK_QUERY = "clearCacheAutoApplyStack"
 
 const val CLEAR_CACHE_AUTO_APPLY_STACK_DEFAULT_RESPONSE = "promo/clear_cache_auto_apply_stack_default_response.json"
+
+const val GET_PROMO_LIST_RECOMMENDATION_ENTRY_POINT_QUERY = "getPromoListRecommendationEntryPoint"
+
+const val GET_PROMO_LIST_RECOMMENDATION_ENTRY_POINT_DEFAULT_RESPONSE = "promo/get_promo_list_recommendation_entry_point_default_response.json"

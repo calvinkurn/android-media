@@ -29,6 +29,7 @@ import com.tokopedia.developer_options.presentation.model.JourneyLogOnNotificati
 import com.tokopedia.developer_options.presentation.model.LeakCanaryUiModel
 import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
 import com.tokopedia.developer_options.presentation.model.LoginHelperUiModel
+import com.tokopedia.developer_options.presentation.model.MsSdkUiModel
 import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
@@ -88,6 +89,7 @@ import com.tokopedia.developer_options.presentation.viewholder.LeakCanaryViewHol
 import com.tokopedia.developer_options.presentation.viewholder.LoggingToServerViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.MsSdkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.NetworkLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.OpenScreenRecorderViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.PdpDevViewHolder
@@ -139,6 +141,8 @@ class DeveloperOptionTypeFactoryImpl(
     private val userIdListener: UserIdViewHolder.UserIdListener,
     private val shopIdListener: ShopIdViewHolder.ShopIdListener
 ) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
+
+    override fun type(uiModel: MsSdkUiModel): Int = MsSdkViewHolder.LAYOUT
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -202,6 +206,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            MsSdkViewHolder.LAYOUT -> MsSdkViewHolder(view)
             DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)

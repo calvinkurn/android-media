@@ -19,6 +19,7 @@ sealed class PmActiveTermUiModel(
         private const val PRIORITY_1 = 1
         private const val PRIORITY_2 = 2
         private const val PRIORITY_3 = 3
+        private const val PRIORITY_4 = 4
     }
 
     data class ShopScore(
@@ -70,5 +71,22 @@ sealed class PmActiveTermUiModel(
         clickableText,
         appLinkOrUrl,
         PRIORITY_3
+    )
+
+    data class Kyc(
+        override val title: String,
+        override val descriptionHtml: String,
+        override val resDrawableIcon: Int,
+        override val isChecked: Boolean,
+        override val clickableText: String? = null,
+        override val appLinkOrUrl: String? = null,
+    ) : PmActiveTermUiModel(
+        title,
+        descriptionHtml,
+        resDrawableIcon,
+        isChecked,
+        clickableText,
+        appLinkOrUrl,
+        PRIORITY_4
     )
 }

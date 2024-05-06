@@ -13,7 +13,8 @@ object PMConstant {
 
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-android-ui"
     const val APP_UPDATE_ERROR_CODE = "err.validate.app_outdated"
-
+    const val SELLER_PACKAGENAME = "com.tokopedia.sellerapp"
+    const val SELLER_EDU = "https://seller.tokopedia.com/edu/keanggotaan-power-merchant/"
     object Images {
         const val PM_BADGE =
             "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
@@ -73,5 +74,6 @@ object PMConstant {
         const val PRO_ADVANCE = "PM PRO Advanced"
         const val PRO_EXPERT = "PM PRO Expert"
         const val PRO_ULTIMATE = "PM PRO Ultimate"
+        const val PRO = "PM PRO"
     }
 }

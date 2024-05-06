@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.buy_more_get_more.minicart.domain.model.MiniCartParam
 import com.tokopedia.buy_more_get_more.minicart.domain.usecase.GetMiniCartUseCase
@@ -30,6 +31,8 @@ import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam
 import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
 import com.tokopedia.campaign.data.request.GetOfferingProductListRequestParam
+import com.tokopedia.campaign.data.request.OfferingNowInfoParam
+import com.tokopedia.campaign.data.request.WarehouseParam
 import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -110,6 +113,10 @@ class OfferLandingPageViewModel @Inject constructor(
     val isLogin: Boolean
         get() = userSession.isLoggedIn
 
+    companion object {
+        const val GET_CART_STATE_DEFAULT = 0
+    }
+
     fun processEvent(event: OlpEvent) {
         when (event) {
             is OlpEvent.SetInitialUiState -> {
@@ -155,6 +162,7 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetOfferTypeId -> setOfferTypeId(event.offerTypeId)
             is OlpEvent.SetSharingData -> setSharingData(event.sharingData)
             is OlpEvent.TapTier -> handleTapTier(event.selectedTier, event.offerInfo)
+            is OlpEvent.SetCartId -> setCartId(event.cartId)
         }
     }
 
@@ -196,6 +204,7 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private fun getOfferingInfoForBuyerRequestParam(): GetOfferingInfoForBuyerRequestParam {
         return GetOfferingInfoForBuyerRequestParam(
+            requestHeader = createGetOfferingInfoRequestHeader(),
             offerIds = currentState.offerIds,
             shopIds = if (currentState.shopData.shopId.isMoreThanZero()) {
                 listOf(currentState.shopData.shopId)
@@ -230,6 +239,7 @@ class OfferLandingPageViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val param = GetOfferingProductListRequestParam(
+                    requestHeader = createGetOfferingProductListRequestHeader(),
                     offerIds = currentState.offerIds,
                     productAnchor = GetOfferingProductListRequestParam.ProductAnchor(
                         currentState.warehouseIds
@@ -380,6 +390,14 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
+    private fun setCartId(cartId: String) {
+        _uiState.update {
+            it.copy(
+                cartId = cartId
+            )
+        }
+    }
+
     fun addAvailableProductImpression(product: OfferProductListUiModel.Product) {
         _uiState.update {
             val list = it.availableProductImpressionList
@@ -459,8 +477,18 @@ class OfferLandingPageViewModel @Inject constructor(
 
                 val miniCartData = getMiniCartUseCase(param = param)
                 val tierGifts = miniCartData.toTierGifts()
+                val mainProducts = miniCartData.toMainProducts()
 
-                _tierGifts.postValue(Success(SelectedTierData(selectedTier, offerInfo, tierGifts)))
+                _tierGifts.postValue(
+                    Success(
+                        SelectedTierData(
+                            selectedTier,
+                            offerInfo,
+                            tierGifts,
+                            mainProducts
+                        )
+                    )
+                )
             },
             onError = { error ->
                 _tierGifts.postValue(Fail(error))
@@ -487,5 +515,30 @@ class OfferLandingPageViewModel @Inject constructor(
         }
 
         return tierGifts
+    }
+
+    private fun BmgmMiniCartDataUiModel.toMainProducts(): List<MainProduct> {
+        return this.products.map {
+            MainProduct(it.productId.toLongOrZero(), it.productQuantity)
+        }
+    }
+
+    private fun createGetOfferingInfoRequestHeader(): GetOfferingInfoForBuyerRequestParam.RequestHeader {
+        return GetOfferingInfoForBuyerRequestParam.RequestHeader(
+            nowInfo = OfferingNowInfoParam(createWarehousesParam())
+        )
+    }
+
+    private fun createGetOfferingProductListRequestHeader(): GetOfferingProductListRequestParam.RequestHeader {
+        return GetOfferingProductListRequestParam.RequestHeader(
+            nowInfo = OfferingNowInfoParam(createWarehousesParam()),
+            shopId = currentState.shopData.shopId
+        )
+    }
+
+    private fun createWarehousesParam(): List<WarehouseParam> {
+        return currentState.localCacheModel?.warehouses.orEmpty().map {
+            WarehouseParam(it.warehouse_id, it.service_type)
+        }
     }
 }

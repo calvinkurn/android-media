@@ -7,7 +7,7 @@ import com.tokopedia.topchat.common.data.TopchatItemMenu
 
 class FilterMenuAdapter : RecyclerView.Adapter<FilterMenuViewHolder>() {
 
-    var onClick: ((TopchatItemMenu, Int) -> Unit)? = null
+    var onClick: ((TopchatItemMenu) -> Unit)? = null
     var menus: MutableList<TopchatItemMenu> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterMenuViewHolder {
@@ -22,8 +22,7 @@ class FilterMenuAdapter : RecyclerView.Adapter<FilterMenuViewHolder>() {
         holder.bind(menus[position], onClick)
     }
 
-    fun setOnItemMenuClickListener(onClick: (TopchatItemMenu, Int) -> Unit) {
+    fun setOnItemMenuClickListener(onClick: (TopchatItemMenu) -> Unit) {
         this.onClick = onClick
     }
-
 }
