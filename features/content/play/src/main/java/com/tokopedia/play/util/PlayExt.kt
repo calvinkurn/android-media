@@ -85,9 +85,9 @@ internal fun <T : Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
     value = value.fn()
 }
 
-fun AbTestPlatform.isUsingShare(): Boolean {
+fun AbTestPlatform.isEnableShareExPlay(): Boolean {
     return this.getString(
-        ShareExConstants.Rollence.ROLLENCE_SHARE_EX_REVIEW,
+        ShareExConstants.Rollence.ROLLANCE_SHARE_EX_PLAY,
         ""
-    ) == ShareExConstants.Rollence.ROLLENCE_SHARE_EX_REVIEW
+    ) == ShareExConstants.Rollence.ROLLANCE_SHARE_EX_PLAY
 }

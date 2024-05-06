@@ -62,6 +62,7 @@ import com.tokopedia.play.ui.explorewidget.PlayChannelRecommendationFragment
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.isChanged
+import com.tokopedia.play.util.isEnableShareExPlay
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -425,7 +426,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         invalidateSystemUiVisibility()
         initAddress()
-        initializeShareEx()
     }
 
     override fun onStart() {
@@ -540,14 +540,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 })
             }
         }
-    }
-
-    private fun initializeShareEx() {
-//        if (abTestPlatform.isUsingShare()) {
-        context?.let {
-            shareExInitializer = ShareExInitializer(it)
-        }
-//        }
     }
 
     private fun getPlayViewModelProvider(): ViewModelProvider {
@@ -1135,24 +1127,34 @@ class PlayUserInteractionFragment @Inject constructor(
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
                     is OpenSharingOptionEvent -> {
-                        shareExInitializer?.openShareBottomSheet(
-                            bottomSheetArg = ShareExBottomSheetArg.Builder(
-                                pageTypeEnum = ShareExPageTypeEnum.PLAY,
-                                defaultUrl = "",
-                                trackerArg = ShareExTrackerArg(
-                                    utmCampaign = "",
-                                    labelActionClickShareIcon = "",
-                                    labelActionCloseIcon = "",
-                                    labelActionClickChannel = "",
-                                    labelImpressionBottomSheet = ""
+                        if (abTestPlatform.isEnableShareExPlay()) {
+                            if (shareExInitializer == null) {
+                                shareExInitializer = ShareExInitializer(requireContext())
+                            }
+                            shareExInitializer?.openShareBottomSheet(
+                                bottomSheetArg = ShareExBottomSheetArg.Builder(
+                                    pageTypeEnum = ShareExPageTypeEnum.PLAY,
+                                    defaultUrl = "",
+                                    trackerArg = ShareExTrackerArg(
+                                        utmCampaign = "",
+                                        labelActionClickShareIcon = "",
+                                        labelActionCloseIcon = "",
+                                        labelActionClickChannel = "",
+                                        labelImpressionBottomSheet = ""
+                                    )
                                 )
+                                    .withContentId(event.channelId)
+                                    .withOrigin("play")
+                                    .build()
                             )
-                                .withContentId(event.channelId)
-                                .withOrigin("play")
-                                .build()
-                        )
-                        // TODO: share ex bottom sheet v2
-//                        shareExperienceView?.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
+                        } else {
+                            shareExperienceView?.showSharingOptions(
+                                event.title,
+                                event.coverUrl,
+                                event.userId,
+                                event.channelId
+                            )
+                        }
                     }
                     is OpenSelectedSharingOptionEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
