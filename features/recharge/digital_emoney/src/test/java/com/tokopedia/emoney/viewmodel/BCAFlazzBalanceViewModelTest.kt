@@ -20,6 +20,7 @@ import com.tokopedia.emoney.domain.response.BCAFlazzResponseMapper
 import com.tokopedia.emoney.domain.usecase.GetBCAFlazzUseCase
 import com.tokopedia.emoney.integration.BCALibraryIntegration
 import com.tokopedia.emoney.integration.data.JNIResult
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -408,8 +409,27 @@ class BCAFlazzBalanceViewModelTest {
         )
     )
 
+    val bcaGenCheckEmpty = TopupBillsPersoFavNumberData(
+        persoFavoriteNumber = TopupBillsPersoFavNumber(
+            items = listOf(
+                TopupBillsPersoFavNumberItem(
+                    label1 = "1",
+                    label2 = ""
+                )
+            )
+        )
+    )
+
     private fun genCheckExecute() {
         coEvery { bcaCheckGen.execute(any()) } returns bcaGenCheck
+    }
+
+    private fun genCheckExecuteEmpty() {
+        coEvery { bcaCheckGen.execute(any()) } returns bcaGenCheckEmpty
+    }
+
+    private fun genCheckExecuteThrows() {
+        coEvery { bcaCheckGen.execute(any()) } throws MessageErrorException()
     }
 
     @Test
@@ -424,6 +444,114 @@ class BCAFlazzBalanceViewModelTest {
         )
 
         genCheckExecute()
+
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkNoPendingBalanceGen1Result, BCAFlazzData::class.java)
+
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkNoPendingBalanceGen1Result
+
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+        //when
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString, messageTopUp1)
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseCheckBalance.attributes.lastBalance,
+                responseCheckBalance.attributes.imageIssuer,
+                true,
+                responseCheckBalance.attributes.amount,
+                responseCheckBalance.status,
+                responseCheckBalance.attributes.message,
+                responseCheckBalance.attributes.hasMorePendingBalance,
+                false,
+                messageTopUp1,
+                "",
+                false
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen1ShouldReturnLastBalance_CheckGenEmpty_Success() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_ONE
+        )
+
+        genCheckExecuteEmpty()
+
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkNoPendingBalanceGen1Result, BCAFlazzData::class.java)
+
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkNoPendingBalanceGen1Result
+
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+        //when
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString, messageTopUp1)
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseCheckBalance.attributes.lastBalance,
+                responseCheckBalance.attributes.imageIssuer,
+                true,
+                responseCheckBalance.attributes.amount,
+                responseCheckBalance.status,
+                responseCheckBalance.attributes.message,
+                responseCheckBalance.attributes.hasMorePendingBalance,
+                false,
+                messageTopUp1,
+                "",
+                false
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen1ShouldReturnLastBalance_CheckGenError_Success() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_ONE
+        )
+
+        genCheckExecuteThrows()
 
         every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
 
