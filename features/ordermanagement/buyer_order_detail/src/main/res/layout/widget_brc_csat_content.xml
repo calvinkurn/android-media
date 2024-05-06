@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:paddingHorizontal="16dp"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_bom_brc_csat_smiley_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="8dp"
+        app:card_type="clear"
+        app:layout_constraintEnd_toStartOf="@id/card_bom_brc_csat_smiley_2"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bom_brc_csat_smiley_1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_brc_csat_smiley_1" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_bom_brc_csat_smiley_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="8dp"
+        app:card_type="clear"
+        app:layout_constraintEnd_toStartOf="@id/card_bom_brc_csat_smiley_3"
+        app:layout_constraintStart_toEndOf="@id/card_bom_brc_csat_smiley_1"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bom_brc_csat_smiley_2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_brc_csat_smiley_2" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_bom_brc_csat_smiley_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="8dp"
+        app:card_type="clear"
+        app:layout_constraintEnd_toStartOf="@id/card_bom_brc_csat_smiley_4"
+        app:layout_constraintStart_toEndOf="@id/card_bom_brc_csat_smiley_2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bom_brc_csat_smiley_3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_brc_csat_smiley_3" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_bom_brc_csat_smiley_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="8dp"
+        app:card_type="clear"
+        app:layout_constraintEnd_toStartOf="@id/card_bom_brc_csat_smiley_5"
+        app:layout_constraintStart_toEndOf="@id/card_bom_brc_csat_smiley_3"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bom_brc_csat_smiley_4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_brc_csat_smiley_4" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_bom_brc_csat_smiley_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="8dp"
+        app:card_type="clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/card_bom_brc_csat_smiley_4"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bom_brc_csat_smiley_5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_brc_csat_smiley_5" />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <View
+        android:id="@+id/divider_bom_brc_csat"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/ic_brc_dashed_divider"
+        app:layout_constraintTop_toBottomOf="@id/card_bom_brc_csat_smiley_1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bom_brc_csat_help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_bom_brc_csat"
+        app:typographyType="display_3"
+        tools:text="@string/bom_brc_csat_help" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

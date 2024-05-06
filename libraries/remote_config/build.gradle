@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -31,6 +31,18 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.track)
+
+    // ttnet
+    implementation rootProject.ext.ttnetDependencies.chromiumCronet
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.ttnetDependencies.boringSsl
+    implementation rootProject.ext.ttnetDependencies.cppShared
+
+    implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
+    // libra
+    api rootProject.ext.libra.abTest
+    //如果使用非APT方式，可以不用加abtest_apt,直接使用非APT方式定义
+    kapt rootProject.ext.libra.abTestApt
 }
 
 project.ext {

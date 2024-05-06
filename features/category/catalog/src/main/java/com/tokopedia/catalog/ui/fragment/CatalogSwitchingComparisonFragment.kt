@@ -52,7 +52,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.fragment_catalog_switching_comparison.*
-import kotlinx.android.synthetic.main.layout_empty_catalog_listing_switching_page.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject

@@ -13,6 +13,8 @@ public interface SearchConstant {
     int CPM_TEMPLATE_ID = 4;
     int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
+    String PAGE_NAME = "PAGE_NAME";
+
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
         String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
@@ -202,5 +204,10 @@ public interface SearchConstant {
         String ETA = "eta";
         String LIST_VIEW = "listview";
         String FIXED_GRID = "fixedgrid";
+    }
+
+    interface SearchCoupon {
+        String SEARCH_COUPON_USE_CASE = "search_coupon_use_case";
+        String SEARCH_COUPON_REDEEM_USE_CASE = "search_coupon_redeem_use_case";
     }
 }

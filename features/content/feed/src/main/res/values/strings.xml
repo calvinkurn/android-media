@@ -101,4 +101,14 @@
     <string name="feed_load_follow_recommendation_error">Yaah, gagal memuat konten</string>
     <string name="feed_load_follow_recommendation_failed">Gagal memuat rekomendasi akun. Coba lagi, ya</string>
     <string name="feed_live_preview_end_label">Yaah, Live-nya telah berakhir</string>
+
+    <string name="feed_product_highlight_atc">+</string>
+
+    <!-- Tooltip -->
+    <string name="feed_search_tooltip_user_affinity">Cara cepet cari konten favoritmu! ❤️</string>
+    <string name="feed_search_tooltip_creator">Cek konten dari para kreator inspiratif!</string>
+    <string name="feed_search_tooltip_story">Udah cek update Story hari ini?</string>
+    <string name="feed_search_tooltip_trending_and_viral_video">Ada konten yang lagi viral! 🔥</string>
+    <string name="feed_search_tooltip_promo">Ada promo hidden gem di konten!</string>
+
 </resources>

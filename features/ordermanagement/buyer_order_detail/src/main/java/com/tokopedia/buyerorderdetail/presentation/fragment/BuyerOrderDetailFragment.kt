@@ -72,9 +72,11 @@ import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
+import com.tokopedia.buyerorderdetail.presentation.partialview.WidgetBrcCsat
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -95,7 +97,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -126,6 +128,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -179,6 +182,8 @@ open class BuyerOrderDetailFragment :
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     protected var loaderBuyerOrderDetail: LoaderUnify? = null
+
+    private var brcCsatShowToasterRunnable: Runnable? = null
 
     private var binding by autoClearedNullable<FragmentBuyerOrderDetailBinding>()
 
@@ -337,7 +342,6 @@ open class BuyerOrderDetailFragment :
                 resultCode,
                 data
             )
-
             BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
             BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY -> handleResultRefreshOnly()
             BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION -> {
@@ -345,18 +349,19 @@ open class BuyerOrderDetailFragment :
                     handleResultOrderExtension(data)
                 }
             }
-
             BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     handleResultPartialOrderFulfillment(data)
                 }
             }
+            BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM -> handleBrcCsatFormResult(data)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         coachMarkManager?.dismissCoachMark()
+        binding?.widgetBrcBom?.removeCallbacks(brcCsatShowToasterRunnable)
     }
 
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
@@ -411,6 +416,7 @@ open class BuyerOrderDetailFragment :
         setupGlobalError()
         setupSwipeRefreshLayout()
         setupStickyActionButtons()
+        setupBrcCsatWidget()
     }
 
     private fun bindViews() {
@@ -444,7 +450,7 @@ open class BuyerOrderDetailFragment :
         if (rvBuyerOrderDetail?.adapter != adapter) {
             rvBuyerOrderDetail?.adapter = adapter
         }
-        recyclerViewSharedPool.setMaxRecycledViews(BmgmAddOnViewHolder.RES_LAYOUT, BmgmAddOnViewHolder.MAX_RECYCLED_VIEWS)
+        recyclerViewSharedPool.setMaxRecycledViews(AddOnViewHolder.RES_LAYOUT, AddOnViewHolder.MAX_RECYCLED_VIEWS)
     }
 
     private fun setupStickyActionButtons() {
@@ -453,6 +459,10 @@ open class BuyerOrderDetailFragment :
             setStickyActionButtonClickHandler(stickyActionButtonHandler)
             setBottomSheetManager(bottomSheetManager)
         }
+    }
+
+    private fun setupBrcCsatWidget() {
+        binding?.widgetBrcBom?.setup(navigator)
     }
 
     private fun loadBuyerOrderDetail(shouldCheckCache: Boolean) {
@@ -604,6 +614,7 @@ open class BuyerOrderDetailFragment :
         updateContent(uiState)
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
+        updateBrcCsatWidget(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_DATA)
@@ -646,7 +657,8 @@ open class BuyerOrderDetailFragment :
 
     private fun updateStickyButtons(uiState: BuyerOrderDetailUiState.HasData) {
         stickyActionButton?.setupActionButtons(
-            actionButtonsUiModel = uiState.actionButtonsUiState.data
+            actionButtonsUiModel = uiState.actionButtonsUiState.data,
+            hasCsatWidgetShowing = uiState.brcCsatUiState is WidgetBrcCsatUiState.HasData.Showing
         )
     }
 
@@ -665,6 +677,10 @@ open class BuyerOrderDetailFragment :
                 //noop
             }
         }
+    }
+
+    private fun updateBrcCsatWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        binding?.widgetBrcBom?.setup(uiState.brcCsatUiState)
     }
 
     private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
@@ -775,6 +791,7 @@ open class BuyerOrderDetailFragment :
         toolbarMenuAnimator?.transitionToEmpty()
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stickyActionButton?.hideSavingWidget()
+        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.getDefaultState())
         stopLoadTimeMonitoring()
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_ERROR)
     }
@@ -782,6 +799,7 @@ open class BuyerOrderDetailFragment :
     private fun onFullscreenLoadingBuyerOrderDetail() {
         showLoader()
         toolbarMenuAnimator?.transitionToEmpty()
+        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.getDefaultState())
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_FULL_SCREEN_LOADING)
     }
 
@@ -793,6 +811,7 @@ open class BuyerOrderDetailFragment :
         updateContent(uiState)
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
+        updateBrcCsatWidget(uiState)
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_PULL_REFRESH_LOADING)
     }
 
@@ -954,6 +973,14 @@ open class BuyerOrderDetailFragment :
     private fun handleResultRefreshOnly() {
         loadBuyerOrderDetail(false)
         bottomSheetManager.dismissBottomSheets()
+    }
+
+    private fun handleBrcCsatFormResult(data: Intent?) {
+        val message = data?.getStringExtra("message")
+        if (!message.isNullOrBlank()) {
+            showToasterOnRefreshed(message, WidgetBrcCsat.ANIMATION_DURATION)
+            loadBuyerOrderDetail(false)
+        }
     }
 
     private fun stopLoadTimeMonitoring() {
@@ -1147,11 +1174,15 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        if (uiModel.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-            navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+        val productUrl = uiModel.productUrl
+        if (productUrl.isNotBlank()) {
+            navigator.openProductUrl(productUrl)
             BuyerOrderDetailTracker.eventClickProduct(uiModel.orderStatusId, uiModel.orderId)
         } else {
-            showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+            showToaster(
+                getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice),
+                getString(R.string.buyer_order_detail_oke)
+            )
         }
     }
 
@@ -1177,33 +1208,15 @@ open class BuyerOrderDetailFragment :
         viewModel.impressBmgmProduct(uiModel)
     }
 
-    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        // no op for bmgm add on because there is no function copy
-    }
-
-    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
-        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
-    }
-
-    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
-        BuyerOrderDetailTracker.AddOnsInformation.clickAddOnsInfo(
-            orderId = viewModel.getOrderId(),
-            addOnsType = type
-        )
-        navigator.openAppLink(infoLink, false)
-    }
-
-    override fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String) {
-        onAddOnsInfoLinkClicked(infoLink, type)
-    }
-
-    override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
-        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
-    }
-
-    private fun showToaster(message: String) {
+    private fun showToaster(message: String, actionText: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.buildWithAction(
+                view = it,
+                text = message,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL,
+                actionText = actionText
+            ).show()
         }
     }
 
@@ -1254,12 +1267,34 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    inner class AddOnListener : BmgmAddOnViewHolder.Listener {
+    private fun showToasterOnRefreshed(message: String, delay: Long = 0L) {
+        var previousState = viewModel.buyerOrderDetailUiState.value
+        var toasterShowed = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel
+                .buyerOrderDetailUiState
+                .takeWhile { !toasterShowed }
+                .collectLatest { newState ->
+                    val isCurrentlyShowingData = newState is BuyerOrderDetailUiState.HasData.Showing
+                    val isPreviouslyLoadingData = previousState is BuyerOrderDetailUiState.FullscreenLoading || previousState is BuyerOrderDetailUiState.HasData.PullRefreshLoading
+                    previousState = newState
+                    if (isCurrentlyShowingData && isPreviouslyLoadingData) {
+                        brcCsatShowToasterRunnable = Runnable {
+                            showCommonToaster(message, getString(R.string.bom_brc_csat_toaster_action_text))
+                            brcCsatShowToasterRunnable = null
+                        }.also { binding?.widgetBrcBom?.postDelayed(it, delay) }
+                        toasterShowed = true
+                    }
+                }
+        }
+    }
+
+    inner class AddOnListener : AddOnViewHolder.Listener {
         override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
             // noop, buyer add on doesn't have copy function
         }
 
-        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
             viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
         }
 
@@ -1276,12 +1311,12 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    inner class ProductBenefitListener : BmgmAddOnViewHolder.Listener {
+    inner class ProductBenefitListener : AddOnViewHolder.Listener {
         override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
             // noop, product benefit doesn't have copyable description
         }
 
-        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
             viewModel.expandCollapseBmgmProductBenefit(addOnsIdentifier, isExpand)
         }
 
@@ -1290,7 +1325,13 @@ open class BuyerOrderDetailFragment :
         }
 
         override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
-            navigator.goToProductSnapshotPage(addOn.orderId, addOn.orderDetailId)
+            if (addOn.addOnsUrl.isNotBlank()) {
+                navigator.openProductUrl(addOn.addOnsUrl)
+            } else {
+                showToaster(
+                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(), context?.getString(R.string.buyer_order_detail_oke).orEmpty()
+                )
+            }
         }
     }
 }

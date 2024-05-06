@@ -69,6 +69,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
               superGraphicURL
               separatorColor
             }
+            productVariantWishlist {
+                productID
+                isWishlist
+            }
             ppGetItemDetailPage{
               program{
                 protectionAvailable
@@ -215,76 +219,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 geolocation
               }
             }
-            installmentRecommendation {
-              data {
-                monthly_price
-                os_monthly_price
-                partner_code
-                subtitle
-              }
-            }
-            installmentCalculation {
-              message
-              data {
-                credit_card {
-                  partner_code
-                  partner_name
-                  partner_icon
-                  partner_url
-                  tnc_id
-                  installment_list {
-                    term
-                    mdr_value
-                    mdr_type
-                    interest_rate
-                    minimum_amount
-                    maximum_amount
-                    monthly_price
-                    os_monthly_price
-                    partner_code
-                    partner_name
-                    partner_icon
-                  }
-                  instruction_list {
-                    order
-                    description
-                    ins_image_url
-                  }
-                }
-                non_credit_card {
-                  partner_code
-                  partner_name
-                  partner_icon
-                  partner_url
-                  tnc_id
-                  installment_list {
-                    term
-                    mdr_value
-                    mdr_type
-                    interest_rate
-                    minimum_amount
-                    maximum_amount
-                    monthly_price
-                    os_monthly_price
-                    partner_code
-                    partner_name
-                    partner_icon
-                  }
-                  instruction_list {
-                    order
-                    description
-                    ins_image_url
-                  }
-                }
-                tnc {
-                  tnc_id
-                  tnc_list {
-                    order
-                    description
-                  }
-                }
-              }
-            }
             validateTradeIn {
               isEligible
               usedPrice
@@ -335,6 +269,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                upcomingType
                productID
                bgColor
+               showRemindMe
              }
             shopTopChatSpeed {
               messageResponseTime
@@ -645,6 +580,22 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 offerID
               }
             }
+            onelinerVariant {
+              productIDs
+              data {
+                name
+                text
+                applink
+                separator
+                icon
+                status
+                chevronPos
+                padding {
+                  t
+                  b
+                }
+              }
+            }
             gwp {
               separator
               data {
@@ -672,6 +623,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 loadMoreText
                 productIDs
                 offerID
+              }
+            }
+            sdui {
+              name
+              data {
+                template
               }
             }
           }
@@ -718,10 +675,15 @@ class GetProductInfoP2DataUseCase @Inject constructor(
 
         try {
             val gqlResponse = graphqlRepository.response(listOf(p2DataRequest), cacheStrategy)
-            val successData = gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
-            val errorData: List<GraphqlError>? = gqlResponse.getError(ProductInfoP2Data.Response::class.java)
+            val successData =
+                gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
+            val errorData: List<GraphqlError>? =
+                gqlResponse.getError(ProductInfoP2Data.Response::class.java)
 
-            if (successData == null || errorData?.isNotEmpty() == true || successData.response.error.errorCode != 0) {
+            if (successData == null ||
+                errorData?.isNotEmpty() == true ||
+                successData.response.error.errorCode != 0
+            ) {
                 throw RuntimeException()
             }
 

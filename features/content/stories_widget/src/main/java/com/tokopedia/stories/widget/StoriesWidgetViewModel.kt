@@ -7,6 +7,7 @@ import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
+import com.tokopedia.stories.widget.domain.TimeMillis
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -49,7 +50,9 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
 
     fun onIntent(intent: StoriesWidgetIntent) {
         when (intent) {
-            is StoriesWidgetIntent.GetStoriesStatus -> onGetStories(intent.shopIds)
+            is StoriesWidgetIntent.GetStoriesStatus -> {
+                onGetStories(intent.shopIds, intent.categoryIds, intent.productIds)
+            }
             is StoriesWidgetIntent.GetLatestStoriesStatus -> onGetLatestStoriesStatus()
             StoriesWidgetIntent.ShowCoachMark -> onShowCoachMark()
             StoriesWidgetIntent.HasSeenCoachMark -> onHasSeenCoachMark()
@@ -66,12 +69,16 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         }
     }
 
-    private fun onGetStories(shopIds: List<String>) {
+    private fun onGetStories(
+        shopIds: List<String>,
+        categoryIds: List<String>,
+        productIds: List<String>,
+    ) {
         if (shopIds.isEmpty()) return
 
         viewModelScope.launch {
             try {
-                val storiesInfo = repository.getStoriesWidgetInfo(entryPoint, shopIds)
+                val storiesInfo = repository.getStoriesWidgetInfo(entryPoint, shopIds, categoryIds, productIds)
                 _storiesState.update {
                     it.copy(
                         widgetStates = it.widgetStates + storiesInfo.widgetStates,
@@ -89,6 +96,7 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
                     widgetStates = it.widgetStates.mapValues { entry ->
                         val isStoriesSeen = repository.getUpdatedSeenStatus(
                             entry.key,
+                            entry.value.status == StoriesStatus.AllStoriesSeen,
                             entry.value.updatedAt
                         )
 
@@ -97,7 +105,8 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
                                 StoriesStatus.AllStoriesSeen
                             } else {
                                 entry.value.status
-                            }
+                            },
+                            updatedAt = TimeMillis.now()
                         )
                     }
                 )

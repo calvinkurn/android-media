@@ -13,17 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.otaliastudios.cameraview.controls.Flash
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.ui.fragment.camera.CameraMode
-import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.adapter.CameraSliderAdapter
 import com.tokopedia.media.picker.ui.adapter.utils.SliderLayoutManager
+import com.tokopedia.media.picker.ui.fragment.camera.CameraMode
 import com.tokopedia.media.picker.ui.fragment.camera.CameraSelectorModel
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
@@ -32,8 +32,9 @@ class CameraControllerComponent(
     private val param: PickerParam,
     private val activityContract: PickerActivityContract?,
     private val controllerListener: Listener,
-    parent: ViewGroup,
-) : UiComponent(parent, R.id.uc_camera_controller), ViewTreeObserver.OnScrollChangedListener,
+    parent: ViewGroup
+) : UiComponent(parent, R.id.uc_camera_controller),
+    ViewTreeObserver.OnScrollChangedListener,
     CameraSliderAdapter.Listener {
 
     private val adapterData = CameraSelectorModel.create()
@@ -138,6 +139,7 @@ class CameraControllerComponent(
     }
 
     fun scrollToPhotoMode() {
+        if (controllerListener.isCameraOnRecording()) return
         lstCameraMode.smoothScrollToPosition(CameraMode.Photo.value)
     }
 
@@ -278,7 +280,7 @@ class CameraControllerComponent(
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
     }
 
-    private fun setCameraModeSelected(mode: CameraMode){
+    private fun setCameraModeSelected(mode: CameraMode) {
         val cameraIndex = CameraMode.to(mode)
 
         if (cameraIndex == cameraModeIndex) return
@@ -317,5 +319,4 @@ class CameraControllerComponent(
         private const val HALF_SIZE_OF_CAMERA_MODE_ITEM = 30f
         private const val COUNTDOWN_INTERVAL = 1000L
     }
-
 }

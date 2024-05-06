@@ -2,6 +2,9 @@ package com.tokopedia.search.result.product.inspirationlistatc
 
 import android.content.Context
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_ADD_TO_CART
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -52,10 +55,17 @@ class InspirationListAtcViewDelegate @Inject constructor(
 
     override fun trackSeeMoreClick(data: InspirationCarouselDataView.Option) {
         InspirationCarouselTracking.trackCarouselClickSeeAll(data.keyword, data)
+
+        AppLogSearch.eventSearchResultClick(data.asByteIOSearchResult(CLICK_SEE_MORE))
     }
 
     override fun trackItemClick(trackingData: InspirationCarouselTracking.Data) {
         InspirationCarouselTracking.trackCarouselClick(trackingData)
+    }
+
+    override fun trackItemClickByteIO(product: InspirationCarouselDataView.Option.Product) {
+        AppLogSearch.eventSearchResultClick(product.asByteIOSearchResult(""))
+        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackItemImpress(product: InspirationCarouselDataView.Option.Product) {
@@ -65,10 +75,18 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 getSearchParameter()
             )
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, trackingData)
+
+        AppLogSearch.eventSearchResultShow(product.asByteIOSearchResult(null))
+        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
-    override fun trackAddToCart(trackingData: InspirationCarouselTracking.Data) {
+    override fun trackAddToCart(
+        trackingData: InspirationCarouselTracking.Data,
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         InspirationCarouselTracking.trackCarouselClickAtc(trackingData)
+
+        AppLogSearch.eventSearchResultClick(product.asByteIOSearchResult(CLICK_ADD_TO_CART))
     }
 
     override fun openAddToCartToaster(message: String, isSuccess: Boolean) {
@@ -109,7 +127,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 )
 
             trackItemClick(trackingData)
-            trackAddToCart(trackingData)
+            trackAddToCart(trackingData, product)
             onCheckout.invoke()
         }
 
@@ -144,5 +162,9 @@ class InspirationListAtcViewDelegate @Inject constructor(
             product.imgUrl,
             SearchConstant.TopAdsComponent.ORGANIC_ADS
         )
+    }
+
+    override fun trackImpression(option: InspirationCarouselDataView.Option) {
+        AppLogSearch.eventSearchResultShow(option.asByteIOSearchResult(null))
     }
 }

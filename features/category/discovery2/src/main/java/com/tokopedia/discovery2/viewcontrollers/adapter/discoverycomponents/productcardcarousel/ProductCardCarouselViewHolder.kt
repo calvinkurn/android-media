@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.di.getSubComponent
@@ -20,6 +23,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -48,11 +52,12 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var shimmerSaleTimer: LoaderUnify = itemView.findViewById(R.id.shimmer_timer_shop_flash_sale)
     private var saleTimer: TimerUnifySingle = itemView.findViewById(R.id.timer_shop_flash_sale)
 
+    private var hasApplogScrollListener = false
+
     init {
         linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-        mDiscoveryRecycleAdapter.setHasStableIds(true)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
         carouselEmptyState = itemView.findViewById(R.id.viewEmptyState)
     }
@@ -91,6 +96,19 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             }
         })
         mProductCarouselRecyclerView.addOnScrollListener(getParallaxEffect())
+    }
+
+    private fun RecyclerView.trackHorizontalScroll() {
+        val component = mProductCarouselComponentViewModel?.components
+        if(hasApplogScrollListener || !component?.isEligibleToTrack().orFalse()) return
+        val pageName = component?.compAdditionalInfo?.tracker?.recommendationPageName.orEmpty()
+        addHorizontalTrackListener(
+            slideTrackObject = SlideTrackObject(
+                moduleName = pageName,
+                barName = pageName,
+            )
+        )
+        hasApplogScrollListener = true
     }
 
     private fun getParallaxEffect(): RecyclerView.OnScrollListener {
@@ -162,6 +180,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel?.getProductCarouselItemsListData()?.observe(lifecycle) { item ->
                 setupMixLeft(item)
                 mDiscoveryRecycleAdapter.setDataList(item)
+                mProductCarouselRecyclerView.trackHorizontalScroll()
             }
             mProductCarouselComponentViewModel?.getSaleEndDate()?.observe(lifecycle) { endTime ->
                 renderTimer(endTime)

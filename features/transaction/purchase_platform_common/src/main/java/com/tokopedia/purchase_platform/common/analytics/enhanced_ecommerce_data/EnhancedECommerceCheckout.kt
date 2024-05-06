@@ -6,10 +6,13 @@ import java.util.*
  * @author anggaprasetiyo on 31/07/18.
  */
 class EnhancedECommerceCheckout {
+
     private val checkoutMap: MutableMap<String, Any> = HashMap()
+
     private val listProducts: MutableList<Any> = ArrayList()
-    fun addProduct(Product: Map<String, Any>) {
-        listProducts.add(Product)
+
+    fun addProduct(product: Map<String, Any>) {
+        listProducts.add(product)
     }
 
     fun setCurrencyCode(currencyCode: String) {

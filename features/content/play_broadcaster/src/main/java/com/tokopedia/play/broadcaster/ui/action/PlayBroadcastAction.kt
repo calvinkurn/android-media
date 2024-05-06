@@ -1,15 +1,15 @@
 package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.util.*
 
@@ -31,8 +31,8 @@ sealed interface PlayBroadcastAction {
     data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN) : PlayBroadcastAction
     data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
 
-    data class GetTickerBottomSheetConfig(val page: TickerBottomSheetPage) : PlayBroadcastAction
-    data class SetLiveToVodPref(val type: TickerBottomSheetType, val page: TickerBottomSheetPage) : PlayBroadcastAction
+    data class GetDynamicTickerBottomSheetConfig(val page: TickerBottomSheetPage) : PlayBroadcastAction
+    data class SetDynamicTickerBottomSheetPref(val type: TickerBottomSheetType) : PlayBroadcastAction
 
     /** Game */
     data class ClickGameOption(val gameType: GameType) : PlayBroadcastAction
@@ -88,6 +88,14 @@ sealed interface PlayBroadcastAction {
     data class SelectPresetOption(val preset: PresetFilterUiModel) : PlayBroadcastAction
     data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
     object RemoveBeautificationMenu : PlayBroadcastAction
+
+    /** CoachMark */
+    object ComponentHasBeenHandled : PlayBroadcastAction
+
+    /** Report */
+    object GetLiveReportSummary : PlayBroadcastAction
+
+    object GetProductReportSummary : PlayBroadcastAction
 
     data class SendErrorLog(
         val throwable: Throwable,

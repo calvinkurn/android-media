@@ -98,10 +98,8 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
 import com.tokopedia.shop_widget.common.util.WidgetState
-import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFactory
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
-import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
-import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.viewholder.ThematicWidgetViewHolder
 
 open class ShopHomeAdapterTypeFactory(
     private val listener: ShopHomeDisplayWidgetListener,
@@ -135,10 +133,8 @@ open class ShopHomeAdapterTypeFactory(
     private val recyclerviewPoolListener: RecyclerviewPoolListener,
     private val bmsmWidgetDependencyProvider: BmsmWidgetDependencyProvider,
     private val bmsmWidgetListener: BmsmWidgetEventListener
-) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
+) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
-    private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
-    private var showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return when (baseShopHomeWidgetUiModel.name) {
@@ -146,7 +142,7 @@ open class ShopHomeAdapterTypeFactory(
             WidgetNameEnum.DISPLAY_DOUBLE_COLUMN.value,
             WidgetNameEnum.DISPLAY_TRIPLE_COLUMN.value -> getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel)
             WidgetNameEnum.SLIDER_SQUARE_BANNER.value -> getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel)
-            WidgetNameEnum.SLIDER_BANNER.value,
+            WidgetNameEnum.SLIDER_BANNER.value -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
             WidgetNameEnum.ADVANCED_SLIDER_BANNER.value -> ShopHomeDisplayAdvanceCarouselBannerViewHolder.LAYOUT_RES
             WidgetNameEnum.VIDEO.value -> ShopHomeVideoViewHolder.LAYOUT_RES
             WidgetNameEnum.PRODUCT.value -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
@@ -165,21 +161,11 @@ open class ShopHomeAdapterTypeFactory(
             WidgetNameEnum.PRODUCT_BUNDLE_SINGLE.value,
             WidgetNameEnum.PRODUCT_BUNDLE_MULTIPLE.value -> ShopHomeProductBundleParentWidgetViewHolder.LAYOUT
             WidgetNameEnum.SHOWCASE_SLIDER_SMALL.value,
-            WidgetNameEnum.SHOWCASE_SLIDER_MEDIUM.value -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
-            WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value -> {
-                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
-                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
-                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
-            }
-            WidgetNameEnum.SHOWCASE_GRID_SMALL.value -> {
-                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
-                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE
-                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
-            }
+            WidgetNameEnum.SHOWCASE_SLIDER_MEDIUM.value,
+            WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value,
+            WidgetNameEnum.SHOWCASE_GRID_SMALL.value,
             WidgetNameEnum.SHOWCASE_GRID_MEDIUM.value,
             WidgetNameEnum.SHOWCASE_GRID_BIG.value -> {
-                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
-                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
                 return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
             WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value -> {
@@ -195,8 +181,17 @@ open class ShopHomeAdapterTypeFactory(
             WidgetNameEnum.DIRECT_PURCHASED_BY_ETALASE.value -> ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT
             WidgetNameEnum.BMSM_GWP_OFFERING_GROUP.value -> getBmsmGwpWidgetViewHolder(baseShopHomeWidgetUiModel)
             WidgetNameEnum.BMSM_PD_OFFERING_GROUP.value -> getBmsmPdWidgetViewHolder(baseShopHomeWidgetUiModel)
-
+            WidgetNameEnum.ETALASE_THEMATIC.value,
+            WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value -> getThematicWidgetViewHolder(baseShopHomeWidgetUiModel)
             else -> HideViewHolder.LAYOUT
+        }
+    }
+
+    private fun getThematicWidgetViewHolder(uiModel: BaseShopHomeWidgetUiModel): Int {
+        return if (isShowThematicWidgetPlaceHolder(uiModel)) {
+            ThematicWidgetLoadingStateViewHolder.LAYOUT
+        } else {
+            ThematicWidgetViewHolder.LAYOUT
         }
     }
 
@@ -335,7 +330,7 @@ open class ShopHomeAdapterTypeFactory(
         }
     }
 
-    fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
+    private fun isShowThematicWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
@@ -349,14 +344,6 @@ open class ShopHomeAdapterTypeFactory(
 
     override fun type(carouselPlayCardViewModel: CarouselPlayWidgetUiModel): Int {
         return CarouselPlayWidgetViewHolder.LAYOUT
-    }
-
-    override fun type(uiModel: ThematicWidgetUiModel): Int {
-        return if (isShowThematicWidgetPlaceHolder(uiModel)) {
-            ThematicWidgetLoadingStateViewHolder.LAYOUT
-        } else {
-            ThematicWidgetViewHolder.LAYOUT
-        }
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
@@ -499,8 +486,6 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT -> ShopHomeShowcaseListBaseWidgetViewHolder(
                 parent,
                 ShopHomeShowcaseListWidgetAdapter(showcaseListWidgetListener = shopHomeShowcaseListWidgetListener),
-                showcaseWidgetLayoutType,
-                showcaseWidgetGridColumnSize,
                 recyclerviewPoolListener
             )
             ProductGridListPlaceholderViewHolder.LAYOUT -> ProductGridListPlaceholderViewHolder(parent)

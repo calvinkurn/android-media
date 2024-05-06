@@ -1,6 +1,9 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_CARD_SEE_MORE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.discovery.common.constants.SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -124,7 +127,7 @@ internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestF
 
     private fun `Then verify view interaction for click see more broad match`(broadMatchDataView: BroadMatchDataView) {
         verify {
-            broadMatchView.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
+            broadMatchView.trackEventClickSeeMoreBroadMatch(broadMatchDataView, CLICK_SEE_MORE)
             applinkModifier.modifyApplink(broadMatchDataView.applink)
             broadMatchView.openLink(any(), broadMatchDataView.url)
         }
@@ -177,13 +180,14 @@ internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestF
                 dynamicProductCarousel,
                 carouselOptionType.option.inspirationCarouselType,
                 carouselOptionType.option,
+                CLICK_SEE_MORE,
             )
             applinkModifier.modifyApplink(dynamicProductCarousel.applink)
             broadMatchView.openLink(any(), dynamicProductCarousel.url)
         }
 
         verify(exactly = 0) {
-            broadMatchView.trackEventClickSeeMoreBroadMatch(any())
+            broadMatchView.trackEventClickSeeMoreBroadMatch(any(), any())
         }
     }
 
@@ -211,13 +215,14 @@ internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestF
                 dynamicProductCarousel,
                 carouselOptionType.option.inspirationCarouselType,
                 carouselOptionType.option,
+                CLICK_CARD_SEE_MORE,
             )
             applinkModifier.modifyApplink(any())
             broadMatchView.openLink(any(), dynamicProductCarousel.url)
         }
 
         verify(exactly = 0) {
-            broadMatchView.trackEventClickSeeMoreBroadMatch(any())
+            broadMatchView.trackEventClickSeeMoreBroadMatch(any(), any())
         }
     }
 }

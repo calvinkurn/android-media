@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -14,6 +13,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.Product;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.PurchaseData;
+import com.tokopedia.tkpd.utils.CurrencyFormatHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -125,7 +125,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
                 localProduct.put(LinkerConstants.ID, product.getId());
                 localProduct.put(LinkerConstants.NAME, product.getName());
                 localProduct.put(LinkerConstants.PRICE, String.valueOf(parseStringToInt(product.getPrice())));
-                localProduct.put(LinkerConstants.PRICE_IDR_TO_DOUBLE, String.valueOf(CurrencyFormatHelper.convertRupiahToLong(product.getPrice())));
+                localProduct.put(LinkerConstants.PRICE_IDR_TO_DOUBLE, String.valueOf(convertRupiahToLong(product.getPrice())));
                 localProduct.put(LinkerConstants.QTY, String.valueOf(product.getQuantity()));
                 String category = product.getCategory();
                 if (TextUtils.isEmpty(category)) {
@@ -148,5 +148,12 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public static long convertRupiahToLong(String rupiah) {
+        rupiah = rupiah.replace("Rp", "");
+        rupiah = rupiah.replace(".", "");
+        rupiah = rupiah.replace(" ", "");
+        return Long.parseLong(rupiah);
     }
 }

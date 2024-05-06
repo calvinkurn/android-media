@@ -268,6 +268,7 @@ class CatalogComparisonDetailFragment :
         val comparisonAdapter = ComparisonHeaderAdapter(
             titleList.takeLast(comparisonUiModel.content.size.dec())
         )
+        if (comparisonAdapter.itemCount == Int.ONE) binding?.tfHeaderTitle?.layoutParams?.width = getScreenWidth()/2
         binding?.tfHeaderTitle?.text = titleList.firstOrNull().orEmpty()
         binding?.tfHeaderTitle?.visible()
         binding?.rvHeader?.apply {

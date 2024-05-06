@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
@@ -41,6 +42,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     private var isOverrideTheme: Boolean = false
     private var patternColorType: String = ""
     private var colorSchema: ShopPageColorSchema = ShopPageColorSchema()
+    private var isTransparent: Boolean = false
 
     companion object {
         @ColorRes
@@ -107,7 +109,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         ctx?.let {
             textTabName.apply {
                 show()
-                if (isOverrideTheme) {
+                if (isUsingReimagineConfig()) {
                     setTabNameReimaginedColor(this, active)
                 } else {
                     setTabNameDefaultColor(this, active)
@@ -196,7 +198,9 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 iconUrl.isUrlPng() -> {
                     binding.shopPageDynamicTabViewIcon.apply {
                         show()
-                        setImageUrl(iconUrl)
+                        loadImage(iconUrl){
+                            centerInside()
+                        }
                         isEnabled = true
                     }
                 }
@@ -218,7 +222,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 iconDataJsonString,
                 ShopPageHeaderTabIconUrlModel::class.java
             ).run {
-                if (isOverrideTheme) {
+                if (isUsingReimagineConfig()) {
                     configIconColorByBackgroundTheme(lightModeUrl, darkThemeUrl)
                 } else {
                     configIconColorByDeviceTheme(lightModeUrl, darkModeUrl)
@@ -345,10 +349,16 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     fun setPageTheme(
         isOverrideTheme: Boolean,
         patternColorType: String,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        isTransparent: Boolean
     ) {
         this.isOverrideTheme = isOverrideTheme
         this.patternColorType = patternColorType
         this.colorSchema = colorSchema
+        this.isTransparent = isTransparent
+    }
+
+    private fun isUsingReimagineConfig(): Boolean {
+        return isOverrideTheme && !isTransparent
     }
 }

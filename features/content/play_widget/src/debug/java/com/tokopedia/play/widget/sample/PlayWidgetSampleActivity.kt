@@ -23,6 +23,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
         Pair("Feed", PlayWidgetSampleFeedFragment()),
         Pair("Common",  PlayWidgetSampleCommonFragment()),
         Pair("Video",  PlayVideoWidgetSampleFragment()),
+        Pair("Live Indicator", PlayLiveIndicatorSampleFragment())
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

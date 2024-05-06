@@ -29,6 +29,7 @@ object ApplinkConstInternalUserPlatform {
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     const val PARAM_IS_FROM_STICKY_LOGIN = "from_sticky_login"
     const val PARAM_IS_FROM_OCL_LOGIN = "from_ocl_page"
+    const val PARAM_CALLBACK_REGISTER = "callback_register"
 
     const val PARAM_IS_SAVE_SESSION = "is_save_session"
 
@@ -90,14 +91,17 @@ object ApplinkConstInternalUserPlatform {
     // ProfileInfoActivity
     const val SETTING_PROFILE = "$NEW_INTERNAL_USER/setting-profile"
 
-    // ProfileManagementActivity
-    const val PROFILE_MANAGEMENT = "$NEW_INTERNAL_USER/profile-management"
-
     /**
      * ExplicitProfileActivity
      * @Applink : tokopedia-android-internal://user/explicit-profile
      **/
     const val EXPLICIT_PROFILE = "$NEW_INTERNAL_USER/explicit-profile"
+
+    /**
+     * ExplicitPersonalizeActivity
+     * @Applink : tokopedia-android-internal://user/explicit-personalize
+     **/
+    const val EXPLICIT_PERSONALIZE = "$NEW_INTERNAL_USER/explicit-personalize"
 
     /**
      * GotoSeamlessLandingActivity
@@ -129,12 +133,6 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val PARAM_OTP_TYPE = "otpType"
     const val COTP = "$NEW_INTERNAL_USER/cotp?$PARAM_OTP_TYPE={otp-type}"
-
-    /**
-     * please refer [com.scp.auth.verification.ScpVerificationActivity]
-     * Applink: tokopedia-android-internal://user/scp-otp
-     */
-    const val SCP_OTP = "$NEW_INTERNAL_USER/scp-otp"
 
     /**
      * LoginByQrResultActivity
@@ -291,12 +289,6 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/profile-completion
      **/
     const val PROFILE_COMPLETION = "$NEW_INTERNAL_USER/profile-completion"
-
-    /**
-     * ScpAuthActivity
-     * @Applink : tokopedia-android-internal://user/scp-login
-     **/
-    const val SCP_LOGIN = "$NEW_INTERNAL_USER/scp-login"
 
     /**
      * AddNameActivity

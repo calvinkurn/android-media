@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
-class TopAdsBannerModel(var topAdsBannerList: ArrayList<TopAdsImageViewModel> = ArrayList(),
+class TopAdsBannerModel(var topAdsBannerList: ArrayList<TopAdsImageUiModel> = ArrayList(),
                         var title: Title = Title(),
                         var template: Template = Template()) : Visitable<DynamicFeedTypeFactory> {
 

@@ -278,7 +278,7 @@ class DigitalPDPPulsaFragment :
             try {
                 /* operator check */
                 val selectedOperator =
-                    viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                    viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.first {
                         selectedClientNumber.startsWith(it.value)
                     }
 

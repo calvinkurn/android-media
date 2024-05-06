@@ -5,8 +5,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
@@ -20,9 +20,9 @@ import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class UpdateCartTestHelper(
-        private val baseViewModel: BaseSearchCategoryViewModel,
-        private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        private val callback: Callback,
+    private val baseViewModel: TokoNowSearchViewModel,
+    private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+    private val callback: Callback
 ) {
 
     fun `onViewResumed should update mini cart and quantity in product list`() {
@@ -40,7 +40,7 @@ class UpdateCartTestHelper(
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
-            miniCartSimplifiedData: MiniCartSimplifiedData
+        miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         every {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
@@ -70,11 +70,11 @@ class UpdateCartTestHelper(
     }
 
     private fun `Then assert mini cart widget live data is updated`(
-            expectedMiniCartSimplifiedData: MiniCartSimplifiedData
+        expectedMiniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         assertThat(
-                baseViewModel.miniCartWidgetLiveData.value,
-                shouldBe(expectedMiniCartSimplifiedData)
+            baseViewModel.miniCartWidgetLiveData.value,
+            shouldBe(expectedMiniCartSimplifiedData)
         )
     }
 
@@ -93,8 +93,8 @@ class UpdateCartTestHelper(
     }
 
     private fun `Then assert product item non variant quantity`(
-            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
-            productItems: List<ProductItemDataView>,
+        miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
+        productItems: List<ProductItemDataView>
     ) {
         val miniCartItemsNonVariant = miniCartItems.values.mapNotNull {
             if (it is MiniCartItem.MiniCartItemProduct && it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID) it else null
@@ -111,11 +111,11 @@ class UpdateCartTestHelper(
     }
 
     private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem.MiniCartItemProduct) =
-            "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
+        "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
 
     private fun `Then assert product item variant quantity`(
-            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
-            productItems: List<ProductItemDataView>,
+        miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
+        productItems: List<ProductItemDataView>
     ) {
         val miniCartItemsVariant = miniCartItems.values.mapNotNull {
             if (it is MiniCartItem.MiniCartItemParentProduct) it else null
@@ -124,7 +124,7 @@ class UpdateCartTestHelper(
         miniCartItemsVariant.forEach { miniCartItemGroup ->
             val totalQuantity = miniCartItemGroup.totalQuantity
             val productItemIndexed = productItems.withIndex()
-                    .find { it.value.parentId == miniCartItemGroup.parentId }!!
+                .find { it.value.parentId == miniCartItemGroup.parentId }!!
             val productItem = productItemIndexed.value
             val reason = createInvalidVariantQtyReason(productItem.productCardModel.productId, productItem.parentId)
             assertThat(reason, productItem.productCardModel.orderQuantity, shouldBe(totalQuantity))
@@ -132,11 +132,11 @@ class UpdateCartTestHelper(
     }
 
     private fun createInvalidVariantQtyReason(productId: String, parentProductId: String) =
-            "Product \"$productId\" with parent \"$parentProductId\" variant quantity is invalid"
+        "Product \"$productId\" with parent \"$parentProductId\" variant quantity is invalid"
 
     private fun `Then assert updated indices`(
-            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
-            visitableList: List<Visitable<*>>,
+        miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
+        visitableList: List<Visitable<*>>
     ) {
         val expectedUpdatedIndices = createExpectedUpdatedIndices(miniCartItems, visitableList)
         val actualUpdatedIndices = baseViewModel.updatedVisitableIndicesLiveData.value!!
@@ -145,8 +145,8 @@ class UpdateCartTestHelper(
     }
 
     private fun createExpectedUpdatedIndices(
-            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
-            visitableList: List<Visitable<*>>,
+        miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
+        visitableList: List<Visitable<*>>
     ): Set<Int> {
         val expectedUpdatedIndices = mutableSetOf<Int>()
 
@@ -157,11 +157,13 @@ class UpdateCartTestHelper(
                         val isNonVariant = miniCartItem.productParentId == "0" || miniCartItem.productParentId == "" && visitable.productCardModel.productId == miniCartItem.productId
                         val isVariant = !(miniCartItem.productParentId == "0" || miniCartItem.productParentId == "") && miniCartItem.productParentId == visitable.parentId
 
-                        if (isNonVariant)
+                        if (isNonVariant) {
                             expectedUpdatedIndices.add(index)
+                        }
 
-                        if (!isVariant)
+                        if (!isVariant) {
                             expectedUpdatedIndices.add(index)
+                        }
                     }
                 }
             }

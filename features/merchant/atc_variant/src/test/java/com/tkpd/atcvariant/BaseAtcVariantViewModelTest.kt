@@ -9,6 +9,7 @@ import com.tkpd.atcvariant.util.AtcVariantJsonHelper
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
@@ -25,11 +26,13 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
+import io.mockk.spyk
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
 /**
  * Created by Yehezkiel on 28/05/21
@@ -75,10 +78,15 @@ abstract class BaseAtcVariantViewModelTest {
         )
     }
 
+    val spykViewModel by lazy {
+        spyk(viewModel)
+    }
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-
+        mockkObject(AppLogAnalytics)
+        every { AppLogAnalytics.getEntranceInfo(any()) } returns "{}"
         coEvery {
             remoteConfig.getBoolean(REMOTE_CONFIG_NEW_VARIANT_LOG, true)
         } returns true
@@ -247,7 +255,7 @@ abstract class BaseAtcVariantViewModelTest {
         cashBackPercentage: Int,
         uspImageUrl: String,
         isTokoCabang: Boolean,
-        expectedMinOrder: Int,
+        expectedMinOrder: Int
     ) {
         visitables.forEach {
             when (it) {

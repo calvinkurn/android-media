@@ -9,7 +9,9 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -32,7 +34,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
-import com.tokopedia.analytics.performance.perf.*
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.GlidePageTrackObject
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -40,6 +51,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -95,7 +107,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.AccurateOffsetLinearLayoutManager
-import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
@@ -118,11 +129,13 @@ import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerCo
 import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomeOrigamiListenerDelegate
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.Mission4SquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MissionWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MixLeftComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MixTopComponentCallback
@@ -143,6 +156,7 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.CATEGORY_ID
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
@@ -159,6 +173,7 @@ import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -167,6 +182,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -257,14 +273,15 @@ open class HomeRevampFragment :
     PlayWidgetListener,
     RecommendationWidgetListener,
     CMHomeWidgetCallback,
-    HomePayLaterWidgetListener {
+    HomePayLaterWidgetListener,
+    AppLogInterface,
+    AppLogGlidePageInterface {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN = 131
-        private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -286,7 +303,11 @@ open class HomeRevampFragment :
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
 
-        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+        private const val PARAM_APPLINK_AUTOCOMPLETE =
+            "?navsource={source}" +
+                "&hint={hint}" +
+                "&first_install={first_install}" +
+                "&enter_method={enter_method}"
         private const val HOME_SOURCE = "home"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
@@ -316,6 +337,7 @@ open class HomeRevampFragment :
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
         private const val DEFAULT_BLOCK_SIZE = 6
+        private const val FPS_TRACER_HOME = "Home Scene"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -360,8 +382,6 @@ open class HomeRevampFragment :
 
     var gamificationPopUpHandler: GamificationPopUpHandler? = null
 
-    @Inject
-    lateinit var homePrefController: HomePrefController
     private lateinit var root: FrameLayout
     private var refreshLayout: ParentIconSwipeRefreshLayout? = null
     private var refreshLayoutOld: ToggleableSwipeRefreshLayout? = null
@@ -429,6 +449,8 @@ open class HomeRevampFragment :
 
     @Inject
     lateinit var homeThematicUtil: HomeThematicUtil
+
+    private var hasApplogScrollListener = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -523,6 +545,16 @@ open class HomeRevampFragment :
     override fun getScreenName(): String {
         return ConstantKey.Analytics.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA
     }
+
+    override fun getPageName(): String {
+        return PageName.HOME
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
+
+    override fun shouldTrackEnterPage(): Boolean = true
 
     override fun initInjector() {
     }
@@ -635,14 +667,18 @@ open class HomeRevampFragment :
             }
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = NavSource.HOME)
-            ).addIcon(getInboxIcon()) {}
-            icons.addIcon(IconList.ID_NOTIFICATION) {}
+            )
+            icons.addIcon(IconList.ID_MESSAGE) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
+            icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_NOTIFICATION_HOMEPAGE) }
             icons.apply {
-                addIcon(IconList.ID_CART) {}
+                addIcon(IconList.ID_CART) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_CART_ICON_HOMEPAGE) }
                 addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
             it.setupMicroInteraction(navToolbarMicroInteraction)
+            it.addOnImpression1pxListener(ImpressHolder()) {
+                AppLogSearch.eventShowSearch()
+            }
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
@@ -662,6 +698,8 @@ open class HomeRevampFragment :
         setupStatusBar()
         setupHomeRecyclerView()
         initEggDragListener()
+
+        homeRecyclerView?.bindFpsTracer(FPS_TRACER_HOME)
         return view
     }
 
@@ -669,10 +707,6 @@ open class HomeRevampFragment :
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
         }
-    }
-
-    private fun getInboxIcon(): Int {
-        return IconList.ID_MESSAGE
     }
 
     private fun ArrayList<CoachMark2Item>.buildSubscriptionCoachMark(subscriptionBalanceCoachMark: BalanceCoachmark) {
@@ -788,11 +822,11 @@ open class HomeRevampFragment :
             val balanceWidgetSubscriptionView =
                 getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && (
-                (
-                    balanceWidgetSubscriptionView?.y
-                        ?: VIEW_DEFAULT_HEIGHT
-                    ) > VIEW_DEFAULT_HEIGHT
-                )
+                    (
+                        balanceWidgetSubscriptionView?.y
+                            ?: VIEW_DEFAULT_HEIGHT
+                        ) > VIEW_DEFAULT_HEIGHT
+                    )
             ) {
                 return balanceWidgetSubscriptionView
             }
@@ -822,8 +856,19 @@ open class HomeRevampFragment :
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
+        trackVerticalScroll()
         setupEmbraceBreadcrumbListener()
         setupHomePlayWidgetListener()
+    }
+
+    private fun trackVerticalScroll() {
+        if (hasApplogScrollListener) return
+        homeRecyclerView?.addVerticalTrackListener {
+            GlidePageTrackObject(
+                distanceToTop = scrollPositionY
+            )
+        }
+        hasApplogScrollListener = true
     }
 
     private fun setupEmbraceBreadcrumbListener() {
@@ -1058,13 +1103,17 @@ open class HomeRevampFragment :
 
     override fun onLoginWidgetClick() {
         LoginWidgetTracking.sendLoginClick()
-        goToLogin(REQUEST_CODE_LOGIN_WIDGET_LOGIN)
+        goToLogin()
     }
 
-    fun goToLogin(requestCode: Int) {
+    fun goToLogin() {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            startActivityForResult(intent, requestCode)
+            intent.putExtra(
+                ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER,
+                ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE
+            )
+            startActivity(intent)
         }
     }
 
@@ -1097,6 +1146,8 @@ open class HomeRevampFragment :
         getHomeViewModel().getCMHomeWidgetData(false)
         // trigger gamification popup flow
         executeGamificationPopUpFlow()
+
+        AppLogSearch.cleanTrendingWordsClickData()
     }
 
     private fun executeGamificationPopUpFlow() {
@@ -1108,7 +1159,7 @@ open class HomeRevampFragment :
 
     private fun conditionalViewModelRefresh() {
         if (!validateChooseAddressWidget()) {
-            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
+            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall(), refreshType = HomeRefreshType.AUTO_REFRESH)
         }
     }
 
@@ -1125,7 +1176,7 @@ open class HomeRevampFragment :
                 val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
                 getHomeViewModel().updateChooseAddressData(updatedChooseAddressData)
-                getHomeViewModel().refreshHomeData()
+                getHomeViewModel().refreshHomeData(HomeRefreshType.ADDRESS_CHANGED)
             }
 
             return isAddressChanged
@@ -1279,17 +1330,20 @@ open class HomeRevampFragment :
                     status === Result.Status.SUCCESS -> {
                         hideLoading()
                     }
+
                     status === Result.Status.ERROR -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
+
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
+
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
@@ -1297,6 +1351,7 @@ open class HomeRevampFragment :
                         adapter?.resetAtfErrorState()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
+
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
@@ -1308,6 +1363,7 @@ open class HomeRevampFragment :
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
+
                     status == Result.Status.ERROR_ATF_NEW -> {
                         if (getHomeViewModel().homeDataModel.list.size <= 1) {
                             val errorString = getErrorStringWithDefault(throwable)
@@ -1319,6 +1375,7 @@ open class HomeRevampFragment :
                             ) { onRefresh() }
                         }
                     }
+
                     else -> {
                         showLoading()
                     }
@@ -1445,14 +1502,14 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE) >= 0) {
+            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition()
+                    ?: DEFAULT_BLOCK_SIZE) >= 0) {
                 layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
             } else {
                 DEFAULT_BLOCK_SIZE
             }
 
             performanceTrace?.setBlock(data.take(takeLimit))
-
             adapter?.submitList(data)
         }
     }
@@ -1564,9 +1621,6 @@ open class HomeRevampFragment :
             }
 
     private fun initAdapter() {
-        if (!this::homePrefController.isInitialized) {
-            initInjectorHome()
-        }
         context?.let { layoutManager = AccurateOffsetLinearLayoutManager(it, adapter) }
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
@@ -1592,7 +1646,7 @@ open class HomeRevampFragment :
             this,
             RechargeBUWidgetCallback(context, this),
             bannerCarouselCallback,
-            DynamicIconComponentCallback(context, this, homePrefController),
+            DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
             this,
@@ -1612,6 +1666,8 @@ open class HomeRevampFragment :
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
             CouponWidgetCallback(this),
             getThematicUtil(),
+            HomeOrigamiListenerDelegate(context, this),
+            Mission4SquareWidgetListenerCallback(this),
             getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -1623,10 +1679,6 @@ open class HomeRevampFragment :
 
     override fun onSectionItemClicked(actionLink: String) {
         onActionLinkClicked(actionLink)
-    }
-
-    private fun doHomeDataRefresh() {
-        getHomeViewModel().refreshHomeData()
     }
 
     private fun onGoToSell() {
@@ -1810,6 +1862,7 @@ open class HomeRevampFragment :
                     NetworkErrorHelper.showSnackbar(activity, message)
                 }
             }
+
             REQUEST_CODE_REVIEW -> {
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
@@ -1817,14 +1870,17 @@ open class HomeRevampFragment :
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
+
             REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET -> if (data != null) {
                 notifyPlayWidgetTotalView(data)
                 notifyPlayWidgetReminder(data)
             }
+
             REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
                 val lastEvent = getHomeViewModel().playWidgetReminderEvent?.value
                 if (lastEvent != null) getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
             }
+
             PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
                 handleProductCardOptionsActivityResult(
                     requestCode,
@@ -1837,6 +1893,7 @@ open class HomeRevampFragment :
                     }
                 )
             }
+
             REQUEST_CODE_LOGIN -> {
                 activity?.let {
                     val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
@@ -1853,14 +1910,6 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
-            REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-                    if (isSuccessRegister && getUserSession().isLoggedIn) {
-                        gotoNewUserZonePage()
-                    }
-                }
-            }
         }
     }
 
@@ -1870,7 +1919,7 @@ open class HomeRevampFragment :
         removeNetworkError()
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
-            getHomeViewModel().refreshHomeData()
+            getHomeViewModel().refreshHomeData(HomeRefreshType.PULL_TO_REFRESH)
         } else {
             hideLoading()
         }
@@ -1891,7 +1940,8 @@ open class HomeRevampFragment :
             if (getHomeViewModel().homeDataModel.list.isNotEmpty()) {
                 getHomeViewModel().refreshWithThreeMinsRules(
                     forceRefresh = true,
-                    isFirstInstall = isFirstInstall()
+                    isFirstInstall = isFirstInstall(),
+                    refreshType = HomeRefreshType.ADDRESS_CHANGED
                 )
             }
         }
@@ -1919,6 +1969,10 @@ open class HomeRevampFragment :
         getHomeViewModel().onCouponClaim(data, catalogId, couponPosition)
     }
 
+    override fun getHomeRefreshType(): HomeRefreshType {
+        return getHomeViewModel().refreshType
+    }
+
     override fun onChooseAddressServerDown() {
         getHomeViewModel().removeChooseAddressWidget()
     }
@@ -1936,7 +1990,7 @@ open class HomeRevampFragment :
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refreshHomeData()
+            getHomeViewModel().refreshHomeData(HomeRefreshType.RELOAD)
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
@@ -2035,13 +2089,7 @@ open class HomeRevampFragment :
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
             navToolbar?.setupSearchbar(
-                hints = listOf(
-                    HintData(
-                        data.placeholder ?: "",
-                        data.keyword
-                            ?: ""
-                    )
-                ),
+                hints = hints(data),
                 applink = if (data.keyword?.isEmpty() != false) {
                     ApplinkConstInternalDiscovery.AUTOCOMPLETE
                 } else {
@@ -2053,7 +2101,8 @@ open class HomeRevampFragment :
                         ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
                         HOME_SOURCE,
                         data.keyword.safeEncodeUtf8(),
-                        isFirstInstall().toString()
+                        isFirstInstall().toString(),
+                        AppLogSearch.ParamValue.ENTER,
                     )
 
                     navToolbarMicroInteraction
@@ -2061,10 +2110,52 @@ open class HomeRevampFragment :
                         ?: startActivity(intent)
                 },
                 searchbarImpressionCallback = {},
-                shouldShowTransition = false
+                shouldShowTransition = false,
+                hintImpressionCallback = { hintData, index ->
+                    if (hintData.imprId.isNotBlank())
+                        AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
+                },
+                hintClickCallback = { hintData, index ->
+                    if (hintData.imprId.isNotBlank())
+                        AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
+                }
             )
         }
     }
+
+    private fun appLogTrendingWords(index: Int, hintData: HintData) =
+        AppLogSearch.TrendingWords(
+            index = index,
+            content = hintData.keyword.trim(),
+            groupId = hintData.groupId,
+            imprId = hintData.imprId,
+            wordsSource = hintData.wordsSource,
+            searchEntrance = PageName.HOME,
+        )
+
+    private fun hints(data: SearchPlaceholder.Data): List<HintData> {
+        val placeholders =
+            data.placeholders
+                ?.filter { !it.placeholder.isNullOrBlank() && !it.keyword.isNullOrEmpty() }
+                ?: listOf()
+
+        return if (placeholders.isNotEmpty())
+            placeholders.map { hintData(it, data.wordsSource, data.imprId) }
+        else
+            listOf(hintData(data, data.wordsSource, data.imprId))
+    }
+
+    private fun hintData(
+        placeholder: SearchPlaceholder.PlaceHolder,
+        wordsSource: String,
+        imprId: String,
+    ) = HintData(
+        placeholder = placeholder.placeholder ?: "",
+        keyword = placeholder.keyword ?: "",
+        groupId = placeholder.groupId,
+        imprId = imprId,
+        wordsSource = wordsSource,
+    )
 
     private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
         var hints = arrayListOf(HintData(data.placeholder ?: "", data.keyword ?: ""))
@@ -2172,7 +2263,7 @@ open class HomeRevampFragment :
     }
 
     override fun onDynamicChannelRetryClicked() {
-        getHomeViewModel().refreshHomeData()
+        getHomeViewModel().refreshHomeData(HomeRefreshType.RELOAD)
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -2297,6 +2388,7 @@ open class HomeRevampFragment :
                     coachmarkSubscription?.hideCoachMark()
                 }
             }
+
             else -> {
                 // no-op
             }
@@ -2700,17 +2792,17 @@ open class HomeRevampFragment :
     private fun initEggDragListener() {
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.setOnDragListener(object :
-                FloatingEggButtonFragment.OnDragListener {
-                override fun onDragStart() {
-                    refreshLayout?.setCanChildScrollUp(true)
-                    refreshLayoutOld?.setCanChildScrollUp(true)
-                }
+            FloatingEggButtonFragment.OnDragListener {
+            override fun onDragStart() {
+                refreshLayout?.setCanChildScrollUp(true)
+                refreshLayoutOld?.setCanChildScrollUp(true)
+            }
 
-                override fun onDragEnd() {
-                    refreshLayout?.setCanChildScrollUp(false)
-                    refreshLayoutOld?.setCanChildScrollUp(false)
-                }
-            })
+            override fun onDragEnd() {
+                refreshLayout?.setCanChildScrollUp(false)
+                refreshLayoutOld?.setCanChildScrollUp(false)
+            }
+        })
     }
 
     override fun onPromoDragStart() {}
@@ -3057,5 +3149,9 @@ open class HomeRevampFragment :
     private fun getThematicUtil(): HomeThematicUtil {
         if (!::homeThematicUtil.isInitialized) initInjectorHome()
         return homeThematicUtil
+    }
+
+    override fun getDistanceToTop(): Int {
+        return scrollPositionY
     }
 }

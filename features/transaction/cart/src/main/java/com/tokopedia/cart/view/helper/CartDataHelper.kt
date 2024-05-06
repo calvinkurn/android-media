@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.helper
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -207,23 +208,11 @@ object CartDataHelper {
         return null
     }
 
-    fun getCartShopHolderIndexByCartId(
-        cartDataList: ArrayList<Any>,
-        cartId: String
-    ): Int {
-        loop@ for ((index, any) in cartDataList.withIndex()) {
-            if (any is CartGroupHolderData) {
-                any.productUiModelList.let { cartItemHolderDataList ->
-                    innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
-                        if (cartItemHolderData.cartId == cartId) {
-                            return index
-                        }
-                    }
-                }
-            }
+    fun getCartItemIndexByCartId(cartDataList: ArrayList<Any>, cartId: String): Int {
+        // indexOfFirst will return -1 when item not found
+        return cartDataList.indexOfFirst { any ->
+            any is CartItemHolderData && any.cartId == cartId
         }
-
-        return RecyclerView.NO_POSITION
     }
 
     fun getCartShopBottomHolderDataFromIndex(
@@ -628,5 +617,9 @@ object CartDataHelper {
                 originalPrice = it.originalPrice
             )
         } ?: emptyList()
+    }
+
+    fun getBuyAgainViewHolderIndex(cartDataList: ArrayList<Any>): Int {
+        return cartDataList.indexOfFirst { it is CartBuyAgainHolderData }
     }
 }

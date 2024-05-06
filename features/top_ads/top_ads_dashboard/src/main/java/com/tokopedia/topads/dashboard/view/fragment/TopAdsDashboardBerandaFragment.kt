@@ -286,7 +286,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             parentFragmentManager
                 .beginTransaction()
                 .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
-                .commit()
+                .commitAllowingStateLoss()
         }
     }
 

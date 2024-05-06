@@ -10,7 +10,7 @@
     <string name="stories_content_render_failed">Yaah, gagal memuat konten</string>
     <string name="stories_content_no_network_title">Koneksi internetmu terganggu!</string>
     <string name="stories_content_no_network_description">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
-    <string name="stories_onboard_move_category">Pindah Kategori</string>
+    <string name="stories_onboard_move_category">Pindah Kategori/Toko</string>
     <string name="stories_onboard_back">Balik</string>
     <string name="stories_onboard_next">Lanjut</string>
     <string name="stories_onboard_see_product">Lihat Produk</string>
@@ -21,4 +21,5 @@
     <string name="story_creation_timestamp">• %s</string>
     <string name="story_manual_duration_coachmark_title">Story yang kamu upload hanya akan tampil 24 jam, ya.</string>
     <string name="story_manual_duration_coachmark_subtitle">Sedangkan Story yang otomatis di-posting tetap akan tampil hingga 7 hari.</string>
+    <string name="stories_report">Laporkan</string>
 </resources>

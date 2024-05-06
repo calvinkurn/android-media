@@ -27,11 +27,12 @@
     <string name="ga_id_ma" translatable="false">UA-9801603-4</string>
     <string name="ga_id_pro" translatable="false">UA-9801603-4</string>
     <string name="ga_id_sa" translatable="false">UA-9801603-29</string>
+    <string name="mssdk_key" translatable="false">default_key</string>
     <string name="branch_sdk_key_ma" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_pro" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_sa" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
 
-    <string name="thanos_token_key" translatable="false">ahwnxhvm2iE_uQ-WeNHxTzhj9HFnWJLM_2-HyYEyLFY=</string>
+    <string name="thanos_token_key" translatable="false">dcJg0xn_WksaVEu-vFSIyv84_3j_e3TTENhO3w6hUdI=</string>
 
     <string name="gojek_sso_client_id" translatable="false">tokopedia:consumer:app</string>
     <string name="gojek_sso_client_secret" translatable="false">qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu</string>
@@ -44,11 +45,6 @@
 
     <string name="qodndmcgfk" translatable="false">lbldazuusi.pdhrqcyvpb.obndtfvxfp</string>
     <string name="ompyqgcgdk" translatable="false">lqkspgghfn.ftzsljzsic.rbqqvtlvxt</string>
-
-    <!-- SCP Auth, Verif and Goto PIN Secret -->
-    <string name="cvsdk_client_secret" translatable="false">uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g</string>
-    <string name="lsdk_client_secret" translatable="false">uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g</string>
-    <string name="goto_pin_client_id" translatable="false">a8533f47-040b-49a1-b0c7-d818b9499a2f-ICP</string>
 
     <string name="ijnuhbygv" translatable="false"></string>
     <string name="plmoknijb" translatable="false"></string>

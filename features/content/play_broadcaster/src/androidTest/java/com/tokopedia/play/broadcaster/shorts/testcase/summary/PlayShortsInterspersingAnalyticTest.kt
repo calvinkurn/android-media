@@ -5,7 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.test.util.pressBack
@@ -18,7 +18,6 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
-import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsLauncher
 import com.tokopedia.play.broadcaster.shorts.helper.clickBackInterspersingConfirmation
 import com.tokopedia.play.broadcaster.shorts.helper.clickCloseBottomSheet
 import com.tokopedia.play.broadcaster.shorts.helper.clickContentTag
@@ -28,6 +27,7 @@ import com.tokopedia.play.broadcaster.shorts.helper.clickNextInterspersingConfir
 import com.tokopedia.play.broadcaster.shorts.helper.clickUploadVideo
 import com.tokopedia.play.broadcaster.shorts.helper.clickVideoPdpOnInterspersingConfirmation
 import com.tokopedia.play.broadcaster.shorts.helper.completeMandatoryMenu
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -38,6 +38,7 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on January 16, 2024
  */
+@CassavaTest
 class PlayShortsInterspersingAnalyticTest {
 
     @get:Rule

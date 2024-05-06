@@ -17,11 +17,11 @@ class StoriesPreference @Inject constructor(
 
     private val sharedPref = context.getSharedPreferences(STORIES_PREFERENCE_NAME, Context.MODE_PRIVATE)
 
-    fun setVisit() {
-        sharedPref.edit().putBoolean(String.format(STORIES_ONBOARD_PREF, userId), true).apply()
+    fun setHasVisit(hasVisit: Boolean) {
+        sharedPref.edit().putBoolean(String.format(STORIES_ONBOARD_PREF, userId), hasVisit).apply()
     }
 
-    fun isVisited() : Boolean = sharedPref.getBoolean(String.format(STORIES_ONBOARD_PREF, userId), false)
+    fun hasVisit() : Boolean = sharedPref.getBoolean(String.format(STORIES_ONBOARD_PREF, userId), false)
 
     companion object {
         private const val STORIES_PREFERENCE_NAME = "stories_pref"

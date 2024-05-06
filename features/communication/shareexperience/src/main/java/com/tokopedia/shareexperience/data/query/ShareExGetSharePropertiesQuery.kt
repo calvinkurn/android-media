@@ -42,7 +42,10 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                   sourceId
                 }
                 generateLinkProperties {
-                  message
+                  messageObject {
+                    message
+                    placeholders
+                  }
                   ogTitle
                   ogDescription
                   ogType
@@ -52,6 +55,7 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                   androidUrl
                   iosUrl
                   iosDeeplinkPath
+                  androidDeeplinkPath
                   canonicalUrl
                   canonicalIdentifier
                   customMetaTags

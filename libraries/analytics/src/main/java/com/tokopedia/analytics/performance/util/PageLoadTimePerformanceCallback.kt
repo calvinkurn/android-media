@@ -63,7 +63,7 @@ open class PageLoadTimePerformanceCallback(
         startMethodTracing(traceName);
     }
 
-    override fun stopMonitoring() {
+    override fun stopMonitoring(onStop : ((overallDuration : Long) -> Unit)?) {
         if (!isNetworkDone) requestNetworkDuration = 0
         if (!isRenderDone) renderDuration = 0
         if (!isNetworkDone) requestNetworkDuration = 0
@@ -73,6 +73,7 @@ open class PageLoadTimePerformanceCallback(
             EmbraceMonitoring.stopMoments(traceName)
             overallDuration = System.currentTimeMillis() - overallDuration
             stopMethodTracing(traceName)
+            onStop?.invoke(overallDuration)
         }
         invalidate()
     }

@@ -32,6 +32,8 @@ object ConstantTransactionAnalytics {
         const val ITEM_NAME = "item_name"
         const val ITEM_VARIANT = "item_variant"
         const val ITEM_BRAND = "item_brand"
+        const val INDEX = "index"
+        const val ITEM_CATEGORY = "item_category"
     }
 
     object EventName {
@@ -81,6 +83,8 @@ object ConstantTransactionAnalytics {
         const val CLICK_PG = "clickPG"
         const val VIEW_PG_IRIS = "viewPGIris"
         const val CLICK_DIGITAL = "clickDigital"
+        const val VIEW_ITEM_LIST = "view_item_list"
+        const val ADD_TO_CART_SNAKE_CASE = "add_to_cart"
     }
 
     object EventCategory {
@@ -109,6 +113,9 @@ object ConstantTransactionAnalytics {
         const val OPTION = "option"
         const val STEP = "step"
         const val PRODUCTS = "products"
+
+        // Variant Editor
+        const val CLICK_SIMPAN_VARIANT_BOTTOM_SHEET = "cart - global variant bottomsheet"
     }
 
     object EventAction {
@@ -446,6 +453,14 @@ object ConstantTransactionAnalytics {
 
         // BELI PAKAI PROMO
         const val VIEW_OCC_BELI_PAKAI_PROMO = "view occ beli pakai promo"
+
+        // CHECKOUT PAYMENT
+        const val CLICK_TENURE_OPTIONS = "payment - click tenure options"
+
+        // Variant Editor
+        const val VIEW_VARIANT_EDITOR = "view variant editor"
+        const val CLICK_VARIANT_EDITOR = "click variant editor"
+        const val CLICK_SIMPAN_VARIANT_BOTTOM_SHEET = "click - simpan on global variant bottomsheet"
     }
 
     object EventLabel {
@@ -634,5 +649,18 @@ object ConstantTransactionAnalytics {
 
         // beli pakai promo
         const val VIEW_BELI_OCC_PAKAI_PROMO = "49899"
+
+        // Cart - Recent View
+        const val VIEW_PRODUCT_LAST_SEEN = "19738"
+
+        // Checkout Payment
+        const val VIEW_PAYMENT_WIDGET = "50674"
+        const val CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION = "50675"
+        const val CLICK_TENURE_OPTIONS = "50676"
+
+        // Variant
+        const val VIEW_VARIANT_EDITOR = "50683"
+        const val CLICK_VARIANT_EDITOR = "50684"
+        const val CLICK_SIMPAN_VARIANT_BOTTOM_SHEET = "50685"
     }
 }

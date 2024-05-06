@@ -7,13 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -21,7 +20,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingViewHolder(
     itemView: View?,
-    addOnListener: BmgmAddOnViewHolder.Listener,
+    addOnListener: AddOnViewHolder.Listener,
     private val listener: Listener,
     private val navigator: BuyerOrderDetailNavigator
 ) : BaseToasterViewHolder<ProductListUiModel.ProductBundlingUiModel>(itemView),
@@ -84,12 +83,15 @@ class ProductBundlingViewHolder(
         }
     }
 
-    override fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String) {
-        if (orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-            navigator.goToProductSnapshotPage(orderId, orderDetailId)
-            BuyerOrderDetailTracker.eventClickProduct(orderStatusId, orderId)
+    override fun onBundleItemClicked(productID: String, orderStatusId: String, productUrl: String) {
+        if (productUrl.isNotBlank()) {
+            navigator.openProductUrl(productUrl)
+            BuyerOrderDetailTracker.eventClickProduct(orderStatusId, productID)
         } else {
-            showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+            showToaster(
+                getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice),
+                getString(R.string.buyer_order_detail_oke)
+            )
         }
     }
 

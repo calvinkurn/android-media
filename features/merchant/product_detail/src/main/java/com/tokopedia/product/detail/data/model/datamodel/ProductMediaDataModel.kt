@@ -8,6 +8,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Lo
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 data class ProductMediaDataModel(
@@ -20,6 +21,7 @@ data class ProductMediaDataModel(
     var shouldAnimateLabel: Boolean = true,
     var containerType: MediaContainerType = MediaContainerType.Square,
     var recommendation: ProductMediaRecomData = ProductMediaRecomData(),
+    var liveIndicator: LiveIndicatorUiModel = LiveIndicatorUiModel(),
     var isPrefetch: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
@@ -29,6 +31,9 @@ data class ProductMediaDataModel(
     companion object {
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
+
+        const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
+        const val PAYLOAD_MEDIA_UPDATE = 6
     }
 
     override val tabletSectionPosition: TabletPosition
@@ -74,7 +79,8 @@ data class ProductMediaDataModel(
         return if (newData is ProductMediaDataModel) {
             listOfMedia.hashCode() == newData.listOfMedia.hashCode() &&
                 initialScrollPosition == newData.initialScrollPosition &&
-                variantOptionIdScrollAnchor == newData.variantOptionIdScrollAnchor
+                variantOptionIdScrollAnchor == newData.variantOptionIdScrollAnchor &&
+                liveIndicator == newData.liveIndicator
         } else {
             false
         }
@@ -90,7 +96,7 @@ data class ProductMediaDataModel(
             if (listOfMedia.hashCode() != newData.listOfMedia.hashCode()) {
                 bundle.putInt(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
-                    ProductDetailConstant.PAYLOAD_MEDIA_UPDATE
+                    PAYLOAD_MEDIA_UPDATE
                 )
             } else if (newData.variantOptionIdScrollAnchor.isEmpty()) {
                 bundle.putInt(
@@ -100,14 +106,16 @@ data class ProductMediaDataModel(
             } else if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
                 bundle.putInt(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
-                    ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT
+                    PAYLOAD_SCROLL_IMAGE_VARIANT
                 )
             }
+
             return bundle.takeIf { !it.isEmpty }
         } else {
             null
         }
     }
+
 }
 
 data class MediaDataModel(
@@ -120,7 +128,8 @@ data class MediaDataModel(
     val videoUrl: String = "",
     val isAutoPlay: Boolean = false,
     val variantOptionId: String = "",
-    val isPrefetch: Boolean = false
+    val isPrefetch: Boolean = false,
+    val isLive: Boolean = false
 ) {
     var prefetchResource: Drawable? = null
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE

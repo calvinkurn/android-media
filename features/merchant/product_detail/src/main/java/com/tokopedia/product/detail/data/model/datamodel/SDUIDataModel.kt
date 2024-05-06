@@ -10,11 +10,21 @@ import timber.log.Timber
 data class SDUIDataModel(
     val type: String,
     val name: String,
-    val jsonString: String
+    private var jsonString: String,
+    var shouldRefreshUI: Boolean = true
 ) : DynamicPdpDataModel {
 
-    val jsonObject: JSONObject? = try {
-        JSONObject(jsonString)
+    var jsonObject: JSONObject? = jsonString.toJSONObject()
+
+    fun updateJson(value: String) {
+        if (jsonString == value) return
+        jsonObject = value.toJSONObject()
+        shouldRefreshUI = true
+        jsonString = value
+    }
+
+    private fun String.toJSONObject(): JSONObject? = try {
+        JSONObject(this)
     } catch (ex: JSONException) {
         Timber.d(ex)
         null
@@ -37,7 +47,7 @@ data class SDUIDataModel(
         }
     }
 
-    override fun newInstance(): DynamicPdpDataModel {
+    override fun newInstance(): SDUIDataModel {
         return this.copy()
     }
 

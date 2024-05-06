@@ -54,7 +54,6 @@ import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.worker.PushWorker;
@@ -73,7 +72,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
+import com.tokopedia.sessioncommon.refreshprofile.RefreshProfileWorker;
 import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -553,15 +552,4 @@ public abstract class SellerRouterApplication extends MainApplication implements
     public void onRefreshCM(String token) {
         refreshFCMFromInstantIdService(token);
     }
-
-    public boolean isGotoAuthSdkEnabled() {
-        return false;
-    }
-
-    @Override
-    public ScpTokenModel onNewRefreshToken() {
-        return new ScpTokenModel("", "");
-        /* no-op */
-    }
-
 }

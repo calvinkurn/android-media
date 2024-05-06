@@ -8,7 +8,6 @@ data class OwocProductListUiModel(
     val productListHeaderUiModel: ProductListHeaderUiModel,
     val productList: List<ProductListUiModel.ProductUiModel>,
     val productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>,
-    val addonsListUiModel: AddonsListUiModel?,
     val productListToggleUiModel: ProductListUiModel.ProductListToggleUiModel?,
 ) {
 
@@ -44,6 +43,7 @@ data class OwocProductListUiModel(
         val priceText: String,
         val productId: String,
         val productName: String,
+        val productUrl: String,
         val productThumbnailUrl: String,
         val quantity: Int,
         val addOnSummaryUiModel: AddOnSummaryUiModel? = null,

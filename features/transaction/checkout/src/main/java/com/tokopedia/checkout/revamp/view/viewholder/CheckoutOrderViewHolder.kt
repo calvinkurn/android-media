@@ -15,11 +15,12 @@ import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companio
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MIN_PHONE_LENGTH
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingWidgetState
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
+import com.tokopedia.logisticcart.utils.ShippingWidgetUtils.toShippingWidgetUiModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
@@ -40,8 +41,7 @@ class CheckoutOrderViewHolder(
     fun bind(order: CheckoutOrderModel, addressModel: CheckoutAddressModel?) {
         this.order = order
         renderAddOnOrderLevel(order)
-        renderShippingWidget(order, addressModel)
-        renderVibration(order)
+        renderShippingWidget(order)
         renderDropshipWidget(order)
     }
 
@@ -67,7 +67,11 @@ class CheckoutOrderViewHolder(
                     )
                 }
             } else if (statusAddOn == 2) {
-                binding.buttonGiftingAddonOrderLevel.showInactive(addOnsButton.title, addOnsButton.description, addOnsButton.rightIconUrl)
+                binding.buttonGiftingAddonOrderLevel.showInactive(
+                    addOnsButton.title,
+                    addOnsButton.description,
+                    addOnsButton.rightIconUrl
+                )
             }
             binding.buttonGiftingAddonOrderLevel.visibility = View.VISIBLE
             binding.buttonGiftingAddonOrderLevel.setOnClickListener {
@@ -80,235 +84,28 @@ class CheckoutOrderViewHolder(
     }
 
     private fun renderShippingWidget(
-        order: CheckoutOrderModel,
-        addressModel: CheckoutAddressModel?
+        order: CheckoutOrderModel
     ) {
         binding.shippingWidget.setupListener(this)
         binding.shippingWidget.hideTradeInShippingInfo()
-
-        if (order.isError) {
-            binding.shippingWidget.renderErrorCourierState(
-                ShippingWidgetUiModel(
-                    currentAddress = RecipientAddressModel(),
-                    courierErrorTitle = order.courierSelectionErrorTitle
-                )
-            )
-        } else if (order.shipment.isLoading) {
-            binding.shippingWidget.prepareLoadCourierState()
-            binding.shippingWidget.renderLoadingCourierState()
-        } else {
-            val courierItemData = order.shipment.courierItemData
-            val insurance = order.shipment.insurance
-            if (courierItemData == null) {
-                binding.shippingWidget.prepareLoadCourierState()
-                binding.shippingWidget.hideShippingStateLoading()
-                if (order.isCustomPinpointError) {
-                    renderErrorPinpointCourier()
-                } else if (order.isDisableChangeCourier && order.hasGeolocation) {
-                    binding.shippingWidget.showLayoutStateFailedShipping(
-                        ShippingWidgetUiModel(
-                            currentAddress = RecipientAddressModel()
-                        )
-                    )
-                } else {
-                    binding.shippingWidget.showLayoutNoSelectedShipping(
-                        ShippingWidgetUiModel(
-                            currentAddress = RecipientAddressModel()
-                        )
-                    )
-                    showMultiplePlusOrderCoachmark(
-                        order,
-                        binding.shippingWidget.layoutStateNoSelectedShipping
-                    )
-                }
-            } else if (courierItemData.scheduleDeliveryUiModel != null) {
-                binding.shippingWidget.prepareLoadCourierState()
-                binding.shippingWidget.hideShippingStateLoading()
-                binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.renderScheduleDeliveryWidget(
-                    ShippingWidgetUiModel(
-                        // Bebas ongkir & NOW Shipment
-                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
-                        // Now Shipment
-                        // label
-                        logPromoDesc = courierItemData.logPromoDesc ?: "",
-                        voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
-                        isHasShownCourierError = order.shipment.isHasShownCourierError,
-
-                        // CourierItemData.name
-                        courierName = courierItemData.name ?: "",
-                        // CourierItemData.shipperPrice
-                        courierShipperPrice = courierItemData.shipperPrice,
-
-                        currentAddress = RecipientAddressModel(),
-                        boOrderMessage = courierItemData.boOrderMessage,
-                        courierOrderMessage = courierItemData.courierOrderMessage,
-
-                        scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
-                        insuranceData = InsuranceWidgetUiModel(
-                            useInsurance = insurance.isCheckInsurance,
-                            insuranceType = courierItemData.selectedShipper.insuranceType,
-                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
-                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
-                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
-                            isInsurance = order.isInsurance
-                        )
-                    )
-                )
-            } else if (order.isDisableChangeCourier) {
-                binding.shippingWidget.prepareLoadCourierState()
-                binding.shippingWidget.hideShippingStateLoading()
-                binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.renderSingleShippingCourier(
-                    ShippingWidgetUiModel(
-                        // Bebas ongkir & NOW Shipment
-                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
-                        // Now Shipment
-                        // label
-                        logPromoDesc = courierItemData.logPromoDesc ?: "",
-                        voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
-                        isHasShownCourierError = order.shipment.isHasShownCourierError,
-
-                        // CourierItemData.name
-                        courierName = courierItemData.name ?: "",
-                        // CourierItemData.shipperPrice
-                        courierShipperPrice = courierItemData.shipperPrice,
-
-                        currentAddress = RecipientAddressModel(),
-                        insuranceData = InsuranceWidgetUiModel(
-                            useInsurance = insurance.isCheckInsurance,
-                            insuranceType = courierItemData.selectedShipper.insuranceType,
-                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
-                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
-                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
-                            isInsurance = order.isInsurance
-                        )
-                    )
-                )
-            } else if (courierItemData.selectedShipper.logPromoCode?.isNotEmpty() == true) {
-                binding.shippingWidget.prepareLoadCourierState()
-                binding.shippingWidget.hideShippingStateLoading()
-                binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.showLayoutFreeShippingCourier(
-                    ShippingWidgetUiModel(
-                        currentAddress = RecipientAddressModel()
-                    )
-                )
-                if (order.isError) {
-                    if (bindingAdapterPosition > RecyclerView.NO_POSITION) {
-                        listener.onCancelVoucherLogisticClicked(
-                            courierItemData.selectedShipper.logPromoCode!!,
-                            bindingAdapterPosition,
-                            order
-                        )
-                    }
-                }
-                binding.shippingWidget.renderFreeShippingCourier(
-                    ShippingWidgetUiModel(
-                        // CourierItemData.etaErrorCode
-                        etaErrorCode = courierItemData.etaErrorCode,
-                        // CourierItemData.etaText
-                        estimatedTimeArrival = courierItemData.etaText ?: "",
-
-                        // Bebas ongkir & NOW Shipment
-                        hideShipperName = courierItemData.isHideShipperName,
-                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
-                        freeShippingLogo = courierItemData.freeShippingChosenImage,
-
-                        // showNormalShippingCourier
-                        currentAddress = RecipientAddressModel(),
-                        cashOnDelivery = courierItemData.codProductData,
-
-                        insuranceData = InsuranceWidgetUiModel(
-                            useInsurance = insurance.isCheckInsurance,
-                            insuranceType = courierItemData.selectedShipper.insuranceType,
-                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
-                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
-                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
-                            isInsurance = order.isInsurance
-                        )
-                    )
-                )
-            } else if (courierItemData.isHideChangeCourierCard) {
-                binding.shippingWidget.prepareLoadCourierState()
-                binding.shippingWidget.hideShippingStateLoading()
-                binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.renderWhitelabelKurirRekomendasiService(
-                    ShippingWidgetUiModel(
-                        // showNormalShippingCourier
-                        currentAddress = RecipientAddressModel(),
-                        // CourierItemData.estimatedTimeDelivery
-                        estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
-
-                        // CourierItemData.shipperPrice
-                        courierShipperPrice = courierItemData.shipperPrice,
-
-                        ontimeDelivery = courierItemData.ontimeDelivery,
-
-                        // CourierItemData.durationCardDescription
-                        whitelabelEtaText = courierItemData.durationCardDescription,
-
-                        insuranceData = InsuranceWidgetUiModel(
-                            useInsurance = insurance.isCheckInsurance,
-                            insuranceType = courierItemData.selectedShipper.insuranceType,
-                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
-                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
-                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
-                            isInsurance = order.isInsurance
-                        )
-                    )
-                )
-            } else {
-                binding.shippingWidget.prepareLoadCourierState()
-                binding.shippingWidget.hideShippingStateLoading()
-                binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.renderNormalShippingCourier(
-                    ShippingWidgetUiModel(
-                        // CourierItemData.etaErrorCode
-                        etaErrorCode = courierItemData.etaErrorCode,
-                        // CourierItemData.etaText
-                        estimatedTimeArrival = courierItemData.etaText ?: "",
-
-                        // showNormalShippingCourier
-                        currentAddress = RecipientAddressModel(),
-                        // CourierItemData.estimatedTimeDelivery
-                        estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
-
-                        // CourierItemData.name
-                        courierName = courierItemData.name ?: "",
-                        // CourierItemData.shipperPrice
-                        courierShipperPrice = courierItemData.shipperPrice,
-
-                        merchantVoucher = courierItemData.merchantVoucherProductModel,
-                        cashOnDelivery = courierItemData.codProductData,
-
-                        insuranceData = InsuranceWidgetUiModel(
-                            useInsurance = insurance.isCheckInsurance,
-                            insuranceType = courierItemData.selectedShipper.insuranceType,
-                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
-                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
-                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
-                            isInsurance = order.isInsurance
-                        )
-                    )
-                )
-            }
-        }
+        val uiModel = order.toShipmentWidgetModel()
+        binding.shippingWidget.render(uiModel)
     }
 
-    private fun renderErrorPinpointCourier() {
-        binding.shippingWidget.renderErrorPinpointCourier()
-    }
-
-    private fun renderVibration(order: CheckoutOrderModel) {
-        binding.shippingWidget.renderShippingVibrationAnimation(
-            ShippingWidgetUiModel(
-                isShippingBorderRed = order.isShippingBorderRed,
-                isTriggerShippingVibrationAnimation = order.isTriggerShippingVibrationAnimation,
-                currentAddress = RecipientAddressModel()
-            )
+    private fun CheckoutOrderModel.toShipmentWidgetModel(): ShippingWidgetUiModel {
+        return shipment.courierItemData.toShippingWidgetUiModel(
+            cartError = isError,
+            cartErrorTitle = courierSelectionErrorTitle,
+            needPinpoint = isCustomPinpointError,
+            isDisableChangeCourier = isDisableChangeCourier,
+            hasGeolocation = hasGeolocation,
+            isLoading = shipment.isLoading,
+            isHasShownCourierError = shipment.isHasShownCourierError,
+            isCheckInsurance = shipment.insurance.isCheckInsurance,
+            isInsurance = isInsurance,
+            isShippingBorderRed = isShippingBorderRed,
+            isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation
         )
-        order.isTriggerShippingVibrationAnimation = false
     }
 
     private fun showMultiplePlusOrderCoachmark(
@@ -359,13 +156,13 @@ class CheckoutOrderViewHolder(
         val VIEW_TYPE = R.layout.item_checkout_order
     }
 
-    override fun onChangeDurationClickListener(currentAddress: RecipientAddressModel) {
+    override fun onChangeDurationClickListener() {
         order?.let {
             listener.onChangeShippingDuration(it, bindingAdapterPosition)
         }
     }
 
-    override fun onChangeCourierClickListener(currentAddress: RecipientAddressModel) {
+    override fun onChangeCourierClickListener() {
         order?.let {
             listener.onChangeShippingCourier(it, bindingAdapterPosition)
         }
@@ -379,7 +176,7 @@ class CheckoutOrderViewHolder(
         listener.onClickSetPinpoint(bindingAdapterPosition)
     }
 
-    override fun onClickLayoutFailedShipping(recipientAddressModel: RecipientAddressModel) {
+    override fun onClickLayoutFailedShipping() {
         order?.let {
             listener.onLoadShippingState(it, bindingAdapterPosition)
             listener.onClickRefreshErrorLoadCourier()
@@ -407,9 +204,13 @@ class CheckoutOrderViewHolder(
         listener.onInsuranceCheckedForTrackingAnalytics()
     }
 
-    override fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    override fun onInsuranceChecked(insuranceData: InsuranceWidgetUiModel?) {
         order?.let {
-            listener.onInsuranceChecked(shippingWidgetUiModel.insuranceData!!.useInsurance!!, it, bindingAdapterPosition)
+            listener.onInsuranceChecked(
+                insuranceData!!.useInsurance!!,
+                it,
+                bindingAdapterPosition
+            )
         }
     }
 
@@ -425,6 +226,31 @@ class CheckoutOrderViewHolder(
                 binding.root.context.getString(purchase_platformcommonR.string.title_bottomsheet_insurance),
                 binding.root.context,
                 listener.getHostFragmentManager()
+            )
+        }
+    }
+
+    override fun onViewCartErrorState(error: ShippingWidgetState.CartError) {
+        order?.run {
+            if (bindingAdapterPosition > RecyclerView.NO_POSITION && error.logisticPromoCode?.isNotEmpty() == true) {
+                listener?.onCancelVoucherLogisticClicked(
+                    error.logisticPromoCode!!,
+                    bindingAdapterPosition,
+                    this
+                )
+            }
+        }
+    }
+
+    override fun onRenderVibrationAnimation(shippingWidgetUiModel: ShippingWidgetUiModel) {
+        this?.order?.isTriggerShippingVibrationAnimation = false
+    }
+
+    override fun onRenderNoSelectedShippingLayout() {
+        order?.let {
+            showMultiplePlusOrderCoachmark(
+                it,
+                binding.shippingWidget.layoutStateNoSelectedShipping
             )
         }
     }

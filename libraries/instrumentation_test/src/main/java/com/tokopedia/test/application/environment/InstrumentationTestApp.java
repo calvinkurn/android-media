@@ -41,7 +41,6 @@ import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
@@ -433,17 +432,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
-
-    @Override
-    public ScpTokenModel onNewRefreshToken() {
-        return null;
-    }
-
-    @Override
-    public boolean isGotoAuthSdkEnabled() {
-        return false;
-    }
-
 
     @Override
     public void connectTokoChat(Boolean isFromLoginFlow) {

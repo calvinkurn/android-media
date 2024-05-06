@@ -303,21 +303,24 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         }
 
         binding?.stickyGiftView?.run {
-            if (offerType == OfferType.PROGRESSIVE_DISCOUNT) {
-                updateItemList(data.getProductList())
-                gone()
-            } else {
-                val allProducts = data.getProductList()
-                val atcProducts = allProducts.filter {
-                    it !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
+            when (offerType) {
+                OfferType.PROGRESSIVE_DISCOUNT -> {
+                    updateItemList(data.getProductList())
+                    gone()
                 }
-                updateItemList(atcProducts)
+                OfferType.GIFT_WITH_PURCHASE -> {
+                    val allProducts = data.getProductList()
+                    val atcProducts = allProducts.filter {
+                        it !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
+                    }
+                    updateItemList(atcProducts)
 
-                val gifts =
-                    allProducts.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
-                submitList(gifts)
-                setOnItemClickedListener(::setOnItemClickedListener)
-                isVisible = gifts.isNotEmpty()
+                    val gifts =
+                        allProducts.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
+                    submitList(gifts)
+                    setOnItemClickedListener(::setOnItemClickedListener)
+                    isVisible = gifts.isNotEmpty()
+                }
             }
         }
     }

@@ -24,6 +24,10 @@ class AffiliateCookieHelper @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
 
+    companion object {
+        const val PARAM_START_SUBID = "subid"
+    }
+
     private var affiliateUUID: String = ""
 
     /**
@@ -42,15 +46,19 @@ class AffiliateCookieHelper @Inject constructor(
         affiliateChannel: String,
         affiliatePageDetail: AffiliatePageDetail,
         uuid: String = "",
-        additionalParam: List<AdditionalParam> = emptyList()
+        additionalParam: List<AdditionalParam> = emptyList(),
+        subIds: List<AdditionalParam> = emptyList(),
+        source: String = ""
     ) {
         val affiliateUuid = getAffiliateUUID(affiliateUUID)
         val params = AffiliateCookieParams(
-            affiliateUuid,
-            affiliateChannel,
-            affiliatePageDetail,
-            uuid,
-            additionalParam
+            affiliateUUID = affiliateUuid,
+            affiliateChannel = affiliateChannel,
+            affiliatePageDetail = affiliatePageDetail,
+            uuid = uuid,
+            additionalParam = additionalParam,
+            subIds = subIds,
+            source = source
         )
         when (affiliatePageDetail.source) {
             is AffiliateSdkPageSource.PDP,
@@ -62,6 +70,7 @@ class AffiliateCookieHelper @Inject constructor(
                     )
                 }
             }
+
             else -> {
                 this.affiliateUUID = params.affiliateUUID
                 if (params.affiliateUUID.isNotEmpty()) {

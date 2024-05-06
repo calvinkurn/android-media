@@ -1,9 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryHeader
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
@@ -11,6 +9,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
@@ -37,27 +36,19 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
         viewModel.onViewCreated()
         viewModel.onScroll(true)
 
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
-        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
+
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -69,10 +60,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         val resultList = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )
@@ -127,27 +115,19 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
         viewModel.onScroll(true)
         viewModel.onScroll(true)
 
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
+
         val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -163,10 +143,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
             .mapToCategoryRecommendation(source = "tokonow_category_l1")
 
         val resultList = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )

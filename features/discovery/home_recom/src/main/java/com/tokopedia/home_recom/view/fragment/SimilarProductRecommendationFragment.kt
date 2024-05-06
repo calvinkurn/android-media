@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -89,6 +91,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     private var internalRef: String = ""
     private var hasNextPage: Boolean = true
     private var navToolbar: NavToolbar? = null
+    private var hasTrackEnterPage = false
+    private var hasApplogScrollListener = false
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -197,9 +201,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     }
                 }
             })
+            trackVerticalScroll()
         }
         RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
     }
+
+    private fun RecyclerView.trackVerticalScroll() {
+        if(hasApplogScrollListener) return
+        addVerticalTrackListener()
+        hasApplogScrollListener = true
+    }
+
     private fun setupToolbar() {
         activity?.let {
             (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
@@ -239,11 +251,13 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                         it.data?.let { pair ->
                             val recommendationItems = pair.first
                             if (recommendationItems.isNotEmpty()) {
+                                trackEnterPage()
                                 recommendationItems.getOrNull(0)?.let {
-                                    navToolbar?.setToolbarTitle(if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation))
+                                    navToolbar?.setToolbarTitle(
+                                        it.productItem.header.ifEmpty { getString(R.string.recom_similar_recommendation) })
                                 }
                                 hasNextPage = pair.second
-                                renderList(mapDataModel(recommendationItems), pair.second)
+                                renderList(recommendationItems, pair.second)
                                 if(!hasNextPage) showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                             }else{
                                 hideLoading()
@@ -435,6 +449,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
     }
 
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
+    }
+
     /**
      * =================================================================================
      * Listener from [RecommendationEmptyViewHolder.RecommendationEmptyStateListener]
@@ -598,16 +618,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * Private function
      * =================================================================================
      */
-
-    /**
-     * Function [mapDataModel]
-     * It handling mapper pojo into dataModel
-     * @param listRecommendationModel list pojo recommendationWidget from API
-     * @return list of dataModel
-     */
-    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<RecommendationItemDataModel>{
-        return listRecommendationModel.map { RecommendationItemDataModel(it) }
-    }
 
     private fun createProductCardOptionsModel(recommendationItem: RecommendationItem, position: Int): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()

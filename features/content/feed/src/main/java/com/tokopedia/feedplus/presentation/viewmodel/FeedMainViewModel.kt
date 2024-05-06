@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.domain.FeedRepository
@@ -13,11 +12,15 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
+import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -41,7 +44,8 @@ class FeedMainViewModel @AssistedInject constructor(
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val onBoardingPreferences: OnBoardingPreferences,
     private val userSession: UserSessionInterface,
-    private val uiEventManager: UiEventManager<FeedMainEvent>
+    private val uiEventManager: UiEventManager<FeedMainEvent>,
+    private val tooltipManager: FeedTooltipManager,
 ) : ViewModel(), OnBoardingPreferences by onBoardingPreferences {
 
     @AssistedFactory
@@ -78,6 +82,9 @@ class FeedMainViewModel @AssistedInject constructor(
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
 
+    val tooltipEvent: Flow<FeedTooltipEvent?>
+        get() = tooltipManager.tooltipEvent
+
     val displayName: String
         get() = userSession.name
 
@@ -103,6 +110,9 @@ class FeedMainViewModel @AssistedInject constructor(
                 null
             }
         }
+
+    val currentTooltipCategory: FeedSearchTooltipCategory
+        get() = tooltipManager.currentCategory
 
     init {
         viewModelScope.launch {
@@ -192,6 +202,16 @@ class FeedMainViewModel @AssistedInject constructor(
         }
     }
 
+    fun consumeEvent(event: FeedTooltipEvent) {
+        viewModelScope.launch {
+            tooltipManager.clearTooltipEvent(event.id)
+        }
+    }
+
+    fun setHasShownTooltip() {
+        tooltipManager.setHasShownTooltip()
+    }
+
     fun deletePostCache() {
         viewModelScope.launch {
             deletePostCacheUseCase(Unit)
@@ -223,7 +243,7 @@ class FeedMainViewModel @AssistedInject constructor(
             val response = repository.getTabs(activeTabSource)
             _feedTabs.value = NetworkResult.Success(response.tab)
         }) {
-            _feedTabs.value = NetworkResult.Error(it)
+            _feedTabs.value = NetworkResult.Fail(it)
         }
     }
 

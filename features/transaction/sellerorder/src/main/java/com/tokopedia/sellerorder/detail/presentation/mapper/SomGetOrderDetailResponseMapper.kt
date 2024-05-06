@@ -27,6 +27,8 @@ import com.tokopedia.order_management_common.R as order_management_commonR
 
 object SomGetOrderDetailResponseMapper {
 
+    private const val ORDER_LEVEL_KEY = "ORDER_LEVEL_KEY"
+
     private fun getBmgmList(
         bmgms: List<SomDetailOrder.GetSomDetail.Bmgm>?,
         orderId: String,
@@ -54,6 +56,7 @@ object SomGetOrderDetailResponseMapper {
                         productPriceText = it.priceText,
                         quantity = it.quantity,
                         productNote = it.note,
+                        productUrl = String.EMPTY,
                         thumbnailUrl = it.thumbnail,
                         addOnSummaryUiModel = it.addonSummary?.let { addOnSummary ->
                             com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
@@ -76,6 +79,7 @@ object SomGetOrderDetailResponseMapper {
                                         quantity = addon.quantity,
                                         addonsId = addon.id,
                                         addOnsName = addon.name,
+                                        addOnsUrl = String.EMPTY,
                                         type = addon.type,
                                         addOnsThumbnailUrl = addon.imageUrl,
                                         toStr = addOnNote?.to.orEmpty(),
@@ -136,6 +140,7 @@ object SomGetOrderDetailResponseMapper {
                 quantity = orderDetail.quantity,
                 addonsId = orderDetail.productId.toString(),
                 addOnsName = orderDetail.productName,
+                addOnsUrl = orderDetail.productUrl,
                 type = String.EMPTY,
                 addOnsThumbnailUrl = orderDetail.thumbnail,
                 toStr = String.EMPTY,
@@ -199,6 +204,7 @@ object SomGetOrderDetailResponseMapper {
                                         quantity = addon.quantity,
                                         addonsId = addon.id,
                                         addOnsName = addon.name,
+                                        addOnsUrl = String.EMPTY,
                                         type = addon.type,
                                         addOnsThumbnailUrl = addon.imageUrl,
                                         toStr = addOnNote?.to.orEmpty(),
@@ -316,6 +322,7 @@ object SomGetOrderDetailResponseMapper {
                                     quantity = addon.quantity,
                                     addonsId = addon.id,
                                     addOnsName = addon.name,
+                                    addOnsUrl = String.EMPTY,
                                     type = addon.type,
                                     addOnsThumbnailUrl = addon.imageUrl,
                                     toStr = addOnNote?.to.orEmpty(),
@@ -348,7 +355,7 @@ object SomGetOrderDetailResponseMapper {
             add(
                 SomDetailAddOnOrderLevelUiModel(
                     addOnSummaryUiModel = AddOnSummaryUiModel(
-                        addOnIdentifier = addOnSummary.label,
+                        addOnIdentifier = ORDER_LEVEL_KEY,
                         totalPriceText = if (addOnSummary.totalPriceStr.isNotBlank()) {
                             StringRes(
                                 order_management_commonR.string.om_add_on_collapsed_title_format,
@@ -367,6 +374,7 @@ object SomGetOrderDetailResponseMapper {
                                 quantity = addon.quantity,
                                 addonsId = addon.id,
                                 addOnsName = addon.name,
+                                addOnsUrl = String.EMPTY,
                                 type = addon.type,
                                 addOnsThumbnailUrl = addon.imageUrl,
                                 toStr = addOnNote?.to.orEmpty(),

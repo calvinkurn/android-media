@@ -28,6 +28,7 @@ data class ProductBmgmSectionUiModel(
         val orderDetailId: String,
         val productId: String = String.EMPTY,
         val productName: String,
+        val productUrl: String,
         val thumbnailUrl: String,
         val productPriceText: String,
         val price: Double,

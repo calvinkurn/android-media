@@ -95,7 +95,7 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
                         identifierType = 0, // Currently not used, same as IOS
                         additionalParams = listOf(
                             ShareExAffiliateLinkAdditionalParamRequest(OG_TITLE_RAW, params.linkerPropertiesRequest.ogTitle),
-                            ShareExAffiliateLinkAdditionalParamRequest(OG_DESCRIPTION_RAW, params.linkerPropertiesRequest.ogTitle),
+                            ShareExAffiliateLinkAdditionalParamRequest(OG_DESCRIPTION_RAW, params.linkerPropertiesRequest.ogDescription),
                             ShareExAffiliateLinkAdditionalParamRequest(OG_IMAGE_URL_RAW, params.linkerPropertiesRequest.ogImageUrl)
                         )
                     )
@@ -120,7 +120,7 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
         return ShareExBranchUniversalObjectRequest(
             canonicalId = params.linkerPropertiesRequest.canonicalIdentifier,
             title = params.linkerPropertiesRequest.ogTitle,
-            description = params.linkerPropertiesRequest.message,
+            description = params.linkerPropertiesRequest.messageObject.getFinalMessage(),
             contentImageUrl = params.linkerPropertiesRequest.ogImageUrl,
             customMetaTags = params.linkerPropertiesRequest.customMetaTags,
             anMinVersion = params.linkerPropertiesRequest.anMinVersion
