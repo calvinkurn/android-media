@@ -109,7 +109,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
                     it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR, STOP) }
                 }
                 it?.type.equals(SHARE) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SHARE_MOBILE, SHARE) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SOCIAL_SHARE, SHARE) }
                 }
                 it?.type.equals(DUPLICATE) -> {
                     it?.text?.let { it1 -> addOptionItem(it1, IconUnify.COPY, DUPLICATE) }

@@ -59,7 +59,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_header_name"
             app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_header_name"
-            app:icon_name="SHARE_MOBILE"
+            app:icon_name="SOCIAL_SHARE"
             app:icon_color_light_enable="@color/Unify_NN0"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

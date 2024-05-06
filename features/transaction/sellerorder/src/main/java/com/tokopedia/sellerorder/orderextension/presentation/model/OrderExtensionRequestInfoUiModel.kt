@@ -7,15 +7,14 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.typefactory.OrderExtensionRequestInfoAdapterTypeFactory
-import java.util.Date
+import java.util.*
 
 data class OrderExtensionRequestInfoUiModel(
     var items: List<BaseOrderExtensionRequestInfoItem> = emptyList(),
     val orderExtensionDate: OrderExtensionDate = OrderExtensionDate(),
-    var processing: Boolean,
+    var sendingRequest: Boolean,
     var success: Boolean,
     var completed: Boolean,
-    var refreshOnDismiss: Boolean,
     var message: String,
     var throwable: Throwable?
 ) {

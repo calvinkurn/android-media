@@ -176,6 +176,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private var currentPlayingVideoUrl: String = ""
     private var mCoachMark: CoachMark2? = null
+    private var isPageActive: Boolean = false
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
@@ -220,11 +221,13 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        resumeStories()
+        isPageActive = true
+        resumeStories(forceResume = true)
     }
 
     override fun onPause() {
         super.onPause()
+        isPageActive = false
         pauseStories()
     }
 
@@ -697,8 +700,8 @@ class StoriesDetailFragment @Inject constructor(
         viewModelAction(PauseStories)
     }
 
-    private fun resumeStories() {
-        viewModelAction(ResumeStories)
+    private fun resumeStories(forceResume: Boolean = false) {
+        viewModelAction(ResumeStories(forceResume))
     }
 
     private fun contentIsLoaded() {
@@ -940,9 +943,9 @@ class StoriesDetailFragment @Inject constructor(
             binding.layoutStoriesContent.playerStoriesDetailContent.player = videoPlayer.exoPlayer
 
             if (currentPlayingVideoUrl != content.data) {
-                videoPlayer.start(content.data, selectedGroupId)
+                videoPlayer.start(content.data, selectedGroupId, isAutoPlay = isPageActive)
                 currentPlayingVideoUrl = content.data
-            } else if (!videoPlayer.exoPlayer.isPlaying) {
+            } else if (!videoPlayer.exoPlayer.isPlaying && isPageActive) {
                 videoPlayer.resume(shouldReset = true, selectedGroupId)
             }
         }
@@ -979,9 +982,12 @@ class StoriesDetailFragment @Inject constructor(
 
         when {
             (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> {
+                if (!isPageActive) return
                 videoPlayer.resume(activeGroupId = selectedGroupId)
             }
-            state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
+            state.event == PAUSE || timerState.event == PAUSE -> {
+                videoPlayer.pause()
+            }
         }
     }
 
