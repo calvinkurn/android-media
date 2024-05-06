@@ -245,7 +245,10 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductShowAppLog(
-                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
+                        productRecommendation.asProductTrackModel(
+                            entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                            additionalParam = listener.getAppLogAdditionalParam()
+                        )
                     )
                 }
             },
