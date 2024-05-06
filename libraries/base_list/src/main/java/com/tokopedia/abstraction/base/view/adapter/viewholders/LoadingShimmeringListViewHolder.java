@@ -1,7 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import android.view.View;
-
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 
 /**

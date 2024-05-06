@@ -8,14 +8,16 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_digital.common.data.model.RechargeSetFailData
+import com.tokopedia.common_digital.common.usecase.RechargeSetFailUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.domain.*
 import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
@@ -460,11 +462,11 @@ class UohListViewModelTest {
     fun atcMulti_shouldReturnSuccess() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         // when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(AddToCartMultiParam()), "")
+        uohListViewModel.doAtcMulti(arrayListOf(AddToCartMultiParam()))
 
         // then
         assert(uohListViewModel.atcMultiResult.value is Success)
@@ -475,11 +477,11 @@ class UohListViewModelTest {
     fun atcMulti_shouldReturnFail() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Fail(Throwable())
 
         // when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
+        uohListViewModel.doAtcMulti(arrayListOf())
 
         // then
         assert(uohListViewModel.atcMultiResult.value is Fail)
@@ -489,11 +491,11 @@ class UohListViewModelTest {
     fun atcMulti_shouldNotReturnEmptyMessage() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         // when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
+        uohListViewModel.doAtcMulti(arrayListOf())
 
         // then
         assert(uohListViewModel.atcMultiResult.value is Success)
@@ -505,7 +507,7 @@ class UohListViewModelTest {
     fun atcBuyAgain_shouldReturnSuccess() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         // when
@@ -520,7 +522,7 @@ class UohListViewModelTest {
     fun atcBuyAgain_shouldReturnError() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Fail(Throwable())
 
         // when
@@ -534,7 +536,7 @@ class UohListViewModelTest {
     fun atcBuyAgain_shouldNotReturnEmptyMessage() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         // when
@@ -734,7 +736,7 @@ class UohListViewModelTest {
     fun tdn_shouldReturnSuccess() {
         // given
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers {
-            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+            arrayListOf(TopAdsImageUiModel(imageUrl = "url"))
         }
 
         // when
@@ -742,7 +744,7 @@ class UohListViewModelTest {
 
         // then
         assert(uohListViewModel.tdnBannerResult.value is Success)
-        assert((uohListViewModel.tdnBannerResult.value as Success<TopAdsImageViewModel>).data.imageUrl == "url")
+        assert((uohListViewModel.tdnBannerResult.value as Success<TopAdsImageUiModel>).data.imageUrl == "url")
     }
 
     @Test

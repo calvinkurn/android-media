@@ -24,7 +24,8 @@ fun ShareExBottomSheetModel.getSelectedChipPosition(
 }
 
 fun ShareExBottomSheetModel.map(
-    position: Int
+    position: Int,
+    selectedImageUrl: String? = null
 ): List<Visitable<in ShareExTypeFactory>> {
     val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
 
@@ -52,8 +53,11 @@ fun ShareExBottomSheetModel.map(
     // Only add when property is not null
     this.bottomSheetPage.listShareProperty.getOrNull(position)?.let { shareExPropertyModel ->
         // Image Carousel UI
+        val selectedImagePosition = shareExPropertyModel.listImage.indexOf(
+            selectedImageUrl.orEmpty()
+        ).coerceAtLeast(0)
         val listImageUiModel = shareExPropertyModel.listImage.mapIndexed { index, imageUrl ->
-            ShareExImageUiModel(imageUrl = imageUrl, isSelected = index == 0)
+            ShareExImageUiModel(imageUrl = imageUrl, isSelected = index == selectedImagePosition)
         }
         if (listImageUiModel.size > 1) {
             val imageCarouselUiModel = ShareExImageCarouselUiModel(listImageUiModel)
@@ -65,7 +69,7 @@ fun ShareExBottomSheetModel.map(
             shareExPropertyModel.title,
             shareExPropertyModel.affiliate.eligibility.message,
             "tokopedia.link",
-            listImageUiModel.firstOrNull()?.imageUrl.toString(),
+            shareExPropertyModel.listImage.getOrNull(selectedImagePosition).orEmpty(),
             shareExPropertyModel.affiliate.eligibility.label,
             shareExPropertyModel.affiliate.eligibility.expiredDate
         )
@@ -141,6 +145,6 @@ fun ShareExBottomSheetModel.getImageGeneratorProperty(
     return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.imageGenerator
 }
 
-fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String {
-    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition) ?: ""
+fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String? {
+    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition)
 }

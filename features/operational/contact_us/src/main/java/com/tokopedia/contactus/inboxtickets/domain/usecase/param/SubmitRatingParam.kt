@@ -10,4 +10,10 @@ data class SubmitRatingParam(
     val rating: Int = 0,
     @SerializedName("reason")
     val reason: String = "",
+    @SerializedName("otherReason")
+    val otherReason: String? = "",
+    @SerializedName("service")
+    val service: String? = "",
+    @SerializedName("dynamicReasons")
+    val dynamicReasons: List<String>? = emptyList()
 ) : GqlParam

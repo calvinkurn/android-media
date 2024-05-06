@@ -2,8 +2,8 @@ package com.tokopedia.cart.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
@@ -52,13 +52,11 @@ open class BaseCartViewModelTest {
     var undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     var updateCartUseCase: UpdateCartUseCase = mockk()
     var updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase = mockk()
-    var compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     var addToWishListV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
     var deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
     var updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     var userSessionInterface: UserSessionInterface = mockk()
     var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    var getRecentViewUseCase: GetRecommendationUseCase = mockk()
     var getWishlistV2UseCase: GetWishlistV2UseCase = mockk()
     var getRecommendationUseCase: GetRecommendationUseCase = mockk()
     var addToCartUseCase: AddToCartUseCase = mockk()
@@ -69,7 +67,8 @@ open class BaseCartViewModelTest {
     var followShopUseCase: FollowShopUseCase = mockk()
     var cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase = mockk()
     var coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
-    var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase = mockk(relaxed = true)
+    var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase =
+        mockk(relaxed = true)
     var getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper =
         PromoUsageGetPromoListRecommendationMapper()
     var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
@@ -89,15 +88,27 @@ open class BaseCartViewModelTest {
             chosenAddressRequestHelper
         )
         cartViewModel = CartViewModel(
-            getCartRevampV4UseCase, deleteCartUseCase,
-            undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
-            addToWishListV2UseCase, deleteWishlistV2UseCase,
-            updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-            getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
-            seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
-            setCartlistCheckboxStateUseCase, followShopUseCase,
-            cartShopGroupTickerAggregatorUseCase, cartPromoEntryPointProcessor,
-            bmGmGetGroupProductTickerUseCase, TestSchedulers,
+            getCartRevampV4UseCase,
+            deleteCartUseCase,
+            undoDeleteCartUseCase,
+            updateCartUseCase,
+            addToWishListV2UseCase,
+            deleteWishlistV2UseCase,
+            updateAndReloadCartUseCase,
+            userSessionInterface,
+            clearCacheAutoApplyStackUseCase,
+            getWishlistV2UseCase,
+            getRecommendationUseCase,
+            addToCartUseCase,
+            addToCartExternalUseCase,
+            seamlessLoginUsecase,
+            updateCartCounterUseCase,
+            updateCartAndGetLastApplyUseCase,
+            setCartlistCheckboxStateUseCase,
+            followShopUseCase,
+            cartShopGroupTickerAggregatorUseCase,
+            cartPromoEntryPointProcessor,
+            bmGmGetGroupProductTickerUseCase,
             coroutineTestDispatchers
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs

@@ -17,7 +17,11 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 
 class SomBottomSheetProductEmpty(
     context: Context
-) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(context, LAYOUT, SomConsts.TITLE_PILIH_PRODUK_KOSONG), SomBottomSheetStockEmptyAdapter.ProductCheckChangedListener {
+) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(
+    context = context,
+    childViewsLayoutResourceId = LAYOUT,
+    bottomSheetTitle = SomConsts.TITLE_PILIH_PRODUK_KOSONG
+), SomBottomSheetStockEmptyAdapter.ProductCheckChangedListener {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary

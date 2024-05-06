@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.globalerror.GlobalError
-    android:id="@+id/reminder_parent_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:paddingVertical="@dimen/unify_space_24">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</com.tokopedia.globalerror.GlobalError>
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/ep_illustration_image"
+        android:layout_height="210dp"
+        android:layout_width="270dp"
+        android:layout_marginTop="48dp"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chat_loading_illustration.png"
+        app:imageDpiSupportType="singleDpi"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/epharmacy_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="@dimen/unify_space_24">
+
+    </com.tokopedia.globalerror.GlobalError>
+</LinearLayout>

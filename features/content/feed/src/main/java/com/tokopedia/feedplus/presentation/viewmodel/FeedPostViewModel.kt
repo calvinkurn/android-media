@@ -12,7 +12,6 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
@@ -24,6 +23,7 @@ import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
+import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
@@ -42,6 +42,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedGetChannelStatusUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
@@ -124,6 +125,7 @@ class FeedPostViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase,
+    private val tooltipManager: FeedTooltipManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -207,6 +209,12 @@ class FeedPostViewModel @Inject constructor(
 
     fun saveScrollPosition(position: Int) {
         mSavedPostPosition = position
+
+        if (tooltipManager.isShowTooltip(position)) {
+            viewModelScope.launch {
+                tooltipManager.showTooltipEvent()
+            }
+        }
     }
 
     fun getScrollPosition(): Int? {
@@ -1029,30 +1037,38 @@ class FeedPostViewModel @Inject constructor(
         get() = _observeBuyProduct
     private val _observeBuyProduct = MutableLiveData<Result<FeedProductActionModel>>()
 
-    private val _suspendedAddProductToCartData = MutableLiveData<ContentTaggedProductUiModel>()
-    private val _suspendedBuyProductData = MutableLiveData<ContentTaggedProductUiModel>()
+    private val _suspendedAddProductToCartData = MutableLiveData<FeedProductActionModel>()
+    private val _suspendedBuyProductData = MutableLiveData<FeedProductActionModel>()
 
-    fun suspendAddProductToCart(product: ContentTaggedProductUiModel) {
-        _suspendedAddProductToCartData.value = product
+    fun suspendAddProductToCart(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
+        _suspendedAddProductToCartData.value = FeedProductActionModel(
+            cartId = "",
+            product = product,
+            source = source
+        )
     }
 
-    fun suspendBuyProduct(product: ContentTaggedProductUiModel) {
-        _suspendedBuyProductData.value = product
+    fun suspendBuyProduct(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
+        _suspendedBuyProductData.value = FeedProductActionModel(
+            cartId = "",
+            product = product,
+            source = source
+        )
     }
 
     fun processSuspendedAddProductToCart() {
         _suspendedAddProductToCartData.value?.let { product ->
-            addProductToCart(product)
+            addProductToCart(product.product, product.source)
         }
     }
 
     fun processSuspendedBuyProduct() {
         _suspendedBuyProductData.value?.let { product ->
-            buyProduct(product)
+            buyProduct(product.product, product.source)
         }
     }
 
-    fun addProductToCart(product: ContentTaggedProductUiModel) {
+    fun addProductToCart(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -1062,7 +1078,8 @@ class FeedPostViewModel @Inject constructor(
                 _observeAddProductToCart.value = Success(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
-                        product = product
+                        product = product,
+                        source = source
                     )
                 )
             }
@@ -1071,7 +1088,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun buyProduct(product: ContentTaggedProductUiModel) {
+    fun buyProduct(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -1081,7 +1098,8 @@ class FeedPostViewModel @Inject constructor(
                 _observeBuyProduct.value = Success(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
-                        product = product
+                        product = product,
+                        source = source
                     )
                 )
             }
@@ -1292,7 +1310,7 @@ class FeedPostViewModel @Inject constructor(
                     feedXGetActivityProductsUseCase(
                         feedXGetActivityProductsUseCase.getFeedDetailParam(
                             activityId,
-                            cursor
+                            ""
                         )
                     ).data
                 }

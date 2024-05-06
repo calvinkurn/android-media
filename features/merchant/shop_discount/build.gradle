@@ -64,6 +64,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.loader_dialog
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
 
@@ -83,6 +84,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    implementation projectOrAar(rootProject.ext.features.campaignCommon)
 
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

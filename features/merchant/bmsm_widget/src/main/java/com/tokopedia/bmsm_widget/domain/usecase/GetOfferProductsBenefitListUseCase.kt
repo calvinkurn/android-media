@@ -99,6 +99,7 @@ class GetOfferProductsBenefitListUseCase @Inject constructor(
         val source = when (source) {
             PageSource.OFFER_LANDING_PAGE -> "offer_page"
             PageSource.CART -> "cart_page"
+            PageSource.MINICART_NOW -> "minicart_now"
         }
 
         return GetOfferProductsBenefitListRequest(

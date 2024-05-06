@@ -9,7 +9,6 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
-import com.tokopedia.shop.common.extension.disableDirectPurchaseCapability
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductSmallGridBinding
@@ -74,7 +73,7 @@ class ShopProductViewHolder(
             isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
-        ).disableDirectPurchaseCapability()
+        )
         productCard?.setProductModel(productCardModel)
 
         if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {

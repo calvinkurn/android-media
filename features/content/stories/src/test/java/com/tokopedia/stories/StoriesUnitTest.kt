@@ -61,15 +61,22 @@ class StoriesUnitTest {
         source = "shop-entrypoint",
         sourceId = "1234"
     )
+    private val argsWidget = StoriesArgsModel(
+        authorId = "123",
+        authorType = "shop",
+        source = "browse_widget",
+        sourceId = "1234"
+    )
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
     private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
-    private fun getStoriesRobot() = StoriesViewModelRobot(
+    private fun getStoriesRobot(isWidget: Boolean = false) = StoriesViewModelRobot(
         dispatchers = testDispatcher,
-        args = args,
+        args = if (isWidget) argsWidget else args,
         repository = mockRepository,
-        userSession = mockUserSession
+        userSession = mockUserSession,
+        sharedPref = mockSharedPref
     )
 
     @Test
@@ -80,7 +87,7 @@ class StoriesUnitTest {
         val resultGroupItem = expectedData.groupItems[selectedGroup]
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockUserSession.userId } returns "123"
 
         getStoriesRobot().use { robot ->
@@ -107,7 +114,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open stories from entry point and success fetch initial data but data is empty`() {
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns StoriesUiModel()
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns StoriesUiModel()
         coEvery { mockUserSession.userId } returns ""
 
         getStoriesRobot().use { robot ->
@@ -134,7 +141,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.entryPointTestCase(selectedGroup)
@@ -150,7 +157,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.entryPointTestCase(selectedGroup)
@@ -166,7 +173,7 @@ class StoriesUnitTest {
         val selectedDetail = -1
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.entryPointTestCase(selectedGroup)
@@ -182,8 +189,8 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData.groupItems[
             selectedGroup.minus(
                 1
             )
@@ -203,8 +210,8 @@ class StoriesUnitTest {
         val selectedDetail = 10
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[selectedGroup].detail
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData.groupItems[selectedGroup].detail
 
         getStoriesRobot().use { robot ->
             robot.entryPointTestCase(selectedGroup)
@@ -220,7 +227,7 @@ class StoriesUnitTest {
     fun `when open stories from entry point and fail fetch initial data`() {
         val expectedThrowable = Throwable("fail fetch")
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } throws expectedThrowable
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } throws expectedThrowable
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
@@ -238,11 +245,11 @@ class StoriesUnitTest {
         val expectedData = mockInitialDataModel(isCached = false)
 
         coEvery {
-            mockRepository.getStoriesInitialData(any())
+            mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData
 
         coEvery {
-            mockRepository.getStoriesDetailData(any())
+            mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData.groupItems[selectedGroup].detail
 
         getStoriesRobot().use { robot ->
@@ -264,15 +271,15 @@ class StoriesUnitTest {
         val expectedData = mockInitialDataModel(isCached = false)
 
         coEvery {
-            mockRepository.getStoriesInitialData(any())
+            mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData
 
         coEvery {
-            mockRepository.getStoriesDetailData(any())
+            mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any())
         } returns StoriesDetail()
 
         every {
-            mockSharedPref.isVisited()
+            mockSharedPref.hasVisit()
         } returns true
 
         getStoriesRobot().use { robot ->
@@ -292,14 +299,14 @@ class StoriesUnitTest {
         val expectedThrowable = Throwable("fail fetch")
 
         coEvery {
-            mockRepository.getStoriesInitialData(any())
+            mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData
 
         coEvery {
-            mockRepository.getStoriesDetailData(any())
+            mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any())
         } throws expectedThrowable
 
-        every { mockSharedPref.isVisited() } returns true
+        every { mockSharedPref.hasVisit() } returns true
 
         getStoriesRobot().use { robot ->
             val state = robot.recordStateAndEvents {
@@ -321,11 +328,11 @@ class StoriesUnitTest {
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
         coEvery {
-            mockRepository.getStoriesInitialData(any())
+            mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData
 
         coEvery {
-            mockRepository.getStoriesDetailData(any())
+            mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData.groupItems[selectedGroup].detail
 
         getStoriesRobot().use { robot ->
@@ -352,11 +359,11 @@ class StoriesUnitTest {
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
         coEvery {
-            mockRepository.getStoriesInitialData(any())
+            mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData
 
         coEvery {
-            mockRepository.getStoriesDetailData(any())
+            mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any())
         } throws expectedThrowable
 
         getStoriesRobot().use { robot ->
@@ -387,11 +394,11 @@ class StoriesUnitTest {
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
         coEvery {
-            mockRepository.getStoriesInitialData(any())
+            mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any())
         } returns expectedData
 
         coEvery {
-            mockRepository.getStoriesDetailData(any())
+            mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any())
         } throws expectedThrowable
 
         getStoriesRobot().use { robot ->
@@ -418,7 +425,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
 
         getStoriesRobot().use { robot ->
@@ -430,12 +437,33 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when stories is loaded user never visit emit onboard`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+        coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
+        every { mockSharedPref.hasVisit() } returns false
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.setTrackActivity(selectedGroup)
+
+                val actualDetail = robot.getViewModel().mDetail
+                actualDetail.isContentLoaded.assertTrue()
+            }
+            event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
+        }
+    }
+
+    @Test
     fun `when has seen all stories`() {
         val selectedGroup = 2
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
         coEvery { mockRepository.setHasSeenAllStories(any(), any()) } coAnswers {}
 
@@ -453,7 +481,7 @@ class StoriesUnitTest {
         val selectedDetail = -1
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
 
         getStoriesRobot().use { robot ->
@@ -471,8 +499,9 @@ class StoriesUnitTest {
         val expectedThrowable = Throwable("fail")
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } throws expectedThrowable
+        every { mockSharedPref.hasVisit() } returns true
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
@@ -491,7 +520,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -510,7 +539,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup.plus(1), selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -529,7 +558,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(0, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -548,7 +577,7 @@ class StoriesUnitTest {
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -567,7 +596,7 @@ class StoriesUnitTest {
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
@@ -583,7 +612,7 @@ class StoriesUnitTest {
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -602,7 +631,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -621,7 +650,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.tapPrevDetailToResetTimer(selectedGroup)
@@ -637,7 +666,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.tapPauseStories(selectedGroup)
@@ -653,7 +682,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.tapResumeStories(selectedGroup)
@@ -669,7 +698,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.tapResumeStoriesButContentNotLoaded(selectedGroup)
@@ -685,7 +714,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.tapResumeStoriesButPageIsNotSelected(selectedGroup)
@@ -696,12 +725,28 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when user back to stories and video should resume to play`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.forceResumeStories(selectedGroup)
+
+            val actualEvent = robot.getViewModel().mDetail.event
+            actualEvent.assertEqualTo(StoriesDetailItemUiEvent.RESUME)
+        }
+    }
+
+    @Test
     fun `when stories open and collect impression group`() {
         val selectedGroup = 0
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.collectImpressionGroup(selectedGroup, expectedData.groupHeader[selectedGroup])
@@ -717,7 +762,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.collectImpressionGroupDuplicate(
@@ -736,7 +781,7 @@ class StoriesUnitTest {
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
@@ -760,7 +805,7 @@ class StoriesUnitTest {
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.deleteStories()
@@ -780,7 +825,7 @@ class StoriesUnitTest {
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.deleteStories(selectedGroup)
@@ -800,7 +845,7 @@ class StoriesUnitTest {
         val selectedDetail = 2
         val expectedData = mockInitialDataModelForDeleteStories(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
             robot.deleteStoriesUntilEmpty(selectedGroup)
@@ -876,8 +921,8 @@ class StoriesUnitTest {
     fun `when open product bottom sheet and close`() {
         val expectedData = mockInitialDataModel(productCount = 5)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData.groupItems.first().detail
 
         getStoriesRobot().use { robot ->
             val stateEventOpen = robot.recordStateAndEvents {
@@ -913,8 +958,8 @@ class StoriesUnitTest {
     fun `when open product bottom sheet and unable to open 1`() {
         val expectedData = mockInitialDataModel(productCount = 5)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData.groupItems.first().detail
 
         getStoriesRobot().use { robot ->
             val stateEventOpen = robot.recordStateAndEvents {
@@ -938,8 +983,8 @@ class StoriesUnitTest {
     fun `when open product bottom sheet and unable to open 2`() {
         val expectedData = mockInitialDataModel(isProductCountEmpty = true)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData.groupItems.first().detail
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -962,8 +1007,8 @@ class StoriesUnitTest {
     fun `when open product bottom sheet and unable to open 3`() {
         val expectedData = mockInitialDataModel(isProductCountEmpty = true)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData.groupItems.first().detail
 
         getStoriesRobot().use { robot ->
             robot.recordState {
@@ -1005,39 +1050,6 @@ class StoriesUnitTest {
             }
             robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Sharing) {
-                    it.value.assertFalse()
-                } else {
-                    it.value.assertFalse()
-                }
-            }
-            robot.getBottomSheetState().isAnyShown.assertFalse()
-        }
-    }
-
-    @Test
-    fun `when open variant bottom sheet and close`() {
-        val mockSharingData = mockContentTaggedProductUiModel()
-
-        getStoriesRobot().use { robot ->
-            val stateEventOpen = robot.recordStateAndEvents {
-                robot.openVariantBottomSheet(mockSharingData)
-            }
-            stateEventOpen.second.last()
-                .assertEqualTo(StoriesUiEvent.ShowVariantSheet(mockSharingData))
-            robot.getBottomSheetState().mapValues {
-                if (it.key == BottomSheetType.GVBS) {
-                    it.value.assertTrue()
-                } else {
-                    it.value.assertFalse()
-                }
-            }
-            robot.getBottomSheetState().isAnyShown.assertTrue()
-
-            robot.recordState {
-                robot.closeBottomSheet(BottomSheetType.GVBS)
-            }
-            robot.getBottomSheetState().mapValues {
-                if (it.key == BottomSheetType.GVBS) {
                     it.value.assertFalse()
                 } else {
                     it.value.assertFalse()
@@ -1213,8 +1225,11 @@ class StoriesUnitTest {
             robot.getViewModel().isAnyBottomSheetShown.assertTrue()
             robot.getBottomSheetState().isAnyShown.assertTrue()
             robot.getBottomSheetState().mapValues {
-                if (it.key == BottomSheetType.SubmitReport) it.value.assertTrue()
-                else it.value.assertFalse()
+                if (it.key == BottomSheetType.SubmitReport) {
+                    it.value.assertTrue()
+                } else {
+                    it.value.assertFalse()
+                }
             }
 
             robot.recordState {
@@ -1312,7 +1327,7 @@ class StoriesUnitTest {
         val expectedData =
             mockInitialDataModel(selectedGroup, selectedDetail, duration = defaultDuration)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockUserSession.userId } returns "123"
 
         getStoriesRobot().use { robot ->
@@ -1338,7 +1353,7 @@ class StoriesUnitTest {
         val expectedData =
             mockInitialDataModel(selectedGroup, selectedDetail)
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockUserSession.userId } returns "123"
 
         getStoriesRobot().use { robot ->
@@ -1364,12 +1379,12 @@ class StoriesUnitTest {
         val expectedData = mockInitialDataModel(
             selectedGroup = selectedGroup,
             selectedDetail = selectedDetail,
-            storiesCategory = StoriesDetailItem.StoryCategory.Manual,
+            storiesCategory = StoriesDetailItem.StoryCategory.Manual
         )
         val resultGroupItem = expectedData.groupItems[selectedGroup]
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
-        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.hasSeenManualStoriesDurationCoachmark() } returns false
         coEvery { mockUserSession.userId } returns "123"
         coEvery { mockUserSession.shopId } returns "123"
@@ -1403,6 +1418,39 @@ class StoriesUnitTest {
             robot.hasSeenTimestampCoachMark()
 
             coVerify(exactly = 1) { mockRepository.setHasSeenManualStoriesDurationCoachmark() }
+        }
+    }
+
+    @Test
+    fun `when user trigger variant sheet, events should contains UiEvent ShowVariantSheet`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            val events = robot.recordEvent {
+                robot.entryPointTestCase(selectedGroup)
+                robot.testShowVariantSheet(product)
+            }
+
+            events.last().assertType<StoriesUiEvent.ShowVariantSheet> {}
+        }
+    }
+
+    @Test
+    fun `when stories source request coming from browse widget, group show cannot be shown`() {
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns StoriesDetail()
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns StoriesUiModel()
+
+        getStoriesRobot(true).use { robot ->
+            val state = robot.recordState {
+                mainDataTestCase(0)
+            }
+
+            state.canShowGroup.assertFalse()
         }
     }
 }

@@ -6,5 +6,9 @@
             <enum name="followHeight" value="1"/>
             <enum name="custom" value="2"/>
         </attr>
+        <attr name="widthToHeightRatio" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="PlayWidgetCardLargeView">
+        <attr name="dimensionRatio" format="string" />
     </declare-styleable>
 </resources>

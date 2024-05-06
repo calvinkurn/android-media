@@ -10,7 +10,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import io.mockk.every
 import io.mockk.slot
 import org.junit.Test
@@ -23,14 +23,14 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
 
     private val searchProductModelFirstPage = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
     private val searchProductModelLoadMore = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
-    private val tdn0 = TopAdsImageViewModel(position = 0, bannerName = "Position 0")
-    private val tdn1 = TopAdsImageViewModel(position = 1, bannerName = "Position 1")
-    private val tdn4 = TopAdsImageViewModel(position = 4, bannerName = "Position 4")
-    private val tdn8 = TopAdsImageViewModel(position = 8, bannerName = "Position 8")
-    private val tdn12 = TopAdsImageViewModel(position = 12, bannerName = "Position 12")
-    private val tdn14 = TopAdsImageViewModel(position = 14, bannerName = "Position 14")
-    private val tdn16 = TopAdsImageViewModel(position = 16, bannerName = "Position 16")
-    private val tdn28 = TopAdsImageViewModel(position = 28, bannerName = "Position 28")
+    private val tdn0 = TopAdsImageUiModel(position = 0, bannerName = "Position 0")
+    private val tdn1 = TopAdsImageUiModel(position = 1, bannerName = "Position 1")
+    private val tdn4 = TopAdsImageUiModel(position = 4, bannerName = "Position 4")
+    private val tdn8 = TopAdsImageUiModel(position = 8, bannerName = "Position 8")
+    private val tdn12 = TopAdsImageUiModel(position = 12, bannerName = "Position 12")
+    private val tdn14 = TopAdsImageUiModel(position = 14, bannerName = "Position 14")
+    private val tdn16 = TopAdsImageUiModel(position = 16, bannerName = "Position 16")
+    private val tdn28 = TopAdsImageUiModel(position = 28, bannerName = "Position 28")
 
     private val visitableList = mutableListOf<Visitable<*>>()
 
@@ -73,11 +73,11 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
         visitableList.size shouldBe 12
 
         visitableList[1].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-        (visitableList[1] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn1
+        (visitableList[1] as SearchProductTopAdsImageDataView).topAdsImageUiModel shouldBe tdn1
         visitableList[6].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-        (visitableList[6] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn4
+        (visitableList[6] as SearchProductTopAdsImageDataView).topAdsImageUiModel shouldBe tdn4
         visitableList[11].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-        (visitableList[11] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn8
+        (visitableList[11] as SearchProductTopAdsImageDataView).topAdsImageUiModel shouldBe tdn8
     }
 
     @Test
@@ -112,9 +112,9 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     private fun `Then verify TDN on second page`() { visitableList.size shouldBe 22
 
         visitableList[16].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-        (visitableList[16] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn12
+        (visitableList[16] as SearchProductTopAdsImageDataView).topAdsImageUiModel shouldBe tdn12
         visitableList[21].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-        (visitableList[21] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn16
+        (visitableList[21] as SearchProductTopAdsImageDataView).topAdsImageUiModel shouldBe tdn16
     }
 
     @Test

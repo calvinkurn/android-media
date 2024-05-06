@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -132,6 +133,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 extra.getString(EXTRA_ADDRESS_STATE, AddressUiState.PinpointOnly.name)
             }
 
+            val isPositiveFlow = if (extra.containsKey(EXTRA_IS_POSITIVE_FLOW)) {
+                extra.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            } else {
+                null
+            }
+
             return PinpointFragment().apply {
                 arguments = Bundle().apply {
                     // general
@@ -141,7 +148,9 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putString(EXTRA_ADDRESS_STATE, state)
 
                     // from address form
-                    putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    if (isPositiveFlow != null) {
+                        putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                    }
                     putString(EXTRA_ADDRESS_ID, extra.getString(EXTRA_ADDRESS_ID))
                     putLong(EXTRA_DISTRICT_ID, extra.getLong(EXTRA_DISTRICT_ID))
 
@@ -332,12 +341,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
 
-        activity?.let { MapsInitializer.initialize(activity) }
+        activity?.let { MapsInitializer.initialize(requireActivity()) }
 
         moveMap(
             getLatLng(viewModel.uiModel.lat, viewModel.uiModel.long)
@@ -636,7 +645,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
+    private fun getLocation(looper: Looper? = Looper.myLooper()) {
         showLoading()
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
@@ -648,11 +657,13 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     )
                 }
             } else {
-                fusedLocationClient?.requestLocationUpdates(
-                    AddNewAddressUtils.getLocationRequest(),
-                    locationCallback,
-                    null
-                )
+                looper?.let {
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        locationCallback,
+                        looper
+                    )
+                }
             }
         }
     }
@@ -843,12 +854,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
                         AddressUiState.AddAddress -> {
                             if (viewModel.isPositiveFlow) {
+                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
+                            } else {
                                 LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
                                     userSession.userId,
                                     if (state.buttonPrimary.success) SUCCESS else NOT_SUCCESS
                                 )
-                            } else {
-                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
                             }
                         }
 

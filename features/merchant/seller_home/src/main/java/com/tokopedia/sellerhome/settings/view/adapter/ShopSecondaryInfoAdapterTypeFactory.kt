@@ -17,7 +17,7 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
 
     override fun type(uiModel: ShopStatusWidgetUiModel): Int = ShopStatusViewHolder.LAYOUT_RES
 
-    override fun type(uiModel: RMTransactionWidgetUiModel): Int = RMTransactionViewHolder.LAYOUT_RES
+    override fun type(uiModel: PMTransactionWidgetUiModel): Int = PMTransactionViewHolder.LAYOUT_RES
 
     override fun type(uiModel: ReputationBadgeWidgetUiModel): Int =
         ReputationBadgeViewHolder.LAYOUT_RES
@@ -41,11 +41,12 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
                 parent,
                 listener::onGoToPowerMerchantSubscribe,
                 listener::onRefreshShopInfo,
-                listener::onShopStatusImpression
+                listener::onShopStatusImpression,
+                listener::navigate
             )
-            RMTransactionViewHolder.LAYOUT_RES -> RMTransactionViewHolder(
+            PMTransactionViewHolder.LAYOUT_RES -> PMTransactionViewHolder(
                 parent,
-                listener::onRmTransactionClicked,
+                listener::onTransactionClicked,
                 listener::onRefreshShopInfo
             )
             ReputationBadgeViewHolder.LAYOUT_RES -> ReputationBadgeViewHolder(

@@ -5,8 +5,10 @@ import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMapWithWareHouse
+import com.tokopedia.discovery2.analytics.TrackingMapper.updatePaginatedPosition
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -17,8 +19,10 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
@@ -36,19 +40,26 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val VALUE_L_NAME_SRE = "sre"
     }
 
-    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+    suspend fun loadFirstPageComponents(
+        componentId: String,
+        pageEndPoint: String,
+        productsLimit: Int = PRODUCT_PER_PAGE
+    ): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         if (isAlreadyLoaded(component)) return false
         component?.let {
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
-            val isDynamic = it.properties?.dynamic ?: false
+
+            val request = ProductCardRequest(
+                it.getComponentId(),
+                pageEndPoint,
+                it.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
+                it.name
+            )
+
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
-                    component.dynamicOriginalId!!
-                } else {
-                    componentId
-                },
+                request,
                 getQueryParameterMap(
                     PAGE_START,
                     parentComponentsItem?.chipSelectionData,
@@ -63,9 +74,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     paramWithoutRpc,
                     it.userAddressData,
                     component.properties?.warehouseTco
-                ),
-                pageEndPoint,
-                it.name
+                )
             )
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
@@ -93,19 +102,26 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return alreadyLoaded
     }
 
-    suspend fun getProductCardsUseCase(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+    suspend fun getProductCardsUseCase(
+        componentId: String,
+        pageEndPoint: String,
+        productsLimit: Int = PRODUCT_PER_PAGE
+    ): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
-            val isDynamic = component1.properties?.dynamic ?: false
             val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
+
+            val request = ProductCardRequest(
+                component1.getComponentId(),
+                pageEndPoint,
+                component1.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
+                component1.name
+            )
+
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
-                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty()) {
-                    component1.dynamicOriginalId!!
-                } else {
-                    component1.id
-                },
+                request,
                 getQueryParameterMap(
                     component1.pageLoadedCounter,
                     parentComponentsItem?.chipSelectionData,
@@ -120,9 +136,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     paramWithoutRpc,
                     component.userAddressData,
                     component.properties?.warehouseTco
-                ),
-                pageEndPoint,
-                component1.name
+                )
             )
             component1.nextPageKey = additionalInfo?.nextPage
             if (productListData.isEmpty()) {
@@ -142,20 +156,30 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return false
     }
 
-    suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+    suspend fun getCarouselPaginatedData(
+        componentId: String,
+        pageEndPoint: String,
+        productsLimit: Int = PRODUCT_PER_PAGE
+    ): ProductCardPaginationLoadState {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
-
-        if (isAlreadyLoaded(component)) return false
-
         component?.let {
             it.properties?.let { properties ->
-                if (properties.limitProduct && properties.limitNumber.toIntOrZero() == it.getComponentsItem()?.size) return false
+                if (properties.limitProduct && properties.limitNumber.toIntOrZero() == it.getComponentsItem()?.size) {
+                    return ProductCardPaginationLoadState.FAILED
+                }
             }
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
-            val isDynamic = it.properties?.dynamic ?: false
+
+            val request = ProductCardRequest(
+                it.getComponentId(),
+                pageEndPoint,
+                it.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
+                it.name
+            )
+
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
+                request,
                 getQueryParameterMap(
                     it.pageLoadedCounter,
                     parentComponentsItem?.chipSelectionData,
@@ -170,20 +194,22 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     paramWithoutRpc,
                     it.userAddressData,
                     component.properties?.warehouseTco
-                ),
-                pageEndPoint,
-                it.name
+                )
             )
             component.nextPageKey = additionalInfo?.nextPage
-            if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
+            if (productListData.isEmpty() && component.nextPageKey.isNullOrEmpty()) {
+                return ProductCardPaginationLoadState.REACH_END_OF_PAGE
+            } else {
+                it.pageLoadedCounter += 1
+            }
             updatePaginatedData(productListData, it)
             if (it.properties?.tokonowATCActive == true) {
                 Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
             }
             (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
-            return true
+            return ProductCardPaginationLoadState.LOAD_MORE
         }
-        return false
+        return ProductCardPaginationLoadState.FAILED
     }
 
     private fun getQueryParameterMap(
@@ -203,7 +229,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     ): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[RPC_PAGE__SIZE] = if (productsPerPage == NO_PRODUCT_PER_PAGE) String.EMPTY else productsPerPage
+        queryParameterMap[RPC_PAGE__SIZE] =
+            if (productsPerPage == NO_PRODUCT_PER_PAGE) String.EMPTY else productsPerPage
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
 
         chipSelectionData?.let {
@@ -213,7 +240,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     if (targetId == component?.parentComponentId) {
                         queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
                     }
-                } else if (targetId == componentId) queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
+                } else if (targetId == componentId) queryParameterMap[RPC_FILTER_KEU + it.key] =
+                    it.value.toString()
             }
         }
         selectedFilters?.let {
@@ -259,15 +287,34 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
+        if (ProductCardExperiment.isReimagine()) {
         queryParameterMap[PARAM_L_NAME] = VALUE_L_NAME_SRE
+        }
         return queryParameterMap
     }
 
-    private fun updatePaginatedData(voucherListData: ArrayList<ComponentsItem>, parentComponentsItem: ComponentsItem) {
-        voucherListData.forEach {
-            it.parentComponentId = parentComponentsItem.id
-            it.pageEndPoint = parentComponentsItem.pageEndPoint
-            it.parentComponentPosition = parentComponentsItem.position
+    private fun updatePaginatedData(
+        products: ArrayList<ComponentsItem>,
+        parentComponentsItem: ComponentsItem
+    ) {
+        products.forEach {
+            it.apply {
+                parentComponentId = parentComponentsItem.id
+                pageEndPoint = parentComponentsItem.pageEndPoint
+                parentComponentPosition = parentComponentsItem.position
+            }
+        }
+
+        val offsetPosition = parentComponentsItem.getComponentsItem()?.size.orZero()
+        products.updatePaginatedPosition(offsetPosition)
+    }
+
+    private fun ComponentsItem.getComponentId(): String {
+        val isDynamic = properties?.dynamic ?: false
+        return if (isDynamic && !dynamicOriginalId.isNullOrEmpty()) {
+            dynamicOriginalId!!
+        } else {
+            id
         }
     }
 }

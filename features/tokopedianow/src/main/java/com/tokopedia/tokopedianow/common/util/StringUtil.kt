@@ -8,4 +8,6 @@ object StringUtil {
     } else {
         this
     }
+
+    fun String.isNotBlankAndNotZeroString(): Boolean = isNotBlank() && this != DEFAULT_ZERO_STRING
 }

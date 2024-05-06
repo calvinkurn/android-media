@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.EmptyStateModel
@@ -24,9 +25,9 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.Sh
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.HeadlineTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
@@ -80,22 +81,27 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
 
+    private var recSessionId: String = ""
+
     fun fetchHomeRecommendation(
         tabName: String,
         recommendationId: Int,
         count: Int,
         locationParam: String = "",
         tabIndex: Int = 0,
-        sourceType: String
+        sourceType: String,
+        refreshType: RefreshType,
     ) {
+        recSessionId = ""
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchHomeRecommendationCard(tabName, locationParam, sourceType)
+            fetchHomeRecommendationCard(tabIndex, tabName, locationParam, sourceType, refreshType)
         } else {
             loadInitialPage(tabName, recommendationId, count, locationParam, tabIndex, sourceType)
         }
     }
 
     fun fetchNextHomeRecommendation(
+        tabIndex: Int,
         tabName: String,
         recommendationId: Int,
         count: Int,
@@ -105,24 +111,32 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
         existingRecommendationData: List<ForYouRecommendationVisitable>
     ) {
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchNextHomeRecommendationCard(tabName, page, locationParam, sourceType, existingRecommendationData)
+            fetchNextHomeRecommendationCard(tabIndex, tabName, page, locationParam, sourceType, existingRecommendationData)
         } else {
             loadNextData(tabName, recommendationId, count, page, locationParam, sourceType)
         }
     }
 
     private fun fetchHomeRecommendationCard(
+        tabIndex: Int,
         tabName: String,
         locationParam: String,
-        sourceType: String
+        sourceType: String,
+        refreshType: RefreshType
     ) {
         launchCatchError(coroutineContext, block = {
             val result = getHomeRecommendationCardUseCase.get().execute(
                 Int.ONE,
+                tabIndex,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
+                refreshType = refreshType,
+                bytedanceSessionId = recSessionId
             )
+
+            recSessionId = result.appLog.sessionId
+
             if (result.homeRecommendations.isEmpty()) {
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.EmptyData(
@@ -145,6 +159,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
     }
 
     private fun fetchNextHomeRecommendationCard(
+        tabIndex: Int,
         tabName: String,
         page: Int,
         locationParam: String,
@@ -168,10 +183,16 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
 
             val result = getHomeRecommendationCardUseCase.get().execute(
                 page,
+                tabIndex,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
+                refreshType = RefreshType.LOAD_MORE,
+                bytedanceSessionId = recSessionId,
+                currentTotalData = existingRecommendationData.size
             )
+
+            recSessionId = result.appLog.sessionId
 
             existingRecommendationDataMutableList.removeAll { it is LoadMoreStateModel }
 
@@ -238,7 +259,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                             .toMutableList()
                     val newList = data.homeRecommendations.toMutableList()
                     val topAdsBanner =
-                        arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                        arrayListOf<Pair<String, ArrayList<TopAdsImageUiModel>>>()
                     homeBannerTopAds.forEach {
                         if (it.bannerType == HomeRecommendationMapper.TYPE_BANNER_ADS) {
                             val bannerData = topAdsImageViewUseCase.get().getImageData(
@@ -308,7 +329,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
 
     private fun handleTopAdsWidgets(
         data: HomeGlobalRecommendationDataModel,
-        topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageViewModel>>>,
+        topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageUiModel>>>,
         homeBannerTopAds: List<BannerOldTopAdsModel>,
         headlineAds: TopAdsHeadlineResponse,
         newList: MutableList<ForYouRecommendationVisitable>
@@ -416,7 +437,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                     data.homeRecommendations.filterIsInstance<BannerOldTopAdsModel>()
                         .toMutableList()
                 val newList = data.homeRecommendations.toMutableList()
-                val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageUiModel>>>()
                 homeBannerTopAds.forEachIndexed { index, it ->
                     if (it.bannerType == HomeRecommendationMapper.TYPE_BANNER_ADS) {
                         val bannerData = topAdsImageViewUseCase.get().getImageData(

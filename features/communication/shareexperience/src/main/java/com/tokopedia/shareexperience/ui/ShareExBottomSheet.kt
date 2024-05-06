@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
 import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
@@ -37,11 +37,13 @@ import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import com.tokopedia.shareexperience.ui.util.ShareExMediaCleanupStorageWorker
 import com.tokopedia.shareexperience.ui.util.copyTextToClipboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
@@ -127,22 +129,29 @@ class ShareExBottomSheet :
 
     @SuppressLint("DeprecatedMethod")
     private fun setupBottomSheetModel() {
-        val args = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY, ShareExBottomSheetArg::class.java)
+        val arg: ShareExBottomSheetArg?
+        val resultArg: ShareExBottomSheetResultArg?
+        if (shouldUseNewParcelable()) {
+            arg = arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY, ShareExBottomSheetArg::class.java)
+            resultArg = arguments?.getParcelable(BOTTOM_SHEET_RESULT_KEY, ShareExBottomSheetResultArg::class.java)
         } else {
-            arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY)
+            arg = arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY)
+            resultArg = arguments?.getParcelable(BOTTOM_SHEET_RESULT_KEY)
         }
-        args?.let {
-            viewModel.bottomSheetArgs = args
+        resultArg?.let {
+            viewModel.bottomSheetResultArg = resultArg
+        }
+        arg?.let {
+            viewModel.bottomSheetArg = arg
             analytics.trackImpressionBottomSheet(
-                identifier = it.identifier,
+                productId = it.productId,
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
-                label = args.trackerArg.labelImpressionBottomSheet
+                label = arg.trackerArg.labelImpressionBottomSheet
             )
             setCloseClickListener { _ ->
                 analytics.trackActionClickClose(
-                    identifier = it.identifier,
+                    productId = it.productId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     label = it.trackerArg.labelActionCloseIcon
@@ -150,6 +159,10 @@ class ShareExBottomSheet :
                 dismiss()
             }
         }
+    }
+
+    private fun shouldUseNewParcelable(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     }
 
     private fun initializeRecyclerView() {
@@ -200,7 +213,10 @@ class ShareExBottomSheet :
 
     private suspend fun observeShortLinkUiState() {
         viewModel.channelIntentUiState.collect {
-            viewBinding?.shareexLayoutLoading?.showWithCondition(it.isLoading)
+            if (it.isLoading) {
+                viewBinding?.shareexLayoutLoading?.show()
+                viewBinding?.shareexLoader?.type = LoaderUnify.TYPE_CIRCULAR
+            }
             /**
              * If loading, then do nothing
              * If error then do logging
@@ -208,6 +224,7 @@ class ShareExBottomSheet :
              ** error branch, skip and do nothing until success
              ** error default should not be possible
              ** error image downloader or using default URL, count as success
+             *** If image downloader error and the intent is image, open native chooser
              * If success
              ** success channel copy link, copy text & show toaster
              ** success channel SMS, check if package is empty, then use manual intent
@@ -221,45 +238,41 @@ class ShareExBottomSheet :
                 ShareExLogger.logExceptionToServerLogger(
                     it.error,
                     userSession.deviceId,
-                    it.errorEnum.toString()
+                    it.errorHistory.joinToString { enum -> enum.name }
                 )
             }
 
-            if (it.error != null && it.errorEnum == ShareExIntentErrorEnum.AFFILIATE_ERROR) {
+            if (it.errorHistory.contains(ShareExIntentErrorEnum.AFFILIATE_ERROR) &&
+                it.shortLink.isNotBlank()
+            ) {
                 dismiss()
                 listener?.onFailGenerateAffiliateLink(it.shortLink)
+                return@collect
             }
 
             if (it.error == null ||
-                it.errorEnum == ShareExIntentErrorEnum.IMAGE_DOWNLOADER ||
-                it.errorEnum == ShareExIntentErrorEnum.DEFAULT_URL_ERROR
+                it.errorHistory.contains(ShareExIntentErrorEnum.IMAGE_DOWNLOADER) ||
+                it.errorHistory.contains(ShareExIntentErrorEnum.DEFAULT_URL_ERROR)
             ) {
                 trackActionClickChannel(
                     it.channelEnum,
                     it.imageType
                 )
                 when (it.channelEnum) {
-                    ShareExChannelEnum.COPY_LINK -> {
-                        val isSuccessCopy = context?.copyTextToClipboard(it.shortLink)
-                        if (isSuccessCopy == true) {
-                            dismiss()
-                            listener?.onSuccessCopyLink()
-                        }
-                    }
-                    ShareExChannelEnum.SMS -> {
-                        openIntentSms(it)
-                        dismiss()
-                    }
-                    ShareExChannelEnum.OTHERS -> {
-                        openIntentChooser(it)
-                        dismiss()
-                    }
+                    ShareExChannelEnum.COPY_LINK -> handleCopyLinkIntent(it)
+                    ShareExChannelEnum.SMS -> openIntentSms(it)
+                    ShareExChannelEnum.OTHERS -> it.intent?.let { intent -> openIntentChooser(intent) }
                     else -> {
                         it.intent?.let { intent ->
-                            if (intent.type == ShareExMimeTypeEnum.IMAGE.textType) {
-                                context?.copyTextToClipboard(it.message)
+                            when (intent.type) {
+                                // Mime Type intent need additional steps
+                                ShareExMimeTypeEnum.IMAGE.textType -> {
+                                    handleImageIntent(it)
+                                }
+                                else -> {
+                                    navigateWithIntent(intent)
+                                }
                             }
-                            navigateWithIntent(intent)
                             dismiss()
                         }
                     }
@@ -272,13 +285,13 @@ class ShareExBottomSheet :
         channelEnum: ShareExChannelEnum?,
         imageTypeEnum: ShareExImageTypeEnum
     ) {
-        viewModel.bottomSheetArgs?.let {
+        viewModel.bottomSheetArg?.let {
             if (channelEnum != null) {
                 analytics.trackActionClickChannel(
-                    identifier = it.identifier,
+                    productId = it.productId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
-                    channel = channelEnum.trackerName,
+                    channel = channelEnum.label,
                     imageType = imageTypeEnum.value,
                     label = it.trackerArg.labelActionClickChannel
                 )
@@ -295,9 +308,9 @@ class ShareExBottomSheet :
     }
 
     override fun onImpressionAffiliateRegistrationCard() {
-        viewModel.bottomSheetArgs?.let {
+        viewModel.bottomSheetArg?.let {
             analytics.trackImpressionTickerAffiliate(
-                identifier = it.identifier,
+                identifier = it.getIdentifier(),
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
                 label = it.trackerArg.labelImpressionAffiliateRegistration
@@ -306,9 +319,9 @@ class ShareExBottomSheet :
     }
 
     override fun onAffiliateRegistrationCardClicked(appLink: String) {
-        viewModel.bottomSheetArgs?.let {
+        viewModel.bottomSheetArg?.let {
             analytics.trackActionClickAffiliateRegistration(
-                identifier = it.identifier,
+                identifier = it.getIdentifier(),
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
                 label = it.trackerArg.labelActionClickAffiliateRegistration
@@ -345,6 +358,14 @@ class ShareExBottomSheet :
         }
     }
 
+    private fun handleCopyLinkIntent(intentUiState: ShareExChannelIntentUiState) {
+        val isSuccessCopy = context?.copyTextToClipboard(intentUiState.shortLink)
+        if (isSuccessCopy == true) {
+            listener?.onSuccessCopyLink()
+            dismiss()
+        }
+    }
+
     private fun openIntentSms(intentUiState: ShareExChannelIntentUiState) {
         val intentPackage = intentUiState.intent?.`package` ?: ""
         if (intentPackage.isBlank()) {
@@ -358,15 +379,35 @@ class ShareExBottomSheet :
                 navigateWithIntent(it)
             }
         }
+        dismiss()
     }
 
-    private fun openIntentChooser(intentUiState: ShareExChannelIntentUiState) {
-        val intentChooser = Intent.createChooser(intentUiState.intent, DEFAULT_TITLE)
+    private fun openIntentChooser(intent: Intent) {
+        val intentChooser = Intent.createChooser(intent, DEFAULT_TITLE)
         navigateWithIntent(intentChooser)
+        dismiss()
+    }
+
+    private fun handleImageIntent(intentUiState: ShareExChannelIntentUiState) {
+        context?.copyTextToClipboard(intentUiState.message)
+        // If image fail to download, then this intent is not complete and will absolutely give error
+        // Open intent chooser for better experience to user
+        if (intentUiState.errorHistory.contains(ShareExIntentErrorEnum.IMAGE_DOWNLOADER)) {
+            val intentChooser = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = ShareExMimeTypeEnum.TEXT.textType
+                putExtra(Intent.EXTRA_TEXT, intentUiState.message)
+            }
+            openIntentChooser(intentChooser)
+        } else {
+            intentUiState.intent?.let {
+                navigateWithIntent(it)
+            }
+        }
     }
 
     private fun getShareId(): String {
-        return viewModel.bottomSheetArgs
+        return viewModel.bottomSheetResultArg
             ?.bottomSheetModel
             ?.bottomSheetPage
             ?.listShareProperty
@@ -392,11 +433,16 @@ class ShareExBottomSheet :
 
     companion object {
         private const val BOTTOM_SHEET_DATA_KEY = "bottom_sheet_data_key"
+        private const val BOTTOM_SHEET_RESULT_KEY = "bottom_sheet_result_key"
 
-        fun newInstance(bottomSheetArg: ShareExBottomSheetArg): ShareExBottomSheet {
+        fun newInstance(
+            bottomSheetArg: ShareExBottomSheetArg,
+            bottomSheetResultArg: ShareExBottomSheetResultArg
+        ): ShareExBottomSheet {
             val fragment = ShareExBottomSheet()
             val bundle = Bundle().apply {
                 putParcelable(BOTTOM_SHEET_DATA_KEY, bottomSheetArg)
+                putParcelable(BOTTOM_SHEET_RESULT_KEY, bottomSheetResultArg)
             }
             fragment.arguments = bundle
             return fragment

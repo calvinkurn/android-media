@@ -333,6 +333,9 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ConstantTransactionAnalytics.EventLabel.PRODUCT_LAST_SEEN
         )
         dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
+        dataLayer[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        dataLayer[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.VIEW_PRODUCT_LAST_SEEN
         sendEnhancedEcommerce(dataLayer)
     }
 
@@ -1240,6 +1243,60 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             )
             .setShopId(shopId)
             .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50683
+    fun eventViewVariantEditor(cartId: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.VIEW_VARIANT_EDITOR)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel(cartId)
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.VIEW_VARIANT_EDITOR
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50684
+    fun eventClickVariantEditor(cartId: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_VARIANT_EDITOR)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel(cartId)
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.CLICK_VARIANT_EDITOR
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50685
+    fun eventClickSimpanVariantBottomSheet(cartId: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_VARIANT_BOTTOM_SHEET)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CLICK_SIMPAN_VARIANT_BOTTOM_SHEET)
+            .setEventLabel(cartId)
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.CLICK_SIMPAN_VARIANT_BOTTOM_SHEET
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
             .build()
             .send()
     }

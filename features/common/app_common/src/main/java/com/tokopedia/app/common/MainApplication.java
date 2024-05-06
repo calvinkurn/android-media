@@ -1,6 +1,7 @@
 package com.tokopedia.app.common;
 
 import android.content.SharedPreferences;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
@@ -25,6 +26,8 @@ import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.unifycomponents.ImageUrlLoader;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -34,6 +37,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 import javax.net.ssl.SSLContext;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 
 public abstract class MainApplication extends CoreNetworkApplication {
@@ -105,6 +111,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     @NotNull
     private Boolean executeInBackground() {
+        ImageUnifyInit.setImageCallback();
         new LocationDetectorHelper(MainApplication.this).getLocation(null,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                 RequestLocationType.APPROXIMATE_OR_PRECISE);

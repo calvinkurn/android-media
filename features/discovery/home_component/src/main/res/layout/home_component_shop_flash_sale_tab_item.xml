@@ -7,6 +7,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <View
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:background="@drawable/bg_flash_sale_tab_shop_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_shop_flash_sale_tab_shop_image"
         android:layout_width="68dp"

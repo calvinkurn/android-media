@@ -28,4 +28,8 @@ class SnapshotLoaderViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder<
         val screenWidth = itemView.resources.displayMetrics.widthPixels
         imageLoader.layoutParams.height = screenWidth
     }
+
+    override fun onViewRecycled() {
+        // noop
+    }
 }

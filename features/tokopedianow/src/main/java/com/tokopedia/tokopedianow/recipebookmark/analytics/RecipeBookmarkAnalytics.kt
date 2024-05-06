@@ -19,6 +19,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getDataLayer
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.hitCommonTracker
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics.ACTION.EVENT_ACTION_CLICK_BACK
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics.ACTION.EVENT_ACTION_CLICK_CANCEL_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics.ACTION.EVENT_ACTION_CLICK_RECIPE_CARD
@@ -42,6 +43,7 @@ import javax.inject.Inject
  */
 
 class RecipeBookmarkAnalytics @Inject constructor(
+    private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface
 ) {
     private object CATEGORY {
@@ -117,9 +119,10 @@ class RecipeBookmarkAnalytics @Inject constructor(
     fun clickRecipeCard(
         recipeId: String,
         recipeTitle: String,
-        warehouseId: String,
         position: Int
     ) {
+        val warehouseId = addressData.getWarehouseId()
+
         val promotion = getPromotion(
             recipeId = recipeId,
             recipeTitle = recipeTitle,
@@ -140,9 +143,10 @@ class RecipeBookmarkAnalytics @Inject constructor(
     fun impressRecipeCard(
         recipeId: String,
         recipeTitle: String,
-        position: Int,
-        warehouseId: String
+        position: Int
     ) {
+        val warehouseId = addressData.getWarehouseId()
+
         val promotion = getPromotion(
             recipeId = recipeId,
             recipeTitle = recipeTitle,
@@ -164,7 +168,7 @@ class RecipeBookmarkAnalytics @Inject constructor(
         recipeId: String,
         recipeTitle: String,
         position: Int,
-        warehouseId: String
+        warehouseId: Long
     ): Bundle {
         return Bundle().apply {
             putString(KEY_CREATIVE_NAME, "${recipeTitle}_${warehouseId}_${userSession.userId}")

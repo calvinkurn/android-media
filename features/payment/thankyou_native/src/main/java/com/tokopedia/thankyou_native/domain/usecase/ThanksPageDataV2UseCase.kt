@@ -116,6 +116,8 @@ class ThanksPageDataV2UseCase @Inject constructor(
                         price_str
                     }
                     item_list{
+                        unique_id
+                        parent_product_id
                         product_id
                         product_name
                         product_brand
@@ -150,6 +152,8 @@ class ThanksPageDataV2UseCase @Inject constructor(
                     }
                     shipping_amount
                     shipping_amount_str
+                    total_discount_shipping
+                    total_discount_product
                     shipping_desc
                     insurance_amount
                     insurance_amount_str

@@ -7,14 +7,19 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.buy_more_get_more.minicart.domain.usecase.GetMiniCartUseCase
+import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartDataUiModel
+import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferInfoForBuyerMapper
 import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferProductListMapper
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpUiState
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.SelectedTierData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
 import com.tokopedia.buy_more_get_more.olp.presentation.OfferLandingPageViewModel
@@ -25,6 +30,7 @@ import com.tokopedia.campaign.data.response.OfferProductListResponse
 import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
@@ -103,6 +109,9 @@ class OfferLandingPageViewModelTest {
     lateinit var cartObserver: Observer<in Result<AddToCartDataModel>>
 
     @RelaxedMockK
+    lateinit var tierGiftObserver: Observer<in Result<SelectedTierData>>
+
+    @RelaxedMockK
     lateinit var errorObserver: Observer<in Throwable>
 
     @RelaxedMockK
@@ -132,6 +141,7 @@ class OfferLandingPageViewModelTest {
             sharingData.observeForever(sharingDataObserver)
             navNotificationLiveData.observeForever(notificationObserver)
             miniCartAdd.observeForever(cartObserver)
+            tierGifts.observeForever(tierGiftObserver)
             error.observeForever(errorObserver)
         }
     }
@@ -144,6 +154,7 @@ class OfferLandingPageViewModelTest {
             sharingData.removeObserver(sharingDataObserver)
             navNotificationLiveData.removeObserver(notificationObserver)
             miniCartAdd.removeObserver(cartObserver)
+            tierGifts.removeObserver(tierGiftObserver)
             error.removeObserver(errorObserver)
         }
     }
@@ -195,7 +206,8 @@ class OfferLandingPageViewModelTest {
     fun `when getOfferingInfo is called, should set uiState data accordingly`() {
         runBlockingTest {
             // Given
-            val expected = Success(getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse()))
+            val expected =
+                Success(getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse()))
             mockGetOfferingInfoForBuyerGqlCall()
 
             // When
@@ -429,6 +441,52 @@ class OfferLandingPageViewModelTest {
     }
 
     @Test
+    fun `when handleTapTier is called, should get minicartData and map it to tier gift list accordingly`() {
+        runBlockingTest {
+            // Given
+            val selectedTier = Tier()
+            val offerInfo = OfferInfoForBuyerUiModel()
+            val tierGifts = listOf(
+                TierGifts(
+                    gifts = listOf(
+                        TierGifts.GiftProduct(
+                            productId = 982480,
+                            quantity = 100
+                        )
+                    ),
+                    tierId = 0
+                )
+            )
+            val expected = Success(SelectedTierData(selectedTier, offerInfo, tierGifts))
+            mockGetMiniCartUseCaseGqlCall()
+
+            // When
+            viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
+
+            // Then
+            val actual = viewModel.tierGifts.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when handleTapTier is returning error, should set error data accordingly`() {
+        runBlockingTest {
+            // Given
+            val selectedTier = Tier()
+            val offerInfo = OfferInfoForBuyerUiModel()
+            mockErrorGetMiniCartUseCaseGqlCall()
+
+            // When
+            viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
+
+            // Then
+            val actual = viewModel.tierGifts.getOrAwaitValue()
+            assert(actual is Fail)
+        }
+    }
+
+    @Test
     fun `when setOfferingJsonData is called, should set setOfferingJsonData to uiState accordingly`() {
         runBlockingTest {
             // Given
@@ -640,7 +698,10 @@ class OfferLandingPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
         mockkObject(BmgmUtil)
         every { BmgmUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
-            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(
+                mockBitmap,
+                mockTransition
+            )
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -660,7 +721,10 @@ class OfferLandingPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
         mockkObject(BmgmUtil)
         every { BmgmUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
-            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(
+                mockBitmap,
+                mockTransition
+            )
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -672,6 +736,40 @@ class OfferLandingPageViewModelTest {
         } returns null
         viewModel.saveBmgmImageToPhoneStorage(context, "")
         assert(viewModel.bmgmImagePath.value == null)
+    }
+
+    @Test
+    fun `given warehouses, when getOfferingInfo is called, should set uiState data accordingly`() {
+        runBlocking {
+            // Given
+            val localCacheModel = LocalCacheModel(
+                warehouses = listOf(
+                    LocalWarehouseModel(
+                        warehouse_id = 12512,
+                        service_type = "2h"
+                    )
+                )
+            )
+            val expected =
+                Success(getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse()))
+            mockGetOfferingInfoForBuyerGqlCall()
+
+            // When
+            viewModel.processEvent(
+                OlpEvent.SetInitialUiState(
+                    offerIds = listOf(120L),
+                    shopIds = 6551456L,
+                    productIds = listOf(28192L),
+                    warehouseIds = listOf(20192L),
+                    localCacheModel = localCacheModel
+                )
+            )
+            viewModel.processEvent(OlpEvent.GetOfferingInfo)
+
+            // Then
+            val actual = viewModel.offeringInfo.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
     }
 
     private fun getDummyUiStateData(): OlpUiState =
@@ -718,6 +816,28 @@ class OfferLandingPageViewModelTest {
     private fun mockGetSharingDataGqlCall() {
         val sharingDataResponse = SharingDataByOfferIdUiModel()
         coEvery { getSharingDataByOfferIDUseCase.execute(any()) } returns sharingDataResponse
+    }
+
+    private fun mockGetMiniCartUseCaseGqlCall() {
+        val miniCartDataResponse = BmgmMiniCartDataUiModel(
+            tiers = listOf(
+                BmgmMiniCartVisitable.TierUiModel(
+                    productsBenefit = listOf(
+                        BmgmMiniCartVisitable.ProductUiModel(
+                            productId = "982480",
+                            quantity = 100
+                        )
+                    )
+                )
+            ),
+            isTierAchieved = true
+        )
+        coEvery { getMiniCartUseCase(any()) } returns miniCartDataResponse
+    }
+
+    private fun mockErrorGetMiniCartUseCaseGqlCall() {
+        val error = MessageErrorException("Server Error")
+        coEvery { getMiniCartUseCase(any()) } throws error
     }
 
     private fun getDummyOfferingInfoResponse(): OfferInfoForBuyerResponse =

@@ -19,15 +19,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingItemAdapter(
     private val listener: ViewHolder.Listener,
-    private val addOnListener: BmgmAddOnViewHolder.Listener
+    private val addOnListener: AddOnViewHolder.Listener
 ) : RecyclerView.Adapter<ProductBundlingItemAdapter.ViewHolder>() {
 
     private val itemList = arrayListOf<ProductListUiModel.ProductUiModel>()
@@ -59,10 +59,10 @@ class ProductBundlingItemAdapter(
     class ViewHolder(
         itemView: View,
         private val listener: Listener,
-        private val addOnListener: BmgmAddOnViewHolder.Listener
+        private val addOnListener: AddOnViewHolder.Listener
     ) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView),
-        BmgmAddOnSummaryViewHolder.Delegate.Mediator,
-        BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
+        AddOnSummaryViewHolder.Delegate.Mediator,
+        AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
         private val containerProductInfo = itemView.findViewById<ConstraintLayout>(R.id.container_product_info)
         private val ivBundleItemInsuranceLogo = itemView.findViewById<ImageUnify>(R.id.iv_item_bom_detail_bundling_insurance_logo)
@@ -87,7 +87,7 @@ class ProductBundlingItemAdapter(
                 setBundleItemProductName(it.productName)
                 setBundleItemProductPriceQuantity(it.quantity, it.priceText)
                 setupBundleItemProductNote(it.productNote)
-                setItemOnClickListener(it.orderId, it.orderDetailId, it.orderStatusId)
+                setItemOnClickListener(it.productId, it.orderStatusId, it.productUrl)
                 setupBundleItemButton(model.button, model.isProcessing)
                 bindAddonSummary(it.addOnSummaryUiModel)
                 setupImpressListener(model)
@@ -121,13 +121,12 @@ class ProductBundlingItemAdapter(
                         }
                         if (
                             oldItem.orderId != newItem.orderId ||
-                            oldItem.orderDetailId != newItem.orderDetailId ||
                             oldItem.orderStatusId != newItem.orderStatusId
                         ) {
                             setItemOnClickListener(
-                                newItem.orderId,
-                                newItem.orderDetailId,
-                                newItem.orderStatusId
+                                newItem.productId,
+                                newItem.orderStatusId,
+                                newItem.productUrl
                             )
                         }
                         if (
@@ -156,7 +155,7 @@ class ProductBundlingItemAdapter(
             return null
         }
 
-        override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
+        override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
             return addOnListener
         }
 
@@ -218,10 +217,12 @@ class ProductBundlingItemAdapter(
             }
         }
 
-        private fun setItemOnClickListener(orderId: String, orderDetailId: String, orderStatusId: String) {
-            itemView.setOnClickListener {
-                listener.onBundleItemClicked(orderId, orderDetailId, orderStatusId)
-            }
+        private fun setItemOnClickListener(
+            productID: String,
+            orderStatusId: String,
+            productUrl: String
+        ) {
+            itemView.setOnClickListener { listener.onBundleItemClicked(productID, orderStatusId, productUrl) }
         }
 
         private fun onItemActionClicked(key: String) {
@@ -242,7 +243,7 @@ class ProductBundlingItemAdapter(
         }
 
         interface Listener {
-            fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String)
+            fun onBundleItemClicked(productID: String, orderStatusId: String, productUrl: String)
             fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel)

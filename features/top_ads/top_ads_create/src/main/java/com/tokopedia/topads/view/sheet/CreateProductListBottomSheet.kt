@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.view.adapter.product.ProductListAdapter
 import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactoryImpl
-import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
+import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.TopadsCreateProductListKeywordListSheetBinding
@@ -49,7 +49,7 @@ class CreateProductListBottomSheet : BottomSheetUnify() {
                 }
             })
         }
-        productListAdapter.items = productList.map { ProductItemViewModel(it).apply { isCompact = true } }.toMutableList()
+        productListAdapter.items = productList.map { ProductItemUiModel(it).apply { isCompact = true } }.toMutableList()
 
     }
 

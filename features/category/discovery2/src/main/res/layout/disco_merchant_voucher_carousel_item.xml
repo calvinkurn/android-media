@@ -5,11 +5,13 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
+    <com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mvc_multi_view"
         android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

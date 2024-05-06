@@ -52,6 +52,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     testImplementation rootProject.ext.testDependencies.mockk

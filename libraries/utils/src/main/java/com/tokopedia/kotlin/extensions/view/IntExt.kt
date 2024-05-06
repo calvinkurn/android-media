@@ -41,13 +41,15 @@ fun Int.pow(exponent: Int) = toDouble().pow(exponent).toInt()
  * e.g. 1100 -> 1,1rb
  */
 fun Int.toAmountString(
-        ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
-        decimalPlaces: Int = 1,
-        separator: String = ",",
-        withSpacing: Boolean = false
+    ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
+    decimalPlaces: Int = 1,
+    separator: String = ",",
+    withSpacing: Boolean = false
 ): String = toLong().toAmountString(ascendingSuffix, decimalPlaces, separator, withSpacing)
 
 fun Int?.orZero(): Int = this ?: 0
 
 val Int.Companion.ZERO get() = 0
 val Int.Companion.ONE get() = 1
+
+val Int.half get() = this.div(2)

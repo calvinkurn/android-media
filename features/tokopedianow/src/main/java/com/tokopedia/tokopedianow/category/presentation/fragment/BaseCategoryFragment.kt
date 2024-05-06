@@ -57,7 +57,7 @@ import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
-import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -185,7 +185,8 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         setupRecyclerView()
         setupRefreshLayout()
         setupNavigationToolbar()
-        setNavToolbarHeight()
+
+        viewModel.onViewCreated()
     }
 
     override fun onResume() {
@@ -568,16 +569,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
                     name = model.name,
                     isLoggedInStatus = viewModel.isLoggedIn()
                 )
-            }
-        }
-    }
-
-    private fun setNavToolbarHeight() {
-        binding?.navToolbar?.let {
-            it.post {
-                val navToolbarHeight = getNavToolbarHeight(it)
-                viewModel.navToolbarHeight = navToolbarHeight
-                viewModel.onViewCreated()
             }
         }
     }

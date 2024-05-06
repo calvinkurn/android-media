@@ -8,26 +8,25 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastReportBinding
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
-import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.isGameParticipants
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.generateHtmlSpanText
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.report.product.ProductReportSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -49,6 +48,7 @@ import com.tokopedia.content.common.R as contentcommonR
 class PlayBroadcastReportFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
+    private val reportAnalyticFactory: PlayBroadcastReportAnalytic.Factory,
     private val router: Router,
 ) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
@@ -71,6 +71,12 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
+
+    private val reportAnalytic = reportAnalyticFactory.create(
+        getAccount = { parentViewModel.selectedAccount },
+        getChannelId = { parentViewModel.channelId },
+        getChannelTitle = { parentViewModel.channelTitle }
     )
 
     override fun getScreenName(): String = "Play Report Page"
@@ -135,6 +141,10 @@ class PlayBroadcastReportFragment @Inject constructor(
                     it.prevValue?.liveReport?.trafficMetricsResult,
                     it.value.liveReport.trafficMetricsResult
                 )
+                renderMetricHighlight(
+                    it.prevValue?.liveReport?.trafficMetricHighlight,
+                    it.value.liveReport.trafficMetricHighlight,
+                )
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -162,7 +172,7 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private fun checkTickerLiveToVodConfig() {
         parentViewModel.submitAction(
-            PlayBroadcastAction.GetTickerBottomSheetConfig(
+            PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                 page = TickerBottomSheetPage.LIVE_REPORT,
             )
         )
@@ -210,6 +220,22 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
+    private fun renderMetricHighlight(
+        prev: NetworkResult<List<LiveStatsUiModel>>?,
+        curr: NetworkResult<List<LiveStatsUiModel>>,
+    ) {
+        if (prev == curr) return
+
+        when (curr) {
+            is NetworkResult.Success -> {
+                summaryInfoView.setTrafficMetricsHighlight(curr.data)
+            }
+            else -> {
+                summaryInfoView.setTrafficMetricsHighlight(emptyList())
+            }
+        }
+    }
+
     private fun renderTickerDisableLiveToVod(
         prev: TickerBottomSheetUiModel?,
         state: TickerBottomSheetUiModel,
@@ -241,9 +267,8 @@ class PlayBroadcastReportFragment @Inject constructor(
 
                 override fun onDismiss() {
                     parentViewModel.submitAction(
-                        PlayBroadcastAction.SetLiveToVodPref(
+                        PlayBroadcastAction.SetDynamicTickerBottomSheetPref(
                             type = TickerBottomSheetType.TICKER,
-                            page = TickerBottomSheetPage.LIVE_REPORT,
                         )
                     )
                 }
@@ -253,13 +278,20 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-        if (metricType.isGameParticipants) {
-            analytic.clickInteractiveParticipantDetail(
-                channelID = viewModel.channelId,
-                channelTitle = viewModel.channelTitle,
-            )
-            viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+    override fun onMetricClicked(view: SummaryInfoViewComponent, liveStats: LiveStatsUiModel) {
+        when (liveStats) {
+            is LiveStatsUiModel.EstimatedIncome -> {
+                reportAnalytic.clickEstimatedIncomeCardOnSummaryPage()
+                openProductReportSummarySheet()
+            }
+            is LiveStatsUiModel.GameParticipant -> {
+                analytic.clickInteractiveParticipantDetail(
+                    channelID = viewModel.channelId,
+                    channelTitle = viewModel.channelTitle,
+                )
+                viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+            }
+            else -> {}
         }
     }
 
@@ -269,6 +301,13 @@ class PlayBroadcastReportFragment @Inject constructor(
             requireContext().classLoader
         )
         leaderboardReportBottomSheet.show(childFragmentManager)
+    }
+
+    private fun openProductReportSummarySheet() {
+        ProductReportSummaryBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader
+        ).show(childFragmentManager)
     }
 
     fun setListener(listener: Listener) {

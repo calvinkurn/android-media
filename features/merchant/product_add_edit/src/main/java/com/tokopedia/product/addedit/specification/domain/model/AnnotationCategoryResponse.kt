@@ -16,6 +16,10 @@ data class DrogonAnnotationCategoryV2 (
 )
 
 data class AnnotationCategoryData (
+        @SerializedName("variantId")
+        @Expose
+        val variantId : Long = 0,
+
 		@SerializedName("sortOrder")
 		@Expose
 		val sortOrder : Int = 0,
@@ -26,7 +30,15 @@ data class AnnotationCategoryData (
 
 		@SerializedName("values")
 		@Expose
-		val data : List<Values> = emptyList()
+		val data : List<Values> = emptyList(),
+
+        @SerializedName("isMandatory")
+        @Expose
+        val isMandatory : Boolean = false,
+
+        @SerializedName("isCustomAnnotType")
+        @Expose
+        val isCustomAnnotType : Boolean = false
 )
 
 data class Values (

@@ -1,10 +1,8 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryHeader
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
@@ -20,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
@@ -60,27 +59,19 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
+
         val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -97,10 +88,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         val categoryPage = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel,
             productAdsUiModel
@@ -118,6 +106,23 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.visitableListLiveData
             .verifyValueEquals(categoryPage)
+    }
+
+    @Test
+    fun `given get product ads error when getFirstPage should remove ads carousel from visitableList`() {
+        val error = NullPointerException()
+        setupAddressAndUserData()
+
+        onCategoryDetail_thenReturns()
+        onTargetedTicker_thenReturns()
+        onGetProductAds_thenReturn(error)
+
+        viewModel.onViewCreated()
+
+        val expectedVisitableList = createVisitableList()
+
+        viewModel.visitableListLiveData
+            .verifyValueEquals(expectedVisitableList)
     }
 
     @Test
@@ -157,26 +162,17 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
         viewModel.onViewCreated()
 
-        // map header space
-        val headerSpaceUiModel = categoryDetailResponse
-            .mapToHeaderSpace(
-                space = navToolbarHeight
-            )
-
-        // map choose address
-        val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
-
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
             targetedTickerResponse
         )
-        val tickerUiModel = categoryDetailResponse
-            .mapToTicker(tickerDataList.tickerList)
 
-        // map title
-        val titleUiModel = categoryDetailResponse
-            .mapToCategoryTitle()
+        // map header
+        val header = categoryDetailResponse.mapToCategoryHeader(
+            ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerDataList.tickerList
+        )
 
         // map category navigation
         val categoryNavigationUiModel = categoryDetailResponse
@@ -188,10 +184,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
         )
 
         val categoryPage = mutableListOf(
-            headerSpaceUiModel,
-            chooseAddressUiModel,
-            tickerUiModel,
-            titleUiModel,
+            header,
             categoryNavigationUiModel,
             productRecommendationUiModel
         )
@@ -278,7 +271,9 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
             val getProductAdsResponse = getProductAdsResponse.productAds
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
+
             onAddToCart_thenReturns(addToCartDataModel)
+            onGetIsLoggedIn_thenReturn(loggedIn = false)
 
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
                 response = getProductAdsResponse

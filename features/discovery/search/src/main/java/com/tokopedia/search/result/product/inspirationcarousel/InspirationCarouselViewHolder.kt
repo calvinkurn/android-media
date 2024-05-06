@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEE_MORE
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
 import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -79,11 +81,19 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselDataView) {
+        bindImpression(element)
         bindHeader(element)
         if (isChipsLayout(element))
             bindChipsCarousel(element)
         else
             bindContent(element)
+    }
+
+    private fun bindImpression(element: InspirationCarouselDataView) {
+        val option = element.options.getOrNull(0) ?: return
+        binding?.root?.addOnImpression1pxListener(option.byteIOImpressHolder) {
+            inspirationCarouselListener.onInspirationCarouselOptionImpressed1Px(option)
+        }
     }
 
     private fun bindHeader(element: InspirationCarouselDataView) {
@@ -151,7 +161,10 @@ class InspirationCarouselViewHolder(
             channelHeader = element.convertToChannelHeader(),
             listener = object : HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
-                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(
+                        option,
+                        CLICK_SEE_MORE,
+                    )
                 }
             },
             maxLines = SEARCH_PAGE_RESULT_MAX_LINE
@@ -318,7 +331,9 @@ class InspirationCarouselViewHolder(
                     ) {
                         val product =
                             activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
-                        inspirationCarouselListener.onInspirationCarouselChipsProductClicked(product)
+                        inspirationCarouselListener.onInspirationCarouselChipsProductClicked(
+                            product,
+                        )
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object :
@@ -331,7 +346,7 @@ class InspirationCarouselViewHolder(
                             activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
 
                         inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(
-                            product
+                            product,
                         )
                     }
 
@@ -369,7 +384,7 @@ class InspirationCarouselViewHolder(
 
             if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                 val option = element.options.getOrNull(0) ?: return
-                val productList = option.product.map{ product -> product.toProductCardModel() }
+                val productList = option.product.map { product -> product.toProductCardModel() }
                 it.initRecyclerViewForGrid(option, productList)
                 configureSeeAllButton(option)
             } else {
@@ -479,7 +494,7 @@ class InspirationCarouselViewHolder(
 
     private fun bindSeeAllButtonListener(option: InspirationCarouselDataView.Option) {
         binding?.inspirationCarouselSeeAllButton?.setOnClickListener {
-            inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+            inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option, CLICK_SEE_MORE)
         }
     }
 

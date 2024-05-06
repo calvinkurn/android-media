@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.order_management_common.domain.data.AddOnSummary
 import com.tokopedia.order_management_common.domain.data.ProductBenefit
 
 data class GetBuyerOrderDetailResponse(
@@ -81,12 +82,6 @@ data class GetBuyerOrderDetailResponse(
             @SerializedName("details")
             @Expose
             val details: Details? = Details(),
-            @SerializedName("has_reso_status")
-            @Expose
-            val hasResoStatus: Boolean? = false,
-            @SerializedName("has_ppp")
-            @Expose
-            val hasInsurance: Boolean? = false,
             @SerializedName("additional_data")
             @Expose
             val additionalData: BomAdditionalData? = null,
@@ -95,7 +90,10 @@ data class GetBuyerOrderDetailResponse(
             val isPof: Boolean? = false,
             @SerializedName("is_plus")
             @Expose
-            val isPlus: Boolean? = false
+            val isPlus: Boolean? = false,
+            @SerializedName("widget")
+            @Expose
+            val widget: Widget? = null
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
@@ -516,84 +514,8 @@ data class GetBuyerOrderDetailResponse(
                 val label: String = "",
                 @SerializedName("order_level")
                 @Expose
-                val orderLevel: OrderLevel? = OrderLevel()
-            ) {
-
-                data class OrderLevel(
-                    @SerializedName("addons")
-                    @Expose
-                    val addons: List<Addon>? = listOf(),
-                    @SerializedName("total")
-                    @Expose
-                    val total: Long = 0,
-                    @SerializedName("total_price")
-                    @Expose
-                    val totalPrice: Double = 0.0,
-                    @SerializedName("total_price_str")
-                    @Expose
-                    val totalPriceStr: String = "",
-                    @SerializedName("total_quantity")
-                    @Expose
-                    val totalQuantity: Int = 0
-                ) {
-                    data class Addon(
-                        @SerializedName("id")
-                        @Expose
-                        val id: String = "0",
-                        @SerializedName("image_url")
-                        @Expose
-                        val imageUrl: String = "",
-                        @SerializedName("metadata")
-                        @Expose
-                        val metadata: Metadata? = Metadata(),
-                        @SerializedName("name")
-                        @Expose
-                        val name: String = "",
-                        @SerializedName("order_id")
-                        @Expose
-                        val orderId: String = "0",
-                        @SerializedName("price_str")
-                        @Expose
-                        val priceStr: String = "",
-                        @SerializedName("price")
-                        @Expose
-                        val price: Double = 0.0,
-                        @SerializedName("quantity")
-                        @Expose
-                        val quantity: Int = 0,
-                        @SerializedName("subtotal_price_str")
-                        @Expose
-                        val subtotalPriceStr: String = "",
-                        @SerializedName("type")
-                        @Expose
-                        val type: String = ""
-                    ) {
-                        data class Metadata(
-                            @SerializedName("add_on_note")
-                            @Expose
-                            val addonNote: AddonNote = AddonNote(),
-                            @SerializedName("info_link")
-                            @Expose
-                            val infoLink: String = ""
-                        ) {
-                            data class AddonNote(
-                                @SerializedName("notes")
-                                @Expose
-                                val notes: String = "",
-                                @SerializedName("tips")
-                                @Expose
-                                val tips: String = "",
-                                @SerializedName("to")
-                                @Expose
-                                val to: String = "",
-                                @SerializedName("from")
-                                @Expose
-                                val from: String = ""
-                            )
-                        }
-                    }
-                }
-            }
+                val addonSummary: AddOnSummary? = null
+            )
 
             data class Details(
                 @SerializedName("bundle_icon")
@@ -655,6 +577,8 @@ data class GetBuyerOrderDetailResponse(
                         val productId: String = "0",
                         @SerializedName("product_name")
                         val productName: String = "",
+                        @SerializedName("product_url")
+                        val productUrl: String = "",
                         @SerializedName("thumbnail")
                         val thumbnail: String = "",
                         @SerializedName("price")
@@ -676,7 +600,7 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("category_id")
                         val categoryId: String = "0",
                         @SerializedName("addon_summary")
-                        val addonSummary: AddonSummary? = null
+                        val addonSummary: AddOnSummary? = null
                     )
                 }
 
@@ -767,6 +691,10 @@ data class GetBuyerOrderDetailResponse(
                         @Expose
                         val productName: String = "",
 
+                        @SerializedName("product_url")
+                        @Expose
+                        val productUrl: String = "",
+
                         @SerializedName("quantity")
                         @Expose
                         val quantity: Int = 0,
@@ -786,14 +714,14 @@ data class GetBuyerOrderDetailResponse(
 
                         @SerializedName("addon_summary")
                         @Expose
-                        val addonSummary: AddonSummary? = AddonSummary()
+                        val addonSummary: AddOnSummary? = null
                     )
                 }
 
                 data class NonBundle(
                     @SerializedName("addon_summary")
                     @Expose
-                    val addonSummary: AddonSummary? = AddonSummary(),
+                    val addonSummary: AddOnSummary? = null,
 
                     @SerializedName("button")
                     @Expose
@@ -855,6 +783,37 @@ data class GetBuyerOrderDetailResponse(
                     @Expose
                     @SerializedName("product_url")
                     val productUrl: String = ""
+                )
+            }
+
+            data class Widget(
+                @SerializedName("reso_status")
+                @Expose
+                val resoStatus: ResoStatus? = null,
+                @SerializedName("reso_csat")
+                @Expose
+                val resoCsat: ResoCsat? = null,
+                @SerializedName("ppp")
+                @Expose
+                val ppp: Ppp? = null
+            ) {
+                data class ResoStatus(
+                    @SerializedName("show")
+                    @Expose
+                    val show: Boolean = false
+                )
+                data class ResoCsat(
+                    @SerializedName("show")
+                    @Expose
+                    val show: Boolean = false,
+                    @SerializedName("help_url")
+                    @Expose
+                    val helpUrl: String = ""
+                )
+                data class Ppp(
+                    @SerializedName("show")
+                    @Expose
+                    val show: Boolean = false
                 )
             }
         }

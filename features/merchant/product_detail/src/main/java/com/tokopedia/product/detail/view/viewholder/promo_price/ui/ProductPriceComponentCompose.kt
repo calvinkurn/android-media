@@ -1,9 +1,10 @@
 package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestImage
@@ -36,6 +38,7 @@ import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource.Remote
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
@@ -67,48 +70,35 @@ fun NormalPriceComponent(
     freeOngkirImageUrl: String = ""
 ) {
     val data = uiModel ?: return
-    Column(
+    FlowRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+        crossAxisAlignment = FlowCrossAxisAlignment.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            NestTypography(
-                data.priceFmt,
-                textStyle = NestTheme.typography.heading3.copy(
-                    color = NestTheme.colors.NN._950,
-                    fontWeight = FontWeight.Bold,
-                )
-            )
-
-            if (freeOngkirImageUrl.isNotEmpty()) {
-                NestImage(
-                    source = Remote(freeOngkirImageUrl, customUIError = {
-
-                    }),
-                    type = NestImageType.Rect(0.dp),
-                    modifier = Modifier
-                        .height(20.dp)
-                        .wrapContentWidth()
-                        .padding(start = 8.dp)
-                )
-            }
-        }
-
+        NestTypography(
+            text = data.priceFmt,
+            textStyle = NestTheme.typography.heading2.copy(
+                color = NestTheme.colors.NN._950,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier
+                .padding(end = 4.dp)
+                .tag("txt_main_price")
+        )
         Row(
-            modifier = Modifier.padding(top = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (data.slashPriceFmt.isNotEmpty()) {
                 NestTypography(
-                    data.slashPriceFmt,
+                    modifier = Modifier.tag("text_slash_price"),
+                    text = data.slashPriceFmt,
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._600,
                         textDecoration = TextDecoration.LineThrough
                     )
                 )
             }
-
             if (data.discPercentage.isNotEmpty()) {
                 NestTypography(
                     data.discPercentage,
@@ -116,7 +106,19 @@ fun NormalPriceComponent(
                         color = NestTheme.colors.RN._500,
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier.padding(start = 2.dp)
+                )
+            }
+            if (freeOngkirImageUrl.isNotEmpty()) {
+                NestImage(
+                    source = Remote(freeOngkirImageUrl, customUIError = {
+                    }),
+                    type = NestImageType.Rect(0.dp),
+                    modifier = Modifier
+                        .height(18.dp)
+                        .wrapContentWidth()
+                        .padding(start = 4.dp)
+                        .tag("img_free_ongkir")
                 )
             }
         }
@@ -137,10 +139,11 @@ fun PromoPriceHeader(
     ) {
         if (mainIconUrl.isNotEmpty()) {
             NestImage(
-                source = Remote(mainIconUrl,
+                source = Remote(
+                    mainIconUrl,
                     customUIError = {
-
-                    }),
+                    }
+                ),
                 modifier = Modifier
                     .size(24.dp)
                     .padding(end = 4.dp)
@@ -204,11 +207,9 @@ fun PromoPriceFooter(
             )
         }
 
-
         if (boLogo.isNotEmpty()) {
             NestImage(
                 source = Remote(source = boLogo, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier
@@ -218,6 +219,7 @@ fun PromoPriceFooter(
                         end.linkTo(parent.absoluteRight)
                     }
                     .height(18.dp)
+                    .tag("img_free_ongkir")
             )
         }
 
@@ -269,7 +271,6 @@ fun PromoPriceCard(
         if (data.superGraphicIconUrl.isNotEmpty()) {
             NestImage(
                 source = Remote(source = data.superGraphicIconUrl, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier.constrainAs(superGraphic) {
@@ -343,48 +344,17 @@ val String.color
         NestTheme.colors.NN._0
     }
 
+@SuppressLint("RememberReturnType")
 @Composable
 @Preview
 fun PromoPriceCardPreview() {
     NestTheme {
-        Surface(
+        Box(
             modifier = Modifier
                 .background(NestTheme.colors.NN._0)
-                .fillMaxSize(),
-            contentColor = NestTheme.colors.NN._0
+                .fillMaxSize()
         ) {
-            val egSuperGraphic =
-                "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20background%20red.png"
-            val boLogo = "https://images.tokopedia.net/img/shop-page-reimagined/bo-normal.png"
-            val mainIconUrl =
-                "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20icon%20red.png"
-
-            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                PromoPriceCard(
-                    PromoPriceUiModel(
-                        priceAdditionalFmt = "Tanpa Promo: Rp.70.000",
-                        promoPriceFmt = "Rp.9.000.000",
-                        promoSubtitle = "Diskon 200rb Cashback 300rb",
-                        slashPriceFmt = "Rp.120.000.000.000.000.000",
-                        separatorColor = "",
-                        mainTextColor = "",
-                        cardBackgroundColor = "",
-                        mainIconUrl = mainIconUrl,
-                        boIconUrl = boLogo,
-                        superGraphicIconUrl = egSuperGraphic,
-                        applink = ""
-                    )
-                )
-
-                NormalPriceComponent(
-                    uiModel = Price(
-                        priceFmt = "Rp.11.000.000",
-                        slashPriceFmt = "Rp.15.000.000",
-                        discPercentage = "20%"
-                    ),
-                    freeOngkirImageUrl = boLogo
-                )
-            }
+//            Testing()
         }
     }
 }

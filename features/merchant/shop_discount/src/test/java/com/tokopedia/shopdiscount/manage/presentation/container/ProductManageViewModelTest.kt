@@ -2,10 +2,13 @@ package com.tokopedia.shopdiscount.manage.presentation.container
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
+import com.tokopedia.shopdiscount.info.data.response.GetSlashPriceTickerResponse
+import com.tokopedia.shopdiscount.info.domain.usecase.GetSlashPriceTickerUseCase
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListMetaResponse
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
@@ -54,6 +57,12 @@ class ProductManageViewModelTest {
     @RelaxedMockK
     lateinit var sellerEligibilityObserver: Observer<in Result<SellerEligibilityData>>
 
+    @RelaxedMockK
+    lateinit var getSlashPriceTickerUseCase: GetSlashPriceTickerUseCase
+
+    @RelaxedMockK
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -63,6 +72,8 @@ class ProductManageViewModelTest {
             CoroutineTestDispatchersProvider,
             getSlashPriceProductListMetaUseCase,
             getSlashPriceBenefitUseCase,
+            getSlashPriceTickerUseCase,
+            getTargetedTickerUseCase,
             authorizeAccessUseCase,
             productListMetaMapper,
             userSession
@@ -302,4 +313,30 @@ class ProductManageViewModelTest {
             assert(viewModel.sellerEligibility.value is Fail)
         }
 
+    @Test
+    fun `when get targeted ticker success, then result should success`(){
+        //Given
+        coEvery {
+            getSlashPriceTickerUseCase.executeOnBackground()
+        } returns GetSlashPriceTickerResponse()
+        coEvery {
+            getTargetedTickerUseCase.execute(any())
+        } returns listOf()
+        //When
+        viewModel.getTargetedTickerData()
+        //Then
+        assert(viewModel.targetedTickerData.value is Success)
+    }
+
+    @Test
+    fun `when get targeted ticker error, then result should fail`(){
+        //Given
+        coEvery {
+            getSlashPriceTickerUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+        //When
+        viewModel.getTargetedTickerData()
+        //Then
+        assert(viewModel.targetedTickerData.value is Fail)
+    }
 }

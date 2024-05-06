@@ -10,10 +10,12 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
+import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerRequestCancellationIntentParamKey
+import com.tokopedia.buyerorderdetail.presentation.activity.OrderCancellationCsatActivity
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -21,6 +23,9 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.webview.KEY_TITLE
+import com.tokopedia.resources.common.R as resourcescommonR
 
 class BuyerOrderDetailNavigator(
     private val activity: Activity,
@@ -29,19 +34,18 @@ class BuyerOrderDetailNavigator(
 
     companion object {
         private const val KEY_URL = "url"
-        private const val TELEPHONY_URI = "tel:"
         private const val PREFIX_HTTP = "http"
-        private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
         private const val BUYER_MODE = 1
+
+        private const val BRC_CSAT_ORDER_ID_PARAM = "${'$'}orderID"
+        private const val BRC_CSAT_FEEDBACK_PARAM = "${'$'}feedback"
+        private val BRC_CSAT_FORM_URL = "${TokopediaUrl.getInstance().WEB}order-details/marketplace/$BRC_CSAT_ORDER_ID_PARAM/csat?feedback=$BRC_CSAT_FEEDBACK_PARAM"
     }
 
     private fun applyTransition() {
-        activity.overridePendingTransition(
-            com.tokopedia.resources.common.R.anim.slide_right_in_medium,
-            com.tokopedia.resources.common.R.anim.slide_left_out_medium
-        )
+        activity.overridePendingTransition(resourcescommonR.anim.slide_right_in_medium, resourcescommonR.anim.slide_left_out_medium)
     }
 
     fun goToBomDetailPage(orderId: String) {
@@ -85,14 +89,6 @@ class BuyerOrderDetailNavigator(
     fun goToShopPage(shopId: String) {
         val intent =
             RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
-        applyTransition()
-    }
-
-    fun goToProductSnapshotPage(orderId: String, orderDetailId: String) {
-        val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
-        val intent = RouteManager.getIntent(activity, appLinkSnapShot)
-        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, false)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
@@ -234,5 +230,20 @@ class BuyerOrderDetailNavigator(
             }
         fragment.startActivityForResult(intent, requestCode)
         applyTransition()
+    }
+
+    fun goToBrcCsatForm(orderId: String, feedback: Int) {
+        val intent = Intent(activity, OrderCancellationCsatActivity::class.java).apply {
+            putExtra(com.tokopedia.webview.KEY_URL, BRC_CSAT_FORM_URL
+                .replace(BRC_CSAT_ORDER_ID_PARAM, orderId)
+                .replace(BRC_CSAT_FEEDBACK_PARAM, feedback.toString()))
+            putExtra(KEY_TITLE, activity.getString(R.string.bom_brc_csat_form_page_title))
+        }
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM)
+        applyTransition()
+    }
+
+    fun openProductUrl(url: String) {
+        openAppLink(url, true)
     }
 }

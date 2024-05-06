@@ -38,6 +38,11 @@ android {
 
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -68,6 +73,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
@@ -93,15 +101,24 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
+
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeActivity
 
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 }
 
 project.ext {
