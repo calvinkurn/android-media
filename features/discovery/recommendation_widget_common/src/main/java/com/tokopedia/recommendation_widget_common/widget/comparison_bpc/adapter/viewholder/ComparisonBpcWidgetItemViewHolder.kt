@@ -3,9 +3,15 @@ package com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonBpcWidgetBinding
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcAnalyticListener
@@ -27,6 +33,13 @@ class ComparisonBpcWidgetItemViewHolder(
         val LAYOUT = R.layout.item_comparison_bpc_widget
     }
     val context: Context = view.context
+
+    init {
+        itemView.addOnAttachStateChangeListener(
+            onViewAttachedToWindow = { onViewAttachedToWindow() },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+        )
+    }
 
     override fun bind(element: ComparisonBpcItemModel) {
         this.elementItem = element
@@ -50,6 +63,17 @@ class ComparisonBpcWidgetItemViewHolder(
                     }
                     listener.onProductCardClicked(element.recommendationItem, element.trackingModel, element.anchorProductId)
                 }
+                override fun onAreaClicked(v: View) {
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                }
             })
             productCardView.addOnImpressionListener(element) {
                 if (element.recommendationItem.isTopAds) {
@@ -65,6 +89,15 @@ class ComparisonBpcWidgetItemViewHolder(
                 listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId, element.widgetTitle)
             }
         }
+    }
+
+    override fun onViewAttachedToWindow() {
+        this.elementItem?.recommendationItem?.sendShowAdsByteIo(itemView.context)
+    }
+
+    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
+        this.elementItem?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        setVisiblePercentage(Int.ZERO)
     }
 
     private fun setLayoutParams(element: ComparisonBpcItemModel) {
