@@ -36,6 +36,8 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import kotlin.math.roundToInt
@@ -174,21 +176,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             }
 
             Calendar.DOUBLE, Calendar.GRID -> {
-                if (properties.calendarLayout == Calendar.GRID) {
-                    layoutParams.width =
-                        ((width) / 2)
-                    imageLayoutParams.width =
-                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(
-                            unifyprinciplesR.dimen.spacing_lvl8
-                        )
-                } else {
-                    layoutParams.width =
-                        ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)) / 2)
-                    imageLayoutParams.width =
-                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(
-                            unifyprinciplesR.dimen.spacing_lvl8
-                        )
-                }
+                layoutParams.width =
+                    ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_24)) / 2)
+                imageLayoutParams.width =
+                    layoutParams.width - itemView.context.resources.getDimensionPixelSize(
+                        unifyprinciplesR.dimen.spacing_lvl8
+                    )
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
                 imageLayoutParams.height =
@@ -200,7 +193,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
             Calendar.TRIPLE -> {
                 layoutParams.width =
-                    ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)) / TRIPLE_WIDTH_RATIO)
+                    ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_24)) / TRIPLE_WIDTH_RATIO)
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
                 imageLayoutParams.height =
@@ -208,6 +201,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarImage.layoutParams = imageLayoutParams
                 itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_6)
                 itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_3)
+            }
+            // CALENDAR.SINGLE
+            else -> {
+                layoutParams.width = width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
+                imageLayoutParams.width = 150.toPx()
+                calendarImage.layoutParams = imageLayoutParams
             }
         }
         if (dataItem?.imageUrl.isNullOrEmpty()) {

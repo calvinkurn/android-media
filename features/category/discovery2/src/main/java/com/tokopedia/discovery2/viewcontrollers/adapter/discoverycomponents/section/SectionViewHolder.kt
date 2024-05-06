@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.toPx
 
 class SectionViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -61,7 +62,8 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         lifecycleOwner?.let {
             viewModel?.hideSection?.observe(it) { shouldHideSection ->
                 if (shouldHideSection) {
-                    viewModel?.getSectionID()?.let { it1 -> (fragment as DiscoveryFragment).handleHideSection(it1) }
+                    viewModel?.getSectionID()
+                        ?.let { it1 -> (fragment as DiscoveryFragment).handleHideSection(it1) }
                 }
             }
             viewModel?.getSyncPageLiveData()?.observe(it) { shouldSync ->
@@ -127,36 +129,59 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     private fun renderFestiveForeground(imageUrl: String) {
         festiveForeground.show()
 
-        festiveForeground.loadImageWithoutPlaceholder(
-            imageUrl,
-            listener = object : ImageLoaderStateListener {
-                override fun successLoad(view: ImageView) {
-                    festiveForeground.minimumHeight = 0
-                }
+        itemView.postDelayed({
+            addHeightForeground(festiveForeground)
+            festiveForeground.loadImageWithoutPlaceholder(
+                imageUrl,
+                listener = object : ImageLoaderStateListener {
+                    override fun successLoad(view: ImageView) {
+                        festiveForeground.minimumHeight = 0
+                    }
 
-                override fun failedLoad(view: ImageView) {
-                    view.hide()
+                    override fun failedLoad(view: ImageView) {
+                        view.hide()
+                    }
                 }
-            }
-        )
+            )
+        }, 50)
     }
 
     private fun renderFestiveBackground(imageUrl: String) {
         festiveBackground.show()
 
-        festiveBackground.loadImageWithoutPlaceholder(
-            imageUrl,
-            listener = object : ImageLoaderStateListener {
-                override fun successLoad(view: ImageView) {
-                    festiveBackground.minimumHeight = 0
-                }
+        itemView.postDelayed({
+            addHeightBgOnce(festiveBackground)
+            festiveBackground.loadImageWithoutPlaceholder(
+                imageUrl,
+                listener = object : ImageLoaderStateListener {
+                    override fun successLoad(view: ImageView) {
+                        festiveBackground.minimumHeight = 0
+                    }
 
-                override fun failedLoad(view: ImageView) {
-                    view.hide()
+                    override fun failedLoad(view: ImageView) {
+                        view.hide()
+                    }
                 }
-            }
-        )
+            )
+        }, 50)
     }
+
+    private fun addHeightBgOnce(view: View) {
+        if (!addHeightBackground && view.height > 0) {
+            view.layoutParams.height = view.height + 8.toPx()
+            addHeightBackground = true
+        }
+    }
+
+    private fun addHeightForeground(view: View) {
+        if (!addHeightForeground && view.height > 0) {
+            view.layoutParams.height = view.height + 8.toPx()
+            addHeightForeground = true
+        }
+    }
+
+    var addHeightForeground = false
+    var addHeightBackground = false
 
     private fun Context?.getMinHeight(): Int? {
         return this?.resources?.getDimensionPixelOffset(festive_section_min_height)
@@ -217,10 +242,12 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                             val isFound = notifyShopHeroComponent(viewModel, payload)
                             if (isFound) return@loop
                         }
+
                         ComponentsList.FlashSaleTokoTab -> {
                             notifyFSTTargetedComponent()
                             return@loop
                         }
+
                         else -> return@loop
                     }
                 }
