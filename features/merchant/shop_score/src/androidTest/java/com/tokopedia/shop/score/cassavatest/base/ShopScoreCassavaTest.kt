@@ -6,7 +6,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopScoreTest
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
