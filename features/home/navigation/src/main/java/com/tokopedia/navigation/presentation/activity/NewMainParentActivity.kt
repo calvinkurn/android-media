@@ -685,8 +685,8 @@ class NewMainParentActivity :
                 this,
                 Bundle().apply {
                     putDiscoId(id.discoId)
-//                    putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
-                    putShouldShowGlobalNav(false)
+                    putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
+//                    putShouldShowGlobalNav(false)
                 }
             )
         }
