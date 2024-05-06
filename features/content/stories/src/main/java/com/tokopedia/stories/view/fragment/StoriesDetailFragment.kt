@@ -827,6 +827,11 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     override fun onSeePerformance(view: StoriesThreeDotsBottomSheet) {
+        analytic?.clickPerformance(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            storyType = viewModel.mDetail.storyType,
+        )
         router.route(requireContext(), viewModel.mDetail.performanceLink)
     }
 
