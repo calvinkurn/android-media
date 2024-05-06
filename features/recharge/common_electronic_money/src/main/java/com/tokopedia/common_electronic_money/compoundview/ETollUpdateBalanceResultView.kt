@@ -64,7 +64,11 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash || inquiryBalanceModel.isBCAGenOne ||
              inquiryBalanceModel.isErrorTopUp2) View.VISIBLE else View.GONE
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
-            buttonTopup.text = it.buttonText
+            if (!inquiryBalanceModel.isBCAGenOne) {
+                buttonTopup.text = it.buttonText
+            } else {
+                buttonTopup.text = resources.getString(R.string.emoney_nfc_bca_back_gen_1)
+            }
             eTollCardInfoView.visibility = View.VISIBLE
             eTollCardInfoView.showCardInfo(it, inquiryBalanceModel.isBCAGenOne)
             buttonTopup.visibility = View.VISIBLE
@@ -94,7 +98,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
                     tickerType = Ticker.TYPE_ERROR
                     setHtmlDescription(inquiryBalanceModel.messageBCAGen1)
                 } else if (inquiryBalanceModel.isErrorTopUp2) {
-                    tickerType = Ticker.TYPE_WARNING
+                    tickerType = Ticker.TYPE_ERROR
                     setHtmlDescription(inquiryBalanceModel.messageTopUp2)
                 }
             }
