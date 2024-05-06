@@ -1,9 +1,6 @@
 package com.tokopedia.imageassets
 
 object TokopediaImageUrl {
-    const val SRE_OTHER_MENU_RM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_rm.png"
-    const val SRE_OTHER_MENU_PM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_pm.png"
-    const val SRE_OTHER_MENU_OS_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_os.png"
     const val EMPTY_DATA_URL = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     const val SHOP_BADGE = "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
     const val IMAGE_OUTSIDE_INDONESIA = "https://images.tokopedia.net/img/android/logistic/location_outside_indonesia.png"
