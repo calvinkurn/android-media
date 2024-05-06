@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.home.HomeInternalRouter
 import com.tokopedia.navigation.presentation.activity.NewMainParentActivity
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
@@ -33,7 +34,12 @@ private const val PARAM_HOME = "home"
 private const val KEY_DISCO_ID = "disco_id"
 private const val KEY_SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
 
-typealias FragmentCreator = FragmentManager.(AppCompatActivity, Bundle) -> Fragment
+data class FragmentCreator(
+    val requireLogin: Boolean,
+    val create: FragmentManager.(AppCompatActivity, Bundle) -> Fragment
+)
+
+//typealias FragmentCreator = FragmentManager.(AppCompatActivity, Bundle) -> Fragment
 
 val BottomNavHomeType = BottomNavBarItemType("home")
 val BottomNavFeedType = BottomNavBarItemType("feed")
@@ -49,17 +55,25 @@ val BottomNavWishlistId = BottomNavItemId(BottomNavWishlistType)
 val BottomNavTransactionId = BottomNavItemId(BottomNavTransactionType)
 val BottomNavProfileId = BottomNavItemId(BottomNavProfileType)
 
-val HomeFragmentCreator: FragmentCreator = { activity, args ->
+val HomeFragmentCreator = FragmentCreator(
+    requireLogin = false
+) { activity, args ->
     val intent = activity.intent
     HomeInternalRouter.getHomeFragment(
         intent.getBooleanExtra(NewMainParentActivity.SCROLL_RECOMMEND_LIST, false),
         args.shouldShowGlobalNav
     )
 }
-val FeedFragmentCreator: FragmentCreator = { activity, _ ->
+
+val FeedFragmentCreator = FragmentCreator(
+    requireLogin = false
+) { activity, _ ->
     RouteManager.instantiateFragment(activity, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, activity.intent.extras)
 }
-val DiscoFragmentCreator: FragmentCreator = { activity, args ->
+
+val DiscoFragmentCreator = FragmentCreator(
+    requireLogin = false
+) { activity, args ->
     val extras = activity.intent.extras ?: Bundle()
     with (extras) {
         putString(DISCOVERY_APPLINK, DISCOVERY_APPLINK_TARGET)
@@ -69,7 +83,10 @@ val DiscoFragmentCreator: FragmentCreator = { activity, args ->
     }
     RouteManager.instantiateFragment(activity, FragmentConst.DISCOVERY_FRAGMENT, extras)
 }
-val WishlistFragmentCreator: FragmentCreator = { activity, args ->
+
+val WishlistFragmentCreator = FragmentCreator(
+    requireLogin = true
+) { activity, args ->
     val extras = activity.intent.extras ?: Bundle()
     with (extras) {
         putString(PARAM_ACTIVITY_WISHLIST_COLLECTION, PARAM_HOME)
@@ -78,7 +95,10 @@ val WishlistFragmentCreator: FragmentCreator = { activity, args ->
     }
     RouteManager.instantiateFragment(activity, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, extras)
 }
-val TransactionFragmentCreator: FragmentCreator = { activity, args ->
+
+val TransactionFragmentCreator = FragmentCreator(
+    requireLogin = true
+) { activity, args ->
     val extras = activity.intent.extras ?: Bundle()
     with (extras) {
         putString(UOH_SOURCE_FILTER_KEY, "")
@@ -88,12 +108,16 @@ val TransactionFragmentCreator: FragmentCreator = { activity, args ->
     }
     RouteManager.instantiateFragment(activity, FragmentConst.UOH_LIST_FRAGMENT, extras)
 }
-val ProfileFragmentCreator: FragmentCreator = { activity, _ ->
+
+val ProfileFragmentCreator = FragmentCreator(
+    requireLogin = false
+)  { activity, _ ->
     val extras = activity.intent.extras ?: Bundle()
     with (extras) {
-        putString("", "")
+        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, "")
+        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH, "")
     }
-    RouteManager.instantiateFragment(activity, FragmentConst.UOH_LIST_FRAGMENT, extras)
+    RouteManager.instantiateFragment(activity, FragmentConst.HOME_NAV_FRAGMENT, extras)
 }
 
 val supportedMainFragments = mapOf(

@@ -100,7 +100,8 @@ class DynamicHomeNavBarView : LinearLayout {
     fun select(itemId: BottomNavItemId) {
         val model = modelMap[itemId] ?: return
 
-        mListener?.onItemSelected(this, model, mSelectedItemId == itemId, model.isJumper())
+        val isSelected = mListener?.onItemSelected(this, model, mSelectedItemId == itemId, model.isJumper())
+        if (isSelected != true) return
 
         mSelectedItemId = itemId
         rebindAllItems(itemId)
@@ -305,9 +306,7 @@ class DynamicHomeNavBarView : LinearLayout {
 
                     val (firstAssetCached, secondAssetCached) = when (asset) {
                         is LottiePlaylist -> {
-                            cacheManager.isUrlLoaded(asset.firstAsset.url) to (asset.nextAsset?.let {
-                                cacheManager.isUrlLoaded(it.url)
-                            } ?: false)
+                            asset.firstAsset.isCached to (asset.nextAsset?.isCached ?: false)
                         }
                         else -> false to false
                     }
@@ -321,8 +320,8 @@ class DynamicHomeNavBarView : LinearLayout {
                     } else {
                         asset?.let { playlist ->
                             if (playlist is LottiePlaylist) {
-                                cacheManager.preloadFromUrl(playlist.firstAsset.url)
-                                playlist.nextAsset?.url?.let { cacheManager.preloadFromUrl(it) }
+                                playlist.firstAsset.preload()
+                                playlist.nextAsset?.preload()
                             }
                         }
 
@@ -391,13 +390,28 @@ class DynamicHomeNavBarView : LinearLayout {
         return jumperStateMap[uniqueId] == true
     }
 
+    private val Type.Lottie.isCached: Boolean
+        get() {
+            return when (this) {
+                is Type.LottieUrl -> cacheManager.isUrlLoaded(url)
+                is Type.LottieRes -> true
+            }
+        }
+
+    private fun Type.Lottie.preload() {
+        when (this) {
+            is Type.LottieUrl -> cacheManager.preloadFromUrl(url)
+            is Type.LottieRes -> {}
+        }
+    }
+
     interface Listener {
         fun onItemSelected(
             view: DynamicHomeNavBarView,
             model: BottomNavBarUiModel,
             isReselected: Boolean,
             isJumper: Boolean,
-        )
+        ): Boolean
     }
 
     data class StateHolder(
@@ -418,24 +432,24 @@ class DynamicHomeNavBarView : LinearLayout {
     private value class ImagePlaylist(val image: Type.Image) : AssetPlaylist {
         companion object {
             fun of(type: Type?): ImagePlaylist? {
-                return if (type is Type.ImageUrl) ImagePlaylist(type) else null
+                return if (type is Type.Image) ImagePlaylist(type) else null
             }
         }
     }
 
     private data class LottiePlaylist(
-        val firstAsset: Type.LottieUrl,
-        val nextAsset: Type.LottieUrl?,
+        val firstAsset: Type.Lottie,
+        val nextAsset: Type.Lottie?,
         val isInfinite: Boolean,
     ) : AssetPlaylist {
         companion object {
             fun of(firstAsset: Type?, secondAsset: Type? = null, isInfinite: Boolean = false): LottiePlaylist? {
-                return if (firstAsset !is Type.LottieUrl) {
+                return if (firstAsset !is Type.Lottie) {
                     null
                 } else {
                     LottiePlaylist(
                         firstAsset,
-                        secondAsset as? Type.LottieUrl,
+                        secondAsset as? Type.Lottie,
                         isInfinite
                     )
                 }

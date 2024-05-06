@@ -64,6 +64,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher
@@ -159,7 +160,7 @@ class NewMainParentActivity :
     private val performanceTrace: BlocksPerformanceTrace? by lazy {
         runCatching {
             BlocksPerformanceTrace(
-                applicationContext,
+                this,
                 PERFORMANCE_TRACE_HOME,
                 this.lifecycleScope,
                 this,
@@ -681,14 +682,26 @@ class NewMainParentActivity :
     private fun getFragmentById(id: BottomNavItemId): Fragment? {
         return supportFragmentManager.findFragmentByTag(id.value) ?: run createFragment@{
             val fragmentCreator = supportedMainFragments[id.type] ?: return null
-            supportFragmentManager.fragmentCreator(
-                this,
-                Bundle().apply {
-                    putDiscoId(id.discoId)
-                    putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
+            val create = fragmentCreator.create
+
+            val requireLogin = fragmentCreator.requireLogin
+            if (requireLogin) {
+                val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+                    .putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+                    .putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
+
+                startActivity(intent)
+                null
+            } else {
+                supportFragmentManager.create(
+                    this,
+                    Bundle().apply {
+                        putDiscoId(id.discoId)
+                        putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
 //                    putShouldShowGlobalNav(false)
-                }
-            )
+                    }
+                )
+            }
         }
     }
 
@@ -785,13 +798,15 @@ class NewMainParentActivity :
                 model: BottomNavBarUiModel,
                 isReselected: Boolean,
                 isJumper: Boolean,
-            ) {
-                if (isReselected) {
+            ): Boolean {
+                return if (isReselected) {
                     onItemReselected(model, isJumper)
+                    true
                 }
                 else {
                     val fragment = getFragmentById(model.uniqueId)
                     fragment?.let { selectFragment(it, model.uniqueId) }
+                    fragment != null
                 }
             }
         })
@@ -1127,6 +1142,8 @@ class NewMainParentActivity :
         private const val REQUEST_CODE_LOGIN: Int = 12137
 
         private const val EXIT_DELAY_MILLIS = 2_000L
+
+        private const val SOURCE_ACCOUNT = "account"
 
         fun start(context: Context): Intent {
             return Intent(context, NewMainParentActivity::class.java)

@@ -14,4 +14,5 @@ object FragmentConst {
     const val FEED_SHOP_FRAGMENT = "com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment"
     const val DISCOVERY_FRAGMENT = "com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryExtensibleFragment"
     const val HOME_REVAMP_FRAGMENT = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
+    const val HOME_NAV_FRAGMENT = "com.tokopedia.homenav.view.fragment.HomeNavFragment"
 }
