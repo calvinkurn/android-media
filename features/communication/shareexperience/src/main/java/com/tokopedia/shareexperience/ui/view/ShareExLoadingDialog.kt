@@ -6,12 +6,14 @@ import android.app.Dialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.gson.Gson
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingOverlayBinding
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDefaultBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExLiveBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExOthersBottomSheetRequest
@@ -38,6 +40,9 @@ class ShareExLoadingDialog(
 
     private val weakContext = WeakReference(context)
     private var _binding: ShareexperienceLoadingOverlayBinding? = null
+    private val gson by lazy {
+        Gson()
+    }
 
     @Inject
     lateinit var useCase: ShareExGetSharePropertiesUseCase
@@ -134,10 +139,10 @@ class ShareExLoadingDialog(
                 )
             }
             else -> {
-                // Default Others
-                ShareExOthersBottomSheetRequest(
+                // Default params, if all BU specific data only need to be passed through metadata
+                ShareExDefaultBottomSheetRequest(
                     pageType = arg.pageTypeEnum.valueInt,
-                    id = arg.generalId
+                    metadata = gson.toJson(arg.metadata)
                 )
             }
         }

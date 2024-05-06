@@ -27,7 +27,7 @@ class ProductMediaVideoViewHolder(
     private var mVideoId: String = ""
 
     init {
-        binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+        binding.videoProductContainer.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
                 if (mVideoId.isEmpty()) return
                 onSelected()
@@ -38,7 +38,7 @@ class ProductMediaVideoViewHolder(
                 onNotSelected()
             }
         })
-        binding.root.setOnClickListener {
+        binding.videoProductContainer.setOnClickListener {
             val state = !mVideoPlayer?.exoPlayer?.playWhenReady.orFalse()
             mVideoPlayer?.exoPlayer?.playWhenReady = state
         }

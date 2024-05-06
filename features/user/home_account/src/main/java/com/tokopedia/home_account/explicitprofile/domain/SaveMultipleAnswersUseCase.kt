@@ -52,6 +52,7 @@ class SaveMultipleAnswersUseCase @Inject constructor(
                 mutation explicitprofileSaveMultiAnswers(${'$'}input: SaveMultiAnswersRequest!) {
                   explicitprofileSaveMultiAnswers(input: ${'$'}input) {
                     message
+                    isSuccess
                   }
                 }
             """.trimIndent()

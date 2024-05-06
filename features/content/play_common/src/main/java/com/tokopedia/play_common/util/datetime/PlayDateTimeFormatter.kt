@@ -21,6 +21,7 @@ object PlayDateTimeFormatter {
     const val ddMMMyyyy_HHmm = "dd MMM yyyy - HH:mm"
     const val ddMMMyyy_HHmmWIB = "dd MMM yyyy, HH:mm 'WIB'"
     const val dMMMMyyyy = "d MMMM yyyy"
+    const val yyyyMMdd = "yyyy-MM-dd"
 
     private const val GMT_DIVIDER = 100
 

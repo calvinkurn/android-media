@@ -1,6 +1,7 @@
 package com.tokopedia.shareexperience.ui.model.arg
 
 import android.os.Parcelable
+import com.tokopedia.applink.internal.ApplinkConstInternalShare
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import kotlinx.parcelize.Parcelize
 
@@ -36,7 +37,12 @@ class ShareExBottomSheetArg private constructor(
      * Optional
      */
     val selectedChip: String,
-    val defaultImageUrl: String
+    val defaultImageUrl: String,
+
+    /**
+     * Metadata from BU, optional
+     */
+    val metadata: Map<String, String>
 ) : Parcelable {
     class Builder(
         val pageTypeEnum: ShareExPageTypeEnum,
@@ -51,6 +57,7 @@ class ShareExBottomSheetArg private constructor(
         private var generalId: String? = null
         private var selectedChip: String? = null
         private var defaultImageUrl: String? = null
+        private var metadata: Map<String, String>? = null
         private var contentId: String? = null
         private var origin: String? = null
 
@@ -94,6 +101,10 @@ class ShareExBottomSheetArg private constructor(
             this.defaultImageUrl = defaultImageUrl
         }
 
+        fun withMetadata(metadata: Map<String, String>) = apply {
+            this.metadata = metadata
+        }
+
         fun build(): ShareExBottomSheetArg {
             return ShareExBottomSheetArg(
                 pageTypeEnum = pageTypeEnum,
@@ -110,7 +121,8 @@ class ShareExBottomSheetArg private constructor(
                 origin = origin.orEmpty(),
 
                 selectedChip = selectedChip.orEmpty(),
-                defaultImageUrl = defaultImageUrl.orEmpty()
+                defaultImageUrl = defaultImageUrl.orEmpty(),
+                metadata = metadata ?: emptyMap()
             )
         }
     }
@@ -121,6 +133,7 @@ class ShareExBottomSheetArg private constructor(
             ShareExPageTypeEnum.REVIEW -> reviewId
             ShareExPageTypeEnum.SHOP -> shopId
             ShareExPageTypeEnum.DISCOVERY -> campaignId
+            ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> metadata[ApplinkConstInternalShare.Param.REFERRAL_CODE] ?: ""
             ShareExPageTypeEnum.PLAY -> contentId
             else -> generalId
         }

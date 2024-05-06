@@ -16,6 +16,7 @@ import dagger.Component
 @Component(
     modules = [
         FeedMainModule::class,
+        FeedBindModule::class,
         FeedMainViewModelModule::class,
         FeedFragmentModule::class,
         ContentCommentModule::class
