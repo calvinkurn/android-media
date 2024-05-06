@@ -50,6 +50,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppL
 
     companion object {
         const val END_POINT = "end_point"
+        const val SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
         const val SOURCE = "source"
         const val COMPONENT_ID = "componentID"
         const val ACTIVE_TAB = "activeTab"

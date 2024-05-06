@@ -36,8 +36,8 @@ internal class MainParentViewModel @Inject constructor(
     var isRecurringAppLink = false
 
     fun hasTabType(type: BottomNavBarItemType): Boolean {
-//        TODO()
-        return true
+        val bottomNav = dynamicBottomNav.value ?: return false
+        return bottomNav.any { it.type == type }
     }
 
     fun fetchNotificationData() {

@@ -944,7 +944,7 @@ public class MainParentActivity extends BaseActivity implements
         List<Fragment> fragmentList = new ArrayList<>();
 
         if (getSupportFragmentManager().findFragmentByTag(FragmentConst.HOME_REVAMP_FRAGMENT) == null) {
-            fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
+            fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false), true));
         } else {
             fragmentList.add(getSupportFragmentManager().findFragmentByTag(FragmentConst.HOME_REVAMP_FRAGMENT));
         }

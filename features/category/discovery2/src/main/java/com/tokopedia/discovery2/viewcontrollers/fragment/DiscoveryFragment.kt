@@ -108,6 +108,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOULD_SHOW_GLOBAL_NAV
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
@@ -428,11 +429,14 @@ open class DiscoveryFragment :
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                         disableDefaultGtmTracker = true
                     )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+                    .also {
+                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                        it.addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
+                    }
             )
         }
     }
@@ -1323,11 +1327,14 @@ open class DiscoveryFragment :
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                         disableDefaultGtmTracker = true
                     )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+                    .also {
+                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                        it.addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
+                    }
             )
             navToolbar.updateNotification()
         } else {
@@ -1343,11 +1350,14 @@ open class DiscoveryFragment :
                     onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                     disableDefaultGtmTracker = true
                 )
-                .addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
+                .also {
+                    if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                    it.addIcon(
+                        iconId = IconList.ID_NAV_GLOBAL,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                        disableDefaultGtmTracker = true
+                    )
+                }
         )
         navToolbar.updateNotification()
     }

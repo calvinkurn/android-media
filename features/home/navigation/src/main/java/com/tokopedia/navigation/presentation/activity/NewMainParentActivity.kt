@@ -78,6 +78,9 @@ import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
 import com.tokopedia.navigation.presentation.model.BottomNavFeedId
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
+import com.tokopedia.navigation.presentation.model.BottomNavProfileType
+import com.tokopedia.navigation.presentation.model.putDiscoId
+import com.tokopedia.navigation.presentation.model.putShouldShowGlobalNav
 import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
 import com.tokopedia.navigation.util.AssetPreloadManager
@@ -565,7 +568,6 @@ class NewMainParentActivity :
         return paramValue != null && paramValue.equals(DOWNLOAD_MANAGER_PARAM_TRUE, true)
     }
 
-    // TODO()
     private fun createView(savedInstanceState: Bundle?) {
         isFirstNavigationImpression = true
         binding = ActivityMainParentBinding.inflate(layoutInflater)
@@ -581,7 +583,6 @@ class NewMainParentActivity :
         showSelectedPage()
 
         setupBottomNavigation()
-//        bottomNavigation.setHomeForYouMenuClickListener(this)
     }
 
     private fun executeFirstTimeEvent(): Boolean {
@@ -678,13 +679,16 @@ class NewMainParentActivity :
     }
 
     private fun getFragmentById(id: BottomNavItemId): Fragment? {
-//        TODO()
-//        return HomeInternalRouter.getHomeFragment(
-//            intent.getBooleanExtra(SCROLL_RECOMMEND_LIST, false)
-//        )
         return supportFragmentManager.findFragmentByTag(id.value) ?: run createFragment@{
             val fragmentCreator = supportedMainFragments[id.type] ?: return null
-            supportFragmentManager.fragmentCreator(this, id.discoId)
+            supportFragmentManager.fragmentCreator(
+                this,
+                Bundle().apply {
+                    putDiscoId(id.discoId)
+//                    putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
+                    putShouldShowGlobalNav(false)
+                }
+            )
         }
     }
 
