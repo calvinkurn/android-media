@@ -909,7 +909,8 @@ class BCAFlazzBalanceViewModelTest {
             responseCheckStatus3Balance.attributes.amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createReversalParam)
@@ -991,7 +992,8 @@ class BCAFlazzBalanceViewModelTest {
             responseCheckStatus3Balance.attributes.amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createReversalParam)
@@ -1073,7 +1075,8 @@ class BCAFlazzBalanceViewModelTest {
             responseCheckStatus3Balance.attributes.amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createReversalParam)
@@ -1399,7 +1402,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogResponseBCALastBCATopUp,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBCALastBCATopUpParam)
@@ -1480,7 +1484,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogResponseBCALastBCATopUp,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBCALastBCATopUpParam)
@@ -2072,7 +2077,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2178,7 +2184,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2288,7 +2295,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2398,7 +2406,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2504,7 +2513,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2618,7 +2628,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2732,7 +2743,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2857,7 +2869,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -2982,7 +2995,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -3022,7 +3036,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -3049,7 +3064,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createReversalParam)
@@ -3155,7 +3171,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -3195,7 +3212,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -3222,7 +3240,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createReversalParam)
@@ -3328,7 +3347,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -3368,7 +3388,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -3395,7 +3416,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createReversalParam)
@@ -3501,7 +3523,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -3541,7 +3564,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -3651,7 +3675,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -3691,7 +3716,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -3797,7 +3823,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -3837,7 +3864,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -3867,7 +3895,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogTopUp2,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBCALastBCATopUpParam)
@@ -3973,7 +4002,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -4013,7 +4043,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -4043,7 +4074,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogTopUp2,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBCALastBCATopUpParam)
@@ -4149,7 +4181,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -4189,7 +4222,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)
@@ -4220,7 +4254,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogResponseBCALastBCATopUp,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBCALastBCATopUpParam)
@@ -4326,7 +4361,8 @@ class BCAFlazzBalanceViewModelTest {
             strLogSession1,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createSessionParam)
@@ -4366,7 +4402,8 @@ class BCAFlazzBalanceViewModelTest {
             amount,
             checkBalanceResult.balance,
             transactionId,
-            GEN_TWO
+            GEN_TWO,
+            "0000"
         )
         every {
             electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createBetweenTopUpParam)

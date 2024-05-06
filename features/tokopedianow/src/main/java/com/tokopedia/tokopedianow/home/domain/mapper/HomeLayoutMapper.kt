@@ -70,11 +70,9 @@ import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmall
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapResponseToProductCarouselChips
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapResponseToProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapResponseToProductRecomOoc
-import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingReferralUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
-import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.createSwitcherUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemIndex
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
@@ -94,8 +92,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
@@ -183,10 +179,8 @@ object HomeLayoutMapper {
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
-        isLoggedIn: Boolean,
         hasBlockedAddToCart: Boolean,
-        tickerList: List<TickerData>,
-        enableNewQuestWidget: Boolean
+        tickerList: List<TickerData>
     ) {
         val headerUiModel = findHeaderUiModel()
         val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
@@ -201,11 +195,9 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart, enableNewQuestWidget)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
                     add(item)
                 }
-
-                addSwitcherUiModel(layoutResponse, localCacheModel, isLoggedIn)
             }
         }
     }
@@ -215,18 +207,11 @@ object HomeLayoutMapper {
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
-        hasBlockedAddToCart: Boolean,
-        enableNewQuestWidget: Boolean
+        hasBlockedAddToCart: Boolean
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(
-                    layoutResponse,
-                    miniCartData,
-                    localCacheModel,
-                    hasBlockedAddToCart,
-                    enableNewQuestWidget
-                )?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
                     add(item)
                 }
             }
@@ -372,21 +357,6 @@ object HomeLayoutMapper {
                 ),
                 state = HomeLayoutItemState.LOADED
             )
-        }
-    }
-
-    fun MutableList<HomeLayoutItemUiModel?>.mapQuestData(
-        item: HomeQuestSequenceWidgetUiModel,
-        questList: List<HomeQuestWidgetUiModel>,
-        state: HomeLayoutItemState
-    ) {
-        updateItemById(item.visitableId) {
-            val quest = HomeQuestSequenceWidgetUiModel(
-                id = MAIN_QUEST,
-                state = state,
-                questList = questList
-            )
-            HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }
     }
 
@@ -544,17 +514,6 @@ object HomeLayoutMapper {
             val layout = (headerUiModel.layout as HomeHeaderUiModel)
                 .copy(warehouses = warehouses)
             add(headerUiModel.copy(layout = layout, state = HomeLayoutItemState.NOT_LOADED))
-        }
-    }
-
-    private fun MutableList<HomeLayoutItemUiModel?>.addSwitcherUiModel(
-        response: HomeLayoutResponse,
-        localCacheModel: LocalCacheModel,
-        isLoggedIn: Boolean
-    ) {
-        if (response.layout == EDUCATIONAL_INFORMATION && isLoggedIn) {
-            val switcherUiModel = createSwitcherUiModel(localCacheModel)
-            switcherUiModel?.let { uiModel -> add(uiModel) }
         }
     }
 
@@ -993,8 +952,7 @@ object HomeLayoutMapper {
         response: HomeLayoutResponse,
         miniCartData: MiniCartSimplifiedData? = null,
         localCacheModel: LocalCacheModel,
-        hasBlockedAddToCart: Boolean,
-        enableNewQuestWidget: Boolean
+        hasBlockedAddToCart: Boolean
     ): HomeLayoutItemUiModel? {
         val serviceType = localCacheModel.service_type
         val warehouseId = localCacheModel.warehouse_id
@@ -1018,7 +976,7 @@ object HomeLayoutMapper {
             CATEGORY -> mapToCategoryLayout(response, notLoadedState)
             BUNDLING_WIDGET -> mapToProductBundleLayout(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
-            MAIN_QUEST -> if (enableNewQuestWidget) mapQuestWidgetUiModel(response, notLoadedState) else mapQuestUiModel(response, notLoadedState)
+            MAIN_QUEST -> mapQuestWidgetUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)

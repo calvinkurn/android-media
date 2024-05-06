@@ -38,4 +38,6 @@ interface WidgetAdapterFactory {
 
     fun type(model: WidgetFeeServiceUiModel): Int
 
+    fun type(model: WidgetShopExploreUiModel): Int
+
 }

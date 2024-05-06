@@ -41,15 +41,11 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -72,22 +68,15 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
-import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
-import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
-import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
-import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
-import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultTrackerListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
-import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.search.analytics.SearchEmptyNoResultAdultAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchProductAdsAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
@@ -132,7 +121,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
@@ -144,7 +132,6 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -157,7 +144,6 @@ class TokoNowSearchFragment :
     CategoryJumperListener,
     CTATokoNowHomeListener,
     BroadMatchListener,
-    SwitcherWidgetListener,
     TokoNowEmptyStateNoResultTrackerListener,
     ChooseAddressListener,
     BannerComponentListener,
@@ -198,9 +184,6 @@ class TokoNowSearchFragment :
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var sharedPref: TokoNowSharedPreference
 
     @Inject
     lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
@@ -459,10 +442,6 @@ class TokoNowSearchFragment :
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = eventCategory
-
-            override fun onSwitchService() {
-                viewModel.switchService()
-            }
         }
     }
 
@@ -597,11 +576,6 @@ class TokoNowSearchFragment :
     private fun showContent() {
         loaderUnify?.gone()
         stickyView?.visible()
-    }
-
-    private fun hideContent() {
-        loaderUnify?.show()
-        stickyView?.gone()
     }
 
     private fun updateEndlessScrollListener(hasNextPage: Boolean) {
@@ -830,7 +804,6 @@ class TokoNowSearchFragment :
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
 
         if (isLoadingVisible) return
-        showOnBoardingBottomSheet()
     }
 
     private fun showNetworkErrorHelper(throwable: Throwable?) {
@@ -890,116 +863,6 @@ class TokoNowSearchFragment :
             eventAction = getAtcEventAction(),
             dimension40 = getListValue(false, recommendationItem)
         )
-    }
-
-    override fun onClickSwitcherTo15M() {
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
-    }
-
-    override fun onClickSwitcherTo2H() {
-        hideContent()
-        viewModel.setUserPreference(ServiceType.NOW_2H)
-    }
-
-    private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
-        showContent()
-        when (result) {
-            is Success -> {
-                context?.apply {
-                    // Set user preference data to local cache
-                    updateLocalCacheModel(
-                        data = result.data,
-                        context = this
-                    )
-
-                    // Refresh the page
-                    gridLayoutManager?.scrollToPosition(TOP_LIST)
-                    refreshLayout()
-
-                    // Show toaster
-                    showOnBoardingToaster(
-                        data = result.data
-                    )
-
-                    // Refresh mini cart
-                    viewModel.refreshMiniCart()
-                }
-            }
-
-            is Fail -> { /* do nothing */
-            }
-        }
-    }
-
-    private fun updateLocalCacheModel(
-        data: SetUserPreference.SetUserPreferenceData,
-        context: Context
-    ) {
-        ChooseAddressUtils.updateTokoNowData(
-            context = context,
-            warehouseId = data.warehouseId,
-            shopId = data.shopId,
-            serviceType = data.serviceType,
-            warehouses = data.warehouses.map {
-                LocalWarehouseModel(
-                    it.warehouseId.toLongOrZero(),
-                    it.serviceType
-                )
-            }
-        )
-    }
-
-    private fun showOnBoardingToaster(data: SetUserPreference.SetUserPreferenceData) {
-        /*
-           Note :
-           - Toaster will be shown when switching service type to 2 hours
-           - When switching to 20 minutes, toaster will be shown if only OnBoard20mBottomSheet has been shown before
-         */
-
-        val needToShowOnBoardBottomSheet =
-            viewModel.needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
-        if (!data.warehouseId.toLongOrZero().isZero() && !needToShowOnBoardBottomSheet) {
-            showSwitcherToaster(data.serviceType)
-        }
-    }
-
-    private fun showOnBoardingBottomSheet() {
-        val needToShowOnBoardBottomSheet =
-            viewModel.needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
-        if (needToShowOnBoardBottomSheet) {
-            show20mOnBoardBottomSheet()
-        }
-    }
-
-    private fun show20mOnBoardBottomSheet() {
-        TokoNowOnBoard20mBottomSheet
-            .newInstance()
-            .show(
-                childFragmentManager,
-                OnBoard20mBottomSheetCallback(
-                    onBackTo2hClicked = {
-                        RouteManager.route(
-                            context,
-                            ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H
-                        )
-                    },
-                    onDismiss = {
-                        sharedPref.set20mBottomSheetOnBoardShown(true)
-                    }
-                )
-            )
-    }
-
-    private fun showSwitcherToaster(serviceType: String) {
-        TokoNowServiceTypeUtil.getServiceTypeRes(
-            key = TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
-            serviceType = serviceType
-        )?.let {
-            showToaster(
-                message = getString(it),
-                toasterType = Toaster.TYPE_NORMAL
-            )
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1127,7 +990,6 @@ class TokoNowSearchFragment :
         viewModel.deleteCartTrackingLiveData.observe(::sendDeleteCartTrackingEvent)
         viewModel.generalSearchEventLiveData.observe(::sendTrackingGeneralEvent)
         viewModel.oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
-        viewModel.setUserPreferenceLiveData.observe(::setUserPreferenceData)
         viewModel.querySafeLiveData.observe(::showDialogAgeRestriction)
         viewModel.updateToolbarNotification.observe(::updateToolbarNotification)
         viewModel.updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
@@ -1280,7 +1142,6 @@ class TokoNowSearchFragment :
             categoryFilterListener = this,
             productItemListener = this,
             productCardCompactSimilarProductTrackerListener = createSimilarProductCallback(false),
-            switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             tokoNowEmptyStateNoResultTrackerListener = this,
             suggestionListener = this,
@@ -1419,16 +1280,7 @@ class TokoNowSearchFragment :
         )
 
         context?.let { context ->
-            TokoNowSwitcherUtil.switchService(
-                context = context,
-                param = param,
-                onRefreshPage = {
-                    viewModel.switchService()
-                },
-                onRedirectPage = {
-                    RouteManager.route(it, applink)
-                }
-            )
+            RouteManager.route(context, applink)
         }
     }
 

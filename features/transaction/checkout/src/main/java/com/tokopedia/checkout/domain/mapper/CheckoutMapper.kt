@@ -1,9 +1,17 @@
 package com.tokopedia.checkout.domain.mapper
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.data.model.response.checkout.*
-import com.tokopedia.checkout.domain.model.checkout.*
-import java.util.*
+import com.tokopedia.checkout.data.model.response.checkout.CheckoutResponse
+import com.tokopedia.checkout.data.model.response.checkout.Message
+import com.tokopedia.checkout.data.model.response.checkout.PriceValidation
+import com.tokopedia.checkout.data.model.response.checkout.PromptResponse
+import com.tokopedia.checkout.data.model.response.checkout.Tracker
+import com.tokopedia.checkout.domain.model.checkout.CheckoutData
+import com.tokopedia.checkout.domain.model.checkout.MessageData
+import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
+import com.tokopedia.checkout.domain.model.checkout.PromptButton
+import com.tokopedia.checkout.domain.model.checkout.TrackerData
 import javax.inject.Inject
 
 class CheckoutMapper @Inject constructor(private val gson: Gson) {
@@ -22,6 +30,7 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
                 redirectUrl = checkoutDataResponse.data.redirectUrl
                 callbackSuccessUrl = checkoutDataResponse.data.callbackUrl
                 callbackFailedUrl = checkoutDataResponse.data.callbackUrl
+                method = checkoutDataResponse.data.method
             } else {
                 prompt = mapPrompt(checkoutResponse.data.prompt)
             }
