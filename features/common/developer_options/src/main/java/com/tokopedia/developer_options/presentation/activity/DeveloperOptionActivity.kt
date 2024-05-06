@@ -244,11 +244,11 @@ class DeveloperOptionActivity :
             isChangeUrlApplink -> uri?.apply { handleUri(this) }
             isHomeMacrobenchmarkApplink -> userSession?.apply { handleHomeMacrobenchmarkUri(this) }
             isCoachmarkApplink -> uri?.apply { handleCoachmarkUri(this) }
-            isCassava -> startActivity(MainValidatorActivity.newInstance(this))
             else -> {
                 setContentView(R.layout.activity_developer_option)
                 setRecyclerView()
                 setSearchBar()
+                if (isCassava) startActivity(MainValidatorActivity.newInstance(this))
             }
         }
     }
