@@ -518,10 +518,9 @@ class AtcVariantBottomSheet :
                 baseAtcBtn?.hideLoading()
 
                 val model = getConfirmCartAnalyticsModel(it)
-                if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-                    || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
-    //                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
-                    ) {
+                if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON ||
+                    buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+                ) {
                     AppLogPdp.sendConfirmCartResult(model)
                 }
 

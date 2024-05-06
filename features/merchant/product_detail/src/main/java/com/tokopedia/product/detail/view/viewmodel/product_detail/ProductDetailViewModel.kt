@@ -328,8 +328,11 @@ class ProductDetailViewModel @Inject constructor(
     val mainPhotoViewed: MutableSet<Int> = mutableSetOf()
     val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
     private val isSingleSku: Boolean
-        get() = if (getProductInfoP1?.isProductVariant() == false) true
-        else variantData?.children?.size == 1
+        get() = if (getProductInfoP1?.isProductVariant() == false) {
+            true
+        } else {
+            variantData?.children?.size == 1
+        }
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -600,7 +603,7 @@ class ProductDetailViewModel @Inject constructor(
             originalPrice = data?.originalPrice.orZero(),
             salePrice = data?.finalPrice.orZero(),
             skuId = data?.basic?.productID.orEmpty(),
-            addSkuNum = data?.basic?.minOrder.orZero(),
+            addSkuNum = data?.basic?.minOrder.orZero()
         )
     }
 
@@ -768,7 +771,7 @@ class ProductDetailViewModel @Inject constructor(
                 originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                addSkuNum = data.basic.minOrder,
+                addSkuNum = data.basic.minOrder
             )
         )
     }
@@ -808,7 +811,6 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
-//        sendConfirmCartBytIoTracker() // disabled on this phase
         val result = withContext(dispatcher.io) {
             addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
         }
@@ -1284,10 +1286,13 @@ class ProductDetailViewModel @Inject constructor(
 
             val subIds = affiliateSubIds?.mapNotNull {
                 val key = it.key.toIntOrNull()
-                    ?: if (it.key.length > PARAM_START_SUBID.length) it.key.substring(
-                        PARAM_START_SUBID.length
-                    ).toIntOrNull() else
+                    ?: if (it.key.length > PARAM_START_SUBID.length) {
+                        it.key.substring(
+                            PARAM_START_SUBID.length
+                        ).toIntOrNull()
+                    } else {
                         return@mapNotNull null
+                    }
 
                 AdditionalParam(
                     key = key.toString(),
@@ -1304,9 +1309,8 @@ class ProductDetailViewModel @Inject constructor(
                 source = affiliateSource ?: ""
             )
         }, onError = {
-            // no op, expect to be handled by Affiliate SDK
-
-        })
+                // no op, expect to be handled by Affiliate SDK
+            })
     }
 
     private fun updateRecomAtcStatusAndMiniCart(
