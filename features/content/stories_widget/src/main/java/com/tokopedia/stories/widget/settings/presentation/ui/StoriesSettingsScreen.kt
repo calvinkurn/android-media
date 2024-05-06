@@ -3,6 +3,8 @@ package com.tokopedia.stories.widget.settings.presentation.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,13 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.globalerror.compose.NestGlobalError
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
@@ -66,34 +69,43 @@ private fun StoriesSettingsSuccess(
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("", "", false)
 
     val ctx = LocalContext.current
-
     var checked by remember { mutableStateOf(isStoryEnable) }
 
-    if (isEligible.not()) {
-        AndroidView(modifier = Modifier.padding(16.dp), factory = {
-            Ticker(it).apply {
-                tickerType = Ticker.TYPE_ANNOUNCEMENT
-                setTextDescription(ctx.getString(R.string.stories_ticker_title))
-            }
-        })
-    }
+    val textColor = if (isEligible) NestTheme.colors.NN._950 else NestTheme.colors.NN._400
 
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .alpha(if (!pageInfo.config.isEligible) 0.4f else 1f)
     ) {
-        val (tvHeader, ivIconHeader, switchHeader, tvDescription, tvAll, tvCategory, rvOptions) = createRefs()
+        val (tickerEligible, tvHeader, ivIconHeader, switchHeader, tvDescription, tvAll, tvCategory, rvOptions) = createRefs()
+        if (isEligible.not()) {
+            AndroidView(modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .padding(vertical = 16.dp)
+                .constrainAs(tickerEligible) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                }, factory = {
+                Ticker(it).apply {
+                    tickerType = Ticker.TYPE_ANNOUNCEMENT
+                    setTextDescription(ctx.getString(R.string.stories_ticker_title))
+                }
+            })
+        }
         NestTypography(
             modifier = Modifier
                 .padding(bottom = 16.dp)
                 .constrainAs(tvHeader) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
+                    top.linkTo(tickerEligible.bottom)
+                    start.linkTo(tickerEligible.start)
                 },
             text = stringResource(id = R.string.stories_settings_header),
-            textStyle = NestTheme.typography.display1.copy(fontWeight = FontWeight.Bold)
+            textStyle = NestTheme.typography.display1.copy(
+                fontWeight = FontWeight.Bold,
+                color = textColor
+            )
         )
         NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier
             .padding(end = 12.dp)
@@ -109,7 +121,10 @@ private fun StoriesSettingsSuccess(
                     top.linkTo(ivIconHeader.top)
                 },
             text = itemFirst.text,
-            textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
+            textStyle = NestTheme.typography.display2.copy(
+                fontWeight = FontWeight.Bold,
+                color = textColor
+            )
         )
         AndroidView(
             modifier = Modifier.constrainAs(switchHeader) {
@@ -140,26 +155,30 @@ private fun StoriesSettingsSuccess(
                 .constrainAs(tvAll) {
                     top.linkTo(tvDescription.bottom)
                     start.linkTo(tvDescription.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
                 },
             text = pageInfo.config.articleCopy,
-            textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+            textStyle = NestTheme.typography.display3.copy(color = textColor)
         )
         NestTypography(
-            modifier = Modifier.padding(bottom = 16.dp).constrainAs(tvCategory){
-                top.linkTo(tvAll.bottom)
-                start.linkTo(tvAll.start)
-            },
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .constrainAs(tvCategory) {
+                    top.linkTo(tvAll.bottom)
+                    start.linkTo(tvAll.start)
+                },
             text = stringResource(id = R.string.stories_settings_body),
-            textStyle = NestTheme.typography.paragraph3
+            textStyle = NestTheme.typography.paragraph3.copy(color = textColor)
         )
 
-        LazyColumn(modifier = Modifier.constrainAs(rvOptions){
+        LazyColumn(modifier = Modifier.constrainAs(rvOptions) {
             top.linkTo(tvCategory.bottom)
             start.linkTo(tvCategory.start)
             end.linkTo(parent.end)
         }) {
             items(pageInfo.options.drop(1)) { item ->
-                SettingOptItem(item, isEligible) {
+                SettingOptItem(item, isEligible, textColor) {
                     viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
                 }
             }
@@ -171,9 +190,8 @@ private fun StoriesSettingsSuccess(
 private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsViewModel) {
     val (text, type, action) = when (error) {
         is UnknownHostException -> Triple(
-            stringResource(id = R.string.stories_settings_page_header),
-            NestGlobalErrorType.NoConnection,
-            {})
+            stringResource(id = R.string.stories_settings_try_again),
+            NestGlobalErrorType.NoConnection, {})
 
         else -> Triple("", NestGlobalErrorType.PageNotFound) {
             viewModel.onEvent(
@@ -188,7 +206,8 @@ private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsVie
 private fun SettingOptItem(
     item: StoriesSettingOpt,
     isEligible: Boolean,
-    onOptionClicked: (StoriesSettingOpt) -> Unit
+    textColor: Color,
+    onOptionClicked: (StoriesSettingOpt) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -199,7 +218,7 @@ private fun SettingOptItem(
     ) {
         NestTypography(
             text = item.text,
-            textStyle = NestTheme.typography.paragraph3
+            textStyle = NestTheme.typography.paragraph3.copy(color = textColor),
         )
         AndroidView(
             factory = { context ->
@@ -241,7 +260,7 @@ data class StoriesSettingsPageUiModel(
         val Empty
             get() = StoriesSettingsPageUiModel(
                 options = emptyList(),
-                config = StoriesSettingConfig("", "", "", false),
+                config = StoriesSettingConfig("", "", "", true),
                 state = ResultState.Loading,
             )
     }
