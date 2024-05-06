@@ -45,7 +45,7 @@ object ShareExAnalyticsConst {
         const val PDP = "product detail page"
         const val REVIEW = "fullscreen review"
         const val GOPAYLATER_REFERRAL = "gopaylater referral"
-        const val BOM = "order detail history"
+        const val ORDER_DETAIL = "order detail history"
     }
 
     object Tracker {
@@ -69,7 +69,7 @@ object ShareExAnalyticsConst {
         const val ID_50466 = "50466"
         const val ID_50467 = "50467"
 
-        // BOM
+        // Order Detail
         const val ID_45653 = "45653"
         const val ID_45654 = "45654"
         const val ID_45655 = "45655"

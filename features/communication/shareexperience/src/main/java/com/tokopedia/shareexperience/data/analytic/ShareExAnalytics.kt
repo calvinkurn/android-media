@@ -49,9 +49,9 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50464
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
-            ShareExPageTypeEnum.BOM -> {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45653
-                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
             }
             else -> Unit
         }
@@ -93,9 +93,9 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50465
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
-            ShareExPageTypeEnum.BOM -> {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45654
-                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
             }
             else -> Unit
         }
@@ -141,9 +141,9 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50466
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
-            ShareExPageTypeEnum.BOM -> {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45655
-                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
             }
             else -> Unit
         }
@@ -185,9 +185,9 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50467
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
-            ShareExPageTypeEnum.BOM -> {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45656
-                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
             }
             else -> Unit
         }
@@ -220,9 +220,9 @@ class ShareExAnalytics @Inject constructor(
                 bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.PDP)
                 bundle.putString(ShareExAnalyticsConst.Key.PRODUCT_ID, identifier)
             }
-            ShareExPageTypeEnum.BOM -> {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
                 bundle.putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_50278)
-                bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.BOM)
+                bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.ORDER_DETAIL)
                 bundle.putString(ShareExAnalyticsConst.Key.PRODUCT_ID, identifier)
             }
             else -> Unit
@@ -274,9 +274,9 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.PDP
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
             }
-            ShareExPageTypeEnum.BOM -> {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50279
-                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.BOM
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
             }
             else -> Unit

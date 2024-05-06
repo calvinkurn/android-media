@@ -5,7 +5,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalShare {
 
     private const val GLOBAL_SHARE = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}"
-    const val SHARE = "${GLOBAL_SHARE}/share"
+    const val SHARE = "$GLOBAL_SHARE/share"
 
     const val ACTIVITY_RESULT_COPY_LINK = "copy_link"
 
@@ -15,7 +15,7 @@ object ApplinkConstInternalShare {
     }
 
     object PageType {
-        const val BOM = 6
+        const val ORDER_DETAIL = 6
     }
 
     object Param {
