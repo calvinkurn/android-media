@@ -206,10 +206,10 @@ private fun CreationViewHeader(
                 top.linkTo(ivClose.top)
                 bottom.linkTo(ivClose.bottom)
                 end.linkTo(ivPerformance.start)
-                width = Dimension.preferredWrapContent
+                width = Dimension.fillToConstraints
             },
         )
-        if (isOwner) {
+        if (true) {
             NestIcon(
                 iconId = IconUnify.GRAPH,
                 colorLightEnable = NestTheme.colors.NN._900,
