@@ -225,7 +225,7 @@
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="SHARE"
+        app:icon_name="SOCIAL_SHARE"
         app:layout_constraintStart_toStartOf="@id/layout_like_review"
         app:layout_constraintBottom_toTopOf="@+id/iv_review_menu"
         app:layout_constraintEnd_toEndOf="@id/layout_like_review"

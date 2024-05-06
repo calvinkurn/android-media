@@ -219,11 +219,11 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
             is StoriesUiAction.OpenBottomSheet -> handleOpenBottomSheet(action.type)
             is StoriesUiAction.SelectReportReason -> handleSelectReportReason(action.reason)
+            is StoriesUiAction.ResumeStories -> handleOnResumeStories(action.forceResume)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
-            StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
             StoriesUiAction.TapSharing -> handleSharing()
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
@@ -356,9 +356,17 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = PAUSE, isSameContent = true)
     }
 
-    private fun handleOnResumeStories() {
+    private fun handleOnResumeStories(forceResume: Boolean) {
+        val event = if (forceResume) {
+            RESUME
+        } else if (mDetail.isContentLoaded && mIsPageSelected) {
+            RESUME
+        } else {
+            PAUSE
+        }
+
         updateDetailData(
-            event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE,
+            event = event,
             isSameContent = true
         )
     }

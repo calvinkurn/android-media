@@ -10,9 +10,9 @@ import javax.inject.Inject
 
 class AnchorTabsItemViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
 
     @JvmField
     @Inject
@@ -25,7 +25,7 @@ class AnchorTabsItemViewModel(
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
-        components.shouldRefreshComponent = null
+        component.shouldRefreshComponent = null
     }
 
     fun getTitle(): String {
@@ -54,8 +54,8 @@ class AnchorTabsItemViewModel(
 
     fun parentPosition(): Int {
         return getComponent(
-            componentId = components.parentComponentId,
-            components.pageEndPoint
-        )?.position ?: components.parentComponentPosition
+            componentId = component.parentComponentId,
+            component.pageEndPoint
+        )?.position ?: component.parentComponentPosition
     }
 }

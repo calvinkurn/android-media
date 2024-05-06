@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class ShopCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class ShopCardItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 

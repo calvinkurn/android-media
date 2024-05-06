@@ -23,9 +23,9 @@ import kotlin.coroutines.CoroutineContext
 
 class SingleAutomateCouponViewModel(
     val application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
 
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
     private val ctaStateAfterClaim = MutableLiveData<AutomateCouponCtaState>()
