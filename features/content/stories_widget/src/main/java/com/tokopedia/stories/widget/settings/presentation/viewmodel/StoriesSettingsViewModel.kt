@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -38,6 +39,9 @@ class StoriesSettingsViewModel @Inject constructor(
         when (action) {
             StoriesSettingsAction.FetchPageInfo -> getList()
             is StoriesSettingsAction.SelectOption -> updateOption(action.option)
+            is StoriesSettingsAction.Navigate -> viewModelScope.launch {
+                _event.emit(StoriesSettingEvent.Navigate(action.appLink))
+            }
             else -> {}
         }
     }

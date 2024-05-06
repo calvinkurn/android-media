@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingEvent
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsAction
@@ -23,7 +24,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class StoriesSettingsFragment @Inject constructor(private val factory: ViewModelFactory, private val analytic: StoriesSettingsTracking) :
+class StoriesSettingsFragment @Inject constructor(
+    private val factory: ViewModelFactory,
+    private val analytic: StoriesSettingsTracking,
+    private val router: Router
+) :
     Fragment() {
 
     private val viewModel by viewModels<StoriesSettingsViewModel> { factory }
@@ -65,6 +70,7 @@ class StoriesSettingsFragment @Inject constructor(private val factory: ViewModel
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
+
                     is StoriesSettingEvent.ClickTrack -> {
                         if (event.option.optionType == "all") {
                             analytic.clickToggle(event.option)
@@ -72,6 +78,8 @@ class StoriesSettingsFragment @Inject constructor(private val factory: ViewModel
                             analytic.clickCheck(event.option)
                         }
                     }
+
+                    is StoriesSettingEvent.Navigate -> router.route(requireContext(), event.appLink)
                     else -> {}
                 }
             }

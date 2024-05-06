@@ -19,7 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -58,6 +61,9 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
         }
     }
 }
+
+val finalText = "Selengkapnya"
+val tagLink = "{{Selengkapnya}}"
 
 @Composable
 private fun StoriesSettingsSuccess(
@@ -149,6 +155,19 @@ private fun StoriesSettingsSuccess(
                 switchUnify.isEnabled = isEligible
             },
         )
+        val text = buildAnnotatedString {
+            append(pageInfo.config.articleCopy.replace(tagLink, ""))
+            withStyle(
+                style = SpanStyle(
+                    color = NestTheme.colors.GN
+                        ._500,
+                    fontWeight = FontWeight.Bold,
+                ),
+            ) {
+                pushStringAnnotation(tagLink, tagLink)
+                append(finalText)
+            }
+        }
         NestTypography(
             modifier = Modifier
                 .padding(bottom = 16.dp)
@@ -158,8 +177,11 @@ private fun StoriesSettingsSuccess(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            text = pageInfo.config.articleCopy,
-            textStyle = NestTheme.typography.display3.copy(color = textColor)
+            text = text,
+            textStyle = NestTheme.typography.display3.copy(color = textColor),
+            onClickText = {
+                viewModel.onEvent(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
+            }
         )
         NestTypography(
             modifier = Modifier

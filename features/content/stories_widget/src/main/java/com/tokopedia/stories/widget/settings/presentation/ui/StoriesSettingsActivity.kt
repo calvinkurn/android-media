@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.settings.di.DaggerStoriesSettingsComponent
@@ -24,6 +25,9 @@ class StoriesSettingsActivity : AppCompatActivity() {
     @Inject
     lateinit var analytics: StoriesSettingsTracking
 
+    @Inject
+    lateinit var router: Router
+
     private lateinit var backHeader: HeaderUnify
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +37,7 @@ class StoriesSettingsActivity : AppCompatActivity() {
             override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
                 return when (className) {
                     StoriesSettingsFragment::class.java.name -> StoriesSettingsFragment(
-                        factory, analytics
+                        factory, analytics, router
                     )
 
                     else -> super.instantiate(classLoader, className)
