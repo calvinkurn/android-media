@@ -63,10 +63,10 @@ class InstantHeaderViewHolder(
             listener.onSeeDetailInvoice()
         }
         binding?.primaryButton?.setOnClickListener {
-            listener.onButtonClick(data.primaryButtonApplink, data.primaryButtonType)
+            listener.onButtonClick(data.primaryButtonApplink, data.primaryButtonType, true, data.primaryButtonText)
         }
         binding?.secondaryButton?.setOnClickListener {
-            listener.onButtonClick(data.secondaryButtonApplink, data.secondaryButtonType)
+            listener.onButtonClick(data.secondaryButtonApplink, data.secondaryButtonType, false, data.secondaryButtonText)
         }
         setUpTotalDeduction(data)
     }
