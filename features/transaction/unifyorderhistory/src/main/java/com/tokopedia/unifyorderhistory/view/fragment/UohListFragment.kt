@@ -652,12 +652,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun loadBuyAgainWidget() {
-        if (UohRollenceUtil.isEnableBuyAgainWidget()) {
-            uohListViewModel.loadBuyAgain()
-        }
-    }
-
     private fun loadUohItemDelay(uuid: String, index: Int) {
         paramUohOrder.uUID = uuid
         paramUohOrder.page = 1
@@ -1928,7 +1922,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         uohItemAdapter?.removePmsButton()
                     }
                 }
-                loadBuyAgainWidget()
+                uohListViewModel.loadBuyAgain()
             } else {
                 uohItemAdapter?.removePmsButton()
             }
