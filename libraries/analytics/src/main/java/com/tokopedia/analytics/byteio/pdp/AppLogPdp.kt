@@ -290,6 +290,7 @@ object AppLogPdp {
                 addSourcePageType()
                 addEnterFromInfo()
                 addEntranceInfo()
+                addEnterFrom()
                 addAuthorId()
                 put("product_id", analyticData.productId)
                 put("is_single_sku", analyticData.isSingleSku.intValue)
