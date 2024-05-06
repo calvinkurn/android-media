@@ -73,7 +73,7 @@ open class PowerMerchantSubscriptionFragment :
             return PowerMerchantSubscriptionFragment()
         }
         private const val PM_ISREVERIFY_KEY = "isReVerify"
-        private const val PM_SUBSCRIBE = "powerMerchantSubscribe"
+        private const val PM_SUBSCRIBE = "Power Merchant"
         private const val PM_PROJECT_ID = "10"
     }
 
@@ -201,6 +201,7 @@ open class PowerMerchantSubscriptionFragment :
             putExtra(PM_ISREVERIFY_KEY, false)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE,  PM_SUBSCRIBE)
             putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, PM_PROJECT_ID)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK, String.EMPTY)
         }
         startReVerifyKycForResult.launch(intent)
     }
