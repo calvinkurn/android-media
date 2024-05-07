@@ -18,6 +18,7 @@ import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
 import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase.Companion.isVisit
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
@@ -1230,7 +1231,7 @@ class FeedPostViewModel @Inject constructor(
         if (playChannelId.isBlank()) return
 
         val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
-        if (hasChanged) {
+        if (hasChanged || event.isVisit) {
             productIds.clear()
             ids.map { productIds.add(it) }
         } else { return }
