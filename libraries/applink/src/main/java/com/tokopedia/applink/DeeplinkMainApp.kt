@@ -49,6 +49,7 @@ import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.model.MatchPattern
 import com.tokopedia.applink.model.StartsWith
 import com.tokopedia.applink.model.or
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -539,6 +540,11 @@ object DeeplinkMainApp {
         "merchant-voucher" to mutableListOf(
             DLP.matchPattern("list") { _: String ->
                 ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
+            }
+        ),
+        "me-page" to mutableListOf(
+            DLP.matchPattern("") { deepLink: String ->
+                DeeplinkMapperMainNavigation.getRegisteredNavigation(deepLink)
             }
         ),
         "modaltoko" to mutableListOf(

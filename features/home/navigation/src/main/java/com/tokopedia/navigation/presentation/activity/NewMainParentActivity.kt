@@ -671,19 +671,6 @@ class NewMainParentActivity :
             selectFragment(fragment, tabId)
             binding.dynamicNavbar.select(tabId, forceSelect = true)
         }
-
-
-//        run feedPlusArguments@{
-//            if (!fragment::class.java.name.equals(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, true)) return@feedPlusArguments
-//            runCatching {
-//                val oldArgs = fragment.arguments ?: Bundle()
-//                intent.extras?.let { extras -> oldArgs.putAll(extras) }
-//                fragment.arguments = oldArgs
-//            }.onFailure { it.printStackTrace() }
-//        }
-
-
-
     }
 
     private fun handleAppLinkBottomNavigation(isFirstInit: Boolean) {
