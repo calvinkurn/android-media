@@ -2,6 +2,8 @@ package com.tokopedia.content.product.preview.utils
 
 import android.content.Context
 import com.tokopedia.content.product.preview.R
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.shareexperience.domain.util.ShareExConstants
 import java.util.concurrent.TimeUnit
 
 @Suppress("MagicNumber")
@@ -31,4 +33,11 @@ fun Long.millisToFormattedVideoDuration(context: Context): String {
     val hours = minutesMod + TimeUnit.SECONDS.toHours(totalSeconds)
     return if (hours <= 0) String.format(context.getString(R.string.video_time_less_than_hour), minutes, seconds)
     else String.format(context.getString(R.string.video_time_hours), hours, minutes, seconds)
+}
+
+fun AbTestPlatform.isUsingShare(): Boolean {
+    return this.getString(
+        ShareExConstants.Rollence.ROLLENCE_SHARE_EX_REVIEW,
+        ""
+    ) == ShareExConstants.Rollence.ROLLENCE_SHARE_EX_REVIEW
 }

@@ -103,6 +103,7 @@
                 app:icon_name="BADGE_PMPRO_FILLED"
                 app:layout_constraintBottom_toBottomOf="@id/tvPmHeaderTermsStatus"
                 app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="@id/tvPmHeaderTermsStatus"
                 tools:src="@tools:sample/avatars" />
 
@@ -112,6 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="16dp"
+                android:visibility="gone"
                 android:text="@string/pm_header_terms_status"
                 android:textColor="@color/Unify_NN950"
                 android:textSize="12sp"
@@ -119,18 +121,30 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmShopAchievement"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="visible"
+                android:text="@string/pm_pro_shop_achivement"
+                app:layout_constraintEnd_toEndOf="@+id/rvPmUpgradeTerms"
+                app:layout_constraintStart_toStartOf="@+id/rvPmUpgradeTerms"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmUpgradeTerms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="48dp"
                 android:layout_marginEnd="12dp"
-                android:layout_marginBottom="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPmHeaderTermsStatus"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:itemCount="2"
                 tools:listitem="@layout/item_pm_registration_term" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -172,20 +186,24 @@
                 tools:itemCount="6"
                 tools:listitem="@layout/item_pm_grade_benefit" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/ctaPmUpgradeLearnMore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
-                android:padding="4dp"
-                android:text="@string/power_merchant_benefit_learn_more"
-                android:textColor="@color/Unify_GN500"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ctaPmUpgradeLearnMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="4dp"
+        android:layout_marginVertical="8dp"
+        android:text="@string/power_merchant_benefit_learn_more"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/cardPmUpgradeBenefits"
+        app:layout_constraintTop_toBottomOf="@+id/cardPmUpgradeBenefits"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

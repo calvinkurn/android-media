@@ -28,11 +28,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -56,23 +55,21 @@ import javax.inject.Inject
  * @param getRecommendationUseCase use case for Recommendation Widget
  * @param addWishListUseCase use case for add wishlist
  * @param removeWishListUseCase use case for remove wishlist
- * @param topAdsWishlishedUseCase use case for add wishlist topads product item
  * @param dispatcher the dispatcher for coroutine
  */
 @SuppressLint("SyntheticAccessor")
 open class RecommendationPageViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
-        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
-        private val addToCartUseCase: AddToCartUseCase,
-        private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
-        private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
-        private val dispatcher: RecommendationDispatcher,
-        private val remoteConfig: RemoteConfig,
-        private val topAdsAddressHelper: TopAdsAddressHelper
+    private val userSessionInterface: UserSessionInterface,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
+    private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
+    private val dispatcher: RecommendationDispatcher,
+    private val remoteConfig: RemoteConfig,
+    private val topAdsAddressHelper: TopAdsAddressHelper
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
     companion object {
@@ -86,16 +83,17 @@ open class RecommendationPageViewModel @Inject constructor(
         const val PARAM_RECOMPUSH_ANCHOR = "recom_1_recompush_anchor"
         const val PARAM_RECOM_WIDGET = "recom_widget"
     }
+
     /**
      * public variable
      */
-    val recommendationListLiveData : LiveData<List<HomeRecommendationDataModel>> get() = _recommendationListLiveData
+    val recommendationListLiveData: LiveData<List<HomeRecommendationDataModel>> get() = _recommendationListLiveData
     private val _recommendationListLiveData = MutableLiveData<List<HomeRecommendationDataModel>>()
 
-    val addToCartLiveData : LiveData<Response<ProductInfoDataModel>> get() = _addToCartLiveData
+    val addToCartLiveData: LiveData<Response<ProductInfoDataModel>> get() = _addToCartLiveData
     private val _addToCartLiveData = MutableLiveData<Response<ProductInfoDataModel>>()
 
-    val buyNowLiveData : LiveData<Response<ProductInfoDataModel>> get() = _buyNowLiveData
+    val buyNowLiveData: LiveData<Response<ProductInfoDataModel>> get() = _buyNowLiveData
     private val _buyNowLiveData = MutableLiveData<Response<ProductInfoDataModel>>()
 
     /**
@@ -103,29 +101,30 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param productId product Id from deeplink
      */
     fun getRecommendationList(
-            productId: String,
-            queryParam: String) {
-        launch (dispatcher.getIODispatcher()) {
-            try{
+        productId: String,
+        queryParam: String
+    ) {
+        launch(dispatcher.getIODispatcher()) {
+            try {
                 var result = awaitAll(
-                        asyncCatchError(dispatcher.getIODispatcher(), block = {
-                            getPrimaryProductUseCase.setParameter(productId, queryParam)
-                            getPrimaryProductUseCase.executeOnBackground()
-                        }) {
-                            null
-                        },
-                        asyncCatchError(dispatcher.getIODispatcher(), block = {
-                            val params = getRecommendationUseCase.getRecomParams(
-                                    pageNumber = 1,
-                                    productIds = listOf(productId),
-                                    pageName = "recom_1,recom_2,recom_3",
-                                    queryParam = queryParam,
-                                    hasNewProductCardEnabled = true
-                            )
-                            getRecommendationUseCase.createObservable(params).toBlocking().first()
-                        }) {
-                            throw it
-                        }
+                    asyncCatchError(dispatcher.getIODispatcher(), block = {
+                        getPrimaryProductUseCase.setParameter(productId, queryParam)
+                        getPrimaryProductUseCase.executeOnBackground()
+                    }) {
+                        null
+                    },
+                    asyncCatchError(dispatcher.getIODispatcher(), block = {
+                        val params = getRecommendationUseCase.getRecomParams(
+                            pageNumber = 1,
+                            productIds = listOf(productId),
+                            pageName = "recom_1,recom_2,recom_3",
+                            queryParam = queryParam,
+                            hasNewProductCardEnabled = true
+                        )
+                        getRecommendationUseCase.createObservable(params).toBlocking().first()
+                    }) {
+                        throw it
+                    }
                 ) as MutableList<Any?>
                 if (eligibleToShowHeadlineCPM(queryParam)) {
                     val newParams = HEADLINE_PARAM_RECOM + userSessionInterface.userId
@@ -151,23 +150,26 @@ open class RecommendationPageViewModel @Inject constructor(
                     val listVisitable = mutableListOf<HomeRecommendationDataModel>()
                     val anchorProductInfo = anchorProductInfoEntity?.productRecommendationProductDetail?.data?.get(0)?.recommendation?.getOrNull(0)
                     val recommendationMappingWidget = recommendationWidgets?.mapDataModel()
-                            ?: listOf()
+                        ?: listOf()
                     if (anchorProductInfo == null && recommendationMappingWidget.isEmpty()) {
                         listVisitable.add(RecommendationErrorDataModel(Exception()))
                     } else {
-                        //append data based on queue
+                        // append data based on queue
 
-                        //1. append product primary
+                        // 1. append product primary
                         listVisitable.add(ProductInfoDataModel(anchorProductInfo))
-                        //2. append CPM based on rollence
+                        // 2. append CPM based on rollence
                         topAdsHeadlineResponse?.let {
-                            if (it.displayAds.data.size != 0)
+                            if (it.displayAds.data.size != 0) {
                                 listVisitable.add(
-                                        RecommendationCPMDataModel(
-                                                topAdsHeadlineResponse = it,
-                                                parentPosition = POS_CPM))
+                                    RecommendationCPMDataModel(
+                                        topAdsHeadlineResponse = it,
+                                        parentPosition = POS_CPM
+                                    )
+                                )
+                            }
                         }
-                        //3. append recom list
+                        // 3. append recom list
                         listVisitable.addAll(recommendationMappingWidget)
                     }
                     _recommendationListLiveData.postValue(listVisitable)
@@ -175,7 +177,6 @@ open class RecommendationPageViewModel @Inject constructor(
                 } else {
                     _recommendationListLiveData.postValue(listOf(RecommendationErrorDataModel(TimeoutException())))
                 }
-
             } catch (t: Exception) {
                 _recommendationListLiveData.postValue(listOf(RecommendationErrorDataModel(t)))
             }
@@ -189,8 +190,9 @@ open class RecommendationPageViewModel @Inject constructor(
     }
 
     fun getProductTopadsStatus(
-            productId: String,
-            queryParam: String) {
+        productId: String,
+        queryParam: String
+    ) {
         launchCatchError(coroutineContext, block = {
             var adsStatus = TopadsIsAdsQuery()
             val timeout = remoteConfig.getLong(
@@ -213,12 +215,12 @@ open class RecommendationPageViewModel @Inject constructor(
 
             val job = withTimeoutOrNull(timeout) {
                 getTopadsIsAdsUseCase.setParams(
-                        productId = productId,
-                        productKey = "",
-                        shopDomain = "",
-                        urlParam = queryParam,
-                        pageName = pageNameParam,
-                        src = srcParam
+                    productId = productId,
+                    productKey = "",
+                    shopDomain = "",
+                    urlParam = queryParam,
+                    pageName = pageNameParam,
+                    src = srcParam
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
                 val dataList = recommendationListLiveData.value?.toMutableList()
@@ -247,11 +249,13 @@ open class RecommendationPageViewModel @Inject constructor(
                     )
                 }
             }
-            if (job == null) RecomServerLogger.logServer(
-                tag = TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED,
-                productId = productId,
-                queryParam = queryParam
-            )
+            if (job == null) {
+                RecomServerLogger.logServer(
+                    tag = TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED,
+                    productId = productId,
+                    queryParam = queryParam
+                )
+            }
         }) {
             RecomServerLogger.logServer(
                 tag = TOPADS_RECOM_PAGE_GENERAL_ERROR,
@@ -267,7 +271,7 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param model the recommendation item product is clicked
      * @param callback the callback for handling [added or removed, throwable] to UI
      */
-    fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
+    fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
         launch(dispatcher.getMainDispatcher()) {
             addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
             val result = withContext(dispatcher.getIODispatcher()) { addToWishlistV2UseCase.executeOnBackground() }
@@ -279,7 +283,7 @@ open class RecommendationPageViewModel @Inject constructor(
         }
     }
 
-    fun removeWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
+    fun removeWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
         launch(dispatcher.getMainDispatcher()) {
             deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
             val result = withContext(dispatcher.getIODispatcher()) { deleteWishlistV2UseCase.executeOnBackground() }
@@ -291,7 +295,7 @@ open class RecommendationPageViewModel @Inject constructor(
         }
     }
 
-    fun onAddToCart(productInfoDataModel: ProductInfoDataModel){
+    fun onAddToCart(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = productDetailData.id.toString()
@@ -304,29 +308,28 @@ open class RecommendationPageViewModel @Inject constructor(
             val requestParams = RequestParams.create()
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
             addToCartUseCase.createObservable(requestParams)
-                    .subscribeOn(dispatcher.getSchedulerIO())
-                    .observeOn(dispatcher.getSchedulerMain())
-                    .subscribe(object : Subscriber<AddToCartDataModel>() {
-                        override fun onCompleted() {
+                .subscribeOn(dispatcher.getSchedulerIO())
+                .observeOn(dispatcher.getSchedulerMain())
+                .subscribe(object : Subscriber<AddToCartDataModel>() {
+                    override fun onCompleted() {
+                    }
 
-                        }
+                    override fun onError(e: Throwable) {
+                        _addToCartLiveData.postValue(Response.error(e))
+                    }
 
-                        override fun onError(e: Throwable) {
-                            _addToCartLiveData.postValue(Response.error(e))
+                    override fun onNext(addToCartResult: AddToCartDataModel) {
+                        if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
+                            _addToCartLiveData.postValue(Response.success(productInfoDataModel))
+                        } else {
+                            _addToCartLiveData.postValue(Response.error(Throwable(addToCartResult.errorMessage.firstOrNull())))
                         }
-
-                        override fun onNext(addToCartResult: AddToCartDataModel) {
-                            if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
-                                _addToCartLiveData.postValue(Response.success(productInfoDataModel))
-                            } else {
-                                _addToCartLiveData.postValue(Response.error(Throwable(addToCartResult.errorMessage.firstOrNull())))
-                            }
-                        }
-                    })
+                    }
+                })
         }
     }
 
-    fun onBuyNow(productInfoDataModel: ProductInfoDataModel){
+    fun onBuyNow(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = productDetailData.id.toString()
@@ -340,23 +343,23 @@ open class RecommendationPageViewModel @Inject constructor(
             val requestParams = RequestParams.create()
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
             addToCartUseCase.createObservable(requestParams)
-                    .subscribeOn(dispatcher.getSchedulerIO())
-                    .observeOn(dispatcher.getSchedulerMain())
-                    .subscribe(object : Subscriber<AddToCartDataModel>() {
-                        override fun onCompleted() {}
+                .subscribeOn(dispatcher.getSchedulerIO())
+                .observeOn(dispatcher.getSchedulerMain())
+                .subscribe(object : Subscriber<AddToCartDataModel>() {
+                    override fun onCompleted() {}
 
-                        override fun onError(e: Throwable) {
-                            _buyNowLiveData.postValue(Response.error(e))
-                        }
+                    override fun onError(e: Throwable) {
+                        _buyNowLiveData.postValue(Response.error(e))
+                    }
 
-                        override fun onNext(addToCartResult: AddToCartDataModel) {
-                            if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
-                                _buyNowLiveData.postValue(Response.success(productInfoDataModel))
-                            } else {
-                                _buyNowLiveData.postValue(Response.error(Throwable(addToCartResult.errorMessage.firstOrNull())))
-                            }
+                    override fun onNext(addToCartResult: AddToCartDataModel) {
+                        if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
+                            _buyNowLiveData.postValue(Response.success(productInfoDataModel))
+                        } else {
+                            _buyNowLiveData.postValue(Response.error(Throwable(addToCartResult.errorMessage.firstOrNull())))
                         }
-                    })
+                    }
+                })
         }
     }
 
@@ -364,5 +367,4 @@ open class RecommendationPageViewModel @Inject constructor(
      * [isLoggedIn] is the function get user session is login or not login
      */
     fun isLoggedIn() = userSessionInterface.isLoggedIn
-
 }

@@ -48,8 +48,11 @@ class SpecificationValueViewHolder(
         }
         tfSpecification?.editText?.doOnTextChanged { text, _, count, _ ->
             onSpecificationClickListener.onSpecificationValueTextChanged(bindingAdapterPosition, text.toString())
-            if (count > Int.ZERO && text?.isBlank() == true)
+            if (count > Int.ZERO && text?.isBlank() == true) {
+                tfSpecification.isInputError = false
+                tfSpecification.setMessage("")
                 onSpecificationClickListener.onSpecificationValueTextCleared(bindingAdapterPosition)
+            }
         }
         tooltipRequired?.setOnClickListener {
             onSpecificationClickListener.onTooltipRequiredClicked()

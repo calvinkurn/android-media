@@ -3,7 +3,7 @@
     <item
         android:gravity="center"
         android:width="32dp"
-        android:height="3dp">
+        android:height="6dp">
         <shape android:shape="rectangle">
             <corners android:radius="5dp" />
             <solid android:color="@color/Unify_GN500" />

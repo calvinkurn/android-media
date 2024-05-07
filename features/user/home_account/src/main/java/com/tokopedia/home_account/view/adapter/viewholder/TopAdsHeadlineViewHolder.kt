@@ -9,7 +9,7 @@ import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.user.session.UserSessionInterface

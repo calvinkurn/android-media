@@ -240,7 +240,8 @@ class SelectProductFragment : BaseDaggerFragment() {
 
         val remainingQuota = if (shopBenefit.isUseVps) {
             val vpsPackage = findVpsPackage(shopBenefit.benefits)
-            vpsPackage?.remainingQuota.orZero()
+            val remainingQuota = vpsPackage?.remainingQuota.orZero()
+            remainingQuota.takeIf { it != -1 } ?: unlimited
         } else {
             unlimited
         }
@@ -302,8 +303,7 @@ class SelectProductFragment : BaseDaggerFragment() {
         } else {
             val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
 
-            val isPartiallyDiscountProduct = selectedProduct.countVariant > ZERO
-            if (remainingSelection > ZERO || isPartiallyDiscountProduct) {
+            if (remainingSelection > ZERO) {
                 tickProduct(selectedProduct)
                 viewModel.addProductToSelection(selectedProduct)
             } else {
@@ -427,7 +427,7 @@ class SelectProductFragment : BaseDaggerFragment() {
     }
 
     private fun findVpsPackage(benefits: List<ShopBenefit.Benefit>): ShopBenefit.Benefit? {
-        return benefits.firstOrNull { it.packageId.toInt() > ZERO }
+        return benefits.firstOrNull()
     }
 
     private fun handleTickerAppearance(selectedProductCount: Int) {

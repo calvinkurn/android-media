@@ -160,6 +160,7 @@
 /features/content/creation_common/                      @tokopedia/android-minionlance-dev
 /features/content/explore/              				@tokopedia/android-minionlance-dev
 /features/content/feed/                 				@tokopedia/android-minionlance-dev
+/features/content/feed_common/                          @tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
 /features/content/kol/                  				@tokopedia/android-minionlance-dev
 /features/content/kol_common/           				@tokopedia/android-minionlance-dev
@@ -222,6 +223,7 @@
 /features/transaction/cart/        		                @tokopedia/android-minionbob-dev
 /features/transaction/cart_common/        		        @tokopedia/android-minionbob-dev
 /features/transaction/checkout/        		            @tokopedia/android-minionbob-dev
+/features/transaction/checkout_payment_common/          @tokopedia/android-minionbob-dev
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
 /features/transaction/minicart/                         @tokopedia/android-minionbob-dev
@@ -256,7 +258,7 @@
 /features/user/settingbank/                     		@tokopedia/android-minionotto-dev
 
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
-/features/user/otp/                             		@tokopedia/android-minionkevin-dev
+/features/user/verification/                             		@tokopedia/android-minionkevin-dev
 /features/user/changepassword/                  		@tokopedia/android-minionkevin-dev
 /features/user/logout/                          		@tokopedia/android-minionkevin-dev
 /features/user/loginregister/                   		@tokopedia/android-minionkevin-dev
@@ -473,10 +475,14 @@
 /settings.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
 /hansel.xml                                             @tokopedia/android-core-dev
+/.gitignore                                             @tokopedia/android-core-dev
 /gradle/                                                @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
 /wearosapp/                                        @tokopedia/android-core-dev
 /jacoco_task.gradle                                     @tokopedia/android-core-dev
+/tokoremotex/                                           @tokopedia/android-core-dev
+/.run/                                                  @tokopedia/android-core-dev
+/remote                                                 @tokopedia/android-core-dev
 testing/joint/inactivephone_otp/                        @tokopedia/android-minionkevin-dev
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 

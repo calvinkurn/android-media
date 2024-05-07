@@ -34,6 +34,8 @@
     <color name="feed_dms_tag_product_background">#2E3137</color>
     <color name="feed_dms_tag_product_icon_background">#FFA617</color>
 
+    <color name="feed_dms_tooltip_background">#2E3137</color>
+
     <color name="feed_dms_red_dot_color">#E02954</color>
 
     <!--browse-->

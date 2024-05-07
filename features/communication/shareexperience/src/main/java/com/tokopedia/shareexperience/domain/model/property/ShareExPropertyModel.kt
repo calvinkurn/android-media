@@ -11,7 +11,7 @@ data class ShareExPropertyModel(
     val listImage: List<String> = listOf(),
     val title: String = "",
     val affiliate: ShareExAffiliateModel = ShareExAffiliateModel(),
-    val linkProperties: ShareExLinkProperties = ShareExLinkProperties(),
+    val linkProperties: ShareExLinkPropertiesModel = ShareExLinkPropertiesModel(),
     val imageGenerator: ShareExImageGeneratorPropertyModel? = null,
     val socialChannel: ShareExChannelModel = ShareExChannelModel(),
     val commonChannel: ShareExChannelModel = ShareExChannelModel()

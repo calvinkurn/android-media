@@ -30,6 +30,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dynamicfeatures.DFInstaller
+import com.tokopedia.inappupdate.AppUpdateManagerWrapper
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -219,6 +220,7 @@ open class SellerHomeActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode)
         val sellerHomeLifecycleState = navigator?.getHomeFragment()?.lifecycle?.currentState
         if (sellerHomeLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
             navigator?.getHomeFragment()?.onActivityResult(requestCode, resultCode, data)

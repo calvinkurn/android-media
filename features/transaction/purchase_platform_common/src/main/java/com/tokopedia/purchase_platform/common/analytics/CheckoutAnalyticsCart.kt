@@ -1246,4 +1246,58 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             .build()
             .send()
     }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50683
+    fun eventViewVariantEditor(cartId: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.VIEW_VARIANT_EDITOR)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel(cartId)
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.VIEW_VARIANT_EDITOR
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50684
+    fun eventClickVariantEditor(cartId: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_VARIANT_EDITOR)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel(cartId)
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.CLICK_VARIANT_EDITOR
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1506
+    // Tracker ID: 50685
+    fun eventClickSimpanVariantBottomSheet(cartId: String) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_VARIANT_BOTTOM_SHEET)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CLICK_SIMPAN_VARIANT_BOTTOM_SHEET)
+            .setEventLabel(cartId)
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.CLICK_SIMPAN_VARIANT_BOTTOM_SHEET
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .build()
+            .send()
+    }
 }

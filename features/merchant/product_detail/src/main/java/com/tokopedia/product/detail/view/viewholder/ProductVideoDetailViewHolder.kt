@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
 import com.tokopedia.product.detail.view.widget.VideoStateListener
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 
 /**
  * Created by Yehezkiel on 01/12/20

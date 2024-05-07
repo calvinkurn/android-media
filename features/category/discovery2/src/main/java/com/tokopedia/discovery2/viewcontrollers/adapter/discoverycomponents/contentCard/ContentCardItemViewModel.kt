@@ -16,9 +16,9 @@ import java.util.*
 
 class ContentCardItemViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timeCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000

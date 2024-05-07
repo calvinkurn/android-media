@@ -77,7 +77,7 @@ class AdminPermissionMapper @Inject constructor() {
             }
             AdminFeature.COMPLAINT -> {
                 String.format(
-                    APPLINK_FORMAT, ApplinkConst.WEBVIEW, TokopediaUrl.getInstance().SELLER, RESO_INBOX_SELLER).let { resolutionInboxApplink ->
+                    APPLINK_FORMAT, ApplinkConst.WEBVIEW, TokopediaUrl.getInstance().MOBILEWEB, RESO_INBOX_SELLER).let { resolutionInboxApplink ->
                     RouteManager.getIntent(context, resolutionInboxApplink)
                 }
             }

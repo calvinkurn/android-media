@@ -35,6 +35,8 @@ data class FeedXHeaderBrowse(
     val title: String = "",
     @SerializedName("applink")
     val applink: String = "",
+    @SerializedName("searchBar")
+    val searchBar: FeedXHeaderSearchbar = FeedXHeaderSearchbar(),
     @SerializedName("__typename")
     val typeName: String = ""
 )
@@ -42,4 +44,17 @@ data class FeedXHeaderBrowse(
 data class FeedXHeaderDetail(
     @SerializedName("title")
     val title: String = ""
+)
+
+data class FeedXHeaderSearchbar(
+    @SerializedName("isActive")
+    val isActive: Boolean = false,
+    @SerializedName("placeholder")
+    val placeholder: String = "",
+    @SerializedName("weblink")
+    val weblink: String = "",
+    @SerializedName("applink")
+    val applink: String = "",
+    @SerializedName("__typename")
+    val typeName: String = ""
 )

@@ -18,7 +18,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.utils.getUserId
 import com.tokopedia.search.utils.getValueString
-import com.tokopedia.topads.sdk.TopAdsConstants
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface

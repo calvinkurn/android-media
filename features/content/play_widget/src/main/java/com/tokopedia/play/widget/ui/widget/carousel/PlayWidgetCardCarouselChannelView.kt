@@ -258,7 +258,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         val lottieRes = R.string.lottie_sound_on_off
 
         if (!downloadedLottieSet.contains(lottieRes) || !animate) {
-            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
+            binding.viewPlayWidgetActionButton.lottieAction.pauseAnimation()
             binding.viewPlayWidgetActionButton.lottieAction.hide()
             binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_MUTE)
             binding.viewPlayWidgetActionButton.iconActionFallback.show()
@@ -268,7 +268,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                     binding.viewPlayWidgetActionButton.iconActionFallback.hide()
                     binding.viewPlayWidgetActionButton.lottieAction.show()
                     binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
-                    binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
+                    binding.viewPlayWidgetActionButton.lottieAction.pauseAnimation()
                     binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
                     binding.viewPlayWidgetActionButton.lottieAction.repeatCount = 0
 
@@ -282,7 +282,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         val loopingLottieRes = R.string.lottie_sound_on_loop
 
         if (!downloadedLottieSet.contains(lottieRes) || !downloadedLottieSet.contains(loopingLottieRes) || !animate) {
-            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
+            binding.viewPlayWidgetActionButton.lottieAction.pauseAnimation()
             binding.viewPlayWidgetActionButton.lottieAction.hide()
             binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_UP)
             binding.viewPlayWidgetActionButton.iconActionFallback.show()
@@ -292,7 +292,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                     binding.viewPlayWidgetActionButton.iconActionFallback.hide()
                     binding.viewPlayWidgetActionButton.lottieAction.show()
                     binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
-                    binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
+                    binding.viewPlayWidgetActionButton.lottieAction.pauseAnimation()
                     binding.viewPlayWidgetActionButton.lottieAction.addAnimatorListener(
                         object : Animator.AnimatorListener {
                             override fun onAnimationStart(animator: Animator) {
@@ -325,7 +325,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 binding.viewPlayWidgetActionButton.iconActionFallback.hide()
                 binding.viewPlayWidgetActionButton.lottieAction.show()
                 binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
-                binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
+                binding.viewPlayWidgetActionButton.lottieAction.pauseAnimation()
                 binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
                 binding.viewPlayWidgetActionButton.lottieAction.repeatCount = LottieDrawable.INFINITE
 
