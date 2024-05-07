@@ -53,7 +53,7 @@ class WidgetAdapterDelegate private constructor() {
         ) {
             val space8 = holder.itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
             holder.bind()
-            holder.itemView.setPadding(space8, space8, space8, space8)
+            holder.itemView.setPadding(0, space8, space8, space8)
             holder.setType(PlayWidgetCardPlaceholderViewHolder.Type.MEDIUM)
         }
 

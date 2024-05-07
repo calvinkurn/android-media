@@ -2,11 +2,11 @@ package com.tokopedia.play.ui.explorewidget.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.databinding.ViewPlayGridBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
+import com.tokopedia.play_common.util.addImpressionListener
 
 /**
  * @author by astidhiyaa on 02/12/22
@@ -31,7 +31,7 @@ class PlayExploreWidgetViewHolder {
                 ) {
                     listener.onToggleReminderClicked(
                         item.channelId,
-                        item.reminderType,
+                        reminderType,
                         absoluteAdapterPosition
                     )
                 }
@@ -45,7 +45,7 @@ class PlayExploreWidgetViewHolder {
         }
 
         fun bind(item: PlayWidgetChannelUiModel) {
-            card.addOnImpressionListener(item.impressHolder) {
+            card.addImpressionListener(item.impressHolder) {
                 listener.onImpressChannelCard(item, absoluteAdapterPosition)
             }
             card.setModel(item)

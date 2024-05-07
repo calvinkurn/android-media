@@ -39,7 +39,6 @@ import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
 import com.tokopedia.play.view.uimodel.action.RefreshWidget
 import com.tokopedia.play.view.uimodel.action.UpdateReminder
-import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.getChipsShimmering
 import com.tokopedia.play.view.uimodel.getWidgetShimmering
@@ -171,7 +170,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         setupView()
         fetchWidget()
         observeState()
-        observeEvent()
     }
 
     private fun setupView() {
@@ -240,23 +238,6 @@ class PlayExploreWidgetFragment @Inject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = cachedState.value.channel.channelInfo
                 )
-            }
-        }
-    }
-
-    private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collect { event ->
-                when (event) {
-                    is ShowInfoEvent -> {
-                        toaster.showToasterInView(
-                            message = getTextFromUiString(event.message),
-                            view = requireView()
-                        )
-                    }
-
-                    else -> {}
-                }
             }
         }
     }
