@@ -8,6 +8,7 @@ import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRe
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
+import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
@@ -16,6 +17,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -28,6 +30,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 15, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSetupCoverAnalyticTest {
 
     @get:Rule
@@ -102,22 +105,14 @@ class PlayShortsSetupCoverAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickCloseOnCoverForm() {
-
-        clickBackCoverForm()
-
-        cassavaValidator.verify("click - close cover page")
-    }
-
-    @Test
-    fun testAnalytic_clickSelectCoverOnCoverForm() {
-        clickSelectCover()
-
-        cassavaValidator.verify("click - edit cover")
-    }
-
-    @Test
-    fun testAnalytic_openScreenCoverForm() {
+    fun testAnalytic_shorts_setupCover() {
         cassavaValidator.verifyOpenScreen("/play broadcast short - cover page - ${mockAccountShop.id} - seller")
+
+        clickSelectCover()
+        cassavaValidator.verify("click - edit cover")
+
+        pressBack()
+        clickBackCoverForm()
+        cassavaValidator.verify("click - close cover page")
     }
 }

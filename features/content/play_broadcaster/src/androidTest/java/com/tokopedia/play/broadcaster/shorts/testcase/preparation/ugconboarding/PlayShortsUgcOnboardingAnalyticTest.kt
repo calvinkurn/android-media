@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 13, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsUgcOnboardingAnalyticTest {
 
     @get:Rule
@@ -90,48 +92,30 @@ class PlayShortsUgcOnboardingAnalyticTest {
     fun setUp() {
         launcher.launchActivity()
 
-        clickToolbar()
-        clickUserAccount()
+        openOnboardingUgcBottomSheet()
     }
 
     @Test
-    fun testAnalytic_clickCancelOnboardingUGC() {
+    fun testAnalytic_shorts_onboardingUGC() {
+        cassavaValidator.verify("view - register user profile")
 
         clickCloseBottomSheet()
-
         cassavaValidator.verify("click - x register user profile")
-    }
 
-    @Test
-    fun testAnalytic_clickTextFieldUsernameOnboardingUGC() {
-
-        clickTextFieldUsername()
-
-        cassavaValidator.verify("click - type user profile name")
-    }
-
-    @Test
-    fun testAnalytic_clickAcceptTncOnboardingUGC() {
-
-        clickAcceptTnc()
-
-        cassavaValidator.verify("click - accept t&c")
-    }
-
-    @Test
-    fun testAnalytic_viewOnboardingUGC() {
-
-        cassavaValidator.verify("view - register user profile")
-    }
-
-    @Test
-    fun testAnalytic_clickContinueOnboardingUGC() {
-
+        openOnboardingUgcBottomSheet()
         clickTextFieldUsername()
         inputUsername()
-        clickAcceptTnc()
-        clickSubmitUgcOnboarding()
+        cassavaValidator.verify("click - type user profile name")
 
+        clickAcceptTnc()
+        cassavaValidator.verify("click - accept t&c")
+
+        clickSubmitUgcOnboarding()
         cassavaValidator.verify("click - lanjut register user profile")
+    }
+
+    private fun openOnboardingUgcBottomSheet() {
+        clickToolbar()
+        clickUserAccount()
     }
 }

@@ -18,6 +18,8 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -30,6 +32,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 15, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSummaryAnalyticTest {
 
     @get:Rule
@@ -79,6 +82,7 @@ class PlayShortsSummaryAnalyticTest {
         coEvery { mockContentProductPickerSGCRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
         coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
         coEvery { mockShortsRepo.saveTag(any(), any()) } returns true
+        coEvery { mockShortsRepo.updateStatus(any(), any(), any()) } throws mockException
 
         PlayShortsInjector.set(
             DaggerPlayShortsTestComponent.builder()
@@ -112,56 +116,32 @@ class PlayShortsSummaryAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickBackOnSummaryPage() {
+    fun testAnalytic_shorts_summaryPage() {
         setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
+            var isError = true
 
-        clickBackOnSummaryPage()
-
-        cassavaValidator.verify("click - back summary page")
-    }
-
-    @Test
-    fun testAnalytic_clickContentTag() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        composeActivityTestRule.clickContentTag(mockFirstTagText)
-
-        cassavaValidator.verify("click - content tag")
-    }
-
-    @Test
-    fun testAnalytic_clickUploadVideo() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        composeActivityTestRule.clickContentTag(mockFirstTagText)
-        clickUploadVideo()
-
-        cassavaValidator.verify("click - upload video")
-    }
-
-    @Test
-    fun testAnalytic_openScreenSummaryPage() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        cassavaValidator.verifyOpenScreen("/play broadcast short - summary page - ${mockAccountShop.id} - seller")
-    }
-
-    @Test
-    fun testAnalytic_clickRefreshContentTag() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } throws mockException
+            coEvery { mockShortsRepo.getTagRecommendation(any()) } coAnswers {
+                if (isError) {
+                    isError = false
+                    throw mockException
+                } else {
+                    mockTags
+                }
+            }
         }
 
         composeActivityTestRule.clickRefreshContentTag()
-
         cassavaValidator.verify("click - refresh content tags")
+
+        cassavaValidator.verifyOpenScreen("/play broadcast short - summary page - ${mockAccountShop.id} - seller")
+
+        composeActivityTestRule.clickContentTag(mockFirstTagText)
+        cassavaValidator.verify("click - content tag")
+
+        clickUploadVideo()
+        cassavaValidator.verify("click - upload video")
+
+        clickBackOnSummaryPage()
+        cassavaValidator.verify("click - back summary page")
     }
 }

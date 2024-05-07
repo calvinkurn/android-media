@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 13, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSetupTitleAnalyticTest {
 
     @get:Rule
@@ -91,38 +93,21 @@ class PlayShortsSetupTitleAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickBackOnTitleForm() {
-        clickBackTitleForm()
+    fun testAnalytic_shorts_setupTitle() {
+        cassavaValidator.verifyOpenScreen("/play broadcast short - title page - ${mockAccountShop.id} - seller")
 
-        cassavaValidator.verify("click - back title page")
-    }
-
-    @Test
-    fun testAnalytic_clickTextFieldOnTitleForm() {
         inputTitle()
-
         cassavaValidator.verify("click - fill text title")
-    }
 
-    @Test
-    fun testAnalytic_clickSaveOnTitleForm() {
+        clearTitle()
+        cassavaValidator.verify("click - delete text title")
+
         inputTitle()
         submitTitle()
-
         cassavaValidator.verify("click - simpan")
-    }
 
-    @Test
-    fun testAnalytic_clickClearTextBoxOnTitleForm() {
-        inputTitle()
-        clearTitle()
-
-        cassavaValidator.verify("click - delete text title")
-    }
-
-    @Test
-    fun testAnalytic_openScreenTitleForm() {
-
-        cassavaValidator.verifyOpenScreen("/play broadcast short - title page - ${mockAccountShop.id} - seller")
+        clickMenuTitle()
+        clickBackTitleForm()
+        cassavaValidator.verify("click - back title page")
     }
 }

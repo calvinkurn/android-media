@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 15, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSetupProductUGCAnalyticTest {
 
     @get:Rule
@@ -94,26 +96,23 @@ class PlayShortsSetupProductUGCAnalyticTest {
 
         clickMenuProduct()
         delay()
+    }
+
+    @Test
+    fun testAnalytic_shorts_productSetupUgc() {
+        openChooseSourceBottomSheet()
+        cassavaValidator.verify("view - product selection user profile")
+
+        clickCloseBreadcrumb()
+        cassavaValidator.verify("click - close product selection filter")
+
+        openChooseSourceBottomSheet()
+        clickProductTagSourceTokopedia()
+        cassavaValidator.verify("click - product selection filter")
+    }
+
+    private fun openChooseSourceBottomSheet() {
         clickBreadcrumb()
         delay()
-    }
-
-    @Test
-    fun testAnalyic_viewProductTagSourceBottomSheet() {
-        cassavaValidator.verify("view - product selection user profile")
-    }
-
-    @Test
-    fun testAnalyic_clickCloseOnProductTagSourceBottomSheet() {
-        clickCloseBreadcrumb()
-
-        cassavaValidator.verify("click - close product selection filter")
-    }
-
-    @Test
-    fun testAnalyic_clickProductTagSource() {
-        clickProductTagSourceTokopedia()
-
-        cassavaValidator.verify("click - product selection filter")
     }
 }

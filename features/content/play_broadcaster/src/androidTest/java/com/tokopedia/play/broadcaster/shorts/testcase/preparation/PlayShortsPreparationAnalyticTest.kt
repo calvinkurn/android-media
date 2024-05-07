@@ -8,6 +8,7 @@ import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRe
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
+import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
@@ -16,6 +17,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -28,6 +30,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 13, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsPreparationAnalyticTest {
 
     @get:Rule
@@ -96,54 +99,28 @@ class PlayShortsPreparationAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_viewPreparationPage() {
+    fun testAnalytic_shorts_preparationPage() {
         cassavaValidator.verify("view - post creation page")
-    }
 
-    @Test
-    fun testAnalytic_clickMenuTitle() {
         clickMenuTitle()
-
         cassavaValidator.verify("click - edit title")
-    }
+        completeTitleMenu()
 
-    @Test
-    fun testAnalytic_clickMenuProduct() {
         clickMenuProduct()
-
         cassavaValidator.verify("click - add product tag")
-    }
-
-    @Test
-    fun testAnalytic_clickMenuCover() {
-
-        completeMandatoryMenu()
+        completeProductMenu()
 
         clickMenuCover()
-
         cassavaValidator.verify("click - add cover on preparation page")
-    }
+        pressBack()
 
-    @Test
-    fun testAnalytic_viewLeavePreparationConfirmationPopup() {
         clickClosePreparationPage()
-
         cassavaValidator.verify("view - yakin mau keluar botom sheet")
-    }
 
-    @Test
-    fun testAnalytic_clickContinueOnLeaveConfirmationPopup() {
-        clickClosePreparationPage()
         clickContinueOnLeaveConfirmationPopup()
-
         cassavaValidator.verify("click - lanjut persiapan bottom sheet")
-    }
 
-    @Test
-    fun testAnalytic_clickNextOnPreparationPage() {
-        completeMandatoryMenu()
         clickContinueOnPreparationPage()
-
         cassavaValidator.verify("click - lanjut post creation")
     }
 }
