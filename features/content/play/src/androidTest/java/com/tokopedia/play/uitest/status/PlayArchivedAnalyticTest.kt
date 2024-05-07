@@ -72,7 +72,7 @@ class PlayArchivedAnalyticTest {
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext))
+                .playTestModule(PlayTestModule(targetContext, router = mockk(relaxed = true)))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()

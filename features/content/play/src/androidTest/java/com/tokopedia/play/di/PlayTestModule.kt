@@ -57,6 +57,7 @@ class PlayTestModule(
     val trackingQueue: TrackingQueue = TrackingQueue(mContext),
     val userSession: (appContext: Context) -> UserSessionInterface = { UserSession(it) },
     val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(mContext),
+    val router: Router = Router(),
     val playPreference: (appContext: Context) -> PlayPreference = {
         PlayPreference(
             it,
@@ -207,5 +208,5 @@ class PlayTestModule(
 
     @PlayScope
     @Provides
-    fun provideRouter(): Router = mockk(relaxed = true)
+    fun provideRouter() = router
 }
