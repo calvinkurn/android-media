@@ -644,6 +644,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void setAdsLogData() {
+        AppLogAnalytics.currentActivityName = MainParentActivity.this.getClass().getSimpleName();
         AppLogAnalytics.currentPageName = getPageName();
         AppLogAnalytics.putAdsPageData(PAGE_NAME, getPageName());
         AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, getPageName());
