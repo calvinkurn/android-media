@@ -261,8 +261,8 @@ class StoriesRepositoryImpl @Inject constructor(
                 params = BroadcasterReportTrackViewerUseCase.createParams(
                     channelId = storyId,
                     productIds = productIds,
-                    event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit,
-                    type = TrackContentType.Play
+                    event = event,
+                    type = TrackContentType.Stories
                 )
             }.executeOnBackground()
         }

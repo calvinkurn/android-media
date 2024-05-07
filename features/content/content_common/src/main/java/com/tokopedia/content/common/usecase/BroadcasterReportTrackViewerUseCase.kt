@@ -104,5 +104,7 @@ class BroadcasterReportTrackViewerUseCase @Inject constructor(
             ProductChanges("product_change"),
             Unknown("");
         }
+        val Event.isVisit : Boolean get() = this == Event.Visit
+
     }
 }

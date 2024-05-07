@@ -7,6 +7,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase.Companion.isVisit
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -381,7 +382,6 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
         checkReportSummary()
-        trackVisitContent(event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
         setupOnboard()
 
         run {
@@ -781,6 +781,7 @@ class StoriesViewModel @AssistedInject constructor(
             mLatestTrackPosition = mDetailPos
             val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
+            trackVisitContent(event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
         }) { exception ->
             _storiesEvent.emit(StoriesUiEvent.ErrorSetTracking(exception))
         }
@@ -793,7 +794,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val productIds = mutableListOf<String>()
     private fun trackVisitContent(ids: List<String> = emptyList(), event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
-        if (hasChanged) {
+        if (hasChanged || event.isVisit) {
             productIds.clear()
             ids.map { productIds.add(it) }
         } else { return }
