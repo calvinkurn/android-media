@@ -59,7 +59,7 @@ open class PercentageScrollListener : OnScrollListener() {
     }
 
     private fun setVisiblePercentageOnScrollChanged(recyclerView: RecyclerView) {
-        val layoutManager = recyclerView.layoutManager
+        val layoutManager = recyclerView.layoutManager ?: return
 
         val firstPosition = when (layoutManager) {
             is StaggeredGridLayoutManager -> {
@@ -82,6 +82,8 @@ open class PercentageScrollListener : OnScrollListener() {
         if (firstPosition == RecyclerView.NO_POSITION || lastPosition == RecyclerView.NO_POSITION) {
             return
         }
+
+        val totalLastPosition = lastPosition + (layoutManager.itemCount - lastPosition)
 
         for (pos in firstPosition..lastPosition) {
             setItemViewVisiblePercentage(layoutManager, pos, recyclerView)
@@ -125,7 +127,7 @@ fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect): Int {
         0
     }
 
-    return visibleAreaPercentage
+    return max(visibleAreaPercentage, prevPercentage)
 }
 
 private fun isPercentViewEnabled(context: Context): Boolean {
